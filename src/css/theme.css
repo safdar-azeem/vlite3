@@ -1,0 +1,325 @@
+@layer base {
+  :root {
+    /* Base Colors */
+    --color-white: #ffffff;
+    --color-black: #000000;
+
+    --color-gray-50: #FAFAFA;
+    --color-gray-100: #F6F5F6;
+    --color-gray-150: #F5F5F5;
+    --color-gray-200: #EFEFEF;
+    --color-gray-250: #d1d1d6;
+    --color-gray-300: #c7c7cc;
+    --color-gray-350: #aeaeb2;
+    --color-gray-400: #8e8e93;
+    --color-gray-450: #636366;
+    --color-gray-500: #636366;
+    --color-gray-550: #48484a;
+    --color-gray-600: #48484a;
+    --color-gray-650: #3a3a3c;
+    --color-gray-700: #3a3a3c;
+    --color-gray-750: #2c2c2e;
+    --color-gray-800: #1c1c1e;
+    --color-gray-850: #000000;
+    --color-gray-900: #000000;
+
+
+    --color-body: var(--color-white);
+    --border: var(--color-gray-250);
+
+    /* NEW SEMANTIC TOKENS (shadcn/ui style) */
+    --background: var(--color-white);
+    --foreground: var(--color-gray-900);
+
+    --card: var(--color-gray-50);
+    --card-foreground: var(--color-gray-900);
+
+    --popover: var(--color-white);
+    --popover-foreground: var(--color-gray-900);
+
+    --primary: #18181b;
+    --primary-foreground: var(--color-white);
+
+    /* Secondary: Slightly darker than muted for actions (Buttons) */
+    --secondary: var(--color-gray-200);
+    --secondary-foreground: var(--color-gray-900);
+
+    /* Muted: Subtle backgrounds (Cards, Inputs) */
+    --muted: var(--color-gray-100);
+    --muted-foreground: var(--color-gray-500);
+
+    /* Accent: Interactive hover states (Dropdown items, etc) */
+    --accent: var(--color-gray-150);
+    --accent-foreground: var(--color-gray-900);
+
+    --destructive: #ff3b30;
+    --destructive-foreground: var(--color-white);
+
+    --border: var(--color-gray-250);
+    --input: var(--color-gray-250);
+    --ring: var(--color-gray-900);
+    /* END NEW SEMANTIC TOKENS */
+
+
+    /* Primary - Refined Dark Zinc/Black */
+    --color-primary-light: #f4f4f5;
+    --color-primary: #18181b;
+    --color-primary-dark: #3f3f46;
+    --color-primary-fg: var(--color-white);
+    --color-primary-fg-light: #18181b;
+
+    /* Semantics - Apple-like Human Interface Colors */
+
+    /* Danger (System Red) */
+    --color-danger-light: #fff2f2;
+    --color-danger: #ff3b30;
+    --color-danger-dark: #d70015;
+    --color-danger-fg: var(--color-white);
+    --color-danger-fg-light: #d70015;
+
+    /* Warning (System Orange/Yellow) */
+    --color-warning-light: #fff9e6;
+    --color-warning: #ff9500;
+    --color-warning-dark: #c95100;
+    --color-warning-fg: var(--color-white);
+    --color-warning-fg-light: #c95100;
+
+    /* Info (System Blue) */
+    --color-info-light: #f0f8ff;
+    --color-info: #007aff;
+    --color-info-dark: #0051a8;
+    --color-info-fg: var(--color-white);
+    --color-info-fg-light: #0051a8;
+
+    /* Success (System Green) */
+    --color-success-light: #f2fffa;
+    --color-success: #34c759;
+    --color-success-dark: #248a3d;
+    --color-success-fg: var(--color-white);
+    --color-success-fg-light: #248a3d;
+
+    /* v-tooltip-lite variables */
+    --tooltip-bg: var(--popover) !important;
+    --tooltip-text: var(--popover-foreground) !important;
+    --tooltip-border: var(--border) !important;
+
+    --tooltip-radius: var(--radius) !important;
+    --tooltip-shadow: var(--shadow-dropdown) !important;
+    --tooltip-arrow-size: 0.5em !important;
+    --tooltip-z-index: 50;
+    --tooltip-font-size: unset !important;
+    --date-picker-border: var(--border) !important;
+
+  }
+
+  .dark {
+    /* Dark Mode Overrides */
+    --color-white: #000000;
+    --color-black: #ffffff;
+
+    /* Notion Dark Background + Apple Grays */
+    --color-body: oklch(0.145 0 0);
+    --border: #2c2c2e;
+
+    --color-gray-50: #161616;
+    --color-gray-100: #161616;
+    --color-gray-150: #3d3d3f;
+    --color-gray-200: #262626;
+    --color-gray-250: #2d2d2d;
+    --color-gray-300: #545456;
+    --color-gray-350: #636366;
+    --color-gray-400: #8e8e93;
+    --color-gray-450: #aeaeb2;
+    --color-gray-500: #aeaeb2;
+    --color-gray-550: #c7c7cc;
+    --color-gray-600: #c7c7cc;
+    --color-gray-650: #d1d1d6;
+    --color-gray-700: #e5e5ea;
+    --color-gray-750: #f2f2f7;
+    --color-gray-800: #f2f2f7;
+    --color-gray-850: #ffffff;
+    --color-gray-900: #ffffff;
+
+    /* NEW SEMANTIC TOKENS (Dark Mode) */
+    --background: var(--color-body);
+    --foreground: var(--color-gray-900);
+
+    --card: #181818;
+    /* Adjusted: using darker context */
+    --card-foreground: var(--color-900);
+
+    --popover: var(--color-body);
+    --popover-foreground: var(--color-gray-900);
+
+    --primary: #f4f4f5;
+    --primary-foreground: #18181b;
+
+    --secondary: var(--color-gray-200);
+    --secondary-foreground: var(--color-gray-900);
+
+    --muted: var(--color-gray-50);
+    --muted-foreground: var(--color-gray-600);
+
+    --accent: var(--color-gray-100);
+    --accent-foreground: var(--color-gray-900);
+
+    --destructive: #bf2625;
+    --destructive-foreground: var(--color-black);
+
+    --border: var(--color-gray-200);
+    --input: var(--color-gray-200);
+    --ring: var(--color-gray-300);
+    /* END NEW SEMANTIC TOKENS */
+
+    /* Primary */
+    --color-primary-light: #2c2c2e;
+    --color-primary: #f4f4f5;
+    /* High Contrast White/Gray */
+    --color-primary-dark: #d4d4d8;
+    --color-primary-fg: #191919;
+    --color-primary-fg-light: #f4f4f5;
+
+    /* Semantics - Dark Mode High Contrast */
+
+    /* Danger */
+    --color-danger-light: #4E1D1A;
+    --color-danger-fg-light: #FCFCFC;
+    --color-danger: #BF2625;
+    --color-danger-fg: #ffffff;
+    --color-danger-dark: #D72627;
+
+    /* Warning */
+    --color-warning-light: #3a1e00;
+    --color-warning-fg-light: #ff9f0a;
+    --color-warning: #ff9f0a;
+    --color-warning-fg: #ffffff;
+    --color-warning-dark: #ffb340;
+
+    /* Info */
+    --color-info-light: #001a33;
+    --color-info-fg-light: #0a84ff;
+    --color-info: #0a84ff;
+    --color-info-fg: #ffffff;
+    --color-info-dark: #409cff;
+
+    /* Success */
+    --color-success-light: #1B3419;
+    --color-success-fg-light: #ffffff;
+    --color-success: #007E51;
+    --color-success-fg: #ffffff;
+    --color-success-dark: #00613f;
+  }
+}
+
+@theme {
+  /* Map Utilities to CSS Variables */
+  --color-white: var(--color-white);
+  --color-black: var(--color-black);
+
+  --color-gray-50: var(--color-gray-50);
+  --color-gray-100: var(--color-gray-100);
+  --color-gray-150: var(--color-gray-150);
+  --color-gray-200: var(--color-gray-200);
+  --color-gray-250: var(--color-gray-250);
+  --color-gray-300: var(--color-gray-300);
+  --color-gray-350: var(--color-gray-350);
+  --color-gray-400: var(--color-gray-400);
+  --color-gray-450: var(--color-gray-450);
+  --color-gray-500: var(--color-gray-500);
+  --color-gray-550: var(--color-gray-550);
+  --color-gray-600: var(--color-gray-600);
+  --color-gray-650: var(--color-gray-650);
+  --color-gray-700: var(--color-gray-700);
+  --color-gray-750: var(--color-gray-750);
+  --color-gray-800: var(--color-gray-800);
+  --color-gray-850: var(--color-gray-850);
+  --color-gray-900: var(--color-gray-900);
+
+  --color-body: var(--color-body);
+  --border: var(--border);
+
+  /* NEW SEMANTIC COLORS */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+
+  --color-primary-light: var(--color-primary-light);
+  /* --color-primary: var(--color-primary); -> Overridden/merged above */
+  --color-primary-dark: var(--color-primary-dark);
+  --color-primary-fg: var(--color-primary-fg);
+  --color-primary-fg-light: var(--color-primary-fg-light);
+
+  --color-danger-light: var(--color-danger-light);
+  --color-danger: var(--color-danger);
+  --color-danger-dark: var(--color-danger-dark);
+  --color-danger-fg: var(--color-danger-fg);
+  --color-danger-fg-light: var(--color-danger-fg-light);
+
+  --color-warning-light: var(--color-warning-light);
+  --color-warning: var(--color-warning);
+  --color-warning-dark: var(--color-warning-dark);
+  --color-warning-fg: var(--color-warning-fg);
+  --color-warning-fg-light: var(--color-warning-fg-light);
+
+  --color-info-light: var(--color-info-light);
+  --color-info: var(--color-info);
+  --color-info-dark: var(--color-info-dark);
+  --color-info-fg: var(--color-info-fg);
+  --color-info-fg-light: var(--color-info-fg-light);
+
+  --color-success-light: var(--color-success-light);
+  --color-success: var(--color-success);
+  --color-success-dark: var(--color-success-dark);
+  --color-success-fg: var(--color-success-fg);
+  --color-success-fg-light: var(--color-success-fg-light);
+
+  /* Shadows */
+  --shadow-dropdown: 0 3px 4px -3px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 3%);
+  --shadow-offcanvas: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.1),
+    0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-DEFAULT: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+    0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  /* Radii */
+  --radius: 0.5rem;
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 3px);
+  --radius-xl: calc(var(--radius) + 5px);
+  --radius-2xl: calc(var(--radius) + 7px);
+
+  /* Animations */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-ripple: ripple 600ms linear;
+}
