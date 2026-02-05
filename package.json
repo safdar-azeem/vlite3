@@ -1,0 +1,66 @@
+{
+  "name": "vlite3",
+  "private": false,
+  "description": "A lightweight Vue 3 UI component library built with Tailwind CSS.",
+  "license": "MIT",
+  "version": "0.0.6",
+  "type": "module",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "postbuild": "node scripts/bundle-css.js",
+    "preview": "vite preview",
+    "prepare:dist": "npm run build && cp package.json README.md dist/",
+    "release:patch": "npm version patch && npm run prepare:dist && cd dist && npm publish",
+    "release:minor": "npm version minor && npm run prepare:dist && cd dist && npm publish",
+    "release:major": "npm version major && npm run prepare:dist && cd dist && npm publish",
+    "publish:dist": "npm run prepare:dist && cd dist && npm publish"
+  },
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "require": "./index.js"
+    },
+    "./style.css": "./style.css"
+  },
+  "dependencies": {
+    "@formkit/drag-and-drop": "^0.5.3",
+    "@iconify/vue": "5.0.0",
+    "@jaames/iro": "^5.5.2",
+    "@tailwindcss/vite": "^4.1.18",
+    "@vueuse/core": "^14.1.0",
+    "iconify-icon-picker": "^1.0.3",
+    "tailwindcss": "^4.1.18",
+    "v-datepicker-lite": "^0.1.3",
+    "v-tooltip-lite": "^0.1.9",
+    "vue-carousel-lite": "^0.2.3"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.24",
+    "vue-router": "4"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.10",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vue/tsconfig": "^0.8.1",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.4",
+    "vite-plugin-dts": "^4.5.4",
+    "vue": "^3.5.24",
+    "vue-router": "^4.0.0",
+    "vue-tsc": "^3.1.4"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "endOfLine": "auto",
+    "bracketSameLine": true
+  }
+}
