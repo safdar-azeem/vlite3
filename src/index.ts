@@ -9,22 +9,7 @@ export * from './components/Carousel'
 export { default as CheckBox } from './components/CheckBox.vue'
 export * from './components/Chip'
 export * from './components/ChoiceBox'
-// export * from './components/ColorPicker' // Check if index.ts exists, it does (Step 17)
-export { default as ColorPicker } from './components/ColorPicker/ColorPicker.vue' // Actually ColorPicker directory usually exports the main component via index.ts?
-// Step 17 showed ColorPicker dir. Step 0 didn't show ColorPicker/index.ts.
-// I should rely on the `index.ts` presence.
-// I'll assume directories have index.ts if I saw them in Step 17 as dirs and they are component dirs.
-// Exception: if I'm not sure, I should check.
-// I'll stick to exporting * from dir if it's a "Component Folder".
-// I'll re-verify ColorPicker index presence if I can?
-// Step 17: ColorPicker isDir:true, numChildren:2.
-// Step 0 showed `ColorPicker/ColorPicker.vue` and `ColorPicker/ColorIro.vue`. NO `index.ts` shown in Step 0.
-// Wait, Step 0 listing was triggered by user, it showed SOME files.
-// Start of Step 0 says: "Listing the contents of the "vlite3 - v-tooltip-lite" folder" and lists specific files.
-// It didn't list everything.
-// I should check if `ColorPicker` has `index.ts`.
-// I'll list `src/components/ColorPicker` just in case.
-
+export { default as ColorPicker } from './components/ColorPicker/ColorPicker.vue'
 export { default as ConfirmationModal } from './components/ConfirmationModal.vue'
 export { default as DatePicker } from './components/DatePicker.vue'
 export * from './components/DataTable'
@@ -56,3 +41,14 @@ export { default as Timeline } from './components/Timeline.vue'
 export { default as ToastNotification } from './components/ToastNotification.vue'
 export { default as Tooltip } from './components/Tooltip.vue'
 export * from './components/Workbook'
+
+// Composables
+export * from './composables/useNotifications'
+export * from './composables/useTheme'
+export * from './composables/useKeyStroke'
+
+// Utils
+export * from './utils'
+
+// Types
+export * from './types'
