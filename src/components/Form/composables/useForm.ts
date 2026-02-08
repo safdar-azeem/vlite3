@@ -308,7 +308,6 @@ export function useForm(options: UseFormOptions): UseFormReturn {
 
       // Call onSubmit callback
       if (onSubmit) {
-        console.log('onsubmit :>> ', processedValues)
         await onSubmit({
           values: processedValues,
           isUpdate,
