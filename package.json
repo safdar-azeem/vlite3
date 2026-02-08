@@ -13,6 +13,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
+    "build:vercel": "vue-tsc -b && vite build --config vite.config.vercel.ts",
     "postbuild": "node scripts/bundle-css.js",
     "preview": "vite preview",
     "prepare:dist": "npm run build && cp package.json README.md dist/",
