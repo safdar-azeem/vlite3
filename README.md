@@ -16,23 +16,19 @@ npm install vlite3
 yarn add vlite3
 ```
 
-## Configuration
+## 2. Tailwind CSS Setup
 
-### 1. Import Styles
-
-Import the library's base styles (for custom component styles) in your main entry file (e.g., `main.ts` or `App.vue`):
+`vite.config.ts`
 
 ```ts
-import 'vlite3/style.css'
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [vue(), tailwindcss()],
+})
 ```
 
-### 2. Tailwind CSS Setup
-
-This library relies on Tailwind CSS for utility classes. You must configure your project to scan the library's files so that the necessary classes are generated.
-
-#### Tailwind CSS v4
-
-If you are using the new CSS-first configuration, add the source path:
+`style.css`
 
 ```css
 @import 'tailwindcss';
@@ -42,7 +38,7 @@ If you are using the new CSS-first configuration, add the source path:
 @source "../node_modules/vlite3";
 ```
 
-## Usage
+## 3. Usage
 
 Import components directly in your Vue files:
 
@@ -52,9 +48,65 @@ import { Button, Input } from 'vlite3'
 </script>
 
 <template>
-	<div class="p-4 space-y-4">
-		<Button>Click Me</Button>
-		<Input placeholder="Type here..." />
-	</div>
+  <div class="p-4 space-y-4">
+    <Button>Click Me</Button>
+    <Input placeholder="Type here..." />
+  </div>
 </template>
 ```
+
+## ✅ Components
+
+- **Button**
+- **ButtonGroup**
+- **Icon**
+- **Label**
+- **Badge**
+- **Chip**
+- **Logo**
+- **Navbar**
+- **SidebarMenu**
+- **SidePanel**
+- **Masonry Grid**
+- **ThemeToggle**
+
+### Inputs & Forms
+
+- **Input**
+- **Textarea**
+- **CheckBox**
+- **Switch**
+- **ChoiceBox**
+- **Slider**
+- **OTPInput**
+- **DatePicker**
+- **ColorPicker**
+- **FilePicker**
+- **AvatarUploader**
+- **IconPicker**
+- **MultiSelect**
+- **Form**
+- **CustomFields**
+
+### Data Display
+
+- **Avatar**
+- **Accordion**
+- **Carousel**
+- **DataTable**
+- **Pagination**
+- **Timeline**
+- **Heatmap**
+- **PricingPlan**
+- **FileTree**
+- **Workbook**
+- **Tabes**
+
+### Feedback & Overlays
+
+- **Alert**
+- **Modal**
+- **ConfirmationModal**
+- **ToastNotification**
+- **Tooltip**
+- **Dropdown**
