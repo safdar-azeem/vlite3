@@ -1,7 +1,13 @@
 <script setup lang="ts">
-import { computed, ref, watch, onMounted, provide } from 'vue'
-import type { IForm, IFormProps, IFormStep, IFormSubmitPayload } from './types'
-import type { InputVariant, InputSize, InputRounded, TimelineTextPosition } from '@/types'
+import { computed, ref, watch } from 'vue'
+import type { IForm, IFormStep, IFormSubmitPayload } from './types'
+import type {
+  InputVariant,
+  InputSize,
+  InputRounded,
+  TimelineTextPosition,
+  ButtonProps,
+} from '@/types'
 import { useForm } from './composables/useForm'
 import FormFields from './FormFields.vue'
 import Button from '@/components/Button.vue'
@@ -31,6 +37,8 @@ interface Props {
   tabs?: IFormStep[]
   /** Submit button text */
   submitText?: string
+  /* submit button props */
+  submitProps?: ButtonProps
   /** Cancel button text */
   cancelText?: string
   /** Show cancel button */
@@ -385,6 +393,7 @@ const handleCancel = () => {
         type="submit"
         variant="primary"
         :text="submitText"
+        v-bind="submitProps"
         :loading="loading || isSubmitting" />
     </div>
   </form>
