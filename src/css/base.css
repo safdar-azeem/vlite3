@@ -43,14 +43,14 @@ html {
   .h3,
   h4,
   .h4 {
-    @apply font-bold text-gray-900;
+    @apply font-bold text-foreground;
   }
 
   h5,
   .h5,
   h6,
   .h6 {
-    @apply font-sans text-gray-900;
+    @apply font-sans text-foreground;
   }
 
   h1,
@@ -133,15 +133,16 @@ html {
 }
 
 #icon-picker {
-  --iconPicker-text: theme('colors.gray.700');
-  --iconPicker-border: theme('colors.gray.250');
-  --iconPicker-primary: theme('colors.primary.DEFAULT');
-  --iconPicker-primary-fg: theme('colors.primary.fg');
-  --iconPicker-primary-hover: theme('colors.primary.dark');
-  --iconPicker-radius: 0.375em;
+  --iconPicker-text: var(--foreground);
+  --iconPicker-border: var(--border);
+  --iconPicker-primary: var(--primary);
+  --iconPicker-primary-fg: var(--primary-foreground);
+  --iconPicker-primary-hover: var(--primary);
+  /* Approximation */
+  --iconPicker-radius: var(--radius);
   --iconPicker-gap: 0.25em;
   --iconPicker-input-height: 2.125em;
-  --iconPicker-selected-bg: theme('colors.gray.100');
+  --iconPicker-selected-bg: var(--accent);
   --iconPicker-font-base: 15.5px;
   --iconPicker-transition: all 0.2s ease;
 }
