@@ -1,6 +1,6 @@
 @layer base {
   :root {
-    /* Base Colors */
+    /* Base Colors - Preserving existing palette for backward compatibility */
     --color-white: #ffffff;
     --color-black: #000000;
 
@@ -23,79 +23,95 @@
     --color-gray-850: #000000;
     --color-gray-900: #000000;
 
-
     --color-body: var(--color-white);
-    --border: var(--color-gray-250);
 
-    /* NEW SEMANTIC TOKENS (shadcn/ui style) */
-    --background: var(--color-white);
-    --foreground: var(--color-gray-900);
+    /* SHADCN/UI SEMANTIC TOKENS */
 
-    --card: var(--color-gray-50);
-    --card-foreground: var(--color-gray-900);
+    /* Backgrounds */
+    --background: #ffffff;
+    --foreground: #09090b;
 
-    --popover: var(--color-white);
-    --popover-foreground: var(--color-gray-900);
+    /* Card */
+    --card: #ffffff;
+    --card-foreground: #09090b;
 
+    /* Popover */
+    --popover: #ffffff;
+    --popover-foreground: #09090b;
+
+    /* Primary */
     --primary: #18181b;
-    --primary-foreground: var(--color-white);
+    --primary-foreground: #fafafa;
 
-    /* Secondary: Slightly darker than muted for actions (Buttons) */
-    --secondary: var(--color-gray-200);
-    --secondary-foreground: var(--color-gray-900);
+    /* Secondary */
+    --secondary: #f4f4f5;
+    --secondary-foreground: #18181b;
 
-    /* Muted: Subtle backgrounds (Cards, Inputs) */
-    --muted: var(--color-gray-100);
-    --muted-foreground: var(--color-gray-500);
+    /* Muted */
+    --muted: #f4f4f5;
+    --muted-foreground: #71717a;
 
-    /* Accent: Interactive hover states (Dropdown items, etc) */
-    --accent: var(--color-gray-150);
-    --accent-foreground: var(--color-gray-900);
+    /* Accent */
+    --accent: #f4f4f5;
+    --accent-foreground: #18181b;
 
-    --destructive: #ff3b30;
-    --destructive-foreground: var(--color-white);
+    /* Destructive */
+    --destructive: #ef4444;
+    --destructive-foreground: #fafafa;
 
-    --border: var(--color-gray-250);
-    --input: var(--color-gray-250);
-    --ring: var(--color-gray-900);
-    /* END NEW SEMANTIC TOKENS */
+    /* Border / Input / Ring */
+    --border: #e4e4e7;
+    --input: #e4e4e7;
+    --ring: #18181b;
+
+    /* Radius */
+    --radius: 0.5rem;
 
 
-    /* Primary - Refined Dark Zinc/Black */
+    /* Charts (Standard Shadcn Chart Colors) */
+    --chart-1: #e76e50;
+    --chart-2: #2a9d8f;
+    --chart-3: #264653;
+    --chart-4: #e9c46a;
+    --chart-5: #f4a261;
+
+    /* --- Legacy/Custom vlite3 Mappings (Merging into semantics where possible) --- */
+
+    /* Primary Variants (vlite3 custom) */
     --color-primary-light: #f4f4f5;
-    --color-primary: #18181b;
+    --color-primary: var(--primary);
     --color-primary-dark: #3f3f46;
-    --color-primary-fg: var(--color-white);
+    --color-primary-fg: var(--primary-foreground);
     --color-primary-fg-light: #18181b;
 
-    /* Semantics - Apple-like Human Interface Colors */
+    /* Semantics - Apple-like Human Interface Colors (Preserved) */
 
-    /* Danger (System Red) */
+    /* Danger (System Red) -> Mapped to Destructive where appropriate */
     --color-danger-light: #fff2f2;
     --color-danger: #ff3b30;
     --color-danger-dark: #d70015;
-    --color-danger-fg: var(--color-white);
+    --color-danger-fg: #ffffff;
     --color-danger-fg-light: #d70015;
 
     /* Warning (System Orange/Yellow) */
     --color-warning-light: #fff9e6;
     --color-warning: #ff9500;
     --color-warning-dark: #c95100;
-    --color-warning-fg: var(--color-white);
+    --color-warning-fg: #ffffff;
     --color-warning-fg-light: #c95100;
 
     /* Info (System Blue) */
     --color-info-light: #f0f8ff;
     --color-info: #007aff;
     --color-info-dark: #0051a8;
-    --color-info-fg: var(--color-white);
+    --color-info-fg: #ffffff;
     --color-info-fg-light: #0051a8;
 
     /* Success (System Green) */
     --color-success-light: #f2fffa;
     --color-success: #34c759;
     --color-success-dark: #248a3d;
-    --color-success-fg: var(--color-white);
+    --color-success-fg: #ffffff;
     --color-success-fg-light: #248a3d;
 
     /* v-tooltip-lite variables */
@@ -113,13 +129,9 @@
   }
 
   .dark {
-    /* Dark Mode Overrides */
+    /* Base Colors Re-definitions for Dark Mode logic (Legacy) */
     --color-white: #000000;
     --color-black: #ffffff;
-
-    /* Notion Dark Background + Apple Grays */
-    --color-body: oklch(0.145 0 0);
-    --border: #2c2c2e;
 
     --color-gray-50: #161616;
     --color-gray-100: #161616;
@@ -140,43 +152,49 @@
     --color-gray-850: #ffffff;
     --color-gray-900: #ffffff;
 
-    /* NEW SEMANTIC TOKENS (Dark Mode) */
-    --background: var(--color-body);
-    --foreground: var(--color-gray-900);
+    --color-body: #09090b;
 
-    --card: #181818;
-    /* Adjusted: using darker context */
-    --card-foreground: var(--color-900);
+    /* SHADCN/UI SEMANTIC TOKENS (DARK) */
+    --background: #09090b;
+    --foreground: #fafafa;
 
-    --popover: var(--color-body);
-    --popover-foreground: var(--color-gray-900);
+    --card: #09090b;
+    --card-foreground: #fafafa;
 
-    --primary: #f4f4f5;
+    --popover: #09090b;
+    --popover-foreground: #fafafa;
+
+    --primary: #fafafa;
     --primary-foreground: #18181b;
 
-    --secondary: var(--color-gray-200);
-    --secondary-foreground: var(--color-gray-900);
+    --secondary: #27272a;
+    --secondary-foreground: #fafafa;
 
-    --muted: var(--color-gray-50);
-    --muted-foreground: var(--color-gray-600);
+    --muted: #27272a;
+    --muted-foreground: #a1a1aa;
 
-    --accent: var(--color-gray-100);
-    --accent-foreground: var(--color-gray-900);
+    --accent: #27272a;
+    --accent-foreground: #fafafa;
 
-    --destructive: #bf2625;
-    --destructive-foreground: var(--color-black);
+    --destructive: #7f1d1d;
+    --destructive-foreground: #fafafa;
 
-    --border: var(--color-gray-200);
-    --input: var(--color-gray-200);
-    --ring: var(--color-gray-300);
-    /* END NEW SEMANTIC TOKENS */
+    --border: #27272a;
+    --input: #27272a;
+    --ring: #d4d4d8;
 
-    /* Primary */
+    /* Charts (Dark) */
+    --chart-1: #22c55e;
+    --chart-2: #2a9d8f;
+    --chart-3: #264653;
+    --chart-4: #e9c46a;
+    --chart-5: #f4a261;
+
+    /* Variants (vlite3 custom) */
     --color-primary-light: #2c2c2e;
-    --color-primary: #f4f4f5;
-    /* High Contrast White/Gray */
+    --color-primary: var(--primary);
     --color-primary-dark: #d4d4d8;
-    --color-primary-fg: #191919;
+    --color-primary-fg: var(--primary-foreground);
     --color-primary-fg-light: #f4f4f5;
 
     /* Semantics - Dark Mode High Contrast */
@@ -238,7 +256,7 @@
   --color-body: var(--color-body);
   --border: var(--border);
 
-  /* NEW SEMANTIC COLORS */
+  /* SHADCN/UI MAPPINGS */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
@@ -267,9 +285,16 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
+  --radius: var(--radius);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 4px);
 
+
+  /* Legacy / Custom Mappings */
   --color-primary-light: var(--color-primary-light);
-  /* --color-primary: var(--color-primary); -> Overridden/merged above */
+  /* --color-primary: var(--color-primary); -> Handled above */
   --color-primary-dark: var(--color-primary-dark);
   --color-primary-fg: var(--color-primary-fg);
   --color-primary-fg-light: var(--color-primary-fg-light);
@@ -309,14 +334,6 @@
     0 4px 6px -4px rgb(0 0 0 / 0.1);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1),
     0 8px 10px -6px rgb(0 0 0 / 0.1);
-
-  /* Radii */
-  --radius: 0.5rem;
-  --radius-sm: calc(var(--radius) - 2px);
-  --radius-md: var(--radius);
-  --radius-lg: calc(var(--radius) + 3px);
-  --radius-xl: calc(var(--radius) + 5px);
-  --radius-2xl: calc(var(--radius) + 7px);
 
   /* Animations */
   --animate-accordion-down: accordion-down 0.2s ease-out;
