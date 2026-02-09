@@ -164,9 +164,9 @@
     --card-foreground: #fafafa;
     --card-muted: #27272a;
 
-    --popover: #09090b;
-    --popover-foreground: #fafafa;
-    --popover-muted: #27272a;
+    --popover: var(--background);
+    --popover-foreground: var(--foreground);
+    --popover-muted: var(--card-muted);
 
     --primary: #fafafa;
     --primary-foreground: #18181b;
