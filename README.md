@@ -16,7 +16,7 @@ npm install vlite3
 yarn add vlite3
 ```
 
-## 2. Tailwind CSS Setup
+## 2. Tailwind CSS Setup (Tailwind v4)
 
 `vite.config.ts`
 
@@ -53,6 +53,91 @@ import { Button, Input } from 'vlite3'
     <Input placeholder="Type here..." />
   </div>
 </template>
+```
+
+## 🎨 Theming & Customization
+
+vlite3 uses a semantic theming system inspired by **shadcn/ui** and compatible with **Tailwind CSS v4**. All colors are defined as CSS variables, making it easy to customize the look and feel of your application including Dark Mode support.
+
+### Semantic Colors
+
+You can customize these colors in your CSS by overriding the variables in `:root` or `.dark` classes (if you are using a class-based dark mode switcher).
+
+| Variable                   | Class Name                    | Description             | Recommended Usage                                          |
+| :------------------------- | :---------------------------- | :---------------------- | :--------------------------------------------------------- |
+| `--background`             | `bg-background`               | Default page background | The main background color of your app.                     |
+| `--foreground`             | `text-foreground`             | Default text color      | The primary text color for content.                        |
+| `--card`                   | `bg-card`                     | Card background         | Background for cards, panels, and dialogs.                 |
+| `--card-foreground`        | `text-card-foreground`        | Card text color         | Text color inside cards.                                   |
+| `--popover`                | `bg-popover`                  | Popover background      | Background for popovers, tooltips, and dropdowns.          |
+| `--popover-foreground`     | `text-popover-foreground`     | Popover text color      | Text color inside popovers.                                |
+| `--primary`                | `bg-primary`                  | Primary brand color     | Used for main actions (buttons, active states).            |
+| `--primary-foreground`     | `text-primary-foreground`     | Primary text color      | Text color for content on top of primary background.       |
+| `--secondary`              | `bg-secondary`                | Secondary background    | Used for secondary actions or muted sections.              |
+| `--secondary-foreground`   | `text-secondary-foreground`   | Secondary text color    | Text color for content on top of secondary background.     |
+| `--muted`                  | `bg-muted`                    | Muted background        | Subtle backgrounds (e.g., table headers, disabled states). |
+| `--muted-foreground`       | `text-muted-foreground`       | Muted text color        | Secondary text, hints, placeholders.                       |
+| `--accent`                 | `bg-accent`                   | Accent background       | Used for hover states, selection highlights.               |
+| `--accent-foreground`      | `text-accent-foreground`      | Accent text color       | Text color on accent backgrounds.                          |
+| `--destructive`            | `bg-destructive`              | Destructive color       | Used for error states and destructive actions.             |
+| `--destructive-foreground` | `text-destructive-foreground` | Destructive text color  | Text color on destructive backgrounds.                     |
+| `--border`                 | `border`                      | Default border color    | Borders for inputs, cards, and dividers.                   |
+| `--input`                  | `border-input`                | Input border color      | Borders specifically for form inputs.                      |
+| `--ring`                   | `ring-ring`                   | Focus ring color        | Outline color for focused elements.                        |
+| `--radius`                 | `rounded-radius`              | Border radius           | Global border radius for components.                       |
+
+### Extended Color Variants
+
+For more complex components, vlite3 provides extended variants for main semantic colors (`primary`, `danger`, `warning`, `info`, `success`). These are useful for building nuanced UIs with subtle backgrounds, hover states, and accessible text.
+
+| Base Color  | Variant Variables                                                                                       | Usage Description                                                                                                                                                                                           |
+| :---------- | :------------------------------------------------------------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Primary** | `--color-primary-light`<br>`--color-primary-dark`<br>`--color-primary-fg`<br>`--color-primary-fg-light` | **Light**: Subtle background (e.g., 10% opacity).<br>**Dark**: Hover state for the main color.<br>**Fg**: Text color on top of the _main_ color.<br>**Fg-Light**: Text color on top of the _light_ variant. |
+| **Danger**  | `--color-danger-light`<br>`--color-danger-dark`<br>`--color-danger-fg`<br>`--color-danger-fg-light`     | **Light**: Error backgrounds (alerts).<br>**Dark**: Hover state for destructive buttons.<br>**Fg**: Text on destructive buttons.<br>**Fg-Light**: Text on error alerts.                                     |
+| **Warning** | `--color-warning-light`<br>`--color-warning-dark`<br>`--color-warning-fg`<br>`--color-warning-fg-light` | **Light**: Warning backgrounds.<br>**Dark**: Active/Determined warning states.<br>**Fg**: Text on warning badges.<br>**Fg-Light**: Text on warning backgrounds.                                             |
+| **Success** | `--color-success-light`<br>`--color-success-dark`<br>`--color-success-fg`<br>`--color-success-fg-light` | **Light**: Success backgrounds (toasts).<br>**Dark**: Hover/Active success actions.<br>**Fg**: Text on success buttons.<br>**Fg-Light**: Text on success backgrounds.                                       |
+| **Info**    | `--color-info-light`<br>`--color-info-dark`<br>`--color-info-fg`<br>`--color-info-fg-light`             | **Light**: Info backgrounds.<br>**Dark**: Hover/Active info actions.<br>**Fg**: Text on info buttons.<br>**Fg-Light**: Text on info backgrounds.                                                            |
+
+**Example Usage:**
+
+```html
+<!-- A success badge with subtle background and matching text -->
+<div class="bg-success-light text-success-fg-light border border-success/20">
+  Operation Completed
+</div>
+
+<!-- A danger button with hover effect -->
+<button class="bg-danger text-danger-fg hover:bg-danger-dark">Delete</button>
+```
+
+### Additional Colors
+
+vlite3 also provides additional utility colors for specific feedback states:
+
+| Variable          | Class Name                   | Description                             |
+| :---------------- | :--------------------------- | :-------------------------------------- |
+| `--color-success` | `text-success`, `bg-success` | For success messages/badges.            |
+| `--color-warning` | `text-warning`, `bg-warning` | For warning messages/badges.            |
+| `--color-info`    | `text-info`, `bg-info`       | For informational messages/badges.      |
+| `--color-danger`  | `text-danger`, `bg-danger`   | Alias for destructive in some contexts. |
+
+### Example Customization
+
+To customize the theme, simply override the CSS variables in your main CSS file:
+
+```css
+@layer base {
+  :root {
+    --primary: #3b82f6; /* Blue-500 */
+    --primary-foreground: #ffffff;
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --primary: #60a5fa; /* Blue-400 */
+    --primary-foreground: #000000;
+  }
+}
 ```
 
 ## ✅ Components
