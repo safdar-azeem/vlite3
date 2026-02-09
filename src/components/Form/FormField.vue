@@ -4,13 +4,15 @@ import type { IForm, IFormFieldChangePayload } from './types'
 import type { InputVariant, InputSize, InputRounded } from '@/types'
 import { isComponent } from './utils/form.utils'
 
-// Core components - imported directly for better tree-shaking
+// Core components - imported directly for better tree-shaking and to prevent slot context issues
 import Input from '@/components/Input.vue'
 import Switch from '@/components/Switch.vue'
 import CheckBox from '@/components/CheckBox.vue'
 import Textarea from '@/components/Textarea.vue'
+import FilePicker from '@/components/FilePicker/FilePicker.vue'
+import AvatarUploader from '@/components/AvatarUploader/AvatarUploader.vue'
 
-// Async imports for less commonly used components
+// Async imports for complex or heavy components
 const Dropdown = defineAsyncComponent(
 	() => import('@/components/Dropdown/Dropdown.vue'),
 )
@@ -19,12 +21,6 @@ const MultiSelect = defineAsyncComponent(
 )
 const DatePicker = defineAsyncComponent(
 	() => import('@/components/DatePicker.vue'),
-)
-const FilePicker = defineAsyncComponent(
-	() => import('@/components/FilePicker/FilePicker.vue'),
-)
-const AvatarUploader = defineAsyncComponent(
-	() => import('@/components/AvatarUploader/AvatarUploader.vue'),
 )
 const ColorPicker = defineAsyncComponent(
 	() => import('@/components/ColorPicker/ColorPicker.vue'),
@@ -107,10 +103,6 @@ const fieldComponent = computed(() => {
 
 		case 'multiSelect':
 			return MultiSelect
-
-		case 'date':
-		case 'time':
-			return DatePicker
 
 		case 'date':
 		case 'time':
@@ -409,3 +401,4 @@ const fieldEvents = computed(() => {
 		v-bind="fieldProps"
 		v-on="fieldEvents" />
 </template>
+
