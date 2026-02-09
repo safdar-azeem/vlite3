@@ -83,19 +83,25 @@ onUnmounted(() => {
       leave-to-class="opacity-0">
       <div
         v-if="visible"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-[#00000077] p-4"
         @click="handleBackdropClick">
         <div
-          class="relative w-full rounded border border-border bg-background text-foreground shadow-lg flex flex-col max-h-[85vh] sm:max-h-[90vh]"
+          class="relative w-full rounded border border-border bg-popover text-foreground shadow-lg flex flex-col max-h-[85vh] sm:max-h-[90vh]"
           :class="[maxWidth]"
           @click.stop>
           <!-- Header -->
           <div v-if="title" class="flex-none flex flex-col space-y-1.5 pb-0 border-b">
-            <div class="flex items-center justify-between bg-muted py-2.5 px-4 rounded-t-xl">
+            <div class="flex items-center justify-between bg-popover-muted py-1 px-4 rounded-t-md">
               <h3 class="text-lg font-semibold leading-none tracking-tight">
                 {{ title }}
               </h3>
-              <Button rounded="full" size="sm" icon="lucide:x" variant="ghost" @click="close" />
+              <Button
+                rounded="full"
+                size="sm"
+                icon="lucide:x"
+                variant="secondary"
+                class="hover:bg-gray-250/25!"
+                @click="close" />
             </div>
           </div>
 
@@ -110,7 +116,7 @@ onUnmounted(() => {
           <!-- Footer Slot if needed -->
           <div
             v-if="$slots.footer"
-            class="flex-none flex items-center px-4 py-3 border-t rounded-b-xl">
+            class="flex-none flex items-center px-4 py-2.5 border-t rounded-b-xl">
             <slot name="footer" :close="close" />
           </div>
         </div>
