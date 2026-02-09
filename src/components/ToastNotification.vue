@@ -201,7 +201,7 @@ const getTransformOrigin = (pos: ToastPosition) => {
               :key="notification.id"
               :data-index="index"
               :data-pos="pos"
-              class="col-start-1 h-max row-start-1 mb-1 w-auto border pl-4 pr-6 py-3 flex gap-3 items-start transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu will-change-transform object-cover"
+              class="col-start-1 h-max row-start-1 mb-1 w-auto border pl-4 pr-6 py-3 flex gap-2.5 items-start transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu will-change-transform object-cover"
               :class="[
                 getVariantClass(notification.type),
                 notification.description || notification.action ? 'rounded-xl' : 'rounded-full',
@@ -220,7 +220,7 @@ const getTransformOrigin = (pos: ToastPosition) => {
 
               <!-- Content -->
               <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium leading-tight">
+                <p class="text-sm font-medium leading-tight mt-0.5">
                   {{ notification.message }}
                 </p>
                 <p v-if="notification.description" class="text-sm mt-1 leading-relaxed opacity-90">
