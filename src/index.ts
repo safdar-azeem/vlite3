@@ -1,4 +1,3 @@
-// Components
 export * from './components/Accordion'
 export { default as Alert } from './components/Alert.vue'
 export { default as Avatar } from './components/Avatar.vue'
@@ -43,17 +42,12 @@ export { default as ToastNotification } from './components/ToastNotification.vue
 export { default as Tooltip } from './components/Tooltip.vue'
 export * from './components/Workbook'
 
-// Composables
 export * from './composables/useNotifications'
 export * from './composables/useTheme'
 export * from './composables/useKeyStroke'
 
-// Core Plugin & Config
 export { createVLite, useVLiteConfig } from './core'
 
-// Utils
 export * from './utils'
 
-// Types
 export * from './types'
-
