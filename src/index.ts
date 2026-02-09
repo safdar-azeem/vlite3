@@ -1,3 +1,4 @@
+// Components
 export * from './components/Accordion'
 export { default as Alert } from './components/Alert.vue'
 export { default as Avatar } from './components/Avatar.vue'
@@ -47,8 +48,12 @@ export * from './composables/useNotifications'
 export * from './composables/useTheme'
 export * from './composables/useKeyStroke'
 
+// Core Plugin & Config
+export { createVLite, useVLiteConfig } from './core'
+
 // Utils
 export * from './utils'
 
 // Types
 export * from './types'
+
