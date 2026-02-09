@@ -15,6 +15,7 @@ interface Props {
   class?: string
   overlayClass?: string
   triggerClass?: string
+  backdrop?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -23,6 +24,7 @@ const props = withDefaults(defineProps<Props>(), {
   size: 'md',
   closeOutside: true,
   hideCloseButton: false,
+  backdrop: true,
   class: '',
   overlayClass: '',
   triggerClass: '',
@@ -111,8 +113,8 @@ const transitionName = computed(() => {
       leave-to-class="opacity-0">
       <div
         v-if="visible"
-        class="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm"
-        :class="overlayClass"
+        class="fixed inset-0 z-50 bg-[#00000077]"
+        :class="[overlayClass, { 'backdrop-blur-[2px]': backdrop }]"
         @click="handleBackdropClick"></div>
     </Transition>
 
@@ -122,15 +124,15 @@ const transitionName = computed(() => {
       @after-leave="$emit('onAfterClose')">
       <div
         v-if="visible"
-        class="fixed inset-y-0 z-50 flex flex-col bg-background shadow-xl transition-transform duration-300 ease-in-out w-full"
+        class="fixed inset-y-0 z-50 flex flex-col bg-popover shadow-xl border transition-transform duration-300 ease-in-out w-full"
         :class="[sizeClasses[size], positionClasses, props.class]">
         <!-- Header -->
         <div
           v-if="title || $slots.header"
-          class="flex-none flex items-center justify-between px-6 py-4 border-b border-border">
+          class="flex-none flex items-center justify-between px-6 py-2 border-b border-border">
           <slot name="header">
             <div>
-              <h3 class="text-lg font-semibold text-foreground">
+              <h3 class="text-lg font-bold text-foreground">
                 {{ title }}
               </h3>
               <p v-if="description" class="mt-1 text-sm text-muted-foreground">
