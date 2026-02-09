@@ -79,7 +79,7 @@ const roundedClasses: Record<AvatarRounded, string> = {
 
 const containerClass = computed(() => {
   return [
-    'relative flex shrink-0 overflow-hidden bg-muted',
+    'relative flex shrink-0 overflow-hidden bg-muted border border-border/50',
     sizeClasses[props.size],
     roundedClasses[props.rounded],
     props.class,
