@@ -7,3 +7,5 @@ export * from './alert.type'
 export * from './timeline.type'
 export * from './navbar.type'
 export * from './styles.ts'
+export * from './config.type'
+
