@@ -238,7 +238,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="w-full min-w-[150px] flex flex-col">
+  <div class="dropdown-menu w-full min-w-[150px] flex flex-col">
     <!-- Fixed Search -->
     <div v-if="showSearch" class="bg-body border-b mb-1 z-10 rounded-t-md shrink-0">
       <Input
