@@ -133,16 +133,16 @@ html {
 }
 
 #icon-picker {
-  --iconPicker-text: var(--foreground);
-  --iconPicker-border: var(--border);
-  --iconPicker-primary: var(--primary);
-  --iconPicker-primary-fg: var(--primary-foreground);
-  --iconPicker-primary-hover: var(--primary);
+  --iconPicker-text: var(--color-foreground);
+  --iconPicker-border: var(--color-border);
+  --iconPicker-primary: var(--color-primary);
+  --iconPicker-primary-fg: var(--color-primary-foreground);
+  --iconPicker-primary-hover: var(--color-primary);
   /* Approximation */
   --iconPicker-radius: var(--radius);
   --iconPicker-gap: 0.25em;
   --iconPicker-input-height: 2.125em;
-  --iconPicker-selected-bg: var(--accent);
+  --iconPicker-selected-bg: var(--color-accent);
   --iconPicker-font-base: 15.5px;
   --iconPicker-transition: all 0.2s ease;
 }
