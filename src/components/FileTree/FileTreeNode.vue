@@ -132,7 +132,7 @@ const handleClick = (e: MouseEvent) => {
     <div
       class="group flex items-center py-1 pr-2 rounded-md hover:bg-accent/50 transition-colors cursor-pointer min-h-[32px]"
       :class="{
-        'bg-accent text-accent-foreground':
+        'bg-accent/50 text-accent-foreground':
           isSelected && selectionMode === 'single' && !showCheckboxes,
         'opacity-50 pointer-events-none': node.disabled,
       }"
