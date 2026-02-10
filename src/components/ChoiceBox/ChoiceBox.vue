@@ -117,7 +117,7 @@ const gapClass = computed(() => {
       <div
         v-for="option in options"
         :key="option.id"
-        class="relative flex cursor-pointer rounded-xl border border-border p-4 shadow-sm transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        class="relative flex cursor-pointer rounded-xl border border-border p-4 transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         :class="[
           isSelected(option.id)
             ? 'border-primary bg-accent'
