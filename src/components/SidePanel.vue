@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { computed, onUnmounted, ref, watch } from 'vue'
+import { computed, onUnmounted, ref, watch, type Component } from 'vue'
 import Button from './Button.vue'
 import { useKeyStroke } from '../composables/useKeyStroke'
 import type { SidePanelPosition, SidePanelSize } from '@/types'
 
 interface Props {
-  show: boolean
+  show?: boolean
   title?: string
   description?: string
   position?: SidePanelPosition
@@ -16,6 +16,8 @@ interface Props {
   overlayClass?: string
   triggerClass?: string
   backdrop?: boolean
+  body?: Component
+  bodyProps?: Record<string, any>
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -101,7 +103,11 @@ const transitionName = computed(() => {
 
 <template>
   <span @click.stop="handleOpen" :class="`${triggerClass}`">
-    <slot name="trigger" />
+    <slot name="trigger">
+      <template v-if="body">
+        <slot />
+      </template>
+    </slot>
   </span>
   <Teleport to="body">
     <Transition
@@ -152,7 +158,12 @@ const transitionName = computed(() => {
 
         <!-- Body -->
         <div class="flex-1 overflow-y-auto px-6 py-4">
-          <slot :close="close" />
+          <template v-if="body">
+            <component :is="body" v-bind="bodyProps" :close="close" />
+          </template>
+          <template v-else>
+            <slot :close="close" />
+          </template>
         </div>
 
         <!-- Footer -->
