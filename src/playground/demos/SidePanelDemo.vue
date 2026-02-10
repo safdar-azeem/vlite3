@@ -1,11 +1,46 @@
 <script setup lang="ts">
 import SidePanel from '@/components/SidePanel.vue'
 import Button from '@/components/Button.vue'
-import { ref } from 'vue'
+import { ref, defineComponent, h, onMounted } from 'vue'
 
 const showRight = ref(false)
 const showLeft = ref(false)
 const showLg = ref(false)
+
+// A simple component defined inline to demonstrate the :body prop
+const LazySidePanelContent = defineComponent({
+  props: {
+    close: { type: Function },
+    itemName: { type: String, default: 'Test Item' },
+  },
+  setup(props) {
+    onMounted(() => {
+      console.log('[LazySidePanelContent] Mounted! This only runs when the panel opens.')
+    })
+    return () =>
+      h('div', { class: 'space-y-4' }, [
+        h(
+          'p',
+          { class: 'text-gray-600' },
+          `This content is lazily rendered for: ${props.itemName}`
+        ),
+        h(
+          'p',
+          { class: 'text-sm text-muted-foreground' },
+          'The component is only created when the panel opens — great for lists!'
+        ),
+        h('div', { class: 'flex justify-end pt-4' }, [
+          h(Button, { variant: 'outline', onClick: props.close }, () => 'Close Panel'),
+        ]),
+      ])
+  },
+})
+
+const sampleItems = [
+  { id: 1, name: 'User A' },
+  { id: 2, name: 'User B' },
+  { id: 3, name: 'User C' },
+]
 </script>
 
 <template>
@@ -22,24 +57,51 @@ const showLg = ref(false)
         <Button @click="showLeft = true" variant="outline">Left</Button>
       </div>
 
-       <SidePanel v-model:show="showRight" title="Right Panel" position="right">
-          <p class="text-gray-600">Content goes here...</p>
-       </SidePanel>
+      <SidePanel v-model:show="showRight" title="Right Panel" position="right">
+        <p class="text-gray-600">Content goes here...</p>
+      </SidePanel>
 
-       <SidePanel v-model:show="showLeft" title="Left Panel" position="left">
-          <p class="text-gray-600">Content goes here...</p>
-       </SidePanel>
+      <SidePanel v-model:show="showLeft" title="Left Panel" position="left">
+        <p class="text-gray-600">Content goes here...</p>
+      </SidePanel>
     </section>
 
     <section class="space-y-4">
       <h3 class="text-lg font-semibold">Sizes</h3>
       <Button @click="showLg = true">Large Panel</Button>
-      
+
       <SidePanel v-model:show="showLg" title="Large Panel" size="lg">
-         <div class="space-y-4">
-            <p v-for="i in 5" :key="i">Some substantial content requiring more width...</p>
-         </div>
+        <div class="space-y-4">
+          <p v-for="i in 5" :key="i">Some substantial content requiring more width...</p>
+        </div>
       </SidePanel>
+    </section>
+
+    <section class="space-y-4">
+      <h3 class="text-lg font-semibold">Lazy Body Component</h3>
+      <p class="text-sm text-gray-500">
+        Pass a component via <code>:body</code> — it's only instantiated when the panel opens.
+      </p>
+
+      <!-- Single usage -->
+      <SidePanel
+        title="Lazy Panel"
+        :body="LazySidePanelContent"
+        :body-props="{ itemName: 'Single Item' }">
+        <Button>Open Lazy Panel</Button>
+      </SidePanel>
+
+      <!-- Iterated usage -->
+      <div class="flex gap-2">
+        <SidePanel
+          v-for="item in sampleItems"
+          :key="item.id"
+          :title="`Details: ${item.name}`"
+          :body="LazySidePanelContent"
+          :body-props="{ itemName: item.name }">
+          <Button variant="outline" size="sm">{{ item.name }}</Button>
+        </SidePanel>
+      </div>
     </section>
   </div>
 </template>
