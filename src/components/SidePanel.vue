@@ -124,7 +124,7 @@ const transitionName = computed(() => {
       @after-leave="$emit('onAfterClose')">
       <div
         v-if="visible"
-        class="fixed inset-y-0 z-50 flex flex-col bg-popover shadow-xl border transition-transform duration-300 ease-in-out w-full"
+        class="sidepanel-body fixed inset-y-0 z-50 flex flex-col bg-body shadow-xl border transition-transform duration-300 ease-in-out w-full"
         :class="[sizeClasses[size], positionClasses, props.class]">
         <!-- Header -->
         <div
