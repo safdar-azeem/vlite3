@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted, type Component } from 'vue'
 import Button from './Button.vue'
 import { useKeyStroke } from '../composables/useKeyStroke'
 
 interface Props {
-  show: boolean
+  show?: boolean
   title?: string
   maxWidth?: string
   closeOutside?: boolean
@@ -14,6 +14,8 @@ interface Props {
   bodyClass?: string
   headerClass?: string
   footerClass?: string
+  body?: Component
+  bodyProps?: Record<string, any>
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -76,7 +78,11 @@ onUnmounted(() => {
 
 <template>
   <span @click.stop="handleOpen" :class="`${triggerClass}`">
-    <slot name="trigger" />
+    <slot name="trigger">
+      <template v-if="body">
+        <slot />
+      </template>
+    </slot>
   </span>
   <Teleport to="body">
     <Transition
@@ -118,7 +124,12 @@ onUnmounted(() => {
             <p v-if="description" class="text-sm text-muted-foreground mb-2">
               {{ description }}
             </p>
-            <slot :close="close" />
+            <template v-if="body">
+              <component :is="body" v-bind="bodyProps" :close="close" />
+            </template>
+            <template v-else>
+              <slot :close="close" />
+            </template>
           </div>
 
           <!-- Footer Slot if needed -->
