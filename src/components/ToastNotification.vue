@@ -115,8 +115,8 @@ const variantClasses: Record<string, string> = {
   default: 'bg-white border-border text-foreground', // Fallback to standard
 
   // Theme Variants (matching Alert.vue style)
-  success: 'bg-success text-success-fg border-success-fg/30',
-  error: 'bg-danger text-danger-fg border-danger-fg/30',
+  success: 'bg-success text-success-fg border-success-fg/30 dark:border-success-fg/10',
+  error: 'bg-danger text-danger-fg border-danger-fg/30 dark:border-danger-fg/10',
   warning: 'bg-warning-light text-warning-fg border-warning-fg/30',
   info: 'bg-white text-gray-900 border/50',
 }
