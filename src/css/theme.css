@@ -1,348 +1,344 @@
-@layer base {
-  :root {
-    /* Base Colors - Preserving existing palette for backward compatibility */
-    --color-white: #ffffff;
-    --color-black: #000000;
+@layer components {
+  @theme {
 
-    --color-gray-50: #FAFAFA;
-    --color-gray-100: #F6F5F6;
-    --color-gray-150: #F5F5F5;
-    --color-gray-200: #EFEFEF;
-    --color-gray-250: #d1d1d6;
-    --color-gray-300: #c7c7cc;
-    --color-gray-350: #aeaeb2;
-    --color-gray-400: #8e8e93;
-    --color-gray-450: #636366;
-    --color-gray-500: #636366;
-    --color-gray-550: #48484a;
-    --color-gray-600: #48484a;
-    --color-gray-650: #3a3a3c;
-    --color-gray-700: #3a3a3c;
-    --color-gray-750: #2c2c2e;
-    --color-gray-800: #1c1c1e;
-    --color-gray-850: #000000;
-    --color-gray-900: #000000;
+    --color-mixture-1: #ffffff;
+    --color-mixture-2: #000000;
 
-    --color-body: var(--color-white);
-
-    /* SHADCN/UI SEMANTIC TOKENS */
-
-    /* Backgrounds */
-    --background: #ffffff;
-    --foreground: #09090b;
-
-    /* Card */
-    --card: #ffffff;
-    --card-foreground: #09090b;
-    --card-muted: #f4f4f5;
-
-    /* Popover */
-    --popover: #ffffff;
-    --popover-foreground: #09090b;
-    --popover-muted: #f4f4f5;
-
-    /* Primary */
-    --primary: #18181b;
-    --primary-foreground: #fafafa;
-
-    /* Secondary */
-    --secondary: #f4f4f5;
-    --secondary-foreground: #18181b;
-
-    /* Muted */
-    --muted: #f4f4f5;
-    --muted-foreground: #71717a;
-
-    /* Accent */
-    --accent: #f4f4f5;
-    --accent-foreground: #18181b;
-
-    /* Destructive */
-    --destructive: #ef4444;
-    --destructive-foreground: #fafafa;
-
-    /* Border / Input / Ring */
-    --border: #e4e4e7;
-    --input: #e4e4e7;
-    --ring: #18181b;
-
-    /* Radius */
-    --radius: 0.5rem;
+    --color-gray-150: '';
+    --color-gray-250: '';
+    --color-body: '';
+    --color-background: '';
+    --color-foreground: '';
+    --color-border: '';
+    --color-input: '';
+    --color-card: '';
+    --color-secondary: '';
+    --color-secondary-foreground: '';
+    --color-muted: '';
+    --color-muted-foreground: '';
+    --color-accent: '';
+    --color-accent-foreground: '';
 
 
-    /* Charts (Standard Shadcn Chart Colors) */
-    --chart-1: #e76e50;
-    --chart-2: #2a9d8f;
-    --chart-3: #264653;
-    --chart-4: #e9c46a;
-    --chart-5: #f4a261;
+    --color-destructive: #ef4444;
+    --color-destructive-foreground: #fafafa;
 
-    /* --- Legacy/Custom vlite3 Mappings (Merging into semantics where possible) --- */
-
-    /* Primary Variants (vlite3 custom) */
+    /* Legacy Primary Variants */
     --color-primary-light: #f4f4f5;
-    --color-primary: var(--primary);
     --color-primary-dark: #3f3f46;
-    --color-primary-fg: var(--primary-foreground);
-    --color-primary-fg-light: #18181b;
+    --color-primary: #18181b;
+    --color-primary-foreground: #fafafa;
+    --color-primary-fg: #fafafa;
+    --color-primary-foreground-light: #18181b;
 
-    /* Semantics - Apple-like Human Interface Colors (Preserved) */
-
-    /* Danger (System Red) -> Mapped to Destructive where appropriate */
+    /* Danger */
     --color-danger-light: #fff2f2;
     --color-danger: #ff3b30;
     --color-danger-dark: #d70015;
     --color-danger-fg: #ffffff;
     --color-danger-fg-light: #d70015;
 
-    /* Warning (System Orange/Yellow) */
-    --color-warning-light: #fff9e6;
+    /* Warning */
+    --color-warning-light: #FFF5EB;
     --color-warning: #ff9500;
     --color-warning-dark: #c95100;
     --color-warning-fg: #ffffff;
     --color-warning-fg-light: #c95100;
 
-    /* Info (System Blue) */
+    /* Info */
     --color-info-light: #f0f8ff;
     --color-info: #007aff;
     --color-info-dark: #0051a8;
     --color-info-fg: #ffffff;
     --color-info-fg-light: #0051a8;
 
-    /* Success (System Green) */
-    --color-success-light: #f2fffa;
+    /* Success */
+    --color-success-light: #EEFBEF;
     --color-success: #34c759;
     --color-success-dark: #248a3d;
     --color-success-fg: #ffffff;
     --color-success-fg-light: #248a3d;
 
-    /* v-tooltip-lite variables */
-    --tooltip-bg: var(--popover) !important;
-    --tooltip-text: var(--popover-foreground) !important;
-    --tooltip-border: var(--border) !important;
+    /* Radius */
+    --radius: 0.5rem;
+    --radius-sm: calc(0.5rem - 2px);
+    --radius-md: 0.5rem;
+    --radius-lg: calc(0.5rem + 2px);
+    --radius-xl: calc(0.5rem + 4px);
 
-    --tooltip-radius: var(--radius) !important;
-    --tooltip-shadow: var(--shadow-dropdown) !important;
-    --tooltip-arrow-size: 0.5em !important;
-    --tooltip-z-index: 50;
-    --tooltip-font-size: unset !important;
-    --date-picker-border: var(--border) !important;
 
-  }
+    /* Shadows */
+    --shadow-dropdown: 0 3px 4px -3px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 3%);
+    --shadow-offcanvas: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+      0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.1),
+      0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-DEFAULT: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+      0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+      0 8px 10px -6px rgb(0 0 0 / 0.1);
 
-  .dark {
-    /* Base Colors Re-definitions for Dark Mode logic (Legacy) */
-    --color-white: #000000;
-    --color-black: #ffffff;
 
-    --color-gray-50: #161616;
-    --color-gray-100: #161616;
-    --color-gray-150: #3d3d3f;
-    --color-gray-200: #262626;
-    --color-gray-250: #2d2d2d;
-    --color-gray-300: #545456;
-    --color-gray-350: #636366;
-    --color-gray-400: #8e8e93;
-    --color-gray-450: #aeaeb2;
-    --color-gray-500: #aeaeb2;
-    --color-gray-550: #c7c7cc;
-    --color-gray-600: #c7c7cc;
-    --color-gray-650: #d1d1d6;
-    --color-gray-700: #e5e5ea;
-    --color-gray-750: #f2f2f7;
-    --color-gray-800: #f2f2f7;
-    --color-gray-850: #ffffff;
-    --color-gray-900: #ffffff;
 
-    --color-body: #09090b;
 
-    /* SHADCN/UI SEMANTIC TOKENS (DARK) */
-    --background: #09090b;
-    --foreground: #fafafa;
-
-    --card: #09090b;
-    --card-foreground: #fafafa;
-    --card-muted: #27272a;
-
-    --popover: var(--background);
-    --popover-foreground: var(--foreground);
-    --popover-muted: var(--card-muted);
-
-    --primary: #fafafa;
-    --primary-foreground: #18181b;
-
-    --secondary: #27272a;
-    --secondary-foreground: #fafafa;
-
-    --muted: #27272a;
-    --muted-foreground: #a1a1aa;
-
-    --accent: #27272a;
-    --accent-foreground: #fafafa;
-
-    --destructive: #7f1d1d;
-    --destructive-foreground: #fafafa;
-
-    --border: #27272a;
-    --input: #27272a;
-    --ring: #d4d4d8;
-
-    /* Charts (Dark) */
-    --chart-1: #22c55e;
-    --chart-2: #2a9d8f;
-    --chart-3: #264653;
-    --chart-4: #e9c46a;
-    --chart-5: #f4a261;
-
-    /* Variants (vlite3 custom) */
-    --color-primary-light: #2c2c2e;
-    --color-primary: var(--primary);
-    --color-primary-dark: #d4d4d8;
-    --color-primary-fg: var(--primary-foreground);
-    --color-primary-fg-light: #f4f4f5;
-
-    /* Semantics - Dark Mode High Contrast */
-
-    /* Danger */
-    --color-danger-light: #4E1D1A;
-    --color-danger-fg-light: #FCFCFC;
-    --color-danger: #BF2625;
-    --color-danger-fg: #ffffff;
-    --color-danger-dark: #D72627;
-
-    /* Warning */
-    --color-warning-light: #3a1e00;
-    --color-warning-fg-light: #ff9f0a;
-    --color-warning: #ff9f0a;
-    --color-warning-fg: #ffffff;
-    --color-warning-dark: #ffb340;
-
-    /* Info */
-    --color-info-light: #001a33;
-    --color-info-fg-light: #0a84ff;
-    --color-info: #0a84ff;
-    --color-info-fg: #ffffff;
-    --color-info-dark: #409cff;
-
-    /* Success */
-    --color-success-light: #1B3419;
-    --color-success-fg-light: #ffffff;
-    --color-success: #007E51;
-    --color-success-fg: #ffffff;
-    --color-success-dark: #00613f;
+    /* Animations */
+    --animate-accordion-down: accordion-down 0.2s ease-out;
+    --animate-accordion-up: accordion-up 0.2s ease-out;
+    --animate-ripple: ripple 600ms linear;
   }
 }
 
-@theme {
-  /* Map Utilities to CSS Variables */
-  --color-white: var(--color-white);
-  --color-black: var(--color-black);
 
-  --color-gray-50: var(--color-gray-50);
-  --color-gray-100: var(--color-gray-100);
-  --color-gray-150: var(--color-gray-150);
-  --color-gray-200: var(--color-gray-200);
-  --color-gray-250: var(--color-gray-250);
-  --color-gray-300: var(--color-gray-300);
-  --color-gray-350: var(--color-gray-350);
-  --color-gray-400: var(--color-gray-400);
-  --color-gray-450: var(--color-gray-450);
-  --color-gray-500: var(--color-gray-500);
-  --color-gray-550: var(--color-gray-550);
-  --color-gray-600: var(--color-gray-600);
-  --color-gray-650: var(--color-gray-650);
-  --color-gray-700: var(--color-gray-700);
-  --color-gray-750: var(--color-gray-750);
-  --color-gray-800: var(--color-gray-800);
-  --color-gray-850: var(--color-gray-850);
-  --color-gray-900: var(--color-gray-900);
+:root {
+  --tooltip-radius: var(--radius) !important;
+  --tooltip-shadow: var(--shadow-dropdown) !important;
+  --tooltip-arrow-size: 0.5em !important;
+  --tooltip-z-index: 50;
+  --tooltip-font-size: unset !important;
 
-  --color-body: var(--color-body);
-  --border: var(--border);
+}
 
-  /* SHADCN/UI MAPPINGS */
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+.dark .modal-body,
+.dark .sidepanel-body,
+.dark .tooltip-container,
+.bg-card,
+:root {
 
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-card-muted: var(--card-muted);
+  --color-white: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 100%,
+      var(--color-mixture-2, #000000));
 
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover-muted: var(--popover-muted);
+  --color-black: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 0%,
+      var(--color-mixture-2, #000000));
 
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
+  --color-gray-50: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 98.5%,
+      var(--color-mixture-2, #000000));
 
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
+  --color-gray-100: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 97%,
+      var(--color-mixture-2, #000000));
 
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
+  --color-gray-150: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 96%,
+      var(--color-mixture-2, #000000));
 
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
+  --color-gray-200: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 94.5%,
+      var(--color-mixture-2, #000000));
 
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
+  --color-gray-250: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 92%,
+      var(--color-mixture-2, #000000));
 
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
+  --color-gray-300: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 74%,
+      var(--color-mixture-2, #000000));
 
-  --radius: var(--radius);
-  --radius-sm: calc(var(--radius) - 2px);
-  --radius-md: var(--radius);
-  --radius-lg: calc(var(--radius) + 2px);
-  --radius-xl: calc(var(--radius) + 4px);
+  --color-gray-400: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 62%,
+      var(--color-mixture-2, #000000));
+
+  --color-gray-500: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 50%,
+      var(--color-mixture-2, #000000));
+
+  --color-gray-600: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 38%,
+      var(--color-mixture-2, #000000));
+
+  --color-gray-700: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 26%,
+      var(--color-mixture-2, #000000));
+
+  --color-gray-800: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 16%,
+      var(--color-mixture-2, #000000));
+
+  --color-gray-850: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 10%,
+      var(--color-mixture-2, #000000));
+
+  --color-gray-900: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 5%,
+      var(--color-mixture-2, #000000));
+
+  --color-gray-950: var(--color-mixture-2, #000000);
+
+  --color-body: var(--color-mixture-1);
+  --color-background: var(--color-body);
+  --color-foreground: var(--color-gray-900);
+
+  --color-border: color-mix(in oklab, var(--color-mixture-1) 90%, var(--color-mixture-2));
+  --color-input: var(--color-border);
 
 
-  /* Legacy / Custom Mappings */
-  --color-primary-light: var(--color-primary-light);
-  /* --color-primary: var(--color-primary); -> Handled above */
-  --color-primary-dark: var(--color-primary-dark);
-  --color-primary-fg: var(--color-primary-fg);
-  --color-primary-fg-light: var(--color-primary-fg-light);
+  --color-secondary: var(--color-gray-200);
+  --color-secondary-foreground: var(--color-foreground);
 
-  --color-danger-light: var(--color-danger-light);
-  --color-danger: var(--color-danger);
-  --color-danger-dark: var(--color-danger-dark);
-  --color-danger-fg: var(--color-danger-fg);
-  --color-danger-fg-light: var(--color-danger-fg-light);
+  --color-muted: var(--color-gray-100);
+  --color-muted-foreground: var(--color-foreground);
 
-  --color-warning-light: var(--color-warning-light);
-  --color-warning: var(--color-warning);
-  --color-warning-dark: var(--color-warning-dark);
-  --color-warning-fg: var(--color-warning-fg);
-  --color-warning-fg-light: var(--color-warning-fg-light);
+  --color-accent: var(--color-gray-150);
+  --color-accent-foreground: var(--color-foreground);
 
-  --color-info-light: var(--color-info-light);
-  --color-info: var(--color-info);
-  --color-info-dark: var(--color-info-dark);
-  --color-info-fg: var(--color-info-fg);
-  --color-info-fg-light: var(--color-info-fg-light);
+  --tooltip-bg: var(--color-background) !important;
+  --tooltip-text: var(--color-foreground) !important;
+  --tooltip-border: var(--color-border) !important;
+  --date-picker-border: var(--color-border) !important;
+  --iconPicker-border: var(--color-border) !important;
+}
 
-  --color-success-light: var(--color-success-light);
-  --color-success: var(--color-success);
-  --color-success-dark: var(--color-success-dark);
-  --color-success-fg: var(--color-success-fg);
-  --color-success-fg-light: var(--color-success-fg-light);
+.dark {
+  --color-mixture-1: #0A0A0A !important;
+  --color-mixture-2: #ffffff !important;
 
-  /* Shadows */
-  --shadow-dropdown: 0 3px 4px -3px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 3%);
-  --shadow-offcanvas: 0 10px 15px -3px rgb(0 0 0 / 0.1),
-    0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.1),
-    0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --shadow-DEFAULT: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
-    0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1),
-    0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --color-gray-50: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 95%,
+      var(--color-mixture-2, #000000));
 
-  /* Animations */
-  --animate-accordion-down: accordion-down 0.2s ease-out;
-  --animate-accordion-up: accordion-up 0.2s ease-out;
-  --animate-ripple: ripple 600ms linear;
+  --color-gray-100: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 93%,
+      var(--color-mixture-2, #000000));
+
+  --color-gray-150: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 90%,
+      var(--color-mixture-2, #000000));
+
+  --color-gray-200: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 88%,
+      var(--color-mixture-2, #000000));
+
+  --color-gray-250: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 82%,
+      var(--color-mixture-2, #000000));
+
+  --color-gray-300: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 74%,
+      var(--color-mixture-2, #000000));
+
+
+
+  --color-destructive: #7f1d1d;
+  --color-destructive-foreground: #fafafa;
+
+  /* Charts (Dark) */
+  --color-chart-1: #22c55e;
+  --color-chart-2: #2a9d8f;
+  --color-chart-3: #264653;
+  --color-chart-4: #e9c46a;
+  --color-chart-5: #f4a261;
+
+  /* Variants (vlite3 custom) */
+  --color-primary-light: #2c2c2e;
+  --color-primary: #fafafa;
+  --color-primary-dark: #d4d4d8;
+  --color-primary-foreground: #18181b;
+  --color-primary-fg: #18181b;
+  --color-primary-foreground-light: #f4f4f5;
+
+  /* Semantics - Dark Mode High Contrast */
+
+  /* Danger */
+  --color-danger-light: #4E1D1A;
+  --color-danger-fg-light: #FCFCFC;
+  --color-danger: #7F1D1D;
+  --color-danger-fg: #ffffff;
+  --color-danger-dark: #D72627;
+
+  /* Warning */
+  --color-warning-light: #3a1e00;
+  --color-warning-fg-light: #ff9f0a;
+  --color-warning: #95600E;
+  --color-warning-fg: #ffffff;
+  --color-warning-dark: #ffb340;
+
+  /* Info */
+  --color-info-light: #001a33;
+  --color-info-fg-light: #0a84ff;
+  --color-info: #0a84ff;
+  --color-info-fg: #ffffff;
+  --color-info-dark: #409cff;
+
+  /* Success */
+  --color-success-light: #1B3419;
+  --color-success-fg-light: #ffffff;
+  --color-success: #007E51;
+  --color-success-fg: #ffffff;
+  --color-success-dark: #00613f;
+}
+
+
+.dark .modal-body,
+.dark .sidepanel-body {
+  --color-body: #171717 !important;
+  --color-mixture-1: #151515 !important;
+  --color-mixture-2: #ffffff !important;
+}
+
+.dark .tooltip-container {
+  --color-background: #171717 !important;
+  --color-mixture-1: #151515 !important;
+  --color-mixture-2: #ffffff !important;
+}
+
+.dark .bg-card {
+  --color-body: #131313 !important;
+  --color-mixture-1: #191818 !important;
+  --color-mixture-2: #ffffff !important;
+  background-color: var(--color-body) !important;
+}
+
+.dark .modal-body .bg-card,
+.dark .sidepanel-body .bg-card,
+.dark .tooltip-container .bg-card {
+  --color-body: #1A1A1A !important;
+  --color-mixture-1: #191818 !important;
+  --color-mixture-2: #ffffff !important;
+  background-color: var(--color-body) !important;
+}
+
+.dark .bg-card {
+  --color-body: #131313 !important;
+  --color-mixture-1: #191818 !important;
+  --color-mixture-2: #ffffff !important;
+  background-color: var(--color-body) !important;
+}
+
+.bg-card {
+  --color-body: #FAFAFA !important;
+  --color-mixture-1: #fbfbfb !important;
+  --color-mixture-2: #000000 !important;
+  background-color: #FBFBFB !important;
+  border-color: color-mix(in oklab, var(--color-mixture-1) 95%, var(--color-mixture-2));
+}
+
+.bg-card .bg-card {
+  --color-body: #F5F5F5 !important;
+  --color-mixture-1: #F5F5F5;
+  --color-mixture-2: #000000;
+  background-color: #F5F5F5 !important;
+}
+
+.bg-card .bg-card .bg-card {
+  --color-body: #EEE !important;
+  --color-mixture-1: #F5F5F5;
+  --color-mixture-2: #000000;
+  background-color: #EEE !important;
+}
+
+.dark .bg-card .bg-card {
+  --color-body: #171717 !important;
+  --color-mixture-1: #181818;
+  --color-mixture-2: #000000;
+  background-color: #171717 !important;
+}
+
+.dark .bg-card .bg-card .bg-card {
+  --color-body: #1A1A1A !important;
+  --color-mixture-1: #171717;
+  --color-mixture-2: #000000;
+  background-color: #1A1A1A !important;
 }
