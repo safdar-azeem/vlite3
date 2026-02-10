@@ -33,20 +33,20 @@ const handleClose = () => {
 
 const variantClasses = computed(() => {
   const variants: Record<AlertVariant, string> = {
-    primary: 'bg-primary-light text-primary border-primary/20',
-    success: 'bg-success-light text-success-dark border-success/20',
+    primary: 'bg-primary-light text-primary border-primary/15',
+    success: 'bg-success-light text-success-dark border-success/25',
     warning: 'bg-warning-light text-warning-dark border-warning/20',
-    danger: 'bg-danger-light text-danger-dark border-danger/20',
+    danger: 'bg-danger-light text-danger-dark border-danger/15',
   }
   return variants[props.variant]
 })
 
 const iconClasses = computed(() => {
   const variants: Record<AlertVariant, string> = {
-    primary: 'text-primary',
-    success: 'text-success-dark',
-    warning: 'text-warning-dark',
-    danger: 'text-danger-dark',
+    primary: 'text-primary!',
+    success: 'text-success-dark!',
+    warning: 'text-warning-dark!',
+    danger: 'text-danger-dark!',
   }
   return variants[props.variant]
 })
@@ -70,7 +70,10 @@ const containerClasses = computed(() => {
 })
 
 const titleClasses = computed(() => {
-  return ['font-medium leading-none tracking-tight', isTitleOnly.value ? '' : 'mb-1'].join(' ')
+  return [
+    'font-medium leading-none tracking-tight text-inherit!',
+    isTitleOnly.value ? '' : 'mb-1',
+  ].join(' ')
 })
 
 const computedRole = computed(() => {
