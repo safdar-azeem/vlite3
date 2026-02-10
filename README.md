@@ -63,30 +63,25 @@ vlite3 uses a semantic theming system inspired by **shadcn/ui** and compatible w
 
 You can customize these colors in your CSS by overriding the variables in `:root` or `.dark` classes (if you are using a class-based dark mode switcher).
 
-| Variable                   | Class Name                    | Description              | Recommended Usage                                          |
-| :------------------------- | :---------------------------- | :----------------------- | :--------------------------------------------------------- |
-| `--background`             | `bg-background`               | Default page background  | The main background color of your app.                     |
-| `--foreground`             | `text-foreground`             | Default text color       | The primary text color for content.                        |
-| `--card`                   | `bg-card`                     | Card background          | Background for cards, panels, and dialogs.                 |
-| `--card-foreground`        | `text-card-foreground`        | Card text color          | Text color inside cards.                                   |
-| `--card-muted`             | `bg-card-muted`               | Muted card background    | Secondary background area within cards.                    |
-| `--popover`                | `bg-popover`                  | Popover background       | Background for popovers, tooltips, and dropdowns.          |
-| `--popover-foreground`     | `text-popover-foreground`     | Popover text color       | Text color inside popovers.                                |
-| `--popover-muted`          | `bg-popover-muted`            | Muted popover background | Secondary area within popovers (e.g., headers).            |
-| `--primary`                | `bg-primary`                  | Primary brand color      | Used for main actions (buttons, active states).            |
-| `--primary-foreground`     | `text-primary-foreground`     | Primary text color       | Text color for content on top of primary background.       |
-| `--secondary`              | `bg-secondary`                | Secondary background     | Used for secondary actions or muted sections.              |
-| `--secondary-foreground`   | `text-secondary-foreground`   | Secondary text color     | Text color for content on top of secondary background.     |
-| `--muted`                  | `bg-muted`                    | Muted background         | Subtle backgrounds (e.g., table headers, disabled states). |
-| `--muted-foreground`       | `text-muted-foreground`       | Muted text color         | Secondary text, hints, placeholders.                       |
-| `--accent`                 | `bg-accent`                   | Accent background        | Used for hover states, selection highlights.               |
-| `--accent-foreground`      | `text-accent-foreground`      | Accent text color        | Text color on accent backgrounds.                          |
-| `--destructive`            | `bg-destructive`              | Destructive color        | Used for error states and destructive actions.             |
-| `--destructive-foreground` | `text-destructive-foreground` | Destructive text color   | Text color on destructive backgrounds.                     |
-| `--border`                 | `border`                      | Default border color     | Borders for inputs, cards, and dividers.                   |
-| `--input`                  | `border-input`                | Input border color       | Borders specifically for form inputs.                      |
-| `--ring`                   | `ring-ring`                   | Focus ring color         | Outline color for focused elements.                        |
-| `--radius`                 | `rounded-radius`              | Border radius            | Global border radius for components.                       |
+| Variable                   | Class Name                    | Description             | Recommended Usage                                                           |
+| :------------------------- | :---------------------------- | :---------------------- | :-------------------------------------------------------------------------- |
+| `--background`             | `bg-background`               | Default page background | The main background color of your app.                                      |
+| `--foreground`             | `text-foreground`             | Default text color      | The primary text color for content.                                         |
+| `--card`                   | `bg-card`                     | Card background         | Little Gray Background for cards, containers, surfece, panels, and dialogs. |
+| `--primary`                | `bg-primary`                  | Primary brand color     | Used for main actions (buttons, active states).                             |
+| `--primary-foreground`     | `text-primary-foreground`     | Primary text color      | Text color for content on top of primary background.                        |
+| `--secondary`              | `bg-secondary`                | Secondary background    | Used for secondary actions or muted sections.                               |
+| `--secondary-foreground`   | `text-secondary-foreground`   | Secondary text color    | Text color for content on top of secondary background.                      |
+| `--muted`                  | `bg-muted`                    | Muted background        | Subtle backgrounds (e.g., table headers, disabled states).                  |
+| `--muted-foreground`       | `text-muted-foreground`       | Muted text color        | Secondary text, hints, placeholders.                                        |
+| `--accent`                 | `bg-accent`                   | Accent background       | Used for hover states, selection highlights.                                |
+| `--accent-foreground`      | `text-accent-foreground`      | Accent text color       | Text color on accent backgrounds.                                           |
+| `--destructive`            | `bg-destructive`              | Destructive color       | Used for error states and destructive actions.                              |
+| `--destructive-foreground` | `text-destructive-foreground` | Destructive text color  | Text color on destructive backgrounds.                                      |
+| `--border`                 | `border`                      | Default border color    | Borders for inputs, cards, and dividers.                                    |
+| `--input`                  | `border-input`                | Input border color      | Borders specifically for form inputs.                                       |
+| `--ring`                   | `ring-ring`                   | Focus ring color        | Outline color for focused elements.                                         |
+| `--radius`                 | `rounded`                     | Border radius           | Global border radius for components.                                        |
 
 ### Extended Color Variants
 
