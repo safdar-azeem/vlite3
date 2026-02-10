@@ -133,9 +133,9 @@ const handleSelect = () => {
   <tr
     class="border-b border-border/70 transition-colors data-[state=selected]:bg-muted h-full"
     :class="[
-      hoverable ? 'hover:bg-muted/20' : '',
+      hoverable ? 'hover:bg-muted/80' : '',
       striped && index % 2 === 1 ? 'bg-muted/20' : 'bg-background',
-      isSelected ? 'bg-muted/10! hover:bg-muted/30' : '',
+      isSelected ? 'bg-muted! hover:bg-muted/30' : '',
       'group',
     ]"
     :data-state="isSelected ? 'selected' : undefined"
