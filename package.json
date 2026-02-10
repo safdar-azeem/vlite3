@@ -3,7 +3,7 @@
   "private": false,
   "description": "A Vue 3 UI component library built with Tailwind CSS.",
   "license": "MIT",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "type": "module",
   "main": "index.js",
   "module": "index.js",
