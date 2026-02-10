@@ -8,12 +8,17 @@ interface Props {
   title?: string
   maxWidth?: string
   closeOutside?: boolean
+  backdrop?: boolean
   description?: string
   triggerClass?: string
+  bodyClass?: string
+  headerClass?: string
+  footerClass?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   show: false,
+  backdrop: true,
   maxWidth: 'sm:max-w-lg',
   closeOutside: true,
 })
@@ -84,14 +89,17 @@ onUnmounted(() => {
       <div
         v-if="visible"
         class="fixed inset-0 z-50 flex items-center justify-center bg-[#00000077] p-4"
+        :class="backdrop && 'backdrop-blur-[2px]'"
         @click="handleBackdropClick">
         <div
-          class="relative w-full rounded border border-border bg-popover text-foreground shadow-lg flex flex-col max-h-[85vh] sm:max-h-[90vh]"
+          class="modal-body relative w-full rounded border border-border bg-body text-foreground shadow-lg flex flex-col max-h-[85vh] sm:max-h-[90vh]"
           :class="[maxWidth]"
           @click.stop>
           <!-- Header -->
           <div v-if="title" class="flex-none flex flex-col space-y-1.5 pb-0 border-b">
-            <div class="flex items-center justify-between bg-popover-muted py-1 px-4 rounded-t-md">
+            <div
+              class="flex items-center justify-between bg-muted py-1 px-4 rounded-t-md"
+              :class="headerClass">
               <h3 class="text-lg font-semibold leading-none tracking-tight">
                 {{ title }}
               </h3>
@@ -99,14 +107,14 @@ onUnmounted(() => {
                 rounded="full"
                 size="sm"
                 icon="lucide:x"
-                variant="secondary"
+                variant="ghost"
                 class="hover:bg-gray-250/25!"
                 @click="close" />
             </div>
           </div>
 
           <!-- Body -->
-          <div class="flex-1 overflow-y-auto px-4 py-4 min-h-0">
+          <div class="flex-1 overflow-y-auto px-4 py-4 min-h-0" :class="bodyClass">
             <p v-if="description" class="text-sm text-muted-foreground mb-2">
               {{ description }}
             </p>
@@ -116,6 +124,7 @@ onUnmounted(() => {
           <!-- Footer Slot if needed -->
           <div
             v-if="$slots.footer"
+            :class="footerClass"
             class="flex-none flex items-center px-4 py-2.5 border-t rounded-b-xl">
             <slot name="footer" :close="close" />
           </div>
