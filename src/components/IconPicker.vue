@@ -109,7 +109,7 @@ const defaultIcons = [
 
 <template>
   <Dropdown
-    className="max-h-[440px] min-w-[250px]"
+    className="max-h-[392px]! min-w-[250px]"
     @on-close="emit('onClose')"
     :position="position">
     <template #trigger>
