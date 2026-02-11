@@ -252,7 +252,7 @@ const handleClose = () => {
 </script>
 
 <template>
-  <div class="relative inline-block text-left">
+  <div class="relative inline-block text-left" :style="{ direction: direction }">
     <ToolTip
       content=""
       trigger="click"
