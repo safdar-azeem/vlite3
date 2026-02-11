@@ -45,8 +45,6 @@ const isExpanded = computed(() => {
 })
 
 const isActive = computed(() => {
-  // Simple check against context activeItem which is now managed by SidebarMenu
-  // For visual highlighting, SidebarMenu sets activeItem based on route.
   return context.activeItem === itemId.value
 })
 
@@ -65,10 +63,6 @@ const handleClick = (e: MouseEvent) => {
     props.item.action(props.item)
   }
 
-  // In Popover mode, Dropdown handles selection if we use options.
-  // But here we are the TRIGGER for the root popover OR a tree item.
-  // If we click the trigger, we don't necessarily set active unless it's a link?
-  // Usually folder clicks don't set active.
   if (!hasChildren.value || props.item.to) {
     context.setActive(itemId.value)
   }
@@ -84,6 +78,11 @@ const handleChevronClick = (e: Event) => {
 // Styling
 const indentSize = computed(() => context.indentSize || 12)
 const itemStyle = computed(() => {
+  // If in compact mode, we want full width regardless of depth (usually depth is 0 for root)
+  // unless strictly in tree mode inside compact sidebar (uncommon).
+  if (context.compact) {
+    return { width: '100%' }
+  }
   return {
     marginLeft: `${props.depth * indentSize.value}px`,
     width: `calc(100% - ${props.depth * indentSize.value}px)`,
@@ -92,12 +91,10 @@ const itemStyle = computed(() => {
 
 const itemClass = computed(() => {
   const base =
-    'group flex items-center justify-between text-sm font-medium rounded-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 relative border border-transparent select-none cursor-pointer'
+    'group flex items-center justify-between text-sm font-medium rounded-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 relative border border-transparent select-none cursor-pointer w-full'
 
   // Center content if compact and on desktop
-  const layout = context.compact
-    ? 'justify-center md:justify-center py-2 px-2.5'
-    : 'justify-between py-2 px-2'
+  const layout = context.compact ? 'justify-center py-2 px-1' : 'justify-between py-2 px-2'
 
   let variantClass = ''
   if (isActive.value) {
@@ -113,15 +110,19 @@ const itemClass = computed(() => {
   return `${base} ${layout} ${variantClass} ${props.item.class || ''}`
 })
 
+const showCompactLabel = computed(() => {
+  return context.compact && context.showCompactLabels
+})
+
 // Mappers for Dropdown
 const mapItemToDropdown = (item: SidebarMenuItemSchema): IDropdownOption => {
   return {
     label: item.label,
-    value: item.id || item.label, // Use stable ID for value
+    value: item.id || item.label,
     icon: item.icon,
     disabled: item.disabled,
     children: item.children ? item.children.map(mapItemToDropdown) : undefined,
-    data: item, // Store full item schema in data for custom slot rendering
+    data: item,
   }
 }
 
@@ -130,18 +131,10 @@ const dropdownOptions = computed<IDropdownOptions>(() => {
   return props.item.children.map(mapItemToDropdown)
 })
 
-// We need a separate click handler for items inside the dropdown (emitted by Dropdown)
 const handleDropdownSelect = (option: any) => {
-  // The option.data contains the SidebarMenuItemSchema
   const schema = option.data as SidebarMenuItemSchema
   if (schema) {
     if (schema.action) schema.action(schema)
-    // If it has a link, navigation happens via router-link in slot technically?
-    // Wait, DropdownItem renders the slot. If slot contains router-link, click propagates?
-    // Dropdown usually handles click and emits select.
-    // If we use <router-link> in the slot, the link click happens.
-    // We should ensure we update active state.
-
     const id = schema.id || schema.label || (typeof schema.to === 'string' ? schema.to : '')
     if (id) context.setActive(id)
   }
@@ -166,7 +159,7 @@ const afterEnter = (el: Element) => {
 const beforeLeave = (el: Element) => {
   const element = el as HTMLElement
   element.style.height = element.scrollHeight + 'px'
-  element.style.overflow = 'hidden' // Force hidden during leave
+  element.style.overflow = 'hidden'
   element.style.opacity = '1'
 }
 const leave = (el: Element) => {
@@ -194,8 +187,7 @@ const componentProps = computed(() => {
 </script>
 
 <template>
-  <div class="w-full relative">
-    <!-- Case 1: Popover Mode (Wrapper is Dropdown) -->
+  <div class="w-full relative sidebar-manu-item">
     <Dropdown
       v-if="usePopover"
       position="right-start"
@@ -205,13 +197,25 @@ const componentProps = computed(() => {
       width="220px"
       :options="dropdownOptions"
       @onSelect="handleDropdownSelect">
+      <template #header>
+        <div
+          v-if="context.compact"
+          class="px-3 py-1.5 text-sm flex items-center gap-2 font-medium border-b bg-muted-light rounded-t-md text-center truncate">
+          <Icon
+            v-if="item.icon"
+            :icon="item.icon"
+            class="shrink-0 transition-colors opacity-80 group-hover:opacity-100" />
+          {{ item.label }}
+        </div>
+      </template>
+
       <template #trigger="{ isOpen }">
-        <!-- Helper Trigger Div to handle layout -->
         <Tooltip
           :content="item.label"
           placement="right"
-          :disabled="!context.compact"
-          class="w-full">
+          className="sidebar-menu-tooltip"
+          :disabled="!context.compact || isOpen"
+          class="w-full block">
           <div class="w-full">
             <component
               :is="componentIs"
@@ -222,23 +226,35 @@ const componentProps = computed(() => {
               :aria-expanded="isOpen"
               @click="handleClick">
               <div
-                class="flex items-center gap-2.5 min-w-0 flex-1"
-                :class="{ 'justify-center': context.compact }">
+                class="min-w-0 flex-1 flex"
+                :class="[
+                  showCompactLabel
+                    ? 'flex-col items-center justify-center gap-1'
+                    : context.compact
+                      ? 'justify-center'
+                      : 'items-center gap-2.5',
+                ]">
                 <Icon
                   v-if="item.icon"
                   :icon="item.icon"
                   class="shrink-0 transition-colors opacity-70 group-hover:opacity-100"
                   :class="[
                     isActive || isOpen ? 'opacity-100' : '',
-                    context.compact ? 'h-4.5 w-4.5' : 'h-4 w-4',
+                    context.compact ? 'h-5 w-5' : 'h-4 w-4',
                   ]" />
+
                 <span
                   class="truncate leading-none pt-0.5"
-                  :class="{ 'md:hidden': context.compact }">
+                  :class="{
+                    'text-[10px]': showCompactLabel,
+                    hidden: context.compact && !showCompactLabel,
+                    'md:hidden': context.compact && !showCompactLabel,
+                  }">
                   {{ item.label }}
                 </span>
+
                 <span
-                  v-if="item.badge"
+                  v-if="item.badge && (!context.compact || !showCompactLabel)"
                   class="ml-auto inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium"
                   :class="[
                     item.badgeClass || 'bg-muted text-muted-foreground',
@@ -247,7 +263,7 @@ const componentProps = computed(() => {
                   {{ item.badge }}
                 </span>
               </div>
-              <!-- Chevron Right for Popover -->
+
               <div
                 class="ml-1.5 flex h-4 w-4 shrink-0 items-center justify-center text-muted-foreground"
                 :class="{ 'md:hidden': context.compact }">
@@ -258,11 +274,7 @@ const componentProps = computed(() => {
         </Tooltip>
       </template>
 
-      <!-- Custom rendering for dropdown items (recursive via Dropdown logic) -->
-      <!-- Dropdown exposes 'item' slot for each option -->
       <template #item="{ option }">
-        <!-- We want to render this similarly to our sidebar item but inside dropdown -->
-        <!-- Use router-link if 'to' is present in the schema (option.data) -->
         <component
           :is="option.data?.to ? 'router-link' : option.data?.href ? 'a' : 'div'"
           :to="option.data?.to"
@@ -281,10 +293,12 @@ const componentProps = computed(() => {
       </template>
     </Dropdown>
 
-    <!-- Case 2: Tree Mode (Standard) -->
     <template v-else>
-      <!-- Item Row -->
-      <Tooltip :content="item.label" placement="right" :disabled="!context.compact" class="w-full">
+      <Tooltip
+        :content="item.label"
+        placement="right"
+        :disabled="!context.compact"
+        class="w-full block">
         <component
           :is="componentIs"
           v-bind="componentProps"
@@ -294,21 +308,32 @@ const componentProps = computed(() => {
           :aria-current="isActive ? 'page' : undefined"
           @click="handleClick">
           <div
-            class="flex items-center gap-2.5 min-w-0 flex-1"
-            :class="{ 'justify-center': context.compact }">
+            class="min-w-0 flex-1 flex"
+            :class="[
+              showCompactLabel
+                ? 'flex-col items-center justify-center gap-1'
+                : context.compact
+                  ? 'justify-center'
+                  : 'items-center gap-2.5',
+            ]">
             <Icon
               v-if="item.icon"
               :icon="item.icon"
               class="shrink-0 transition-colors opacity-70 group-hover:opacity-100"
-              :class="[
-                isActive ? 'opacity-100' : '',
-                context.compact ? 'h-4.5 w-4.5' : 'h-4 w-4',
-              ]" />
-            <span class="truncate leading-none pt-0.5" :class="{ 'md:hidden': context.compact }">
+              :class="[isActive ? 'opacity-100' : '', context.compact ? 'h-5 w-5' : 'h-4 w-4']" />
+
+            <span
+              class="truncate leading-none pt-0.5"
+              :class="{
+                'text-[10px]': showCompactLabel,
+                hidden: context.compact && !showCompactLabel,
+                'md:hidden': context.compact && !showCompactLabel,
+              }">
               {{ item.label }}
             </span>
+
             <span
-              v-if="item.badge"
+              v-if="item.badge && (!context.compact || !showCompactLabel)"
               class="ml-auto inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium"
               :class="[
                 item.badgeClass || 'bg-muted text-muted-foreground',
@@ -318,7 +343,6 @@ const componentProps = computed(() => {
             </span>
           </div>
 
-          <!-- Chevron Down for Tree -->
           <div
             v-if="hasChildren"
             role="button"
@@ -335,7 +359,6 @@ const componentProps = computed(() => {
         </component>
       </Tooltip>
 
-      <!-- Children Recursion -->
       <Transition
         name="sidebar-slide"
         @before-enter="beforeEnter"
@@ -346,7 +369,6 @@ const componentProps = computed(() => {
         <div
           v-if="hasChildren && isExpanded"
           class="overflow-hidden transition-all duration-300 ease-in-out relative">
-          <!-- Tree Guide -->
           <div
             v-if="context.variant === 'default'"
             class="absolute top-0 bottom-2 w-px bg-border"
@@ -367,6 +389,16 @@ const componentProps = computed(() => {
   </div>
 </template>
 
-<style scoped>
-/* No extra styles */
+<style>
+.sidebar-manu-item .tooltip-trigger {
+  width: 100% !important;
+}
+
+.sidebar-menu-tooltip {
+  margin-left: 4px !important;
+}
+
+[dir='rtl'] .sidebar-menu-tooltip {
+  margin-right: 4px !important;
+}
 </style>
