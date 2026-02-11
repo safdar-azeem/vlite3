@@ -125,7 +125,7 @@ onUnmounted(() => {
             </div>
           </div>
 
-          <div class="flex-1 overflow-y-auto px-4 py-4 min-h-0 shadow-xl" :class="bodyClass">
+          <div class="flex-1 overflow-y-auto px-4 pt-4 pb-3.5 min-h-0 shadow-xl" :class="bodyClass">
             <p v-if="description" class="text-sm text-muted-foreground mb-2">
               {{ description }}
             </p>
