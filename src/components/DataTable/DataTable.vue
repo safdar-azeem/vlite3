@@ -44,7 +44,7 @@ const props = withDefaults(defineProps<DataTableProps>(), {
   hoverable: true,
   bordered: true,
   compact: false,
-  sortable: true,
+  sortable: false,
 })
 
 const emit = defineEmits<{
@@ -321,16 +321,7 @@ onMounted(() => {
 
     <div :class="containerClass">
       <div class="overflow-x-auto w-full">
-        <table :class="tableClass" class="min-w-[1000px]">
-          <colgroup>
-            <col v-if="selectable" style="width: 48px" />
-            <col
-              v-for="header in headers"
-              :key="header.field"
-              :style="{
-                width: getColumnWidth(header),
-              }" />
-          </colgroup>
+        <table :class="tableClass" class="">
           <thead class="[&_tr]:border-b [&_tr]:border-border/70! bg-muted">
             <tr class="hover:bg-transparent">
               <th
@@ -355,7 +346,10 @@ onMounted(() => {
                 :compact="compact"
                 :table-sortable="sortable"
                 @sort="handleSort"
-                class="last:pr-6!" />
+                class="last:pr-5!"
+                :style="{
+                  width: getColumnWidth(header),
+                }" />
             </tr>
           </thead>
 
@@ -402,7 +396,7 @@ onMounted(() => {
                 :compact="compact"
                 @select="toggleRowSelection"
                 @row-click="handleRowClick"
-                class="[&_td:last-child]:pr-6!">
+                class="[&_td:last-child]:pr-3.5!">
                 <template
                   v-for="header in headers"
                   :key="'slot-' + header.field"
@@ -467,11 +461,7 @@ onMounted(() => {
 
 <style scoped>
 table {
-  table-layout: fixed;
-}
-
-table col:first-child {
-  width: 48px !important;
+  /* table-layout: fixed; - Removed to fix responsiveness */
 }
 
 table th:first-child,
