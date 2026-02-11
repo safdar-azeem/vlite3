@@ -119,7 +119,7 @@ const transitionName = computed(() => {
       leave-to-class="opacity-0">
       <div
         v-if="visible"
-        class="fixed inset-0 z-50 bg-[#00000077]"
+        class="fixed inset-0 z-50 bg-[#00000033]"
         :class="[overlayClass, { 'backdrop-blur-[2px]': backdrop }]"
         @click="handleBackdropClick"></div>
     </Transition>
@@ -130,7 +130,7 @@ const transitionName = computed(() => {
       @after-leave="$emit('onAfterClose')">
       <div
         v-if="visible"
-        class="sidepanel-body fixed inset-y-0 z-50 flex flex-col bg-body shadow-xl border transition-transform duration-300 ease-in-out w-full"
+        class="sidepanel-body fixed inset-y-0 z-50 flex flex-col bg-body shadow-sm border transition-transform duration-300 ease-in-out w-full"
         :class="[sizeClasses[size], positionClasses, props.class]">
         <!-- Header -->
         <div
