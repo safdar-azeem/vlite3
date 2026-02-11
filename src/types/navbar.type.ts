@@ -26,4 +26,5 @@ export interface NavbarProps {
   compact?: boolean
   logo?: string
   logoAlt?: string
+  mobileBreakpoint?: 'sm' | 'md' | 'lg' | 'xl'
 }
