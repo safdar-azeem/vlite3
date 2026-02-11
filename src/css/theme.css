@@ -68,16 +68,14 @@
 
 
     /* Shadows */
-    --shadow-dropdown: 0 3px 4px -3px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 3%);
-    --shadow-offcanvas: 0 10px 15px -3px rgb(0 0 0 / 0.1),
-      0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.1),
-      0 1px 2px -1px rgb(0 0 0 / 0.1);
-    --shadow-DEFAULT: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
-      0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1),
-      0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --shadow-sm: 0px 4px 20px -6px rgba(97, 101, 107, 0.12);
+    --shadow-DEFAULT: 0px 4px 16px -4px rgba(97, 101, 107, 0.15);
+    --shadow-md: 0px 4px 16px -4px rgba(97, 101, 107, 0.15);
+    --shadow-lg: 0px 10px 36px -8px rgba(97, 101, 107, 0.18);
+    --shadow-xl: 0px 16px 48px -10px rgba(97, 101, 107, 0.2);
+    --shadow-dropdown: 0px 6px 24px -6px rgba(97, 101, 107, 0.16);
+    --shadow-offcanvas: 0px 16px 48px -10px rgba(97, 101, 107, 0.2);
+    --shadow-card: 0px 4px 16px -4px rgba(97, 101, 107, 0.15);
 
 
 
@@ -92,7 +90,7 @@
 
 :root {
   --tooltip-radius: var(--radius) !important;
-  --tooltip-shadow: var(--shadow-dropdown) !important;
+  --tooltip-shadow: var(--shadow-DEFAULT) !important;
   --tooltip-arrow-size: 0.5em !important;
   --tooltip-z-index: 50;
   --tooltip-font-size: unset !important;
@@ -186,7 +184,7 @@
 
   --tooltip-bg: var(--color-background) !important;
   --tooltip-text: var(--color-foreground) !important;
-  --tooltip-border: var(--color-border) !important;
+  --tooltip-border: color-mix(in oklab, var(--color-mixture-1) 93%, var(--color-mixture-2)) !important;
   --date-picker-border: var(--color-border) !important;
   --iconPicker-border: var(--color-border) !important;
 }
