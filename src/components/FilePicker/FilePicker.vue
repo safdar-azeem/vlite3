@@ -341,7 +341,7 @@ const inputBaseClass = computed(() => {
         @drop="handleDrop">
         <div
           v-if="!hasValue"
-          class="border-2 border-dashed border-border rounded-lg p-6 transition-all duration-200 ease-in-out cursor-pointer flex flex-col items-center justify-center text-center gap-3"
+          class="border-2 border-dashed border-border rounded-lg p-6 transition-all duration-200 ease-in-out cursor-pointer flex flex-col items-center justify-center text-center gap-2"
           :class="[
             isDragging
               ? 'border-primary bg-primary/5'
@@ -349,7 +349,7 @@ const inputBaseClass = computed(() => {
             disabled || loading || isProcessing ? 'opacity-50 cursor-not-allowed' : '',
           ]"
           @click="triggerInput">
-          <div class="p-3 bg-muted-light rounded-full text-muted-foreground">
+          <div class="p-3 bg-muted rounded-full text-muted-foreground">
             <Icon
               v-if="loading || isProcessing"
               icon="lucide:loader-2"
@@ -376,7 +376,7 @@ const inputBaseClass = computed(() => {
             :class="[!multiSelect && !disabled ? 'cursor-pointer hover:border-primary/50' : '']"
             @click="!multiSelect && !disabled ? triggerInput() : null">
             <div class="shrink-0 mr-3">
-              <div class="p-2 bg-primary-light rounded text-primary">
+              <div class="p-2 bg-primary-light rounded text-primary-fg-light">
                 <Icon icon="lucide:file-text" class="w-5 h-5" />
               </div>
             </div>
