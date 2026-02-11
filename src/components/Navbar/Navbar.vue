@@ -90,17 +90,51 @@ const containerClasses = computed(() => {
 
 const breakpointClasses = computed(() => {
   const bp = props.mobileBreakpoint || 'md'
+
+  // We use static lookups so Tailwind scanner picks up the full class names.
+  // Dynamic string interpolation (e.g. `${bp}:hidden`) is NOT detected by Tailwind.
+
+  const mobileTriggerClasses: Record<string, string> = {
+    sm: 'sm:hidden',
+    md: 'md:hidden',
+    lg: 'lg:hidden',
+    xl: 'xl:hidden',
+  }
+
+  const desktopContentClasses: Record<string, string> = {
+    sm: 'hidden sm:flex',
+    md: 'hidden md:flex',
+    lg: 'hidden lg:flex',
+    xl: 'hidden xl:flex',
+  }
+
+  const sidebarLayoutClasses: Record<string, string> = {
+    sm: `flex flex-col max-sm:w-full ${props.compact ? 'w-20' : props.width} h-auto sm:h-full sm:max-h-screen`,
+    md: `flex flex-col max-md:w-full ${props.compact ? 'w-20' : props.width} h-auto md:h-full md:max-h-screen`,
+    lg: `flex flex-col max-lg:w-full ${props.compact ? 'w-20' : props.width} h-auto lg:h-full lg:max-h-screen`,
+    xl: `flex flex-col max-xl:w-full ${props.compact ? 'w-20' : props.width} h-auto xl:h-full xl:max-h-screen`,
+  }
+
+  const mobileHeaderClasses: Record<string, string> = {
+    sm: 'sm:hidden flex items-center justify-between px-4 py-3 shrink-0 bg-background',
+    md: 'md:hidden flex items-center justify-between px-4 py-3 shrink-0 bg-background',
+    lg: 'lg:hidden flex items-center justify-between px-4 py-3 shrink-0 bg-background',
+    xl: 'xl:hidden flex items-center justify-between px-4 py-3 shrink-0 bg-background',
+  }
+
+  const desktopSidebarClasses: Record<string, string> = {
+    sm: 'hidden sm:flex flex-col h-full w-full overflow-hidden',
+    md: 'hidden md:flex flex-col h-full w-full overflow-hidden',
+    lg: 'hidden lg:flex flex-col h-full w-full overflow-hidden',
+    xl: 'hidden xl:flex flex-col h-full w-full overflow-hidden',
+  }
+
   return {
-    // Show on mobile (up to breakpoint), hide on desktop (breakpoint and up)
-    mobileTrigger: `${bp}:hidden`,
-    // Hide on mobile, show on desktop
-    desktopContent: `hidden ${bp}:flex`,
-    // Sidebar: Mobile (auto height, full width) -> Desktop (fixed width based on prop, full height constrained to viewport)
-    sidebarLayout: `flex flex-col max-${bp}:w-full ${props.compact ? 'w-20' : props.width} h-auto ${bp}:h-full ${bp}:max-h-screen`,
-    // Mobile Header (visible only on small screens)
-    mobileHeader: `${bp}:hidden flex items-center justify-between px-4 py-3 shrink-0 bg-background`,
-    // Desktop Sidebar Content (hidden on small screens)
-    desktopSidebar: `hidden ${bp}:flex flex-col h-full w-full overflow-hidden`,
+    mobileTrigger: mobileTriggerClasses[bp],
+    desktopContent: desktopContentClasses[bp],
+    sidebarLayout: sidebarLayoutClasses[bp],
+    mobileHeader: mobileHeaderClasses[bp],
+    desktopSidebar: desktopSidebarClasses[bp],
   }
 })
 
