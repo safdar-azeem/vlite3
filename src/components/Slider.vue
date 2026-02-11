@@ -119,21 +119,25 @@ const sizeClasses = computed(() => {
       track: 'h-0.5',
       thumb: 'w-2.5 h-2.5',
       wrapper: 'h-4',
+      tick: 'h-2.5',
     },
     sm: {
       track: 'h-1',
       thumb: 'w-3 h-3',
       wrapper: 'h-4',
+      tick: 'h-3',
     },
     md: {
       track: 'h-1.5',
       thumb: 'w-3.5 h-3.5',
       wrapper: 'h-6',
+      tick: 'h-3.5',
     },
     lg: {
       track: 'h-2',
       thumb: 'w-4 h-4',
       wrapper: 'h-7',
+      tick: 'h-4',
     },
   }
   return sizes[props.size]
@@ -168,7 +172,7 @@ const sizeClasses = computed(() => {
       <div
         v-if="isBipolar"
         class="absolute top-1/2 w-0.5 bg-muted-foreground/30 rounded transform -translate-y-1/2 z-0"
-        :class="sizeClasses.track"
+        :class="sizeClasses.tick"
         :style="{ left: getContainedPos(zeroPercentage) }"></div>
 
       <!-- Active Track -->
@@ -208,7 +212,7 @@ const sizeClasses = computed(() => {
     <span
       @dblclick="handleReset"
       v-if="showValue"
-      class="font-mono tabular-nums text-muted-foreground text-right min-w-[1.5rem] text-sm">
+      class="font-mono tabular-nums text-muted-foreground text-right min-w-6 text-sm">
       {{ displayValue }}
     </span>
   </div>
