@@ -9,7 +9,7 @@ const props = withDefaults(defineProps<FileTreeProps>(), {
   selectionMode: 'single',
   showCheckboxes: false,
   defaultExpandedKeys: () => [],
-  highlightSearch: true,
+  highlightSearch: false,
 })
 
 const emit = defineEmits<FileTreeEvents>()
@@ -176,7 +176,7 @@ const filteredData = computed(() => {
   // If `searchQuery` is provided, we filter.
   // Note: content search matches are usually provided in `data` by parent.
   // If `node.searchMatch` exists, we include it regardless of label match.
-  
+
   if (!props.searchQuery) return props.data
 
   const query = props.searchQuery.toLowerCase()
@@ -184,7 +184,7 @@ const filteredData = computed(() => {
   const filterNode = (node: FileNode): FileNode | null => {
     // Match by Name
     const nameMatch = node.label.toLowerCase().includes(query)
-    
+
     // Match by Content (pre-populated)
     const contentMatch = !!node.searchMatch
 
@@ -257,8 +257,7 @@ watch(
         :search-query="searchQuery"
         @toggle-expand="handleToggleExpand"
         @toggle-select="handleToggleSelect"
-        @click-node="(n) => emit('node-click', n)"
-      />
+        @click-node="(n) => emit('node-click', n)" />
     </template>
     <div v-else class="text-sm text-muted-foreground p-4 text-center">No results found.</div>
   </div>
