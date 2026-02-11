@@ -17,6 +17,7 @@ const props = withDefaults(defineProps<WorkbookProps>(), {
   sheets: () => [],
   maxSheets: 50,
   confirmDelete: false,
+  allowIconChange: true,
 })
 
 const emit = defineEmits<{
@@ -189,6 +190,7 @@ const canDeleteSheet = computed(() => props.sheets.length > 1)
             :can-delete="canDeleteSheet"
             :confirm-delete="confirmDelete"
             :confirm-delete-texts="confirmDeleteTexts"
+            :allow-icon-change="allowIconChange"
             @select="handleSelect"
             @update:title="handleUpdateTitle"
             @update:icon="handleUpdateIcon"
