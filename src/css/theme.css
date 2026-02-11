@@ -25,12 +25,15 @@
     --color-destructive-foreground: #fafafa;
 
     /* Legacy Primary Variants */
-    --color-primary-light: #f4f4f5;
-    --color-primary-dark: #3f3f46;
+
+    --color-primary-dark: #000;
     --color-primary: #18181b;
     --color-primary-foreground: #fafafa;
     --color-primary-fg: #fafafa;
-    --color-primary-foreground-light: #18181b;
+    --color-primary-fg-light: var(--color-primary-dark);
+    --color-primary-light: color-mix(in oklab,
+        var(--color-primary-fg, #ffffff) 93%,
+        var(--color-primary, #000000));
 
     /* Danger */
     --color-danger-light: #fff2f2;
@@ -214,7 +217,7 @@
       var(--color-mixture-1, #ffffff) 74%,
       var(--color-mixture-2, #000000));
 
-  --color-secondary: color-mix(in oklab, var(--color-mixture-1) 91.5%, var(--color-mixture-2));
+  --color-secondary: color-mix(in oklab, var(--color-mixture-1) 88%, var(--color-mixture-2));
 
   --color-destructive: #7f1d1d;
   --color-destructive-foreground: #fafafa;
@@ -232,7 +235,7 @@
   --color-primary-dark: #d4d4d8;
   --color-primary-foreground: #18181b;
   --color-primary-fg: #18181b;
-  --color-primary-foreground-light: #f4f4f5;
+  --color-primary-fg-light: #f4f4f5;
 
   --shadow-sm: none !important;
   --shadow-DEFAULT: none !important;
@@ -279,8 +282,8 @@
 }
 
 .dark .tooltip-container {
-  --color-background: #171717 !important;
-  --color-mixture-1: #1c1c1c !important;
+  --color-background: #181818 !important;
+  --color-mixture-1: #1f2020 !important;
   --color-mixture-2: #ffffff !important;
 }
 
