@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted, type Component } from 'vue'
+import { ref, watch, onUnmounted, useAttrs, computed, type Component } from 'vue'
 import Button from './Button.vue'
 import { useKeyStroke } from '../composables/useKeyStroke'
 
@@ -15,8 +15,11 @@ interface Props {
   headerClass?: string
   footerClass?: string
   body?: Component
-  bodyProps?: Record<string, any>
 }
+
+defineOptions({
+  inheritAttrs: false,
+})
 
 const props = withDefaults(defineProps<Props>(), {
   show: false,
@@ -31,6 +34,8 @@ const emit = defineEmits<{
   (e: 'onOpen'): void
 }>()
 
+const attrs = useAttrs()
+
 const visible = ref(props.show)
 
 watch(
@@ -43,6 +48,8 @@ watch(
 
 const handleOpen = () => {
   visible.value = true
+  emit('update:show', true)
+  emit('onOpen')
 }
 
 const close = () => {
@@ -57,11 +64,33 @@ const handleBackdropClick = () => {
   }
 }
 
-// Escape key handling
+const reservedKeys = new Set([
+  'show',
+  'title',
+  'maxWidth',
+  'closeOutside',
+  'backdrop',
+  'description',
+  'triggerClass',
+  'bodyClass',
+  'headerClass',
+  'footerClass',
+  'body',
+])
+
+const bodyAttrs = computed<Record<string, any>>(() => {
+  const result: Record<string, any> = {}
+  Object.entries(attrs).forEach(([key, value]) => {
+    if (!reservedKeys.has(key)) {
+      result[key] = value
+    }
+  })
+  return result
+})
+
 const { onKeyStroke } = useKeyStroke()
 onKeyStroke('Escape', close)
 
-// Prevent body scroll when open
 watch(visible, (val) => {
   if (val) {
     document.body.style.overflow = 'hidden'
@@ -70,7 +99,6 @@ watch(visible, (val) => {
   }
 })
 
-// Clean up on unmount
 onUnmounted(() => {
   document.body.style.overflow = ''
 })
@@ -84,6 +112,7 @@ onUnmounted(() => {
       </template>
     </slot>
   </span>
+
   <Teleport to="body">
     <Transition
       enter-active-class="transition duration-200 ease-out"
@@ -101,7 +130,6 @@ onUnmounted(() => {
           class="modal-body relative w-full rounded border border-border bg-body text-foreground shadow-lg flex flex-col max-h-[85vh] sm:max-h-[90vh]"
           :class="[maxWidth]"
           @click.stop>
-          <!-- Header -->
           <div v-if="title" class="flex-none flex flex-col space-y-1.5 pb-0 border-b">
             <div
               class="flex items-center justify-between bg-muted-light py-1 px-4 rounded-t-md"
@@ -119,20 +147,20 @@ onUnmounted(() => {
             </div>
           </div>
 
-          <!-- Body -->
           <div class="flex-1 overflow-y-auto px-4 py-4 min-h-0 shadow-xl" :class="bodyClass">
             <p v-if="description" class="text-sm text-muted-foreground mb-2">
               {{ description }}
             </p>
+
             <template v-if="body">
-              <component :is="body" v-bind="bodyProps" :close="close" />
+              <component :is="body" v-bind="bodyAttrs" :close="close" />
             </template>
+
             <template v-else>
               <slot :close="close" />
             </template>
           </div>
 
-          <!-- Footer Slot if needed -->
           <div
             v-if="$slots.footer"
             :class="footerClass"
