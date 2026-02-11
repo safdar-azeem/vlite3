@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted, useSlots } from 'vue'
+import { computed, ref, onMounted, onUnmounted, useSlots, provide } from 'vue'
 import Icon from '../Icon.vue'
 import NavbarItem from './NavbarItem.vue'
 import Button from '../Button.vue'
@@ -16,6 +16,7 @@ const props = withDefaults(defineProps<NavbarProps>(), {
   floating: false,
   height: 'h-16',
   width: 'w-64',
+  compact: false,
   class: '',
 })
 
@@ -72,10 +73,12 @@ const containerClasses = computed(() => {
   // Layout
   let layout = ''
   if (isSidebar) {
+    // Sidebar logic: Use compact width if compact mode is on
+    const sidebarWidth = props.compact ? 'w-20' : props.width
     // Sidebar: Mobile (auto height, full width) -> Desktop (fixed width based on prop, full height constrained to viewport)
     // We use md:max-h-screen to ensure that if the sidebar is sticky/fixed, it never exceeds the viewport height,
     // allowing internal scrolling to work correctly regardless of the main content height.
-    layout = `flex flex-col max-md:w-full ${props.width} h-auto md:h-full md:max-h-screen`
+    layout = `flex flex-col max-md:w-full ${sidebarWidth} h-auto md:h-full md:max-h-screen`
   } else {
     // Header Navbar
     // Flexbox with standard gap. Alignment is handled by child margins.
@@ -101,6 +104,10 @@ const centerClasses = computed(() => {
       // Tried to center in available space. mx-auto in a flex container pushes against siblings.
       return 'hidden md:flex items-center justify-center mx-auto'
   }
+})
+
+provide('navbar-context', {
+  compact: computed(() => props.compact),
 })
 </script>
 
