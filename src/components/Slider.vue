@@ -83,6 +83,15 @@ const trackStyle = computed(() => {
   }
 })
 
+const trackRoundingClass = computed(() => {
+  if (!isBipolar.value) return ''
+
+  if (innerValue.value < 0) return 'rounded-r-none'
+  if (innerValue.value > 0) return 'rounded-l-none'
+
+  return ''
+})
+
 const thumbStyle = computed(() => {
   return {
     left: getContainedPos(percentage.value),
@@ -163,25 +172,29 @@ const sizeClasses = computed(() => {
     </div>
 
     <div class="relative flex-1 flex items-center group" :class="sizeClasses.wrapper">
-      <!-- Track Background -->
       <div
         class="absolute w-full bg-secondary rounded-full overflow-hidden"
         :class="sizeClasses.track"></div>
 
-      <!-- Zero Tick for Bipolar -->
       <div
         v-if="isBipolar"
         class="absolute top-1/2 w-0.5 bg-muted-foreground/30 rounded transform -translate-y-1/2 z-0"
         :class="sizeClasses.tick"
         :style="{ left: getContainedPos(zeroPercentage) }"></div>
 
-      <!-- Active Track -->
       <div
-        class="absolute bg-primary rounded-full transition-all duration-75 ease-out will-change-transform"
-        :class="[{ 'bg-muted-foreground': disabled }, sizeClasses.track]"
+        class="absolute bg-primary rounded-full will-change-transform"
+        :class="[
+          {
+            'bg-muted-foreground': disabled,
+            'transition-all duration-75 ease-out': !isDragging,
+            'duration-0': isDragging,
+          },
+          sizeClasses.track,
+          trackRoundingClass,
+        ]"
         :style="trackStyle"></div>
 
-      <!-- Thumb -->
       <div
         class="absolute top-1/2 bg-background border border-border shadow-sm rounded-full transform -translate-y-1/2 -translate-x-1/2 pointer-events-none transition-transform duration-100 ease-out z-10"
         :class="[
