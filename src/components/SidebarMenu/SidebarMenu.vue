@@ -10,6 +10,7 @@ const props = withDefaults(defineProps<SidebarMenuProps>(), {
   indentSize: 12,
   variant: 'default',
   defaultExpanded: () => [],
+  compact: false,
 })
 
 const route = useRoute()
@@ -134,6 +135,7 @@ const context = reactive({
   indentSize: computed(() => props.indentSize),
   variant: computed(() => props.variant),
   renderMode: computed(() => props.renderMode || 'tree'),
+  compact: computed(() => props.compact),
 })
 
 provide('sidebar-menu-ctx', context)
