@@ -58,7 +58,7 @@ const currentIconVariant = computed(() => {
 
 const iconContainerClass = computed(() => {
   const base = 'flex items-center justify-center shrink-0 transition-all duration-300'
-  const size = 'h-8 w-8 rounded-full' // Standard click target/visual size for updated designs
+  const size = 'h-8 w-8 rounded-full'
 
   const variants: Record<string, string> = {
     simple: 'text-muted-foreground bg-transparent',
@@ -70,9 +70,6 @@ const iconContainerClass = computed(() => {
 
   const variantClass = variants[currentIconVariant.value] || variants['simple']
 
-  // If simple, we might not want the fixed size container unless it's intended to be a button?
-  // User requested "customizable it's variant like transparent, solid...".
-  // Solid/Outline implies a shape.
   if (currentIconVariant.value === 'simple')
     return `text-muted-foreground group-hover:text-foreground ${iconRotationClass.value}`
 
@@ -83,42 +80,33 @@ const iconContainerClass = computed(() => {
 <template>
   <button
     type="button"
-    class="group flex flex-1 w-full items-center justify-between py-3 text-left font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+    class="group flex flex-1 w-full items-center justify-between py-3 text-left font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
     :class="[props.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer', props.class]"
     :data-state="props.open ? 'open' : 'closed'"
     :disabled="props.disabled"
     @click="handleClick">
     <div class="flex items-center gap-3">
-      <!-- Number Badge -->
       <div
         v-if="showIndex && index !== undefined"
         class="flex items-center justify-center h-7 w-7 rounded-full bg-primary-light text-primary text-xs font-bold shrink-0">
         {{ index }}
       </div>
 
-      <!-- Item Icon (Leader) -->
       <Icon
         v-if="icon"
         :icon="icon"
         class="h-5 w-5 shrink-0 text-muted-foreground group-hover:text-foreground transition-colors" />
 
-      <!-- Content Slot -->
       <div class="flex flex-col">
         <slot />
       </div>
     </div>
 
-    <!-- Expand/Collapse Icon -->
     <slot name="icon">
       <div v-if="chevron || openIcon || closeIcon" :class="iconContainerClass">
         <Icon
           :icon="currentIcon"
-          class="h-4 w-4 shrink-0 transition-transform duration-200"
-          :class="{ 'rotate-0': currentIconVariant !== 'simple' }" />
-        <!-- Note: Rotation handled in container for shapes, or on icon for simple. 
-                         If container rotates, the shadow/border rotates too which is fine for circle, 
-                         but checking logic above: iconContainerClass includes iconRotationClass.
-                    -->
+          :class="['h-4 w-4 shrink-0 transition-transform duration-200', currentIconVariant !== 'simple' ? 'rotate-0' : '']" />
       </div>
     </slot>
   </button>
