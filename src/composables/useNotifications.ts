@@ -22,6 +22,7 @@ export interface Notification {
   action?: NotificationAction
   position: ToastPosition
   promise?: Promise<any>
+  isFirst?: boolean
 }
 
 export interface ToastOptions {
@@ -46,6 +47,9 @@ const globalConfig = ref<ToastConfig>({
 })
 
 const notifications = ref<Notification[]>([])
+
+// Track whether the very first toast (per position) has been shown
+const firstToastShownByPosition = new Map<ToastPosition, boolean>()
 
 interface TimerData {
   remaining: number
@@ -76,11 +80,18 @@ function createToast(
   }
 
   const id = idCounter++
-  const finalDuration =
-    options.duration ?? globalConfig.value.duration ?? 4000
-  const finalPosition =
-    options.position ?? globalConfig.value.position ?? 'bottom-right'
+  const finalDuration = options.duration ?? globalConfig.value.duration ?? 4000
+  const finalPosition = options.position ?? globalConfig.value.position ?? 'bottom-right'
   const finalType = type === 'default' ? (globalConfig.value.variant ?? 'default') : type
+
+  // Determine if this is the first toast for this position
+  const notificationsAtPosition = notifications.value.filter((n) => n.position === finalPosition)
+  const isFirst = notificationsAtPosition.length === 0 && !firstToastShownByPosition.get(finalPosition)
+
+  // Mark position as having had its first toast
+  if (isFirst) {
+    firstToastShownByPosition.set(finalPosition, true)
+  }
 
   const notification: Notification = {
     id,
@@ -90,6 +101,7 @@ function createToast(
     duration: finalDuration,
     action: options.action,
     position: finalPosition,
+    isFirst,
   }
 
   notifications.value.push(notification)
