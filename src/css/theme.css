@@ -67,18 +67,6 @@
     --radius-xl: calc(0.5rem + 4px);
 
 
-    /* Shadows */
-    --shadow-sm: 0px 4px 20px -6px rgba(97, 101, 107, 0.12);
-    --shadow-DEFAULT: 0px 4px 16px -4px rgba(97, 101, 107, 0.15);
-    --shadow-md: 0px 4px 16px -4px rgba(97, 101, 107, 0.15);
-    --shadow-lg: 0px 10px 36px -8px rgba(97, 101, 107, 0.18);
-    --shadow-xl: box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-    --shadow-dropdown: 0px 6px 24px -6px rgba(97, 101, 107, 0.16);
-    --shadow-offcanvas: 0px 16px 48px -10px rgba(97, 101, 107, 0.2);
-    --shadow-card: 0px 4px 16px -4px rgba(97, 101, 107, 0.15);
-
-
-
 
     /* Animations */
     --animate-accordion-down: accordion-down 0.2s ease-out;
@@ -95,6 +83,12 @@
   --tooltip-z-index: 50;
   --tooltip-font-size: unset !important;
 
+
+  --shadow-sm: rgba(95, 97, 100, 0.07) 0px 15px 90px 0px, rgba(0, 0, 0, 0.02) 0.2px 0.2px 1px 0px;
+  --shadow-DEFAULT: rgba(55, 59, 74, 0.1) 0px 15px 50px 0px;
+  --shadow-md: var(--shadow-DEFAULT);
+  --shadow-lg: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  --shadow-xl: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
 }
 
 .dark .modal-body,
@@ -174,7 +168,7 @@
   --color-input: var(--color-border);
 
 
-  --color-secondary: var(--color-gray-200);
+  --color-secondary: color-mix(in oklab, var(--color-mixture-1) 95.5%, var(--color-mixture-2));
   --color-secondary-foreground: var(--color-foreground);
 
   --color-muted: var(--color-gray-100);
@@ -218,7 +212,7 @@
       var(--color-mixture-1, #ffffff) 74%,
       var(--color-mixture-2, #000000));
 
-
+  --color-secondary: color-mix(in oklab, var(--color-mixture-1) 91.5%, var(--color-mixture-2));
 
   --color-destructive: #7f1d1d;
   --color-destructive-foreground: #fafafa;
@@ -238,6 +232,11 @@
   --color-primary-fg: #18181b;
   --color-primary-foreground-light: #f4f4f5;
 
+  --shadow-sm: none !important;
+  --shadow-DEFAULT: none !important;
+  --shadow-md: none !important;
+  --shadow-lg: none !important;
+  --shadow-xl: none !important;
   /* Semantics - Dark Mode High Contrast */
 
   /* Danger */
@@ -340,4 +339,28 @@
   --color-mixture-1: #171717;
   --color-mixture-2: #000000;
   background-color: #1A1A1A !important;
+}
+
+.shadow-sm {
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.shadow-DEFAULT {
+  box-shadow: var(--shadow-DEFAULT) !important;
+}
+
+.shadow-md {
+  box-shadow: var(--shadow-md) !important;
+}
+
+.shadow {
+  box-shadow: var(--shadow-md) !important;
+}
+
+.shadow-lg {
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.shadow-xl {
+  box-shadow: var(--shadow-xl) !important;
 }
