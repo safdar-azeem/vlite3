@@ -30,10 +30,8 @@
     --color-primary: #18181b;
     --color-primary-foreground: #fafafa;
     --color-primary-fg: #fafafa;
-    --color-primary-fg-light: var(--color-primary-dark);
-    --color-primary-light: color-mix(in oklab,
-        var(--color-primary-fg, #ffffff) 93%,
-        var(--color-primary, #000000));
+    --color-primary-fg-light: #196AC3;
+    --color-primary-light: #EBF0F8;
 
     /* Danger */
     --color-danger-light: #fff2f2;
