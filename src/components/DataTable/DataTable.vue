@@ -44,6 +44,7 @@ const props = withDefaults(defineProps<DataTableProps>(), {
   hoverable: true,
   bordered: true,
   compact: false,
+  sortable: true,
 })
 
 const emit = defineEmits<{
@@ -320,7 +321,7 @@ onMounted(() => {
 
     <div :class="containerClass">
       <div class="overflow-x-auto w-full">
-        <table :class="tableClass">
+        <table :class="tableClass" class="min-w-[1000px]">
           <colgroup>
             <col v-if="selectable" style="width: 48px" />
             <col
@@ -352,7 +353,9 @@ onMounted(() => {
                 :header="header"
                 :sort-config="sortConfig"
                 :compact="compact"
-                @sort="handleSort" />
+                :table-sortable="sortable"
+                @sort="handleSort"
+                class="last:pr-6!" />
             </tr>
           </thead>
 
@@ -373,7 +376,7 @@ onMounted(() => {
                 <td
                   v-for="header in headers"
                   :key="header.field"
-                  class="p-5! align-middle"
+                  class="p-5! align-middle last:pr-6!"
                   :class="[header.hideOnMobile ? 'hidden md:table-cell' : '']">
                   <div
                     class="rounded-md bg-muted/50 animate-pulse h-4 w-full"
@@ -398,7 +401,8 @@ onMounted(() => {
                 :striped="striped"
                 :compact="compact"
                 @select="toggleRowSelection"
-                @row-click="handleRowClick">
+                @row-click="handleRowClick"
+                class="[&_td:last-child]:pr-6!">
                 <template
                   v-for="header in headers"
                   :key="'slot-' + header.field"
