@@ -6,6 +6,7 @@ import type { TooltTipProps } from 'v-tooltip-lite/types'
 const props = withDefaults(defineProps<TooltTipProps & { disabled?: boolean }>(), {
   placement: 'top',
   class: '',
+  className: '',
   teleport: true,
   arrow: true,
   contentClass: 'max-w-[350px]',
@@ -18,7 +19,11 @@ const props = withDefaults(defineProps<TooltTipProps & { disabled?: boolean }>()
   <div v-if="disabled" class="contents">
     <slot />
   </div>
-  <ToolTipLite v-else v-bind="props" class="inline-block" class-name="basic-tooltip">
+  <ToolTipLite
+    v-else
+    v-bind="props"
+    class="inline-block"
+    :class-name="`basic-tooltip ${className}`">
     <template #trigger>
       <slot />
     </template>
