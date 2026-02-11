@@ -106,7 +106,7 @@ const getActiveStyle = (option: TabesOption) => {
       @click="handleSelect(opt)"
       type="button">
       <Icon v-if="opt.icon" :icon="opt.icon" :class="size === 'sm' ? 'w-3.5 h-3.5' : 'w-4 h-4'" />
-      <span :class="textClass">{{ opt.label }}</span>
+      <span class="whitespace-nowrap" :class="textClass">{{ opt.label }}</span>
     </button>
   </div>
 </template>
