@@ -45,6 +45,8 @@ interface Props {
   showCancel?: boolean
   /** Whether this is an update operation */
   isUpdate?: boolean
+  /** Folder ID for file uploads */
+  folderId?: string
   /** Custom class for form element */
   class?: string
   /** Custom class for the grid layout (overrides columns) */
@@ -72,6 +74,7 @@ const props = withDefaults(defineProps<Props>(), {
   cancelText: 'Cancel',
   showCancel: false,
   isUpdate: false,
+  folderId: undefined,
   class: '',
   className: '',
   groupClass: '',
@@ -148,6 +151,7 @@ const {
   schema: props.schema,
   values: props.values,
   isUpdate: props.isUpdate,
+  folderId: props.folderId,
   onSubmit: (payload) => {
     emit('onSubmit', payload)
   },
@@ -255,7 +259,6 @@ const handleCancel = () => {
 
 <template>
   <form :class="['form-container', props.class]" @submit.prevent="handleSubmit">
-    <!-- Multi-Step Timeline -->
     <div v-if="isMultiStepMode && timelineSteps.length > 0" class="form-timeline mb-18">
       <Timeline
         :steps="timelineSteps"
@@ -266,7 +269,6 @@ const handleCancel = () => {
         @step-click="goToStep" />
     </div>
 
-    <!-- Single Schema Mode -->
     <div v-if="!isGroupedMode" class="form-fields-single">
       <FormFields
         :schema="schema as IForm[]"
@@ -283,13 +285,11 @@ const handleCancel = () => {
         @change="onFieldChange" />
     </div>
 
-    <!-- Grouped Schema Mode (Cards) -->
     <div v-else-if="isGroupedMode && !isMultiStepMode" class="form-groups space-y-6">
       <div
         v-for="(groupSchema, groupIndex) in groupedSchemas"
         :key="groupIndex"
         :class="['form-group border rounded-lg overflow-hidden', groupClass]">
-        <!-- Group Header -->
         <div
           v-if="groupsHeadings?.[groupIndex]"
           :class="['form-group-header bg-muted/50 px-6 py-4 border-b', headerClass]">
@@ -303,7 +303,6 @@ const handleCancel = () => {
           </p>
         </div>
 
-        <!-- Group Fields -->
         <div class="form-group-body p-6">
           <FormFields
             :schema="groupSchema"
@@ -322,9 +321,7 @@ const handleCancel = () => {
       </div>
     </div>
 
-    <!-- Multi-Step Mode (One Group at a Time) -->
     <div v-else-if="isMultiStepMode" class="form-step">
-      <!-- Step Header -->
       <div v-if="tabs?.[currentStep]" :class="['form-step-header mb-6', headerClass]">
         <h2 class="text-lg font-semibold text-foreground">
           {{ tabs[currentStep].title }}
@@ -334,7 +331,6 @@ const handleCancel = () => {
         </p>
       </div>
 
-      <!-- Step Fields -->
       <FormFields
         :schema="currentStepSchema"
         :values="formValues"
@@ -350,18 +346,15 @@ const handleCancel = () => {
         @change="onFieldChange" />
     </div>
 
-    <!-- Custom Content Slot -->
     <slot
       :values="formValues"
       :errors="errors"
       :isSubmitting="isSubmitting"
       :handleSubmit="handleSubmit" />
 
-    <!-- Footer -->
     <div
       v-if="footer"
       :class="['form-footer mt-6 flex items-center justify-end gap-3', footerClass]">
-      <!-- Cancel Button -->
       <Button
         v-if="showCancel"
         type="button"
@@ -370,7 +363,6 @@ const handleCancel = () => {
         :disabled="loading || isSubmitting"
         @click="handleCancel" />
 
-      <!-- Previous Button (Multi-Step) -->
       <Button
         v-if="isMultiStepMode && canGoPrevious"
         type="button"
@@ -379,7 +371,6 @@ const handleCancel = () => {
         text="Previous"
         @click="goPrevious" />
 
-      <!-- Next/Submit Button -->
       <Button
         v-if="isMultiStepMode && !isLastStep"
         type="button"
