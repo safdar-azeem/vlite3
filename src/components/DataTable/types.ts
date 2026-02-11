@@ -71,6 +71,7 @@ export interface DataTableProps {
   compact?: boolean
   tableClass?: string
   class?: string
+  sortable?: boolean
 }
 
 export interface SelectionState {
