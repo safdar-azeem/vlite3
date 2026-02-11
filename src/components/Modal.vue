@@ -94,7 +94,7 @@ onUnmounted(() => {
       leave-to-class="opacity-0">
       <div
         v-if="visible"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-[#00000077] p-4"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-[#00000051] p-4"
         :class="backdrop && 'backdrop-blur-[2px]'"
         @click="handleBackdropClick">
         <div
@@ -104,7 +104,7 @@ onUnmounted(() => {
           <!-- Header -->
           <div v-if="title" class="flex-none flex flex-col space-y-1.5 pb-0 border-b">
             <div
-              class="flex items-center justify-between bg-muted py-1 px-4 rounded-t-md"
+              class="flex items-center justify-between bg-muted-light py-1 px-4 rounded-t-md"
               :class="headerClass">
               <h3 class="text-lg font-semibold leading-none tracking-tight">
                 {{ title }}
@@ -120,7 +120,7 @@ onUnmounted(() => {
           </div>
 
           <!-- Body -->
-          <div class="flex-1 overflow-y-auto px-4 py-4 min-h-0" :class="bodyClass">
+          <div class="flex-1 overflow-y-auto px-4 py-4 min-h-0 shadow-xl" :class="bodyClass">
             <p v-if="description" class="text-sm text-muted-foreground mb-2">
               {{ description }}
             </p>
