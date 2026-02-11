@@ -17,6 +17,7 @@ import type {
 import { useGetUsers, type User } from '../composables/useGetUsers'
 
 const searchQuery = ref('')
+const isTableSortable = ref(true)
 // selectedCount definition removed (ref defined later)
 
 const { result, loading, refetch } = useGetUsers()
@@ -132,7 +133,13 @@ const handleDelete = (rows: User[]) => {
   <div class="space-y-8">
     <!-- Header -->
     <div class="space-y-2">
-      <h1 class="text-2xl font-bold">DataTable</h1>
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold">DataTable</h1>
+        <label class="flex items-center gap-2 text-sm font-medium">
+          <input type="checkbox" v-model="isTableSortable" class="rounded border-gray-300" />
+          Global Sortable
+        </label>
+      </div>
       <p class="text-muted-foreground">
         Refactored DataTable with external controls (Search, Actions) and built-in pagination.
       </p>
@@ -148,6 +155,7 @@ const handleDelete = (rows: User[]) => {
         :page-info="pageInfo"
         :loading="loading"
         :search="searchQuery"
+        :sortable="isTableSortable"
         :items-per-page-options="[10, 25, 50, 100]"
         key-field="_id"
         selectable
