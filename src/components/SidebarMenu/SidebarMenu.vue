@@ -44,7 +44,8 @@ const syncWithRoute = (
 ): boolean => {
   let found = false
   for (const item of items) {
-    const id = item.id || item.label
+    // Match logic in SidebarMenuItem: ID > to (if string) > label
+    const id = item.id || (typeof item.to === 'string' ? item.to : null) || item.label
     // Check if this item is the active one
     if (isItemActive(item, path)) {
       activeItem.value = id
@@ -123,4 +124,3 @@ provide('sidebar-menu-ctx', context)
     <SidebarMenuItem v-for="item in items" :key="item.id || item.label" :item="item" />
   </nav>
 </template>
-
