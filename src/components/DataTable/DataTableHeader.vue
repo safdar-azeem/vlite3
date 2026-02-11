@@ -7,10 +7,12 @@ interface Props {
   header: TableHeader
   sortConfig?: SortConfig
   compact?: boolean
+  tableSortable?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   compact: false,
+  tableSortable: true,
 })
 
 const emit = defineEmits<{
@@ -35,7 +37,7 @@ const sortIcon = computed(() => {
 })
 
 const handleSort = () => {
-  if (props.header.sortable !== false) {
+  if (props.tableSortable && props.header.sortable !== false) {
     emit('sort', props.header.field)
   }
 }
@@ -65,7 +67,7 @@ const alignClass = computed(() => {
         header.title
       }}</span>
 
-      <span v-if="header.sortable !== false" class="w-4 h-4 shrink-0">
+      <span v-if="tableSortable && header.sortable !== false" class="w-4 h-4 shrink-0">
         <Icon
           :icon="sortIcon"
           class="w-3.5 h-3.5 transition-all text-muted-foreground mt-0.5"
