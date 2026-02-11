@@ -51,6 +51,33 @@ const sampleItems = [
 // Schema for the Form inside Modal
 const modalFormSchema: IForm[] = [
   {
+    type: 'fileUploader',
+    name: 'files',
+    label: 'Upload Files',
+    required: true,
+    props: {
+      multiSelect: true,
+    },
+  },
+  {
+    type: 'fileUploader',
+    name: 'files',
+    label: 'Upload Files',
+    required: true,
+    props: {
+      multiSelect: true,
+    },
+  },
+  {
+    type: 'fileUploader',
+    name: 'files',
+    label: 'Upload Files',
+    required: true,
+    props: {
+      multiSelect: true,
+    },
+  },
+  {
     name: 'title',
     label: 'Task Title',
     type: 'text',
@@ -88,7 +115,7 @@ const handleFormSubmit = async (payload: any) => {
   await new Promise((resolve) => setTimeout(resolve, 1000))
   console.log('Form submitted from modal:', payload)
   toast.success('Task created successfully!')
-  
+
   // Note: We DO NOT need to manually close the modal here.
   // The Form component detects the modal context and closes it automatically on success.
 }
@@ -103,26 +130,22 @@ const handleFormSubmit = async (payload: any) => {
 
     <section class="space-y-4 border-b pb-8">
       <div class="flex items-center gap-2">
-         <h3 class="text-lg font-semibold">Form Integration (Auto-detect)</h3>
-         <span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded font-medium">New</span>
+        <h3 class="text-lg font-semibold">Form Integration (Auto-detect)</h3>
+        <span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded font-medium">New</span>
       </div>
       <p class="text-sm text-gray-500">
-        The <code>Form</code> component automatically detects if it is rendered inside a <code>Modal</code>. 
-        It will automatically show a "Cancel" button and handle closing the modal upon successful submission or cancellation.
+        The <code>Form</code> component automatically detects if it is rendered inside a
+        <code>Modal</code>. It will automatically show a "Cancel" button and handle closing the
+        modal upon successful submission or cancellation.
       </p>
-      
+
       <Button @click="showFormModal = true">Open Form Modal</Button>
 
-      <Modal 
-        v-model:show="showFormModal" 
+      <Modal
+        v-model:show="showFormModal"
         title="Create New Task"
-        description="Fill out the details below. The form handles the modal buttons automatically."
-      >
-        <Form 
-          :schema="modalFormSchema"
-          submitText="Create Task"
-          @onSubmit="handleFormSubmit"
-        />
+        description="Fill out the details below. The form handles the modal buttons automatically.">
+        <Form :schema="modalFormSchema" submitText="Create Task" @onSubmit="handleFormSubmit" />
       </Modal>
     </section>
 
