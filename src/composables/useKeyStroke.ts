@@ -39,7 +39,7 @@ export const useKeyStroke = (): KeyStrokeComposable => {
   }
 
   const normalizeKey = (key: string): string => {
-    return key.toLowerCase()
+    return key ? key.toLowerCase() : ''
   }
 
   const getTarget = (
@@ -121,6 +121,7 @@ export const useAdvancedKeyStroke = () => {
   let keydownTimeout: number | null = null
 
   const normalizeModifierKey = (key: string): string => {
+    if (!key) return ''
     const normalized = key.toLowerCase()
     if (normalized === 'cmd' || normalized === 'meta' || normalized === 'metakey') return 'meta'
     if (normalized === 'ctrl' || normalized === 'control' || normalized === 'controlkey')
