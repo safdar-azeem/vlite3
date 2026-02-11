@@ -1,30 +1,40 @@
+export interface SearchMatch {
+  path?: string // Optional context
+  line_content: string
+  line_number: number
+  match_start: number
+  match_length: number
+}
+
 export interface FileNode {
   id: string
   label: string
   isFolder?: boolean
   children?: FileNode[]
-  disabled?: boolean
   icon?: string
-  data?: any
+  disabled?: boolean
   isLoaded?: boolean
+  data?: any
+  // Search specific props
+  searchMatch?: SearchMatch
 }
 
 export type FileTreeSelectionMode = 'single' | 'multiple' | 'none'
 
 export interface FileTreeProps {
-  data: FileNode[]
   modelValue?: string[]
+  data?: FileNode[]
   selectionMode?: FileTreeSelectionMode
   showCheckboxes?: boolean
   defaultExpandedKeys?: string[]
   loadData?: (node: FileNode) => Promise<FileNode[]>
-  searchQuery?: string
   highlightSearch?: boolean
+  searchQuery?: string
   class?: string
 }
 
 export interface FileTreeEvents {
-  (e: 'update:modelValue', value: string[]): void
+  (e: 'update:modelValue', keys: string[]): void
   (e: 'select', node: FileNode, selected: boolean): void
   (e: 'expand', node: FileNode, expanded: boolean): void
   (e: 'node-click', node: FileNode): void
