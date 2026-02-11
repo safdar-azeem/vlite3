@@ -54,7 +54,7 @@ const containerClasses = computed(() => {
     absolute: 'absolute top-0 left-0 w-full z-40',
   }
 
-  const base = 'transition-all duration-300 ease-in-out bg-body'
+  const base = 'bg-body'
 
   // Effects
   const effects = [
