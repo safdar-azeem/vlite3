@@ -107,7 +107,7 @@ const sampleItems = [
           :key="item.id"
           :title="`Details: ${item.name}`"
           :body="LazyModalContent"
-          :body-props="{ itemName: item.name }">
+          :itemName="item.name">
           <Button variant="outline" size="sm">{{ item.name }}</Button>
         </Modal>
       </div>
