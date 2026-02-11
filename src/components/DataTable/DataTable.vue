@@ -421,10 +421,10 @@ onMounted(() => {
                 class="h-96 text-center align-middle hover:bg-transparent">
                 <div
                   class="flex flex-col items-center justify-center gap-2 text-muted-foreground p-8">
-                  <div class="flex h-12 w-12 items-center justify-center rounded-full bg-muted/20">
+                  <div class="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
                     <Icon :icon="emptyIcon" class="h-6 w-6 text-muted-foreground/80" />
                   </div>
-                  <h3 class="mt-2 text-base font-semibold text-foreground">
+                  <h3 class="mt-1 text-base font-semibold text-foreground">
                     {{ emptyMessage }}
                   </h3>
                   <p class="text-sm max-w-sm mx-auto">
