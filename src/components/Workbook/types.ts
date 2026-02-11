@@ -34,6 +34,9 @@ export interface WorkbookProps {
     confirm?: string
     cancel?: string
   }
+
+  // Configuration
+  allowIconChange?: boolean
 }
 
 export interface SheetEvent {
