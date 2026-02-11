@@ -152,7 +152,7 @@ const handleDelete = (rows: User[]) => {
         key-field="_id"
         selectable
         hoverable
-        bordered
+        :bordered="false"
         @change="handleTableChange"
         @delete="handleDelete">
         <!-- Custom User Cell with Avatar -->
