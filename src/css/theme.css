@@ -15,6 +15,7 @@
     --color-secondary: '';
     --color-secondary-foreground: '';
     --color-muted: '';
+    --color-muted-light: '';
     --color-muted-foreground: '';
     --color-accent: '';
     --color-accent-foreground: '';
@@ -171,6 +172,7 @@
   --color-secondary: color-mix(in oklab, var(--color-mixture-1) 95.5%, var(--color-mixture-2));
   --color-secondary-foreground: var(--color-foreground);
 
+  --color-muted-light: var(--color-gray-50);
   --color-muted: var(--color-gray-100);
   --color-muted-foreground: var(--color-foreground);
 
