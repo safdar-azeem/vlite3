@@ -166,6 +166,8 @@ const handleDelete = (rows: User[]) => {
         key-field="_id"
         selectable
         hoverable
+        empty-title="No users found"
+        empty-description="We couldn't find any users matching your search criteria."
         :bordered="false"
         @change="handleTableChange"
         @delete="handleDelete">
