@@ -2,8 +2,6 @@
 import { computed, ref, onMounted, onUnmounted, useSlots, provide, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import Icon from '../Icon.vue'
-import NavbarItem from './NavbarItem.vue'
-import Button from '../Button.vue'
 import SidePanel from '../SidePanel.vue'
 import Logo from '../Logo.vue' // Assuming Logo exists or using fallback
 import type { NavbarProps } from '@/types/navbar.type'
