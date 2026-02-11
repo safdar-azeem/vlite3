@@ -10,6 +10,7 @@ const allowMultiple = ref(true)
 const variant = ref<'default' | 'ghost'>('default')
 const renderMode = ref<'tree' | 'popover'>('tree')
 const compact = ref(false)
+const showCompactLabels = ref(false)
 
 const toggleVariant = () => {
   variant.value = variant.value === 'default' ? 'ghost' : 'default'
@@ -88,13 +89,14 @@ const menuItems: SidebarMenuItemSchema[] = [
 
 <template>
   <div class="space-y-6">
-    <div class="flex items-center justify-between border-b pb-4">
+    <div class="flex flex-col gap-4 border-b pb-4">
       <div>
         <h2 class="text-2xl font-bold tracking-tight">Sidebar Menu</h2>
         <p class="text-gray-500">A recursive, accessible navigation menu with smooth animations.</p>
       </div>
-      <div class="flex items-center gap-4">
+      <div class="flex flex-wrap items-center gap-4">
         <CheckBox v-model="allowMultiple" label="Allow Multiple Expanded" />
+        <CheckBox v-model="showCompactLabels" label="Show Compact Labels" :disabled="!compact" />
         <Button size="sm" variant="outline" @click="toggleMode"> Mode: {{ renderMode }} </Button>
         <Button size="sm" variant="outline" @click="toggleVariant"> Variant: {{ variant }} </Button>
         <Button size="sm" variant="outline" @click="toggleCompact">
@@ -103,38 +105,38 @@ const menuItems: SidebarMenuItemSchema[] = [
       </div>
     </div>
 
-    <!-- Layout Simulation -->
     <div class="flex h-[600px] border rounded-xl overflow-hidden bg-white shadow-sm">
-      <!-- Sidebar -->
       <div
         class="border-r bg-gray-50/50 flex flex-col transition-all duration-300"
-        :class="compact ? 'w-' : 'w-64'">
-        <div class="p-4 border-b h-16 flex items-center font-bold text-lg px-6">A.</div>
+        :class="compact ? 'w-20' : 'w-64'">
+        <div class="p-4 border-b h-16 flex items-center justify-center font-bold text-lg">
+          {{ compact ? 'A.' : 'App Name' }}
+        </div>
 
-        <div class="flex-1 overflow-y-auto p-3">
+        <div class="flex-1 overflow-y-auto p-2">
           <SidebarMenu
             :items="menuItems"
             :allow-multiple="allowMultiple"
             :variant="variant"
             :render-mode="renderMode"
-            :compact="compact" />
+            :compact="compact"
+            :show-compact-labels="showCompactLabels" />
         </div>
 
         <div class="p-4 border-t bg-gray-50">
-          <div class="flex items-center gap-3">
+          <div class="flex items-center justify-center gap-3" :class="{ 'flex-col': compact }">
             <div
-              class="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+              class="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold shrink-0">
               U
             </div>
-            <div class="text-sm" :class="{ hidden: compact }">
-              <div class="font-medium">User Name</div>
-              <div class="text-gray-500 text-xs">user@example.com</div>
+            <div class="text-sm overflow-hidden" :class="{ hidden: compact }">
+              <div class="font-medium truncate">User Name</div>
+              <div class="text-gray-500 text-xs truncate">user@example.com</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Main Content -->
       <div class="flex-1 flex flex-col bg-white">
         <div class="h-16 border-b flex items-center px-6 text-gray-400 text-sm">Header</div>
         <div class="flex-1 p-8 flex items-center justify-center text-gray-400 bg-gray-50/20">
@@ -148,3 +150,4 @@ const menuItems: SidebarMenuItemSchema[] = [
     </div>
   </div>
 </template>
+
