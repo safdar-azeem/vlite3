@@ -27,13 +27,13 @@ const props = withDefaults(
   }
 )
 
-const emit = defineEmits(['update:modelValue', 'onChange'])
+const emit = defineEmits(['update:modelValue', 'change'])
 
 const actualValue = computed({
   get: () => props.modelValue ?? props.value,
   set: (val) => {
     emit('update:modelValue', val)
-    emit('onChange', val)
+    emit('change', val)
   },
 })
 
@@ -84,7 +84,7 @@ const handleDateChange = (val: any) => {
           :size="size || 'md'"
           :icon="icon || 'lucide:calendar'"
           v-bind="btnProps"
-          class="w-full" />
+          class="w-full justify-start text-left font-normal" />
       </slot>
     </template>
 
@@ -100,3 +100,4 @@ const handleDateChange = (val: any) => {
     </div>
   </Dropdown>
 </template>
+
