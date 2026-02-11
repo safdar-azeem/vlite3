@@ -70,7 +70,7 @@ const inputWrapperClass = computed(() => {
 const inputBaseClass = computed(() => {
   // Base styles - removed 'flex' as it's not valid on input
   const base =
-    'block w-full bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 transition-all focus-visible:outline-none'
+    'block w-full bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/50 disabled:cursor-not-allowed disabled:opacity-50 transition-all focus-visible:outline-none'
 
   // Variant styles
   const variantStyles: Record<InputVariant, string> = {
@@ -183,6 +183,7 @@ const leftAddonClass = computed(() => {
     isCustom ? '' : sizeText[props.size],
     map[props.rounded] || 'rounded-l-md',
     props.addonLeftClass,
+    props.disabled ? 'opacity-50 cursor-not-allowed' : '',
   ].join(' ')
 })
 
@@ -208,6 +209,7 @@ const rightAddonClass = computed(() => {
     isCustom ? '' : sizeText[props.size],
     map[props.rounded] || 'rounded-r-md',
     props.addonRightClass,
+    props.disabled ? 'opacity-50 cursor-not-allowed' : '',
   ].join(' ')
 })
 
@@ -304,8 +306,11 @@ onMounted(() => {
         <div
           v-if="icon"
           tabindex="-1"
-          class="absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center cursor-pointer text-muted-foreground hover:text-foreground"
-          @click="emit('click:icon', $event)">
+          :class="[
+            'absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center text-muted-foreground',
+            disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:text-foreground',
+          ]"
+          @click="!disabled && emit('click:icon', $event)">
           <Icon :icon="icon" class="h-4 w-4" />
         </div>
 
@@ -322,8 +327,11 @@ onMounted(() => {
           <div
             v-else-if="iconRight"
             tabindex="-1"
-            class="flex items-center justify-center cursor-pointer text-muted-foreground hover:text-foreground"
-            @click="emit('click:icon-right', $event)">
+            :class="[
+              'flex items-center justify-center text-muted-foreground',
+              disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:text-foreground',
+            ]"
+            @click="!disabled && emit('click:icon-right', $event)">
             <Icon :icon="iconRight" class="h-4 w-4" />
           </div>
 
