@@ -34,14 +34,14 @@ const columns = ref<TableHeader[]>([
   {
     field: 'email',
     title: 'Email',
-    width: '20%',
+    width: '25%',
     sortable: true,
     hideOnMobile: true,
   },
   {
     field: 'role',
     title: 'Role',
-    width: '12%',
+    width: '15%',
     sortable: true,
     capitalize: true,
   },
@@ -63,7 +63,7 @@ const columns = ref<TableHeader[]>([
   {
     field: 'action',
     title: 'Actions',
-    width: '8%',
+    width: '5%',
     sortable: false,
     align: 'center',
   },
@@ -187,7 +187,7 @@ const handleDelete = (rows: User[]) => {
 
         <!-- Actions Column -->
         <template #action="{ value }">
-          <div class="flex items-center justify-center gap-1">
+          <div class="flex items-center justify-end gap-1">
             <Button variant="ghost" size="xs" icon="lucide:eye" @click.stop="handleView(value)" />
             <Button
               variant="ghost"
