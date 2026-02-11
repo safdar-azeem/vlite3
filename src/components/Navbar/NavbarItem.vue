@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, inject } from 'vue'
+import { useRoute } from 'vue-router'
 import Icon from '../Icon.vue'
 import Tooltip from '@/components/Tooltip.vue'
 
@@ -30,6 +31,20 @@ const emit = defineEmits<{
   (e: 'click', event: MouseEvent): void
 }>()
 
+const route = useRoute()
+
+const isActive = computed(() => {
+  if (props.active) return true
+  if (props.to && route) {
+    const toPath = props.to.toString()
+    return (
+      route.path === toPath ||
+      (route.path.startsWith(toPath) && toPath !== '/' && toPath.length > 1)
+    )
+  }
+  return false
+})
+
 const isExternal = computed(() => {
   return props.href && (props.href.startsWith('http') || props.href.startsWith('//'))
 })
@@ -54,7 +69,9 @@ const classes = computed(() => {
       base,
       layout,
       'hover:bg-accent hover:text-foreground text-muted-foreground',
-      props.active ? 'bg-accent text-accent-foreground font-semibold' : 'text-muted-foreground',
+      isActive.value
+        ? 'bg-primary-light text-primary-fg-light font-semibold'
+        : 'text-muted-foreground',
       props.class,
     ].join(' ')
   }
@@ -64,7 +81,7 @@ const classes = computed(() => {
     return [
       base,
       layout,
-      props.active
+      isActive.value
         ? 'bg-primary text-primary-fg shadow-sm'
         : 'text-muted-foreground hover:bg-accent hover:text-foreground',
       props.class,
@@ -77,7 +94,7 @@ const classes = computed(() => {
       base,
       layout,
       'rounded-none border-b-2',
-      props.active
+      isActive.value
         ? 'text-primary border-primary'
         : 'text-muted-foreground border-transparent hover:border-border hover:text-foreground',
       props.class,
@@ -89,7 +106,7 @@ const classes = computed(() => {
     base,
     layout,
     'hover:text-foreground transition-colors',
-    props.active ? 'text-foreground font-semibold' : 'text-muted-foreground',
+    isActive.value ? 'text-foreground font-semibold' : 'text-muted-foreground',
     props.class,
   ].join(' ')
 })
@@ -122,7 +139,7 @@ const handleClick = (e: MouseEvent) => {
         v-if="icon"
         :icon="icon"
         class="h-4 w-4 shrink-0 transition-colors"
-        :class="active ? 'text-current' : 'text-muted-foreground group-hover:text-current'" />
+        :class="isActive ? 'text-current' : 'text-muted-foreground group-hover:text-current'" />
 
       <span
         v-if="label || $slots.default"
