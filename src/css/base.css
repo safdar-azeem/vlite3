@@ -145,4 +145,5 @@ html {
   --iconPicker-selected-bg: var(--color-accent);
   --iconPicker-font-base: 15.5px;
   --iconPicker-transition: all 0.2s ease;
+  padding: 5px;
 }
