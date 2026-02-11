@@ -167,7 +167,7 @@ const transitionName = computed(() => {
         </div>
 
         <!-- Footer -->
-        <div v-if="$slots.footer" class="flex-none px-6 py-4 border-t border-border bg-muted/50">
+        <div v-if="$slots.footer" class="flex-none px-6 py-4 border-t border-border bg-muted-light">
           <slot name="footer" :close="close" />
         </div>
       </div>
