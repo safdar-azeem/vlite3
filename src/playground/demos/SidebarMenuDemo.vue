@@ -108,8 +108,8 @@ const menuItems: SidebarMenuItemSchema[] = [
       <!-- Sidebar -->
       <div
         class="border-r bg-gray-50/50 flex flex-col transition-all duration-300"
-        :class="compact ? 'w-20' : 'w-64'">
-        <div class="p-4 border-b h-16 flex items-center font-bold text-lg px-6">Acme Inc.</div>
+        :class="compact ? 'w-' : 'w-64'">
+        <div class="p-4 border-b h-16 flex items-center font-bold text-lg px-6">A.</div>
 
         <div class="flex-1 overflow-y-auto p-3">
           <SidebarMenu
@@ -126,7 +126,7 @@ const menuItems: SidebarMenuItemSchema[] = [
               class="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
               U
             </div>
-            <div class="text-sm">
+            <div class="text-sm" :class="{ hidden: compact }">
               <div class="font-medium">User Name</div>
               <div class="text-gray-500 text-xs">user@example.com</div>
             </div>
