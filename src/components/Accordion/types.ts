@@ -1,41 +1,38 @@
+import type { Component } from 'vue'
+
+export type AccordionVariant = 'default' | 'solid' | 'outline' | 'separated' | 'ghost'
+export type AccordionSize = 'sm' | 'md' | 'lg'
+export type IconVariant = 'simple' | 'solid' | 'outline' | 'primary' | 'ghost'
+
 export interface AccordionItemSchema {
   id: string
   title: string
   description?: string
-  content?: string // HTML or text
-  bodyComponent?: any // Component to render in body
-  disabled?: boolean
+  content?: string
   icon?: string
-  // Allow any arbitrary data for slots
+  disabled?: boolean
+  bodyComponent?: Component | any
   [key: string]: any
 }
 
-export type AccordionVariant = 'default' | 'solid' | 'outline' | 'ghost' | 'separated' // Items have gaps between them
-
 export interface AccordionProps {
-  items?: AccordionItemSchema[]
   modelValue?: string | string[]
-  allowMultiple?: boolean
   defaultValue?: string | string[]
-  disabled?: boolean
+  items?: AccordionItemSchema[]
+  allowMultiple?: boolean
   variant?: AccordionVariant
-
-  // Layout
+  size?: AccordionSize
   attached?: boolean
-
-  // Icon Customization
+  disabled?: boolean
+  showIndex?: boolean
+  // Icons
   openIcon?: string
   closeIcon?: string
-  iconPosition?: 'left' | 'right'
-  iconVariant?: 'simple' | 'solid' | 'outline' | 'primary' | 'ghost'
-  activeIconVariant?: 'simple' | 'solid' | 'outline' | 'primary' | 'ghost'
-
-  // Numbering
-  showIndex?: boolean
-
-  // Classes for deep customization
+  iconVariant?: IconVariant
+  activeIconVariant?: IconVariant
+  // Classes
   class?: string
-  itemClass?: string
   triggerClass?: string
   contentClass?: string
+  itemClass?: string
 }
