@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject } from 'vue'
+import { computed } from 'vue'
 
 interface Props {
   class?: string
@@ -8,10 +8,6 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   class: '',
 })
-
-// In simple implementations, the open state is checked in the parent Item or here.
-// But mostly the Item decides if Content is rendered or if it is v-show.
-// For smooth animation on v-if/v-show, we need a Transition.
 
 const beforeEnter = (el: Element) => {
   const element = el as HTMLElement
