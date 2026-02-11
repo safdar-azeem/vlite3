@@ -264,7 +264,7 @@ watch(
 
     <template v-else>
       <div :class="breakpointClasses.mobileHeader">
-        <slot name="logo" v-if="$slots?.right">
+        <slot name="logo" v-if="$slots?.logo">
           <div class="font-bold text-xl truncate">Brand</div>
         </slot>
 
