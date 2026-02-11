@@ -11,6 +11,7 @@ const props = withDefaults(defineProps<SidebarMenuProps>(), {
   variant: 'default',
   defaultExpanded: () => [],
   compact: false,
+  showCompactLabels: false,
 })
 
 const route = useRoute()
@@ -28,9 +29,6 @@ const isItemActive = (item: SidebarMenuItemSchema, path: string): boolean => {
   if (item.to) {
     const itemPath = typeof item.to === 'string' ? item.to : (item.to as any).path
     if (itemPath) {
-      // Exact match or Prefix? Usually exact for link, prefix for group?
-      // Sidebar links usually exact match or "active class" logic.
-      // Simple exact + optional trailing slash logic
       if (path === itemPath) return true
       if (path.startsWith(itemPath) && itemPath !== '/' && itemPath.length > 1) return true
     }
@@ -61,10 +59,6 @@ const syncWithRoute = (
     if (item.children) {
       const childFound = syncWithRoute(item.children, path, [...parents, id])
       if (childFound) {
-        // If child is active, also ensure this parent is expanded?
-        // Yes, if we want auto-expand.
-        // Logic above "Expand all parents" handles ancestors.
-        // But if we are "parents" list, we are already added.
         found = true
       }
     }
@@ -76,9 +70,6 @@ const syncWithRoute = (
 watch(
   () => route?.path,
   (path) => {
-    // Only auto-expand if utilizing Tree mode mostly?
-    // Or Popover too? Popover usually doesn't "expand" in terms of pushing content, but "active" state matters.
-    // For Tree mode (default), we definitely want to expand.
     if (path) syncWithRoute(props.items, path)
   },
   { immediate: true }
@@ -102,19 +93,6 @@ const toggleExpand = (id: string) => {
     if (props.allowMultiple) {
       expandedItems.value.push(id)
     } else {
-      // Single mode: close siblings?
-      // Truly "Accordion" usually means ONLY one at this level can be open.
-      // But implementing strict single-open globally is tricky for deep nesting.
-      // A simple approach for standard sidebar: Close ALL others? Or just close others at same level?
-      // "allowMultiple: false" usually implies global single expanded or per level.
-      // Let's implement: Replace current expanded list with just this one (and its parents?)
-      // To keep parents open, we'd need to know lineage.
-      // SIMPLIFICATION for this task: Just single mode logic = Replace array if at root, but deeper logic needs parent awareness.
-      // FOR NOW: Simple toggle, usually sufficient. If users want strict accordion, we might need more complex tree traversal or emitting events up.
-      // Let's stick to standard behavior: simply add it. If not allowMultiple, we clear others?
-      // Let's clear others for now to mimic strict accordion.
-      // warning: clearing others might close parents! That's bad.
-      // Better to default to standard multiple for sidebars as safe default.
       expandedItems.value.push(id)
     }
   }
@@ -125,8 +103,6 @@ const setActive = (id: string | null) => {
 }
 
 // Provide context
-// We use reactive to auto-unwrap Refs for consumers
-
 const context = reactive({
   activeItem,
   expandedItems,
@@ -136,6 +112,7 @@ const context = reactive({
   variant: computed(() => props.variant),
   renderMode: computed(() => props.renderMode || 'tree'),
   compact: computed(() => props.compact),
+  showCompactLabels: computed(() => props.showCompactLabels),
 })
 
 provide('sidebar-menu-ctx', context)
@@ -146,3 +123,4 @@ provide('sidebar-menu-ctx', context)
     <SidebarMenuItem v-for="item in items" :key="item.id || item.label" :item="item" />
   </nav>
 </template>
+
