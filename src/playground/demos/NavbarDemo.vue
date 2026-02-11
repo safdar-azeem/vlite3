@@ -104,6 +104,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       <div class="border rounded-lg overflow-hidden bg-gray-50 sm:h-[700px] flex max-sm:flex-col">
         <Navbar
           variant="sidebar"
+          mobileBreakpoint="sm"
           position="relative"
           class="bg-white border-r h-full flex flex-col">
           <template #logo>
@@ -118,6 +119,54 @@ const menuItems: SidebarMenuItemSchema[] = [
           </template>
         </Navbar>
         <div class="p-8 text-gray-400">Main Content</div>
+      </div>
+    </section>
+
+    <section class="space-y-4">
+      <h3 class="text-lg font-semibold">Configurable Mobile Breakpoint (Large 'lg')</h3>
+      <p class="text-sm text-gray-500">
+        This navbar switches to mobile mode (hamburger menu) on screens smaller than 'lg' (1024px).
+        Try resizing the window to see it switch earlier than the default 'md'.
+      </p>
+      <div class="border rounded-lg overflow-hidden bg-gray-100 h-[200px] relative">
+        <Navbar position="absolute" mobile-breakpoint="lg" class="w-full bg-white border-b">
+          <template #logo>
+            <div class="flex items-center gap-2 font-bold text-lg">Large Breakpoint</div>
+          </template>
+          <template #left>
+            <NavbarGroup>
+              <NavbarItem label="Menu 1" />
+              <NavbarItem label="Menu 2" />
+              <NavbarItem label="Menu 3" />
+            </NavbarGroup>
+          </template>
+          <template #right>
+            <Button size="sm">Action</Button>
+          </template>
+        </Navbar>
+      </div>
+    </section>
+
+    <section class="space-y-4">
+      <h3 class="text-lg font-semibold">Configurable Mobile Breakpoint (Small 'sm')</h3>
+      <p class="text-sm text-gray-500">
+        This navbar stays in desktop mode until the screen is very small ('sm' / 640px).
+      </p>
+      <div class="border rounded-lg overflow-hidden bg-gray-100 h-[200px] relative">
+        <Navbar position="absolute" mobile-breakpoint="sm" class="w-full bg-white border-b">
+          <template #logo>
+            <div class="flex items-center gap-2 font-bold text-lg">Small Breakpoint</div>
+          </template>
+          <template #left>
+            <NavbarGroup>
+              <NavbarItem label="Link A" />
+              <NavbarItem label="Link B" />
+            </NavbarGroup>
+          </template>
+          <template #right>
+            <Button size="sm" variant="outline">Log in</Button>
+          </template>
+        </Navbar>
       </div>
     </section>
   </div>
