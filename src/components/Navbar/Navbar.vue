@@ -18,6 +18,7 @@ const props = withDefaults(defineProps<NavbarProps>(), {
   width: 'w-64',
   compact: false,
   class: '',
+  mobileBreakpoint: 'md',
 })
 
 const emit = defineEmits<{
@@ -73,12 +74,11 @@ const containerClasses = computed(() => {
   // Layout
   let layout = ''
   if (isSidebar) {
-    // Sidebar logic: Use compact width if compact mode is on
-    const sidebarWidth = props.compact ? 'w-20' : props.width
+    // Sidebar logic: Use dynamic breakpoint classes
     // Sidebar: Mobile (auto height, full width) -> Desktop (fixed width based on prop, full height constrained to viewport)
-    // We use md:max-h-screen to ensure that if the sidebar is sticky/fixed, it never exceeds the viewport height,
+    // We use max-h-screen to ensure that if the sidebar is sticky/fixed, it never exceeds the viewport height,
     // allowing internal scrolling to work correctly regardless of the main content height.
-    layout = `flex flex-col max-md:w-full ${sidebarWidth} h-auto md:h-full md:max-h-screen`
+    layout = breakpointClasses.value.sidebarLayout
   } else {
     // Header Navbar
     // Flexbox with standard gap. Alignment is handled by child margins.
@@ -86,6 +86,22 @@ const containerClasses = computed(() => {
   }
 
   return [base, positionClasses[props.position], ...effects, layout, props.class].join(' ')
+})
+
+const breakpointClasses = computed(() => {
+  const bp = props.mobileBreakpoint || 'md'
+  return {
+    // Show on mobile (up to breakpoint), hide on desktop (breakpoint and up)
+    mobileTrigger: `${bp}:hidden`,
+    // Hide on mobile, show on desktop
+    desktopContent: `hidden ${bp}:flex`,
+    // Sidebar: Mobile (auto height, full width) -> Desktop (fixed width based on prop, full height constrained to viewport)
+    sidebarLayout: `flex flex-col max-${bp}:w-full ${props.compact ? 'w-20' : props.width} h-auto ${bp}:h-full ${bp}:max-h-screen`,
+    // Mobile Header (visible only on small screens)
+    mobileHeader: `${bp}:hidden flex items-center justify-between px-4 py-3 shrink-0 bg-background`,
+    // Desktop Sidebar Content (hidden on small screens)
+    desktopSidebar: `hidden ${bp}:flex flex-col h-full w-full overflow-hidden`,
+  }
 })
 
 const centerClasses = computed(() => {
@@ -102,7 +118,7 @@ const centerClasses = computed(() => {
     case 'center':
     default:
       // Tried to center in available space. mx-auto in a flex container pushes against siblings.
-      return 'hidden md:flex items-center justify-center mx-auto'
+      return `${breakpointClasses.value.desktopContent} items-center justify-center mx-auto`
   }
 })
 
@@ -121,7 +137,8 @@ provide('navbar-context', {
         <slot name="mobile-trigger">
           <button
             type="button"
-            class="md:hidden p-2 -ml-2 text-muted-foreground hover:bg-accent rounded-md shrink-0"
+            class="p-2 -ml-2 text-muted-foreground hover:bg-accent rounded-md shrink-0"
+            :class="breakpointClasses.mobileTrigger"
             @click="isMobileMenuOpen = true">
             <Icon icon="lucide:menu" class="w-5 h-5" />
             <span class="sr-only">Open Menu</span>
@@ -143,7 +160,9 @@ provide('navbar-context', {
         </div>
 
         <!-- Left Slot Content -->
-        <div class="hidden md:flex items-center gap-1 overflow-x-auto no-scrollbar mask-gradient">
+        <div
+          class="items-center gap-1 overflow-x-auto no-scrollbar mask-gradient"
+          :class="breakpointClasses.desktopContent">
           <slot name="left" />
         </div>
       </div>
@@ -203,7 +222,7 @@ provide('navbar-context', {
     <!-- SIDEBAR LAYOUT -->
     <template v-else>
       <!-- MOBILE HEADER (Visible only on small screens) -->
-      <div class="md:hidden flex items-center justify-between px-4 py-3 shrink-0 bg-background">
+      <div :class="breakpointClasses.mobileHeader">
         <!-- Logo -->
         <slot name="logo">
           <div class="font-bold text-xl truncate">Brand</div>
@@ -220,7 +239,7 @@ provide('navbar-context', {
       </div>
 
       <!-- DESKTOP SIDEBAR CONTENT -->
-      <div class="hidden md:flex flex-col h-full w-full overflow-hidden">
+      <div :class="breakpointClasses.desktopSidebar">
         <!-- Sidebar Header -->
         <div class="h-16 flex items-center px-6 shrink-0 z-10">
           <slot name="logo">
@@ -247,8 +266,9 @@ provide('navbar-context', {
       v-model:show="isMobileMenuOpen"
       position="left"
       size="sm"
-      triggerClass="sm:hidden"
-      class="z-60 sm:hidden">
+      :triggerClass="breakpointClasses.mobileTrigger"
+      class="z-60"
+      :class="breakpointClasses.mobileTrigger">
       <template #header>
         <slot name="logo">Brand</slot>
       </template>
