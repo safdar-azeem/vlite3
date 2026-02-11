@@ -4,10 +4,13 @@ import ConfirmationModal from '@/components/ConfirmationModal.vue'
 import Button from '@/components/Button.vue'
 import { ref, defineComponent, h, onMounted } from 'vue'
 import ColorsDemo from './ColorsDemo.vue'
+import { Form, type IForm } from '@/components/Form'
+import { toast } from '@/composables/useNotifications'
 
 const showModal = ref(false)
 const showScrollModal = ref(false)
 const showConfirm = ref(false)
+const showFormModal = ref(false)
 
 // A simple component defined inline to demonstrate the :body prop
 const LazyModalContent = defineComponent({
@@ -44,6 +47,51 @@ const sampleItems = [
   { id: 2, name: 'Document B' },
   { id: 3, name: 'Document C' },
 ]
+
+// Schema for the Form inside Modal
+const modalFormSchema: IForm[] = [
+  {
+    name: 'title',
+    label: 'Task Title',
+    type: 'text',
+    required: true,
+    placeholder: 'Enter task title',
+  },
+  {
+    name: 'priority',
+    label: 'Priority',
+    type: 'select',
+    options: [
+      { label: 'Low', value: 'low' },
+      { label: 'Medium', value: 'medium' },
+      { label: 'High', value: 'high' },
+    ],
+    required: true,
+  },
+  {
+    name: 'dueDate',
+    label: 'Due Date',
+    type: 'date',
+    required: true,
+  },
+  {
+    name: 'description',
+    label: 'Description',
+    type: 'textarea',
+    placeholder: 'Add details...',
+    props: { rows: 3 },
+  },
+]
+
+const handleFormSubmit = async (payload: any) => {
+  // Simulate API call
+  await new Promise((resolve) => setTimeout(resolve, 1000))
+  console.log('Form submitted from modal:', payload)
+  toast.success('Task created successfully!')
+  
+  // Note: We DO NOT need to manually close the modal here.
+  // The Form component detects the modal context and closes it automatically on success.
+}
 </script>
 
 <template>
@@ -52,6 +100,31 @@ const sampleItems = [
       <h2 class="text-2xl font-bold">Modal</h2>
       <p class="text-gray-500">Dialogs that interrupt user flow for critical actions or info.</p>
     </div>
+
+    <section class="space-y-4 border-b pb-8">
+      <div class="flex items-center gap-2">
+         <h3 class="text-lg font-semibold">Form Integration (Auto-detect)</h3>
+         <span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded font-medium">New</span>
+      </div>
+      <p class="text-sm text-gray-500">
+        The <code>Form</code> component automatically detects if it is rendered inside a <code>Modal</code>. 
+        It will automatically show a "Cancel" button and handle closing the modal upon successful submission or cancellation.
+      </p>
+      
+      <Button @click="showFormModal = true">Open Form Modal</Button>
+
+      <Modal 
+        v-model:show="showFormModal" 
+        title="Create New Task"
+        description="Fill out the details below. The form handles the modal buttons automatically."
+      >
+        <Form 
+          :schema="modalFormSchema"
+          submitText="Create Task"
+          @onSubmit="handleFormSubmit"
+        />
+      </Modal>
+    </section>
 
     <section class="space-y-4">
       <h3 class="text-lg font-semibold">Basic Usage</h3>
@@ -95,12 +168,10 @@ const sampleItems = [
         for lists where each row has a modal.
       </p>
 
-      <!-- Single usage -->
       <Modal title="Lazy Modal" :body="LazyModalContent" :body-props="{ itemName: 'Single Item' }">
         <Button>Open Lazy Modal</Button>
       </Modal>
 
-      <!-- Iterated usage — the key performance benefit -->
       <div class="flex gap-2">
         <Modal
           v-for="item in sampleItems"
@@ -124,7 +195,6 @@ const sampleItems = [
         @confirm="showConfirm = false"
         @cancel="showConfirm = false" />
 
-      <!-- Confirmation Modal with trigger (no :show needed) -->
       <ConfirmationModal
         title="Remove item?"
         description="This will remove the selected item."
