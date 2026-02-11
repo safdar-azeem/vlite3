@@ -17,12 +17,14 @@ interface Props {
     confirm?: string
     cancel?: string
   }
+  allowIconChange?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   isEditing: false,
   canDelete: true,
   confirmDelete: false,
+  allowIconChange: true,
 })
 
 const emit = defineEmits<{
@@ -118,20 +120,25 @@ const containerClass = computed(() => {
     <!-- Icon / IconPicker -->
     <div @click.stop class="mr-2 flex items-center shrink-0">
       <IconPicker
-        v-if="sheet.icon || isEditing"
+        v-if="(sheet.icon || isEditing) && allowIconChange"
         :value="sheet.icon || 'lucide:file'"
         position="bottom-start"
         @onSelect="(val) => emit('update:icon', sheet.id, val)">
         <template #default>
           <button
             type="button"
-            class="flex items-center justify-center rounded hover:bg-accent transition-colors p-0.5 outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
+            class="flex items-center justify-center rounded hover:bg-accent transition-colors p-0.5 outline-none focus-visible:ring-2 focus-visible:ring-primary/20 mt-1">
             <Icon
               :icon="sheet.icon || 'lucide:file'"
               class="w-4 h-4 opacity-70 hover:opacity-100 transition-opacity" />
           </button>
         </template>
       </IconPicker>
+
+      <!-- Read-only Icon (when allowIconChange is false or just showing icon) -->
+      <div v-else-if="sheet.icon" class="flex items-center justify-center p-0.5">
+        <Icon :icon="sheet.icon" class="w-4 h-4 opacity-70" />
+      </div>
       <!-- If no icon and not editing, maybe show nothing or default? 
                  User said "showing the icon with the tab title". 
                  If tab.icon is missing, usually we showed nothing? 
