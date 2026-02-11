@@ -90,12 +90,12 @@ const menuItems: SidebarMenuItemSchema[] = [
 </script>
 
 <template>
-  <div class="h-screen w-full bg-body text-gray-900 flex overflow-hidden">
+  <div class="h-screen w-full bg-body text-gray-900 flex max-md:flex-col overflow-hidden">
     <!-- Navbar (Sidebar Variant) -->
     <Navbar
       variant="sidebar"
       mobileBreakpoint="md"
-      class="bg-card border-r border-border h-full shrink-0 z-20"
+      class="bg-card border-r border-border h-max shrink-0 z-20"
       width="w-64">
       <template #logo>
         <div class="flex items-center gap-2 font-bold text-xl tracking-tight px-2">
