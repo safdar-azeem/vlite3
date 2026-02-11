@@ -37,16 +37,15 @@ const containerClasses = computed(() => {
 
   // Base White Styling
   // We strictly use bg-card (usually white) or explicit white to ensure it pops against any background.
-  let styleClasses = 'bg-card text-card-foreground'
+  let styleClasses = 'bg-background text-card-foreground'
 
   if (props.selected) {
     // Selected State: White card with Strong Border + Shadow
     // No background tint to keep it "Clean White"
-    styleClasses += ' border-2 border-primary shadow-xl scale-[1.02] z-10'
+    styleClasses += ' border-2 border-primary shadow scale-[1.02] z-10'
   } else {
     // Normal State
-    styleClasses +=
-      ' border border-muted hover:border-primary/30 hover:shadow-lg hover:-translate-y-1'
+    styleClasses += ' border hover:border-gray-400 hover:shadow-lg hover:-translate-y-1'
   }
 
   return `${base} ${styleClasses}`
@@ -88,7 +87,7 @@ const isFeatureIncluded = (feature: string | { included?: boolean }) => {
     </div>
 
     <!-- Header -->
-    <div class="mb-6 text-center">
+    <div class="mb-3 text-center">
       <h3 class="text-xl font-bold text-foreground tracking-tight">{{ item.title }}</h3>
       <p
         v-if="item.description"
@@ -111,12 +110,12 @@ const isFeatureIncluded = (feature: string | { included?: boolean }) => {
     <!-- <div class="h-px w-full bg-border/50 mb-6"></div> -->
 
     <!-- Features -->
-    <ul class="flex-1 space-y-4 mb-8">
+    <ul class="flex-1 space-y-2.5 mb-8">
       <li
         v-for="(feature, idx) in item.features"
         :key="idx"
         class="flex items-start gap-3 text-sm group/feature">
-        <div class="mt-0.5 shrink-0 transition-transform group-hover/feature:scale-110">
+        <div class="mt-0 shrink-0 transition-transform group-hover/feature:scale-110">
           <Icon
             v-if="isFeatureIncluded(feature)"
             icon="lucide:check"
@@ -135,7 +134,7 @@ const isFeatureIncluded = (feature: string | { included?: boolean }) => {
     </ul>
 
     <!-- Action Button -->
-    <div class="mt-auto pt-4 border-t border-border/40">
+    <div class="mt-auto pt-4 border-t border-border/70">
       <Button
         :variant="buttonVariant"
         class="w-full font-semibold shadow-sm rounded-lg"
