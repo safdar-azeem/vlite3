@@ -95,6 +95,9 @@ const modalContext = inject<{ close: () => void } | null>('modal-context', null)
 // Determine if Cancel button should be shown (Explicit prop OR inside modal)
 const shouldShowCancel = computed(() => props.showCancel || !!modalContext)
 
+// Check if form is inside a modal to apply sticky footer styles
+const isInsideModal = computed(() => !!modalContext)
+
 // Determine form mode
 const isGroupedMode = computed(() => {
   if (!props.schema || props.schema.length === 0) return false
@@ -368,7 +371,13 @@ const handleCancel = () => {
 
     <div
       v-if="footer"
-      :class="['form-footer mt-6 flex items-center justify-end gap-3', footerClass]">
+      :class="[
+        'form-footer flex items-center justify-end gap-3',
+        footerClass,
+        isInsideModal
+          ? 'sticky bottom-0 z-20 bg-body pt-4 border-t border-border -mx-4 px-4  mt-4'
+          : 'mt-6',
+      ]">
       <Button
         v-if="shouldShowCancel"
         type="button"
