@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject } from 'vue'
+import { computed } from 'vue'
 import type { FileNode, FileTreeSelectionMode } from './types'
 import Icon from '../Icon.vue'
 import CheckBox from '../CheckBox.vue'
@@ -58,8 +58,6 @@ const truncatedLabel = computed(() => {
   // Attempt to preserve extension
   const lastDotIndex = label.lastIndexOf('.')
 
-  // If no extension or it's a folder usually (folders might have dots too but fewer rules)
-  // or extension is too long (weird case)
   if (lastDotIndex === -1 || label.length - lastDotIndex > 10) {
     return label.substring(0, maxLength) + '...'
   }
@@ -67,14 +65,12 @@ const truncatedLabel = computed(() => {
   const ext = label.substring(lastDotIndex)
   const name = label.substring(0, lastDotIndex)
 
-  // We want total length ~ maxLength
-  // Available for name = maxLength - ext.length - 3 (for '...')
   const available = Math.max(0, maxLength - ext.length - 3)
 
   return name.substring(0, available) + '...' + ext
 })
 
-// Highlight Search
+// Highlight Search (Label)
 const labelParts = computed(() => {
   const displayText = truncatedLabel.value
 
@@ -96,27 +92,41 @@ const labelParts = computed(() => {
   ]
 })
 
+// Highlight Search Match (Content)
+const contentMatchParts = computed(() => {
+  const match = props.node.searchMatch
+  if (!match) return []
+
+  const text = match.line_content
+  const start = match.match_start
+  const len = match.match_length
+
+  // Safety check
+  if (start < 0 || start >= text.length) return [{ text, highlight: false }]
+
+  return [
+    { text: text.substring(0, start), highlight: false },
+    { text: text.substring(start, start + len), highlight: true },
+    { text: text.substring(start + len), highlight: false },
+  ]
+})
+
 // Handlers
 const handleExpand = (e?: MouseEvent) => {
   if (e) e.stopPropagation()
   emit('toggle-expand', props.node)
 }
 
-const handleSelect = (e?: Event | boolean) => {
-  // Checkbox change
+const handleSelect = () => {
   emit('toggle-select', props.node)
 }
 
 const handleClick = (e: MouseEvent) => {
   e.stopPropagation()
 
-  // UX Improvement:
-  // If Folder -> Expand/Collapse
   if (isFolder.value) {
     handleExpand()
   } else {
-    // If File -> Toggle Selection (if mode allows)
-    // Works for both checkbox and single mode
     if (props.selectionMode !== 'none') {
       emit('toggle-select', props.node)
     }
@@ -128,74 +138,92 @@ const handleClick = (e: MouseEvent) => {
 
 <template>
   <div class="flex flex-col select-none">
-    <!-- Node Row -->
     <div
-      class="group flex items-center py-1 pr-2 rounded-md hover:bg-accent/50 transition-colors cursor-pointer min-h-[32px]"
+      class="group flex flex-col rounded-md transition-colors cursor-pointer"
       :class="{
-        'bg-accent/50 text-accent-foreground':
-          isSelected && selectionMode === 'single' && !showCheckboxes,
+        'bg-accent/50 text-accent-foreground': isSelected && selectionMode === 'single' && !showCheckboxes,
+        'hover:bg-accent/50': !isSelected || selectionMode !== 'single',
         'opacity-50 pointer-events-none': node.disabled,
       }"
-      :style="{ paddingLeft }"
       @click="handleClick"
-      :title="node.label">
-      <!-- Expand Logic: Chevron or Spacer -->
-      <!-- We keep the button for explicit chevron clicking, but row click also triggers it -->
-      <button
-        v-if="isFolder"
-        type="button"
-        class="p-1 mr-1 rounded-sm hover:bg-muted text-muted-foreground transition-transform duration-200 focus:outline-none"
-        :class="{ 'rotate-90': isExpanded }"
-        @click.stop="handleExpand">
-        <Icon icon="lucide:chevron-right" class="w-4 h-4" />
-      </button>
-      <div v-else class="w-6 mr-1" />
-      <!-- Spacer for non-folders -->
+      :title="node.label"
+    >
+      <div class="flex items-center py-1 pr-2 min-h-[32px]" :style="{ paddingLeft }">
+        <button
+          v-if="isFolder"
+          type="button"
+          class="p-1 mr-1 rounded-sm hover:bg-muted text-muted-foreground transition-transform duration-200 focus:outline-none"
+          :class="{ 'rotate-90': isExpanded }"
+          @click.stop="handleExpand"
+        >
+          <Icon icon="lucide:chevron-right" class="w-4 h-4" />
+        </button>
+        <div v-else class="w-6 mr-1" />
 
-      <!-- Checkbox -->
+        <div
+          v-if="showCheckboxes && selectionMode !== 'none'"
+          class="mr-2 flex items-center justify-center bg-transparent"
+          @click.stop
+        >
+          <CheckBox
+            :checked="isSelected"
+            :indeterminate="isIndeterminate"
+            :disabled="node.disabled"
+            @update:checked="handleSelect"
+            rounded="sm"
+            size="sm"
+          />
+        </div>
+
+        <div class="mr-2 text-muted-foreground shrink-0">
+          <Icon v-if="isLoading" icon="lucide:loader-2" class="w-4 h-4 animate-spin" />
+          <Icon v-else-if="node.icon" :icon="node.icon" class="w-4 h-4" />
+          <Icon
+            v-else-if="isFolder"
+            :icon="isExpanded ? 'lucide:folder-open' : 'lucide:folder'"
+            class="w-4 h-4"
+          />
+          <Icon v-else icon="lucide:file" class="w-4 h-4" />
+        </div>
+
+        <div class="flex-1 truncate text-sm font-medium">
+          <template v-for="(part, i) in labelParts" :key="i">
+            <span
+              :class="{
+                'bg-yellow-100 text-yellow-900 rounded-sm px-0.5': part.highlight,
+              }"
+              >{{ part.text }}</span
+            >
+          </template>
+        </div>
+      </div>
+
       <div
-        v-if="showCheckboxes && selectionMode !== 'none'"
-        class="mr-2 flex items-center justify-center bg-transparent"
-        @click.stop>
-        <CheckBox
-          :checked="isSelected"
-          :indeterminate="isIndeterminate"
-          :disabled="node.disabled"
-          @update:checked="handleSelect"
-          rounded="sm"
-          size="sm" />
-      </div>
-
-      <!-- Icon -->
-      <div class="mr-2 text-muted-foreground shrink-0">
-        <Icon v-if="isLoading" icon="lucide:loader-2" class="w-4 h-4 animate-spin" />
-        <Icon v-else-if="node.icon" :icon="node.icon" class="w-4 h-4" />
-        <Icon
-          v-else-if="isFolder"
-          :icon="isExpanded ? 'lucide:folder-open' : 'lucide:folder'"
-          class="w-4 h-4" />
-        <Icon v-else icon="lucide:file" class="w-4 h-4" />
-      </div>
-
-      <!-- Label -->
-      <div class="flex-1 truncate text-sm font-medium">
-        <template v-for="(part, i) in labelParts" :key="i">
-          <span
-            :class="{
-              'bg-yellow-100 text-yellow-900 rounded-sm px-0.5': part.highlight,
-            }"
-            >{{ part.text }}</span
-          >
-        </template>
+        v-if="node.searchMatch"
+        class="flex items-center text-[11px] text-gray-500 font-mono pr-2 pb-1.5 truncate"
+        :style="{ paddingLeft: (depth * 20 + 28) + 'px' }"
+      >
+        <span class="mr-2 text-gray-400 select-none shrink-0"
+          >L{{ node.searchMatch.line_number }}</span
+        >
+        <div class="truncate">
+          <template v-for="(part, i) in contentMatchParts" :key="i">
+            <span
+              :class="{
+                'bg-yellow-500/20 text-gray-900 px-0.5 rounded-[1px] font-medium border border-yellow-600/30': part.highlight,
+              }"
+              >{{ part.text }}</span
+            >
+          </template>
+        </div>
       </div>
     </div>
 
-    <!-- Children (Recursive) -->
     <div v-if="isExpanded && isFolder && !isLoading" class="relative flex flex-col">
-      <!-- Vertical Line -->
       <div
         class="absolute top-1 bottom-1 border-l border-border"
-        :style="{ left: depth * 20 + 10 + 'px' }"></div>
+        :style="{ left: depth * 20 + 10 + 'px' }"
+      ></div>
 
       <template v-if="node.children && node.children.length > 0">
         <FileTreeNode
@@ -213,13 +241,15 @@ const handleClick = (e: MouseEvent) => {
           :search-query="searchQuery"
           @toggle-expand="(n) => $emit('toggle-expand', n)"
           @toggle-select="(n) => $emit('toggle-select', n)"
-          @click-node="(n) => $emit('click-node', n)" />
+          @click-node="(n) => $emit('click-node', n)"
+        />
       </template>
-      <!-- Empty State - Adjusted Padding -->
+      
       <div
         v-else-if="isExpanded && isFolder && (!node.children || node.children.length === 0)"
         class="py-0.5 text-xs text-muted-foreground italic"
-        :style="{ paddingLeft: (depth + 1) * 20 + 26 + 'px' }"></div>
+        :style="{ paddingLeft: (depth + 1) * 20 + 26 + 'px' }"
+      ></div>
     </div>
   </div>
 </template>
