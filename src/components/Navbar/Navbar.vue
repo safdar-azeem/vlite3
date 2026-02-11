@@ -189,7 +189,7 @@ watch(
         </slot>
 
         <!-- Logo Slot -->
-        <div class="shrink-0">
+        <div class="shrink-0" v-if="$slots?.logo">
           <slot name="logo">
             <component
               :is="props.logo ? 'img' : 'div'"
@@ -204,6 +204,7 @@ watch(
 
         <!-- Left Slot Content -->
         <div
+          v-if="$slots?.left"
           class="items-center gap-1 overflow-x-auto no-scrollbar mask-gradient"
           :class="breakpointClasses.desktopContent">
           <slot name="left" />
@@ -216,7 +217,8 @@ watch(
           centerClasses,
           // Width constraint to ensure it doesn't crush others, but allows simple resizing
           'max-w-full',
-        ]">
+        ]"
+        v-if="$slots?.center">
         <slot name="center" />
       </div>
 
@@ -262,16 +264,12 @@ watch(
       </div>
     </template>
 
-    <!-- SIDEBAR LAYOUT -->
     <template v-else>
-      <!-- MOBILE HEADER (Visible only on small screens) -->
       <div :class="breakpointClasses.mobileHeader">
-        <!-- Logo -->
-        <slot name="logo">
+        <slot name="logo" v-if="$slots?.right">
           <div class="font-bold text-xl truncate">Brand</div>
         </slot>
 
-        <!-- Mobile Toggle -->
         <button
           type="button"
           class="p-2 -mr-2 text-muted-foreground hover:bg-accent rounded-md"
@@ -281,30 +279,25 @@ watch(
         </button>
       </div>
 
-      <!-- DESKTOP SIDEBAR CONTENT -->
       <div :class="breakpointClasses.desktopSidebar">
-        <!-- Sidebar Header -->
-        <div class="h-16 flex items-center px-6 shrink-0 z-10">
+        <div class="h-16 flex items-center px-6 z-10" v-if="$slots?.logo">
           <slot name="logo">
             <div class="font-bold text-xl truncate">Brand</div>
           </slot>
         </div>
 
-        <!-- Sidebar Body -->
         <div class="flex-1 px-4 py-4 overflow-y-auto space-y-4 scrollbar-thin">
           <slot name="left" />
           <slot />
           <slot name="center" />
         </div>
 
-        <!-- Sidebar Footer -->
-        <div class="p-4 border-t border-border shrink-0 bg-background mt-auto">
+        <div class="p-4 border-t border-border shrink-0 bg-background mt-auto" v-if="$slots?.right">
           <slot name="right" />
         </div>
       </div>
     </template>
 
-    <!-- MOBILE DRAWER (reusing SidePanel) -->
     <SidePanel
       v-model:show="isMobileMenuOpen"
       position="left"
@@ -317,7 +310,6 @@ watch(
       </template>
 
       <div class="flex flex-col space-y-6 pt-4 h-full">
-        <!-- Header Variant Menu -->
         <template v-if="variant === 'header'">
           <div class="flex flex-col space-y-1">
             <slot name="mobile-menu">
@@ -338,7 +330,7 @@ watch(
           </div>
         </template>
 
-        <div class="mt-auto pt-4 border-t border-border">
+        <div class="mt-auto pt-4 border-t border-border" v-if="$slots?.right">
           <slot name="right" />
         </div>
       </div>
