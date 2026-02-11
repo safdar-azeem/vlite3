@@ -60,24 +60,6 @@ const modalFormSchema: IForm[] = [
     },
   },
   {
-    type: 'fileUploader',
-    name: 'files',
-    label: 'Upload Files',
-    required: true,
-    props: {
-      multiSelect: true,
-    },
-  },
-  {
-    type: 'fileUploader',
-    name: 'files',
-    label: 'Upload Files',
-    required: true,
-    props: {
-      multiSelect: true,
-    },
-  },
-  {
     name: 'title',
     label: 'Task Title',
     type: 'text',
