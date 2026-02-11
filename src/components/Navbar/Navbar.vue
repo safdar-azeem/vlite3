@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted, useSlots, provide } from 'vue'
+import { computed, ref, onMounted, onUnmounted, useSlots, provide, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import Icon from '../Icon.vue'
 import NavbarItem from './NavbarItem.vue'
 import Button from '../Button.vue'
@@ -159,6 +160,14 @@ const centerClasses = computed(() => {
 provide('navbar-context', {
   compact: computed(() => props.compact),
 })
+const route = useRoute()
+
+watch(
+  () => route.path,
+  () => {
+    isMobileMenuOpen.value = false
+  }
+)
 </script>
 
 <template>
