@@ -263,8 +263,9 @@ const emitChange = () => {
 
 const containerClass = computed(() => {
   return [
-    'w-full bg-background rounded border border-border/60  flex flex-col',
+    'w-full bg-background rounded  flex flex-col',
     'overflow-hidden',
+    props.bordered ? 'border-b border-border/60' : '',
     props.class,
   ].join(' ')
 })
