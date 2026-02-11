@@ -38,6 +38,7 @@ interface Props {
   hasMore?: boolean
   searchable?: boolean
   remote?: boolean
+  direction?: 'ltr' | 'rtl'
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -55,6 +56,7 @@ const props = withDefaults(defineProps<Props>(), {
   hasMore: false,
   searchable: true,
   remote: false,
+  direction: 'ltr',
 })
 
 const emit = defineEmits<{
@@ -238,7 +240,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="dropdown-menu w-full min-w-[150px] flex flex-col">
+  <div class="dropdown-menu w-full min-w-[150px] flex flex-col" :dir="direction">
     <!-- Fixed Search -->
     <div v-if="showSearch" class="bg-body border-b mb-1 z-10 rounded-t-md shrink-0">
       <Input
@@ -313,6 +315,7 @@ onBeforeUnmount(() => {
               :nestedOffset="props.nestedOffset"
               :selectable="props.selectable"
               :ignoreClickOutside="getAllRecursiveIds(option.children)"
+              :direction="direction"
               @onSelect="(payload: any) => handleRecursiveSelect(option, payload)">
               <template #trigger>
                 <div
@@ -333,7 +336,7 @@ onBeforeUnmount(() => {
                     <span class="truncate">{{ option.label }}</span>
                   </div>
                   <Icon
-                    icon="lucide:chevron-right"
+                    :icon="direction === 'rtl' ? 'lucide:chevron-left' : 'lucide:chevron-right'"
                     class="h-4 w-4 text-muted-foreground shrink-0 ml-2" />
                 </div>
               </template>
