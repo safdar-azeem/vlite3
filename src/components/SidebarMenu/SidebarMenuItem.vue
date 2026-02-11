@@ -98,7 +98,7 @@ const itemClass = computed(() => {
 
   let variantClass = ''
   if (isActive.value) {
-    variantClass = 'bg-primary/5 text-primary'
+    variantClass = 'bg-primary-light text-primary-fg-light'
   } else {
     variantClass = 'text-muted-foreground hover:bg-accent/80 hover:text-foreground'
   }
