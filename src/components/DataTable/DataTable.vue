@@ -263,7 +263,7 @@ const emitChange = () => {
 
 const containerClass = computed(() => {
   return [
-    'w-full bg-card rounded border border-border/60  flex flex-col',
+    'w-full bg-background rounded border border-border/60  flex flex-col',
     'overflow-hidden',
     props.class,
   ].join(' ')
@@ -304,7 +304,7 @@ onMounted(() => {
       <template #left v-if="$slots?.['toolbar-left']">
         <slot name="toolbar-left" />
       </template>
-      <template #right v-if="$slots?.['toolbar-right']">
+      <template #right v-if="$slots?.['toolbar-right'] || selectedIds.size > 0">
         <Button
           v-if="selectedIds.size > 0"
           rounded="full"
