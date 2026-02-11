@@ -248,6 +248,7 @@ onBeforeUnmount(() => {
         placeholder="Search..."
         icon="lucide:search"
         size="sm"
+        class="font-medium!"
         variant="transparent"
         :show-clear-button="false" />
     </div>
