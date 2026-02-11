@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { FileTree, FileNode } from '@/components/FileTree'
-import Button from '@/components/Button.vue'
 import Input from '@/components/Input.vue'
 
 // --- Data ---
@@ -33,10 +32,47 @@ const asyncData = ref<FileNode[]>([
     { id: 'local', label: 'Local Disk', isFolder: true, children: [] }
 ])
 
+// Specific data for content search demo to guarantee matches appear
+const contentSearchData = ref<FileNode[]>([
+  {
+    id: 'src-search',
+    label: 'src',
+    isFolder: true,
+    children: [
+      { 
+        id: 'utils', 
+        label: 'utils.ts', 
+        isFolder: false,
+        icon: 'lucide:file-code',
+        // Mocking a search result match (normally comes from backend search)
+        searchMatch: {
+          line_number: 42,
+          line_content: 'export const calculateTotal = (a, b) => a + b',
+          match_start: 13,
+          match_length: 9, // "calculate"
+        }
+      },
+      { 
+        id: 'api', 
+        label: 'api.ts', 
+        isFolder: false,
+        icon: 'lucide:file-code',
+        searchMatch: {
+            line_number: 10,
+            line_content: 'const endpoint = "https://api.example.com"',
+            match_start: 25,
+            match_length: 3 // "api"
+        }
+      }
+    ]
+  }
+])
+
 // --- State ---
 const singleSelection = ref<string[]>(['main'])
 const multiSelection = ref<string[]>([])
-const searchQuery = ref('')
+const basicSearchQuery = ref('')
+const contentSearchQuery = ref('calculate')
 
 // --- Async Loader ---
 const handleLoad = async (node: FileNode) => {
@@ -65,7 +101,6 @@ const handleLog = (msg: string) => {
 
 <template>
     <div class="space-y-10">
-        <!-- Header -->
         <div>
             <h2 class="text-2xl font-bold mb-2">File Tree</h2>
             <p class="text-gray-500">
@@ -73,18 +108,17 @@ const handleLog = (msg: string) => {
             </p>
         </div>
 
-        <!-- 1. Single Selection & Search -->
         <div class="space-y-4">
             <h3 class="text-lg font-semibold border-b pb-2">Single Selection & Search</h3>
             <div class="flex gap-6">
                 <div class="w-1/2 border rounded-lg p-4 bg-card h-[400px] flex flex-col">
                     <div class="mb-4">
-                         <Input v-model="searchQuery" placeholder="Search files..." icon="lucide:search" />
+                         <Input v-model="basicSearchQuery" placeholder="Search files..." icon="lucide:search" />
                     </div>
                     <FileTree 
                         :data="basicData" 
                         v-model="singleSelection"
-                        :search-query="searchQuery"
+                        :search-query="basicSearchQuery"
                         selection-mode="single"
                         :default-expanded-keys="['root', 'src']"
                         @node-click="(n) => handleLog(`Clicked: ${n.label}`)"
@@ -107,7 +141,6 @@ const handleLog = (msg: string) => {
             </div>
         </div>
 
-        <!-- 2. Multiple Selection (Checkboxes) -->
         <div class="space-y-4">
             <h3 class="text-lg font-semibold border-b pb-2">Multiple Selection (Checkboxes)</h3>
             <div class="flex gap-6">
@@ -129,7 +162,6 @@ const handleLog = (msg: string) => {
             </div>
         </div>
 
-        <!-- 3. Async Loading -->
         <div class="space-y-4">
             <h3 class="text-lg font-semibold border-b pb-2">Async Loading</h3>
              <p class="text-sm text-gray-500 mb-2">
@@ -142,6 +174,34 @@ const handleLog = (msg: string) => {
                         selection-mode="single"
                         :load-data="handleLoad"
                     />
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <h3 class="text-lg font-semibold border-b pb-2">Content Search Highlighting</h3>
+             <p class="text-sm text-gray-500 mb-2">
+                Simulates search results where the file content is matched. Note the line number and highlighted text snippet.
+            </p>
+            <div class="flex gap-6">
+                <div class="w-1/2 border rounded-lg p-4 bg-card h-[300px] flex flex-col">
+                    <div class="mb-4">
+                         <Input v-model="contentSearchQuery" placeholder="Search content..." icon="lucide:search" />
+                    </div>
+                    <FileTree 
+                        :data="contentSearchData" 
+                        :search-query="contentSearchQuery"
+                        selection-mode="single"
+                        :default-expanded-keys="['src-search']"
+                        class="flex-1"
+                    />
+                </div>
+                <div class="w-1/2 p-4 bg-muted rounded-lg">
+                    <h4 class="font-medium mb-2">Demo Info</h4>
+                    <p class="text-xs text-gray-600">
+                        This demo uses static data with `searchMatch` properties pre-populated to demonstrate the UI capability. 
+                        Try searching for "calculate" or "api".
+                    </p>
                 </div>
             </div>
         </div>
