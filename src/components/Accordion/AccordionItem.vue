@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { AccordionItemSchema, AccordionVariant } from './types'
+import type { AccordionItemSchema, AccordionVariant, AccordionSize, IconVariant } from './types'
 import AccordionTrigger from './AccordionTrigger.vue'
 import AccordionContent from './AccordionContent.vue'
 
@@ -8,16 +8,15 @@ interface Props {
   item: AccordionItemSchema
   isOpen: boolean
   variant?: AccordionVariant
+  size?: AccordionSize
   attached?: boolean
   disabled?: boolean
   index?: number
   showIndex?: boolean
   openIcon?: string
   closeIcon?: string
-  iconVariant?: 'simple' | 'solid' | 'outline' | 'primary' | 'ghost'
-  activeIconVariant?: 'simple' | 'solid' | 'outline' | 'primary' | 'ghost'
-
-  // Classes
+  iconVariant?: IconVariant
+  activeIconVariant?: IconVariant
   triggerClass?: string
   contentClass?: string
   itemClass?: string
@@ -26,6 +25,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   variant: 'default',
+  size: 'md',
   attached: false,
   disabled: false,
   class: '',
@@ -41,100 +41,89 @@ const handleToggle = () => {
   emit('toggle', props.item.id)
 }
 
-// Styling based on variant
 const containerClass = computed(() => {
   const { variant, attached } = props
 
   if (attached) {
-    // ATTACHED MODE (List Group)
     const baseAttached = 'transition-all first:rounded-t-lg last:rounded-b-lg'
-    let borderClass = 'border-b last:border-0'
-
-    if (variant === 'default' || variant === 'outline') {
-      return `${baseAttached} ${borderClass}`
-    }
-    if (variant === 'solid') {
-      return `border-b last:border-0 bg-transparent`
-    }
-    if (variant === 'ghost') {
-      return 'bg-transparent border-b last:border-0'
-    }
+    const borderClass = 'border-b last:border-0'
     return `${baseAttached} ${borderClass}`
   }
 
-  // DETACHED MODE (Cards)
-  // 'solid': Container has border (outline) but no background
-  if (variant === 'solid') {
+  if (variant === 'solid')
     return 'mb-2 border rounded-lg overflow-hidden transition-all duration-200'
-  }
-
-  // 'outline': Item has border.
   if (variant === 'outline') return 'border mb-2 rounded-lg overflow-hidden'
-
-  // 'separated': distinct cards style
   if (variant === 'separated') return 'border mb-4 rounded-lg overflow-hidden'
-
   if (variant === 'ghost') return 'border-none bg-transparent mb-1 rounded-lg overflow-hidden'
 
-  // Default Detached (Underline style usually)
   return 'border-b'
 })
 
-// Specific Trigger Styling Logic
 const computedTriggerClass = computed(() => {
-  const { variant, attached, isOpen } = props
+  const { variant, size, isOpen } = props
   const base = props.triggerClass || ''
-  
-  // Transition base for smooth background swaps
   const transition = 'transition-all duration-200 ease-in-out'
-  const padding = 'px-4'
 
-  // --- SOLID VARIANT ---
+  const paddings: Record<AccordionSize, string> = {
+    sm: 'px-3.5 py-2.5 text-sm',
+    md: 'px-4 py-3 text-base',
+    lg: 'px-5 py-4 text-lg',
+  }
+
+  const padding = paddings[size]
+
   if (variant === 'solid') {
     return `${base} ${padding} bg-muted hover:bg-muted/80 ${transition}`
   }
 
-  // --- GHOST VARIANT ---
   if (variant === 'ghost') {
-    // Requirement: Feel solid when open. 
-    // We enforce padding to ensure the "solid" state looks like a block.
-    if (isOpen) {
-      return `${base} ${padding} bg-muted font-medium ${transition}`
-    }
+    if (isOpen) return `${base} ${padding} bg-muted font-medium ${transition}`
     return `${base} ${padding} hover:bg-muted/20 bg-transparent ${transition}`
   }
 
-  // --- OUTLINE / SEPARATED ---
   if (variant === 'outline' || variant === 'separated') {
-    // Requirement: Better UX handling.
-    // When open, add a border-b to separate header from content and subtle bg.
-    if (isOpen) {
-      return `${base} ${padding} bg-muted/5 border-b border-border ${transition}`
-    }
+    if (isOpen) return `${base} ${padding} bg-muted/5 border-b border-border ${transition}`
     return `${base} ${padding} hover:bg-muted/5 bg-transparent ${transition}`
   }
 
-  // --- DEFAULT (Detached) ---
-  if (!attached && variant === 'default') {
-    // Classic minimal style (no padding usually)
-    return `${base} px-0 hover:no-underline ${transition}`
+  if (!props.attached && variant === 'default') {
+    const defaultPaddings: Record<AccordionSize, string> = {
+      sm: 'py-2 text-base',
+      md: 'py-3 text-base',
+      lg: 'py-4 text-lg',
+    }
+    return `${base} ${defaultPaddings[size]} px-0 hover:no-underline ${transition}`
   }
 
-  // --- DEFAULT (Attached) ---
   return `${base} ${padding} hover:bg-muted/5 ${transition}`
 })
 
 const computedContentClass = computed(() => {
-  const { variant, attached } = props
+  const { variant, size, attached } = props
   const base = props.contentClass || ''
 
-  // Standardize padding for content to match triggers with padding
-  if (variant === 'solid' || variant === 'outline' || variant === 'separated' || variant === 'ghost' || attached) {
-    return `${base} px-4 pt-4`
+  const paddings: Record<AccordionSize, string> = {
+    sm: 'px-3.5 pb-3.5 pt-2.5 text-sm',
+    md: 'px-4 pb-4 pt-4 text-sm',
+    lg: 'px-5 pb-5 pt-5 text-base',
   }
 
-  // Default detached minimal
-  return `${base} px-0 pt-4`
+  if (
+    variant === 'solid' ||
+    variant === 'outline' ||
+    variant === 'separated' ||
+    variant === 'ghost' ||
+    attached
+  ) {
+    return `${base} ${paddings[size]}`
+  }
+
+  const defaultPaddings: Record<AccordionSize, string> = {
+    sm: 'pb-3.5 pt-2.5 text-sm',
+    md: 'pb-4 pt-4 text-sm',
+    lg: 'pb-5 pt-5 text-base',
+  }
+  return `${base} ${defaultPaddings[size]} px-0`
 })
 </script>
 
@@ -145,20 +134,21 @@ const computedContentClass = computed(() => {
       :item="item"
       :open="isOpen"
       :toggle="handleToggle"
-      :triggerClass="computedTriggerClass">
+      :trigger-class="computedTriggerClass">
       <AccordionTrigger
         :open="isOpen"
+        :size="size"
         :disabled="item.disabled || disabled"
         :icon="item.icon"
         :index="index"
-        :showIndex="showIndex"
+        :show-index="showIndex"
         :open-icon="openIcon"
         :close-icon="closeIcon"
         :icon-variant="iconVariant"
         :active-icon-variant="activeIconVariant"
         :class="computedTriggerClass"
         @click="handleToggle">
-        <span>
+        <span class="font-medium">
           {{ item.title }}
         </span>
 
