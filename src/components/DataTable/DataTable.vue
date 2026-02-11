@@ -270,7 +270,7 @@ const containerClass = computed(() => {
     'w-full flex flex-col',
     isRaised ? 'bg-background shadow-sm p-2 rounded-lg' : 'bg-background rounded',
     'overflow-hidden',
-    !isRaised && props.bordered ? 'border-b border-border/60' : '',
+    props.bordered ? 'border border-border/60' : '',
     props.class,
   ].join(' ')
 })
