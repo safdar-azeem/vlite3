@@ -315,7 +315,7 @@ const inputBaseClass = computed(() => {
           :disabled="disabled || loading || isProcessing" />
 
         <div
-          class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center gap-2">
+          class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center gap-2 bg-background">
           <Icon
             v-if="loading || isProcessing"
             icon="lucide:loader-2"
