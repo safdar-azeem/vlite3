@@ -6,6 +6,7 @@ import AccordionItem from './AccordionItem.vue'
 const props = withDefaults(defineProps<AccordionProps>(), {
   allowMultiple: false,
   variant: 'default',
+  size: 'md',
   attached: false,
   items: () => [],
   disabled: false,
@@ -58,9 +59,8 @@ const toggleItem = (id: string) => {
       internalValue.value = [...internalValue.value, id]
     }
   } else {
-    // Single mode
     if (isOpen) {
-      internalValue.value = [] // Toggle off if clicking same
+      internalValue.value = []
     } else {
       internalValue.value = [id]
     }
@@ -80,13 +80,7 @@ const rootClasses = computed(() => {
 
   if (props.attached) {
     classes.push('rounded-lg overflow-hidden')
-
-    // Add border to container if it's outline or default attached
-    if (props.variant === 'outline' || props.variant === 'default') {
-      classes.push('border')
-    }
-    // Solid attached usually keeps items contained
-    if (props.variant === 'solid') {
+    if (props.variant === 'outline' || props.variant === 'default' || props.variant === 'solid') {
       classes.push('border')
     }
   }
@@ -101,31 +95,27 @@ const rootClasses = computed(() => {
       <template v-for="(item, index) in items" :key="item.id">
         <AccordionItem
           :item="item"
-          :isOpen="internalValue.includes(item.id)"
+          :is-open="internalValue.includes(item.id)"
           :variant="variant"
+          :size="size"
           :attached="attached"
           :disabled="disabled"
           :index="index + 1"
-          :showIndex="showIndex"
-          :openIcon="openIcon"
-          :closeIcon="closeIcon"
-          :iconVariant="iconVariant"
-          :activeIconVariant="activeIconVariant"
-          :triggerClass="triggerClass"
-          :contentClass="contentClass"
-          :itemClass="itemClass"
+          :show-index="showIndex"
+          :open-icon="openIcon"
+          :close-icon="closeIcon"
+          :icon-variant="iconVariant"
+          :active-icon-variant="activeIconVariant"
+          :trigger-class="triggerClass"
+          :content-class="contentClass"
+          :item-class="itemClass"
           @toggle="toggleItem">
-          <template v-if="$slots.trigger" #trigger="{ item, open, toggle, triggerClass }">
-            <slot
-              name="trigger"
-              :item="item"
-              :open="open"
-              :toggle="toggle"
-              :triggerClass="triggerClass" />
+          <template v-if="$slots.trigger" #trigger="slotProps">
+            <slot name="trigger" v-bind="slotProps" />
           </template>
 
-          <template v-if="$slots.content" #content="{ item }">
-            <slot name="content" :close="toggleItem" :item="item" />
+          <template v-if="$slots.content" #content="slotProps">
+            <slot name="content" v-bind="slotProps" :close="toggleItem" />
           </template>
         </AccordionItem>
       </template>
