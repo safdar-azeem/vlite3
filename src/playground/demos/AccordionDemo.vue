@@ -64,15 +64,11 @@ const CustomBodyComponent = {
           class: 'p-4 bg-primary/5 rounded-md border border-primary/10',
         },
         [
-          h(
-            'div',
-            { class: 'font-bold text-primary mb-2' },
-            'Custom Body Component',
-          ),
+          h('div', { class: 'font-bold text-primary mb-2' }, 'Custom Body Component'),
           h(
             'p',
             { class: 'text-sm text-gray-600 mb-3' },
-            `This content is rendered dynamically. Item ID: ${props.item.id}`,
+            `This content is rendered dynamically. Item ID: ${props.item.id}`
           ),
           h(
             'button',
@@ -80,9 +76,9 @@ const CustomBodyComponent = {
               class: 'text-xs font-bold text-primary hover:underline cursor-pointer',
               onClick: props.close,
             },
-            'Close (via prop)',
+            'Close (via prop)'
           ),
-        ],
+        ]
       )
   },
 }
@@ -106,110 +102,74 @@ const bodyComponentItems = [
     <div class="space-y-2">
       <h2 class="text-3xl font-bold tracking-tight">Accordion</h2>
       <p class="text-gray-500 text-lg">
-        A vertically stacked set of interactive headings that each
-        reveal a section of content.
+        A vertically stacked set of interactive headings that each reveal a section of content.
       </p>
     </div>
 
     <section class="space-y-6">
-      <h3 class="text-xl font-semibold border-b pb-2">
-        Layouts & Variants
-      </h3>
+      <h3 class="text-xl font-semibold border-b pb-2">Layouts & Variants</h3>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
         <div class="space-y-3">
-          <h4
-            class="font-medium text-sm text-gray-500 uppercase tracking-wider">
+          <h4 class="font-medium text-sm text-gray-500 uppercase tracking-wider">
             Default (Detached)
           </h4>
           <Accordion :items="basicItems" />
         </div>
 
         <div class="space-y-3">
-          <h4
-            class="font-medium text-sm text-gray-500 uppercase tracking-wider">
-            Attached Group
-          </h4>
-          <Accordion
-            :items="basicItems"
-            attached />
+          <h4 class="font-medium text-sm text-gray-500 uppercase tracking-wider">Attached Group</h4>
+          <Accordion :items="basicItems" attached />
         </div>
 
         <div class="space-y-3">
-          <h4
-            class="font-medium text-sm text-gray-500 uppercase tracking-wider">
+          <h4 class="font-medium text-sm text-gray-500 uppercase tracking-wider">
             Solid Variant (Trigger Bg)
           </h4>
-          <Accordion
-            :items="basicItems"
-            variant="solid" />
+          <Accordion :items="basicItems" variant="solid" />
         </div>
 
         <div class="space-y-3">
-          <h4
-            class="font-medium text-sm text-gray-500 uppercase tracking-wider">
+          <h4 class="font-medium text-sm text-gray-500 uppercase tracking-wider">
             Outline (Attached)
           </h4>
-          <Accordion
-            :items="basicItems"
-            variant="outline"
-            attached />
+          <Accordion :items="basicItems" variant="outline" attached />
         </div>
 
         <div class="space-y-3">
-          <h4
-            class="font-medium text-sm text-gray-500 uppercase tracking-wider">
-            Separated
-          </h4>
-          <Accordion
-            :items="basicItems"
-            variant="separated" />
+          <h4 class="font-medium text-sm text-gray-500 uppercase tracking-wider">Separated</h4>
+          <Accordion :items="basicItems" variant="separated" />
         </div>
 
         <div class="space-y-3">
-          <h4
-            class="font-medium text-sm text-gray-500 uppercase tracking-wider">
+          <h4 class="font-medium text-sm text-gray-500 uppercase tracking-wider">
             Ghost (Minimal)
           </h4>
-          <Accordion
-            :items="basicItems"
-            variant="ghost" />
+          <Accordion :items="basicItems" variant="ghost" />
         </div>
       </div>
     </section>
 
     <section class="space-y-6">
-      <h3 class="text-xl font-semibold border-b pb-2">
-        New Features: Numbering & Icons
-      </h3>
+      <h3 class="text-xl font-semibold border-b pb-2">New Features: Numbering & Icons</h3>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
         <div class="space-y-3">
-          <h4
-            class="font-medium text-sm text-gray-500 uppercase tracking-wider">
+          <h4 class="font-medium text-sm text-gray-500 uppercase tracking-wider">
             With Numbering (show-index)
           </h4>
-          <Accordion
-            :items="basicItems"
-            variant="outline"
-            show-index
-            attached />
+          <Accordion :items="basicItems" variant="outline" show-index attached />
         </div>
 
         <div class="space-y-3">
-          <h4
-            class="font-medium text-sm text-gray-500 uppercase tracking-wider">
+          <h4 class="font-medium text-sm text-gray-500 uppercase tracking-wider">
             Icon Primary Variant
           </h4>
-          <Accordion
-            :items="basicItems"
-            variant="separated"
-            icon-variant="primary" />
+          <Accordion :items="basicItems" variant="separated" icon-variant="primary" />
         </div>
 
         <div class="space-y-3">
-          <h4
-            class="font-medium text-sm text-gray-500 uppercase tracking-wider">
+          <h4 class="font-medium text-sm text-gray-500 uppercase tracking-wider">
             Dynamic Icon (Solid -> Primary)
           </h4>
           <Accordion
@@ -222,22 +182,14 @@ const bodyComponentItems = [
         </div>
 
         <div class="space-y-3">
-          <h4
-            class="font-medium text-sm text-gray-500 uppercase tracking-wider">
-            Outline Icons
-          </h4>
-          <Accordion
-            :items="basicItems"
-            variant="ghost"
-            icon-variant="outline" />
+          <h4 class="font-medium text-sm text-gray-500 uppercase tracking-wider">Outline Icons</h4>
+          <Accordion :items="basicItems" variant="ghost" icon-variant="outline" />
         </div>
       </div>
     </section>
 
     <section class="space-y-6">
-      <h3 class="text-xl font-semibold border-b pb-2">
-        Interactive Playground
-      </h3>
+      <h3 class="text-xl font-semibold border-b pb-2">Interactive Playground</h3>
 
       <div class="p-6 border rounded-xl space-y-6 bg-gray-50/50">
         <div class="flex items-center gap-6">
@@ -247,9 +199,7 @@ const bodyComponentItems = [
           </div>
           <div class="text-sm text-gray-500">
             Model Value:
-            <span class="font-mono text-primary">{{
-              interactiveValue
-            }}</span>
+            <span class="font-mono text-primary">{{ interactiveValue }}</span>
           </div>
         </div>
 
@@ -265,12 +215,8 @@ const bodyComponentItems = [
     </section>
 
     <section class="space-y-6">
-      <h3 class="text-xl font-semibold border-b pb-2">
-        Advanced: Scoped Slots
-      </h3>
-      <p class="text-gray-500">
-        Fully customize the trigger or content using slots.
-      </p>
+      <h3 class="text-xl font-semibold border-b pb-2">Advanced: Scoped Slots</h3>
+      <p class="text-gray-500">Fully customize the trigger or content using slots.</p>
 
       <div class="max-w-2xl border rounded-lg p-4 bg-white">
         <Accordion
@@ -291,33 +237,23 @@ const bodyComponentItems = [
                 <span class="font-bold text-lg">IMG</span>
               </div>
               <div class="flex-1 text-left">
-                <h5 class="font-bold text-gray-900">
-                  Custom Trigger Layout
-                </h5>
-                <p class="text-xs text-gray-500">
-                  Click anywhere on this row
-                </p>
+                <h5 class="font-bold text-gray-900">Custom Trigger Layout</h5>
+                <p class="text-xs text-gray-500">Click anywhere on this row</p>
               </div>
               <div
                 class="px-3 py-1 rounded-full text-xs font-semibold transition-colors"
-                :class="
-                  open
-                    ? 'bg-success/10 text-success'
-                    : 'bg-gray-100 text-gray-600'
-                ">
+                :class="open ? 'bg-success/10 text-success' : 'bg-gray-100 text-gray-600'">
                 {{ open ? 'Active' : 'Inactive' }}
               </div>
             </div>
           </template>
 
           <template #content>
-            <div
-              class="p-6 bg-gray-50 rounded-b-lg border-t border-dashed">
+            <div class="p-6 bg-gray-50 rounded-b-lg border-t border-dashed">
               <div class="grid grid-cols-2 gap-4">
                 <div class="h-20 bg-white rounded border"></div>
                 <div class="h-20 bg-white rounded border"></div>
-                <div
-                  class="col-span-2 text-center text-sm text-gray-500 pt-2">
+                <div class="col-span-2 text-center text-sm text-gray-500 pt-2">
                   Custom Complex Content via Slot
                 </div>
               </div>
@@ -327,18 +263,35 @@ const bodyComponentItems = [
       </div>
     </section>
 
+    <section class="space-y-8">
+      <h3 class="text-xl font-semibold border-b pb-2">Size Variants</h3>
+
+      <div class="space-y-8 max-w-3xl">
+        <div class="space-y-3">
+          <h4 class="font-medium text-sm text-gray-500 uppercase">Small (size="sm")</h4>
+          <Accordion :items="basicItems" size="sm" variant="outline" attached />
+        </div>
+
+        <div class="space-y-3">
+          <h4 class="font-medium text-sm text-gray-500 uppercase">Medium (Default)</h4>
+          <Accordion :items="basicItems" size="md" variant="outline" attached />
+        </div>
+
+        <div class="space-y-3">
+          <h4 class="font-medium text-sm text-gray-500 uppercase">Large (size="lg")</h4>
+          <Accordion :items="basicItems" size="lg" variant="outline" attached />
+        </div>
+      </div>
+    </section>
+
     <section class="space-y-6">
-      <h3 class="text-xl font-semibold border-b pb-2">
-        Body Component prop
-      </h3>
+      <h3 class="text-xl font-semibold border-b pb-2">Body Component prop</h3>
       <p class="text-gray-500">
         Pass a component definition directly to the item object to render it in the body.
       </p>
 
       <div class="max-w-2xl">
-        <Accordion
-          :items="bodyComponentItems"
-          variant="outline" />
+        <Accordion :items="bodyComponentItems" variant="outline" />
       </div>
     </section>
   </div>
