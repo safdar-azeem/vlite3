@@ -320,7 +320,7 @@ onBeforeUnmount(() => {
               <template #trigger>
                 <div
                   data-dropdown-item
-                  class="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors justify-between w-full"
+                  class="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm font-medium outline-none transition-colors justify-between w-full"
                   :class="[
                     isKeyboardMode && focusedIndex === index
                       ? 'bg-accent text-accent-foreground'
@@ -332,7 +332,7 @@ onBeforeUnmount(() => {
                     <Icon
                       v-if="option.icon"
                       :icon="option.icon"
-                      class="h-4 w-4 shrink-0 opacity-70" />
+                      class="mr-2 h-4 w-4 shrink-0 mt-0.5" />
                     <span class="truncate">{{ option.label }}</span>
                   </div>
                   <Icon
