@@ -40,9 +40,16 @@ const lazyVal = ref('')
       <h3 class="text-lg font-semibold">States</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input label="Disabled" disabled placeholder="You cannot type here" />
-        <Input label="Readonly (simulate with disabled for now if native not supp)" disabled model-value="Read only value" />
+        <Input
+          label="Readonly (simulate with disabled for now if native not supp)"
+          disabled
+          model-value="Read only value" />
         <Input label="Error State" error="This field is required" placeholder="Invalid input" />
-        <Input label="Success/Valid (Custom Icon)" icon-right="lucide:check-circle" placeholder="Valid input" class="text-green-600" />
+        <Input
+          label="Success/Valid (Custom Icon)"
+          icon-right="lucide:check-circle"
+          placeholder="Valid input"
+          class="text-green-600" />
       </div>
     </section>
 
