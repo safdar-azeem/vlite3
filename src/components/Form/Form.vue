@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, inject } from 'vue'
 import type { IForm, IFormStep, IFormSubmitPayload } from './types'
 import type {
   InputVariant,
@@ -84,10 +84,16 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
-  (e: 'onSubmit', payload: IFormSubmitPayload): void
+  (e: 'onSubmit', payload: IFormSubmitPayload, close: () => void): void
   (e: 'onCancel'): void
   (e: 'onStepChange', step: number): void
 }>()
+
+// Inject modal context if available
+const modalContext = inject<{ close: () => void } | null>('modal-context', null)
+
+// Determine if Cancel button should be shown (Explicit prop OR inside modal)
+const shouldShowCancel = computed(() => props.showCancel || !!modalContext)
 
 // Determine form mode
 const isGroupedMode = computed(() => {
@@ -153,7 +159,7 @@ const {
   isUpdate: props.isUpdate,
   folderId: props.folderId,
   onSubmit: (payload) => {
-    emit('onSubmit', payload)
+    emit('onSubmit', payload, modalContext?.close)
   },
 })
 
@@ -248,12 +254,20 @@ const handleSubmit = async () => {
     return
   }
 
-  await formSubmit()
+  try {
+    await formSubmit()
+  } catch (error) {
+    // Error handling is done in useForm, we catch here to prevent modal closing
+  }
 }
 
 // Handle cancel
 const handleCancel = () => {
   emit('onCancel')
+  // If inside a modal, close it
+  if (modalContext) {
+    modalContext?.close?.()
+  }
 }
 </script>
 
@@ -356,7 +370,7 @@ const handleCancel = () => {
       v-if="footer"
       :class="['form-footer mt-6 flex items-center justify-end gap-3', footerClass]">
       <Button
-        v-if="showCancel"
+        v-if="shouldShowCancel"
         type="button"
         variant="outline"
         :text="cancelText"
