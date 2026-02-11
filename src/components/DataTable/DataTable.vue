@@ -34,7 +34,8 @@ const props = withDefaults(defineProps<DataTableProps>(), {
   keyField: '_id',
   loading: false,
   selectable: false,
-  emptyMessage: 'No data available',
+  emptyTitle: 'No data available',
+  emptyDescription: 'No results found. Try adjusting your filters or search terms.',
   emptyIcon: 'lucide:inbox',
   showPagination: true,
   itemsPerPage: 10,
@@ -425,11 +426,11 @@ onMounted(() => {
                     <Icon :icon="emptyIcon" class="h-6 w-6 text-muted-foreground/80" />
                   </div>
                   <h3 class="mt-1 text-base font-semibold text-foreground">
-                    {{ emptyMessage }}
+                    {{ emptyTitle }}
                   </h3>
                   <p class="text-sm max-w-sm mx-auto">
                     <slot name="empty-description">
-                      No results found. Try adjusting your filters or search terms.
+                      {{ emptyDescription }}
                     </slot>
                   </p>
                   <div class="mt-4" v-if="$slots['empty-action']">
