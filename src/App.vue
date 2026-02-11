@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import Playground from './playground/Playground.vue'
+// App.vue acts as the root layout shell
 </script>
 
 <template>
-	<Playground />
+  <router-view />
 </template>
