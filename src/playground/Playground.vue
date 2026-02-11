@@ -146,8 +146,9 @@ const menuItems: SidebarMenuItemSchema[] = [
               </p>
             </div>
             <div class="flex items-center gap-2">
-              <Button variant="outline" size="sm" icon="lucide:github">Docs</Button>
-              <!-- <Button variant="primary" size="sm" icon="lucide:download">Export</Button> -->
+              <a href="https://github.com/safdar-azeem/vlite3" target="_blank">
+                <Button variant="outline" size="sm" icon="lucide:github">Docs</Button>
+              </a>
             </div>
           </div>
 
