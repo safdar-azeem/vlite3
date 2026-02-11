@@ -86,10 +86,10 @@
 
 
   --shadow-sm: rgba(95, 97, 100, 0.07) 0px 15px 90px 0px, rgba(0, 0, 0, 0.02) 0.2px 0.2px 1px 0px;
-  --shadow-DEFAULT: rgba(55, 59, 74, 0.1) 0px 15px 50px 0px;
+  --shadow-DEFAULT: rgba(55, 59, 74, 0.074) 0px 10px 55px 3px;
   --shadow-md: var(--shadow-DEFAULT);
-  --shadow-lg: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-  --shadow-xl: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
+  --shadow-lg: rgba(100, 100, 111, 0.15) 0px 7px 40px -1px;
+  --shadow-xl: rgba(0, 0, 0, 0.2) 0px 15px 50px -12px;
 }
 
 .dark .modal-body,
