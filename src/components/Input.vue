@@ -70,7 +70,7 @@ const inputWrapperClass = computed(() => {
 const inputBaseClass = computed(() => {
   // Base styles - removed 'flex' as it's not valid on input
   const base =
-    'block w-full bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/50 disabled:cursor-not-allowed disabled:opacity-50 transition-all focus-visible:outline-none'
+    'block w-full bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/50 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none'
 
   // Variant styles
   const variantStyles: Record<InputVariant, string> = {
