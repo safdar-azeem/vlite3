@@ -45,6 +45,7 @@ const props = withDefaults(defineProps<DataTableProps>(), {
   bordered: true,
   compact: false,
   sortable: false,
+  variant: 'default',
 })
 
 const emit = defineEmits<{
@@ -263,10 +264,12 @@ const emitChange = () => {
 }
 
 const containerClass = computed(() => {
+  const isRaised = props.variant === 'raised'
   return [
-    'w-full bg-background rounded  flex flex-col',
+    'w-full flex flex-col',
+    isRaised ? 'bg-background shadow-sm p-2 rounded-lg' : 'bg-background rounded',
     'overflow-hidden',
-    props.bordered ? 'border-b border-border/60' : '',
+    !isRaised && props.bordered ? 'border-b border-border/60' : '',
     props.class,
   ].join(' ')
 })
@@ -322,7 +325,13 @@ onMounted(() => {
     <div :class="containerClass">
       <div class="overflow-x-auto w-full">
         <table :class="tableClass" class="">
-          <thead class="[&_tr]:border-b [&_tr]:border-border/70! bg-muted">
+          <thead
+            :class="[
+              '[&_tr]:border-b [&_tr]:border-border/70! bg-muted',
+              variant === 'raised'
+                ? '[&_th:first-child]:rounded-tl-lg [&_th:last-child]:rounded-tr-lg'
+                : '',
+            ]">
             <tr class="hover:bg-transparent">
               <th
                 v-if="selectable"
@@ -460,10 +469,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-table {
-  /* table-layout: fixed; - Removed to fix responsiveness */
-}
-
 table th:first-child,
 table td:first-child {
   width: 48px !important;
