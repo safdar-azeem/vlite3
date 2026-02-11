@@ -349,7 +349,7 @@ const inputBaseClass = computed(() => {
             disabled || loading || isProcessing ? 'opacity-50 cursor-not-allowed' : '',
           ]"
           @click="triggerInput">
-          <div class="p-3 bg-muted rounded-full text-muted-foreground">
+          <div class="p-3 bg-muted-light rounded-full text-muted-foreground">
             <Icon
               v-if="loading || isProcessing"
               icon="lucide:loader-2"
@@ -368,7 +368,7 @@ const inputBaseClass = computed(() => {
           </div>
         </div>
 
-        <div v-else class="space-y-3">
+        <div v-else class="space-y-2">
           <div
             v-for="(file, index) in displayFiles"
             :key="index"
@@ -376,7 +376,7 @@ const inputBaseClass = computed(() => {
             :class="[!multiSelect && !disabled ? 'cursor-pointer hover:border-primary/50' : '']"
             @click="!multiSelect && !disabled ? triggerInput() : null">
             <div class="shrink-0 mr-3">
-              <div class="p-2 bg-primary/10 rounded text-primary">
+              <div class="p-2 bg-primary-light rounded text-primary">
                 <Icon icon="lucide:file-text" class="w-5 h-5" />
               </div>
             </div>
