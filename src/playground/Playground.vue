@@ -133,7 +133,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       -->
 
       <div class="flex-1 overflow-y-auto">
-        <div class="max-w-5xl mx-auto px-6 py-10 md:py-12">
+        <div class="max-w-6xl mx-auto px-6 py-10 md:py-12">
           <!-- Header -->
           <div
             class="mb-10 pb-6 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
