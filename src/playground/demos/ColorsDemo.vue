@@ -204,6 +204,8 @@ const grayShades = [
   'bg-black',
 ]
 
+const shadows = ['shadow-sm', 'shadow', 'shadow-lg', 'shadow-xl']
+
 const borderColors = [
   { name: 'border', var: '--border' },
   { name: 'input', var: '--input' },
@@ -266,6 +268,16 @@ const borderColors = [
           class="rounded-lg p-4 bg-card border border-border space-y-2">
           <div :class="`border-4 border-${b.name}`" class="h-10 rounded-md bg-background"></div>
           <code class="text-[10px] font-mono text-muted-foreground">{{ b.var }}</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shadows -->
+    <div class="space-y-4">
+      <h2 class="text-lg font-semibold text-foreground">Shadows</h2>
+      <div class="grid grid-cols-4 gap-20">
+        <div v-for="s in shadows" :key="s" class="rounded-lg p-4 aspect-square bg-body" :class="s">
+          <code class="text-[10px] font-mono text-muted-foreground">{{ s }}</code>
         </div>
       </div>
     </div>
