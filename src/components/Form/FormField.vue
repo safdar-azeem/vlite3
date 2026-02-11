@@ -13,392 +13,380 @@ import FilePicker from '@/components/FilePicker/FilePicker.vue'
 import AvatarUploader from '@/components/AvatarUploader/AvatarUploader.vue'
 
 // Async imports for complex or heavy components
-const Dropdown = defineAsyncComponent(
-	() => import('@/components/Dropdown/Dropdown.vue'),
-)
-const MultiSelect = defineAsyncComponent(
-	() => import('@/components/MultiSelect/MultiSelect.vue'),
-)
-const DatePicker = defineAsyncComponent(
-	() => import('@/components/DatePicker.vue'),
-)
-const ColorPicker = defineAsyncComponent(
-	() => import('@/components/ColorPicker/ColorPicker.vue'),
-)
-const IconPicker = defineAsyncComponent(
-	() => import('@/components/IconPicker.vue'),
-)
-const CustomFieldsComponent = defineAsyncComponent(
-	() => import('./CustomFields.vue'),
-)
+const Dropdown = defineAsyncComponent(() => import('@/components/Dropdown/Dropdown.vue'))
+const MultiSelect = defineAsyncComponent(() => import('@/components/MultiSelect/MultiSelect.vue'))
+const DatePicker = defineAsyncComponent(() => import('@/components/DatePicker.vue'))
+const ColorPicker = defineAsyncComponent(() => import('@/components/ColorPicker/ColorPicker.vue'))
+const IconPicker = defineAsyncComponent(() => import('@/components/IconPicker.vue'))
+const CustomFieldsComponent = defineAsyncComponent(() => import('./CustomFields.vue'))
 
 interface Props {
-	field: IForm
-	value: any
-	values: Record<string, any>
-	variant?: InputVariant
-	size?: InputSize
-	rounded?: InputRounded
-	disabled?: boolean
-	readonly?: boolean
-	error?: string
-	isUpdate?: boolean
+  field: IForm
+  value: any
+  values: Record<string, any>
+  variant?: InputVariant
+  size?: InputSize
+  rounded?: InputRounded
+  disabled?: boolean
+  readonly?: boolean
+  error?: string
+  isUpdate?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	variant: 'outline',
-	size: 'md',
-	rounded: 'md',
-	disabled: false,
-	readonly: false,
-	error: '',
-	isUpdate: false,
+  variant: 'outline',
+  size: 'md',
+  rounded: 'md',
+  disabled: false,
+  readonly: false,
+  error: '',
+  isUpdate: false,
 })
 
 const emit = defineEmits<{
-	(e: 'change', payload: IFormFieldChangePayload): void
+  (e: 'change', payload: IFormFieldChangePayload): void
 }>()
 
 // Handle value change
 const handleChange = (value: any, data?: any) => {
-	emit('change', { value, data })
+  emit('change', { value, data })
 }
 
 // Handle input events (for v-model style components)
 const handleInput = (value: any) => {
-	emit('change', { value })
+  emit('change', { value })
 }
 
 // Get the component to render based on field type
 const fieldComponent = computed(() => {
-	const type = props.field.type
+  const type = props.field.type
 
-	// Custom component passed directly
-	if (isComponent(type)) {
-		return markRaw(type as Component)
-	}
+  // Custom component passed directly
+  if (isComponent(type)) {
+    return markRaw(type as Component)
+  }
 
-	// Map type to component
-	switch (type) {
-		case 'text':
-		case 'email':
-		case 'password':
-		case 'number':
-		case 'tel':
-		case 'url':
-		case 'search':
-			return Input
+  // Map type to component
+  switch (type) {
+    case 'text':
+    case 'email':
+    case 'password':
+    case 'number':
+    case 'tel':
+    case 'url':
+    case 'search':
+      return Input
 
-		case 'textarea':
-			return Textarea
+    case 'textarea':
+      return Textarea
 
-		case 'switch':
-			return Switch
+    case 'switch':
+      return Switch
 
-		case 'check':
-			return CheckBox
+    case 'check':
+      return CheckBox
 
-		case 'select':
-			return Dropdown
+    case 'select':
+      return Dropdown
 
-		case 'multiSelect':
-			return MultiSelect
+    case 'multiSelect':
+      return MultiSelect
 
-		case 'date':
-		case 'time':
-			return DatePicker
+    case 'date':
+    case 'time':
+      return DatePicker
 
-		case 'file':
-		case 'fileUploader':
-			return FilePicker
+    case 'file':
+    case 'fileUploader':
+      return FilePicker
 
-		case 'avatarUpload':
-			return AvatarUploader
+    case 'avatarUpload':
+      return AvatarUploader
 
-		case 'color':
-			return ColorPicker
+    case 'color':
+      return ColorPicker
 
-		case 'iconPicker':
-			return IconPicker
+    case 'iconPicker':
+      return IconPicker
 
-		case 'customFields':
-			return CustomFieldsComponent
+    case 'customFields':
+      return CustomFieldsComponent
 
-		default:
-			return Input
-	}
+    default:
+      return Input
+  }
 })
 
 // Build props for the component
 const fieldProps = computed(() => {
-	const type = props.field.type
-	const baseProps: Record<string, any> = {
-		disabled: props.disabled || props.field.disabled === true,
-		...(props.field.props || {}),
-	}
+  const type = props.field.type
+  const baseProps: Record<string, any> = {
+    disabled: props.disabled || props.field.disabled === true,
+    ...(props.field.props || {}),
+  }
 
-	// Input-based components
-	if (
-		type === 'text' ||
-		type === 'email' ||
-		type === 'password' ||
-		type === 'number' ||
-		type === 'tel' ||
-		type === 'url' ||
-		type === 'search' ||
-		!type
-	) {
-		return {
-			...baseProps,
-			modelValue: props.value ?? '',
-			type: type || 'text',
-			placeholder: props.field.placeholder,
-			icon: props.field.icon,
-			iconRight: props.field.iconRight,
-			addonLeft: props.field.addonLeft,
-			addonRight: props.field.addonRight,
-			variant: props.variant,
-			size: props.size,
-			rounded: props.rounded,
-			error: props.error,
-			min: props.field.min,
-			max: props.field.max,
-			class: props.field.className,
-		}
-	}
+  // Input-based components
+  if (
+    type === 'text' ||
+    type === 'email' ||
+    type === 'password' ||
+    type === 'number' ||
+    type === 'tel' ||
+    type === 'url' ||
+    type === 'search' ||
+    !type
+  ) {
+    return {
+      ...baseProps,
+      modelValue: props.value ?? '',
+      type: type || 'text',
+      placeholder: props.field.placeholder,
+      icon: props.field.icon,
+      iconRight: props.field.iconRight,
+      addonLeft: props.field.addonLeft,
+      addonRight: props.field.addonRight,
+      variant: props.variant,
+      size: props.size,
+      rounded: props.rounded,
+      error: props.error,
+      min: props.field.min,
+      max: props.field.max,
+      class: props.field.className,
+    }
+  }
 
-	// Textarea
-	if (type === 'textarea') {
-		return {
-			...baseProps,
-			modelValue: props.value ?? '',
-			placeholder: props.field.placeholder,
-			rows: props.field.props?.rows || 3,
-			class: props.field.className,
-		}
-	}
+  // Textarea
+  if (type === 'textarea') {
+    return {
+      ...baseProps,
+      modelValue: props.value ?? '',
+      placeholder: props.field.placeholder,
+      rows: props.field.props?.rows || 3,
+      class: props.field.className,
+    }
+  }
 
-	// Switch
-	if (type === 'switch') {
-		return {
-			...baseProps,
-			modelValue: !!props.value,
-			label: '', // Label handled externally
-		}
-	}
+  // Switch
+  if (type === 'switch') {
+    return {
+      ...baseProps,
+      modelValue: !!props.value,
+      label: '', // Label handled externally
+    }
+  }
 
-	// Checkbox
-	if (type === 'check') {
-		return {
-			...baseProps,
-			modelValue: !!props.value,
-			label: '', // Label handled externally
-		}
-	}
+  // Checkbox
+  if (type === 'check') {
+    return {
+      ...baseProps,
+      modelValue: !!props.value,
+      label: '', // Label handled externally
+    }
+  }
 
-	// Dropdown (Select)
-	if (type === 'select') {
-		return {
-			...baseProps,
-			modelValue: props.value,
-			options: props.field.options || [],
-			placeholder: props.field.placeholder,
-			selectable: true,
-			closeOnSelect: true,
-		}
-	}
+  // Dropdown (Select)
+  if (type === 'select') {
+    return {
+      ...baseProps,
+      modelValue: props.value,
+      options: props.field.options || [],
+      placeholder: props.field.placeholder,
+      selectable: true,
+      closeOnSelect: true,
+    }
+  }
 
-	// MultiSelect
-	if (type === 'multiSelect') {
-		return {
-			...baseProps,
-			modelValue: Array.isArray(props.value) ? props.value : [],
-			options: props.field.options || [],
-			placeholder: props.field.placeholder,
-		}
-	}
+  // MultiSelect
+  if (type === 'multiSelect') {
+    return {
+      ...baseProps,
+      modelValue: Array.isArray(props.value) ? props.value : [],
+      options: props.field.options || [],
+      placeholder: props.field.placeholder,
+    }
+  }
 
-	// DatePicker / TimePicker
-	if (type === 'date' || type === 'time') {
-		return {
-			...baseProps,
-			modelValue: props.value,
-			mode: type === 'time' ? 'time' : 'date',
-			placeholder: props.field.placeholder,
-		}
-	}
+  // DatePicker / TimePicker
+  if (type === 'date' || type === 'time') {
+    return {
+      ...baseProps,
+      modelValue: props.value,
+      mode: type === 'time' ? 'time' : 'date',
+      placeholder: props.field.placeholder,
+    }
+  }
 
-	// FilePicker
-	if (type === 'fileUploader' || type === 'file') {
-		return {
-			...baseProps,
-			modelValue: props.value,
-			multiSelect: props.field.props?.multiple || false,
-			fileTypes: props.field.props?.accept
-				? props.field.props.accept.split(',')
-				: [],
-			returnFormat: 'base64',
-			variant: type === 'file' ? 'input' : 'dropzone',
-			placeholder: props.field.placeholder,
-			size: props.size,
-			rounded: props.rounded,
-		}
-	}
+  // FilePicker
+  if (type === 'fileUploader' || type === 'file') {
+    return {
+      ...baseProps,
+      modelValue: props.value,
+      multiSelect: props.field.props?.multiple || false,
+      fileTypes: props.field.props?.accept ? props.field.props.accept.split(',') : [],
+      returnFormat: 'base64',
+      variant: type === 'file' ? 'input' : 'dropzone',
+      placeholder: props.field.placeholder,
+      size: props.size,
+      rounded: props.rounded,
+    }
+  }
 
-	// AvatarUploader
-	if (type === 'avatarUpload') {
-		return {
-			...baseProps,
-			modelValue: props.value,
-			editable: !props.readonly,
-		}
-	}
+  // AvatarUploader
+  if (type === 'avatarUpload') {
+    return {
+      ...baseProps,
+      modelValue: props.value,
+      editable: !props.readonly,
+    }
+  }
 
-	// ColorPicker
-	if (type === 'color') {
-		return {
-			...baseProps,
-			modelValue: props.value || '#000000',
-		}
-	}
+  // ColorPicker
+  if (type === 'color') {
+    return {
+      ...baseProps,
+      modelValue: props.value || '#000000',
+    }
+  }
 
-	// IconPicker
-	if (type === 'iconPicker') {
-		return {
-			...baseProps,
-			value: props.value || 'lucide:smile',
-		}
-	}
+  // IconPicker
+  if (type === 'iconPicker') {
+    return {
+      ...baseProps,
+      value: props.value || 'lucide:smile',
+    }
+  }
 
-	// CustomFields
-	if (type === 'customFields') {
-		return {
-			...baseProps,
-			modelValue: Array.isArray(props.value) ? props.value : [],
-			schema: props.field.props?.schema || [],
-			headers: props.field.props?.headers || [],
-			values: props.values,
-			variant: props.variant,
-			size: props.size,
-			rounded: props.rounded,
-			isUpdate: props.isUpdate,
-		}
-	}
+  // CustomFields
+  if (type === 'customFields') {
+    return {
+      ...baseProps,
+      modelValue: Array.isArray(props.value) ? props.value : [],
+      schema: props.field.props?.schema || [],
+      headers: props.field.props?.headers || [],
+      values: props.values,
+      variant: props.variant,
+      size: props.size,
+      rounded: props.rounded,
+      isUpdate: props.isUpdate,
+    }
+  }
 
-	// Custom component
-	if (isComponent(type)) {
-		return {
-			...baseProps,
-			value: props.value,
-			values: props.values,
-		}
-	}
+  // Custom component
+  if (isComponent(type)) {
+    return {
+      ...baseProps,
+      value: props.value,
+      values: props.values,
+    }
+  }
 
-	return baseProps
+  return baseProps
 })
 
 // Build event handlers
 const fieldEvents = computed(() => {
-	const type = props.field.type
+  const type = props.field.type
 
-	// v-model components (emit 'update:modelValue')
-	if (
-		type === 'text' ||
-		type === 'email' ||
-		type === 'password' ||
-		type === 'number' ||
-		type === 'tel' ||
-		type === 'url' ||
-		type === 'search' ||
-		type === 'textarea' ||
-		type === 'switch' ||
-		type === 'check' ||
-		!type
-	) {
-		return {
-			'update:modelValue': handleInput,
-		}
-	}
+  // v-model components (emit 'update:modelValue')
+  if (
+    type === 'text' ||
+    type === 'email' ||
+    type === 'password' ||
+    type === 'number' ||
+    type === 'tel' ||
+    type === 'url' ||
+    type === 'search' ||
+    type === 'textarea' ||
+    type === 'switch' ||
+    type === 'check' ||
+    !type
+  ) {
+    return {
+      'update:modelValue': handleInput,
+    }
+  }
 
-	// Dropdown emits onSelect
-	if (type === 'select') {
-		return {
-			onSelect: (payload: { value: any; data?: any }) => {
-				handleChange(payload.value, payload.data)
-			},
-		}
-	}
+  // Dropdown emits onSelect
+  if (type === 'select') {
+    return {
+      onSelect: (payload: { value: any; data?: any }) => {
+        handleChange(payload.value, payload.data)
+      },
+    }
+  }
 
-	// MultiSelect emits change
-	if (type === 'multiSelect') {
-		return {
-			change: (value: any) => handleChange(value),
-		}
-	}
+  // MultiSelect emits change
+  if (type === 'multiSelect') {
+    return {
+      change: (value: any) => handleChange(value),
+    }
+  }
 
-	// DatePicker emits onChange
-	if (type === 'date' || type === 'time') {
-		return {
-			change: (value: any) => handleChange(value),
-		}
-	}
+  // DatePicker emits onChange
+  if (type === 'date' || type === 'time') {
+    return {
+      change: (value: any) => handleChange(value),
+    }
+  }
 
-	// FilePicker emits change
-	if (type === 'fileUploader' || type === 'file') {
-		return {
-			change: (value: any) => {
-				handleChange(value)
-			},
-		}
-	}
+  // FilePicker emits change
+  if (type === 'fileUploader' || type === 'file') {
+    return {
+      change: (value: any) => {
+        handleChange(value)
+      },
+    }
+  }
 
-	// AvatarUploader emits change
-	if (type === 'avatarUpload') {
-		return {
-			change: (value: any) => {
-				handleChange(value)
-			},
-		}
-	}
+  // AvatarUploader emits change
+  if (type === 'avatarUpload') {
+    return {
+      change: (value: any) => {
+        handleChange(value)
+      },
+    }
+  }
 
-	// ColorPicker emits change
-	if (type === 'color') {
-		return {
-			change: (value: string) => handleChange(value),
-		}
-	}
+  // ColorPicker emits change
+  if (type === 'color') {
+    return {
+      change: (value: string) => handleChange(value),
+    }
+  }
 
-	// IconPicker emits onSelect
-	if (type === 'iconPicker') {
-		return {
-			onSelect: (value: string) => handleChange(value),
-		}
-	}
+  // IconPicker emits onSelect
+  if (type === 'iconPicker') {
+    return {
+      onSelect: (value: string) => handleChange(value),
+    }
+  }
 
-	// CustomFields emits change
-	if (type === 'customFields') {
-		return {
-			change: (value: any) => handleChange(value),
-		}
-	}
+  // CustomFields emits change
+  if (type === 'customFields') {
+    return {
+      change: (value: any) => handleChange(value),
+    }
+  }
 
-	// Custom component emits onChange
-	if (isComponent(type)) {
-		return {
-			onChange: (payload: { value: any; data?: any }) => {
-				handleChange(payload.value, payload.data)
-			},
-		}
-	}
+  // Custom component emits onChange
+  if (isComponent(type)) {
+    return {
+      onChange: (payload: { value: any; data?: any }) => {
+        handleChange(payload.value, payload.data)
+      },
+    }
+  }
 
-	return {}
+  return {}
 })
 </script>
 
 <template>
-	<component
-		:is="fieldComponent"
-		v-bind="fieldProps"
-		v-on="fieldEvents" />
+  <component
+    :is="fieldComponent"
+    v-bind="{
+      ...fieldProps,
+      ...(field?.props || {}),
+    }"
+    v-on="fieldEvents" />
 </template>
-
