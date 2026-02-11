@@ -451,7 +451,7 @@ onMounted(() => {
     <ConfirmationModal
       v-model:show="showDeleteConfirmation"
       title="Confirm Deletion"
-      description="Are you sure you want to delete the selected items? This action cannot be undone."
+      description="Are you sure you want to delete the selected items?"
       confirm-text="Delete"
       cancel-text="Cancel"
       variant="danger"
