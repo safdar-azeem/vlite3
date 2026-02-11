@@ -4,6 +4,10 @@ import Button from './Button.vue'
 import { useKeyStroke } from '../composables/useKeyStroke'
 import type { SidePanelPosition, SidePanelSize } from '@/types'
 
+defineOptions({
+  inheritAttrs: false,
+})
+
 interface Props {
   show?: boolean
   title?: string
@@ -102,7 +106,7 @@ const transitionName = computed(() => {
 </script>
 
 <template>
-  <span @click.stop="handleOpen" :class="`${triggerClass}`">
+  <span @click.stop="handleOpen" :class="`${triggerClass}`" v-bind="$attrs">
     <slot name="trigger">
       <template v-if="body">
         <slot />
@@ -132,7 +136,6 @@ const transitionName = computed(() => {
         v-if="visible"
         class="sidepanel-body fixed inset-y-0 z-50 flex flex-col bg-body shadow-sm border transition-transform duration-300 ease-in-out w-full"
         :class="[sizeClasses[size], positionClasses, props.class]">
-        <!-- Header -->
         <div
           v-if="title || $slots.header"
           class="flex-none flex items-center justify-between px-6 py-2 border-b border-border">
@@ -156,17 +159,15 @@ const transitionName = computed(() => {
             class="-mr-2" />
         </div>
 
-        <!-- Body -->
         <div class="flex-1 overflow-y-auto px-6 py-4">
           <template v-if="body">
-            <component :is="body" v-bind="bodyProps" :close="close" />
+            <component :is="body" v-bind="{ ...bodyProps, ...$attrs }" :close="close" />
           </template>
           <template v-else>
             <slot :close="close" />
           </template>
         </div>
 
-        <!-- Footer -->
         <div v-if="$slots.footer" class="flex-none px-6 py-4 border-t border-border bg-muted-light">
           <slot name="footer" :close="close" />
         </div>
