@@ -92,10 +92,12 @@ const itemStyle = computed(() => {
 
 const itemClass = computed(() => {
   const base =
-    'group flex items-center justify-between py-1.5 px-2 text-sm font-medium rounded-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 relative border border-transparent select-none cursor-pointer'
+    'group flex items-center justify-between text-sm font-medium rounded-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 relative border border-transparent select-none cursor-pointer'
 
   // Center content if compact and on desktop
-  const layout = context.compact ? 'justify-center md:justify-center' : 'justify-between'
+  const layout = context.compact
+    ? 'justify-center md:justify-center py-2 px-2.5'
+    : 'justify-between py-2 px-2'
 
   let variantClass = ''
   if (isActive.value) {
@@ -225,8 +227,11 @@ const componentProps = computed(() => {
                 <Icon
                   v-if="item.icon"
                   :icon="item.icon"
-                  class="h-4 w-4 shrink-0 transition-colors opacity-70 group-hover:opacity-100"
-                  :class="isActive || isOpen ? 'opacity-100' : ''" />
+                  class="shrink-0 transition-colors opacity-70 group-hover:opacity-100"
+                  :class="[
+                    isActive || isOpen ? 'opacity-100' : '',
+                    context.compact ? 'h-4.5 w-4.5' : 'h-4 w-4',
+                  ]" />
                 <span
                   class="truncate leading-none pt-0.5"
                   :class="{ 'md:hidden': context.compact }">
@@ -294,8 +299,11 @@ const componentProps = computed(() => {
             <Icon
               v-if="item.icon"
               :icon="item.icon"
-              class="h-4 w-4 shrink-0 transition-colors opacity-70 group-hover:opacity-100"
-              :class="isActive ? 'opacity-100' : ''" />
+              class="shrink-0 transition-colors opacity-70 group-hover:opacity-100"
+              :class="[
+                isActive ? 'opacity-100' : '',
+                context.compact ? 'h-4.5 w-4.5' : 'h-4 w-4',
+              ]" />
             <span class="truncate leading-none pt-0.5" :class="{ 'md:hidden': context.compact }">
               {{ item.label }}
             </span>
