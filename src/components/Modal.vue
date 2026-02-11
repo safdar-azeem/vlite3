@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted, type Component } from 'vue'
+import { ref, watch, onMounted, onUnmounted, provide, type Component } from 'vue'
 import Button from './Button.vue'
 import { useKeyStroke } from '../composables/useKeyStroke'
 
@@ -54,6 +54,9 @@ const close = () => {
   emit('update:show', false)
   emit('close')
 }
+
+// Provide the close method to descendants (e.g., Form.vue)
+provide('modal-context', { close })
 
 const handleBackdropClick = () => {
   if (props.closeOutside) {
