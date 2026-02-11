@@ -174,6 +174,8 @@ export interface IFormProps {
   showCancel?: boolean
   /** Whether this is an update operation */
   isUpdate?: boolean
+  /** Folder ID for file uploads */
+  folderId?: string
   /** Custom class for form element */
   class?: string
   /** Custom class for the grid layout (overrides columns) */
