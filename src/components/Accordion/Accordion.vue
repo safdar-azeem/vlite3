@@ -11,6 +11,7 @@ const props = withDefaults(defineProps<AccordionProps>(), {
   disabled: false,
   showIndex: false,
   iconVariant: 'simple',
+  class: '',
 })
 
 const emit = defineEmits<{
@@ -78,19 +79,14 @@ const rootClasses = computed(() => {
   const classes = ['w-full', props.class]
 
   if (props.attached) {
-    // classes.push('rounded-lg overflow-hidden') -> Managed by Items for cleaner edges if separated logic used
-    // But for attached, usually the container clips.
     classes.push('rounded-lg overflow-hidden')
 
     // Add border to container if it's outline or default attached
-    // Solid usually doesn't have a container border if items are solid blocks?
-    // But if attached list, yes.
     if (props.variant === 'outline' || props.variant === 'default') {
       classes.push('border')
     }
+    // Solid attached usually keeps items contained
     if (props.variant === 'solid') {
-      // If solid attached, usually no border or just internal dividers?
-      // Let's add border to keep it contained.
       classes.push('border')
     }
   }
@@ -119,7 +115,6 @@ const rootClasses = computed(() => {
           :contentClass="contentClass"
           :itemClass="itemClass"
           @toggle="toggleItem">
-          <!-- Pass Slots Down -->
           <template v-if="$slots.trigger" #trigger="{ item, open, toggle, triggerClass }">
             <slot
               name="trigger"
