@@ -72,7 +72,7 @@
     --shadow-DEFAULT: 0px 4px 16px -4px rgba(97, 101, 107, 0.15);
     --shadow-md: 0px 4px 16px -4px rgba(97, 101, 107, 0.15);
     --shadow-lg: 0px 10px 36px -8px rgba(97, 101, 107, 0.18);
-    --shadow-xl: 0px 16px 48px -10px rgba(97, 101, 107, 0.2);
+    --shadow-xl: box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     --shadow-dropdown: 0px 6px 24px -6px rgba(97, 101, 107, 0.16);
     --shadow-offcanvas: 0px 16px 48px -10px rgba(97, 101, 107, 0.2);
     --shadow-card: 0px 4px 16px -4px rgba(97, 101, 107, 0.15);
@@ -101,6 +101,7 @@
 .dark .sidepanel-body,
 .dark .tooltip-container,
 .bg-card,
+.theme-section,
 :root {
 
   --color-white: color-mix(in oklab,
