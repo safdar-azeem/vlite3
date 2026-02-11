@@ -41,6 +41,8 @@ export interface SidebarMenuProps {
   variant?: 'default' | 'ghost'
   /** Default rendering mode for groups */
   renderMode?: 'tree' | 'popover'
+  /** Compact mode: Icons only on desktop */
+  compact?: boolean
 }
 
 export interface SidebarMenuContext {
@@ -51,4 +53,5 @@ export interface SidebarMenuContext {
   indentSize: number
   variant: 'default' | 'ghost'
   renderMode: 'tree' | 'popover'
+  compact: boolean
 }
