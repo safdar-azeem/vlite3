@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, inject } from 'vue'
 import Icon from '../Icon.vue'
+import Tooltip from '@/components/Tooltip.vue'
 import type { SidebarMenuItemSchema, SidebarMenuContext } from './types'
 import { Dropdown } from '@/components/Dropdown'
 import type { IDropdownOptions, IDropdownOption } from '@/types/styles'
@@ -22,6 +23,7 @@ if (!context) {
 
 // Render Mode Logic
 const computedRenderMode = computed(() => {
+  if (context.compact && hasChildren.value) return 'popover'
   return props.item.renderMode || context.renderMode || 'tree'
 })
 
@@ -92,6 +94,9 @@ const itemClass = computed(() => {
   const base =
     'group flex items-center justify-between py-1.5 px-2 text-sm font-medium rounded-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 relative border border-transparent select-none cursor-pointer'
 
+  // Center content if compact and on desktop
+  const layout = context.compact ? 'justify-center md:justify-center' : 'justify-between'
+
   let variantClass = ''
   if (isActive.value) {
     variantClass = 'bg-primary/5 text-primary'
@@ -103,7 +108,7 @@ const itemClass = computed(() => {
     variantClass = 'opacity-50 cursor-not-allowed pointer-events-none'
   }
 
-  return `${base} ${variantClass} ${props.item.class || ''}`
+  return `${base} ${layout} ${variantClass} ${props.item.class || ''}`
 })
 
 // Mappers for Dropdown
@@ -200,36 +205,52 @@ const componentProps = computed(() => {
       @onSelect="handleDropdownSelect">
       <template #trigger="{ isOpen }">
         <!-- Helper Trigger Div to handle layout -->
-        <div class="w-full">
-          <component
-            :is="componentIs"
-            v-bind="componentProps"
-            :class="[itemClass, isOpen ? 'bg-muted text-foreground' : '']"
-            :style="itemStyle"
-            :aria-haspopup="true"
-            :aria-expanded="isOpen"
-            @click="handleClick">
-            <div class="flex items-center gap-2.5 min-w-0 flex-1">
-              <Icon
-                v-if="item.icon"
-                :icon="item.icon"
-                class="h-4 w-4 shrink-0 transition-colors opacity-70 group-hover:opacity-100"
-                :class="isActive || isOpen ? 'opacity-100' : ''" />
-              <span class="truncate leading-none pt-0.5">{{ item.label }}</span>
-              <span
-                v-if="item.badge"
-                class="ml-auto inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium"
-                :class="item.badgeClass || 'bg-muted text-muted-foreground'">
-                {{ item.badge }}
-              </span>
-            </div>
-            <!-- Chevron Right for Popover -->
-            <div
-              class="ml-1.5 flex h-4 w-4 shrink-0 items-center justify-center text-muted-foreground">
-              <Icon icon="lucide:chevron-right" class="h-3 w-3" />
-            </div>
-          </component>
-        </div>
+        <Tooltip
+          :content="item.label"
+          placement="right"
+          :disabled="!context.compact"
+          class="w-full">
+          <div class="w-full">
+            <component
+              :is="componentIs"
+              v-bind="componentProps"
+              :class="[itemClass, isOpen ? 'bg-muted text-foreground' : '']"
+              :style="itemStyle"
+              :aria-haspopup="true"
+              :aria-expanded="isOpen"
+              @click="handleClick">
+              <div
+                class="flex items-center gap-2.5 min-w-0 flex-1"
+                :class="{ 'justify-center': context.compact }">
+                <Icon
+                  v-if="item.icon"
+                  :icon="item.icon"
+                  class="h-4 w-4 shrink-0 transition-colors opacity-70 group-hover:opacity-100"
+                  :class="isActive || isOpen ? 'opacity-100' : ''" />
+                <span
+                  class="truncate leading-none pt-0.5"
+                  :class="{ 'md:hidden': context.compact }">
+                  {{ item.label }}
+                </span>
+                <span
+                  v-if="item.badge"
+                  class="ml-auto inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium"
+                  :class="[
+                    item.badgeClass || 'bg-muted text-muted-foreground',
+                    { 'md:hidden': context.compact },
+                  ]">
+                  {{ item.badge }}
+                </span>
+              </div>
+              <!-- Chevron Right for Popover -->
+              <div
+                class="ml-1.5 flex h-4 w-4 shrink-0 items-center justify-center text-muted-foreground"
+                :class="{ 'md:hidden': context.compact }">
+                <Icon icon="lucide:chevron-right" class="h-3 w-3" />
+              </div>
+            </component>
+          </div>
+        </Tooltip>
       </template>
 
       <!-- Custom rendering for dropdown items (recursive via Dropdown logic) -->
@@ -258,43 +279,53 @@ const componentProps = computed(() => {
     <!-- Case 2: Tree Mode (Standard) -->
     <template v-else>
       <!-- Item Row -->
-      <component
-        :is="componentIs"
-        v-bind="componentProps"
-        :class="itemClass"
-        :style="itemStyle"
-        :aria-expanded="hasChildren ? isExpanded : undefined"
-        :aria-current="isActive ? 'page' : undefined"
-        @click="handleClick">
-        <div class="flex items-center gap-2.5 min-w-0 flex-1">
-          <Icon
-            v-if="item.icon"
-            :icon="item.icon"
-            class="h-4 w-4 shrink-0 transition-colors opacity-70 group-hover:opacity-100"
-            :class="isActive ? 'opacity-100' : ''" />
-          <span class="truncate leading-none pt-0.5">{{ item.label }}</span>
-          <span
-            v-if="item.badge"
-            class="ml-auto inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium"
-            :class="item.badgeClass || 'bg-muted text-muted-foreground'">
-            {{ item.badge }}
-          </span>
-        </div>
+      <Tooltip :content="item.label" placement="right" :disabled="!context.compact" class="w-full">
+        <component
+          :is="componentIs"
+          v-bind="componentProps"
+          :class="itemClass"
+          :style="itemStyle"
+          :aria-expanded="hasChildren ? isExpanded : undefined"
+          :aria-current="isActive ? 'page' : undefined"
+          @click="handleClick">
+          <div
+            class="flex items-center gap-2.5 min-w-0 flex-1"
+            :class="{ 'justify-center': context.compact }">
+            <Icon
+              v-if="item.icon"
+              :icon="item.icon"
+              class="h-4 w-4 shrink-0 transition-colors opacity-70 group-hover:opacity-100"
+              :class="isActive ? 'opacity-100' : ''" />
+            <span class="truncate leading-none pt-0.5" :class="{ 'md:hidden': context.compact }">
+              {{ item.label }}
+            </span>
+            <span
+              v-if="item.badge"
+              class="ml-auto inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium"
+              :class="[
+                item.badgeClass || 'bg-muted text-muted-foreground',
+                { 'md:hidden': context.compact },
+              ]">
+              {{ item.badge }}
+            </span>
+          </div>
 
-        <!-- Chevron Down for Tree -->
-        <div
-          v-if="hasChildren"
-          role="button"
-          tabindex="0"
-          class="ml-1.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-sm text-muted-foreground hover:bg-accent/50 hover:text-foreground transition-all"
-          @click="handleChevronClick"
-          @keydown.enter.space.prevent="handleChevronClick">
-          <Icon
-            icon="lucide:chevron-down"
-            class="h-3 w-3 transition-transform duration-200"
-            :class="{ 'rotate-180': isExpanded }" />
-        </div>
-      </component>
+          <!-- Chevron Down for Tree -->
+          <div
+            v-if="hasChildren"
+            role="button"
+            tabindex="0"
+            class="ml-1.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-sm text-muted-foreground hover:bg-accent/50 hover:text-foreground transition-all"
+            :class="{ 'md:hidden': context.compact }"
+            @click="handleChevronClick"
+            @keydown.enter.space.prevent="handleChevronClick">
+            <Icon
+              icon="lucide:chevron-down"
+              class="h-3 w-3 transition-transform duration-200"
+              :class="{ 'rotate-180': isExpanded }" />
+          </div>
+        </component>
+      </Tooltip>
 
       <!-- Children Recursion -->
       <Transition
