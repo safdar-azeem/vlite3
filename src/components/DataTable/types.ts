@@ -72,6 +72,7 @@ export interface DataTableProps {
   tableClass?: string
   class?: string
   sortable?: boolean
+  variant?: 'default' | 'raised'
 }
 
 export interface SelectionState {
