@@ -1,11 +1,5 @@
 import { ref, computed, watch, type Ref, type ComputedRef } from 'vue'
-import type {
-  IForm,
-  IFormProps,
-  IFormContext,
-  IFormFieldChangePayload,
-  IFormSubmitPayload,
-} from '../types'
+import type { IForm, IFormContext, IFormSubmitPayload } from '../types'
 import {
   getNestedValue,
   setNestedValue,
@@ -21,6 +15,7 @@ export interface UseFormOptions {
   schema: IForm[] | IForm[][]
   values?: Record<string, any>
   isUpdate?: boolean
+  folderId?: string
   onSubmit?: (payload: IFormSubmitPayload) => void | Promise<void>
 }
 
@@ -65,7 +60,7 @@ export interface UseFormReturn {
  * Main form composable for managing form state, validation, and submission
  */
 export function useForm(options: UseFormOptions): UseFormReturn {
-  const { schema, values: initialValues, isUpdate = false, onSubmit } = options
+  const { schema, values: initialValues, isUpdate = false, folderId, onSubmit } = options
   const { handleUploadFile, loading: uploadLoading } = useFileUpload()
 
   // Initialize form values
@@ -259,7 +254,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
         value instanceof File || (value && typeof value === 'object' && value.file instanceof File)
 
       if (needsUpload) {
-        const url = await handleUploadFile(value)
+        const url = await handleUploadFile(value, folderId)
         if (url) {
           // Update the value in the cloned values
           Object.assign(values, setNestedValue(values, name, url))
