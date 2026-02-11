@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import Icon from '../Icon.vue'
+import type { AccordionSize, IconVariant } from './types'
 
 interface Props {
   class?: string
@@ -9,13 +10,11 @@ interface Props {
   disabled?: boolean
   index?: number
   showIndex?: boolean
-
-  // Custom icons from parent/root
+  size?: AccordionSize
   openIcon?: string
   closeIcon?: string
-  // Icon Style
-  iconVariant?: 'simple' | 'solid' | 'outline' | 'primary' | 'ghost'
-  activeIconVariant?: 'simple' | 'solid' | 'outline' | 'primary' | 'ghost'
+  iconVariant?: IconVariant
+  activeIconVariant?: IconVariant
   chevron?: boolean
 }
 
@@ -23,6 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
   class: '',
   chevron: true,
   showIndex: false,
+  size: 'md',
   iconVariant: 'simple',
 })
 
@@ -35,18 +35,13 @@ const handleClick = (e: MouseEvent) => {
   emit('click', e)
 }
 
-// Icon Logic
 const currentIcon = computed(() => {
-  // If specific open/close icons are provided
   if (props.open && props.openIcon) return props.openIcon
   if (!props.open && props.closeIcon) return props.closeIcon
-
-  // Default chevron behavior
   return 'lucide:chevron-down'
 })
 
 const iconRotationClass = computed(() => {
-  // Only rotate if we are NOT using distinct icons (i.e. using chevron for both or same icon)
   if (props.openIcon && props.closeIcon) return ''
   return props.open ? 'rotate-180' : ''
 })
@@ -58,7 +53,12 @@ const currentIconVariant = computed(() => {
 
 const iconContainerClass = computed(() => {
   const base = 'flex items-center justify-center shrink-0 transition-all duration-300'
-  const size = 'h-8 w-8 rounded-full'
+
+  const sizes: Record<AccordionSize, string> = {
+    sm: 'h-6.5 w-6.5',
+    md: 'h-8 w-8',
+    lg: 'h-10 w-10',
+  }
 
   const variants: Record<string, string> = {
     simple: 'text-muted-foreground bg-transparent',
@@ -73,29 +73,53 @@ const iconContainerClass = computed(() => {
   if (currentIconVariant.value === 'simple')
     return `text-muted-foreground group-hover:text-foreground ${iconRotationClass.value}`
 
-  return `${base} ${size} ${variantClass} ${iconRotationClass.value}`
+  return `${base} ${sizes[props.size]} rounded-full ${variantClass} ${iconRotationClass.value}`
+})
+
+const iconSizeClass = computed(() => {
+  const sizes: Record<AccordionSize, string> = {
+    sm: 'h-3.5 w-3.5',
+    md: 'h-4 w-4',
+    lg: 'h-5 w-5',
+  }
+  return sizes[props.size]
+})
+
+const indexSizeClass = computed(() => {
+  const sizes: Record<AccordionSize, string> = {
+    sm: 'h-6.5 w-6.5 text-[11px]',
+    md: 'h-7 w-7 text-xs',
+    lg: 'h-9 w-9 text-sm',
+  }
+  return sizes[props.size]
 })
 </script>
 
 <template>
   <button
     type="button"
-    class="group flex flex-1 w-full items-center justify-between py-3 text-left font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+    class="group flex flex-1 w-full items-center justify-between text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
     :class="[props.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer', props.class]"
     :data-state="props.open ? 'open' : 'closed'"
     :disabled="props.disabled"
     @click="handleClick">
-    <div class="flex items-center gap-3">
+    <div class="flex items-center" :class="size == 'sm' ? 'gap-2' : 'gap-2.5'">
       <div
         v-if="showIndex && index !== undefined"
-        class="flex items-center justify-center h-7 w-7 rounded-full bg-primary-light text-primary text-xs font-bold shrink-0">
+        :class="[
+          'flex items-center justify-center rounded-full bg-primary-light text-primary font-bold shrink-0',
+          indexSizeClass,
+        ]">
         {{ index }}
       </div>
 
       <Icon
         v-if="icon"
         :icon="icon"
-        class="h-5 w-5 shrink-0 text-muted-foreground group-hover:text-foreground transition-colors" />
+        :class="[
+          'shrink-0 text-muted-foreground group-hover:text-foreground transition-colors',
+          iconSizeClass,
+        ]" />
 
       <div class="flex flex-col">
         <slot />
@@ -106,7 +130,11 @@ const iconContainerClass = computed(() => {
       <div v-if="chevron || openIcon || closeIcon" :class="iconContainerClass">
         <Icon
           :icon="currentIcon"
-          :class="['h-4 w-4 shrink-0 transition-transform duration-200', currentIconVariant !== 'simple' ? 'rotate-0' : '']" />
+          :class="[
+            'shrink-0 transition-transform duration-200',
+            iconSizeClass,
+            currentIconVariant !== 'simple' ? 'rotate-0' : '',
+          ]" />
       </div>
     </slot>
   </button>
