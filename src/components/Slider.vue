@@ -14,6 +14,7 @@ const props = withDefaults(
     modelValue?: number
     labelClass?: string
     centerOrigin?: boolean
+    size?: 'xs' | 'sm' | 'md' | 'lg'
   }>(),
   {
     min: 0,
@@ -22,6 +23,7 @@ const props = withDefaults(
     modelValue: 0,
     showValue: true,
     centerOrigin: undefined,
+    size: 'md',
   }
 )
 
@@ -110,6 +112,32 @@ const displayValue = computed(() => {
   const decimals = props.step.toString().split('.')[1]?.length || 0
   return innerValue.value.toFixed(decimals)
 })
+
+const sizeClasses = computed(() => {
+  const sizes = {
+    xs: {
+      track: 'h-0.5',
+      thumb: 'w-2.5 h-2.5',
+      wrapper: 'h-4',
+    },
+    sm: {
+      track: 'h-1',
+      thumb: 'w-3 h-3',
+      wrapper: 'h-4',
+    },
+    md: {
+      track: 'h-1.5',
+      thumb: 'w-3.5 h-3.5',
+      wrapper: 'h-6',
+    },
+    lg: {
+      track: 'h-2',
+      thumb: 'w-4 h-4',
+      wrapper: 'h-7',
+    },
+  }
+  return sizes[props.size]
+})
 </script>
 
 <template>
@@ -130,29 +158,35 @@ const displayValue = computed(() => {
       </label>
     </div>
 
-    <div class="relative flex-1 h-6 flex items-center group">
+    <div class="relative flex-1 flex items-center group" :class="sizeClasses.wrapper">
       <!-- Track Background -->
-      <div class="absolute w-full h-1.5 bg-secondary rounded-full overflow-hidden"></div>
+      <div
+        class="absolute w-full bg-secondary rounded-full overflow-hidden"
+        :class="sizeClasses.track"></div>
 
       <!-- Zero Tick for Bipolar -->
       <div
         v-if="isBipolar"
-        class="absolute top-1/2 h-1.5 w-0.5 bg-muted-foreground/30 rounded transform -translate-y-1/2 z-0"
+        class="absolute top-1/2 w-0.5 bg-muted-foreground/30 rounded transform -translate-y-1/2 z-0"
+        :class="sizeClasses.track"
         :style="{ left: getContainedPos(zeroPercentage) }"></div>
 
       <!-- Active Track -->
       <div
-        class="absolute h-1.5 bg-primary rounded-full transition-all duration-75 ease-out will-change-transform"
-        :class="{ 'bg-muted-foreground': disabled }"
+        class="absolute bg-primary rounded-full transition-all duration-75 ease-out will-change-transform"
+        :class="[{ 'bg-muted-foreground': disabled }, sizeClasses.track]"
         :style="trackStyle"></div>
 
       <!-- Thumb -->
       <div
-        class="absolute top-1/2 w-4 h-4 bg-background border border-border shadow-sm rounded-full transform -translate-y-1/2 -translate-x-1/2 pointer-events-none transition-transform duration-100 ease-out z-10"
-        :class="{
-          'border-primary shadow-md scale-110': isDragging,
-          'border-primary': isModified,
-        }"
+        class="absolute top-1/2 bg-background border border-border shadow-sm rounded-full transform -translate-y-1/2 -translate-x-1/2 pointer-events-none transition-transform duration-100 ease-out z-10"
+        :class="[
+          {
+            'border-primary shadow-md scale-110': isDragging,
+            'border-primary': isModified,
+          },
+          sizeClasses.thumb,
+        ]"
         :style="thumbStyle"></div>
 
       <input
