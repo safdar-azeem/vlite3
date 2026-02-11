@@ -103,13 +103,13 @@ const menuItems: SidebarMenuItemSchema[] = [
             class="w-8 h-8 bg-primary text-primary-fg rounded-lg flex items-center justify-center shrink-0">
             <Icon icon="lucide:box" class="w-5 h-5" />
           </div>
-          Builto
+          vLite3
         </div>
       </template>
 
       <!-- Sidebar Content -->
       <template #default>
-        <div class="space-y-6">
+        <div class="space-y-6 -mt-2">
           <SidebarMenu :items="menuItems" :allow-multiple="true" :default-expanded="['Core']" />
         </div>
       </template>
@@ -133,7 +133,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       -->
 
       <div class="flex-1 overflow-y-auto">
-        <div class="max-w-6xl mx-auto px-6 py-10 md:py-12">
+        <div class="max-w-5xl mx-auto px-6 py-10 md:py-12">
           <!-- Header -->
           <div
             class="mb-10 pb-6 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
