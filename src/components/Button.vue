@@ -19,7 +19,7 @@ const isOnlyIcon = computed(() => props.icon && !props.text && !slots.default)
 
 const classes = computed(() => {
   const baseClasses =
-    'inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-95 cursor-pointer'
+    'inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-95 cursor-pointer gap-2'
 
   const variants: Record<ButtonVariant, string> = {
     primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
@@ -98,25 +98,20 @@ const iconClasses = computed(() => {
     <Icon
       v-if="loading"
       icon="lucide:loader-2"
-      class="mr-2 animate-spin"
-      :class="{ 'mr-0': isOnlyIcon, [iconClasses]: true }" />
+      class="animate-spin"
+      :class="{ [iconClasses]: true }" />
 
     <!-- Icon logic: center if only icon -->
     <Icon
       v-else-if="icon"
       :icon="icon"
       :class="{
-        'mr-2': $slots.default || text,
         'mx-auto': isOnlyIcon,
         [iconClasses]: true,
       }" />
 
     <slot>{{ text }}</slot>
 
-    <Icon
-      v-if="iconRight && !loading"
-      :icon="iconRight"
-      :class="iconClasses"
-      class="ml-2 h-4 w-4" />
+    <Icon v-if="iconRight && !loading" :icon="iconRight" :class="iconClasses" class="h-4 w-4" />
   </button>
 </template>
