@@ -87,7 +87,7 @@ const iconSizeClass = computed(() => {
 
 const indexSizeClass = computed(() => {
   const sizes: Record<AccordionSize, string> = {
-    sm: 'h-6.5 w-6.5 text-[11px]',
+    sm: 'h-7 w-7 text-[12px]',
     md: 'h-7 w-7 text-xs',
     lg: 'h-9 w-9 text-sm',
   }
