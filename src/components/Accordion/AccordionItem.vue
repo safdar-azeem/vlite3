@@ -51,11 +51,9 @@ const containerClass = computed(() => {
     let borderClass = 'border-b last:border-0'
 
     if (variant === 'default' || variant === 'outline') {
-      // Outline in attached usually means the Container (Accordion) has the border, items just have separators.
       return `${baseAttached} ${borderClass}`
     }
     if (variant === 'solid') {
-      // Solid attached: items might alternate or just be list.
       return `border-b last:border-0 bg-transparent`
     }
     if (variant === 'ghost') {
@@ -65,7 +63,7 @@ const containerClass = computed(() => {
   }
 
   // DETACHED MODE (Cards)
-  // 'solid': Container has border (outline) but no background, content needs to be inside.
+  // 'solid': Container has border (outline) but no background
   if (variant === 'solid') {
     return 'mb-2 border rounded-lg overflow-hidden transition-all duration-200'
   }
@@ -74,9 +72,9 @@ const containerClass = computed(() => {
   if (variant === 'outline') return 'border mb-2 rounded-lg overflow-hidden'
 
   // 'separated': distinct cards style
-  if (variant === 'separated') return 'border mb-4 rounded-lg  overflow-hidden'
+  if (variant === 'separated') return 'border mb-4 rounded-lg overflow-hidden'
 
-  if (variant === 'ghost') return 'border-none bg-transparent mb-1'
+  if (variant === 'ghost') return 'border-none bg-transparent mb-1 rounded-lg overflow-hidden'
 
   // Default Detached (Underline style usually)
   return 'border-b'
@@ -86,33 +84,57 @@ const containerClass = computed(() => {
 const computedTriggerClass = computed(() => {
   const { variant, attached, isOpen } = props
   const base = props.triggerClass || ''
+  
+  // Transition base for smooth background swaps
+  const transition = 'transition-all duration-200 ease-in-out'
+  const padding = 'px-4'
 
-  // Solid Variant: Trigger gets the background
+  // --- SOLID VARIANT ---
   if (variant === 'solid') {
-    return `${base} px-4 bg-muted transition-colors`
+    return `${base} ${padding} bg-muted hover:bg-muted/80 ${transition}`
   }
 
-  // Default/Ghost in detached: no padding usually?
-  if (!attached && (variant === 'ghost' || variant === 'default')) {
-    return `${base} px-0 hover:no-underline` // ensure no unwanted hover bg
+  // --- GHOST VARIANT ---
+  if (variant === 'ghost') {
+    // Requirement: Feel solid when open. 
+    // We enforce padding to ensure the "solid" state looks like a block.
+    if (isOpen) {
+      return `${base} ${padding} bg-muted font-medium ${transition}`
+    }
+    return `${base} ${padding} hover:bg-muted/20 bg-transparent ${transition}`
   }
 
-  // Outline/Separated/Attached: usually need padding styling inside the border
-  return `${base} px-4 hover:bg-accent`
+  // --- OUTLINE / SEPARATED ---
+  if (variant === 'outline' || variant === 'separated') {
+    // Requirement: Better UX handling.
+    // When open, add a border-b to separate header from content and subtle bg.
+    if (isOpen) {
+      return `${base} ${padding} bg-muted/5 border-b border-border ${transition}`
+    }
+    return `${base} ${padding} hover:bg-muted/5 bg-transparent ${transition}`
+  }
+
+  // --- DEFAULT (Detached) ---
+  if (!attached && variant === 'default') {
+    // Classic minimal style (no padding usually)
+    return `${base} px-0 hover:no-underline ${transition}`
+  }
+
+  // --- DEFAULT (Attached) ---
+  return `${base} ${padding} hover:bg-muted/5 ${transition}`
 })
 
 const computedContentClass = computed(() => {
   const { variant, attached } = props
   const base = props.contentClass || ''
 
-  if (variant === 'solid') {
+  // Standardize padding for content to match triggers with padding
+  if (variant === 'solid' || variant === 'outline' || variant === 'separated' || variant === 'ghost' || attached) {
     return `${base} px-4 pt-4`
   }
 
-  if (!attached && (variant === 'ghost' || variant === 'default')) {
-    return `${base} px-0`
-  }
-  return `${base} px-4`
+  // Default detached minimal
+  return `${base} px-0 pt-4`
 })
 </script>
 
