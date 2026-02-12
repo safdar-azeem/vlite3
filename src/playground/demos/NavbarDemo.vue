@@ -193,7 +193,7 @@ const menuItems: SidebarMenuItemSchema[] = [
           position="relative"
           logoClass="bg-blue-100 text-blue-700 justify-center"
           contentClass="bg-green-50 px-4"
-          footerClass="bg-red-50 border-t-2 border-red-200"
+          rightClass="bg-red-50 border-t-2 border-red-200"
           class="bg-white border-r h-full w-64">
           <template #logo>
             <div class="font-bold">Styled Logo Area</div>
@@ -208,6 +208,59 @@ const menuItems: SidebarMenuItemSchema[] = [
           </template>
           <template #right>
             <div class="text-sm">Footer Area (Red bg)</div>
+          </template>
+        </Navbar>
+      </div>
+    </section>
+
+    <section class="space-y-4">
+      <h3 class="text-lg font-semibold">Header Variant Custom Styles</h3>
+      <p class="text-sm text-gray-500">
+        Using <code>logoClass</code>, <code>contentClass</code>, and <code>rightClass</code> on a
+        Header variant.
+      </p>
+      <div class="border rounded-lg overflow-hidden bg-gray-50 flex flex-col h-[200px]">
+        <Navbar
+          variant="header"
+          position="relative"
+          logoClass="bg-purple-100 text-purple-700 px-4 rounded-r-lg"
+          contentClass="bg-orange-50 border border-orange-200 rounded-lg p-1 flex-1 flex justify-center"
+          rightClass="bg-pink-100 text-pink-700 px-4 rounded-l-lg"
+          class="bg-white border-b w-full">
+          <template #logo>
+            <div class="font-bold">Styled Header</div>
+          </template>
+          <template #center>
+            <div class="text-sm">Centered Content (Orange)</div>
+          </template>
+          <template #right>
+            <div class="text-sm font-semibold">Right (Pink)</div>
+          </template>
+        </Navbar>
+      </div>
+    </section>
+
+    <section class="space-y-4">
+      <h3 class="text-lg font-semibold">Mobile Trigger Customization</h3>
+      <p class="text-sm text-gray-500">
+        Using <code>mobileTriggerClass</code> to style the default button, or providing a custom
+        <code>mobile-trigger</code> slot. Resize window to see mobile view.
+      </p>
+      <div class="border rounded-lg overflow-hidden bg-gray-50 flex flex-col h-[200px]">
+        <Navbar
+          variant="sidebar"
+          mobileBreakpoint="xl"
+          logoClass="bg-blue-100"
+          rightClass="bg-red-50"
+          mobileTriggerClass="bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
+          class="bg-white border-r h-full w-64">
+          <template #logo>
+            <div class="font-bold">Mobile Trigger Demo</div>
+          </template>
+          <template #default>
+            <div class="p-4 text-sm">
+              Resize window to &lt; xl to see the yellow mobile trigger.
+            </div>
           </template>
         </Navbar>
       </div>
