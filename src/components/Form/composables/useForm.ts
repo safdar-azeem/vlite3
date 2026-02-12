@@ -61,7 +61,7 @@ export interface UseFormReturn {
  */
 export function useForm(options: UseFormOptions): UseFormReturn {
   const { schema, values: initialValues, isUpdate = false, folderId, onSubmit } = options
-  const { handleUploadFile, loading: uploadLoading } = useFileUpload()
+  const { handleUploadFile } = useFileUpload()
 
   // Initialize form values
   const formValues = ref<Record<string, any>>(initializeFormValues(schema, initialValues))
@@ -241,26 +241,70 @@ export function useForm(options: UseFormOptions): UseFormReturn {
 
   /**
    * Process file uploads before submission
+   * Handles both single files and arrays of files (parallel upload)
    */
   const processFileUploads = async (): Promise<Record<string, any>> => {
     const values = deepClone(formValues.value)
     const fileFields = collectFileFields(schema, values)
 
-    for (const fileField of fileFields) {
-      const { name, value, type } = fileField
+    // Create a list of promises for each field that needs updating
+    // This allows all uploads across all fields to happen in parallel
+    const fieldUpdatePromises = fileFields.map(async (fileField) => {
+      const { name, value } = fileField
 
-      // Check if value is a File or FilePickerValue that needs uploading
-      const needsUpload =
-        value instanceof File || (value && typeof value === 'object' && value.file instanceof File)
+      // CASE 1: Array of files (Multiple)
+      if (Array.isArray(value)) {
+        // Map the array to a list of promises to upload individual items in parallel
+        const itemPromises = value.map(async (item) => {
+          // Determine if this specific item needs uploading
+          // It needs upload if it's a File object OR a FilePickerValue containing a File
+          const needsUpload =
+            item instanceof File || (item && typeof item === 'object' && item.file instanceof File)
 
-      if (needsUpload) {
-        const url = await handleUploadFile(value, folderId)
-        if (url) {
-          // Update the value in the cloned values
-          Object.assign(values, setNestedValue(values, name, url))
-        }
+          if (needsUpload) {
+            // Upload and return the new URL
+            const url = await handleUploadFile(item, folderId)
+            // If upload fails (returns null), we return null (or could keep original if needed, but here assuming fail)
+            return url || null
+          }
+
+          // If it's already a string (URL) or doesn't match upload criteria, return as is
+          return item
+        })
+
+        // Wait for all items in this array to finish
+        const newArray = await Promise.all(itemPromises)
+        
+        // Return the update instruction
+        return { name, value: newArray }
       }
-    }
+
+      // CASE 2: Single Value
+      else {
+        const needsUpload =
+          value instanceof File || (value && typeof value === 'object' && value.file instanceof File)
+
+        if (needsUpload) {
+          const url = await handleUploadFile(value, folderId)
+          if (url) {
+            return { name, value: url }
+          }
+        }
+        
+        // No update needed for this field
+        return null
+      }
+    })
+
+    // Wait for ALL field updates to complete
+    const updates = await Promise.all(fieldUpdatePromises)
+
+    // Apply the updates to the values object
+    updates.forEach((update) => {
+      if (update) {
+        Object.assign(values, setNestedValue(values, update.name, update.value))
+      }
+    })
 
     return values
   }
@@ -349,3 +393,4 @@ export function useForm(options: UseFormOptions): UseFormReturn {
     flatSchema,
   }
 }
+
