@@ -109,7 +109,7 @@ const menuItems: SidebarMenuItemSchema[] = [
 
       <!-- Sidebar Content -->
       <template #default>
-        <div class="space-y-6 -mt-2">
+        <div class="space-y-6">
           <SidebarMenu :items="menuItems" :allow-multiple="true" :default-expanded="['Core']" />
         </div>
       </template>
