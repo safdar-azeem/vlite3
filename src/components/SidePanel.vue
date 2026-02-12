@@ -18,6 +18,8 @@ interface Props {
   hideCloseButton?: boolean
   class?: string
   overlayClass?: string
+  bodyClass?: string
+  headerClass?: string
   triggerClass?: string
   backdrop?: boolean
   body?: Component
@@ -138,6 +140,7 @@ const transitionName = computed(() => {
         :class="[sizeClasses[size], positionClasses, props.class]">
         <div
           v-if="title || $slots.header"
+          :class="headerClass"
           class="flex-none flex items-center justify-between px-6 py-2 border-b border-border">
           <slot name="header">
             <div>
@@ -159,7 +162,7 @@ const transitionName = computed(() => {
             class="-mr-2" />
         </div>
 
-        <div class="flex-1 overflow-y-auto px-6 py-4">
+        <div class="flex-1 overflow-y-auto px-6 py-4" :class="bodyClass">
           <template v-if="body">
             <component :is="body" v-bind="{ ...bodyProps, ...$attrs }" :close="close" />
           </template>
