@@ -18,6 +18,9 @@ const props = withDefaults(defineProps<NavbarProps>(), {
   compact: false,
   class: '',
   mobileBreakpoint: 'md',
+  logoClass: '',
+  contentClass: '',
+  footerClass: '',
 })
 
 const emit = defineEmits<{
@@ -278,19 +281,27 @@ watch(
       </div>
 
       <div :class="breakpointClasses.desktopSidebar">
-        <div class="py-3 flex items-center px-4.5 z-10" v-if="$slots?.logo">
+        <div
+          class="py-3 flex items-center px-4.5 z-10"
+          :class="props.logoClass"
+          v-if="$slots?.logo">
           <slot name="logo">
             <div class="font-bold text-xl truncate">Brand</div>
           </slot>
         </div>
 
-        <div class="flex-1 px-2.5 py-0 overflow-y-auto space-y-4 scrollbar-thin">
+        <div
+          class="flex-1 px-2.5 py-0 overflow-y-auto space-y-4 scrollbar-thin"
+          :class="props.contentClass">
           <slot name="left" />
           <slot />
           <slot name="center" />
         </div>
 
-        <div class="p-2 border-t border-border shrink-0 bg-background mt-auto" v-if="$slots?.right">
+        <div
+          class="p-2 border-t border-border shrink-0 bg-background mt-auto"
+          :class="props.footerClass"
+          v-if="$slots?.right">
           <slot name="right" />
         </div>
       </div>
