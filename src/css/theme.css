@@ -32,7 +32,7 @@
     --color-primary-fg: #fafafa;
     --color-primary-fg-light: var(--color-primary-dark);
     --color-primary-light: color-mix(in oklab,
-        var(--color-primary-fg, #ffffff) 94%,
+        var(--color-primary-fg, #ffffff) 95%,
         var(--color-primary, #000000));
 
     /* Danger */
@@ -102,9 +102,7 @@
 .theme-section,
 :root {
 
-  --color-white: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 100%,
-      var(--color-mixture-2, #000000));
+  --color-white: #ffffff;
 
   --color-black: color-mix(in oklab,
       var(--color-mixture-1, #ffffff) 0%,
@@ -164,7 +162,7 @@
 
   --color-gray-950: var(--color-mixture-2, #000000);
 
-  --color-body: var(--color-mixture-1);
+  --color-body: var(--color-white);
   --color-background: var(--color-body);
   --color-foreground: var(--color-gray-900);
 
@@ -190,7 +188,8 @@
 }
 
 .dark {
-  --color-mixture-1: #0A0A0A !important;
+  --color-white: #0b0b0b !important;
+  --color-mixture-1: #0c0c0c !important;
   --color-mixture-2: #ffffff !important;
 
   --color-gray-50: color-mix(in oklab,
@@ -217,7 +216,7 @@
       var(--color-mixture-1, #ffffff) 74%,
       var(--color-mixture-2, #000000));
 
-  --color-secondary: color-mix(in oklab, var(--color-mixture-1) 88%, var(--color-mixture-2));
+  --color-secondary: color-mix(in oklab, var(--color-mixture-1) 89%, var(--color-mixture-2));
 
   --color-destructive: #7f1d1d;
   --color-destructive-foreground: #fafafa;
@@ -230,7 +229,7 @@
   --color-chart-5: #f4a261;
 
   /* Variants (vlite3 custom) */
-  --color-primary-light: #282829;
+  --color-primary-light: #212121;
   --color-primary: #fafafa;
   --color-primary-dark: #d4d4d8;
   --color-primary-foreground: #18181b;
@@ -276,13 +275,13 @@
 
 .dark .modal-body,
 .dark .sidepanel-body {
-  --color-body: #171717 !important;
+  --color-white: #171717 !important;
   --color-mixture-1: #151515 !important;
   --color-mixture-2: #ffffff !important;
 }
 
 .dark .tooltip-container {
-  --color-background: #181818 !important;
+  --color-white: #181818 !important;
   --color-mixture-1: #1f2020 !important;
   --color-mixture-2: #ffffff !important;
 }
@@ -368,4 +367,8 @@
 
 .shadow-xl {
   box-shadow: var(--shadow-xl) !important;
+}
+
+.text-muted {
+  color: var(--color-gray-600) !important;
 }
