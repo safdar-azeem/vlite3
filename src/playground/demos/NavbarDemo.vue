@@ -117,6 +117,16 @@ const menuItems: SidebarMenuItemSchema[] = [
               <SidebarMenu :items="menuItems" :allow-multiple="true" />
             </div>
           </template>
+          <template #right>
+            <div>
+              <Button
+                variant="ghost"
+                class="w-full justify-start text-gray-600 hover:text-red-600 hover:bg-red-50"
+                icon="lucide:log-out">
+                Logout
+              </Button>
+            </div>
+          </template>
         </Navbar>
         <div class="p-8 text-gray-400">Main Content</div>
       </div>
