@@ -179,5 +179,38 @@ const menuItems: SidebarMenuItemSchema[] = [
         </Navbar>
       </div>
     </section>
+
+    <section class="space-y-4">
+      <h3 class="text-lg font-semibold">Custom Slot Styles</h3>
+      <p class="text-sm text-gray-500">
+        Using <code>logoClass</code>, <code>contentClass</code>, and <code>footerClass</code> to
+        style specific slot containers.
+      </p>
+      <div class="border rounded-lg overflow-hidden bg-gray-50 flex flex-col h-[300px]">
+        <Navbar
+          variant="sidebar"
+          mobileBreakpoint="sm"
+          position="relative"
+          logoClass="bg-blue-100 text-blue-700 justify-center"
+          contentClass="bg-green-50 px-4"
+          footerClass="bg-red-50 border-t-2 border-red-200"
+          class="bg-white border-r h-full w-64">
+          <template #logo>
+            <div class="font-bold">Styled Logo Area</div>
+          </template>
+          <template #default>
+            <div class="test-content p-4">
+              <p>Content Area (Green bg)</p>
+              <p class="text-xs mt-2">
+                This area has <code>bg-green-50</code> applied via <code>contentClass</code>.
+              </p>
+            </div>
+          </template>
+          <template #right>
+            <div class="text-sm">Footer Area (Red bg)</div>
+          </template>
+        </Navbar>
+      </div>
+    </section>
   </div>
 </template>
