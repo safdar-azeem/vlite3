@@ -73,6 +73,7 @@ You can customize these colors in your CSS by overriding the variables in `:root
 | `--secondary`              | `bg-secondary`                | Secondary background    | Used for secondary actions or muted sections.                               |
 | `--secondary-foreground`   | `text-secondary-foreground`   | Secondary text color    | Text color for content on top of secondary background.                      |
 | `--muted`                  | `bg-muted`                    | Muted background        | Subtle backgrounds (e.g., table headers, disabled states).                  |
+| `--muted`                  | `text-muted`                  | Muted Text              | Secondary text, Unactive Link, description.                                 |
 | `--muted-foreground`       | `text-muted-foreground`       | Muted text color        | Secondary text, hints, placeholders.                                        |
 | `--accent`                 | `bg-accent`                   | Accent background       | Used for hover states, selection highlights.                                |
 | `--accent-foreground`      | `text-accent-foreground`      | Accent text color       | Text color on accent backgrounds.                                           |
