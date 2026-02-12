@@ -38,7 +38,11 @@ export function useFileUpload() {
     
     try {
       // Extract File object if FilePickerValue was passed
+      // If it's a FilePickerValue, it has a .file property
       const fileToUpload = file instanceof File ? file : file.file
+
+      // If no actual file object is present (e.g. malformed data), return null
+      if (!fileToUpload) return null
 
       // ---------------------------------------------------------
       // 1. Check for Global Custom Implementation (Registry Pattern)
