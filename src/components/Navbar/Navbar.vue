@@ -20,7 +20,8 @@ const props = withDefaults(defineProps<NavbarProps>(), {
   mobileBreakpoint: 'md',
   logoClass: '',
   contentClass: '',
-  footerClass: '',
+  rightClass: '',
+  mobileTriggerClass: '',
 })
 
 const emit = defineEmits<{
@@ -178,11 +179,14 @@ watch(
       <!-- Left Section -->
       <div class="flex items-center gap-4 shrink-0 z-10">
         <!-- Mobile Toggle -->
-        <slot name="mobile-trigger">
+        <slot
+          name="mobile-trigger"
+          :is-open="isMobileMenuOpen"
+          :toggle="() => (isMobileMenuOpen = !isMobileMenuOpen)">
           <button
             type="button"
             class="p-2 -ml-2 text-muted-foreground hover:bg-accent rounded-md shrink-0"
-            :class="breakpointClasses.mobileTrigger"
+            :class="[breakpointClasses.mobileTrigger, props.mobileTriggerClass]"
             @click="isMobileMenuOpen = true">
             <Icon icon="lucide:menu" class="w-5 h-5" />
             <span class="sr-only">Open Menu</span>
@@ -190,7 +194,7 @@ watch(
         </slot>
 
         <!-- Logo Slot -->
-        <div class="shrink-0" v-if="$slots?.logo">
+        <div class="shrink-0" :class="props.logoClass" v-if="$slots?.logo">
           <slot name="logo">
             <component
               :is="props.logo ? 'img' : 'div'"
@@ -218,6 +222,7 @@ watch(
           centerClasses,
           // Width constraint to ensure it doesn't crush others, but allows simple resizing
           'max-w-full',
+          props.contentClass,
         ]"
         v-if="$slots?.center">
         <slot name="center" />
@@ -253,14 +258,17 @@ watch(
             -->
       <div
         class="flex items-center gap-2 shrink-0 max-w-[40%] z-10"
-        :class="{
-          // Always push to end unless Center is pushing it.
-          // If Center is 'center' (mx-auto) or 'right' (ml-auto), this naturally falls to end.
-          // If Center is 'left', we MUST have ml-auto here.
-          'ml-auto': centerPosition === 'left' || centerPosition === 'center',
-          // If center is 'right', Center has ml-auto. Right just sits next to it.
-          // But if we add ml-auto here too, they might split space? No, flexbox parses strictly.
-        }">
+        :class="[
+          {
+            // Always push to end unless Center is pushing it.
+            // If Center is 'center' (mx-auto) or 'right' (ml-auto), this naturally falls to end.
+            // If Center is 'left', we MUST have ml-auto here.
+            'ml-auto': centerPosition === 'left' || centerPosition === 'center',
+            // If center is 'right', Center has ml-auto. Right just sits next to it.
+            // But if we add ml-auto here too, they might split space? No, flexbox parses strictly.
+          },
+          props.rightClass,
+        ]">
         <slot name="right" />
       </div>
     </template>
@@ -271,18 +279,24 @@ watch(
           <div class="font-bold text-xl truncate">Brand</div>
         </slot>
 
-        <button
-          type="button"
-          class="p-2 -mr-2 text-muted-foreground hover:bg-accent rounded-md"
-          @click="isMobileMenuOpen = true">
-          <Icon icon="lucide:menu" class="w-5 h-5" />
-          <span class="sr-only">Open Menu</span>
-        </button>
+        <slot
+          name="mobile-trigger"
+          :is-open="isMobileMenuOpen"
+          :toggle="() => (isMobileMenuOpen = !isMobileMenuOpen)">
+          <button
+            type="button"
+            class="p-2 -mr-2 text-muted-foreground hover:bg-accent rounded-md"
+            :class="props.mobileTriggerClass"
+            @click="isMobileMenuOpen = true">
+            <Icon icon="lucide:menu" class="w-5 h-5" />
+            <span class="sr-only">Open Menu</span>
+          </button>
+        </slot>
       </div>
 
       <div :class="breakpointClasses.desktopSidebar">
         <div
-          class="py-3 flex items-center px-4.5 z-10"
+          class="py-4.5 flex items-center px-4.5 z-10"
           :class="props.logoClass"
           v-if="$slots?.logo">
           <slot name="logo">
@@ -291,7 +305,7 @@ watch(
         </div>
 
         <div
-          class="flex-1 px-2.5 py-0 overflow-y-auto space-y-4 scrollbar-thin"
+          class="flex-1 px-2.5 pt-0 pb-4 overflow-y-auto space-y-4 scrollbar-thin"
           :class="props.contentClass">
           <slot name="left" />
           <slot />
@@ -300,7 +314,7 @@ watch(
 
         <div
           class="p-2 border-t border-border shrink-0 bg-background mt-auto"
-          :class="props.footerClass"
+          :class="props.rightClass"
           v-if="$slots?.right">
           <slot name="right" />
         </div>
@@ -313,6 +327,8 @@ watch(
       size="sm"
       :triggerClass="breakpointClasses.mobileTrigger"
       class="z-60"
+      headerClass="pl-3! pr-4.5! py-3!"
+      bodyClass="p-0!"
       :class="breakpointClasses.mobileTrigger">
       <template #header>
         <slot name="logo">Brand</slot>
@@ -332,14 +348,14 @@ watch(
 
         <!-- Sidebar Variant Menu (Just replicate sidebar content) -->
         <template v-else>
-          <div class="flex flex-col space-y-4 flex-1 overflow-y-auto">
+          <div class="flex flex-col space-y-4 flex-1 overflow-y-auto px-3.5!">
             <slot name="left" />
             <slot />
             <slot name="center" />
           </div>
         </template>
 
-        <div class="mt-auto pt-4 border-t border-border" v-if="$slots?.right">
+        <div class="mt-auto pt-2 border-t border-border px-3! py-2!" v-if="$slots?.right">
           <slot name="right" />
         </div>
       </div>
