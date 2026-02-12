@@ -27,4 +27,7 @@ export interface NavbarProps {
   logo?: string
   logoAlt?: string
   mobileBreakpoint?: 'sm' | 'md' | 'lg' | 'xl'
+  logoClass?: string
+  contentClass?: string
+  footerClass?: string
 }
