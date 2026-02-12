@@ -95,10 +95,10 @@ const menuItems: SidebarMenuItemSchema[] = [
     <Navbar
       variant="sidebar"
       mobileBreakpoint="md"
-      class="bg-card border-r border-border h-max shrink-0 z-20"
+      class="bg-body border-r border-border h-max shrink-0 z-20"
       width="w-64">
       <template #logo>
-        <div class="flex items-center gap-2 font-bold text-xl tracking-tight px-2">
+        <div class="flex items-center gap-2 font-bold text-xl tracking-tight">
           <div
             class="w-8 h-8 bg-primary text-primary-fg rounded-lg flex items-center justify-center shrink-0">
             <Icon icon="lucide:box" class="w-5 h-5" />
