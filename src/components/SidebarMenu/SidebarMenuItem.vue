@@ -100,7 +100,7 @@ const itemClass = computed(() => {
   if (isActive.value) {
     variantClass = 'bg-primary-light text-primary-fg-light'
   } else {
-    variantClass = 'text-muted-foreground hover:bg-accent/80 hover:text-foreground'
+    variantClass = 'text-muted hover:bg-accent/80 hover:text-foreground'
   }
 
   if (props.item.disabled) {
