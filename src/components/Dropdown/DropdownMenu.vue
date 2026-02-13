@@ -241,7 +241,6 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="dropdown-menu w-full min-w-[150px] flex flex-col" :dir="direction">
-    <!-- Fixed Search -->
     <div v-if="showSearch" class="bg-body border-b mb-1 z-10 rounded-t-md shrink-0">
       <Input
         v-model="searchQuery"
@@ -253,12 +252,10 @@ onBeforeUnmount(() => {
         :show-clear-button="false" />
     </div>
 
-    <!-- Fixed Header Slot -->
     <div v-if="$slots.header" class="shrink-0">
       <slot name="header" />
     </div>
 
-    <!-- Scrollable Options Area -->
     <div
       ref="containerRef"
       tabindex="0"
@@ -270,15 +267,12 @@ onBeforeUnmount(() => {
       :style="{ maxHeight: props.maxHeight }"
       @mousemove="handleMouseMove"
       @scroll="handleScroll">
-      <!-- No header slot here anymore -->
-
       <div
         v-if="filteredOptions.length === 0 && options?.length > 0 && !loading"
         class="px-2 py-6 text-center text-sm text-muted-foreground">
         No options found
       </div>
 
-      <!-- GROUPED MODE -->
       <template v-if="layout === 'grouped'">
         <DropdownGroupedLayout
           :options="filteredOptions"
@@ -288,13 +282,10 @@ onBeforeUnmount(() => {
           @select="handleSelect" />
       </template>
 
-      <!-- DEFAULT RECURSIVE MODE -->
       <template v-else>
         <template v-for="(option, index) in filteredOptions" :key="index">
-          <!-- Divider -->
           <div v-if="option.label === '---'" class="h-px bg-border my-1 mx-1" />
 
-          <!-- Boolean Toggle Item -->
           <DropdownBooleanItem
             v-else-if="option.data?.isBoolean"
             :option="option"
@@ -303,7 +294,6 @@ onBeforeUnmount(() => {
             @change="handleBooleanChange"
             @mouseenter="onMouseEnterItem(index)" />
 
-          <!-- Nested Dropdown -->
           <template v-else-if="option.children && option.children.length > 0">
             <Dropdown
               :position="option.position || props.nestedPosition"
@@ -344,7 +334,6 @@ onBeforeUnmount(() => {
             </Dropdown>
           </template>
 
-          <!-- Standard Item -->
           <DropdownItem
             v-else
             :option="option"
@@ -354,23 +343,22 @@ onBeforeUnmount(() => {
             :selectable="selectable"
             @click="handleSelect(option, index)"
             @mouseenter="onMouseEnterItem(index)">
-            <template #default="slotProps">
+            
+            <template #default="slotProps" v-if="$slots.item">
               <slot name="item" v-bind="slotProps" />
             </template>
+            
           </DropdownItem>
         </template>
       </template>
 
-      <!-- Loading Spinner -->
       <div v-if="loading" class="flex justify-center py-2">
         <Icon icon="lucide:loader-2" class="w-4 h-4 animate-spin text-muted-foreground" />
       </div>
 
       <slot name="menu" />
-      <!-- No footer slot here anymore -->
-    </div>
+      </div>
 
-    <!-- Fixed Footer Slot -->
     <div v-if="$slots.footer" class="shrink-0 border-t mt-1 pt-1">
       <slot name="footer" />
     </div>
