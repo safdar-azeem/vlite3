@@ -2,7 +2,7 @@
 import ToolTip from 'v-tooltip-lite'
 import 'v-tooltip-lite/style.css'
 import { computed, ref, watch, reactive, toRefs } from 'vue'
-import type { IDropdownOptions, IDropdownOption } from '@/types/styles'
+import type { IDropdownOptions, IDropdownOption } from '@/types'
 import type { TooltTipPlacement } from 'v-tooltip-lite/types'
 import DropdownMenu from './DropdownMenu.vue'
 import DropdownTrigger from './DropdownTrigger.vue'
@@ -185,7 +185,7 @@ const finalIgnoreClickOutside = computed(() => {
   return [...new Set([...propsList, ...recursiveIds])]
 })
 
-const handleOptionSelect = (option: import('@/types/styles').IDropdownOption) => {
+const handleOptionSelect = (option: import('@/types').IDropdownOption) => {
   // Check if double confirmation is enabled globally or per-option
   const needsConfirmation = props.doubleConfirmation || !!option.confirmation
 
@@ -229,7 +229,7 @@ const handleOptionSelect = (option: import('@/types/styles').IDropdownOption) =>
   }
 }
 
-const performSelection = (option: import('@/types/styles').IDropdownOption) => {
+const performSelection = (option: import('@/types').IDropdownOption) => {
   selectOption(option)
 }
 
@@ -312,15 +312,19 @@ const handleClose = () => {
           @close="handleClose"
           @load-more="$emit('load-more')"
           @search="(q) => $emit('search', q)">
-          <template #menu>
+          
+          <template #menu v-if="$slots.menu">
             <slot name="menu" />
           </template>
-          <template #item="slotProps">
+          
+          <template #item="slotProps" v-if="$slots.item">
             <slot name="item" v-bind="slotProps" />
           </template>
+          
           <template #header v-if="$slots.header">
             <slot name="header" />
           </template>
+          
           <template #footer v-if="$slots.footer">
             <slot name="footer" />
           </template>
