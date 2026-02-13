@@ -11,9 +11,11 @@ import CheckBox from '@/components/CheckBox.vue'
 import Textarea from '@/components/Textarea.vue'
 import FilePicker from '@/components/FilePicker/FilePicker.vue'
 import AvatarUploader from '@/components/AvatarUploader/AvatarUploader.vue'
+// Dropdown must be imported synchronously to avoid 'ce' (currentElement) null errors in library builds
+import Dropdown from '@/components/Dropdown/Dropdown.vue'
 
 // Async imports for complex or heavy components
-const Dropdown = defineAsyncComponent(() => import('@/components/Dropdown/Dropdown.vue'))
+// Circular dependencies (like CustomFields) must remain async
 const MultiSelect = defineAsyncComponent(() => import('@/components/MultiSelect/MultiSelect.vue'))
 const DatePicker = defineAsyncComponent(() => import('@/components/DatePicker.vue'))
 const ColorPicker = defineAsyncComponent(() => import('@/components/ColorPicker/ColorPicker.vue'))
