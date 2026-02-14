@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import { Form, type IForm, type IFormSubmitPayload } from '@/components/Form'
 import Icon from '@/components/Icon.vue'
+import DemoSection from '../../DemoSection.vue'
+import sourceCode from './FormBasic.vue?raw'
 
 // Login Form Schema
 const loginSchema: IForm[] = [
@@ -91,70 +93,72 @@ const handleSubmit = (form: string, payload: IFormSubmitPayload) => {
 </script>
 
 <template>
-  <div class="space-y-8">
-    <div>
-      <h3 class="text-lg font-semibold mb-1">Login Form</h3>
-      <p class="text-sm text-gray-500 mb-4">
-        Simple login form with email, password, and remember me.
-      </p>
-      <div class="flex flex-col lg:flex-row gap-6">
-        <div class="flex-1 max-w-md">
-          <Form
-            :schema="loginSchema"
-            submitText="Sign In"
-            @onSubmit="(payload) => handleSubmit('Login Form', payload)" />
-        </div>
-        <!-- Inline Submitted Values -->
-        <div
-          v-if="submittedValues && submittedValues.form === 'Login Form'"
-          class="flex-1 max-w-md">
-          <div class="bg-green-50 border border-green-200 rounded-lg p-4 h-full">
-            <div class="flex items-center gap-2 mb-3">
-              <Icon icon="lucide:check-circle" class="w-5 h-5 text-green-600" />
-              <h4 class="font-semibold text-green-800">Submitted Values</h4>
+  <DemoSection title="Basic Forms" :code="sourceCode">
+    <div class="space-y-8">
+      <div>
+        <h3 class="text-lg font-semibold mb-1">Login Form</h3>
+        <p class="text-sm text-gray-500 mb-4">
+          Simple login form with email, password, and remember me.
+        </p>
+        <div class="flex flex-col lg:flex-row gap-6">
+          <div class="flex-1 max-w-md">
+            <Form
+              :schema="loginSchema"
+              submitText="Sign In"
+              @onSubmit="(payload) => handleSubmit('Login Form', payload)" />
+          </div>
+          <!-- Inline Submitted Values -->
+          <div
+            v-if="submittedValues && submittedValues.form === 'Login Form'"
+            class="flex-1 max-w-md">
+            <div class="bg-green-50 border border-green-200 rounded-lg p-4 h-full">
+              <div class="flex items-center gap-2 mb-3">
+                <Icon icon="lucide:check-circle" class="w-5 h-5 text-green-600" />
+                <h4 class="font-semibold text-green-800">Submitted Values</h4>
+              </div>
+              <div class="bg-white rounded border border-green-200 p-3 overflow-auto max-h-60">
+                <pre class="text-xs text-gray-700 whitespace-pre-wrap">{{
+                  JSON.stringify(submittedValues.values, null, 2)
+                }}</pre>
+              </div>
             </div>
-            <div class="bg-white rounded border border-green-200 p-3 overflow-auto max-h-60">
-              <pre class="text-xs text-gray-700 whitespace-pre-wrap">{{
-                JSON.stringify(submittedValues.values, null, 2)
-              }}</pre>
+          </div>
+        </div>
+      </div>
+
+      <hr class="border-border" />
+
+      <div>
+        <h3 class="text-lg font-semibold mb-1">Contact Form</h3>
+        <p class="text-sm text-gray-500 mb-4">
+          Contact form with dropdown, textarea, and grid layout.
+        </p>
+        <div class="flex flex-col lg:flex-row gap-6">
+          <div class="flex-1 max-w-2xl">
+            <Form
+              :schema="contactSchema"
+              class-name="grid-cols-2"
+              submitText="Send Message"
+              @onSubmit="(payload) => handleSubmit('Contact Form', payload)" />
+          </div>
+          <!-- Inline Submitted Values -->
+          <div
+            v-if="submittedValues && submittedValues.form === 'Contact Form'"
+            class="flex-1 max-w-md">
+            <div class="bg-green-50 border border-green-200 rounded-lg p-4 h-full">
+              <div class="flex items-center gap-2 mb-3">
+                <Icon icon="lucide:check-circle" class="w-5 h-5 text-green-600" />
+                <h4 class="font-semibold text-green-800">Submitted Values</h4>
+              </div>
+              <div class="bg-white rounded border border-green-200 p-3 overflow-auto max-h-60">
+                <pre class="text-xs text-gray-700 whitespace-pre-wrap">{{
+                  JSON.stringify(submittedValues.values, null, 2)
+                }}</pre>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    <hr class="border-border" />
-
-    <div>
-      <h3 class="text-lg font-semibold mb-1">Contact Form</h3>
-      <p class="text-sm text-gray-500 mb-4">
-        Contact form with dropdown, textarea, and grid layout.
-      </p>
-      <div class="flex flex-col lg:flex-row gap-6">
-        <div class="flex-1 max-w-2xl">
-          <Form
-            :schema="contactSchema"
-            class-name="grid-cols-2"
-            submitText="Send Message"
-            @onSubmit="(payload) => handleSubmit('Contact Form', payload)" />
-        </div>
-        <!-- Inline Submitted Values -->
-        <div
-          v-if="submittedValues && submittedValues.form === 'Contact Form'"
-          class="flex-1 max-w-md">
-          <div class="bg-green-50 border border-green-200 rounded-lg p-4 h-full">
-            <div class="flex items-center gap-2 mb-3">
-              <Icon icon="lucide:check-circle" class="w-5 h-5 text-green-600" />
-              <h4 class="font-semibold text-green-800">Submitted Values</h4>
-            </div>
-            <div class="bg-white rounded border border-green-200 p-3 overflow-auto max-h-60">
-              <pre class="text-xs text-gray-700 whitespace-pre-wrap">{{
-                JSON.stringify(submittedValues.values, null, 2)
-              }}</pre>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  </DemoSection>
 </template>
