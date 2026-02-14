@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import { MultiSelect } from '@/components/MultiSelect'
 import Icon from '@/components/Icon.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './MultiSelectDemo.vue?raw'
 
 // --- Data ---
 const options = [
@@ -118,13 +120,7 @@ const handleLoadMore = () => {
 		</div>
 
 		<!-- 1. Basic Usage -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold flex items-center gap-2">
-				<Icon
-					icon="lucide:check-square"
-					class="text-primary" />
-				Basic Usage
-			</h3>
+		<DemoSection title="Basic Usage" :code="sourceCode">
 			<div class="p-4 border rounded-xl bg-gray-50/50">
 				<MultiSelect
 					v-model="selectedFrameworks"
@@ -135,16 +131,10 @@ const handleLoadMore = () => {
 					Model: {{ selectedFrameworks }}
 				</div>
 			</div>
-		</section>
+		</DemoSection>
 
         <!-- 2. Remote Search -->
-        <section class="space-y-4">
-            <h3 class="text-lg font-semibold flex items-center gap-2">
-                <Icon
-                    icon="lucide:search"
-                    class="text-primary" />
-                Remote Search (Async)
-            </h3>
+        <DemoSection title="Remote Search (Async)" :code="sourceCode">
             <div class="p-4 border rounded-xl bg-gray-50/50">
                 <MultiSelect
                     v-model="remoteSelected"
@@ -159,16 +149,10 @@ const handleLoadMore = () => {
                     Type anything to simulate an API search.
                 </div>
             </div>
-        </section>
+        </DemoSection>
 
         <!-- 3. Rich Options (Subtitle & Description) -->
-        <section class="space-y-4">
-            <h3 class="text-lg font-semibold flex items-center gap-2">
-                <Icon
-                    icon="lucide:layout-list"
-                    class="text-primary" />
-                Rich Options
-            </h3>
+        <DemoSection title="Rich Options" :code="sourceCode">
             <div class="p-4 border rounded-xl bg-gray-50/50">
                 <MultiSelect
                     v-model="selectedRich"
@@ -180,16 +164,10 @@ const handleLoadMore = () => {
                     Options with subtitles (shortcuts) and descriptions.
                 </div>
             </div>
-        </section>
+        </DemoSection>
 
         <!-- 4. Pagination / Infinite Scroll -->
-        <section class="space-y-4">
-            <h3 class="text-lg font-semibold flex items-center gap-2">
-                <Icon
-                    icon="lucide:list-plus"
-                    class="text-primary" />
-                Pagination (Load More)
-            </h3>
+        <DemoSection title="Pagination (Load More)" :code="sourceCode">
             <div class="p-4 border rounded-xl bg-gray-50/50">
                 <MultiSelect
                     v-model="selectedPaged"
@@ -204,16 +182,10 @@ const handleLoadMore = () => {
                     Scroll to the bottom of the list to load more items.
                 </div>
             </div>
-        </section>
+        </DemoSection>
 
         <!-- 4. Grouped Options -->
-        <section class="space-y-4">
-            <h3 class="text-lg font-semibold flex items-center gap-2">
-                <Icon
-                    icon="lucide:layers"
-                    class="text-primary" />
-                Grouped Options
-            </h3>
+        <DemoSection title="Grouped Options" :code="sourceCode">
             <div class="p-4 border rounded-xl bg-gray-50/50">
                 <MultiSelect
                     v-model="selectedGrouped"
@@ -227,16 +199,10 @@ const handleLoadMore = () => {
 					Model: {{ selectedGrouped }}
 				</div>
             </div>
-        </section>
+        </DemoSection>
 
 		<!-- 5. Empty State & Placeholder -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold flex items-center gap-2">
-				<Icon
-					icon="lucide:message-square"
-					class="text-primary" />
-				Placeholder
-			</h3>
+		<DemoSection title="Placeholder" :code="sourceCode">
 			<div class="p-4 border rounded-xl bg-gray-50/50">
 				<MultiSelect
 					v-model="selectedEmpty"
@@ -244,16 +210,10 @@ const handleLoadMore = () => {
 					placeholder="Choose your stack..."
 					@change="(v) => handleChange('Empty', v)" />
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- 6. Overflow Handling (+N) -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold flex items-center gap-2">
-				<Icon
-					icon="lucide:more-horizontal"
-					class="text-primary" />
-				Overflow Handling (+N)
-			</h3>
+		<DemoSection title="Overflow Handling (+N)" :code="sourceCode">
 			<div class="p-4 border rounded-xl bg-gray-50/50">
 				<MultiSelect
 					v-model="selectedMany"
@@ -264,16 +224,10 @@ const handleLoadMore = () => {
 					Max visible set to 3. Selection has 5 items.
 				</p>
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- 7. States -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold flex items-center gap-2">
-				<Icon
-					icon="lucide:toggle-left"
-					class="text-primary" />
-				States
-			</h3>
+		<DemoSection title="States" :code="sourceCode">
 			<div
 				class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border rounded-xl bg-gray-50/50">
 				<div>
@@ -295,6 +249,6 @@ const handleLoadMore = () => {
 						variant="solid" />
 				</div>
 			</div>
-		</section>
+		</DemoSection>
 	</div>
 </template>
