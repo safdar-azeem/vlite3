@@ -4,6 +4,8 @@ import { SidebarMenu } from '@/components/SidebarMenu'
 import { SidebarMenuItemSchema } from '@/components/SidebarMenu/types'
 import Button from '@/components/Button.vue'
 import CheckBox from '@/components/CheckBox.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './SidebarMenuDemo.vue?raw'
 
 // Demo Configuration
 const allowMultiple = ref(true)
