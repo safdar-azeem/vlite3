@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import { AvatarUploader } from '@/components/AvatarUploader'
 import Icon from '@/components/Icon.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './AvatarUploaderDemo.vue?raw'
 
 const avatar1 = ref<string | null>(null)
 const avatar2 = ref<string | null>('https://i.pravatar.cc/300?img=12')
@@ -27,11 +29,7 @@ const handleError = (err: string) => {
     </div>
 
     <!-- 1. Sizes -->
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold flex items-center gap-2">
-        <Icon icon="lucide:scaling" class="text-primary" />
-        Sizes & Defaults
-      </h3>
+    <DemoSection title="Sizes & Defaults" :code="sourceCode">
       <div class="p-6 border rounded-xl bg-card flex items-end gap-6">
         <!-- Small -->
         <div class="flex flex-col items-center gap-2">
@@ -66,14 +64,10 @@ const handleError = (err: string) => {
       <p class="text-sm text-gray-500">
         Note: All these share the same model, so updating one updates all.
       </p>
-    </section>
+    </DemoSection>
 
     <!-- 2. Pre-filled & Shapes -->
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold flex items-center gap-2">
-        <Icon icon="lucide:user-circle" class="text-primary" />
-        Pre-filled & Shapes
-      </h3>
+    <DemoSection title="Pre-filled & Shapes" :code="sourceCode">
       <div class="p-6 border rounded-xl bg-card flex gap-8">
         <div class="flex flex-col items-center gap-2">
           <label class="text-sm font-medium">Circle (Default)</label>
@@ -89,14 +83,10 @@ const handleError = (err: string) => {
             @change="(v) => handleChange('Square', v)" />
         </div>
       </div>
-    </section>
+    </DemoSection>
 
     <!-- 3. States -->
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold flex items-center gap-2">
-        <Icon icon="lucide:toggle-left" class="text-primary" />
-        States
-      </h3>
+    <DemoSection title="States" :code="sourceCode">
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 p-6 border rounded-xl bg-card">
         <!-- Disabled -->
         <div class="flex flex-col items-center gap-2">
@@ -116,18 +106,14 @@ const handleError = (err: string) => {
           <span class="text-xs text-gray-500">Loading</span>
         </div>
       </div>
-    </section>
+    </DemoSection>
 
     <!-- 4. Max Size error handling -->
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold flex items-center gap-2">
-        <Icon icon="lucide:alert-triangle" class="text-primary" />
-        Validation (Max 50KB)
-      </h3>
+    <DemoSection title="Validation (Max 50KB)" :code="sourceCode">
       <div class="p-6 border rounded-xl bg-card">
         <AvatarUploader v-model="avatar1" size="xl" :max-size="50 * 1024" @error="handleError" />
         <p class="mt-2 text-xs text-gray-500">Try uploading a large image to see the alert.</p>
       </div>
-    </section>
+    </DemoSection>
   </div>
 </template>
