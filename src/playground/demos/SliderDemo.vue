@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import Slider from '@/components/Slider.vue'
 import { ref } from 'vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './SliderDemo.vue?raw'
 
 const val1 = ref(50)
 const val2 = ref(75)
@@ -16,8 +18,7 @@ const val3 = ref(0)
       </p>
     </div>
 
-    <section class="space-y-8 max-w-xl">
-      <h3 class="text-lg font-semibold">Sizes</h3>
+    <DemoSection title="Sizes" :code="sourceCode">
 
       <Slider label="Extra Small" size="xs" v-model="val1" />
 
@@ -26,10 +27,9 @@ const val3 = ref(0)
       <Slider label="Medium (Default)" size="md" v-model="val1" />
 
       <Slider label="Large" size="lg" v-model="val1" />
-    </section>
+    </DemoSection>
 
-    <section class="space-y-8 max-w-xl">
-      <h3 class="text-lg font-semibold">Examples</h3>
+    <DemoSection title="Examples" :code="sourceCode">
 
       <Slider label="Standard (0-100)" v-model="val1" />
 
@@ -43,6 +43,6 @@ const val3 = ref(0)
         icon="lucide:scale" />
 
       <Slider label="Disabled" :model-value="30" disabled />
-    </section>
+    </DemoSection>
   </div>
 </template>
