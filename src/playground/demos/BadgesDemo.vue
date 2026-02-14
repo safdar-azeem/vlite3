@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import Badge from '@/components/Badge.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './BadgesDemo.vue?raw'
 </script>
 
 <template>
-  <section class="space-y-6">
+  <DemoSection title="Badges" :code="sourceCode">
     <div class="space-y-2">
       <h2 class="text-xl font-semibold tracking-tight">Badges</h2>
       <p class="text-sm text-gray-500">
@@ -22,5 +24,5 @@ import Badge from '@/components/Badge.vue'
         <Badge variant="danger">Danger</Badge>
       </div>
     </div>
-  </section>
+  </DemoSection>
 </template>
