@@ -15,6 +15,8 @@ import type {
   TableState,
 } from '@/components/DataTable/types'
 import { useGetUsers, type User } from '../composables/useGetUsers'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './DataTableDemo.vue?raw'
 
 const searchQuery = ref('')
 const isTableSortable = ref(true)
@@ -151,7 +153,7 @@ const handleDelete = (rows: User[]) => {
     </div>
 
     <!-- Main Demo -->
-    <section class="space-y-4">
+    <DemoSection title="User Management" :code="sourceCode">
       <h2 class="text-lg font-semibold">User Management</h2>
 
       <DataTable
@@ -205,6 +207,6 @@ const handleDelete = (rows: User[]) => {
           </div>
         </template>
       </DataTable>
-    </section>
+    </DemoSection>
   </div>
 </template>
