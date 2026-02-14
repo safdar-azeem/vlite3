@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Chip } from '@/components/Chip'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './ChipDemo.vue?raw'
 
 const deletedChips = ref<string[]>([])
 
@@ -29,8 +31,7 @@ const restore = () => {
 		</div>
 
 		<!-- Basic Variants -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">Variants</h3>
+		<DemoSection title="Variants" :code="sourceCode">
 			<div class="flex flex-wrap gap-2">
 				<Chip
 					text="Solid"
@@ -48,11 +49,10 @@ const restore = () => {
 					text="Ghost"
 					variant="ghost" />
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- Semantic Variants -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">Semantic Colors</h3>
+		<DemoSection title="Semantic Colors" :code="sourceCode">
 			<div class="flex flex-wrap gap-2">
 				<Chip
 					text="Primary"
@@ -74,11 +74,10 @@ const restore = () => {
 					variant="info"
 					icon="lucide:info" />
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- Sizes -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">Sizes</h3>
+		<DemoSection title="Sizes" :code="sourceCode">
 			<div class="flex flex-wrap items-center gap-2">
 				<Chip
 					text="Small"
@@ -90,11 +89,10 @@ const restore = () => {
 					text="Large"
 					size="large" />
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- Icons & Avatars -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">Icons & Avatars</h3>
+		<DemoSection title="Icons & Avatars" :code="sourceCode">
 			<div class="flex flex-wrap gap-2">
 				<Chip
 					text="With Icon"
@@ -112,11 +110,10 @@ const restore = () => {
 					variant="outline" />
 				<!-- Icon Only -->
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- Interactions -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">Interactions</h3>
+		<DemoSection title="Interactions" :code="sourceCode">
 			<div class="space-y-4">
 				<div class="flex flex-wrap gap-2">
 					<Chip
@@ -156,11 +153,10 @@ const restore = () => {
 					</button>
 				</div>
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- States -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">States</h3>
+		<DemoSection title="States" :code="sourceCode">
 			<div class="flex flex-wrap gap-2">
 				<Chip
 					text="Disabled"
@@ -174,17 +170,16 @@ const restore = () => {
 					clickable
 					disabled />
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- Custom Styling -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">Custom Styling (Override)</h3>
+		<DemoSection title="Custom Styling (Override)" :code="sourceCode">
 			<div class="flex flex-wrap gap-2">
 				<!-- Example of overriding classes manually if needed, distinct from semantic variants -->
 				<Chip
 					text="Custom Class"
 					class="bg-indigo-100 text-indigo-700 border-indigo-200" />
 			</div>
-		</section>
+		</DemoSection>
 	</div>
 </template>
