@@ -2,6 +2,8 @@
 import ColorPicker from '@/components/ColorPicker/ColorPicker.vue'
 import Label from '@/components/Label.vue'
 import { ref } from 'vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './ColorPickerDemo.vue?raw'
 
 const color = ref('#4f46e5')
 </script>
@@ -15,8 +17,7 @@ const color = ref('#4f46e5')
 			</p>
 		</div>
 
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">Usage</h3>
+		<DemoSection title="Usage" :code="sourceCode">
 			<div class="flex flex-col gap-2">
 				<Label>Accent Color</Label>
 				<ColorPicker v-model="color" />
@@ -25,6 +26,6 @@ const color = ref('#4f46e5')
 					<span class="font-mono text-gray-900">{{ color }}</span>
 				</p>
 			</div>
-		</section>
+		</DemoSection>
 	</div>
 </template>
