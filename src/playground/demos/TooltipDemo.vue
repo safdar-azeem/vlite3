@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import Tooltip from '@/components/Tooltip.vue'
 import Button from '@/components/Button.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './TooltipDemo.vue?raw'
 </script>
 
 <template>
@@ -10,8 +12,7 @@ import Button from '@/components/Button.vue'
       <p class="text-gray-500">A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.</p>
     </div>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Usage</h3>
+    <DemoSection title="Usage" :code="sourceCode">
       <div class="flex gap-4">
         <Tooltip content="Add to Library">
            <Button variant="ghost" size="sm" icon="lucide:plus" />
@@ -25,6 +26,6 @@ import Button from '@/components/Button.vue'
            <Button variant="outline">Hover for details</Button>
         </Tooltip>
       </div>
-    </section>
+    </DemoSection>
   </div>
 </template>
