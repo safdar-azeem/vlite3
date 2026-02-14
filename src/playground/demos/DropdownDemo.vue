@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import Basic from './dropdown/Basic.vue'
-import Scrollable from './dropdown/Scrollable.vue'
-import CustomSlot from './dropdown/CustomSlot.vue'
-import RichOptions from './dropdown/RichOptions.vue'
-import Nested from './dropdown/Nested.vue'
-import Recursive from './dropdown/Recursive.vue'
-import Direction from './dropdown/Direction.vue'
-import MegaMenu from './dropdown/MegaMenu.vue'
-import Pagination from './dropdown/Pagination.vue'
-import RemoteSearch from './dropdown/RemoteSearch.vue'
-import StickySlots from './dropdown/StickySlots.vue'
+import DropdownBasic from './dropdown/DropdownBasic.vue'
+import DropdownScrollable from './dropdown/DropdownScrollable.vue'
+import DropdownVariants from './dropdown/DropdownVariants.vue'
+import DropdownCustomSlot from './dropdown/CustomSlot.vue'
+import DropdownRichOptions from './dropdown/RichOptions.vue'
+import DropdownNested from './dropdown/Nested.vue'
+import DropdownRecursive from './dropdown/Recursive.vue'
+import DropdownDirection from './dropdown/Direction.vue'
+import DropdownMegaMenu from './dropdown/MegaMenu.vue'
+import DropdownPagination from './dropdown/Pagination.vue'
+import DropdownRemoteSearch from './dropdown/RemoteSearch.vue'
+import DropdownStickySlots from './dropdown/StickySlots.vue'
 </script>
 
 <template>
@@ -19,16 +20,17 @@ import StickySlots from './dropdown/StickySlots.vue'
       <p class="text-gray-500">Displays a list of options for the user to pick from.</p>
     </div>
 
-    <Basic />
-    <Scrollable />
-    <CustomSlot />
-    <RichOptions />
-    <Nested />
-    <Recursive />
-    <Direction />
-    <MegaMenu />
-    <Pagination />
-    <RemoteSearch />
-    <StickySlots />
+    <DropdownBasic />
+    <DropdownScrollable />
+    <DropdownVariants />
+    <DropdownCustomSlot />
+    <DropdownRichOptions />
+    <DropdownNested />
+    <DropdownRecursive />
+    <DropdownDirection />
+    <DropdownMegaMenu />
+    <DropdownPagination />
+    <DropdownRemoteSearch />
+    <DropdownStickySlots />
   </div>
 </template>
