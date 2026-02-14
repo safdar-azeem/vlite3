@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import Button from '@/components/Button.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './ButtonDemo.vue?raw'
 </script>
 
 <template>
@@ -13,8 +15,7 @@ import Button from '@/components/Button.vue'
 		</div>
 
 		<!-- Variants -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">Variants</h3>
+		<DemoSection title="Variants" :code="sourceCode">
 			<div class="flex flex-wrap gap-2">
 				<Button>Primary</Button>
 				<Button variant="secondary">Secondary</Button>
@@ -22,11 +23,10 @@ import Button from '@/components/Button.vue'
 				<Button variant="ghost">Ghost</Button>
 				<Button variant="link">Link</Button>
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- Semantic Variants -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">Semantic / Colors</h3>
+		<DemoSection title="Semantic / Colors" :code="sourceCode">
 			<div class="space-y-4">
 				<div class="flex flex-wrap gap-2">
 					<Button variant="info">Info</Button>
@@ -47,32 +47,29 @@ import Button from '@/components/Button.vue'
 					<Button variant="outline-danger">Outline Danger</Button>
 				</div>
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- Sizes -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">Sizes</h3>
+		<DemoSection title="Sizes" :code="sourceCode">
 			<div class="flex flex-wrap items-center gap-4">
 				<Button size="sm">Small</Button>
 				<Button size="md">Medium (Default)</Button>
 				<Button size="lg">Large</Button>
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- States & Shapes -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">States & Shapes</h3>
+		<DemoSection title="States & Shapes" :code="sourceCode">
 			<div class="flex flex-wrap items-center gap-4">
 				<Button loading>Loading</Button>
 				<Button disabled>Disabled</Button>
 				<Button rounded="full">Rounded Full</Button>
 				<Button rounded="none">Rounded None</Button>
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- Icons -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">With Icons</h3>
+		<DemoSection title="With Icons" :code="sourceCode">
 			<div class="flex flex-wrap gap-4">
 				<Button icon="lucide:plus">Add New</Button>
 				<Button icon-right="lucide:arrow-right">Continue</Button>
@@ -94,6 +91,6 @@ import Button from '@/components/Button.vue'
 					icon="lucide:settings"
 					text="Secondary" />
 			</div>
-		</section>
+		</DemoSection>
 	</div>
 </template>
