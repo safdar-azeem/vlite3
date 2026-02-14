@@ -46,7 +46,6 @@ export function highlightVue(code: string): string {
         escaped = escaped.replace(/\b(v-[a-z:-]+|@[a-z.-]+|:[a-z.-]+)/g, wrap('$1', 'directive'))
 
         // 6. Normal attributes (word=...)
-        // Improved regex to avoid matching inside placeholders
         escaped = escaped.replace(/\b([a-zA-Z-]+)(=)/g, (match, p1, p2) => {
           return wrap(p1, 'attr') + p2
         })
@@ -69,10 +68,92 @@ export function highlightVue(code: string): string {
   )
 }
 
+// Internal helper to transform script imports
+function transformScript(scriptBlock: string): string {
+  if (!scriptBlock) return ''
+
+  const openTagMatch = scriptBlock.match(/<script[^>]*>/)
+  const closeTag = '</script>'
+
+  if (!openTagMatch) return scriptBlock
+
+  const openTag = openTagMatch[0]
+  // Extract content between tags
+  const start = scriptBlock.indexOf(openTag) + openTag.length
+  const end = scriptBlock.lastIndexOf(closeTag)
+  if (end === -1) return scriptBlock // Malformed?
+
+  const innerContent = scriptBlock.substring(start, end)
+  const lines = innerContent.split('\n')
+
+  const componentImports = new Set<string>()
+  const otherLines: string[] = []
+
+  lines.forEach((line) => {
+    // Using simple iteration to filter
+    const trimmed = line.trim()
+    if (trimmed.startsWith('import ')) {
+      // Filter out internal demo imports
+      if (trimmed.includes('DemoSection') || trimmed.includes('?raw')) return
+
+      // Handle component imports from @/components/
+      // We assume all @/components/ imports should be exposed as 'vlite3' named imports
+      if (line.includes('@/components/')) {
+        // Try default import: import X from ...
+        const defaultMatch = line.match(/import\s+(\w+)\s+from/)
+        if (defaultMatch) {
+          componentImports.add(defaultMatch[1])
+          return
+        }
+        // Try named import: import { X } from ...
+        const namedMatch = line.match(/import\s+\{\s*([^}]+)\s*\}\s+from/)
+        if (namedMatch) {
+          const names = namedMatch[1].split(',').map((s) => s.trim())
+          names.forEach((n) => componentImports.add(n))
+          return
+        }
+        // Fallback for mixed or other forms? Just add to otherLines if not matched
+        otherLines.push(line)
+      } else {
+        // Other imports (vue, utils, etc)
+        otherLines.push(line)
+      }
+    } else {
+      // Non-import lines (logic, consts, etc)
+      otherLines.push(line)
+    }
+  })
+
+  // Build new imports
+  const sortedComponents = Array.from(componentImports).sort()
+  let newImportBlock = ''
+  if (sortedComponents.length > 0) {
+    newImportBlock = `import { ${sortedComponents.join(', ')} } from 'vlite3'`
+  }
+
+  // Reassemble content
+  // Remove empty lines from start/end of otherLines to clean up
+  while (otherLines.length && !otherLines[0].trim()) otherLines.shift()
+  while (otherLines.length && !otherLines[otherLines.length - 1].trim()) otherLines.pop()
+
+  let newInner = newImportBlock
+  if (otherLines.length > 0) {
+    if (newInner) newInner += '\n'
+    newInner += otherLines.join('\n')
+  }
+
+  return `${openTag}\n${newInner}\n${closeTag}`
+}
+
 export function extractSnippet(code: string, sectionTitle: string): string {
   // Extract script block (if any)
   const scriptMatch = code.match(/<script[\s\S]*?<\/script>/)
-  const scriptContent = scriptMatch ? scriptMatch[0] : ''
+  let scriptContent = scriptMatch ? scriptMatch[0] : ''
+
+  // Transform script imports if found
+  if (scriptContent) {
+    scriptContent = transformScript(scriptContent)
+  }
 
   // Escape regex chars in title
   const safeTitle = sectionTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -113,6 +194,20 @@ export function extractSnippet(code: string, sectionTitle: string): string {
     if (scriptContent) result += scriptContent + '\n\n'
     result += '<template>\n' + content + '\n</template>'
     return result
+  }
+
+  // If no specific section found (or title mismatch), just return transformed script + whatever code?
+  // Or just whole file transformed?
+  // Let's transform the whole file's script if snippet extraction fails?
+  // Yes, helpful fallback.
+
+  if (scriptContent && code.includes('<script')) {
+    // Replace original script with transformed script in code?
+    // This is complex string replacement.
+    // Let's keep it simple: return code as is if snippet extraction fails,
+    // but maybe try to transform script there too?
+    // Ideally yes.
+    return code.replace(/<script[\s\S]*?<\/script>/, scriptContent)
   }
 
   return code
