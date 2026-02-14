@@ -3,6 +3,8 @@ import Label from '@/components/Label.vue'
 import Input from '@/components/Input.vue'
 import CheckBox from '@/components/CheckBox.vue'
 import { ref } from 'vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './LabelDemo.vue?raw'
 
 const checked = ref(false)
 </script>
@@ -14,8 +16,7 @@ const checked = ref(false)
       <p class="text-gray-500">Renders an accessible label associated with controls.</p>
     </div>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Usage</h3>
+    <DemoSection title="Usage" :code="sourceCode">
       <div class="grid gap-4 max-w-sm">
          <div class="space-y-1">
             <Label for="email">Email address</Label>
@@ -27,6 +28,6 @@ const checked = ref(false)
             <Label for="terms" class="cursor-pointer">I accept the terms</Label>
          </div>
       </div>
-    </section>
+    </DemoSection>
   </div>
 </template>
