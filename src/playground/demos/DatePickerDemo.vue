@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import DatePicker from '@/components/DatePicker.vue'
 import { ref } from 'vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './DatePickerDemo.vue?raw'
 
 const date = ref<Date | null>(new Date())
 const emptyDate = ref<Date | null>(null)
@@ -13,7 +15,7 @@ const emptyDate = ref<Date | null>(null)
 			<p class="text-gray-500">A component for selecting a date.</p>
 		</div>
 
-		<section class="space-y-8 max-w-sm">
+		<DemoSection title="DatePicker" :code="sourceCode">
 			<!-- <div class="space-y-2">
 				<h3 class="text-lg font-semibold">Basic</h3>
 				<DatePicker
@@ -38,6 +40,6 @@ const emptyDate = ref<Date | null>(null)
 					mode="dateTime" />
 				<p class="text-xs text-gray-500">Value: {{ date }}</p>
 			</div>
-		</section>
+		</DemoSection>
 	</div>
 </template>
