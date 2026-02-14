@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import ButtonGroup from '@/components/ButtonGroup.vue'
 import Button from '@/components/Button.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './ButtonGroupDemo.vue?raw'
 </script>
 
 <template>
@@ -10,30 +12,27 @@ import Button from '@/components/Button.vue'
       <p class="text-gray-500">Group a series of buttons together on a single line.</p>
     </div>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Attached (Default)</h3>
+    <DemoSection title="Attached (Default)" :code="sourceCode">
       <ButtonGroup>
         <Button>Years</Button>
         <Button>Months</Button>
         <Button>Days</Button>
       </ButtonGroup>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Detached</h3>
+    <DemoSection title="Detached" :code="sourceCode">
       <ButtonGroup :attached="false">
         <Button variant="outline">Cancel</Button>
         <Button variant="outline">Save</Button>
       </ButtonGroup>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Vertical</h3>
+    <DemoSection title="Vertical" :code="sourceCode">
       <ButtonGroup direction="vertical">
         <Button variant="secondary">Top</Button>
         <Button variant="secondary">Middle</Button>
         <Button variant="secondary">Bottom</Button>
       </ButtonGroup>
-    </section>
+    </DemoSection>
   </div>
 </template>
