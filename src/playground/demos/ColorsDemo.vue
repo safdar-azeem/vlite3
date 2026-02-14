@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import Icon from '@/components/Icon.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './ColorsDemo.vue?raw'
 
 const semanticColors = [
   {
