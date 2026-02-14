@@ -47,12 +47,7 @@ export function highlightVue(code: string): string {
 
         // 6. Normal attributes (word=...)
         // Improved regex to avoid matching inside placeholders
-        // We use a negative lookbehind or ensure we are not inside a placeholder?
-        // Simple approach: The placeholders use ___HL_... which doesn't look like valid attr syntax
         escaped = escaped.replace(/\b([a-zA-Z-]+)(=)/g, (match, p1, p2) => {
-          // Avoid matching inside placeholders if they look like attrs?
-          // Actually, our placeholders are ___HL_START_...___
-          // They don't contain =.
           return wrap(p1, 'attr') + p2
         })
 
@@ -72,4 +67,53 @@ export function highlightVue(code: string): string {
       .replace(/___HL_START_([a-z-]+)___/g, '<span class="hl-$1">')
       .replace(/___HL_END___/g, '</span>')
   )
+}
+
+export function extractSnippet(code: string, sectionTitle: string): string {
+  // Extract script block (if any)
+  const scriptMatch = code.match(/<script[\s\S]*?<\/script>/)
+  const scriptContent = scriptMatch ? scriptMatch[0] : ''
+
+  // Escape regex chars in title
+  const safeTitle = sectionTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+  // Find <DemoSection title="Title" ...>...</DemoSection>
+  const regex = new RegExp(
+    `<DemoSection[^>]+title=["']${safeTitle}["'][^>]*>([\\s\\S]*?)</DemoSection>`
+  )
+  const match = code.match(regex)
+
+  if (match && match[1]) {
+    let content = match[1]
+
+    // De-indent
+    const lines = content.split('\n')
+    // Remove leading/trailing empty lines
+    while (lines.length && !lines[0].trim()) lines.shift()
+    while (lines.length && !lines[lines.length - 1].trim()) lines.pop()
+
+    if (lines.length) {
+      // Find base indent from first line
+      const firstLineIndentMatch = lines[0].match(/^\s*/)
+      const indentLen = firstLineIndentMatch ? firstLineIndentMatch[0].length : 0
+
+      content = lines
+        .map((line) => {
+          if (line.length >= indentLen) {
+            return line.substring(indentLen)
+          }
+          return line
+        })
+        .join('\n')
+    } else {
+      content = ''
+    }
+
+    let result = ''
+    if (scriptContent) result += scriptContent + '\n\n'
+    result += '<template>\n' + content + '\n</template>'
+    return result
+  }
+
+  return code
 }
