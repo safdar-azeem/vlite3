@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import { OTPInput } from '@/components/OTPInput'
 import Button from '@/components/Button.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './OTPInputDemo.vue?raw'
 
 const code1 = ref('')
 const code2 = ref('')
@@ -26,19 +28,17 @@ const handleComplete = (val: string) => {
 		</div>
 
 		<!-- Default -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">Default</h3>
+		<DemoSection title="Default" :code="sourceCode">
 			<div class="p-4 border rounded-lg">
 				<OTPInput
 					v-model="code1"
 					@complete="handleComplete" />
 				<p class="mt-2 text-sm text-gray-500">Value: {{ code1 }}</p>
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- Variants -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">Variants</h3>
+		<DemoSection title="Variants" :code="sourceCode">
 			<div class="grid gap-6">
 				<div>
 					<p class="text-sm font-medium mb-2 text-gray-600">
@@ -61,11 +61,10 @@ const handleComplete = (val: string) => {
 						variant="ghost" />
 				</div>
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- Attached -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">Attached / Grouped</h3>
+		<DemoSection title="Attached / Grouped" :code="sourceCode">
 			<div class="grid gap-6">
 				<div>
 					<p class="text-sm font-medium mb-2 text-gray-600">
@@ -86,11 +85,10 @@ const handleComplete = (val: string) => {
 						variant="solid" />
 				</div>
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- Sizes -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">Sizes</h3>
+		<DemoSection title="Sizes" :code="sourceCode">
 			<div class="flex flex-col gap-4">
 				<div class="flex items-center gap-4">
 					<span class="w-20 text-sm text-gray-500">Small</span>
@@ -111,11 +109,10 @@ const handleComplete = (val: string) => {
 						size="lg" />
 				</div>
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- Custom Length & Type -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">Custom configuration</h3>
+		<DemoSection title="Custom configuration" :code="sourceCode">
 			<div class="grid gap-6">
 				<div>
 					<p class="text-sm font-medium mb-2 text-gray-600">
@@ -137,11 +134,10 @@ const handleComplete = (val: string) => {
 					<p class="text-xs text-gray-400 mt-1">Try typing letters</p>
 				</div>
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- States -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">States</h3>
+		<DemoSection title="States" :code="sourceCode">
 			<div class="grid gap-6">
 				<div>
 					<p class="text-sm font-medium mb-2 text-gray-600">Error</p>
@@ -165,6 +161,6 @@ const handleComplete = (val: string) => {
 					<OTPInput autofocus />
 				</div>
 			</div>
-		</section>
+		</DemoSection>
 	</div>
 </template>
