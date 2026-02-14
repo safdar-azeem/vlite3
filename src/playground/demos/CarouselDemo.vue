@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { Carousel } from '@/components/Carousel'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './CarouselDemo.vue?raw'
 
 /*
  * Carousel Wrapper Demo
@@ -26,8 +28,7 @@ const itemsToShowBreakpoints = {
 		<h1 class="text-3xl font-bold mb-6">Carousel Wrapper Demo</h1>
 
 		<!-- 1. Basic Carousel -->
-		<section>
-			<h2 class="text-xl font-semibold mb-4">1. Basic Carousel</h2>
+		<DemoSection title="Basic Carousel" :code="sourceCode">
 			<Carousel
 				:data="images"
 				pagination="dots"
@@ -41,13 +42,10 @@ const itemsToShowBreakpoints = {
 					</div>
 				</template>
 			</Carousel>
-		</section>
+		</DemoSection>
 
 		<!-- 2. Responsive Breakpoints -->
-		<section>
-			<h2 class="text-xl font-semibold mb-4">
-				2. Responsive Breakpoints
-			</h2>
+		<DemoSection title="Responsive Breakpoints" :code="sourceCode">
 			<Carousel
 				:data="images"
 				:items-to-show="itemsToShowBreakpoints"
@@ -63,13 +61,10 @@ const itemsToShowBreakpoints = {
 					</div>
 				</template>
 			</Carousel>
-		</section>
+		</DemoSection>
 
 		<!-- 3. Multi Pagination Types -->
-		<section>
-			<h2 class="text-xl font-semibold mb-4">
-				3. Multi Pagination (Dots + Buttons)
-			</h2>
+		<DemoSection title="Multi Pagination (Dots + Buttons)" :code="sourceCode">
 			<Carousel
 				:data="images"
 				:pagination="['dots', 'buttons']"
@@ -85,13 +80,10 @@ const itemsToShowBreakpoints = {
 					</div>
 				</template>
 			</Carousel>
-		</section>
+		</DemoSection>
 
 		<!-- 4. Hover Visibility Control -->
-		<section>
-			<h2 class="text-xl font-semibold mb-4">
-				4. Hover Visibility (Buttons on Hover)
-			</h2>
+		<DemoSection title="Hover Visibility (Buttons on Hover)" :code="sourceCode">
 			<Carousel
 				:data="images"
 				:pagination="['dots', 'buttons']"
@@ -107,11 +99,10 @@ const itemsToShowBreakpoints = {
 					</div>
 				</template>
 			</Carousel>
-		</section>
+		</DemoSection>
 
 		<!-- 5. Vertical Carousel -->
-		<section>
-			<h2 class="text-xl font-semibold mb-4">5. Vertical Carousel</h2>
+		<DemoSection title="Vertical Carousel" :code="sourceCode">
 			<Carousel
 				:data="images"
 				direction="vertical"
@@ -130,6 +121,6 @@ const itemsToShowBreakpoints = {
 					</div>
 				</template>
 			</Carousel>
-		</section>
+		</DemoSection>
 	</div>
 </template>
