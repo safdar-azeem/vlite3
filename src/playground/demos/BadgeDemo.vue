@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import Badge from '@/components/Badge.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './BadgeDemo.vue?raw'
 </script>
 
 <template>
@@ -9,23 +11,21 @@ import Badge from '@/components/Badge.vue'
       <p class="text-gray-500">Displays a badge or a component that looks like a badge.</p>
     </div>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Variants</h3>
+    <DemoSection title="Variants" :code="sourceCode">
       <div class="flex flex-wrap gap-2">
         <Badge>Default / Primary</Badge>
         <Badge variant="secondary">Secondary</Badge>
         <Badge variant="outline">Outline</Badge>
       </div>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Semantic Colors</h3>
+    <DemoSection title="Semantic Colors" :code="sourceCode">
       <div class="flex flex-wrap gap-2">
         <Badge variant="info">Info</Badge>
         <Badge variant="success">Success</Badge>
         <Badge variant="warning">Warning</Badge>
         <Badge variant="danger">Danger</Badge>
       </div>
-    </section>
+    </DemoSection>
   </div>
 </template>
