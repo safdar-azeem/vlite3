@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import Alert from '@/components/Alert.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './AlertDemo.vue?raw'
 </script>
 
 <template>
@@ -9,28 +11,25 @@ import Alert from '@/components/Alert.vue'
       <p class="text-gray-500">Displays a callout for user attention.</p>
     </div>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Variants</h3>
+    <DemoSection title="Variants" :code="sourceCode">
       <div class="space-y-3 max-w-xl">
          <Alert title="Primary" description="This is a primary alert." variant="primary" />
          <Alert title="Success" description="Operation completed successfully." icon="lucide:check-circle" variant="success" />
          <Alert title="Warning" description="Please review your inputs." icon="lucide:alert-triangle" variant="warning" />
          <Alert title="Error" description="Something went wrong." icon="lucide:x-circle" variant="danger" />
       </div>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Title Only</h3>
+    <DemoSection title="Title Only" :code="sourceCode">
       <div class="max-w-xl">
         <Alert title="Short message here" variant="primary" />
       </div>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Closable</h3>
+    <DemoSection title="Closable" :code="sourceCode">
       <div class="max-w-xl">
         <Alert title="Dismiss me" description="Click the X icon to close." closable variant="primary" />
       </div>
-    </section>
+    </DemoSection>
   </div>
 </template>
