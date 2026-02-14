@@ -2,6 +2,8 @@
 import { ref, computed } from 'vue'
 import { Masonry } from '@/components/Masonry'
 import Button from '@/components/Button.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './MasonryDemo.vue?raw'
 
 // Types
 type ItemType = 'text' | 'image' | 'mixed'
