@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Tabes, TabesOption, TabesVariant } from '@/components/Tabes'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './TabesDemo.vue?raw'
 
 // Demo 1: Basic
 const selectedMode = ref('write')
