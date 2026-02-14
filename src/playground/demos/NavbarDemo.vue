@@ -6,6 +6,8 @@ import Button from '@/components/Button.vue'
 import Icon from '@/components/Icon.vue'
 import { SidebarMenuItemSchema } from '@/components/SidebarMenu'
 import SidebarMenu from '@/components/SidebarMenu/SidebarMenu.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './NavbarDemo.vue?raw'
 
 // Mock Items
 const menuItems: SidebarMenuItemSchema[] = [
@@ -79,8 +81,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       <p class="text-gray-500">Navigation headers and sidebars.</p>
     </div>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Top Navigation</h3>
+    <DemoSection title="Top Navigation" :code="sourceCode">
       <div class="border rounded-lg overflow-hidden bg-gray-100 h-[200px] relative">
         <Navbar position="absolute" class="w-full bg-white border-b">
           <template #logo>
@@ -97,10 +98,9 @@ const menuItems: SidebarMenuItemSchema[] = [
           </template>
         </Navbar>
       </div>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Sidebar Navigation</h3>
+    <DemoSection title="Sidebar Navigation" :code="sourceCode">
       <div class="border rounded-lg overflow-hidden bg-gray-50 sm:h-[700px] flex max-sm:flex-col">
         <Navbar
           variant="sidebar"
@@ -130,10 +130,9 @@ const menuItems: SidebarMenuItemSchema[] = [
         </Navbar>
         <div class="p-8 text-gray-400">Main Content</div>
       </div>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Configurable Mobile Breakpoint (Large 'lg')</h3>
+    <DemoSection title="Configurable Mobile Breakpoint (Large 'lg')" :code="sourceCode">
       <p class="text-sm text-gray-500">
         This navbar switches to mobile mode (hamburger menu) on screens smaller than 'lg' (1024px).
         Try resizing the window to see it switch earlier than the default 'md'.
@@ -155,10 +154,9 @@ const menuItems: SidebarMenuItemSchema[] = [
           </template>
         </Navbar>
       </div>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Configurable Mobile Breakpoint (Small 'sm')</h3>
+    <DemoSection title="Configurable Mobile Breakpoint (Small 'sm')" :code="sourceCode">
       <p class="text-sm text-gray-500">
         This navbar stays in desktop mode until the screen is very small ('sm' / 640px).
       </p>
@@ -178,10 +176,9 @@ const menuItems: SidebarMenuItemSchema[] = [
           </template>
         </Navbar>
       </div>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Custom Slot Styles</h3>
+    <DemoSection title="Custom Slot Styles" :code="sourceCode">
       <p class="text-sm text-gray-500">
         Using <code>logoClass</code>, <code>contentClass</code>, and <code>footerClass</code> to
         style specific slot containers.
@@ -211,10 +208,9 @@ const menuItems: SidebarMenuItemSchema[] = [
           </template>
         </Navbar>
       </div>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Header Variant Custom Styles</h3>
+    <DemoSection title="Header Variant Custom Styles" :code="sourceCode">
       <p class="text-sm text-gray-500">
         Using <code>logoClass</code>, <code>contentClass</code>, and <code>rightClass</code> on a
         Header variant.
@@ -238,10 +234,9 @@ const menuItems: SidebarMenuItemSchema[] = [
           </template>
         </Navbar>
       </div>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Mobile Trigger Customization</h3>
+    <DemoSection title="Mobile Trigger Customization" :code="sourceCode">
       <p class="text-sm text-gray-500">
         Using <code>mobileTriggerClass</code> to style the default button, or providing a custom
         <code>mobile-trigger</code> slot. Resize window to see mobile view.
@@ -264,6 +259,6 @@ const menuItems: SidebarMenuItemSchema[] = [
           </template>
         </Navbar>
       </div>
-    </section>
+    </DemoSection>
   </div>
 </template>
