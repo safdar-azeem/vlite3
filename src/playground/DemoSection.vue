@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { highlightVue } from './highlighter'
+import { highlightVue, extractSnippet } from './highlighter'
 
 const props = defineProps<{
   title: string
@@ -10,11 +10,12 @@ const props = defineProps<{
 const showCode = ref(false)
 const copied = ref(false)
 
-const highlightedCode = computed(() => highlightVue(props.code))
+const snippet = computed(() => extractSnippet(props.code, props.title))
+const highlightedCode = computed(() => highlightVue(snippet.value))
 
 async function copyCode() {
   try {
-    await navigator.clipboard.writeText(props.code)
+    await navigator.clipboard.writeText(snippet.value)
     copied.value = true
     setTimeout(() => {
       copied.value = false
