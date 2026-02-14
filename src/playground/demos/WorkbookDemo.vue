@@ -5,6 +5,8 @@ import Button from '@/components/Button.vue'
 import Input from '@/components/Input.vue'
 import { Dropdown } from '@/components/Dropdown'
 import Switch from '@/components/Switch.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './WorkbookDemo.vue?raw'
 
 // --- Demo 1: Basic Usage ---
 const activeSheet1 = ref('1')
