@@ -8,6 +8,8 @@ import ColorPicker from '@/components/ColorPicker/ColorPicker.vue'
 import Label from '@/components/Label.vue'
 import Slider from '@/components/Slider.vue'
 import Button from '@/components/Button.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './InputsDemo.vue?raw'
 
 const inputValue = ref('')
 const lazyValue = ref('')
@@ -22,7 +24,7 @@ const sliderBipolarValue = ref(0)
 </script>
 
 <template>
-  <section class="space-y-8">
+  <DemoSection title="Forms & Inputs" :code="sourceCode">
      <div class="space-y-2">
       <h2 class="text-xl font-semibold tracking-tight">Forms & Inputs</h2>
       <p class="text-sm text-gray-500">
@@ -123,5 +125,5 @@ const sliderBipolarValue = ref(0)
        <Textarea placeholder="Share your thoughts..." v-model="textareaValue" :rows="4" />
     </div>
 
-  </section>
+  </DemoSection>
 </template>
