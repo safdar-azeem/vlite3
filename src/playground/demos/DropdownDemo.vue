@@ -2,6 +2,8 @@
 import { Dropdown } from '@/components/Dropdown'
 import Button from '@/components/Button.vue'
 import { ref, computed } from 'vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './DropdownDemo.vue?raw'
 
 const val1 = ref('1')
 
@@ -211,8 +213,7 @@ const handleRemoteSearch = async (query: string) => {
       <p class="text-gray-500">Displays a list of options for the user to pick from.</p>
     </div>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Basic Usage</h3>
+    <DemoSection title="Basic Usage" :code="sourceCode">
       <div class="flex items-center gap-4">
         <Dropdown
           closeOnSelect
@@ -243,10 +244,9 @@ const handleRemoteSearch = async (query: string) => {
         </Dropdown>
         <span class="text-sm text-gray-500">Selected: {{ val1 }}</span>
       </div>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Scrollable (Many Options)</h3>
+    <DemoSection title="Scrollable (Many Options)" :code="sourceCode">
       <Dropdown
         :options="
           Array.from({ length: 20 }, (_, i) => ({
@@ -259,11 +259,10 @@ const handleRemoteSearch = async (query: string) => {
           <Button variant="outline" icon-right="lucide:chevron-down">Long List</Button>
         </template>
       </Dropdown>
-    </section>
+    </DemoSection>
 
     <!-- Variants Section -->
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Variants & Sizes</h3>
+    <DemoSection title="Variants & Sizes" :code="sourceCode">
       <div class="flex flex-wrap items-center gap-4">
         <!-- Default/Outline -->
         <Dropdown :options="[{ value: 1, label: 'Option 1' }]" :selected="val1">
@@ -288,11 +287,10 @@ const handleRemoteSearch = async (query: string) => {
           </template>
         </Dropdown>
       </div>
-    </section>
+    </DemoSection>
 
     <!-- Custom Item Slot Section -->
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Custom Item Slot</h3>
+    <DemoSection title="Custom Item Slot" :code="sourceCode">
       <p class="text-sm text-gray-500">
         Customize the look of each option using the
         <code>#item</code> slot.
@@ -357,11 +355,10 @@ const handleRemoteSearch = async (query: string) => {
           </div>
         </template>
       </Dropdown>
-    </section>
+    </DemoSection>
 
     <!-- Rich Options Section -->
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Rich Options (Subtitle & Description)</h3>
+    <DemoSection title="Rich Options (Subtitle & Description)" :code="sourceCode">
       <p class="text-sm text-gray-500">
         Options can have proper subtitles (shortcuts) and descriptions.
       </p>
@@ -395,11 +392,10 @@ const handleRemoteSearch = async (query: string) => {
           </Button>
         </template>
       </Dropdown>
-    </section>
+    </DemoSection>
 
     <!-- Multi Nested Dropdowns Section -->
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Multi-Nested Dropdowns (Schema Driven)</h3>
+    <DemoSection title="Multi-Nested Dropdowns (Schema Driven)" :code="sourceCode">
       <p class="text-sm text-gray-500">
         Demonstrating recursive nested menus using the
         <code>children</code> property in the options schema.
@@ -416,9 +412,8 @@ const handleRemoteSearch = async (query: string) => {
         </Dropdown>
         <span class="text-sm text-gray-500">Selected Value: {{ nestedVal }}</span>
       </div>
-    </section>
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Recursive Form (v-model)</h3>
+    </DemoSection>
+    <DemoSection title="Recursive Form (v-model)" :code="sourceCode">
       <p class="text-sm text-gray-500">
         Demonstrating recursive state management with
         <code>v-model</code>. Supports deep merging, toggling, and static trigger labels.
@@ -456,11 +451,10 @@ const handleRemoteSearch = async (query: string) => {
           <pre>{{ JSON.stringify(config, null, 2) }}</pre>
         </div>
       </div>
-    </section>
+    </DemoSection>
 
     <!-- Direction Control Section -->
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Direction Control (RTL)</h3>
+    <DemoSection title="Direction Control (RTL)" :code="sourceCode">
       <p class="text-sm text-gray-500">Support for LTR and RTL directions.</p>
       <div class="flex gap-4">
         <div class="space-y-2">
@@ -480,11 +474,10 @@ const handleRemoteSearch = async (query: string) => {
           </Dropdown>
         </div>
       </div>
-    </section>
+    </DemoSection>
 
     <!-- Mega Menu Section -->
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Mega Menu (Grouped Layout)</h3>
+    <DemoSection title="Mega Menu (Grouped Layout)" :code="sourceCode">
       <p class="text-sm text-gray-500">
         Displays a flattened, grouped view suitable for navigational menus. using
         <code>layout="grouped"</code>.
@@ -505,11 +498,10 @@ const handleRemoteSearch = async (query: string) => {
           </Button>
         </template>
       </Dropdown>
-    </section>
+    </DemoSection>
 
     <!-- Pagination / Infinite Scroll Section -->
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Pagination (Infinite Scroll)</h3>
+    <DemoSection title="Pagination (Infinite Scroll)" :code="sourceCode">
       <p class="text-sm text-gray-500">Loads more items as you scroll to the bottom.</p>
 
       <Dropdown
@@ -526,11 +518,10 @@ const handleRemoteSearch = async (query: string) => {
           </Button>
         </template>
       </Dropdown>
-    </section>
+    </DemoSection>
 
     <!-- Remote Search Section -->
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Remote Search (Async)</h3>
+    <DemoSection title="Remote Search (Async)" :code="sourceCode">
       <p class="text-sm text-gray-500">
         Fetches results from a Simulated API as you type. Disables local filtering.
       </p>
@@ -550,10 +541,9 @@ const handleRemoteSearch = async (query: string) => {
           </Button>
         </template>
       </Dropdown>
-    </section>
+    </DemoSection>
     <!-- Sticky Header & Footer Section -->
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Sticky Header & Footer Slots</h3>
+    <DemoSection title="Sticky Header & Footer Slots" :code="sourceCode">
       <p class="text-sm text-gray-500">
         Use <code>#header</code> and <code>#footer</code> slots to add fixed content that stays
         visible while scrolling.
@@ -593,6 +583,6 @@ const handleRemoteSearch = async (query: string) => {
           </div>
         </template>
       </Dropdown>
-    </section>
+    </DemoSection>
   </div>
 </template>
