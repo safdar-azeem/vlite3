@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import IconPicker from '@/components/IconPicker.vue'
 import { ref } from 'vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './IconPickerDemo.vue?raw'
 
 const icon = ref('lucide:home')
 </script>
@@ -12,8 +14,7 @@ const icon = ref('lucide:home')
 			<p class="text-gray-500">A component to search and select icons.</p>
 		</div>
 
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">Usage</h3>
+		<DemoSection title="Usage" :code="sourceCode">
 			<div class="max-w-xs space-y-2">
 				<IconPicker
 					:value="icon"
@@ -22,6 +23,6 @@ const icon = ref('lucide:home')
 					Selected: <span class="font-mono">{{ icon }}</span>
 				</p>
 			</div>
-		</section>
+		</DemoSection>
 	</div>
 </template>
