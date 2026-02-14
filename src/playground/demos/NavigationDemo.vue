@@ -6,12 +6,14 @@ import Input from '@/components/Input.vue'
 import Button from '@/components/Button.vue'
 import Label from '@/components/Label.vue'
 import Icon from '@/components/Icon.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './NavigationDemo.vue?raw'
 
 const centerPosition = ref<'center' | 'left' | 'right'>('center')
 </script>
 
 <template>
-  <section class="space-y-8">
+  <DemoSection title="Navigation" :code="sourceCode">
      <div class="space-y-2">
       <h2 class="text-xl font-semibold tracking-tight">Navigation</h2>
       <p class="text-sm text-gray-500">
@@ -112,5 +114,5 @@ const centerPosition = ref<'center' | 'left' | 'right'>('center')
        </div>
     </div>
 
-  </section>
+  </DemoSection>
 </template>
