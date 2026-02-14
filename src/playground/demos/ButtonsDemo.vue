@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import Button from '@/components/Button.vue'
 import ButtonGroup from '@/components/ButtonGroup.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './ButtonsDemo.vue?raw'
 </script>
 
 <template>
-  <section class="space-y-6">
+  <DemoSection title="Buttons" :code="sourceCode">
     <div class="space-y-2">
 			<h2 class="text-xl font-semibold tracking-tight">Buttons</h2>
 			<p class="text-sm text-gray-500">
@@ -107,5 +109,5 @@ import ButtonGroup from '@/components/ButtonGroup.vue'
          </div>
       </div>
     </div>
-  </section>
+  </DemoSection>
 </template>
