@@ -3,6 +3,8 @@ import { ref } from 'vue'
 import { FilePicker, type FilePickerValue } from '@/components/FilePicker'
 import Button from '@/components/Button.vue'
 import Icon from '@/components/Icon.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './FilePickerDemo.vue?raw'
 
 const basicFiles = ref<FilePickerValue | null>(null)
 const multiFiles = ref<FilePickerValue[] | null>(null)
@@ -30,29 +32,17 @@ const handleError = (err: string) => {
 		</div>
 
 		<!-- 1. Basic Usage -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold flex items-center gap-2">
-				<Icon
-					icon="lucide:file"
-					class="text-primary" />
-				Basic Usage
-			</h3>
+		<DemoSection title="Basic Usage" :code="sourceCode">
 			<div class="p-4 border rounded-xl bg-gray-50/50">
 				<FilePicker
 					v-model="basicFiles"
 					@change="(val) => logChange('Basic', val)"
 					@error="handleError" />
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- 2. Multi-Select -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold flex items-center gap-2">
-				<Icon
-					icon="lucide:files"
-					class="text-primary" />
-				Multi-Select
-			</h3>
+		<DemoSection title="Multi-Select" :code="sourceCode">
 			<div class="p-4 border rounded-xl bg-gray-50/50">
 				<FilePicker
 					v-model="multiFiles"
@@ -60,16 +50,10 @@ const handleError = (err: string) => {
 					@change="(val) => logChange('Multi', val)"
 					@error="handleError" />
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- 3. Restricted File Types (Images) -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold flex items-center gap-2">
-				<Icon
-					icon="lucide:image"
-					class="text-primary" />
-				Restricted Types (Images Only)
-			</h3>
+		<DemoSection title="Restricted Types (Images Only)" :code="sourceCode">
 			<div class="p-4 border rounded-xl bg-gray-50/50">
 				<FilePicker
 					v-model="imageFiles"
@@ -77,16 +61,10 @@ const handleError = (err: string) => {
 					@change="(val) => logChange('Images', val)"
 					@error="handleError" />
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- 4. Base64 Return Format -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold flex items-center gap-2">
-				<Icon
-					icon="lucide:code-2"
-					class="text-primary" />
-				Base64 Output
-			</h3>
+		<DemoSection title="Base64 Output" :code="sourceCode">
 			<div class="p-4 border rounded-xl bg-gray-50/50">
 				<FilePicker
 					v-model="base64Files"
@@ -105,16 +83,10 @@ const handleError = (err: string) => {
 						class="h-20 w-auto rounded border shadow-sm" />
 				</div>
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- 5. Custom Trigger -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold flex items-center gap-2">
-				<Icon
-					icon="lucide:mouse-pointer-click"
-					class="text-primary" />
-				Custom Trigger
-			</h3>
+		<DemoSection title="Custom Trigger" :code="sourceCode">
 			<div class="p-4 border rounded-xl bg-gray-50/50">
 				<FilePicker
 					v-model="customTriggerFiles"
@@ -150,16 +122,10 @@ const handleError = (err: string) => {
 					</template>
 				</FilePicker>
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- 6. States -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold flex items-center gap-2">
-				<Icon
-					icon="lucide:toggle-left"
-					class="text-primary" />
-				States
-			</h3>
+		<DemoSection title="States" :code="sourceCode">
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 				<div class="p-4 border rounded-xl bg-gray-50/50">
 					<p class="text-sm font-medium mb-2">Disabled</p>
@@ -170,6 +136,6 @@ const handleError = (err: string) => {
 					<FilePicker loading />
 				</div>
 			</div>
-		</section>
+		</DemoSection>
 	</div>
 </template>
