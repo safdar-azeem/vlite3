@@ -2,6 +2,8 @@
 import { ref, computed } from 'vue'
 import { FileTree, FileNode } from '@/components/FileTree'
 import Input from '@/components/Input.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './FileTreeDemo.vue?raw'
 
 // --- Data ---
 const basicData = ref<FileNode[]>([
