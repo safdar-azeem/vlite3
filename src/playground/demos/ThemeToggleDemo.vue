@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import ThemeToggle from '@/components/ThemeToggle.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './ThemeToggleDemo.vue?raw'
 </script>
 
 <template>
@@ -9,12 +11,11 @@ import ThemeToggle from '@/components/ThemeToggle.vue'
       <p class="text-gray-500">A dedicated button to toggle between light and dark modes.</p>
     </div>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Usage</h3>
+    <DemoSection title="Usage" :code="sourceCode">
       <div class="flex items-center gap-4">
         <ThemeToggle />
         <span class="text-sm text-gray-500">Click to switch theme</span>
       </div>
-    </section>
+    </DemoSection>
   </div>
 </template>
