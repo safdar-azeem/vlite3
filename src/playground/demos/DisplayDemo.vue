@@ -9,6 +9,8 @@ import AccordionContent from '@/components/Accordion/AccordionContent.vue'
 import Timeline from '@/components/Timeline.vue'
 import { TimelineStep } from '@/types'
 import Button from '@/components/Button.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './DisplayDemo.vue?raw'
 
 const activeStep = ref(1)
 const timelineSteps = ref<TimelineStep[]>([
@@ -20,7 +22,7 @@ const timelineSteps = ref<TimelineStep[]>([
 </script>
 
 <template>
-  <section class="space-y-12">
+  <DemoSection title="Data Display" :code="sourceCode">
     <div class="space-y-2">
       <h2 class="text-xl font-semibold tracking-tight">Data Display</h2>
       <p class="text-sm text-gray-500">
@@ -97,5 +99,5 @@ const timelineSteps = ref<TimelineStep[]>([
         </div>
     </div>
 
-  </section>
+  </DemoSection>
 </template>
