@@ -8,6 +8,8 @@ import Tooltip from '@/components/Tooltip.vue'
 import SidePanel from '@/components/SidePanel.vue'
 import Input from '@/components/Input.vue'
 import Avatar from '@/components/Avatar.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './OverlaysDemo.vue?raw'
 
 const dropdownValue = ref('1')
 const showModal = ref(false)
@@ -16,7 +18,7 @@ const showSidePanel = ref(false)
 </script>
 
 <template>
-  <section class="space-y-6">
+  <DemoSection title="Overlays & Popups" :code="sourceCode">
     <div class="space-y-2">
       <h2 class="text-xl font-semibold tracking-tight">Overlays & Popups</h2>
       <p class="text-sm text-gray-500">
@@ -100,5 +102,5 @@ const showSidePanel = ref(false)
        </template>
     </SidePanel>
 
-  </section>
+  </DemoSection>
 </template>
