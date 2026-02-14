@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import Textarea from '@/components/Textarea.vue'
 import { ref } from 'vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './TextareaDemo.vue?raw'
 
 const val = ref('')
 </script>
@@ -12,20 +14,18 @@ const val = ref('')
       <p class="text-gray-500">Multi-line text input component.</p>
     </div>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Basic Usage</h3>
+    <DemoSection title="Basic Usage" :code="sourceCode">
       <div class="max-w-xl space-y-4">
         <Textarea placeholder="Type your message here..." v-model="val" :rows="4" />
         <p class="text-sm text-gray-500">Value: {{ val }}</p>
       </div>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">States</h3>
+    <DemoSection title="States" :code="sourceCode">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Textarea disabled placeholder="This textarea is disabled" :rows="3" />
         <Textarea error="This field is required" placeholder="Error state" :rows="3" />
       </div>
-    </section>
+    </DemoSection>
   </div>
 </template>
