@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import { Pagination } from '@/components/Pagination'
 import Icon from '@/components/Icon.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './PaginationDemo.vue?raw'
 
 const page1 = ref(1)
 const page2 = ref(5)
@@ -37,13 +39,7 @@ const handlePerPageChange = (val: number) => {
 		</div>
 
 		<!-- 1. Full Featured -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold flex items-center gap-2">
-				<Icon
-					icon="lucide:star"
-					class="text-primary" />
-				Full Featured
-			</h3>
+		<DemoSection title="Full Featured" :code="sourceCode">
 			<div
 				class="p-6 border rounded-xl bg-gray-50/50 flex flex-col items-center gap-4">
 				<Pagination
@@ -55,16 +51,10 @@ const handlePerPageChange = (val: number) => {
 					@change="(v) => handleChange('Full', v)"
 					@change:items-per-page="handlePerPageChange" />
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- 2. Icon Navigation -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold flex items-center gap-2">
-				<Icon
-					icon="lucide:arrow-right-circle"
-					class="text-primary" />
-				Icon Only Navigation
-			</h3>
+		<DemoSection title="Icon Only Navigation" :code="sourceCode">
 			<div
 				class="p-6 border rounded-xl bg-gray-50/50 flex flex-col items-center gap-4">
 				<Pagination
@@ -73,16 +63,10 @@ const handlePerPageChange = (val: number) => {
 					nav-type="icon"
 					@change="(v) => handleChange('Icon Only', v)" />
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- 3. Smart Truncation -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold flex items-center gap-2">
-				<Icon
-					icon="lucide:more-horizontal"
-					class="text-primary" />
-				Smart Truncation
-			</h3>
+		<DemoSection title="Smart Truncation" :code="sourceCode">
 			<div
 				class="p-6 border rounded-xl bg-gray-50/50 flex flex-col items-center gap-4">
 				<Pagination
@@ -90,16 +74,10 @@ const handlePerPageChange = (val: number) => {
 					:total-pages="20"
 					@change="(v) => handleChange('Truncation', v)" />
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- 4. With Edges (First/Last) -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold flex items-center gap-2">
-				<Icon
-					icon="lucide:chevrons-left-right"
-					class="text-primary" />
-				With First/Last Buttons
-			</h3>
+		<DemoSection title="With First/Last Buttons" :code="sourceCode">
 			<div
 				class="p-6 border rounded-xl bg-gray-50/50 flex flex-col items-center gap-4">
 				<Pagination
@@ -108,16 +86,10 @@ const handlePerPageChange = (val: number) => {
 					show-edges
 					@change="(v) => handleChange('Edges', v)" />
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- 5. Disabled -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold flex items-center gap-2">
-				<Icon
-					icon="lucide:ban"
-					class="text-primary" />
-				Disabled State
-			</h3>
+		<DemoSection title="Disabled State" :code="sourceCode">
 			<div
 				class="p-6 border rounded-xl bg-gray-50/50 flex flex-col items-center gap-4">
 				<Pagination
@@ -125,6 +97,6 @@ const handlePerPageChange = (val: number) => {
 					:total-pages="10"
 					disabled />
 			</div>
-		</section>
+		</DemoSection>
 	</div>
 </template>
