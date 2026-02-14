@@ -6,6 +6,8 @@ import { ref, defineComponent, h, onMounted } from 'vue'
 import ColorsDemo from './ColorsDemo.vue'
 import { Form, type IForm } from '@/components/Form'
 import { toast } from '@/composables/useNotifications'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './ModalDemo.vue?raw'
 
 const showModal = ref(false)
 const showScrollModal = ref(false)
@@ -128,9 +130,8 @@ const handleFormSubmit = async (payload: any) => {
       <p class="text-gray-500">Dialogs that interrupt user flow for critical actions or info.</p>
     </div>
 
-    <section class="space-y-4 border-b pb-8">
-      <div class="flex items-center gap-2">
-        <h3 class="text-lg font-semibold">Form Integration (Auto-detect)</h3>
+    <DemoSection title="Form Integration (Auto-detect)" :code="sourceCode">
+      <div class="flex items-center gap-2 mb-2">
         <span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded font-medium">New</span>
       </div>
       <p class="text-sm text-gray-500">
@@ -147,10 +148,9 @@ const handleFormSubmit = async (payload: any) => {
         description="Fill out the details below. The form handles the modal buttons automatically.">
         <Form :schema="modalFormSchema" submitText="Create Task" @onSubmit="handleFormSubmit" />
       </Modal>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Basic Usage</h3>
+    <DemoSection title="Basic Usage" :code="sourceCode">
       <Button @click="showModal = true">Open Standard Modal</Button>
 
       <Modal
@@ -168,10 +168,9 @@ const handleFormSubmit = async (payload: any) => {
           </div>
         </template>
       </Modal>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Long Content</h3>
+    <DemoSection title="Long Content" :code="sourceCode">
       <Button @click="showScrollModal = true">Open Scrollable Modal</Button>
       <Modal v-model:show="showScrollModal" title="Terms of Service">
         <div class="space-y-4 py-2">
@@ -182,10 +181,9 @@ const handleFormSubmit = async (payload: any) => {
           </p>
         </div>
       </Modal>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Lazy Body Component</h3>
+    <DemoSection title="Lazy Body Component" :code="sourceCode">
       <p class="text-sm text-gray-500">
         Pass a component via <code>:body</code> — it's only instantiated when the modal opens. Ideal
         for lists where each row has a modal.
@@ -205,10 +203,9 @@ const handleFormSubmit = async (payload: any) => {
           <Button variant="outline" size="sm">{{ item.name }}</Button>
         </Modal>
       </div>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Confirmation Modal</h3>
+    <DemoSection title="Confirmation Modal" :code="sourceCode">
       <Button variant="danger" @click="showConfirm = true">Delete Account</Button>
       <ConfirmationModal
         v-model:show="showConfirm"
@@ -225,6 +222,6 @@ const handleFormSubmit = async (payload: any) => {
         @cancel="() => {}">
         <Button variant="outline">Delete with Trigger</Button>
       </ConfirmationModal>
-    </section>
+    </DemoSection>
   </div>
 </template>
