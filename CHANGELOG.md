@@ -11,7 +11,9 @@ All notable changes to this project will be documented in this file.
   - Added syntax highlighting for Vue SFC code (template, script, style) using a custom lightweight highlighter.
   - Implemented intelligent code snippet extraction to show only relevant code for each demo section.
   - Added automatic script transformation to rewrite internal component imports to use the public `vlite3` package (e.g. `import { Button } from 'vlite3'`).
-- **Refactoring**: Automated refactoring of 47 demo files to use the new `DemoSection` wrapper and expose raw source code via Vite imports.
+- **Refactoring**:
+  - Automated refactoring of 47 demo files to use the new `DemoSection` wrapper.
+  - **Modular Architecture**: Split the monolithic `DropdownDemo.vue` into 12 separate component files to ensure code snippets are fast, focused, and free of unused variables.
 
 ### Fixed
 
