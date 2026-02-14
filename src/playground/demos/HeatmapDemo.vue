@@ -9,6 +9,8 @@ import Button from '@/components/Button.vue'
 import Input from '@/components/Input.vue'
 import Label from '@/components/Label.vue'
 import { Dropdown } from '@/components/Dropdown'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './HeatmapDemo.vue?raw'
 
 
 const colorScheme = ref<HeatmapColorScheme>('github')
@@ -169,8 +171,7 @@ const customColorScheme = ref([
 		</div>
 
 		<!-- Controls -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">Configuration</h3>
+		<DemoSection title="Configuration" :code="sourceCode">
 			<div
 				class="p-6 border rounded-xl bg-gray-50/50 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 				<div>
@@ -218,14 +219,11 @@ const customColorScheme = ref([
 
 
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- Demo 1: GitHub-style Activity Heatmap -->
-		<section class="space-y-4">
+		<DemoSection title="GitHub-style Activity Heatmap" :code="sourceCode">
 			<div class="flex items-center justify-between">
-				<h3 class="text-lg font-semibold">
-					GitHub-style Activity Heatmap
-				</h3>
 				<Button
 					size="sm"
 					variant="outline"
@@ -255,12 +253,11 @@ const customColorScheme = ref([
 					@cell-click="handleCellClick"
 					@cell-hover="handleCellHover" />
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- Demo 2: 90-Day Habit Progress -->
-		<section class="space-y-4">
+		<DemoSection title="90-Day Habit Progress" :code="sourceCode">
 			<div class="flex items-center justify-between">
-				<h3 class="text-lg font-semibold">90-Day Habit Progress</h3>
 				<Button
 					size="sm"
 					variant="outline"
@@ -285,14 +282,11 @@ const customColorScheme = ref([
 					:responsive="responsive"
 					@cell-click="handleCellClick" />
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- Demo 3: Sequential Timeline -->
-		<section class="space-y-4">
+		<DemoSection title="Sequential Timeline (90 Days)" :code="sourceCode">
 			<div class="flex items-center justify-between">
-				<h3 class="text-lg font-semibold">
-					Sequential Timeline (90 Days)
-				</h3>
 				<Button
 					size="sm"
 					variant="outline"
@@ -317,14 +311,11 @@ const customColorScheme = ref([
 					:responsive="responsive"
 					@cell-click="handleCellClick" />
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- Demo 4: Responsive Container Demo -->
-		<section class="space-y-4">
+		<DemoSection title="Responsive Container" :code="sourceCode">
 			<div class="flex items-center justify-between">
-				<h3 class="text-lg font-semibold">
-					Responsive Container (Resize to see it adapt)
-				</h3>
 				<div class="flex items-center gap-4">
 					<div class="flex items-center gap-2">
 						<Label class="text-sm">Width:</Label>
@@ -378,12 +369,11 @@ const customColorScheme = ref([
 				container. Try resizing the window or adjusting the sliders
 				above.
 			</p>
-		</section>
+		</DemoSection>
 
 		<!-- Demo 5: Custom Grid -->
-		<section class="space-y-4">
+		<DemoSection title="Custom Grid Layout" :code="sourceCode">
 			<div class="flex items-center justify-between">
-				<h3 class="text-lg font-semibold">Custom Grid Layout</h3>
 				<Button
 					size="sm"
 					variant="outline"
@@ -409,11 +399,10 @@ const customColorScheme = ref([
 					:responsive="responsive"
 					@cell-click="handleCellClick" />
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- Demo 6: Custom Color Scheme -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">Custom Color Scheme</h3>
+		<DemoSection title="Custom Color Scheme" :code="sourceCode">
 			<div class="p-6 border rounded-xl bg-white h-[300px]">
 				<Heatmap
 					:data="randomData"
@@ -433,11 +422,10 @@ const customColorScheme = ref([
 					:responsive="responsive"
 					@cell-click="handleCellClick" />
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- Demo 7: With Min/Max Range -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold">With Custom Min/Max Range</h3>
+		<DemoSection title="With Custom Min/Max Range" :code="sourceCode">
 			<div class="p-6 border rounded-xl bg-white h-[300px]">
 				<Heatmap
 					:data="randomData"
@@ -460,7 +448,7 @@ const customColorScheme = ref([
 					min/max.
 				</p>
 			</div>
-		</section>
+		</DemoSection>
 
 
 	</div>
