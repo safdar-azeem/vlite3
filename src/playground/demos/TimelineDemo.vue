@@ -2,6 +2,8 @@
 import Timeline from '@/components/Timeline.vue'
 import Button from '@/components/Button.vue'
 import { ref } from 'vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './TimelineDemo.vue?raw'
 
 const activeStep = ref(1)
 const steps = [
@@ -19,25 +21,31 @@ const steps = [
       <p class="text-gray-500">Visualizes a sequence of events or steps.</p>
     </div>
 
-    <section class="space-y-4">
+    <DemoSection title="Horizontal" :code="sourceCode">
       <div class="flex items-center justify-between max-w-2xl">
-         <h3 class="text-lg font-semibold">Horizontal</h3>
-         <div class="flex gap-2">
-            <Button size="sm" variant="outline" :disabled="activeStep <= 0" @click="activeStep--">Prev</Button>
-            <Button size="sm" variant="outline" :disabled="activeStep >= steps.length" @click="activeStep++">Next</Button>
-         </div>
+        <div class="flex gap-2">
+          <Button size="sm" variant="outline" :disabled="activeStep <= 0" @click="activeStep--"
+            >Prev</Button
+          >
+          <Button
+            size="sm"
+            variant="outline"
+            :disabled="activeStep >= steps.length"
+            @click="activeStep++"
+            >Next</Button
+          >
+        </div>
       </div>
-      
+
       <div class="p-6 border rounded-lg max-w-2xl">
         <Timeline :steps="steps" :active-step="activeStep" />
       </div>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-4">
-      <h3 class="text-lg font-semibold">Vertical</h3>
-       <div class="p-6 border rounded-lg max-w-xs">
+    <DemoSection title="Vertical" :code="sourceCode">
+      <div class="p-6 border rounded-lg max-w-xs">
         <Timeline :steps="steps" :active-step="activeStep" direction="vertical" />
       </div>
-    </section>
+    </DemoSection>
   </div>
 </template>
