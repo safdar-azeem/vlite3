@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { Dropdown } from '@/components/Dropdown'
 import Button from '@/components/Button.vue'
+import Icon from '@/components/Icon.vue'
 import DemoSection from '../../DemoSection.vue'
 import sourceCode from './CustomSlot.vue?raw'
 
@@ -49,27 +50,14 @@ const val1 = ref('u1')
       </template>
 
       <template #item="{ option, selected }">
-        <div class="flex items-center gap-3 w-full">
-          <img :src="option.data?.avatar" class="w-8 h-8 rounded-full bg-gray-100" />
+        <div class="flex items-center gap-3 w-full p-1">
+          <img :src="option.data?.avatar" class="w-8 h-8 rounded-full bg-gray-100 object-cover" />
           <div class="flex flex-col text-left">
-            <span class="font-medium text-gray-900">{{ option.label }}</span>
-            <span class="text-xs text-gray-500">{{ option.data?.email }}</span>
+            <span class="font-medium text-gray-900 leading-tight">{{ option.label }}</span>
+            <span class="text-xs text-gray-500 leading-tight">{{ option.data?.email }}</span>
           </div>
           <div v-if="selected === option.value" class="ml-auto text-primary">
-            <!-- Iconify usage in template context if auto-imported or globally available -->
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="lucide lucide-check">
-              <path d="M20 6 9 17l-5-5" />
-            </svg>
+            <Icon icon="lucide:check" class="w-4 h-4" />
           </div>
         </div>
       </template>
