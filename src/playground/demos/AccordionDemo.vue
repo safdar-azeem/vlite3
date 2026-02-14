@@ -3,6 +3,8 @@ import { ref, h } from 'vue'
 import { Accordion } from '@/components/Accordion'
 import Switch from '@/components/Switch.vue'
 import Label from '@/components/Label.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './AccordionDemo.vue?raw'
 
 // --- Data Schemas ---
 
@@ -106,8 +108,7 @@ const bodyComponentItems = [
       </p>
     </div>
 
-    <section class="space-y-6">
-      <h3 class="text-xl font-semibold border-b pb-2">Layouts & Variants</h3>
+    <DemoSection title="Layouts & Variants" :code="sourceCode">
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
         <div class="space-y-3">
@@ -148,10 +149,9 @@ const bodyComponentItems = [
           <Accordion :items="basicItems" variant="ghost" />
         </div>
       </div>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-6">
-      <h3 class="text-xl font-semibold border-b pb-2">New Features: Numbering & Icons</h3>
+    <DemoSection title="New Features: Numbering & Icons" :code="sourceCode">
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
         <div class="space-y-3">
@@ -186,10 +186,9 @@ const bodyComponentItems = [
           <Accordion :items="basicItems" variant="ghost" icon-variant="outline" />
         </div>
       </div>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-6">
-      <h3 class="text-xl font-semibold border-b pb-2">Interactive Playground</h3>
+    <DemoSection title="Interactive Playground" :code="sourceCode">
 
       <div class="p-6 border rounded-xl space-y-6 bg-gray-50/50">
         <div class="flex items-center gap-6">
@@ -212,10 +211,9 @@ const bodyComponentItems = [
             attached />
         </div>
       </div>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-6">
-      <h3 class="text-xl font-semibold border-b pb-2">Advanced: Scoped Slots</h3>
+    <DemoSection title="Advanced: Scoped Slots" :code="sourceCode">
       <p class="text-gray-500">Fully customize the trigger or content using slots.</p>
 
       <div class="max-w-2xl border rounded-lg p-4 bg-white">
@@ -261,10 +259,9 @@ const bodyComponentItems = [
           </template>
         </Accordion>
       </div>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-8">
-      <h3 class="text-xl font-semibold border-b pb-2">Size Variants</h3>
+    <DemoSection title="Size Variants" :code="sourceCode">
 
       <div class="space-y-8 max-w-3xl">
         <div class="space-y-3">
@@ -282,10 +279,9 @@ const bodyComponentItems = [
           <Accordion :items="basicItems" size="lg" variant="outline" attached />
         </div>
       </div>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-6">
-      <h3 class="text-xl font-semibold border-b pb-2">Body Component prop</h3>
+    <DemoSection title="Body Component prop" :code="sourceCode">
       <p class="text-gray-500">
         Pass a component definition directly to the item object to render it in the body.
       </p>
@@ -293,6 +289,6 @@ const bodyComponentItems = [
       <div class="max-w-2xl">
         <Accordion :items="bodyComponentItems" variant="outline" />
       </div>
-    </section>
+    </DemoSection>
   </div>
 </template>
