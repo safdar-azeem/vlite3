@@ -3,6 +3,8 @@ import { ref } from 'vue'
 import { showToast, useNotifications, type ToastPosition } from '@/composables/useNotifications'
 import Button from '@/components/Button.vue'
 import ToastNotification from '@/components/ToastNotification.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './ToastDemo.vue?raw'
 
 const { toast, configure } = useNotifications()
 
@@ -62,8 +64,7 @@ const triggerPromise = () => {
       <p class="text-gray-500">Global notification system with stacked layout and animations.</p>
     </div>
 
-    <section class="space-y-6">
-      <h3 class="text-lg font-semibold">Global Configuration</h3>
+    <DemoSection title="Global Configuration" :code="sourceCode">
       <div class="p-6 border rounded-xl bg-gray-50 space-y-4">
         <p class="text-sm text-gray-500">Set the default position for all future toasts.</p>
         <div class="flex flex-wrap gap-2">
@@ -82,10 +83,9 @@ const triggerPromise = () => {
           </Button>
         </div>
       </div>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-6">
-      <h3 class="text-lg font-semibold">Positions</h3>
+    <DemoSection title="Positions" :code="sourceCode">
       <div class="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl">
         <Button @click="triggerToast('top-left')">Top Left</Button>
         <Button @click="triggerToast('top-center')">Top Center</Button>
@@ -95,10 +95,9 @@ const triggerPromise = () => {
         <Button @click="triggerToast('bottom-center', 'info')">Bottom Center</Button>
         <Button @click="triggerToast('bottom-right', 'info')">Bottom Right</Button>
       </div>
-    </section>
+    </DemoSection>
 
-    <section class="space-y-6">
-      <h3 class="text-lg font-semibold">Types & Features</h3>
+    <DemoSection title="Types & Features" :code="sourceCode">
       <div class="flex flex-wrap gap-4">
         <Button variant="success" @click="triggerToast('bottom-right', 'success')">Success</Button>
         <Button variant="danger" @click="triggerToast('bottom-right', 'error')">Error</Button>
@@ -106,6 +105,6 @@ const triggerPromise = () => {
         <Button variant="outline" @click="triggerStack">Trigger Stack</Button>
         <Button variant="outline" @click="triggerPromise">Promise Toast</Button>
       </div>
-    </section>
+    </DemoSection>
   </div>
 </template>
