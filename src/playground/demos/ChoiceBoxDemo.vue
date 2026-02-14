@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import { ChoiceBox, type ChoiceBoxOption } from '@/components/ChoiceBox'
 import Icon from '@/components/Icon.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './ChoiceBoxDemo.vue?raw'
 
 const plans: ChoiceBoxOption[] = [
 	{
@@ -76,13 +78,7 @@ const handleChange = (label: string, val: any) => {
 		</div>
 
 		<!-- 1. Single Select (Plans) -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold flex items-center gap-2">
-				<Icon
-					icon="lucide:check-circle"
-					class="text-primary" />
-				Single Selection (Radio Style)
-			</h3>
+		<DemoSection title="Single Selection (Radio Style)" :code="sourceCode">
 			<div class="p-6 border rounded-xl bg-gray-50/50">
 				<ChoiceBox
 					v-model="selectedPlan"
@@ -96,16 +92,10 @@ const handleChange = (label: string, val: any) => {
 					Selected Plan ID: <strong>{{ selectedPlan }}</strong>
 				</div>
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- 2. Multi Select (Features) -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold flex items-center gap-2">
-				<Icon
-					icon="lucide:check-square"
-					class="text-primary" />
-				Multi Selection (Checkbox Style)
-			</h3>
+		<DemoSection title="Multi Selection (Checkbox Style)" :code="sourceCode">
 			<div class="p-6 border rounded-xl bg-gray-50/50">
 				<ChoiceBox
 					v-model="selectedFeatures"
@@ -120,16 +110,10 @@ const handleChange = (label: string, val: any) => {
 					Selected Features: <strong>{{ selectedFeatures }}</strong>
 				</div>
 			</div>
-		</section>
+		</DemoSection>
 
 		<!-- 3. Layout Variations -->
-		<section class="space-y-4">
-			<h3 class="text-lg font-semibold flex items-center gap-2">
-				<Icon
-					icon="lucide:layout-grid"
-					class="text-primary" />
-				Layout Options
-			</h3>
+		<DemoSection title="Layout Options" :code="sourceCode">
 			<div class="p-6 border rounded-xl bg-gray-50/50 space-y-6">
 				<!-- Stacked list -->
 				<div>
@@ -155,6 +139,6 @@ const handleChange = (label: string, val: any) => {
 						:grid="1" />
 				</div>
 			</div>
-		</section>
+		</DemoSection>
 	</div>
 </template>
