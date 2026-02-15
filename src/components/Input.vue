@@ -61,18 +61,15 @@ const wrapperClass = computed(() => {
 })
 
 const inputWrapperClass = computed(() => {
-  // items-stretch ensures addons match the height of the input container
   return ['relative flex w-full items-stretch', props.labelPosition !== 'top' ? 'flex-1' : ''].join(
     ' '
   )
 })
 
 const inputBaseClass = computed(() => {
-  // Base styles - removed 'flex' as it's not valid on input
   const base =
-    'block w-full bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/50 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none'
+    'block w-full bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/50 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none relative focus:z-10'
 
-  // Variant styles
   const variantStyles: Record<InputVariant, string> = {
     solid: 'bg-muted border-transparent focus-visible:border-primary',
     outline: 'border border-input focus-visible:border-primary',
@@ -80,14 +77,12 @@ const inputBaseClass = computed(() => {
     transparent: 'border-none bg-transparent shadow-none',
   }
 
-  // Size styles
   const sizeStyles: Record<InputSize, string> = {
     sm: 'h-8 text-xs',
     md: 'h-9 text-sm',
     lg: 'h-10 text-base',
   }
 
-  // Rounded styles
   const roundedStyles: Record<InputRounded, string> = {
     none: 'rounded-none',
     sm: 'rounded-sm',
@@ -98,34 +93,31 @@ const inputBaseClass = computed(() => {
     full: 'rounded-full',
   }
 
-  // Logic for rounded corners when addons are present
+  // Handle Input Rounded Corners based on addons
   let roundedClass = roundedStyles[props.rounded]
+
   if (hasAddonLeft.value) {
-    roundedClass = roundedClass.replace('rounded-', 'rounded-r-').replace('rounded-l-', '')
-    // Fix for full rounded or simple rounded
     if (props.rounded === 'md') roundedClass = 'rounded-r-md rounded-l-none'
-    if (props.rounded === 'sm') roundedClass = 'rounded-r-sm rounded-l-none'
-    if (props.rounded === 'lg') roundedClass = 'rounded-r-lg rounded-l-none'
-    if (props.rounded === 'full') roundedClass = 'rounded-r-full rounded-l-none'
-    // Handle specific cases if needed, but simple override works for standard Tailwind classes
+    else if (props.rounded === 'sm') roundedClass = 'rounded-r-sm rounded-l-none'
+    else if (props.rounded === 'lg') roundedClass = 'rounded-r-lg rounded-l-none'
+    else if (props.rounded === 'full') roundedClass = 'rounded-r-full rounded-l-none'
+    else if (props.rounded !== 'none')
+      roundedClass = roundedClass.replace('rounded-', 'rounded-r-').replace('rounded-l-', '')
   }
+
   if (hasAddonRight.value) {
-    // If we already modified it for left, we need to modify for right as well, effectively making it square?
-    // Or just remove right rounding.
-    let rClass = roundedStyles[props.rounded]
     if (hasAddonLeft.value) {
-      // Both addons -> no rounded corners on sides
       roundedClass = 'rounded-none'
     } else {
-      // Only right addon
       if (props.rounded === 'md') roundedClass = 'rounded-l-md rounded-r-none'
-      if (props.rounded === 'sm') roundedClass = 'rounded-l-sm rounded-r-none'
-      if (props.rounded === 'lg') roundedClass = 'rounded-l-lg rounded-r-none'
-      if (props.rounded === 'full') roundedClass = 'rounded-l-full rounded-r-none'
+      else if (props.rounded === 'sm') roundedClass = 'rounded-l-sm rounded-r-none'
+      else if (props.rounded === 'lg') roundedClass = 'rounded-l-lg rounded-r-none'
+      else if (props.rounded === 'full') roundedClass = 'rounded-l-full rounded-r-none'
+      else if (props.rounded !== 'none')
+        roundedClass = roundedClass.replace('rounded-', 'rounded-l-').replace('rounded-r-', '')
     }
   }
 
-  // Special case for 'outline-b' variants which usually shouldn't have rounded corners or borders on sides
   if (props.variant === 'outline-b') {
     roundedClass = 'rounded-none'
   }
@@ -138,9 +130,7 @@ const inputBaseClass = computed(() => {
     sizeStyles[props.size],
     roundedClass,
     props.error ? 'border-destructive focus-visible:ring-destructive' : '',
-    // Left Padding
     props.icon ? 'pl-9' : isMinimal && !hasAddonLeft.value ? 'pl-0' : '',
-    // Right Padding
     (props.showClearButton && hasValue.value) ||
     props.type === 'password' ||
     props.loading ||
@@ -153,15 +143,33 @@ const inputBaseClass = computed(() => {
   ].join(' ')
 })
 
-// Text size mapping - moved out for reuse or keep inside
 const sizeText: Record<InputSize, string> = {
   sm: 'text-xs',
   md: 'text-sm',
   lg: 'text-base',
 }
 
+// Common logic to auto-style child buttons/inputs passed into slots
+const getAutoAddonClasses = (side: 'left' | 'right') => {
+  const isLeft = side === 'left'
+  // Targeted selectors for buttons, anchors, and common wrappers
+  return [
+    // Ensure height matches
+    '[&_button]:w-full [&_a]:w-full! [&_.v-btn]:w-full! [&_.tooltip-trigger]:w-full',
+    // Handle borders (Connect sides)
+    isLeft
+      ? '[&_button]:rounded-r-none [&_a]:rounded-r-none [&_.v-btn]:rounded-r-none'
+      : '[&_button]:rounded-l-none [&_a]:rounded-l-none [&_.v-btn]:rounded-l-none',
+    // Ensure focus ring appears on top
+    '[&_button]:relative [&_button]:focus:z-20',
+    // Merge borders (Negative margin to overlap single pixels)
+    isLeft ? '-mr-px' : '-ml-px',
+    'z-10', // Ensure addons sit visually above input border if needed
+  ].join(' ')
+}
+
 const leftAddonClass = computed(() => {
-  // Matches input rounding on left
+  const isCustom = !!slots['addon-left']
   const map: Record<string, string> = {
     sm: 'rounded-l-sm',
     md: 'rounded-l-md',
@@ -172,23 +180,19 @@ const leftAddonClass = computed(() => {
     '2xl': 'rounded-l-2xl',
   }
 
-  // Check if slot overrides default content
-  const isCustom = !!slots['addon-left']
-
   return [
     'flex items-center justify-center whitespace-nowrap',
     isCustom
-      ? 'border-none'
-      : 'bg-muted border border-input border-r-0! px-3 text-muted-foreground',
+      ? `border-none ${getAutoAddonClasses('left')}`
+      : `bg-muted border border-input border-r-0! px-3 text-muted-foreground ${map[props.rounded] || 'rounded-l-md'}`,
     isCustom ? '' : sizeText[props.size],
-    map[props.rounded] || 'rounded-l-md',
     props.addonLeftClass,
     props.disabled ? 'opacity-50 cursor-not-allowed' : '',
   ].join(' ')
 })
 
 const rightAddonClass = computed(() => {
-  // Matches input rounding on right
+  const isCustom = !!slots['addon-right']
   const map: Record<string, string> = {
     sm: 'rounded-r-sm',
     md: 'rounded-r-md',
@@ -199,15 +203,12 @@ const rightAddonClass = computed(() => {
     '2xl': 'rounded-r-2xl',
   }
 
-  const isCustom = !!slots['addon-right']
-
   return [
     'flex items-center justify-center whitespace-nowrap',
     isCustom
-      ? 'border-none'
-      : 'bg-muted border border-input border-l-0! px-3 text-muted-foreground',
+      ? `border-none ${getAutoAddonClasses('right')}`
+      : `bg-muted border border-input border-l-0! px-3 text-muted-foreground ${map[props.rounded] || 'rounded-r-md'}`,
     isCustom ? '' : sizeText[props.size],
-    map[props.rounded] || 'rounded-r-md',
     props.addonRightClass,
     props.disabled ? 'opacity-50 cursor-not-allowed' : '',
   ].join(' ')
@@ -270,7 +271,6 @@ onMounted(() => {
     </Label>
 
     <div :class="inputWrapperClass">
-      <!-- Left Addon -->
       <div v-if="hasAddonLeft" :class="leftAddonClass">
         <slot name="addon-left">{{ addonLeft }}</slot>
       </div>
@@ -302,28 +302,23 @@ onMounted(() => {
           @blur="handleBlur"
           @focus="handleFocus" />
 
-        <!-- Left Icon -->
         <div
           v-if="icon"
           tabindex="-1"
           :class="[
-            'absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center text-muted-foreground',
-            disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:text-foreground',
-          ]"
-          @click="!disabled && emit('click:icon', $event)">
+            'absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center text-muted-foreground z-20 pointer-events-none',
+            disabled ? 'opacity-50' : '',
+          ]">
           <Icon :icon="icon" class="h-4 w-4" />
         </div>
 
-        <!-- Right Actions/Icons -->
         <div
-          class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center gap-2">
-          <!-- Loading -->
+          class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center gap-2 z-20">
           <Icon
             v-if="loading"
             icon="lucide:loader-2"
             class="h-4 w-4 animate-spin text-muted-foreground" />
 
-          <!-- Icon Right (only if not loading) -->
           <div
             v-else-if="iconRight"
             tabindex="-1"
@@ -335,7 +330,6 @@ onMounted(() => {
             <Icon :icon="iconRight" class="h-4 w-4" />
           </div>
 
-          <!-- Password Toggle -->
           <button
             v-if="type === 'password' && !disabled"
             type="button"
@@ -345,7 +339,6 @@ onMounted(() => {
             <Icon :icon="isPasswordVisible ? 'lucide:eye-off' : 'lucide:eye'" class="h-4 w-4" />
           </button>
 
-          <!-- Clear Button -->
           <button
             v-if="
               showClearButton &&
@@ -365,7 +358,6 @@ onMounted(() => {
         </div>
       </div>
 
-      <!-- Right Addon -->
       <div v-if="hasAddonRight" :class="rightAddonClass">
         <slot name="addon-right">{{ addonRight }}</slot>
       </div>
