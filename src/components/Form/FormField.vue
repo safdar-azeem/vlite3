@@ -7,18 +7,14 @@ import { isAddonObject } from './utils/form.utils'
 import NumberInput from '@/components/NumberInput.vue'
 import Button from '@/components/Button.vue'
 
-// Core components - imported directly for better tree-shaking and to prevent slot context issues
 import Input from '@/components/Input.vue'
 import Switch from '@/components/Switch.vue'
 import CheckBox from '@/components/CheckBox.vue'
 import Textarea from '@/components/Textarea.vue'
 import FilePicker from '@/components/FilePicker/FilePicker.vue'
 import AvatarUploader from '@/components/AvatarUploader/AvatarUploader.vue'
-// Dropdown must be imported synchronously to avoid 'ce' (currentElement) null errors in library builds
 import Dropdown from '@/components/Dropdown/Dropdown.vue'
 
-// Async imports for complex or heavy components
-// Circular dependencies (like CustomFields) must remain async
 const MultiSelect = defineAsyncComponent(() => import('@/components/MultiSelect/MultiSelect.vue'))
 const DatePicker = defineAsyncComponent(() => import('@/components/DatePicker.vue'))
 const ColorPicker = defineAsyncComponent(() => import('@/components/ColorPicker/ColorPicker.vue'))
