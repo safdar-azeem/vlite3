@@ -139,7 +139,7 @@ const buttonClasses = computed(() => {
       return [
         base,
         !props.disabled ? 'hover:text-primary hover:bg-background/80' : '',
-        'bg-background shadow-sm rounded-full mx-1 my-0.5 aspect-square self-center h-[calc(100%-4px)] w-auto max-w-[calc(100%-4px)] flex items-center justify-center',
+        'bg-background shadow-sm rounded-full mx-1 my-0.5 aspect-square self-center h-[calc(100%-12px)] w-auto max-w-[calc(100%-12px)] flex items-center justify-center',
       ]
     }
     // Outline/Ghost Split
