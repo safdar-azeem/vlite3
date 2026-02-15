@@ -1470,19 +1470,19 @@ Access these via `ref`:
 
 ### Props
 
-| Prop | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `modelValue` | `FilePickerValue \| FilePickerValue[] \| null` | `null` | Binding (`v-model`) |
-| `variant` | `'dropzone' \| 'input'` | `'dropzone'` | Display variant |
-| `multiSelect` | `boolean` | `false` | Allow multiple file selection |
-| `fileTypes` | `string[]` | `[]` | Allowed types (e.g., `['image/*', '.pdf']`) |
-| `returnFormat` | `'file' \| 'base64'` | `'file'` | Output format for file data |
-| `maxSize` | `number` | — | Max file size in bytes |
-| `loading` | `boolean` | `false` | Show loading state |
-| `disabled` | `boolean` | `false` | Disable interaction |
-| `placeholder` | `string` | — | Placeholder (for `input` variant) |
-| `size` | `InputSize` | `'md'` | Size (for `input` variant) |
-| `rounded` | `InputRounded` | `'md'` | Border radius (for `input` variant) |
+| Prop           | Type                                           | Default      | Description                                 |
+| :------------- | :--------------------------------------------- | :----------- | :------------------------------------------ |
+| `modelValue`   | `FilePickerValue \| FilePickerValue[] \| null` | `null`       | Binding (`v-model`)                         |
+| `variant`      | `'dropzone' \| 'input'`                        | `'dropzone'` | Display variant                             |
+| `multiSelect`  | `boolean`                                      | `false`      | Allow multiple file selection               |
+| `fileTypes`    | `string[]`                                     | `[]`         | Allowed types (e.g., `['image/*', '.pdf']`) |
+| `returnFormat` | `'file' \| 'base64'`                           | `'file'`     | Output format for file data                 |
+| `maxSize`      | `number`                                       | —            | Max file size in bytes                      |
+| `loading`      | `boolean`                                      | `false`      | Show loading state                          |
+| `disabled`     | `boolean`                                      | `false`      | Disable interaction                         |
+| `placeholder`  | `string`                                       | —            | Placeholder (for `input` variant)           |
+| `size`         | `InputSize`                                    | `'md'`       | Size (for `input` variant)                  |
+| `rounded`      | `InputRounded`                                 | `'md'`       | Border radius (for `input` variant)         |
 
 ### Types
 
@@ -1491,8 +1491,8 @@ export interface FilePickerValue {
   fileName: string
   fileType: string
   fileSize: number
-  file: File        // Actual File object
-  base64: string   // Populated if returnFormat='base64'
+  file: File // Actual File object
+  base64: string // Populated if returnFormat='base64'
 }
 ```
 
@@ -1504,35 +1504,32 @@ export interface FilePickerValue {
 
 ### Slots
 
-| Slot | Description | Props |
-| :--- | :--- | :--- |
+| Slot      | Description         | Props                                       |
+| :-------- | :------------------ | :------------------------------------------ |
 | `trigger` | Custom trigger area | `{ trigger, files, isDragging, isLoading }` |
 
 ### Usage
 
 #### Basic Dropzone
+
 ```vue
 <FilePicker v-model="files" :file-types="['image/*']" />
 ```
 
 #### Input Variant
+
 ```vue
-<FilePicker 
-  v-model="files" 
-  variant="input" 
-  placeholder="Upload document..." 
-  :multi-select="true" />
+<FilePicker v-model="files" variant="input" placeholder="Upload document..." :multi-select="true" />
 ```
 
 #### Base64 Return
+
 ```vue
-<FilePicker 
-  v-model="files" 
-  return-format="base64" 
-  @change="uploadToServer" />
+<FilePicker v-model="files" return-format="base64" @change="uploadToServer" />
 ```
 
 #### Custom Trigger Slot
+
 ```vue
 <FilePicker v-model="files">
   <template #trigger="{ trigger, files, isLoading }">
@@ -1544,4 +1541,89 @@ export interface FilePickerValue {
     </Button>
   </template>
 </FilePicker>
+```
+
+---
+
+# AvatarUploader
+
+**Import:** `import { AvatarUploader } from 'vlite3'`
+
+### Props
+
+| Prop         | Type             | Default  | Description                                 |
+| :----------- | :--------------- | :------- | :------------------------------------------ |
+| `modelValue` | `string \| null` | `null`   | Binding (`v-model`) - usually Base64 or URL |
+| `size`       | `AvatarSize`     | `'xl'`   | Size of the avatar                          |
+| `rounded`    | `AvatarRounded`  | `'full'` | Border radius                               |
+| `editable`   | `boolean`        | `true`   | Enable upload/remove actions                |
+| `loading`    | `boolean`        | `false`  | Show loading overlay                        |
+| `disabled`   | `boolean`        | `false`  | Disable interactions                        |
+| `fallback`   | `string`         | —        | Fallback image/text                         |
+| `maxSize`    | `number`         | —        | Max file size in bytes                      |
+| `className`  | `string`         | —        | Custom class for Avatar                     |
+
+### Events
+
+- `@update:modelValue`: Emitted with Base64 string on upload
+- `@change`: Emitted with full `FilePickerValue` object
+- `@error`: Emitted on validation errors
+
+### Usage
+
+#### Basic Usage
+
+```vue
+<AvatarUploader v-model="userAvatar" size="xl" />
+```
+
+#### Rounded Square & Validation
+
+```vue
+<AvatarUploader v-model="avatar" rounded="lg" :max-size="1024 * 1024" @error="handleError" />
+```
+
+---
+
+# IconPicker
+
+**Import:** `import { IconPicker } from 'vlite3'`
+
+### Props
+
+| Prop       | Type                | Default                 | Description                         |
+| :--------- | :------------------ | :---------------------- | :---------------------------------- |
+| `value`    | `string`            | `'tabler:icons-filled'` | Selected icon name                  |
+| `position` | `TooltTipPlacement` | `'bottom'`              | Picker dropdown position            |
+| `btnProps` | `ButtonProps`       | —                       | Props to pass to the trigger button |
+
+### Events
+
+- `@onSelect`: Emitted when an icon is selected (`value`, `svg`)
+- `@onTrigger`: Emitted when the trigger button is clicked
+- `@onClose`: Emitted when the picker closes
+
+### Slots
+
+| Slot       | Description                 | Props       |
+| :--------- | :-------------------------- | :---------- |
+| `default`  | Custom trigger element      | —           |
+| `menu-top` | Content above the icon grid | `{ close }` |
+
+### Usage
+
+#### Basic Usage
+
+```vue
+<IconPicker :value="selectedIcon" @on-select="(val) => (selectedIcon = val)" />
+
+<Icon :icon="selectedIcon" />
+```
+
+#### Custom Trigger
+
+```vue
+<IconPicker v-model="icon">
+  <Button variant="ghost">Select Icon</Button>
+</IconPicker>
 ```
