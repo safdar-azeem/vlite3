@@ -26,6 +26,9 @@
 - [ConfirmationModal](#confirmationmodal)
 - [Navbar](#navbar)
 - [SidebarMenu](#sidebarmenu)
+- [Input](#input)
+- [OTPInput](#otpinput)
+- [Textarea](#textarea)
 
 ---
 
@@ -904,4 +907,108 @@ const items = [
 <template>
   <SidebarMenu :items="items" />
 </template>
+```
+
+---
+
+# Input
+
+**Import:** `import { Input } from 'vlite3'`
+
+### Props
+
+| Prop              | Type                                                   | Default   | Description                              |
+| :---------------- | :----------------------------------------------------- | :-------- | :--------------------------------------- |
+| `modelValue`      | `string \| number`                                     | `''`      | Binding (`v-model`)                      |
+| `type`            | `InputType`                                            | `text`    | Native input type (text, password, etc.) |
+| `label`           | `string`                                               | —         | Label text                               |
+| `placeholder`     | `string`                                               | —         | Input placeholder                        |
+| `disabled`        | `boolean`                                              | `false`   | Disable input                            |
+| `error`           | `string`                                               | —         | Error message / state                    |
+| `variant`         | `'solid' \| 'outline' \| 'outline-b' \| 'transparent'` | `outline` | Visual style                             |
+| `size`            | `'sm' \| 'md' \| 'lg'`                                 | `md`      | Dimensions                               |
+| `rounded`         | `InputRounded`                                         | `md`      | Border radius                            |
+| `icon`            | `string`                                               | —         | Leading icon (Iconify ID)                |
+| `iconRight`       | `string`                                               | —         | Trailing icon (Iconify ID)               |
+| `loading`         | `boolean`                                              | `false`   | Show spinner                             |
+| `showClearButton` | `boolean`                                              | `true`    | Show clear 'x' when value exists         |
+| `addonLeft`       | `string`                                               | —         | Text addon on the left                   |
+| `addonRight`      | `string`                                               | —         | Text addon on the right                  |
+| `labelPosition`   | `'top' \| 'left' \| 'right'`                           | `top`     | Label placement                          |
+
+### Events
+
+- `@update:modelValue`: Emitted on input
+- `@change`: Emitted on blur/change
+- `@focus`
+- `@blur`
+- `@click:icon`: Click on left icon
+- `@click:icon-right`: Click on right icon
+
+### Usage
+
+```vue
+<Input v-model="username" label="Username" placeholder="Enter username" icon="lucide:user" />
+
+<Input v-model="password" label="Password" type="password" variant="filled" />
+
+<Input v-model="price" label="Price" addon-left="$" addon-right=".00" type="number" />
+```
+
+---
+
+# OTPInput
+
+**Import:** `import { OTPInput } from 'vlite3'`
+
+### Props
+
+| Prop         | Type                              | Default   | Description                         |
+| :----------- | :-------------------------------- | :-------- | :---------------------------------- |
+| `modelValue` | `string`                          | `''`      | Binding (`v-model`) - Joined string |
+| `length`     | `number`                          | `6`       | Number of inputs                    |
+| `type`       | `'text' \| 'number'`              | `number`  | Input mask                          |
+| `variant`    | `'solid' \| 'outline' \| 'ghost'` | `outline` | Visual style                        |
+| `size`       | `'sm' \| 'md' \| 'lg'`            | `md`      | Dimensions                          |
+| `attached`   | `boolean`                         | `false`   | Group inputs visually               |
+| `error`      | `boolean`                         | `false`   | Error state                         |
+| `disabled`   | `boolean`                         | `false`   | Disable all inputs                  |
+| `autofocus`  | `boolean`                         | `false`   | Focus first input on mount          |
+
+### Events
+
+- `@update:modelValue`: Emitted on change
+- `@complete`: Emitted when all fields are filled
+
+### Usage
+
+```vue
+<OTPInput v-model="otp" :length="4" variant="solid" @complete="verifyOtp" />
+```
+
+---
+
+# Textarea
+
+**Import:** `import { Textarea } from 'vlite3'`
+
+### Props
+
+| Prop          | Type      | Default | Description          |
+| :------------ | :-------- | :------ | :------------------- |
+| `modelValue`  | `string`  | `''`    | Binding (`v-model`)  |
+| `rows`        | `number`  | `3`     | Default visible rows |
+| `placeholder` | `string`  | —       | Placeholder text     |
+| `disabled`    | `boolean` | `false` | Disable input        |
+
+### Events
+
+- `@update:modelValue`
+- `@focus`
+- `@blur`
+
+### Usage
+
+```vue
+<Textarea v-model="message" placeholder="Leave a comment..." :rows="5" />
 ```
