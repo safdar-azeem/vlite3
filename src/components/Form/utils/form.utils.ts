@@ -1,4 +1,11 @@
-import type { IForm, IFormContext, IFormDisabled, IFormWhen } from '../types'
+import type { IForm, IFormAddon, IFormContext, IFormDisabled, IFormWhen } from '../types'
+
+/**
+ * Helper: check if an addon definition is an object config (not a plain string)
+ */
+export function isAddonObject(addon: string | IFormAddon | undefined): addon is IFormAddon {
+  return !!addon && typeof addon === 'object'
+}
 
 /**
  * Get a nested value from an object using dot notation path
@@ -49,13 +56,30 @@ export function setNestedValue(
 }
 
 /**
+ * Seed a single addon's default value into the values object (if not already set)
+ */
+function seedAddonValue(
+  values: Record<string, any>,
+  addon: string | IFormAddon | undefined
+): Record<string, any> {
+  if (!isAddonObject(addon)) return values
+  if (!addon.name) return values
+
+  const existing = getNestedValue(values, addon.name)
+  if (existing === undefined && addon.value !== undefined) {
+    return setNestedValue(values, addon.name, addon.value)
+  }
+  return values
+}
+
+/**
  * Initialize form values from schema and optional initial values
  */
 export function initializeFormValues(
   schema: IForm[] | IForm[][],
   initialValues?: Record<string, any>
 ): Record<string, any> {
-  const values: Record<string, any> = initialValues ? deepClone(initialValues) : {}
+  let values: Record<string, any> = initialValues ? deepClone(initialValues) : {}
 
   // Flatten schema if grouped
   const flatSchema = Array.isArray(schema[0]) ? (schema as IForm[][]).flat() : (schema as IForm[])
@@ -72,6 +96,10 @@ export function initializeFormValues(
         Object.assign(values, setNestedValue(values, field.name, defaultValue))
       }
     }
+
+    // Seed addon default values
+    values = seedAddonValue(values, field.addonLeft)
+    values = seedAddonValue(values, field.addonRight)
   }
 
   return values
