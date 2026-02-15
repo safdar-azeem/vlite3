@@ -40,6 +40,7 @@ const menuItems: SidebarMenuItemSchema[] = [
     icon: 'lucide:text-cursor-input',
     children: [
       { label: 'Input', to: '/input', icon: 'lucide:text-cursor-input' },
+      { label: 'Number Input', to: '/numberinput', icon: 'lucide:hash' },
       { label: 'OTP Input', to: '/otpinput', icon: 'lucide:hash' },
       { label: 'Form', to: '/form', icon: 'lucide:file-input' },
       { label: 'MultiSelect', to: '/multiselect', icon: 'lucide:list-checks' },
