@@ -87,6 +87,7 @@ const emit = defineEmits<{
   (e: 'onSubmit', payload: IFormSubmitPayload, close: () => void): void
   (e: 'onCancel'): void
   (e: 'onStepChange', step: number): void
+  (e: 'onAddonAction', action: string): void
 }>()
 
 // Inject modal context if available
@@ -299,7 +300,8 @@ const handleCancel = () => {
         :isFieldVisible="isFieldVisible"
         :isFieldDisabled="isFieldDisabled"
         :isFieldReadonly="isFieldReadonly"
-        @change="onFieldChange" />
+        @change="onFieldChange"
+        @addonAction="(action: string) => emit('onAddonAction', action)" />
     </div>
 
     <div v-else-if="isGroupedMode && !isMultiStepMode" class="form-groups space-y-6">
@@ -333,7 +335,8 @@ const handleCancel = () => {
             :isFieldVisible="isFieldVisible"
             :isFieldDisabled="isFieldDisabled"
             :isFieldReadonly="isFieldReadonly"
-            @change="onFieldChange" />
+            @change="onFieldChange"
+            @addonAction="(action: string) => emit('onAddonAction', action)" />
         </div>
       </div>
     </div>
@@ -360,7 +363,8 @@ const handleCancel = () => {
         :isFieldVisible="isFieldVisible"
         :isFieldDisabled="isFieldDisabled"
         :isFieldReadonly="isFieldReadonly"
-        @change="onFieldChange" />
+        @change="onFieldChange"
+        @addonAction="(action: string) => emit('onAddonAction', action)" />
     </div>
 
     <slot
