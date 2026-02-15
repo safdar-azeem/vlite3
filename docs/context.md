@@ -15,6 +15,12 @@
 - [Switch](#switch)
 - [CheckBox](#checkbox)
 - [Avatar](#avatar)
+- [Accordion](#accordion)
+- [Alert](#alert)
+- [DataTable](#datatable)
+- [DatePicker](#datepicker)
+- [Pagination](#pagination)
+- [Tabes](#tabes)
 
 ---
 
@@ -284,4 +290,287 @@ type AvatarRounded = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
 ```vue
 <Avatar src="[https://i.pravatar.cc/150](https://i.pravatar.cc/150)" size="lg" />
 <Avatar alt="John Doe" fallback="JD" rounded="md" />
+```
+
+---
+
+# Accordion
+
+**Import:** `import { Accordion } from 'vlite3'`
+
+### Props
+
+| Prop                | Type                    | Default   | Description                       |
+| :------------------ | :---------------------- | :-------- | :-------------------------------- |
+| `items`             | `AccordionItemSchema[]` | `[]`      | Data source for items             |
+| `allowMultiple`     | `boolean`               | `false`   | Allow multiple items open at once |
+| `variant`           | `AccordionVariant`      | `default` | Visual style                      |
+| `size`              | `AccordionSize`         | `md`      | Size of trigger/content           |
+| `attached`          | `boolean`               | `false`   | Remove spacing between items      |
+| `disabled`          | `boolean`               | `false`   | Disable all interaction           |
+| `showIndex`         | `boolean`               | `false`   | Show item number (1, 2...)        |
+| `openIcon`          | `string`                | —         | Icon when open                    |
+| `closeIcon`         | `string`                | —         | Icon when closed                  |
+| `iconVariant`       | `IconVariant`           | `simple`  | Style of the toggle icon          |
+| `activeIconVariant` | `IconVariant`           | —         | Style when active                 |
+| `triggerClass`      | `string`                | —         | Custom class for trigger          |
+| `contentClass`      | `string`                | —         | Custom class for content          |
+| `itemClass`         | `string`                | —         | Custom class for item wrapper     |
+
+### Types
+
+```ts
+export interface AccordionItemSchema {
+  id: string
+  title: string
+  description?: string
+  content?: string
+  icon?: string
+  disabled?: boolean
+  bodyComponent?: Component | any
+  [key: string]: any
+}
+
+export type AccordionVariant = 'default' | 'solid' | 'outline' | 'separated' | 'ghost'
+export type AccordionSize = 'sm' | 'md' | 'lg'
+export type IconVariant = 'simple' | 'solid' | 'outline' | 'primary' | 'ghost'
+```
+
+### Usage
+
+```vue
+<Accordion :items="items" variant="outline" allow-multiple attached show-index />
+```
+
+---
+
+# Alert
+
+**Import:** `import { Alert } from 'vlite3'`
+
+### Props
+
+| Prop          | Type                            | Default   | Description                          |
+| :------------ | :------------------------------ | :-------- | :----------------------------------- |
+| `title`       | `string`                        | —         | Alert title                          |
+| `description` | `string`                        | —         | Alert description                    |
+| `icon`        | `string`                        | —         | Custom icon (overrides variant icon) |
+| `variant`     | `AlertVariant`                  | `primary` | Visual style theme                   |
+| `closable`    | `boolean`                       | `false`   | Show close button                    |
+| `role`        | `'alert' \| 'status' \| 'none'` | —         | ARIA role                            |
+| `class`       | `string`                        | —         | Custom classes                       |
+
+### Types
+
+```ts
+export type AlertVariant = 'primary' | 'success' | 'warning' | 'danger'
+```
+
+### Usage
+
+```vue
+<Alert
+  title="Payment Success"
+  description="Your transaction has been processed."
+  variant="success"
+  closable
+  @close="onClose" />
+```
+
+---
+
+# DataTable
+
+**Import:** `import { DataTable } from 'vlite3'`
+
+### Props
+
+| Prop                  | Type                    | Default             | Description                 |
+| :-------------------- | :---------------------- | :------------------ | :-------------------------- |
+| `rows`                | `any[]`                 | `[]`                | Data array to display       |
+| `headers`             | `TableHeader[]`         | `[]`                | Column definitions          |
+| `search`              | `string`                | —                   | Search query string         |
+| `showSearch`          | `boolean`               | `true`              | Show search input           |
+| `searchPlaceholder`   | `string`                | `Search...`         | Placeholder for search      |
+| `loading`             | `boolean`               | `false`             | Show loading state/skeleton |
+| `selectable`          | `boolean`               | `false`             | Enable row selection        |
+| `sortable`            | `boolean`               | `false`             | Enable column sorting       |
+| `showPagination`      | `boolean`               | `true`              | Show footer pagination      |
+| `itemsPerPage`        | `number`                | `10`                | Rows per page               |
+| `itemsPerPageOptions` | `number[]`              | `[10, 25, 50, 100]` | Options dropdown            |
+| `showItemsPerPage`    | `boolean`               | `true`              | Show limit selector         |
+| `striped`             | `boolean`               | `false`             | Zebra striping              |
+| `hoverable`           | `boolean`               | `true`              | Highlight row on hover      |
+| `bordered`            | `boolean`               | `true`              | Outer border                |
+| `compact`             | `boolean`               | `false`             | Reduced padding             |
+| `variant`             | `'default' \| 'raised'` | `default`           | Table style                 |
+| `emptyTitle`          | `string`                | `No data available` | Empty state title           |
+| `emptyDescription`    | `string`                | —                   | Empty state text            |
+| `emptyIcon`           | `string`                | `lucide:inbox`      | Empty state icon            |
+
+### Types
+
+```ts
+export interface TableHeader {
+  field: string
+  title: string
+  width?: string
+  minWidth?: string
+  sortable?: boolean
+  hideOnMobile?: boolean
+  align?: 'left' | 'center' | 'right'
+  format?: (value: any, row?: any) => string
+  class?: string | ((value: any, row?: any) => string)
+  capitalize?: boolean
+  addStatusColor?: boolean
+  type?: 'text' | 'price' | 'date' | 'number'
+}
+
+export interface SortConfig {
+  field: string
+  order: 'asc' | 'desc' | ''
+}
+
+export interface TableState {
+  pagination: { page: number; limit: number }
+  sorting: SortConfig
+  search: string
+}
+```
+
+### Slots
+
+| Slot             | Description                                          |
+| :--------------- | :--------------------------------------------------- |
+| `[header.field]` | Custom cell content (e.g. `p#name="{ value, row }"`) |
+| `toolbar-left`   | Left side of toolbar                                 |
+| `toolbar-right`  | Right side of toolbar                                |
+| `empty-action`   | Action button in empty state                         |
+
+### Usage
+
+```vue
+<DataTable :headers="headers" :rows="users" selectable sortable :loading="isLoading">
+  <template #status="{ value }">
+    <Badge :variant="value === 'active' ? 'success' : 'secondary'">
+      {{ value }}
+    </Badge>
+  </template>
+
+  <template #toolbar-right>
+    <Button icon="lucide:plus">New User</Button>
+  </template>
+</DataTable>
+```
+
+---
+
+# DatePicker
+
+**Import:** `import { DatePicker } from 'vlite3'`
+
+### Props
+
+| Prop             | Type                   | Default           | Description               |
+| :--------------- | :--------------------- | :---------------- | :------------------------ |
+| `modelValue`     | `any`                  | —                 | Binding (`v-model`)       |
+| `mode`           | `'date' \| 'dateTime'` | `date`            | Selection mode            |
+| `minDate`        | `string`               | —                 | Minimum allowed date      |
+| `placeholder`    | `string`               | —                 | Input placeholder         |
+| `icon`           | `string`               | `lucide:calendar` | Trigger icon              |
+| `size`           | `ButtonSize`           | `md`              | Trigger button size       |
+| `variant`        | `ButtonVariant`        | `outline`         | Trigger button style      |
+| `teleport`       | `boolean`              | `true`            | Teleport dropdown to body |
+| `minuteInterval` | `number`               | `5`               | Minute step for time      |
+
+### Usage
+
+```vue
+<DatePicker v-model="date" mode="dateTime" :min-date="new Date().toISOString()" variant="ghost" />
+```
+
+---
+
+# Pagination
+
+**Import:** `import { Pagination } from 'vlite3'`
+
+### Props
+
+| Prop                  | Type                                        | Default       | Description                      |
+| :-------------------- | :------------------------------------------ | :------------ | :------------------------------- |
+| `currentPage`         | `number`                                    | `1`           | Binding (`v-model:currentPage`)  |
+| `totalPages`          | `number`                                    | required      | Total pages                      |
+| `siblingCount`        | `number`                                    | `1`           | Number of siblings               |
+| `disabled`            | `boolean`                                   | `false`       | Disable navigation               |
+| `showEdges`           | `boolean`                                   | `false`       | Show first/last buttons          |
+| `showPageInfo`        | `boolean`                                   | `false`       | Show "Page X of Y"               |
+| `showItemsPerPage`    | `boolean`                                   | `false`       | Show limit selector              |
+| `itemsPerPage`        | `number`                                    | `10`          | Binding (`v-model:itemsPerPage`) |
+| `itemsPerPageOptions` | `number[]`                                  | `[10, 25...]` | Limit options                    |
+| `navType`             | `'text' \| 'icon'`                          | `text`        | Navigation style                 |
+| `alignment`           | `'start' \| 'center' \| 'end' \| 'between'` | —             | Flex alignment                   |
+
+### Usage
+
+```vue
+<Pagination
+  v-model:currentPage="page"
+  v-model:itemsPerPage="limit"
+  :total-pages="10"
+  show-page-info
+  show-items-per-page
+  alignment="between" />
+```
+
+---
+
+# Tabes
+
+**Import:** `import { Tabes } from 'vlite3'`
+
+### Props
+
+| Prop         | Type               | Default   | Description           |
+| :----------- | :----------------- | :-------- | :-------------------- |
+| `modelValue` | `string \| number` | —         | Binding (`v-model`)   |
+| `options`    | `TabesOption[]`    | required  | Array of tabs         |
+| `size`       | `TabesSize`        | `md`      | Dimensions            |
+| `variant`    | `TabesVariant`     | `surface` | Visual style          |
+| `block`      | `boolean`          | `false`   | Full width            |
+| `textClass`  | `string`           | —         | Custom class for text |
+
+### Types
+
+```ts
+export interface TabesOption {
+  label: string
+  value: string | number
+  icon?: string
+  disabled?: boolean
+}
+
+export type TabesSize = 'sm' | 'md' | 'lg'
+
+export type TabesVariant =
+  | 'surface'
+  | 'primary'
+  | 'secondary'
+  | 'danger'
+  | 'success'
+  | 'outline'
+  | 'line'
+```
+
+### Usage
+
+```vue
+<Tabes
+  v-model="currentTab"
+  :options="[
+    { label: 'Home', value: 'home' },
+    { label: 'Profile', value: 'profile' },
+  ]"
+  variant="line"
+  block />
 ```
