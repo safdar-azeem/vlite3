@@ -142,12 +142,6 @@ const buttonClasses = computed(() => {
         'bg-background shadow-sm rounded-full mx-1 my-0.5 aspect-square self-center h-[calc(100%-12px)] w-auto max-w-[calc(100%-12px)] flex items-center justify-center',
       ]
     }
-    // Outline/Ghost Split
-    // Apply rounded-l to left button and rounded-r to right button manually for robustness
-    // But this function doesn't know if it's left or right button?
-    // Wait, the current buttonClasses is blindly applied to BOTH.
-    // I need to split buttonClasses or apply overrides in template.
-    // I'll keep common classes here and apply rounding in template.
     return [base, hover, 'h-full', 'px-2']
   } else {
     // Stacked
