@@ -1636,17 +1636,18 @@ export interface FilePickerValue {
 
 ### Props
 
-| Prop | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `data` | `any[]` | required | Array of items to render |
-| `cols` | `number \| Record<string \| number, number>` | `{ default: 1, sm: 2, lg: 3 }` | Column configuration for different breakpoints |
-| `gap` | `number` | `16` | Space between items in pixels |
-| `tag` | `string` | `'div'` | Root container HTML tag |
-| `itemKey` | `string` | `'id'` | Unique key property in data items |
+| Prop      | Type                                         | Default                        | Description                                    |
+| :-------- | :------------------------------------------- | :----------------------------- | :--------------------------------------------- |
+| `data`    | `any[]`                                      | required                       | Array of items to render                       |
+| `cols`    | `number \| Record<string \| number, number>` | `{ default: 1, sm: 2, lg: 3 }` | Column configuration for different breakpoints |
+| `gap`     | `number`                                     | `16`                           | Space between items in pixels                  |
+| `tag`     | `string`                                     | `'div'`                        | Root container HTML tag                        |
+| `itemKey` | `string`                                     | `'id'`                         | Unique key property in data items              |
 
 ### Breakpoints
 
 Default numeric values for named breakpoints:
+
 - `sm`: 640px
 - `md`: 768px
 - `lg`: 1024px
@@ -1655,13 +1656,14 @@ Default numeric values for named breakpoints:
 
 ### Slots
 
-| Slot | Description | Props |
-| :--- | :--- | :--- |
+| Slot      | Description                    | Props                       |
+| :-------- | :----------------------------- | :-------------------------- |
 | `default` | Template for each masonry item | `{ data, index, colIndex }` |
 
 ### Usage
 
 #### Basic Usage (Fixed Columns)
+
 ```vue
 <Masonry :data="items" :cols="3" :gap="20">
   <template #default="{ data }">
@@ -1671,11 +1673,9 @@ Default numeric values for named breakpoints:
 ```
 
 #### Responsive Grid
+
 ```vue
-<Masonry 
-  :data="images" 
-  :cols="{ default: 1, sm: 2, md: 3, lg: 4 }" 
-  :gap="16">
+<Masonry :data="images" :cols="{ default: 1, sm: 2, md: 3, lg: 4 }" :gap="16">
   <template #default="{ data }">
     <img :src="data.url" class="rounded-lg w-full h-auto" />
   </template>
@@ -1683,6 +1683,7 @@ Default numeric values for named breakpoints:
 ```
 
 #### Performance Optimization
+
 The `Masonry` component uses `content-visibility: auto` and `ResizeObserver` to ensure high performance even with thousands of items by skipping rendering for off-screen content.
 
 ---
@@ -1693,20 +1694,20 @@ The `Masonry` component uses `content-visibility: auto` and `ResizeObserver` to 
 
 ### Props
 
-| Prop | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `modelValue` | `any[]` | `[]` | Selected values |
-| `options` | `IDropdownOptions` | `[]` | Options to display |
-| `placeholder` | `string` | `'Select items...'` | Placeholder text |
-| `searchable` | `boolean` | `true` | Enable search functionality |
-| `disabled` | `boolean` | `false` | Disable interaction |
-| `loading` | `boolean` | `false` | Show loading state |
-| `variant` | `'default' \| 'outline' \| 'solid'` | `'outline'` | Visual style variant |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Component size |
-| `maxVisible` | `number` | `2` | Max tags to show before +N badge |
-| `hasMore` | `boolean` | `false` | Show "Load More" trigger |
-| `remote` | `boolean` | `false` | Enable remote search mode |
-| `layout` | `'default' \| 'grouped'` | `'default'` | Option layout mode |
+| Prop          | Type                                | Default             | Description                      |
+| :------------ | :---------------------------------- | :------------------ | :------------------------------- |
+| `modelValue`  | `any[]`                             | `[]`                | Selected values                  |
+| `options`     | `IDropdownOptions`                  | `[]`                | Options to display               |
+| `placeholder` | `string`                            | `'Select items...'` | Placeholder text                 |
+| `searchable`  | `boolean`                           | `true`              | Enable search functionality      |
+| `disabled`    | `boolean`                           | `false`             | Disable interaction              |
+| `loading`     | `boolean`                           | `false`             | Show loading state               |
+| `variant`     | `'default' \| 'outline' \| 'solid'` | `'outline'`         | Visual style variant             |
+| `size`        | `'sm' \| 'md' \| 'lg'`              | `'md'`              | Component size                   |
+| `maxVisible`  | `number`                            | `2`                 | Max tags to show before +N badge |
+| `hasMore`     | `boolean`                           | `false`             | Show "Load More" trigger         |
+| `remote`      | `boolean`                           | `false`             | Enable remote search mode        |
+| `layout`      | `'default' \| 'grouped'`            | `'default'`         | Option layout mode               |
 
 ### Events
 
@@ -1718,38 +1719,27 @@ The `Masonry` component uses `content-visibility: auto` and `ResizeObserver` to 
 ### Usage
 
 #### Basic Usage
+
 ```vue
-<MultiSelect 
-  v-model="selected" 
-  :options="options" 
-  placeholder="Select frameworks" />
+<MultiSelect v-model="selected" :options="options" placeholder="Select frameworks" />
 ```
 
 #### Remote Search
+
 ```vue
-<MultiSelect 
-  v-model="selected" 
-  :options="results" 
-  remote 
-  :loading="isLoading"
-  @search="onSearch" />
+<MultiSelect v-model="selected" :options="results" remote :loading="isLoading" @search="onSearch" />
 ```
 
 #### Grouped Options
+
 ```vue
-<MultiSelect 
-  v-model="selected" 
-  :options="groupedOptions" 
-  layout="grouped" />
+<MultiSelect v-model="selected" :options="groupedOptions" layout="grouped" />
 ```
 
 #### Pagination
+
 ```vue
-<MultiSelect 
-  v-model="selected" 
-  :options="items" 
-  :has-more="hasMore" 
-  @load-more="loadNextPage" />
+<MultiSelect v-model="selected" :options="items" :has-more="hasMore" @load-more="loadNextPage" />
 ```
 
 ---
@@ -1759,19 +1749,23 @@ The `Masonry` component uses `content-visibility: auto` and `ResizeObserver` to 
 **Import:** `import { ThemeToggle } from 'vlite3'`
 
 ### Description
+
 A dedicated button component to toggle between light and dark modes. It utilizes the `useTheme` composable internally.
 
 ### Props
+
 This component does not accept specific props. It inherits all attributes (like `class`) and passes them to the underlying button.
 
 ### Usage
 
 #### Basic Usage
+
 ```vue
 <ThemeToggle />
 ```
 
 #### With Custom Class
+
 ```vue
 <ThemeToggle class="absolute top-4 right-4" />
 ```
@@ -1783,39 +1777,49 @@ This component does not accept specific props. It inherits all attributes (like 
 **Import:** `import { Form } from 'vlite3'`
 
 ### Description
+
 A schema-driven form builder with built-in validation, multi-step wizards, grouped layouts, and dynamic field dependencies.
 
 ### Props
 
-| Prop | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `schema` | `IForm[] \| IForm[][]` | required | Array of field definitions (or array of arrays for grouped/multi-step) |
-| `values` | `Record<string, any>` | `{}` | Initial form values |
-| `variant` | `InputVariant` | `'outline'` | Style variant for all inputs |
-| `size` | `InputSize` | `'md'` | Size of inputs |
-| `columns` | `number` | — | Number of grid columns (default 1) |
-| `className` | `string` | — | Custom class for grid (e.g., `'grid-cols-2'`) |
-| `loading` | `boolean` | `false` | Loading state on submit button |
-| `submitText` | `string` | `'Submit'` | Label for submit button |
-| `isUpdate` | `boolean` | `false` | Mode for update/edit operations |
-| `tabs` | `IFormStep[]` | — | Configuration for multi-step wizard |
-| `groupsHeadings` | `string[]` | — | Headings for grouped layout |
+| Prop                       | Type                   | Default     | Description                                                            |
+| :------------------------- | :--------------------- | :---------- | :--------------------------------------------------------------------- |
+| `schema`                   | `IForm[] \| IForm[][]` | required    | Array of field definitions (or array of arrays for grouped/multi-step) |
+| `values`                   | `Record<string, any>`  | `{}`        | Initial form values                                                    |
+| `variant`                  | `InputVariant`         | `'outline'` | Style variant for all inputs                                           |
+| `size`                     | `InputSize`            | `'md'`      | Size of inputs                                                         |
+| `columns`                  | `number`               | —           | Number of grid columns (default 1)                                     |
+| `className`                | `string`               | —           | Custom class for grid (e.g., `'grid-cols-2'`)                          |
+| `loading`                  | `boolean`              | `false`     | Loading state on submit button                                         |
+| `submitText`               | `string`               | `'Submit'`  | Label for submit button                                                |
+| `isUpdate`                 | `boolean`              | `false`     | Mode for update/edit operations                                        |
+| `tabs`                     | `IFormStep[]`          | —           | Configuration for multi-step wizard                                    |
+| `groupsHeadings`           | `string[]`             | —           | Headings for grouped layout                                            |
+| `groupHeadingsDescription` | `string[]`             | —           | Descriptions for grouped layout                                        |
+| `folderId`                 | `string`               | —           | Folder ID for file uploads                                             |
+| `cancelText`               | `string`               | `'Cancel'`  | Label for cancel button                                                |
+| `showCancel`               | `boolean`              | `false`     | Show cancel button                                                     |
+| `groupClass`               | `string`               | —           | Custom class for grouped layout                                        |
+| `headerClass`              | `string`               | —           | Custom class for group header                                          |
+| `footerClass`              | `string`               | —           | Custom class for footer                                                |
+| `timelineTextPosition`     | `TimelineTextPosition` | `'bottom'`  | Text position for timeline tabs                                        |
+| `footer`                   | `boolean`              | `true`      | Show footer and submit button                                          |
 
 ### Schema Interface (`IForm`)
 
-| Property | Type | Description |
-| :--- | :--- | :--- |
-| `name` | `string` | Field key in values object (supports dot notation) |
-| `label` | `string` | display label |
-| `type` | `IFormFieldType` | Input type (text, email, password, select, file, etc.) |
-| `required` | `boolean` | Marks field as required |
-| `placeholder` | `string` | input placeholder |
-| `options` | `IDropdownOptions` | Options for select/multiSelect/radio |
-| `validation` | `(ctx) => string` | Return error message or empty string |
-| `when` | `(ctx) => boolean` | Conditionally show/hide field |
-| `updateValues` | `(ctx) => Record\<string, any\>` | Dynamically update other fields on change |
-| `itemClass` | `string` | Class for field wrapper (e.g. `col-span-2`) |
-| `disabled` | `boolean \| (ctx) => boolean` | Disable field |
+| Property       | Type                             | Description                                            |
+| :------------- | :------------------------------- | :----------------------------------------------------- |
+| `name`         | `string`                         | Field key in values object (supports dot notation)     |
+| `label`        | `string`                         | display label                                          |
+| `type`         | `IFormFieldType`                 | Input type (text, email, password, select, file, etc.) |
+| `required`     | `boolean`                        | Marks field as required                                |
+| `placeholder`  | `string`                         | input placeholder                                      |
+| `options`      | `IDropdownOptions`               | Options for select/multiSelect/radio                   |
+| `validation`   | `(ctx) => string`                | Return error message or empty string                   |
+| `when`         | `(ctx) => boolean`               | Conditionally show/hide field                          |
+| `updateValues` | `(ctx) => Record\<string, any\>` | Dynamically update other fields on change              |
+| `itemClass`    | `string`                         | Class for field wrapper (e.g. `col-span-2`)            |
+| `disabled`     | `boolean \| (ctx) => boolean`    | Disable field                                          |
 
 ### Events
 
@@ -1826,30 +1830,32 @@ A schema-driven form builder with built-in validation, multi-step wizards, group
 ### Usage
 
 #### Basic Form
+
 ```vue
 <script setup>
 const schema = [
   { name: 'email', label: 'Email', type: 'email', required: true },
-  { name: 'password', label: 'Password', type: 'password', required: true }
+  { name: 'password', label: 'Password', type: 'password', required: true },
 ]
 </script>
 
 <template>
-  <Form 
-    :schema="schema" 
-    @onSubmit="handleSubmit" 
-  />
+  <Form :schema="schema" @onSubmit="handleSubmit" />
 </template>
 ```
 
 #### Validation & Conditional Logic
-```vue
+
+```javascript
 const schema = [
   {
     name: 'role',
     label: 'Role',
     type: 'select',
-    options: [{ label: 'Admin', value: 'admin' }, { label: 'User', value: 'user' }]
+    options: [
+      { label: 'Admin', value: 'admin' },
+      { label: 'User', value: 'user' },
+    ],
   },
   {
     name: 'adminCode',
@@ -1858,35 +1864,118 @@ const schema = [
     // Only show if role is admin
     when: ({ values }) => values.role === 'admin',
     // Custom validation
-    validation: ({ value }) => value === 'SECRET' ? '' : 'Invalid code'
-  }
+    validation: ({ value }) => (value === 'SECRET' ? '' : 'Invalid code'),
+  },
 ]
 ```
 
 #### Multi-Step Wizard
+
 ```vue
 <script setup>
 const tabs = [
   { id: 1, title: 'Account', icon: 'lucide:user' },
-  { id: 2, title: 'Profile', icon: 'lucide:settings' }
+  { id: 2, title: 'Profile', icon: 'lucide:settings' },
 ]
 
 // Schema is array of arrays
 const schema = [
-  [ // Step 1
-    { name: 'username', label: 'Username', type: 'text' }
+  [
+    // Step 1
+    { name: 'username', label: 'Username', type: 'text' },
   ],
-  [ // Step 2
-    { name: 'bio', label: 'Bio', type: 'textarea' }
-  ]
+  [
+    // Step 2
+    { name: 'bio', label: 'Bio', type: 'textarea' },
+  ],
 ]
 </script>
 
 <template>
-  <Form 
-    :steps="tabs" 
-    :schema="schema" 
-    @onSubmit="console.log" 
-  />
+  <Form :steps="tabs" :schema="schema" @onSubmit="console.log" />
+</template>
+```
+
+#### Custom Fields (Repeater)
+
+Use `type: 'customFields'` to create array/repeater fields.
+
+```javascript
+const schema = [
+  {
+    name: 'teamMembers',
+    label: 'Team Members',
+    type: 'customFields',
+    props: {
+      headers: ['Name', 'Role'],
+      schema: [
+        { name: 'name', label: 'Name', type: 'text' },
+        {
+          name: 'role',
+          label: 'Role',
+          type: 'select',
+          options: [
+            { label: 'Dev', value: 'dev' },
+            { label: 'Design', value: 'design' },
+          ],
+        },
+      ],
+    },
+  },
+]
+```
+
+#### File Uploads
+
+Support for single file, multiple files, and different UI variants.
+
+```javascript
+const schema = [
+  {
+    name: 'avatar',
+    label: 'Avatar',
+    type: 'avatarUpload', // Specialized avatar uploader
+  },
+  {
+    name: 'resume',
+    label: 'Resume',
+    type: 'fileUploader', // Dropzone style
+    props: { accept: '.pdf' },
+  },
+  {
+    name: 'documents',
+    label: 'Documents',
+    type: 'file', // Standard input style
+    props: { multiple: true },
+  },
+]
+```
+
+#### Grouped Forms
+
+Organize complex forms into visual groups with headings.
+
+```vue
+<script setup>
+// Define schema as array of arrays
+const schema = [
+  [
+    // Group 1: Personal
+    { name: 'firstName', label: 'First Name', type: 'text' },
+    { name: 'lastName', label: 'Last Name', type: 'text' },
+  ],
+  [
+    // Group 2: Contact
+    { name: 'email', label: 'Email', type: 'email' },
+    { name: 'phone', label: 'Phone', type: 'tel' },
+  ],
+]
+</script>
+
+<template>
+  <Form
+    :schema="schema"
+    :groupsHeadings="['Personal Info', 'Contact Details']"
+    :groupHeadingsDescription="['Basic identification', 'How to reach you']" />
 </template>
 ```
