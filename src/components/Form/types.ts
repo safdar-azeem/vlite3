@@ -3,6 +3,27 @@ import type { IDropdownOptions } from '@/types'
 import type { InputVariant, InputSize, InputRounded } from '@/types'
 
 /**
+ * Addon configuration for input field addons (left/right)
+ * Allows rendering dropdowns or buttons inside input addons from schema
+ */
+export interface IFormAddon {
+  /** Key in form values this addon writes to (required for select, optional for button) */
+  name?: string
+  /** 'select' renders a Dropdown; 'button' renders a Button */
+  type: 'select' | 'button'
+  /** Default value (for select addons) */
+  value?: any
+  /** Dropdown options (required when type='select') */
+  options?: IDropdownOptions
+  /** Button label (required when type='button') */
+  text?: string
+  /** Emitted action name on button click */
+  action?: string
+  /** Extra props forwarded to the rendered component */
+  props?: Record<string, any>
+}
+
+/**
  * Form field types - maps to corresponding UI components
  */
 export type IFormFieldType =
@@ -107,10 +128,10 @@ export interface IForm {
   disabled?: IFormDisabled
   /** Readonly state - boolean or conditional function */
   readonly?: IFormDisabled
-  /** Left addon text */
-  addonLeft?: string
-  /** Right addon text */
-  addonRight?: string
+  /** Left addon — plain text or an addon config object (select/button) */
+  addonLeft?: string | IFormAddon
+  /** Right addon — plain text or an addon config object (select/button) */
+  addonRight?: string | IFormAddon
   /** Options for select/multiSelect/dropdown fields */
   options?: IDropdownOptions
   /** Validation function - returns error message or empty string */
