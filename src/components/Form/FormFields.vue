@@ -33,6 +33,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: 'change', name: string, payload: IFormFieldChangePayload): void
+  (e: 'addonAction', action: string): void
 }>()
 
 // Grid class for layout
@@ -90,6 +91,16 @@ const handleFieldChange = (field: IForm, payload: IFormFieldChangePayload) => {
 const getItemClass = (field: IForm): string => {
   return field.itemClass || ''
 }
+
+// Handle addon value change (propagate as a regular field change)
+const handleAddonChange = (addonName: string, payload: IFormFieldChangePayload) => {
+  emit('change', addonName, payload)
+}
+
+// Handle addon action (e.g. button click)
+const handleAddonAction = (action: string) => {
+  emit('addonAction', action)
+}
 </script>
 
 <template>
@@ -126,7 +137,9 @@ const getItemClass = (field: IForm): string => {
           :readonly="checkFieldReadonly(field)"
           :error="getFieldError(field)"
           :isUpdate="isUpdate"
-          @change="(payload) => handleFieldChange(field, payload)" />
+          @change="(payload) => handleFieldChange(field, payload)"
+          @addonChange="handleAddonChange"
+          @addonAction="handleAddonAction" />
 
         <!-- Inline Label for Switch/Checkbox -->
         <Label
