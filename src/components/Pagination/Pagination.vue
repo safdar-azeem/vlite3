@@ -16,6 +16,7 @@ interface Props {
   itemsPerPage?: number
   itemsPerPageOptions?: number[]
   navType?: 'text' | 'icon' // Default 'text' (responsive) vs 'icon' (always arrows)
+  alignment?: 'start' | 'center' | 'end' | 'between'
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -98,12 +99,32 @@ const range = (start: number, end: number) => {
   let length = end - start + 1
   return Array.from({ length }, (_, idx) => idx + start)
 }
+
+const alignmentClass = computed(() => {
+  // If explicitly provided, respect it
+  if (props.alignment) {
+    switch (props.alignment) {
+      case 'start':
+        return 'justify-start'
+      case 'end':
+        return 'justify-end'
+      case 'between':
+        return 'justify-between'
+      case 'center':
+      default:
+        return 'justify-center'
+    }
+  }
+
+  // Otherwise, use smart defaults based on content
+  // If we show extra info (page count or items per page), default to 'between'
+  // If we only show pagination buttons, default to 'center'
+  return props.showPageInfo || props.showItemsPerPage ? 'justify-between' : 'justify-center'
+})
 </script>
 
 <template>
-  <div
-    class="flex flex-col md:flex-row items-center gap-4 w-full"
-    :class="[showPageInfo || showItemsPerPage ? 'justify-between' : 'justify-center']">
+  <div class="flex flex-col md:flex-row items-center gap-4 w-full" :class="[alignmentClass]">
     <!-- Left Group: Page Info & Items Per Page -->
     <div
       v-if="showPageInfo || showItemsPerPage"
