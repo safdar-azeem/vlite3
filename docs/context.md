@@ -1332,4 +1332,7 @@ export type IDropdownOptions = IDropdownOption[]
     </div>
   </template>
 </Dropdown>
+
+<!-- With Default Trigger (Optional Trigger Slot) -->
+<Dropdown v-model="selectedUser" :options="users" placeholder="Select User" />
 ```
