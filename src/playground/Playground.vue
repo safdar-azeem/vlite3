@@ -36,7 +36,7 @@ const menuItems: SidebarMenuItemSchema[] = [
     ],
   },
   {
-    label: 'Forms',
+    label: 'Forms & Auth',
     icon: 'lucide:text-cursor-input',
     children: [
       { label: 'Input', to: '/input', icon: 'lucide:text-cursor-input' },
@@ -52,6 +52,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'ColorPicker', to: '/colorpicker', icon: 'lucide:palette' },
       { label: 'IconPicker', to: '/iconpicker', icon: 'lucide:smile' },
       { label: 'DatePicker', to: '/datepicker', icon: 'lucide:calendar' },
+      { label: 'Google Login', to: '/googlelogin', icon: 'lucide:chrome' },
     ],
   },
   {
@@ -91,7 +92,6 @@ const menuItems: SidebarMenuItemSchema[] = [
 
 <template>
   <div class="h-screen w-full bg-body text-gray-900 flex max-md:flex-col overflow-hidden">
-    <!-- Navbar (Sidebar Variant) -->
     <Navbar
       variant="sidebar"
       mobileBreakpoint="md"
@@ -107,14 +107,12 @@ const menuItems: SidebarMenuItemSchema[] = [
         </div>
       </template>
 
-      <!-- Sidebar Content -->
       <template #default>
         <div class="space-y-6">
-          <SidebarMenu :items="menuItems" :allow-multiple="true" :default-expanded="['Core']" />
+          <SidebarMenu :items="menuItems" :allow-multiple="true" :default-expanded="['Core', 'Forms & Auth']" />
         </div>
       </template>
 
-      <!-- Sidebar Footer -->
       <template #right>
         <div class="flex items-center justify-between gap-2">
           <ThemeToggle />
@@ -123,18 +121,9 @@ const menuItems: SidebarMenuItemSchema[] = [
       </template>
     </Navbar>
 
-    <!-- Main Content Area -->
     <main class="flex-1 min-w-0 flex flex-col h-full overflow-hidden bg-body relative z-0">
-      <!-- Header for Mobile/Context -->
-      <!-- 
-        Note: The Navbar(sidebar) handles the mobile toggle button on small screens.
-        But we might want a top header for the main content area on desktop or mobile?
-        The original design had a top header inside the main area.
-      -->
-
       <div class="flex-1 overflow-y-auto">
         <div class="max-w-5xl mx-auto px-6 py-6 md:py-12">
-          <!-- Header -->
           <div
             class="mb-10 pb-6 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
@@ -152,7 +141,6 @@ const menuItems: SidebarMenuItemSchema[] = [
             </div>
           </div>
 
-          <!-- Router View -->
           <router-view v-slot="{ Component }">
             <Transition
               mode="out-in"
