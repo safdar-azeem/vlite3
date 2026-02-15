@@ -2075,22 +2075,51 @@ A schema-driven form builder with built-in validation, multi-step wizards, group
 | Property       | Type                             | Description                                            |
 | :------------- | :------------------------------- | :----------------------------------------------------- |
 | `name`         | `string`                         | Field key in values object (supports dot notation)     |
-| `label`        | `string`                         | display label                                          |
+| `label`        | `string`                         | Display label                                          |
 | `type`         | `IFormFieldType`                 | Input type (text, email, password, select, file, etc.) |
 | `required`     | `boolean`                        | Marks field as required                                |
-| `placeholder`  | `string`                         | input placeholder                                      |
+| `placeholder`  | `string`                         | Input placeholder                                      |
 | `options`      | `IDropdownOptions`               | Options for select/multiSelect/radio                   |
 | `validation`   | `(ctx) => string`                | Return error message or empty string                   |
 | `when`         | `(ctx) => boolean`               | Conditionally show/hide field                          |
 | `updateValues` | `(ctx) => Record\<string, any\>` | Dynamically update other fields on change              |
 | `itemClass`    | `string`                         | Class for field wrapper (e.g. `col-span-2`)            |
 | `disabled`     | `boolean \| (ctx) => boolean`    | Disable field                                          |
+| `icon`         | `string`                         | Left icon (Iconify ID)                                 |
+| `iconRight`    | `string`                         | Right icon (Iconify ID)                                |
+| `addonLeft`    | `string \| IFormAddon`           | Left addon — plain text or addon config object         |
+| `addonRight`   | `string \| IFormAddon`           | Right addon — plain text or addon config object        |
+| `props`        | `Record<string, any>`            | Extra props forwarded to the field component           |
+
+### Addon Interface (`IFormAddon`)
+
+When `addonLeft` or `addonRight` is an object, it renders a dropdown or button inside the input addon. Each select addon binds to its own key in form state.
+
+```ts
+export interface IFormAddon {
+  /** Key in form values this addon writes to (required for select, optional for button) */
+  name?: string
+  /** 'select' renders a Dropdown; 'button' renders a Button */
+  type: 'select' | 'button'
+  /** Default value (for select addons) */
+  value?: any
+  /** Dropdown options (required when type='select') */
+  options?: IDropdownOptions
+  /** Button label (required when type='button') */
+  text?: string
+  /** Emitted action name on button click */
+  action?: string
+  /** Extra props forwarded to the rendered component */
+  props?: Record<string, any>
+}
+```
 
 ### Events
 
 - `@onSubmit` (payload: `{ values, isUpdate }`, close): Emitted when form is valid and submitted.
 - `@onCancel`: Emitted when cancel button is clicked.
 - `@onStepChange` (step: `number`): Emitted when step changes in multi-step mode.
+- `@onAddonAction` (action: `string`): Emitted when a button addon is clicked (carries the `action` string from the addon config).
 
 ### Usage
 
@@ -2244,6 +2273,68 @@ const schema = [
     :groupHeadingsDescription="['Basic identification', 'How to reach you']" />
 </template>
 ```
+
+#### Input Addons (Schema-Driven)
+
+Use `addonLeft` and `addonRight` as objects to render dropdowns or buttons inside input addons. Each select addon binds to its own key in form state.
+
+```vue
+<script setup>
+const schema = [
+  {
+    name: 'domain',
+    label: 'Website',
+    type: 'text',
+    placeholder: 'example.com',
+    // Dropdown addon on the left — writes to formValues.protocol
+    addonLeft: {
+      name: 'protocol',
+      type: 'select',
+      value: 'https://',
+      options: [
+        { label: 'https://', value: 'https://' },
+        { label: 'http://', value: 'http://' },
+      ],
+      props: { class: 'w-24' },
+    },
+    // Button addon on the right — emits @onAddonAction
+    addonRight: {
+      type: 'button',
+      text: 'Check',
+      action: 'checkAvailability',
+    },
+  },
+  {
+    name: 'amount',
+    label: 'Price',
+    type: 'text',
+    placeholder: '0.00',
+    // Select addon + plain text addon can be mixed
+    addonLeft: {
+      name: 'currency',
+      type: 'select',
+      value: 'USD',
+      options: [
+        { label: 'USD', value: 'USD' },
+        { label: 'EUR', value: 'EUR' },
+      ],
+    },
+    addonRight: '.00', // Plain string addon (unchanged API)
+  },
+]
+
+const handleAddonAction = (action) => {
+  // action === 'checkAvailability'
+}
+</script>
+
+<template>
+  <Form :schema="schema" @onSubmit="handleSubmit" @onAddonAction="handleAddonAction" />
+  <!-- Submitted values: { protocol: 'https://', domain: '...', currency: 'USD', amount: '...' } -->
+</template>
+```
+
+> **Note:** Plain string addons (e.g. `addonLeft: '$'`) still work exactly as before — fully backward compatible.
 
 #### 3. Form in Lazy Modal (Real-world Example)
 
