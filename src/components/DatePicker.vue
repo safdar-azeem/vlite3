@@ -4,7 +4,7 @@ import type { DatePickerMode } from 'v-datepicker-lite/types'
 import Button from './Button.vue'
 import type { ButtonSize, ButtonVariant } from '@/types'
 import { Dropdown } from './Dropdown'
-import DatePickerLite from 'v-datepicker-lite'
+import DatePicker, { TimePicker } from 'v-datepicker-lite'
 import 'v-datepicker-lite/style.css'
 
 const props = withDefaults(
@@ -14,16 +14,22 @@ const props = withDefaults(
     value?: any
     mode: DatePickerMode
     minDate?: string
+    maxDate?: string
+    disabledDates?: { start: string; end?: string }[]
     icon?: string
     size?: ButtonSize
     variant?: ButtonVariant
     btnProps?: any
     teleport?: boolean
     minuteInterval?: number
+    timeFormat?: '12h' | '24h'
+    disabled?: boolean
+    readonly?: boolean
   }>(),
   {
     minuteInterval: 5,
     teleport: true,
+    timeFormat: '12h',
   }
 )
 
@@ -52,6 +58,8 @@ const hasTimePart = (val: any): boolean => {
 const displayValue = computed(() => {
   if (!actualValue.value) return ''
 
+  if (props.mode === 'time') return actualValue.value
+
   try {
     const d = new Date(actualValue.value)
     if (isNaN(d.getTime())) return String(actualValue.value)
@@ -62,7 +70,9 @@ const displayValue = computed(() => {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
-      ...(showTime ? { hour: '2-digit', minute: '2-digit' } : {}),
+      ...(showTime
+        ? { hour: '2-digit', minute: '2-digit', hour12: props.timeFormat === '12h' }
+        : {}),
     })
   } catch (e) {
     return String(actualValue.value)
@@ -75,7 +85,13 @@ const handleDateChange = (val: any) => {
 </script>
 
 <template>
-  <Dropdown position="bottom-start" class="w-full" :teleport="teleport">
+  <Dropdown
+    position="bottom-start"
+    class="w-full"
+    v-if="mode !== 'time'"
+    maxHeight="max-h-[500px]"
+    :teleport="teleport"
+    :disabled="disabled || readonly">
     <template #trigger>
       <slot :value="actualValue" :displayValue="displayValue">
         <Button
@@ -83,21 +99,47 @@ const handleDateChange = (val: any) => {
           :variant="variant || 'outline'"
           :size="size || 'md'"
           :icon="icon || 'lucide:calendar'"
+          :disabled="disabled"
           v-bind="btnProps"
           class="w-full justify-start text-left font-normal" />
       </slot>
     </template>
 
-    <div class="min-w-[300px] overflow-hidden">
-      <DatePickerLite
+    <div class="overflow-hidden min-w-[300px]">
+      <DatePicker
         :value="actualValue"
         :mode="mode"
         :min-date="minDate"
+        :max-date="maxDate"
+        :disabled-dates="disabledDates"
         class="w-full"
         :minuteInterval="minuteInterval"
-        timeFormat="12h"
+        time-format="12h"
+        :disabled="disabled"
+        :readonly="readonly"
         @change="handleDateChange" />
     </div>
   </Dropdown>
+  <TimePicker
+    v-else
+    v-model:model-value="actualValue"
+    :mode="mode"
+    :min-date="minDate"
+    :max-date="maxDate"
+    :disabled-dates="disabledDates"
+    class="w-full"
+    :minuteInterval="minuteInterval"
+    time-format="12h"
+    :disabled="disabled"
+    :readonly="readonly"
+    @update:modelValue="handleDateChange">
+    <Button
+      :text="displayValue || placeholder || 'Select date'"
+      :variant="variant || 'outline'"
+      :size="size || 'md'"
+      :icon="icon || (mode === 'time' ? 'lucide:clock' : 'lucide:calendar')"
+      :disabled="disabled"
+      v-bind="btnProps"
+      class="w-full justify-start text-left font-normal" />
+  </TimePicker>
 </template>
-
