@@ -38,6 +38,7 @@
 - [Form](#form)
 - [GoogleLogin](#googlelogin)
 - [Spinner](#spinner)
+- [NumberInput](#numberinput)
 
 ---
 
@@ -2205,33 +2206,107 @@ import CreateFolder from './CreateFolder.vue'
   </div>
 </template>
 
-
----
-
 # Spinner
 
-**Import:** `import { Spinner } from 'vlite3'`
+**Import:**
 
-### Props
+```ts
+import { Spinner } from 'vlite3'
+```
+
+## Props
 
 | Prop      | Type             | Default   | Description        |
-| :-------- | :--------------- | :-------- | :----------------- |
+| --------- | ---------------- | --------- | ------------------ |
 | `size`    | `SpinnerSize`    | `md`      | Dimensions         |
 | `color`   | `SpinnerColor`   | `current` | Color theme        |
 | `variant` | `SpinnerVariant` | `border`  | Visual style       |
 | `class`   | `string`         | —         | Custom CSS classes |
 
-### Types
+## Types
 
 ```ts
 type SpinnerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-type SpinnerColor = 'current' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'white'
+
+type SpinnerColor =
+  | 'current'
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'warning'
+  | 'danger'
+  | 'white'
+
 type SpinnerVariant = 'border' | 'dots' | 'bars' | 'ping'
 ```
 
-### Usage
+## Usage
 
 ```vue
 <Spinner />
-<Spinner variant="dots" size="lg" color="primary" />
+
+<Spinner
+  variant="dots"
+  size="lg"
+  color="primary"
+/>
 ```
+
+---
+
+# NumberInput
+
+**Import:**
+
+```ts
+import { NumberInput } from 'vlite3'
+```
+
+## Props
+
+| Prop          | Type                 | Default     | Description             |
+| ------------- | -------------------- | ----------- | ----------------------- |
+| `modelValue`  | `number`             | `undefined` | Binding (`v-model`)     |
+| `min`         | `number`             | —           | Minimum value           |
+| `max`         | `number`             | —           | Maximum value           |
+| `step`        | `number`             | `1`         | Increment step          |
+| `variant`     | `NumberInputVariant` | `split`     | Visual style            |
+| `mode`        | `NumberInputMode`    | `outline`   | Background/border style |
+| `size`        | `NumberInputSize`    | `md`        | Dimensions              |
+| `rounded`     | `NumberInputRounded` | `md`        | Border radius           |
+| `placeholder` | `string`             | —           | Input placeholder       |
+| `disabled`    | `boolean`            | `false`     | Disable interaction     |
+| `readonly`    | `boolean`            | `false`     | Read-only state         |
+
+## Types
+
+```ts
+type NumberInputVariant = 'split' | 'stacked'
+
+type NumberInputMode = 'solid' | 'outline' | 'ghost'
+
+type NumberInputSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+
+type NumberInputRounded =
+  | 'none'
+  | 'sm'
+  | 'md'
+  | 'lg'
+  | 'xl'
+  | '2xl'
+  | 'full'
+```
+
+## Usage
+
+```vue
+<NumberInput
+  v-model="quantity"
+  :min="1"
+  :max="10"
+/>
+
+<NumberInput
+  v-model="price"
+```
+````
