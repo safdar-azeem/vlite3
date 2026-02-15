@@ -1,44 +1,108 @@
-# vlite3 — Component Context
+# vlite3 — LLM Context File
 
-> AI-agent & developer reference.
+> Complete AI-agent & developer reference for **vlite3** — a Vue 3 UI component library built with Tailwind CSS v4.
+
+- **Package:** `vlite3` (npm)
+- **Version:** 0.2.1
+- **License:** MIT
+- **Author:** safdar-azeem
+- **Repository:** https://github.com/safdar-azeem/vlite3
+- **Peer Dependencies:** Vue 3.5+, Vue Router 4
+- **Styling:** Tailwind CSS v4 with semantic CSS variables (shadcn/ui-inspired)
+- **Icons:** Iconify (`@iconify/vue`) — use IDs like `lucide:home`, `lucide:settings`
+
+---
+
+## 🎨 Theming & Customization
+
+vlite3 uses a semantic theming system inspired by **shadcn/ui** and compatible with **Tailwind CSS v4**. All colors are defined as CSS variables, making it easy to customize the look and feel of your application including Dark Mode support.
+
+### Semantic Colors
+
+You can customize these colors in your CSS by overriding the variables in `:root` or `.dark` classes (if you are using a class-based dark mode switcher).
+
+| Variable                   | Class Name                    | Description             | Recommended Usage                                                           |
+| :------------------------- | :---------------------------- | :---------------------- | :-------------------------------------------------------------------------- |
+| `--background`             | `bg-background`               | Default page background | The main background color of your app.                                      |
+| `--foreground`             | `text-foreground`             | Default text color      | The primary text color for content.                                         |
+| `--card`                   | `bg-card`                     | Card background         | Little Gray Background for cards, containers, surfece, panels, and dialogs. |
+| `--primary`                | `bg-primary`                  | Primary brand color     | Used for main actions (buttons, active states).                             |
+| `--primary-foreground`     | `text-primary-foreground`     | Primary text color      | Text color for content on top of primary background.                        |
+| `--secondary`              | `bg-secondary`                | Secondary background    | Used for secondary actions or muted sections.                               |
+| `--secondary-foreground`   | `text-secondary-foreground`   | Secondary text color    | Text color for content on top of secondary background.                      |
+| `--muted`                  | `bg-muted`                    | Muted background        | Subtle backgrounds (e.g., table headers, disabled states).                  |
+| `--muted`                  | `text-muted`                  | Muted Text              | Secondary text, Unactive Link, description.                                 |
+| `--muted-foreground`       | `text-muted-foreground`       | Muted text color        | Secondary text, hints, placeholders.                                        |
+| `--accent`                 | `bg-accent`                   | Accent background       | Used for hover states, selection highlights.                                |
+| `--accent-foreground`      | `text-accent-foreground`      | Accent text color       | Text color on accent backgrounds.                                           |
+| `--destructive`            | `bg-destructive`              | Destructive color       | Used for error states and destructive actions.                              |
+| `--destructive-foreground` | `text-destructive-foreground` | Destructive text color  | Text color on destructive backgrounds.                                      |
+| `--border`                 | `border`                      | Default border color    | Borders for inputs, cards, and dividers.                                    |
+| `--input`                  | `border-input`                | Input border color      | Borders specifically for form inputs.                                       |
+| `--ring`                   | `ring-ring`                   | Focus ring color        | Outline color for focused elements.                                         |
+| `--radius`                 | `rounded`                     | Border radius           | Global border radius for components.                                        |
+
+### Extended Color Variants
+
+For more complex components, vlite3 provides extended variants for main semantic colors (`primary`, `danger`, `warning`, `info`, `success`). These are useful for building nuanced UIs with subtle backgrounds, hover states, and accessible text.
+
+| Base Color  | Variant Variables                                                                                       | Usage Description                                                                                                                                                                                           |
+| :---------- | :------------------------------------------------------------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Primary** | `--color-primary-light`<br>`--color-primary-dark`<br>`--color-primary-fg`<br>`--color-primary-fg-light` | **Light**: Subtle background (e.g., 10% opacity).<br>**Dark**: Hover state for the main color.<br>**Fg**: Text color on top of the _main_ color.<br>**Fg-Light**: Text color on top of the _light_ variant. |
+| **Danger**  | `--color-danger-light`<br>`--color-danger-dark`<br>`--color-danger-fg`<br>`--color-danger-fg-light`     | **Light**: Error backgrounds (alerts).<br>**Dark**: Hover state for destructive buttons.<br>**Fg**: Text on destructive buttons.<br>**Fg-Light**: Text on error alerts.                                     |
+| **Warning** | `--color-warning-light`<br>`--color-warning-dark`<br>`--color-warning-fg`<br>`--color-warning-fg-light` | **Light**: Warning backgrounds.<br>**Dark**: Active/Determined warning states.<br>**Fg**: Text on warning badges.<br>**Fg-Light**: Text on warning backgrounds.                                             |
+| **Success** | `--color-success-light`<br>`--color-success-dark`<br>`--color-success-fg`<br>`--color-success-fg-light` | **Light**: Success backgrounds (toasts).<br>**Dark**: Hover/Active success actions.<br>**Fg**: Text on success buttons.<br>**Fg-Light**: Text on success backgrounds.                                       |
+| **Info**    | `--color-info-light`<br>`--color-info-dark`<br>`--color-info-fg`<br>`--color-info-fg-light`             | **Light**: Info backgrounds.<br>**Dark**: Hover/Active info actions.<br>**Fg**: Text on info buttons.<br>**Fg-Light**: Text on info backgrounds.                                                            |
+
+**Example Usage:**
+
+```html
+<!-- A success badge with subtle background and matching text -->
+<div class="bg-success-light text-success-fg-light border border-success/20">
+  Operation Completed
+</div>
+
+<!-- A danger button with hover effect -->
+<button class="bg-danger text-danger-fg hover:bg-danger-dark">Delete</button>
+```
+
+### Additional Colors
+
+vlite3 also provides additional utility colors for specific feedback states:
+
+| Variable          | Class Name                   | Description                             |
+| :---------------- | :--------------------------- | :-------------------------------------- |
+| `--color-success` | `text-success`, `bg-success` | For success messages/badges.            |
+| `--color-warning` | `text-warning`, `bg-warning` | For warning messages/badges.            |
+| `--color-info`    | `text-info`, `bg-info`       | For informational messages/badges.      |
+| `--color-danger`  | `text-danger`, `bg-danger`   | Alias for destructive in some contexts. |
 
 ---
 
 ## Table of Contents
 
-- [Button](#button)
-- [ButtonGroup](#buttongroup)
-- [Icon](#icon)
-- [Label](#label)
-- [Badge](#badge)
-- [Chip](#chip)
-- [Switch](#switch)
-- [CheckBox](#checkbox)
-- [Avatar](#avatar)
-- [Accordion](#accordion)
-- [Alert](#alert)
-- [DataTable](#datatable)
-- [DatePicker](#datepicker)
-- [Pagination](#pagination)
-- [Tabes](#tabes)
-- [Modal](#modal)
-- [SidePanel](#sidepanel)
-- [ConfirmationModal](#confirmationmodal)
-- [Navbar](#navbar)
-- [SidebarMenu](#sidebarmenu)
-- [Input](#input)
-- [OTPInput](#otpinput)
-- [Textarea](#textarea)
-- [ChoiceBox](#choicebox)
-- [Slider](#slider)
-- [ColorPicker](#colorpicker)
-- [ToastNotification](#toastnotification)
-- [Tooltip](#tooltip)
-- [Textarea](#textarea)
-- [Form](#form)
-- [GoogleLogin](#googlelogin)
-- [Spinner](#spinner)
-- [NumberInput](#numberinput)
+### Components
+
+- [Button](#button) · [ButtonGroup](#buttongroup) · [Icon](#icon) · [Label](#label)
+- [Badge](#badge) · [Chip](#chip) · [Switch](#switch) · [CheckBox](#checkbox)
+- [Avatar](#avatar) · [Accordion](#accordion) · [Alert](#alert)
+- [DataTable](#datatable) · [DatePicker](#datepicker) · [Pagination](#pagination) · [Tabes](#tabes)
+- [Modal](#modal) · [SidePanel](#sidepanel) · [ConfirmationModal](#confirmationmodal)
+- [Navbar](#navbar) · [SidebarMenu](#sidebarmenu)
+- [Input](#input) · [OTPInput](#otpinput) · [Textarea](#textarea) · [NumberInput](#numberinput)
+- [ChoiceBox](#choicebox) · [Slider](#slider) · [ColorPicker](#colorpicker)
+- [Dropdown](#dropdown) · [MultiSelect](#multiselect)
+- [ToastNotification](#toastnotification) · [Tooltip](#tooltip)
+- [Timeline](#timeline) · [Carousel](#carousel) · [Masonry](#masonry)
+- [FilePicker](#filepicker) · [AvatarUploader](#avataruploader) · [IconPicker](#iconpicker)
+- [ThemeToggle](#themetoggle) · [GoogleLogin](#googlelogin) · [Spinner](#spinner)
+- [Form](#form) · [Heatmap](#heatmap) · [PricingPlan](#pricingplan)
+- [FileTree](#filetree) · [Workbook](#workbook)
+
+### Composables & Utilities
+
+- [useTheme](#usetheme) · [useNotifications / showToast](#usenotifications) · [useKeyStroke](#usekeystroke)
+- [Utility Functions](#utility-functions)
 
 ---
 
@@ -102,10 +166,10 @@ type ButtonRounded = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
 
 ### Props
 
-| Prop        | Type          | Default     | Description                   |
-| ----------- | ------------- | ----------- | ----------------------------- | ----------- |
-| `direction` | `'horizontal' | 'vertical'` | `horizontal`                  | Layout axis |
-| `attached`  | `boolean`     | `true`      | Fuse borders (false adds gap) |
+| Prop        | Type                         | Default      | Description                   |
+| ----------- | ---------------------------- | ------------ | ----------------------------- |
+| `direction` | `'horizontal' \| 'vertical'` | `horizontal` | Layout axis                   |
+| `attached`  | `boolean`                    | `true`       | Fuse borders (false adds gap) |
 
 ### Usage
 
@@ -118,10 +182,12 @@ type ButtonRounded = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
 
 #### Outline variant (border-aware)
 
+```vue
 <ButtonGroup>
   <Button variant="outline">Left</Button>
   <Button variant="outline">Center</Button>
 </ButtonGroup>
+```
 
 ---
 
@@ -2132,7 +2198,7 @@ A common pattern is using a Form inside a lazy modal. The `close` method is auto
 
 ```vue
 <script setup lang="ts">
-import { Form, useNotifications } from 'vlite3'
+import { Form, showToast } from 'vlite3'
 // Example usage with a mutation hook
 import { useCreateFolderMutation } from '@/graphql'
 
@@ -2141,7 +2207,6 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const { showToast } = useNotifications()
 
 // Mock mutation hook
 const { mutate: createFolder, loading: creatingFolder } = useCreateFolderMutation({
@@ -2187,7 +2252,7 @@ const handleCreateFolder = async (payload: any, close) => {
 
 **Usage in Parent Page**
 
-````vue
+```vue
 <script setup>
 import CreateFolder from './CreateFolder.vue'
 </script>
@@ -2205,67 +2270,46 @@ import CreateFolder from './CreateFolder.vue'
     </Modal>
   </div>
 </template>
+```
 
 # Spinner
 
-**Import:**
+**Import:** `import { Spinner } from 'vlite3'`
 
-```ts
-import { Spinner } from 'vlite3'
-```
-
-## Props
+### Props
 
 | Prop      | Type             | Default   | Description        |
-| --------- | ---------------- | --------- | ------------------ |
+| :-------- | :--------------- | :-------- | :----------------- |
 | `size`    | `SpinnerSize`    | `md`      | Dimensions         |
 | `color`   | `SpinnerColor`   | `current` | Color theme        |
 | `variant` | `SpinnerVariant` | `border`  | Visual style       |
 | `class`   | `string`         | —         | Custom CSS classes |
 
-## Types
+### Types
 
 ```ts
 type SpinnerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-
-type SpinnerColor =
-  | 'current'
-  | 'primary'
-  | 'secondary'
-  | 'success'
-  | 'warning'
-  | 'danger'
-  | 'white'
-
+type SpinnerColor = 'current' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'white'
 type SpinnerVariant = 'border' | 'dots' | 'bars' | 'ping'
 ```
 
-## Usage
+### Usage
 
 ```vue
 <Spinner />
-
-<Spinner
-  variant="dots"
-  size="lg"
-  color="primary"
-/>
+<Spinner variant="dots" size="lg" color="primary" />
 ```
 
 ---
 
 # NumberInput
 
-**Import:**
+**Import:** `import { NumberInput } from 'vlite3'`
 
-```ts
-import { NumberInput } from 'vlite3'
-```
-
-## Props
+### Props
 
 | Prop          | Type                 | Default     | Description             |
-| ------------- | -------------------- | ----------- | ----------------------- |
+| :------------ | :------------------- | :---------- | :---------------------- |
 | `modelValue`  | `number`             | `undefined` | Binding (`v-model`)     |
 | `min`         | `number`             | —           | Minimum value           |
 | `max`         | `number`             | —           | Maximum value           |
@@ -2278,35 +2322,92 @@ import { NumberInput } from 'vlite3'
 | `disabled`    | `boolean`            | `false`     | Disable interaction     |
 | `readonly`    | `boolean`            | `false`     | Read-only state         |
 
-## Types
+### Types
 
 ```ts
 type NumberInputVariant = 'split' | 'stacked'
-
 type NumberInputMode = 'solid' | 'outline' | 'ghost'
-
 type NumberInputSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-
-type NumberInputRounded =
-  | 'none'
-  | 'sm'
-  | 'md'
-  | 'lg'
-  | 'xl'
-  | '2xl'
-  | 'full'
+type NumberInputRounded = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
 ```
 
-## Usage
+### Usage
 
 ```vue
-<NumberInput
-  v-model="quantity"
-  :min="1"
-  :max="10"
-/>
-
-<NumberInput
-  v-model="price"
+<NumberInput v-model="quantity" :min="1" :max="10" />
+<NumberInput v-model="price" variant="stacked" mode="ghost" />
 ```
-````
+
+---
+
+# Composables
+
+## useKeyStroke
+
+**Import:** `import { useKeyStroke, useAdvancedKeyStroke } from 'vlite3'`
+
+### Single key listener
+
+```ts
+const { onKeyStroke, offKeyStroke, destroy } = useKeyStroke()
+
+onKeyStroke('Escape', (e) => closeModal())
+onKeyStroke(['ArrowUp', 'ArrowDown'], (e) => navigate(e), { preventDefault: true })
+offKeyStroke('Escape')
+```
+
+### Combo key listener (Ctrl+S, Cmd+K)
+
+```ts
+const { onKeyStroke, offKeyStroke, destroy } = useAdvancedKeyStroke()
+
+onKeyStroke('ctrl+s', (e) => {
+  e.preventDefault()
+  save()
+})
+onKeyStroke('cmd+k', (e) => openSearch()) // Auto-maps cmd↔ctrl cross-platform
+```
+
+---
+
+# Utility Functions
+
+**Import:** `import { debounce, deepMerge, getUniqueId,downloadFile, isAppleDevice } from 'vlite3'`
+
+### `debounce(fn, delay)`
+
+Creates a debounced function that delays invocation until `delay` ms after the last call.
+
+```ts
+const debouncedSearch = debounce((query) => fetchResults(query), 300)
+```
+
+### `throttle(fn, delay)`
+
+Creates a throttled function that only invokes the provided function at most once per every `delay` ms.
+
+```ts
+const throttledSearch = throttle((query) => fetchResults(query), 300)
+```
+
+### `deepMerge(target, source)`
+
+Deep merges two objects. Source overwrites target. Arrays are replaced, not concatenated.
+
+```ts
+const merged = deepMerge(defaults, userConfig)
+```
+
+### `isAppleDevice()`
+
+Returns `true` if the current device is an Apple device (iPhone, iPad, Mac, etc.).
+
+```text
+downloadFile('https://example.com/file.pdf', 'My File')
+`isEmpty(value)`
+`removeExtraProperties({ x: 1, y: 2, z: 3 }, ['x', 'y'])`
+`flattenArray([1, 2, [3, 4], 5])`
+`capitalize('hello world')`
+`camelCase('hello world')`
+const id = getUniqueId()
+```
