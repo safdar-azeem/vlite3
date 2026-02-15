@@ -59,12 +59,12 @@ const baseClasses =
 const sizeClasses = computed(() => {
   switch (props.size) {
     case 'small':
-      return 'h-6 text-xs px-2 gap-1.5'
+      return 'h-5 text-[10px] px-1.5 gap-1'
     case 'large':
-      return 'h-10 text-base px-4 gap-2.5'
+      return 'h-8 text-sm px-3 gap-2'
     case 'medium':
     default:
-      return 'h-8 text-sm px-3 gap-2'
+      return 'h-6 text-xs px-2.5 gap-1.5'
   }
 })
 
@@ -102,12 +102,12 @@ const rootClasses = computed(() => {
 const iconSizeClass = computed(() => {
   switch (props.size) {
     case 'small':
-      return 'h-3.5 w-3.5'
+      return 'h-3 w-3'
     case 'large':
-      return 'h-5 w-5'
+      return 'h-4 w-4'
     case 'medium':
     default:
-      return 'h-4 w-4'
+      return 'h-3.5 w-3.5'
   }
 })
 
@@ -115,12 +115,12 @@ const iconSizeClass = computed(() => {
 const closeIconSizeClass = computed(() => {
   switch (props.size) {
     case 'small':
-      return 'h-3 w-3'
+      return 'h-2.5 w-2.5'
     case 'large':
-      return 'h-4 w-4'
+      return 'h-3.5 w-3.5'
     case 'medium':
     default:
-      return 'h-3.5 w-3.5'
+      return 'h-3 w-3'
   }
 })
 </script>
@@ -149,7 +149,7 @@ const closeIconSizeClass = computed(() => {
       size="xs"
       rounded="full"
       :disabled="disabled"
-      class="ml-auto !p-0.5 !h-auto !w-auto hover:bg-[#8282823c]"
+      class="ml-auto p-0.5! h-auto! w-auto! hover:bg-[#8282823c]"
       :class="[text ? (size === 'small' ? '-mr-0.5' : '-mr-1') : '']"
       @click="handleDelete">
       <Icon icon="lucide:x" :class="closeIconSizeClass" />
