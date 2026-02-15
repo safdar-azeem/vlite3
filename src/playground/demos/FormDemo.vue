@@ -10,6 +10,7 @@ import FormGrouped from './forms/FormGrouped.vue'
 import FormMultiStep from './forms/FormMultiStep.vue'
 import FormCustom from './forms/FormCustom.vue'
 import FormUploads from './forms/FormUploads.vue'
+import FormNumber from './forms/FormNumber.vue'
 
 const activeTab = ref('basic')
 
@@ -26,6 +27,7 @@ const tabs = [
   },
   { id: 'custom', label: 'Custom Fields', icon: 'lucide:layers', component: FormCustom },
   { id: 'uploads', label: 'Uploads', icon: 'lucide:upload-cloud', component: FormUploads },
+  { id: 'number', label: 'Number', icon: 'lucide:hash', component: FormNumber },
 ]
 </script>
 
