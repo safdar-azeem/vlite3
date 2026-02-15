@@ -1775,3 +1775,118 @@ This component does not accept specific props. It inherits all attributes (like 
 ```vue
 <ThemeToggle class="absolute top-4 right-4" />
 ```
+
+---
+
+# Form
+
+**Import:** `import { Form } from 'vlite3'`
+
+### Description
+A schema-driven form builder with built-in validation, multi-step wizards, grouped layouts, and dynamic field dependencies.
+
+### Props
+
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `schema` | `IForm[] \| IForm[][]` | required | Array of field definitions (or array of arrays for grouped/multi-step) |
+| `values` | `Record<string, any>` | `{}` | Initial form values |
+| `variant` | `InputVariant` | `'outline'` | Style variant for all inputs |
+| `size` | `InputSize` | `'md'` | Size of inputs |
+| `columns` | `number` | — | Number of grid columns (default 1) |
+| `className` | `string` | — | Custom class for grid (e.g., `'grid-cols-2'`) |
+| `loading` | `boolean` | `false` | Loading state on submit button |
+| `submitText` | `string` | `'Submit'` | Label for submit button |
+| `isUpdate` | `boolean` | `false` | Mode for update/edit operations |
+| `tabs` | `IFormStep[]` | — | Configuration for multi-step wizard |
+| `groupsHeadings` | `string[]` | — | Headings for grouped layout |
+
+### Schema Interface (`IForm`)
+
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `name` | `string` | Field key in values object (supports dot notation) |
+| `label` | `string` | display label |
+| `type` | `IFormFieldType` | Input type (text, email, password, select, file, etc.) |
+| `required` | `boolean` | Marks field as required |
+| `placeholder` | `string` | input placeholder |
+| `options` | `IDropdownOptions` | Options for select/multiSelect/radio |
+| `validation` | `(ctx) => string` | Return error message or empty string |
+| `when` | `(ctx) => boolean` | Conditionally show/hide field |
+| `updateValues` | `(ctx) => Record\<string, any\>` | Dynamically update other fields on change |
+| `itemClass` | `string` | Class for field wrapper (e.g. `col-span-2`) |
+| `disabled` | `boolean \| (ctx) => boolean` | Disable field |
+
+### Events
+
+- `@onSubmit` (payload: `{ values, isUpdate }`, close): Emitted when form is valid and submitted.
+- `@onCancel`: Emitted when cancel button is clicked.
+- `@onStepChange` (step: `number`): Emitted when step changes in multi-step mode.
+
+### Usage
+
+#### Basic Form
+```vue
+<script setup>
+const schema = [
+  { name: 'email', label: 'Email', type: 'email', required: true },
+  { name: 'password', label: 'Password', type: 'password', required: true }
+]
+</script>
+
+<template>
+  <Form 
+    :schema="schema" 
+    @onSubmit="handleSubmit" 
+  />
+</template>
+```
+
+#### Validation & Conditional Logic
+```vue
+const schema = [
+  {
+    name: 'role',
+    label: 'Role',
+    type: 'select',
+    options: [{ label: 'Admin', value: 'admin' }, { label: 'User', value: 'user' }]
+  },
+  {
+    name: 'adminCode',
+    label: 'Admin Code',
+    type: 'password',
+    // Only show if role is admin
+    when: ({ values }) => values.role === 'admin',
+    // Custom validation
+    validation: ({ value }) => value === 'SECRET' ? '' : 'Invalid code'
+  }
+]
+```
+
+#### Multi-Step Wizard
+```vue
+<script setup>
+const tabs = [
+  { id: 1, title: 'Account', icon: 'lucide:user' },
+  { id: 2, title: 'Profile', icon: 'lucide:settings' }
+]
+
+// Schema is array of arrays
+const schema = [
+  [ // Step 1
+    { name: 'username', label: 'Username', type: 'text' }
+  ],
+  [ // Step 2
+    { name: 'bio', label: 'Bio', type: 'textarea' }
+  ]
+]
+</script>
+
+<template>
+  <Form 
+    :steps="tabs" 
+    :schema="schema" 
+    @onSubmit="console.log" 
+  />
+</template>
+```
