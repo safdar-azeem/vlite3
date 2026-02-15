@@ -1,9 +1,6 @@
-# vlite3 — LLM Context File
+# 🎨 Theming & Customization
 
 >  AI-agent & developer reference for **vlite3** and Tailwind CSS v4 theming system. A semantic design token system inspired by shadcn/ui principles and optimized for Tailwind CSS v4.
-
-
-## 🎨 Theming & Customization
 
 All colors are defined as CSS variables, making it easy to customize the look and feel of your application including Dark Mode support.
 
