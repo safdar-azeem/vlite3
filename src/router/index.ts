@@ -50,6 +50,8 @@ import FileTreeDemo from '../playground/demos/FileTreeDemo.vue'
 import DataTableDemo from '../playground/demos/DataTableDemo.vue'
 import CarouselDemo from '../playground/demos/CarouselDemo.vue'
 
+import GoogleLoginDemo from '../playground/GoogleLoginDemo.vue'
+
 const routes = [
   {
     path: '/',
@@ -78,6 +80,7 @@ const routes = [
       { path: 'iconpicker', component: IconPickerDemo },
       { path: 'datepicker', component: DatePickerDemo },
       { path: 'form', component: FormDemo },
+      { path: 'googlelogin', component: GoogleLoginDemo },
 
       // Feedback / Overlays
       { path: 'alert', component: AlertDemo },
