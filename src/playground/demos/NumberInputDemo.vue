@@ -8,6 +8,7 @@ const val = ref(10)
 const minMaxVal = ref(5)
 const stepVal = ref(0)
 const stackedVal = ref(20)
+const roundedVal = ref(5)
 </script>
 
 <template>
@@ -72,6 +73,18 @@ const stackedVal = ref(20)
           <span class="w-16 text-sm">XL</span>
           <NumberInput size="xl" placeholder="xl" class="max-w-[150px]" />
         </div>
+      </div>
+    </DemoSection>
+
+    <!-- Rounded -->
+    <DemoSection title="Rounded" :code="sourceCode">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+        <NumberInput rounded="none" placeholder="None" />
+        <NumberInput rounded="sm" placeholder="Small" />
+        <NumberInput rounded="md" placeholder="Medium (Default)" />
+        <NumberInput rounded="lg" placeholder="Large" />
+        <NumberInput rounded="xl" placeholder="XL" />
+        <NumberInput rounded="full" placeholder="Full" />
       </div>
     </DemoSection>
 
