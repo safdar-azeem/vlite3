@@ -15,6 +15,7 @@ export interface NumberInputProps {
   name?: string
   id?: string
   readonly?: boolean
+  rounded?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
 }
 
 const props = withDefaults(defineProps<NumberInputProps>(), {
@@ -25,6 +26,7 @@ const props = withDefaults(defineProps<NumberInputProps>(), {
   size: 'md',
   disabled: false,
   readonly: false,
+  rounded: 'md',
 })
 
 const emit = defineEmits<{
@@ -59,15 +61,59 @@ const sizeStyles = computed(() => {
   return sizes[props.size] || sizes.md
 })
 
+// Rounded styles
+const roundedStyles = computed(() => {
+  const map = {
+    none: 'rounded-none',
+    sm: 'rounded-sm',
+    md: 'rounded-md',
+    lg: 'rounded-lg',
+    xl: 'rounded-xl',
+    '2xl': 'rounded-2xl',
+    full: 'rounded-full',
+  }
+  // @ts-ignore
+  return map[props.rounded] || 'rounded-md'
+})
+
+const roundedLeftStyles = computed(() => {
+  const map = {
+    none: 'rounded-l-none',
+    sm: 'rounded-l-sm',
+    md: 'rounded-l-md',
+    lg: 'rounded-l-lg',
+    xl: 'rounded-l-xl',
+    '2xl': 'rounded-l-2xl',
+    full: 'rounded-l-full',
+  }
+  // @ts-ignore
+  return map[props.rounded] || 'rounded-l-md'
+})
+
+const roundedRightStyles = computed(() => {
+  const map = {
+    none: 'rounded-r-none',
+    sm: 'rounded-r-sm',
+    md: 'rounded-r-md',
+    lg: 'rounded-r-lg',
+    xl: 'rounded-r-xl',
+    '2xl': 'rounded-r-2xl',
+    full: 'rounded-r-full',
+  }
+  // @ts-ignore
+  return map[props.rounded] || 'rounded-r-md'
+})
+
 // wrapper classes
 const wrapperClasses = computed(() => {
   return [
     'flex items-center w-full relative transition-all duration-200',
     props.disabled ? 'opacity-50 cursor-not-allowed' : '',
-    props.mode === 'solid' ? 'bg-muted rounded-md' : '',
-    props.mode === 'outline' ? 'border border-input rounded-md bg-background' : '',
+    props.mode === 'solid' ? 'bg-muted' : '',
+    props.mode === 'outline' ? 'border border-input bg-background' : '',
     props.mode === 'ghost' ? 'bg-transparent' : '',
     sizeStyles.value.h,
+    roundedStyles.value,
   ]
 })
 
@@ -89,6 +135,19 @@ const buttonClasses = computed(() => {
   const size = props.size === 'xs' || props.size === 'sm' ? 'w-6' : 'w-8'
 
   if (props.variant === 'split') {
+    if (props.mode === 'solid') {
+      return [
+        base,
+        !props.disabled ? 'hover:text-primary hover:bg-background/80' : '',
+        'bg-background shadow-sm rounded-full mx-1 my-0.5 aspect-square self-center h-[calc(100%-4px)] w-auto max-w-[calc(100%-4px)] flex items-center justify-center',
+      ]
+    }
+    // Outline/Ghost Split
+    // Apply rounded-l to left button and rounded-r to right button manually for robustness
+    // But this function doesn't know if it's left or right button?
+    // Wait, the current buttonClasses is blindly applied to BOTH.
+    // I need to split buttonClasses or apply overrides in template.
+    // I'll keep common classes here and apply rounding in template.
     return [base, hover, 'h-full', 'px-2']
   } else {
     // Stacked
@@ -146,12 +205,16 @@ const handleBlur = (event: FocusEvent) => {
 </script>
 
 <template>
-  <div :class="[wrapperClasses, props.variant === 'stacked' ? 'overflow-hidden' : '']">
+  <div :class="[wrapperClasses, 'overflow-hidden']">
     <!-- Split Variant: Minus on Left -->
     <button
       v-if="variant === 'split'"
       type="button"
-      :class="[buttonClasses, mode === 'outline' ? 'border-r border-input' : '']"
+      :class="[
+        buttonClasses,
+        mode === 'outline' ? 'border-r border-input' : '',
+        variant === 'split' && mode !== 'solid' ? roundedLeftStyles : '',
+      ]"
       :disabled="disabled || (min !== undefined && Number(localValue) <= min)"
       @click="decrement">
       <Icon icon="lucide:minus" :class="sizeStyles.icon" />
@@ -178,7 +241,11 @@ const handleBlur = (event: FocusEvent) => {
     <button
       v-if="variant === 'split'"
       type="button"
-      :class="[buttonClasses, mode === 'outline' ? 'border-l border-input' : '']"
+      :class="[
+        buttonClasses,
+        mode === 'outline' ? 'border-l border-input' : '',
+        variant === 'split' && mode !== 'solid' ? roundedRightStyles : '',
+      ]"
       :disabled="disabled || (max !== undefined && Number(localValue) >= max)"
       @click="increment">
       <Icon icon="lucide:plus" :class="sizeStyles.icon" />
