@@ -29,6 +29,12 @@
 - [Input](#input)
 - [OTPInput](#otpinput)
 - [Textarea](#textarea)
+- [ChoiceBox](#choicebox)
+- [Slider](#slider)
+- [ColorPicker](#colorpicker)
+- [ToastNotification](#toastnotification)
+- [Tooltip](#tooltip)
+- [Textarea](#textarea)
 
 ---
 
@@ -1011,4 +1017,175 @@ const items = [
 
 ```vue
 <Textarea v-model="message" placeholder="Leave a comment..." :rows="5" />
+```
+
+---
+
+# ChoiceBox
+
+**Import:** `import { ChoiceBox, type ChoiceBoxOption } from 'vlite3'`
+
+### Props
+
+| Prop          | Type                                               | Default | Description               |
+| :------------ | :------------------------------------------------- | :------ | :------------------------ |
+| `modelValue`  | `string \| number \| (string \| number)[] \| null` | —       | Selection binding         |
+| `options`     | `ChoiceBoxOption[]`                                | —       | Data source               |
+| `multiple`    | `boolean`                                          | `false` | Allow multiple selections |
+| `title`       | `string`                                           | —       | Group title               |
+| `description` | `string`                                           | —       | Group description         |
+| `grid`        | `number`                                           | `1`     | Grid columns (1-4)        |
+| `gap`         | `number`                                           | `4`     | Gap size (2, 3, 4, 6, 8)  |
+| `disabled`    | `boolean`                                          | `false` | Disable all options       |
+
+### Types
+
+```ts
+interface ChoiceBoxOption {
+  id: string | number
+  title: string
+  description?: string
+  icon?: string // Iconify ID
+  disabled?: boolean
+  badge?: string
+}
+```
+
+### Usage
+
+```vue
+<ChoiceBox v-model="selectedPlan" :options="plans" title="Choose Plan" :grid="3" />
+```
+
+---
+
+# Slider
+
+**Import:** `import { Slider } from 'vlite3'`
+
+### Props
+
+| Prop           | Type                           | Default | Description          |
+| :------------- | :----------------------------- | :------ | :------------------- |
+| `modelValue`   | `number`                       | `0`     | Value binding        |
+| `min`          | `number`                       | `0`     | Minimum value        |
+| `max`          | `number`                       | `100`   | Maximum value        |
+| `step`         | `number`                       | `1`     | Step interval        |
+| `label`        | `string`                       | —       | Label text           |
+| `icon`         | `string`                       | —       | Icon next to label   |
+| `showValue`    | `boolean`                      | `true`  | Show numerical value |
+| `size`         | `'xs' \| 'sm' \| 'md' \| 'lg'` | `md`    | Dimensions           |
+| `centerOrigin` | `boolean`                      | —       | Force bipolar mode   |
+| `disabled`     | `boolean`                      | `false` | Disable interaction  |
+
+### Usage
+
+```vue
+<Slider label="Volume" v-model="volume" :max="100" />
+<Slider label="Balance" v-model="balance" :min="-50" :max="50" icon="lucide:scale" />
+```
+
+---
+
+# ColorPicker
+
+**Import:** `import { ColorPicker } from 'vlite3'`
+
+### Props
+
+| Prop         | Type                   | Default     | Description       |
+| :----------- | :--------------------- | :---------- | :---------------- |
+| `modelValue` | `string`               | `'#000000'` | Hex color binding |
+| `size`       | `'sm' \| 'md' \| 'lg'` | `md`        | Picker size       |
+| `position`   | `TooltipPlacement`     | `bottom`    | Popover placement |
+| `disabled`   | `boolean`              | `false`     | Disable picker    |
+
+### Usage
+
+```vue
+<ColorPicker v-model="accentColor" />
+```
+
+---
+
+# ToastNotification
+
+**Composable:** `import { showToast } from 'vlite3'`
+**Component:** `import { ToastNotification } from 'vlite3'`
+
+### Component Props
+
+Place `<ToastNotification />` in your root layout (e.g., `App.vue`).
+
+| Prop       | Type            | Default | Description              |
+| :--------- | :-------------- | :------ | :----------------------- |
+| `position` | `ToastPosition` | —       | Override global position |
+| `expand`   | `boolean`       | `false` | Force expanded state     |
+
+type: 'success' | 'error' | 'info' | 'warning' | 'default'
+
+export interface ToastOptions {
+description?: string
+duration?: number
+action?: NotificationAction
+position?: ToastPosition
+}
+
+function showToast(
+message: string,
+type?: Notification['type'],
+options?: ToastOptions
+): number {}
+
+### Composable API
+
+```ts
+import { showToast } from 'vlite3'
+const { configure, toast } = useNotifications()
+
+// Configuration
+configure({
+  position: 'top-right',
+  duration: 5000,
+  variant: 'default',
+})
+
+// Usage
+showToast('Operation successful')
+showToast('Saved!')
+showToast('Failed to save')
+
+// Promise wrapper
+toast.promise(saveData(), {
+  loading: 'Saving...',
+  success: 'Data saved',
+  error: 'Error saving data',
+})
+```
+
+---
+
+# Tooltip
+
+**Import:** `import { Tooltip } from 'vlite3'`
+
+### Props
+
+| Prop        | Type                                     | Default | Description     |
+| :---------- | :--------------------------------------- | :------ | :-------------- |
+| `content`   | `string`                                 | —       | Tooltip text    |
+| `placement` | `'top' \| 'bottom' \| 'left' \| 'right'` | `top`   | Position        |
+| `disabled`  | `boolean`                                | `false` | Disable tooltip |
+
+### Slots
+
+- `default`: Trigger element
+- `content`: Custom HTML content (overrides `content` prop)
+
+### Usage
+
+```vue
+<Tooltip content="Edit item">
+  <Button icon="lucide:edit" />
+</Tooltip>
 ```
