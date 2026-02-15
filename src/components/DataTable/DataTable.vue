@@ -453,6 +453,7 @@ onMounted(() => {
         :items-per-page="internalItemsPerPage"
         :items-per-page-options="itemsPerPageOptions"
         nav-type="icon"
+        :alignment="props.paginationPosition"
         @change="handlePageChange"
         @update:items-per-page="handleItemsPerPageChange" />
     </div>
