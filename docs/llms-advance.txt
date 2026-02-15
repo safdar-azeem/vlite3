@@ -1,3 +1,10 @@
+# Table of Contents
+
+* [Heatmap](#heatmap)
+* [PricingPlan](#pricingplan)
+* [FileTree](#filetree)
+* [Workbook](#workbook)
+
 # Advanced Components
 
 This section covers complex data visualization and business-logic components.
