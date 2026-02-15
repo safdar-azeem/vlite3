@@ -8,6 +8,7 @@ import BadgeDemo from '../playground/demos/BadgeDemo.vue'
 import ChipDemo from '../playground/demos/ChipDemo.vue'
 import AvatarDemo from '../playground/demos/AvatarDemo.vue'
 import AvatarUploaderDemo from '../playground/demos/AvatarUploaderDemo.vue'
+import ProgressBarDemo from '../playground/demos/ProgressBarDemo.vue'
 
 // Forms
 import InputDemo from '../playground/demos/InputDemo.vue'
@@ -67,6 +68,7 @@ const routes = [
       { path: 'chip', component: ChipDemo },
       { path: 'avatar', component: AvatarDemo },
       { path: 'avatar-uploader', component: AvatarUploaderDemo },
+      { path: 'progressbar', component: ProgressBarDemo },
 
       // Forms
       { path: 'input', component: InputDemo },
