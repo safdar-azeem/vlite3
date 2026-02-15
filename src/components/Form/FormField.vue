@@ -3,6 +3,7 @@ import { computed, defineAsyncComponent, markRaw, type Component } from 'vue'
 import type { IForm, IFormFieldChangePayload } from './types'
 import type { InputVariant, InputSize, InputRounded } from '@/types'
 import { isComponent } from './utils/form.utils'
+import NumberInput from '@/components/NumberInput.vue'
 
 // Core components - imported directly for better tree-shaking and to prevent slot context issues
 import Input from '@/components/Input.vue'
@@ -73,11 +74,13 @@ const fieldComponent = computed(() => {
     case 'text':
     case 'email':
     case 'password':
-    case 'number':
     case 'tel':
     case 'url':
     case 'search':
       return Input
+
+    case 'number':
+      return NumberInput
 
     case 'textarea':
       return Textarea
@@ -132,7 +135,6 @@ const fieldProps = computed(() => {
     type === 'text' ||
     type === 'email' ||
     type === 'password' ||
-    type === 'number' ||
     type === 'tel' ||
     type === 'url' ||
     type === 'search' ||
@@ -151,8 +153,25 @@ const fieldProps = computed(() => {
       size: props.size,
       rounded: props.rounded,
       error: props.error,
+      min: props.field.min, // kept for validation attributes if needed
+      max: props.field.max,
+      class: props.field.className,
+    }
+  }
+
+  // NumberInput
+  if (type === 'number') {
+    return {
+      ...baseProps,
+      modelValue: props.value ?? undefined,
       min: props.field.min,
       max: props.field.max,
+      step: props.field.props?.step ?? 1,
+      variant: props.field.props?.variant ?? 'split',
+      mode: props.field.props?.mode ?? 'outline',
+      size: props.size,
+      rounded: props.rounded,
+      placeholder: props.field.placeholder,
       class: props.field.className,
     }
   }
@@ -294,13 +313,13 @@ const fieldEvents = computed(() => {
     type === 'text' ||
     type === 'email' ||
     type === 'password' ||
-    type === 'number' ||
     type === 'tel' ||
     type === 'url' ||
     type === 'search' ||
     type === 'textarea' ||
     type === 'switch' ||
     type === 'check' ||
+    type === 'number' ||
     !type
   ) {
     return {
