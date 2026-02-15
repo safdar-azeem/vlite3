@@ -1277,7 +1277,7 @@ export type IDropdownOption = {
   icon?: string
   emoji?: string
   disabled?: Boolean
-  children?: IDropdownOption[] // Nested menus
+  children?: IDropdownOption[] // Nested Recursive menus
   confirmation?: boolean | { title?: string; description?: string; ... }
 }
 
@@ -1305,7 +1305,7 @@ export type IDropdownOptions = IDropdownOption[]
 
 ### Usage
 
-```vue
+````vue
 <Dropdown v-model="selectedUser" :options="users" searchable placeholder="Select a user">
   <template #trigger="{ selectedLabel }">
     <Button variant="outline">
@@ -1335,4 +1335,54 @@ export type IDropdownOptions = IDropdownOption[]
 
 <!-- With Default Trigger (Optional Trigger Slot) -->
 <Dropdown v-model="selectedUser" :options="users" placeholder="Select User" />
-```
+
+<!-- Full SFC Example: Pagination & Infinite Scroll -->
+#### Pagination & Infinite Scroll ```vue
+<script setup>
+import { ref } from 'vue'
+import { Dropdown } from 'vlite3'
+
+const items = ref([
+  { label: 'Item 1', value: 1 },
+  { label: 'Item 2', value: 2 },
+  { label: 'Item 3', value: 3 },
+])
+
+const selectedItem = ref(null)
+const isLoading = ref(false)
+const hasMoreItems = ref(true)
+let page = 1
+
+const fetchNextPage = async () => {
+  if (isLoading.value || !hasMoreItems.value) return
+
+  isLoading.value = true
+
+  // Simulate API call
+  await new Promise((resolve) => setTimeout(resolve, 1000))
+
+  const newItems = [
+    { label: `Item ${items.value.length + 1}`, value: items.value.length + 1 },
+    { label: `Item ${items.value.length + 2}`, value: items.value.length + 2 },
+  ]
+
+  items.value.push(...newItems)
+  page++
+
+  // Stop after 5 pages for demo
+  if (page >= 5) hasMoreItems.value = false
+
+  isLoading.value = false
+}
+</script>
+
+<template>
+  <Dropdown
+    v-model="selectedItem"
+    :options="items"
+    :loading="isLoading"
+    :has-more="hasMoreItems"
+    @load-more="fetchNextPage"
+    placeholder="Scroll to load more" />
+</template>
+````
