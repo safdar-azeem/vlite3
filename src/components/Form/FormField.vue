@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, markRaw, type Component } from 'vue'
-import type { IForm, IFormFieldChangePayload } from './types'
+import type { IForm, IFormAddon, IFormFieldChangePayload } from './types'
 import type { InputVariant, InputSize, InputRounded } from '@/types'
 import { isComponent } from './utils/form.utils'
+import { isAddonObject } from './utils/form.utils'
 import NumberInput from '@/components/NumberInput.vue'
+import Button from '@/components/Button.vue'
 
 // Core components - imported directly for better tree-shaking and to prevent slot context issues
 import Input from '@/components/Input.vue'
@@ -48,6 +50,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: 'change', payload: IFormFieldChangePayload): void
+  (e: 'addonChange', name: string, payload: IFormFieldChangePayload): void
+  (e: 'addonAction', action: string): void
 }>()
 
 // Handle value change
@@ -147,8 +151,9 @@ const fieldProps = computed(() => {
       placeholder: props.field.placeholder,
       icon: props.field.icon,
       iconRight: props.field.iconRight,
-      addonLeft: props.field.addonLeft,
-      addonRight: props.field.addonRight,
+      // Only pass addon strings; object addons are rendered via slots
+      addonLeft: typeof props.field.addonLeft === 'string' ? props.field.addonLeft : undefined,
+      addonRight: typeof props.field.addonRight === 'string' ? props.field.addonRight : undefined,
       variant: props.variant,
       size: props.size,
       rounded: props.rounded,
@@ -411,10 +416,102 @@ const fieldEvents = computed(() => {
 
   return {}
 })
+// Whether this field has object-type addons that need slot rendering
+const hasObjectAddons = computed(() => {
+  return isAddonObject(props.field.addonLeft) || isAddonObject(props.field.addonRight)
+})
+
+// Check if the field is an input-type field (where addons make sense)
+const isInputType = computed(() => {
+  const type = props.field.type
+  return (
+    type === 'text' ||
+    type === 'email' ||
+    type === 'password' ||
+    type === 'tel' ||
+    type === 'url' ||
+    type === 'search' ||
+    !type
+  )
+})
+
+// Whether to render via the addon-aware Input path
+const useAddonSlots = computed(() => hasObjectAddons.value && isInputType.value)
+
+// Handle addon select change
+const handleAddonSelect = (addon: IFormAddon, payload: { value: any; data?: any }) => {
+  emit('addonChange', addon.name, { value: payload.value })
+}
+
+// Handle addon button click
+const handleAddonAction = (addon: IFormAddon) => {
+  if (addon.action) {
+    emit('addonAction', addon.action)
+  }
+}
 </script>
 
 <template>
+  <!-- Input with object addon slots -->
+  <Input
+    v-if="useAddonSlots"
+    v-bind="{
+      ...fieldProps,
+      ...(field?.props || {}),
+    }"
+    v-on="fieldEvents">
+    <template v-if="isAddonObject(field.addonLeft)" #addon-left>
+      <!-- Select addon -->
+      <Dropdown
+        v-if="field.addonLeft.type === 'select'"
+        :modelValue="values[field.addonLeft.name]"
+        :options="field.addonLeft.options || []"
+        v-bind="field.addonLeft.props || {}"
+        @onSelect="(payload: any) => handleAddonSelect(field.addonLeft as IFormAddon, payload)">
+        <template #trigger="{ selectedLabel }">
+          <Button variant="outline">
+            {{ selectedLabel }}
+          </Button>
+        </template>
+      </Dropdown>
+      <!-- Button addon -->
+      <Button
+        v-else-if="field.addonLeft.type === 'button'"
+        variant="outline"
+        v-bind="field.addonLeft.props || {}"
+        @click="handleAddonAction(field.addonLeft as IFormAddon)">
+        {{ field.addonLeft.text }}
+      </Button>
+    </template>
+
+    <template v-if="isAddonObject(field.addonRight)" #addon-right>
+      <!-- Select addon -->
+      <Dropdown
+        v-if="field.addonRight.type === 'select'"
+        :modelValue="values[field.addonRight.name]"
+        :options="field.addonRight.options || []"
+        v-bind="field.addonRight.props || {}"
+        @onSelect="(payload: any) => handleAddonSelect(field.addonRight as IFormAddon, payload)">
+        <template #trigger="{ selectedLabel }">
+          <Button variant="outline">
+            {{ selectedLabel }}
+          </Button>
+        </template>
+      </Dropdown>
+      <!-- Button addon -->
+      <Button
+        v-else-if="field.addonRight.type === 'button'"
+        variant="outline"
+        v-bind="field.addonRight.props || {}"
+        @click="handleAddonAction(field.addonRight as IFormAddon)">
+        {{ field.addonRight.text }}
+      </Button>
+    </template>
+  </Input>
+
+  <!-- Default: bare component rendering (no object addons) -->
   <component
+    v-else
     :is="fieldComponent"
     v-bind="{
       ...fieldProps,
