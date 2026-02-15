@@ -12,6 +12,7 @@ import AvatarUploaderDemo from '../playground/demos/AvatarUploaderDemo.vue'
 // Forms
 import InputDemo from '../playground/demos/InputDemo.vue'
 import OTPInputDemo from '../playground/demos/OTPInputDemo.vue'
+import NumberInputDemo from '../playground/demos/NumberInputDemo.vue'
 import MultiSelectDemo from '../playground/demos/MultiSelectDemo.vue'
 import ChoiceBoxDemo from '../playground/demos/ChoiceBoxDemo.vue'
 import FilePickerDemo from '../playground/demos/FilePickerDemo.vue'
@@ -70,6 +71,7 @@ const routes = [
       // Forms
       { path: 'input', component: InputDemo },
       { path: 'otpinput', component: OTPInputDemo },
+      { path: 'numberinput', component: NumberInputDemo },
       { path: 'multiselect', component: MultiSelectDemo },
       { path: 'choicebox', component: ChoiceBoxDemo },
       { path: 'filepicker', component: FilePickerDemo },
