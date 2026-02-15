@@ -331,19 +331,30 @@ const fieldEvents = computed(() => {
     }
   }
 
-  // FilePicker emits change
+  // FilePicker emits change and update:modelValue
   if (type === 'fileUploader' || type === 'file') {
     return {
       change: (value: any) => {
         handleChange(value)
       },
+      'update:modelValue': (value: any) => {
+        handleChange(value)
+      },
     }
   }
 
-  // AvatarUploader emits change
+  // AvatarUploader emits change and update:modelValue
   if (type === 'avatarUpload') {
     return {
       change: (value: any) => {
+        handleChange(value)
+      },
+      'update:modelValue': (value: any) => {
+        // We accept update:modelValue, but note that AvatarUploader emits base64 string on upload
+        // and Null on remove. The 'change' event emits the full object on upload and Null on remove.
+        // Since 'change' fires AFTER 'update:modelValue' in AvatarUploader, the Object will properly
+        // overwrite the string in the form model during upload.
+        // During remove, both are null, so it's safe.
         handleChange(value)
       },
     }
