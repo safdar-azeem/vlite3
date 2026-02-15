@@ -9,33 +9,34 @@ This section covers complex data visualization and business-logic components.
 **Import:** `import { Heatmap } from 'vlite3'`
 
 ### Description
+
 An interactive heatmap suitable for visualizing activity, time-series data, or density across a grid. Supports both calendar-style (sequential) and coordinate-based (grid) layouts.
 
 ### Props
 
-| Prop | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `data` | `HeatmapDataPoint[]` | required | Array of data points |
-| `layout` | `'grid' \| 'sequential'` | `'grid'` | Layout mode |
-| `interactive` | `boolean` | `true` | Enable hover and click effects |
-| `showLegend` | `boolean` | `true` | Show gradient legend at bottom |
-| `showLabels` | `boolean` | `false` | Show values inside cells |
-| `responsive` | `boolean` | `true` | Auto-calculate cell size to fit container |
-| `minValue` | `number` | calculated | Min value for color normalization |
-| `maxValue` | `number` | calculated | Max value for color normalization |
-| `color-config` | `HeatmapColorConfig` | `{ scheme: 'github' }` | Color scheme configuration |
-| `grid-config` | `object` | `{ rows: 7, gap: 3 }` | Config for grid layout |
-| `tooltip-config` | `object` | `{ enabled: true }` | Tooltip settings |
+| Prop             | Type                     | Default                | Description                               |
+| :--------------- | :----------------------- | :--------------------- | :---------------------------------------- |
+| `data`           | `HeatmapDataPoint[]`     | required               | Array of data points                      |
+| `layout`         | `'grid' \| 'sequential'` | `'grid'`               | Layout mode                               |
+| `interactive`    | `boolean`                | `true`                 | Enable hover and click effects            |
+| `showLegend`     | `boolean`                | `true`                 | Show gradient legend at bottom            |
+| `showLabels`     | `boolean`                | `false`                | Show values inside cells                  |
+| `responsive`     | `boolean`                | `true`                 | Auto-calculate cell size to fit container |
+| `minValue`       | `number`                 | calculated             | Min value for color normalization         |
+| `maxValue`       | `number`                 | calculated             | Max value for color normalization         |
+| `color-config`   | `HeatmapColorConfig`     | `{ scheme: 'github' }` | Color scheme configuration                |
+| `grid-config`    | `object`                 | `{ rows: 7, gap: 3 }`  | Config for grid layout                    |
+| `tooltip-config` | `object`                 | `{ enabled: true }`    | Tooltip settings                          |
 
 ### Data Format (`HeatmapDataPoint`)
 
 ```typescript
 interface HeatmapDataPoint {
-  x: number         // Column index (or linear index for sequential)
-  y: number         // Row index
-  value: number     // Value for intensity
-  date?: string     // Optional ISO date string
-  tooltip?: string  // Custom tooltip text
+  x: number // Column index (or linear index for sequential)
+  y: number // Row index
+  value: number // Value for intensity
+  date?: string // Optional ISO date string
+  tooltip?: string // Custom tooltip text
   [key: string]: any // Any other data to pass through
 }
 ```
@@ -48,6 +49,7 @@ interface HeatmapDataPoint {
 ### Usage
 
 #### Basic Activity Grid
+
 ```vue
 <script setup>
 const data = [
@@ -58,24 +60,23 @@ const data = [
 </script>
 
 <template>
-  <Heatmap 
-    :data="data" 
+  <Heatmap
+    :data="data"
     :color-config="{ scheme: 'green' }"
-    @cell-click="(cell) => console.log(cell)"
-  />
+    @cell-click="(cell) => console.log(cell)" />
 </template>
 ```
 
 #### Sequential Timeline (Github Style)
+
 ```vue
 <Heatmap
   :data="data"
   layout="sequential"
   :sequential-config="{ itemsPerRow: 7, gap: 2 }"
-  :tooltip-config="{ 
-    formatter: (cell) => `${cell.value} commits on ${cell.date}` 
-  }"
-/>
+  :tooltip-config="{
+    formatter: (cell) => `${cell.value} commits on ${cell.date}`,
+  }" />
 ```
 
 ---
@@ -85,17 +86,18 @@ const data = [
 **Import:** `import { PricingPlan } from 'vlite3'`
 
 ### Description
+
 A responsive pricing table component supporting highlighting, features lists, and different visual variants.
 
 ### Props
 
-| Prop | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `items` | `PricingPlanItemSchema[]` | `[]` | Array of plan definitions |
-| `modelValue` | `string \| number` | `null` | Selected plan ID (v-model) |
-| `variant` | `'outline' \| 'solid'` | `'outline'` | Visual style variant |
-| `columns` | `number` | `3` | Number of columns (responsive by default) |
-| `gap` | `number` | `6` | Gap between cards (tailwind scale) |
+| Prop         | Type                      | Default     | Description                               |
+| :----------- | :------------------------ | :---------- | :---------------------------------------- |
+| `items`      | `PricingPlanItemSchema[]` | `[]`        | Array of plan definitions                 |
+| `modelValue` | `string \| number`        | `null`      | Selected plan ID (v-model)                |
+| `variant`    | `'outline' \| 'solid'`    | `'outline'` | Visual style variant                      |
+| `columns`    | `number`                  | `3`         | Number of columns (responsive by default) |
+| `gap`        | `number`                  | `6`         | Gap between cards (tailwind scale)        |
 
 ### Item Schema (`PricingPlanItemSchema`)
 
@@ -108,13 +110,14 @@ interface PricingPlanItemSchema {
   description?: string
   features: Array<string | { text: string; included: boolean }>
   buttonText?: string
-  popular?: boolean      // Adds "Popular" badge
-  recommended?: boolean  // Adds styling emphasis
+  popular?: boolean // Adds "Popular" badge
+  recommended?: boolean // Adds styling emphasis
   variant?: 'outline' | 'solid' // Override per item
 }
 ```
 
 ### Events
+
 - `@update:modelValue`: Emitted when a plan is selected (via button click).
 - `@change`: Emitted when selection changes.
 
@@ -130,24 +133,20 @@ const plans = [
     id: 'basic',
     title: 'Basic',
     price: '/bin/zsh',
-    features: ['1 Project', 'Basic Support']
+    features: ['1 Project', 'Basic Support'],
   },
   {
     id: 'pro',
     title: 'Pro',
     price: '',
     popular: true,
-    features: ['Unlimited Projects', 'Priority Support']
-  }
+    features: ['Unlimited Projects', 'Priority Support'],
+  },
 ]
 </script>
 
 <template>
-  <PricingPlan 
-    v-model="selected" 
-    :items="plans" 
-    variant="outline" 
-  />
+  <PricingPlan v-model="selected" :items="plans" variant="outline" />
 </template>
 ```
 
@@ -158,20 +157,21 @@ const plans = [
 **Import:** `import { FileTree } from 'vlite3'`
 
 ### Description
+
 A recursive tree component for displaying hierarchical data (files, folders, categories) with support for selection, checkboxes, async loading, and search filtering.
 
 ### Props
 
-| Prop | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `data` | `FileNode[]` | `[]` | Tree data structure |
-| `modelValue` | `string[]` | `[]` | Selected node IDs (v-model) |
-| `selectionMode` | `'single' \| 'multiple'` | `'single'` | Selection behavior |
-| `showCheckboxes` | `boolean` | `false` | Show checkboxes for selection |
-| `loadData` | `(node) => Promise<FileNode[]>` | — | Async handler for loading children |
-| `searchQuery` | `string` | — | Filter nodes by name or content |
-| `highlightSearch` | `boolean` | `false` | Highlight matching text |
-| `defaultExpandedKeys` | `string[]` | `[]` | Initially expanded nodes |
+| Prop                  | Type                            | Default    | Description                        |
+| :-------------------- | :------------------------------ | :--------- | :--------------------------------- |
+| `data`                | `FileNode[]`                    | `[]`       | Tree data structure                |
+| `modelValue`          | `string[]`                      | `[]`       | Selected node IDs (v-model)        |
+| `selectionMode`       | `'single' \| 'multiple'`        | `'single'` | Selection behavior                 |
+| `showCheckboxes`      | `boolean`                       | `false`    | Show checkboxes for selection      |
+| `loadData`            | `(node) => Promise<FileNode[]>` | —          | Async handler for loading children |
+| `searchQuery`         | `string`                        | —          | Filter nodes by name or content    |
+| `highlightSearch`     | `boolean`                       | `false`    | Highlight matching text            |
+| `defaultExpandedKeys` | `string[]`                      | `[]`       | Initially expanded nodes           |
 
 ### Type Definitions
 
@@ -181,10 +181,10 @@ interface FileNode {
   label: string
   isFolder?: boolean
   children?: FileNode[]
-  icon?: string       // Custom icon name
+  icon?: string // Custom icon name
   disabled?: boolean
-  isLoaded?: boolean  // For async loading status
-  [key: string]: any  // Allow custom data
+  isLoaded?: boolean // For async loading status
+  [key: string]: any // Allow custom data
 }
 ```
 
@@ -196,64 +196,74 @@ interface FileNode {
 
 ### Usage
 
-#### Basic Selection
+#### 1. Content Search & Highlighting
+
+To enable content highlighting, your data nodes should include the `searchMatch` property.
+
 ```vue
 <script setup>
-const files = [
+import { computed, ref } from 'vue'
+
+const searchQuery = ref('calculate')
+
+// Example: Data is usually processed to attach search matches
+const files = computed(() => [
   {
-    id: 'root',
-    label: 'Documents',
-    isFolder: true,
-    children: [
-      { id: 'resume', label: 'resume.pdf' },
-      { id: 'notes', label: 'notes.txt' }
-    ]
-  }
-]
-const selected = ref(['resume'])
+    id: 'utils',
+    label: 'utils.ts',
+    // ...
+    searchMatch: {
+      line_number: 42,
+      line_content: 'export const calculateTotal = (a, b) => a + b',
+      match_start: 24, // index where 'calculate' starts
+      match_length: 9,
+    },
+  },
+])
 </script>
 
 <template>
-  <FileTree 
-    :data="files" 
-    v-model="selected" 
-    selection-mode="single" 
-  />
+  <FileTree :data="files" :search-query="searchQuery" highlight-search />
 </template>
 ```
 
-#### Checkboxes & Multiple Selection
-```vue
-<FileTree 
-  :data="files" 
-  v-model="selectedIds" 
-  selection-mode="multiple" 
-  show-checkboxes 
-/>
-```
+#### 2. Async Loading with Skeleton State
 
-#### Async Loading
+Load children dynamically when a folder is expanded.
+
 ```vue
 <script setup>
 const handleLoad = async (node) => {
-  const children = await fetchChildren(node.id)
-  return children
+  // Simulate API call
+  await new Promise((r) => setTimeout(r, 1000))
+
+  return [{ id: `${node.id}-1`, label: 'Dynamic File.txt', isFolder: false }]
 }
 </script>
 
 <template>
-  <FileTree 
-    :data="initialNodes" 
-    :loadData="handleLoad" 
-  />
+  <FileTree :data="initialNodes" :loadData="handleLoad" />
 </template>
 ```
 
-#### Search Filtering
+#### 3. Multiple Selection with Checkboxes
+
+Handle selection state via `v-model`.
+
 ```vue
-<FileTree 
-  :data="files" 
-  :search-query="search" 
-  highlight-search 
-/>
+<script setup>
+const selectedIds = ref([])
+</script>
+
+<template>
+  <div class="h-64 border rounded p-2">
+    <FileTree
+      :data="projectFiles"
+      v-model="selectedIds"
+      selection-mode="multiple"
+      show-checkboxes
+      :default-expanded-keys="['root']" />
+  </div>
+  <div>Selected: {{ selectedIds }}</div>
+</template>
 ```
