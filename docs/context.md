@@ -8,6 +8,13 @@
 
 - [Button](#button)
 - [ButtonGroup](#buttongroup)
+- [Icon](#icon)
+- [Label](#label)
+- [Badge](#badge)
+- [Chip](#chip)
+- [Switch](#switch)
+- [CheckBox](#checkbox)
+- [Avatar](#avatar)
 
 ---
 
@@ -17,18 +24,17 @@
 
 ### Props
 
-| Prop        | Type                        | Default   | Description                         |
-| ----------- | --------------------------- | --------- | ----------------------------------- |
-| `variant`   | `ButtonVariant`             | `primary` | Visual style                        |
-| `size`      | `ButtonSize`                | `md`      | Button dimensions                   |
-| `rounded`   | `ButtonRounded`             | `md`      | Border radius                       |
-| `icon`      | `string`                    | —         | Left icon (Iconify ID or image URL) |
-| `iconRight` | `string`                    | —         | Right icon (Iconify ID)             |
-| `text`      | `string`                    | —         | Label (alternative to default slot) |
-| `type`      | `button \| submit \| reset` | `button`  | Native button type                  |
-| `loading`   | `boolean`                   | `false`   | Replaces icon with spinner          |
-| `disabled`  | `boolean`                   | `false`   | Disables all interaction            |
-| `class`     | `any`                       | `''`      | Additional Tailwind classes         |
+| Prop        | Type               | Default   | Description                         |
+| :---------- | :----------------- | :-------- | :---------------------------------- |
+| `variant`   | `ButtonVariant`    | `primary` | Visual style                        |
+| `size`      | `ButtonSize`       | `md`      | Dimensions                          |
+| `rounded`   | `ButtonRounded`    | `md`      | Border radius                       |
+| `icon`      | `string`           | —         | Left icon (Iconify ID or Image URL) |
+| `iconRight` | `string`           | —         | Right icon (Iconify ID)             |
+| `text`      | `string`           | —         | Label text (alt to slot)            |
+| `type`      | `button \| submit` | `button`  | Native type                         |
+| `loading`   | `boolean`          | `false`   | Show spinner                        |
+| `disabled`  | `boolean`          | `false`   | Disable interaction                 |
 
 ### Types
 
@@ -53,66 +59,229 @@ type ButtonVariant =
   | 'outline-success'
   | 'ghost'
   | 'link'
-
 type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 type ButtonRounded = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
 ```
 
-### Demos
+### Usage
 
 ```vue
-<Button>Primary</Button>
-<Button text="Primary" />
-<!-- Icon only (square sizing auto-applied, no slot needed) -->
-<Button icon="lucide:trash-2" variant="danger" />
-<!-- Image URL as icon -->
-<Button icon="https://example.com/logo.webp" text="Brand Action" />
+<Button variant="primary" icon="lucide:plus">Add Item</Button>
+<Button variant="ghost" loading />
 ```
-
-### Do / Don't
-
-| ✅ Do                           | ❌ Don't                                  |
-| ------------------------------- | ----------------------------------------- |
-| Use `variant` for color intent  | Apply raw color classes like `bg-red-500` |
-| Use `text` prop OR default slot | Pass content to both `text` and the slot  |
 
 ---
 
 # ButtonGroup
 
-Groups `<Button>` components into a fused or spaced row/column with correct border handling.
-
 **Import:** `import { ButtonGroup } from 'vlite3'`
 
 ### Props
 
-| Prop        | Type                     | Default      | Description                        |
-| ----------- | ------------------------ | ------------ | ---------------------------------- |
-| `direction` | `horizontal \| vertical` | `horizontal` | Layout axis                        |
-| `attached`  | `boolean`                | `true`       | Fuse borders; `false` adds `gap-2` |
-| `class`     | `string`                 | `''`         | Additional Tailwind classes        |
+| Prop        | Type          | Default     | Description                   |
+| ----------- | ------------- | ----------- | ----------------------------- | ----------- |
+| `direction` | `'horizontal' | 'vertical'` | `horizontal`                  | Layout axis |
+| `attached`  | `boolean`     | `true`      | Fuse borders (false adds gap) |
 
-### Demos
-
-**Attached (default)**
+### Usage
 
 ```vue
-<ButtonGroup>
+<ButtonGroup attached>
   <Button>Years</Button>
   <Button>Months</Button>
-  <Button>Days</Button>
 </ButtonGroup>
 ```
 
-**Outline variant (border-aware)**
+#### Outline variant (border-aware)
 
-```vue
 <ButtonGroup>
   <Button variant="outline">Left</Button>
   <Button variant="outline">Center</Button>
 </ButtonGroup>
+
+---
+
+# Icon
+
+**Import:** `import { Icon } from 'vlite3'`
+
+### Props
+
+| Prop   | Type     | Default | Description                                   |
+| ------ | -------- | ------- | --------------------------------------------- |
+| `icon` | `string` | `''`    | Iconify ID (e.g., `lucide:home`) or Image URL |
+
+### Usage
+
+```vue
+<Icon icon="lucide:settings" class="w-4 h-4" />
+<Icon icon="[https://example.com/logo.png](https://example.com/logo.png)" />
 ```
 
 ---
 
-<!-- ADD NEW COMPONENTS BELOW THIS LINE -->
+# Label
+
+**Import:** `import { Label } from 'vlite3'`
+
+### Props
+
+| Prop  | Type     | Default | Description                   |
+| ----- | -------- | ------- | ----------------------------- |
+| `for` | `string` | —       | ID of the target form element |
+
+### Usage
+
+```vue
+<Label for="email">Email Address</Label>
+<Input id="email" />
+```
+
+---
+
+# Badge
+
+**Import:** `import { Badge } from 'vlite3'`
+
+### Props
+
+| Prop      | Type           | Default   | Description |
+| --------- | -------------- | --------- | ----------- |
+| `variant` | `BadgeVariant` | `default` | Color theme |
+
+### Types
+
+```ts
+type BadgeVariant = 'default' | 'secondary' | 'danger' | 'outline' | 'warning' | 'info' | 'success'
+```
+
+### Usage
+
+```vue
+<Badge variant="success">Completed</Badge>
+```
+
+---
+
+# Chip
+
+**Import:** `import { Chip } from 'vlite3'`
+
+### Props
+
+| Prop        | Type                             | Default  | Description                      |
+| ----------- | -------------------------------- | -------- | -------------------------------- |
+| `variant`   | `ChipVariant`                    | `subtle` | Visual style                     |
+| `size`      | `'small' \| 'medium' \| 'large'` | `medium` | Dimensions                       |
+| `text`      | `string`                         | —        | Label text                       |
+| `icon`      | `string`                         | —        | Leading icon                     |
+| `clickable` | `boolean`                        | `false`  | Enable interaction styles/events |
+| `deletable` | `boolean`                        | `false`  | Show delete button               |
+| `disabled`  | `boolean`                        | `false`  | Disable interactions             |
+
+### Events
+
+- `@click` (requires `clickable`)
+- `@delete` (requires `deletable`)
+
+### Types
+
+```ts
+type ChipVariant =
+  | 'solid'
+  | 'outline'
+  | 'ghost'
+  | 'subtle'
+  | 'secondary'
+  | 'success'
+  | 'warning'
+  | 'danger'
+  | 'info'
+```
+
+### Usage
+
+```vue
+<Chip text="Vue" variant="primary" clickable @click="select" />
+<Chip text="Filter" deletable @delete="remove" />
+```
+
+---
+
+# Switch
+
+**Import:** `import { Switch } from 'vlite3'`
+
+### Props
+
+| Prop         | Type      | Default | Description         |
+| ------------ | --------- | ------- | ------------------- |
+| `modelValue` | `boolean` | `false` | Binding (`v-model`) |
+| `label`      | `string`  | —       | Side label text     |
+| `disabled`   | `boolean` | `false` | Disable toggle      |
+
+### Usage
+
+```vue
+<Switch v-model="isEnabled" label="Airplane Mode" />
+```
+
+---
+
+# CheckBox
+
+**Import:** `import { CheckBox } from 'vlite3'`
+
+### Props
+
+| Prop            | Type              | Default | Description                            |
+| --------------- | ----------------- | ------- | -------------------------------------- |
+| `checked`       | `boolean`         | `false` | Binding (`v-model:checked`)            |
+| `label`         | `string`          | —       | Side label text                        |
+| `indeterminate` | `boolean`         | `false` | Mixed state visually                   |
+| `disabled`      | `boolean`         | `false` | Disable input                          |
+| `size`          | `CheckboxSize`    | `md`    | Dimensions                             |
+| `rounded`       | `CheckboxRounded` | —       | Corner radius (defaults to size style) |
+
+### Types
+
+```ts
+type CheckboxSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+type CheckboxRounded = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
+```
+
+### Usage
+
+```vue
+<CheckBox v-model:checked="isAgreed" label="I accept terms" />
+```
+
+---
+
+# Avatar
+
+**Import:** `import { Avatar } from 'vlite3'`
+
+### Props
+
+| Prop       | Type            | Default  | Description                           |
+| ---------- | --------------- | -------- | ------------------------------------- |
+| `src`      | `string`        | —        | Image URL                             |
+| `alt`      | `string`        | `Avatar` | Alt text, used for initial generation |
+| `fallback` | `string`        | —        | Explicit text fallback (e.g. "JD")    |
+| `size`     | `AvatarSize`    | `md`     | Dimensions                            |
+| `rounded`  | `AvatarRounded` | `full`   | Shape                                 |
+
+### Types
+
+```ts
+type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
+type AvatarRounded = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
+```
+
+### Usage
+
+```vue
+<Avatar src="[https://i.pravatar.cc/150](https://i.pravatar.cc/150)" size="lg" />
+<Avatar alt="John Doe" fallback="JD" rounded="md" />
+```
