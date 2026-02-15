@@ -21,6 +21,7 @@ import sourceCode from './DataTableDemo.vue?raw'
 const searchQuery = ref('')
 const isTableSortable = ref(true)
 const isRaised = ref(false)
+const paginationPosition = ref<'start' | 'center' | 'end' | 'between'>('between')
 // selectedCount definition removed (ref defined later)
 
 const { result, loading, refetch } = useGetUsers()
@@ -136,16 +137,29 @@ const handleDelete = (rows: User[]) => {
   <div class="space-y-8">
     <!-- Header -->
     <div class="space-y-2">
-      <div class="flex items-center justify-between">
+      <div class="flex items-center justify-between flex-wrap gap-4">
         <h1 class="text-2xl font-bold">DataTable</h1>
-        <label class="flex items-center gap-2 text-sm font-medium">
-          <input type="checkbox" v-model="isTableSortable" class="rounded border-gray-300" />
-          Global Sortable
-        </label>
-        <label class="flex items-center gap-2 text-sm font-medium">
-          <input type="checkbox" v-model="isRaised" class="rounded border-gray-300" />
-          Raised Variant
-        </label>
+        <div class="flex items-center gap-4">
+          <label class="flex items-center gap-2 text-sm font-medium">
+            Pagination:
+            <select
+              v-model="paginationPosition"
+              class="bg-background border border-border rounded px-2 py-1">
+              <option value="start">Left</option>
+              <option value="center">Center</option>
+              <option value="end">Right</option>
+              <option value="between">Between</option>
+            </select>
+          </label>
+          <label class="flex items-center gap-2 text-sm font-medium">
+            <input type="checkbox" v-model="isTableSortable" class="rounded border-gray-300" />
+            Global Sortable
+          </label>
+          <label class="flex items-center gap-2 text-sm font-medium">
+            <input type="checkbox" v-model="isRaised" class="rounded border-gray-300" />
+            Raised Variant
+          </label>
+        </div>
       </div>
       <p class="text-muted-foreground">
         Refactored DataTable with external controls (Search, Actions) and built-in pagination.
@@ -164,7 +178,7 @@ const handleDelete = (rows: User[]) => {
         :search="searchQuery"
         :sortable="isTableSortable"
         :variant="isRaised ? 'raised' : 'default'"
-        :items-per-page-options="[10, 25, 50, 100]"
+        :pagination-position="paginationPosition"
         key-field="_id"
         selectable
         hoverable
