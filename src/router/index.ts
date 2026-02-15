@@ -31,6 +31,7 @@ import SidePanelDemo from '../playground/demos/SidePanelDemo.vue'
 import DropdownDemo from '../playground/demos/DropdownDemo.vue'
 import TooltipDemo from '../playground/demos/TooltipDemo.vue'
 import ToastDemo from '../playground/demos/ToastDemo.vue'
+import SpinnerDemo from '../playground/demos/SpinnerDemo.vue'
 
 // Navigation / Data
 import AccordionDemo from '../playground/demos/AccordionDemo.vue'
@@ -89,6 +90,7 @@ const routes = [
       { path: 'dropdown', component: DropdownDemo },
       { path: 'tooltip', component: TooltipDemo },
       { path: 'toast', component: ToastDemo },
+      { path: 'spinner', component: SpinnerDemo },
 
       // Navigation / Data
       { path: 'accordion', component: AccordionDemo },
