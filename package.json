@@ -3,7 +3,7 @@
   "private": false,
   "description": "A Vue 3 UI component library built with Tailwind CSS.",
   "license": "MIT",
-  "version": "0.1.10",
+  "version": "0.2.0",
   "type": "module",
   "main": "index.js",
   "module": "index.js",
@@ -38,7 +38,7 @@
     "@vueuse/core": "^14.1.0",
     "iconify-icon-picker": "^1.0.3",
     "tailwindcss": "^4.1.18",
-    "v-datepicker-lite": "^0.1.4",
+    "v-datepicker-lite": "^0.1.5",
     "v-tooltip-lite": "^0.1.9",
     "vue-carousel-lite": "^0.2.3",
     "vue3-google-login": "^2.0.37"
