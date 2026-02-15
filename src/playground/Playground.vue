@@ -10,10 +10,6 @@ import Button from '@/components/Button.vue'
 
 const router = useRouter()
 
-// Convert categories to SidebarMenuItemSchema
-// We use a computed or just static definition since it doesn't change much.
-// Using 'children' to create collapsible sections for categories.
-
 const menuItems: SidebarMenuItemSchema[] = [
   {
     label: 'Theme & Style',
@@ -67,6 +63,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Tooltip', to: '/tooltip', icon: 'lucide:message-square' },
       { label: 'Toast', to: '/toast', icon: 'lucide:bell' },
       { label: 'Spinner', to: '/spinner', icon: 'lucide:loader-2' },
+      { label: 'ProgressBar', to: '/progressbar', icon: 'lucide:bar-chart-3' },
     ],
   },
   {
@@ -114,7 +111,7 @@ const menuItems: SidebarMenuItemSchema[] = [
           <SidebarMenu
             :items="menuItems"
             :allow-multiple="true"
-            :default-expanded="['Core', 'Forms & Auth']" />
+            :default-expanded="['Core', 'Feedback & Overlays']" />
         </div>
       </template>
 
