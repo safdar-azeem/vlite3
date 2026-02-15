@@ -150,3 +150,110 @@ const plans = [
   />
 </template>
 ```
+
+---
+
+# FileTree
+
+**Import:** `import { FileTree } from 'vlite3'`
+
+### Description
+A recursive tree component for displaying hierarchical data (files, folders, categories) with support for selection, checkboxes, async loading, and search filtering.
+
+### Props
+
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `data` | `FileNode[]` | `[]` | Tree data structure |
+| `modelValue` | `string[]` | `[]` | Selected node IDs (v-model) |
+| `selectionMode` | `'single' \| 'multiple'` | `'single'` | Selection behavior |
+| `showCheckboxes` | `boolean` | `false` | Show checkboxes for selection |
+| `loadData` | `(node) => Promise<FileNode[]>` | — | Async handler for loading children |
+| `searchQuery` | `string` | — | Filter nodes by name or content |
+| `highlightSearch` | `boolean` | `false` | Highlight matching text |
+| `defaultExpandedKeys` | `string[]` | `[]` | Initially expanded nodes |
+
+### Type Definitions
+
+```typescript
+interface FileNode {
+  id: string
+  label: string
+  isFolder?: boolean
+  children?: FileNode[]
+  icon?: string       // Custom icon name
+  disabled?: boolean
+  isLoaded?: boolean  // For async loading status
+  [key: string]: any  // Allow custom data
+}
+```
+
+### Events
+
+- `@node-click` (node: `FileNode`): Emitted when a node is clicked.
+- `@select` (node: `FileNode`, selected: `boolean`): Emitted when selection changes.
+- `@expand` (node: `FileNode`, expanded: `boolean`): Emitted when a folder is expanded/collapsed.
+
+### Usage
+
+#### Basic Selection
+```vue
+<script setup>
+const files = [
+  {
+    id: 'root',
+    label: 'Documents',
+    isFolder: true,
+    children: [
+      { id: 'resume', label: 'resume.pdf' },
+      { id: 'notes', label: 'notes.txt' }
+    ]
+  }
+]
+const selected = ref(['resume'])
+</script>
+
+<template>
+  <FileTree 
+    :data="files" 
+    v-model="selected" 
+    selection-mode="single" 
+  />
+</template>
+```
+
+#### Checkboxes & Multiple Selection
+```vue
+<FileTree 
+  :data="files" 
+  v-model="selectedIds" 
+  selection-mode="multiple" 
+  show-checkboxes 
+/>
+```
+
+#### Async Loading
+```vue
+<script setup>
+const handleLoad = async (node) => {
+  const children = await fetchChildren(node.id)
+  return children
+}
+</script>
+
+<template>
+  <FileTree 
+    :data="initialNodes" 
+    :loadData="handleLoad" 
+  />
+</template>
+```
+
+#### Search Filtering
+```vue
+<FileTree 
+  :data="files" 
+  :search-query="search" 
+  highlight-search 
+/>
+```
