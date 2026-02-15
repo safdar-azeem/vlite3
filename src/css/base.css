@@ -147,3 +147,7 @@ html {
   --iconPicker-transition: all 0.2s ease;
   padding: 5px;
 }
+
+.date-picker-content {
+  padding: 0 !important;
+}
