@@ -65,6 +65,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Dropdown', to: '/dropdown', icon: 'lucide:chevron-down-square' },
       { label: 'Tooltip', to: '/tooltip', icon: 'lucide:message-square' },
       { label: 'Toast', to: '/toast', icon: 'lucide:bell' },
+      { label: 'Spinner', to: '/spinner', icon: 'lucide:loader-2' },
     ],
   },
   {
@@ -109,7 +110,10 @@ const menuItems: SidebarMenuItemSchema[] = [
 
       <template #default>
         <div class="space-y-6">
-          <SidebarMenu :items="menuItems" :allow-multiple="true" :default-expanded="['Core', 'Forms & Auth']" />
+          <SidebarMenu
+            :items="menuItems"
+            :allow-multiple="true"
+            :default-expanded="['Core', 'Forms & Auth']" />
         </div>
       </template>
 
