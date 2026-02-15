@@ -62,6 +62,7 @@ export interface DataTableProps {
   emptyDescription?: string
   emptyIcon?: string
   showPagination?: boolean
+  paginationPosition?: 'start' | 'center' | 'end' | 'between'
   pageInfo?: PageInfo
   itemsPerPage?: number
   itemsPerPageOptions?: number[]
