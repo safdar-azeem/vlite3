@@ -1,6 +1,6 @@
 # vlite3
 
-A lightweight Vue 3 UI component library built with Tailwind CSS.
+A lightweight Vue 3 UI component library built with Tailwind CSS, created for personal projects and available for anyone to use.
 
 ## Installation
 
