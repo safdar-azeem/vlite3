@@ -21,6 +21,8 @@
 - [DatePicker](#datepicker)
 - [Pagination](#pagination)
 - [Tabes](#tabes)
+- [Modal](#modal)
+- [SidePanel](#sidepanel)
 
 ---
 
@@ -573,4 +575,132 @@ export type TabesVariant =
   ]"
   variant="line"
   block />
+```
+
+---
+
+# Modal
+
+**Import:** `import { Modal } from 'vlite3'`
+
+### Props
+
+| Prop           | Type        | Default       | Description                                 |
+| :------------- | :---------- | :------------ | :------------------------------------------ |
+| `show`         | `boolean`   | `false`       | Binding (`v-model:show`) - Visibility state |
+| `title`        | `string`    | —             | Modal title text                            |
+| `description`  | `string`    | —             | Helper text below title                     |
+| `maxWidth`     | `string`    | `sm:max-w-lg` | Tailwind max-width class (e.g. `max-w-2xl`) |
+| `closeOutside` | `boolean`   | `true`        | Close when clicking backdrop                |
+| `backdrop`     | `boolean`   | `true`        | Show dark overlay                           |
+| `triggerClass` | `string`    | —             | Classes for the trigger wrapper             |
+| `headerClass`  | `string`    | —             | Classes for the header section              |
+| `bodyClass`    | `string`    | —             | Classes for the content section             |
+| `footerClass`  | `string`    | —             | Classes for the footer section              |
+| `body`         | `Component` | —             | Component to render lazily inside           |
+| `bodyProps`    | `object`    | —             | Props to pass to the `body` component       |
+
+### Events
+
+- `@close`: Emitted when the modal is closed
+- `@update:show`: Emitted to update the v-model
+- `@onOpen`: Emitted when the modal opens
+
+### Slots
+
+| Slot      | Description                           | Props                   |
+| :-------- | :------------------------------------ | :---------------------- |
+| `trigger` | Element that opens the modal on click | —                       |
+| `default` | Main content of the modal             | `{ close: () => void }` |
+| `footer`  | Footer content (buttons, etc.)        | `{ close: () => void }` |
+
+### Usage
+
+```vue
+<Modal title="Edit User">
+  <template #trigger>
+    <Button>Open Modal</Button>
+  </template>
+
+  <div class="space-y-4">
+    <p>User details form goes here...</p>
+  </div>
+
+  <template #footer="{ close }">
+    <Button variant="outline" @click="close">Cancel</Button>
+    <Button @click="save">Save</Button>
+  </template>
+</Modal>
+```
+
+#### Programmatic Control
+
+```vue
+<Modal v-model:show="isOpen" title="Programmatic" description="Controlled via v-model">
+  <p>Content...</p>
+</Modal>
+```
+
+---
+
+# SidePanel
+
+**Import:** `import { SidePanel } from 'vlite3'`
+
+### Props
+
+| Prop              | Type                | Default | Description                        |
+| :---------------- | :------------------ | :------ | :--------------------------------- |
+| `show`            | `boolean`           | `false` | Binding (`v-model:show`)           |
+| `title`           | `string`            | —       | Panel title                        |
+| `description`     | `string`            | —       | Helper text below title            |
+| `position`        | `SidePanelPosition` | `right` | Slide from `left` or `right`       |
+| `size`            | `SidePanelSize`     | `md`    | Width preset (`sm` to `full`)      |
+| `closeOutside`    | `boolean`           | `true`  | Close on backdrop click            |
+| `hideCloseButton` | `boolean`           | `false` | Hide the 'X' button                |
+| `backdrop`        | `boolean`           | `true`  | Show overlay                       |
+| `body`            | `Component`         | —       | Component for lazy loading content |
+| `bodyProps`       | `object`            | —       | Props for the body component       |
+
+### Types
+
+```ts
+type SidePanelPosition = 'left' | 'right'
+type SidePanelSize = 'sm' | 'md' | 'lg' | 'xl' | 'full'
+```
+
+### Events
+
+- `@close`
+- `@update:show`
+- `@onOpen`
+- `@onAfterOpen`: Animation complete
+- `@onAfterClose`: Animation complete
+
+### Slots
+
+| Slot      | Description                     | Props                   |
+| :-------- | :------------------------------ | :---------------------- |
+| `trigger` | Clickable element to open panel | —                       |
+| `header`  | Custom header content           | —                       |
+| `default` | Body content                    | `{ close: () => void }` |
+| `footer`  | Footer content                  | `{ close: () => void }` |
+
+### Usage
+
+```vue
+<SidePanel title="Settings" position="right" size="lg">
+  <template #trigger>
+    <Button variant="ghost" icon="lucide:settings" />
+  </template>
+
+  <div class="p-4">
+    <h4 class="font-medium">Account Settings</h4>
+    <!-- settings controls -->
+  </div>
+
+  <template #footer="{ close }">
+    <Button class="w-full" @click="close">Done</Button>
+  </template>
+</SidePanel>
 ```
