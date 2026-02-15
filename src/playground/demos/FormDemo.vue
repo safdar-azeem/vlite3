@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import Icon from '@/components/Icon.vue'
 
-// Import new modular components
 import FormBasic from './forms/FormBasic.vue'
 import FormValidation from './forms/FormValidation.vue'
 import FormAdvanced from './forms/FormAdvanced.vue'
