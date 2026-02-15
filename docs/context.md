@@ -1189,3 +1189,147 @@ toast.promise(saveData(), {
   <Button icon="lucide:edit" />
 </Tooltip>
 ```
+
+---
+
+# Timeline
+
+**Import:** `import { Timeline } from 'vlite3'`
+
+### Props
+
+| Prop           | Type                   | Default      | Description                                   |
+| :------------- | :--------------------- | :----------- | :-------------------------------------------- |
+| `steps`        | `TimelineStep[]`       | required     | Array of steps to display                     |
+| `activeStep`   | `number`               | `0`          | Index of current active step                  |
+| `direction`    | `TimelineDirection`    | `horizontal` | Layout direction (`horizontal` or `vertical`) |
+| `textPosition` | `TimelineTextPosition` | `bottom`     | Position of text relative to step             |
+| `clickable`    | `boolean`              | `false`      | Enable click events on steps                  |
+| `class`        | `string`               | —            | Custom class for wrapper                      |
+
+### Types
+
+```ts
+export interface TimelineStep {
+  id: string | number
+  title: string
+  description?: string
+  icon?: string
+  status?: 'completed' | 'current' | 'upcoming'
+}
+
+export type TimelineDirection = 'horizontal' | 'vertical'
+export type TimelineTextPosition = 'bottom' | 'right'
+```
+
+### Events
+
+- `@step-click`: Emitted when a step is clicked (requires `clickable` prop)
+
+### Usage
+
+```vue
+<Timeline
+  :steps="[
+    { id: 1, title: 'Ordered', icon: 'lucide:shopping-cart' },
+    { id: 2, title: 'Processing', icon: 'lucide:settings' },
+    { id: 3, title: 'Shipped', icon: 'lucide:truck' },
+    { id: 4, title: 'Delivered', icon: 'lucide:check' },
+  ]"
+  :active-step="1"
+  direction="horizontal" />
+```
+
+---
+
+# Dropdown
+
+**Import:** `import { Dropdown } from 'vlite3'`
+
+### Props
+
+| Prop                 | Type                | Default      | Description                             |
+| :------------------- | :------------------ | :----------- | :-------------------------------------- |
+| `modelValue`         | `any`               | —            | Binding (`v-model`)                     |
+| `selected`           | `any`               | —            | Selected value (alternative to v-model) |
+| `options`            | `IDropdownOptions`  | `[]`         | Array of options                        |
+| `placeholder`        | `string`            | —            | Placeholder text                        |
+| `disabled`           | `boolean`           | `false`      | Disable dropdown                        |
+| `loading`            | `boolean`           | `false`      | Show loading state                      |
+| `searchable`         | `boolean`           | `true`       | Enable search input                     |
+| `closeOnSelect`      | `boolean`           | `true`       | Close dropdown after selection          |
+| `position`           | `TooltTipPlacement` | `bottom-end` | Dropdown position                       |
+| `width`              | `string`            | —            | Custom width                            |
+| `maxHeight`          | `string`            | `300px`      | Max height of menu                      |
+| `teleport`           | `boolean`           | `true`       | Teleport menu to body                   |
+| `doubleConfirmation` | `boolean`           | `false`      | Require confirmation for selection      |
+| `remote`             | `boolean`           | `false`      | Enable remote data loading              |
+| `hasMore`            | `boolean`           | `false`      | Show "Load More" indicator              |
+
+### Types
+
+```ts
+export type IDropdownOption = {
+  label: string
+  value?: any
+  subtitle?: string
+  description?: string
+  icon?: string
+  emoji?: string
+  disabled?: Boolean
+  children?: IDropdownOption[] // Nested menus
+  confirmation?: boolean | { title?: string; description?: string; ... }
+}
+
+export type IDropdownOptions = IDropdownOption[]
+```
+
+### Events
+
+- `@onSelect`: Emitted when an option is selected
+- `@update:modelValue`: Emitted to update v-model
+- `@onOpen`: Emitted when dropdown opens
+- `@onClose`: Emitted when dropdown closes
+- `@search`: Emitted when search query changes
+- `@load-more`: Emitted when scrolling to bottom (if `hasMore` is true)
+
+### Slots
+
+| Slot      | Description               | Props                         |
+| :-------- | :------------------------ | :---------------------------- |
+| `trigger` | Custom trigger element    | `{ isOpen, selectedLabel }`   |
+| `item`    | Custom option rendering   | `{ option, index, selected }` |
+| `header`  | Content at top of menu    | —                             |
+| `footer`  | Content at bottom of menu | —                             |
+| `menu`    | Full menu replacement     | —                             |
+
+### Usage
+
+```vue
+<Dropdown v-model="selectedUser" :options="users" searchable placeholder="Select a user">
+  <template #trigger="{ selectedLabel }">
+    <Button variant="outline">
+      {{ selectedLabel || 'Select User' }}
+    </Button>
+  </template>
+</Dropdown>
+
+<!-- With Custom Styling (Optional Item Slot) -->
+<Dropdown v-model="selectedUser" :options="users">
+  <template #trigger="{ selectedLabel }">
+    <Button variant="outline">
+      {{ selectedLabel || 'Select User' }}
+    </Button>
+  </template>
+  
+  <template #item="{ option }">
+    <div class="flex items-center gap-2 p-2 hover:bg-muted rounded-md cursor-pointer">
+      <Avatar :src="option.avatar" size="xs" />
+      <div class="flex flex-col">
+        <span class="font-medium">{{ option.label }}</span>
+        <span class="text-xs text-muted-foreground">{{ option.email }}</span>
+      </div>
+    </div>
+  </template>
+</Dropdown>
+```
