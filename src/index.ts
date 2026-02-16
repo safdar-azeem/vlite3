@@ -1,3 +1,5 @@
+import GoogleSignInPlugin from 'vue3-google-signin'
+
 export * from './components/Accordion'
 export { default as Alert } from './components/Alert.vue'
 export { default as Avatar } from './components/Avatar.vue'
@@ -54,6 +56,7 @@ export * from './composables/useKeyStroke'
 export * from './directives/vScrollReveal'
 
 export { createVLite, useVLiteConfig } from './core'
+export { GoogleSignInPlugin }
 
 export * from './utils'
 
