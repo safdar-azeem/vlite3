@@ -129,7 +129,7 @@ const menuItems: SidebarMenuItemSchema[] = [
           <div
             class="mb-10 pb-6 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 class="text-3xl font-bold tracking-tight text-gray-900 mb-2">
+              <h1 class="text-fs-8 font-bold tracking-tight text-gray-900 mb-2">
                 Component Playground
               </h1>
               <p class="text-gray-500">
