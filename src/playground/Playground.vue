@@ -64,6 +64,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Toast', to: '/toast', icon: 'lucide:bell' },
       { label: 'Spinner', to: '/spinner', icon: 'lucide:loader-2' },
       { label: 'ProgressBar', to: '/progressbar', icon: 'lucide:bar-chart-3' },
+      { label: 'Scroll Reveal', to: '/scroll-reveal', icon: 'lucide:move-down' },
     ],
   },
   {
@@ -124,7 +125,7 @@ const menuItems: SidebarMenuItemSchema[] = [
     </Navbar>
 
     <main class="flex-1 min-w-0 flex flex-col h-full overflow-hidden bg-body relative z-0">
-      <div class="flex-1 overflow-y-auto">
+      <div class="flex-1 overflow-y-auto scroll-smooth">
         <div class="max-w-5xl mx-auto px-6 py-6 md:py-12">
           <div
             class="mb-10 pb-6 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
