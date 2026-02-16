@@ -372,7 +372,10 @@ Follow these rules strictly to ensure visual consistency and predictable styling
 
 ## Complete reference for AI agents and developers:
 
-- [llms.txt](https://github.com/safdar-azeem/vlite3/blob/main/llms.txt).
-- [llms-theming.txt](https://github.com/safdar-azeem/vlite3/blob/main/llms-theming.txt).
-- [llms-full.txt](https://github.com/safdar-azeem/vlite3/blob/main/llms-full.txt).
-- [llms-advance.txt](https://github.com/safdar-azeem/vlite3/blob/main/llms-advance.txt).
+- [1-setup.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/1-setup.md)
+- [2-theming.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/2-theming.md)
+- [3-all-components.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/3-all-components.md)
+- [4-forms.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/4-forms.md)
+- [5-utility.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/5-utility.md)
+- [6-advance-components.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/6-advance-components.md)
+- [7-search-util.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/7-search-util.md)
