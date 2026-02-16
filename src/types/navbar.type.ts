@@ -31,4 +31,5 @@ export interface NavbarProps {
   contentClass?: string
   rightClass?: string
   mobileTriggerClass?: string
+  mobileMenuVariant?: 'sidepanel' | 'dropdown'
 }
