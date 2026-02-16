@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted, useSlots, provide, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useBreakpoints, breakpointsTailwind } from '@vueuse/core'
 import Icon from '../Icon.vue'
 import SidePanel from '../SidePanel.vue'
 import Logo from '../Logo.vue' // Assuming Logo exists or using fallback
@@ -170,6 +171,15 @@ watch(
     isMobileMenuOpen.value = false
   }
 )
+
+const breakpoints = useBreakpoints(breakpointsTailwind)
+const isDesktop = breakpoints.greater(props.mobileBreakpoint as any)
+
+watch(isDesktop, (val) => {
+  if (val) {
+    isMobileMenuOpen.value = false
+  }
+})
 </script>
 
 <template>
