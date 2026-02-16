@@ -1,12 +1,19 @@
 export type ProgressBarType = 'linear' | 'circular'
-export type ProgressBarVariant = 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'gradient'
+export type ProgressBarVariant =
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'warning'
+  | 'danger'
+  | 'info'
+  | 'gradient'
 export type ProgressBarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 
 export interface ProgressBarProps {
   /**
    * Current value (0-100)
    */
-  modelValue: number
+  modelValue?: number
   /**
    * Visual type of the progress bar
    * @default 'linear'
