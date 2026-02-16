@@ -70,12 +70,39 @@
     --radius-lg: calc(0.5rem + 2px);
     --radius-xl: calc(0.5rem + 4px);
 
-
-
     /* Animations */
     --animate-accordion-down: accordion-down 0.2s ease-out;
     --animate-accordion-up: accordion-up 0.2s ease-out;
     --animate-ripple: ripple 600ms linear;
+
+    --text--fs-1: 0.95em;
+    --text--fs-2: 0.8em;
+    --text--fs-3: 0.75em;
+    --text--fs-4: 0.7em;
+    --text--fs-5: 0.65em;
+    --text--fs-6: 0.6em;
+    --text--fs-7: 0.55em;
+    --text--fs-8: 0.5em;
+    --text-fs-0.5: 1em;
+    --text-fs-1: 1.03030303em;
+    --text-fs-1.5: 1.06060606em;
+    --text-fs-2: 1.1030303em;
+    --text-fs-2.5: 1.13333333em;
+    --text-fs-3: 1.16363636em;
+    --text-fs-3.5: 1.19393939em;
+    --text-fs-4: 1.2242424242424241em;
+    --text-fs-4.5: 1.31515152em;
+    --text-fs-5: 1.39393939em;
+    --text-fs-5.5: 1.48484848em;
+    --text-fs-6: 1.57575758em;
+    --text-fs-6.5: 1.63636364em;
+    --text-fs-7: 1.6969697em;
+    --text-fs-7.5: 1.75757576em;
+    --text-fs-8: 1.81818182em;
+    --text-fs-8.5: 1.87878788em;
+    --text-fs-9: 1.93939394em;
+    --text-fs-9.5: 2em;
+    --text-fs-10: 2.06060606em;
   }
 }
 
@@ -369,6 +396,6 @@
   box-shadow: var(--shadow-xl) !important;
 }
 
-.text-muted {
+@utility text-muted {
   color: var(--color-gray-600) !important;
 }
