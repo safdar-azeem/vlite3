@@ -49,6 +49,18 @@ export interface SearchResult<T> {
   results: T[]
   /** Clears the cached index for the associated model key */
   reset: () => void
+  /** Whether the search engine is still building indexes (always false for sync `search()`) */
+  loading: boolean
+}
+
+/** Returned from `lazySearch()` — a pre-configured, reusable search instance */
+export interface LazySearchResult<T> {
+  /** Execute a search query against the pre-indexed dataset */
+  search: (query: string) => T[]
+  /** Clear the cached index and rebuild on next search */
+  reset: () => void
+  /** Whether the index is currently being built */
+  loading: boolean
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -771,7 +783,7 @@ function evaluatePrimitiveQuery<T>(data: T[], query: string, dataIndex: DataInde
  */
 export function search<T>(data: T[], ...args: any[]): SearchResult<T> {
   if (!Array.isArray(data) || data.length === 0) {
-    return { results: [], reset: () => {} }
+    return { results: [], reset: () => {}, loading: false }
   }
 
   // ── Parse arguments: separate queries from modelKey ──
@@ -816,7 +828,7 @@ export function search<T>(data: T[], ...args: any[]): SearchResult<T> {
 
   // ── No query provided ──
   if (queryArgs.length === 0) {
-    return { results: [...data], reset: resetFn }
+    return { results: [...data], reset: resetFn, loading: false }
   }
 
   const firstQuery = queryArgs[0]
@@ -827,7 +839,7 @@ export function search<T>(data: T[], ...args: any[]): SearchResult<T> {
     const results = Array.from(matchedIndices)
       .sort((a, b) => a - b)
       .map((i) => data[i])
-    return { results, reset: resetFn }
+    return { results, reset: resetFn, loading: false }
   }
 
   // ── Array of queries (OR) ──
@@ -855,7 +867,7 @@ export function search<T>(data: T[], ...args: any[]): SearchResult<T> {
     const results = Array.from(finalIndices)
       .sort((a, b) => a - b)
       .map((i) => data[i])
-    return { results, reset: resetFn }
+    return { results, reset: resetFn, loading: false }
   }
 
   // ── Single or multiple QueryObject(s) (AND) ──
@@ -886,5 +898,123 @@ export function search<T>(data: T[], ...args: any[]): SearchResult<T> {
         .map((i) => data[i])
     : []
 
-  return { results, reset: resetFn }
+  return { results, reset: resetFn, loading: false }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SECTION 10 — Lazy Search API
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Creates a pre-configured, reusable search instance.
+ *
+ * Unlike `search()`, which takes a full query each time, `lazySearch()` accepts
+ * the dataset and a list of searchable fields upfront, builds the index once,
+ * and returns a lightweight `search(query)` function for fast repeated lookups.
+ *
+ * Think of it like creating a Fuse.js instance — you configure once, search many times.
+ *
+ * @param data       — The dataset to search (array of objects or primitives)
+ * @param keys       — Array of field paths (dot-notation supported) to search across.
+ *                     For primitive arrays, this is optional.
+ * @param modelKey   — Optional cache key for index persistence across calls
+ *
+ * @returns `{ search, reset, loading }`
+ *          - `search(query)` — returns matching items for a string query
+ *          - `reset()` — clears the cached index
+ *          - `loading` — whether the index is being built
+ *
+ * @example
+ * const people = [
+ *   { name: { firstName: 'Jesse', lastName: 'Bowen' }, state: 'Seattle' },
+ *   { name: { firstName: 'Jane', lastName: 'Doe' }, state: 'London' },
+ * ]
+ *
+ * const { search, reset, loading } = lazySearch(people, ['name.firstName', 'state'])
+ * const results = search('ess')
+ * // results: [{ name: { firstName: 'Jesse', lastName: 'Bowen' }, state: 'Seattle' }]
+ *
+ * @example
+ * // Primitive array — keys not needed
+ * const { search } = lazySearch(['apple', 'banana', 'cherry'])
+ * search('an') // ['banana']
+ */
+export function lazySearch<T>(data: T[], keys?: string[], modelKey?: string): LazySearchResult<T> {
+  const result: LazySearchResult<T> = {
+    search: () => [],
+    reset: () => {},
+    loading: true,
+  }
+
+  if (!Array.isArray(data) || data.length === 0) {
+    result.loading = false
+    return result
+  }
+
+  // Build (or retrieve) the index
+  const dataIndex = getOrBuildIndex(data, modelKey)
+  result.loading = false
+
+  const isPrimitive = data.length > 0 && (typeof data[0] !== 'object' || data[0] === null)
+
+  // Reset function
+  result.reset = () => {
+    if (modelKey) {
+      resetSearchIndex(modelKey)
+    }
+  }
+
+  // Search function — fast substring search across specified keys
+  result.search = (query: string): T[] => {
+    if (!query || typeof query !== 'string') return [...data]
+
+    const needle = query.toLowerCase()
+
+    // Primitive array — direct substring match
+    if (isPrimitive) {
+      const matchedIndices = evaluatePrimitiveQuery(data, query, dataIndex)
+      return Array.from(matchedIndices)
+        .sort((a, b) => a - b)
+        .map((i) => data[i])
+    }
+
+    // Object array — search across specified keys (OR across keys)
+    const searchKeys = keys && keys.length > 0 ? keys : Array.from(dataIndex.fields.keys())
+
+    const matchedIndices = new Set<number>()
+
+    for (const key of searchKeys) {
+      const fieldIdx = dataIndex.fields.get(key)
+
+      if (fieldIdx) {
+        // Use inverted index for fast substring match
+        for (const [text, indices] of fieldIdx.inverted) {
+          if (text.includes(needle)) {
+            for (const idx of indices) matchedIndices.add(idx)
+          }
+        }
+      } else {
+        // Fallback: full scan for this key
+        for (let i = 0; i < data.length; i++) {
+          const item = data[i] as Record<string, any>
+          if (!item || typeof item !== 'object') continue
+          const val = getNestedValue(item, key)
+          if (val === undefined || val === null) continue
+          if (typeof val === 'string' && val.toLowerCase().includes(needle)) {
+            matchedIndices.add(i)
+          } else if (Array.isArray(val)) {
+            if (val.some((v) => typeof v === 'string' && v.toLowerCase().includes(needle))) {
+              matchedIndices.add(i)
+            }
+          }
+        }
+      }
+    }
+
+    return Array.from(matchedIndices)
+      .sort((a, b) => a - b)
+      .map((i) => data[i])
+  }
+
+  return result
 }
