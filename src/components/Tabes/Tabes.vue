@@ -87,7 +87,7 @@ const containerClasses = computed(() => {
   const base = 'inline-flex rounded-lg relative isolate'
 
   const variantStyles: Record<TabesVariant, string> = {
-    surface: 'bg-secondary p-1',
+    surface: 'bg-secondary/80 p-1',
     primary: 'bg-secondary p-1',
     secondary: 'bg-secondary p-1',
     danger: 'bg-danger/10 p-1',
