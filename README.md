@@ -254,5 +254,6 @@ The system is divided into two groups:
 # Complete reference for AI agents and developers:
 
 - [llms.txt](https://github.com/safdar-azeem/vlite3/blob/main/llms.txt).
+- [llms-theming.txt](https://github.com/safdar-azeem/vlite3/blob/main/llms-theming.txt).
 - [llms-full.txt](https://github.com/safdar-azeem/vlite3/blob/main/llms-full.txt).
 - [llms-advance.txt](https://github.com/safdar-azeem/vlite3/blob/main/llms-advance.txt).
