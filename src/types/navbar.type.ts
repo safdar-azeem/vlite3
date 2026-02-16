@@ -29,6 +29,7 @@ export interface NavbarProps {
   mobileBreakpoint?: 'sm' | 'md' | 'lg' | 'xl'
   logoClass?: string
   contentClass?: string
+  menuClass?: string
   rightClass?: string
   mobileTriggerClass?: string
   mobileMenuVariant?: 'sidepanel' | 'dropdown'
