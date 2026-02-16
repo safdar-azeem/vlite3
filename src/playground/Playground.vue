@@ -119,7 +119,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       <template #right>
         <div class="flex items-center justify-between gap-2">
           <ThemeToggle />
-          <p class="text-xs text-muted-foreground">v0.1.5</p>
+          <p class="text-xs text-muted-foreground">v0.2.2</p>
         </div>
       </template>
     </Navbar>
