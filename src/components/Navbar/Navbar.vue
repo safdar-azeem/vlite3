@@ -21,6 +21,7 @@ const props = withDefaults(defineProps<NavbarProps>(), {
   mobileBreakpoint: 'md',
   logoClass: '',
   contentClass: '',
+  menuClass: '',
   rightClass: '',
   mobileTriggerClass: '',
   mobileMenuVariant: 'sidepanel',
@@ -350,7 +351,7 @@ watch(isDesktop, (val) => {
         v-if="isMobileMenuOpen"
         ref="mobileMenuRef"
         class="absolute top-[calc(100%_+_1px)] left-0 w-full bg-body border border-border/50 shadow-xl z-50 flex flex-col transition-all duration-300 origin-top overflow-hidden will-change-transform"
-        :class="props.contentClass">
+        :class="props.menuClass">
         <div class="flex flex-col max-h-[80vh] overflow-y-auto">
           <slot name="mobile-menu">
             <div class="space-y-1 p-2">
