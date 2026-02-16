@@ -260,6 +260,7 @@ onBeforeUnmount(() => {
       ref="containerRef"
       tabindex="0"
       role="menu"
+      v-if="props?.options.length > 0 || $slots.menu"
       :class="[
         'w-full p-1 space-y-0.5 overflow-y-auto overflow-x-hidden focus:outline-none flex-1',
         props.class,
@@ -343,11 +344,9 @@ onBeforeUnmount(() => {
             :selectable="selectable"
             @click="handleSelect(option, index)"
             @mouseenter="onMouseEnterItem(index)">
-            
             <template #default="slotProps" v-if="$slots.item">
               <slot name="item" v-bind="slotProps" />
             </template>
-            
           </DropdownItem>
         </template>
       </template>
@@ -357,7 +356,7 @@ onBeforeUnmount(() => {
       </div>
 
       <slot name="menu" />
-      </div>
+    </div>
 
     <div v-if="$slots.footer" class="shrink-0 border-t mt-1 pt-1">
       <slot name="footer" />
