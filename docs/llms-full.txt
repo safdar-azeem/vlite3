@@ -2452,7 +2452,7 @@ onKeyStroke('cmd+k', (e) => openSearch()) // Auto-maps cmd↔ctrl cross-platform
 
 # Utility Functions
 
-**Import:** `import { debounce, throttle, deepMerge, getUniqueId, downloadFile, isAppleDevice, isEmpty, removeExtraProperties, flattenArray, capitalize, camelCase, slugify, randomNumber, truncate, formatCurrency, delay } from 'vlite3'`
+**Import:** `import { debounce, throttle, deepMerge, getUniqueId, downloadFile, isAppleDevice, isEmpty, removeExtraProperties, flattenArray, capitalize, camelCase, slugify, randomNumber, truncate, formatCurrency, delay, copyToClipboard } from 'vlite3'`
 
 ### `debounce(fn, delay)`
 
@@ -2596,5 +2596,14 @@ while (polling) {
   const data = await fetchData()
   await delay(5000)
 }
+```
+
+### `copyToClipboard(text)`
+
+Copies text to the system clipboard. Uses the modern `navigator.clipboard` API with a `document.execCommand('copy')` fallback. Returns a Promise resolving to `true` on success.
+
+```ts
+const ok = await copyToClipboard('Hello!')
+if (ok) showToast('Copied!')
 ```
 
