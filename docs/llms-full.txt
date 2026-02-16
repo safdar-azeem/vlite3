@@ -3,7 +3,7 @@
 > Complete AI-agent & developer reference for **vlite3** — a Vue 3 UI component library built with Tailwind CSS v4.
 
 - **Package:** `vlite3` (npm)
-- **Version:** 0.2.1
+- **Version:** 0.2.2
 - **License:** MIT
 - **Author:** safdar-azeem
 - **Repository:** https://github.com/safdar-azeem/vlite3
