@@ -43,10 +43,15 @@ export { default as Timeline } from './components/Timeline.vue'
 export { default as ToastNotification } from './components/ToastNotification.vue'
 export { default as Tooltip } from './components/Tooltip.vue'
 export * from './components/Workbook'
+export { default as GoogleLogin } from './components/GoogleLogin.vue'
+export * from './components/ProgressBar'
+export * from './components/Spinner'
 
 export * from './composables/useNotifications'
 export * from './composables/useTheme'
 export * from './composables/useKeyStroke'
+
+export * from './directives/vScrollReveal'
 
 export { createVLite, useVLiteConfig } from './core'
 
