@@ -34,6 +34,7 @@ import DropdownDemo from '../playground/demos/DropdownDemo.vue'
 import TooltipDemo from '../playground/demos/TooltipDemo.vue'
 import ToastDemo from '../playground/demos/ToastDemo.vue'
 import SpinnerDemo from '../playground/demos/SpinnerDemo.vue'
+import ScrollRevealDemo from '../playground/demos/ScrollRevealDemo.vue'
 
 // Navigation / Data
 import AccordionDemo from '../playground/demos/AccordionDemo.vue'
@@ -95,6 +96,7 @@ const routes = [
       { path: 'tooltip', component: TooltipDemo },
       { path: 'toast', component: ToastDemo },
       { path: 'spinner', component: SpinnerDemo },
+      { path: 'scroll-reveal', component: ScrollRevealDemo },
 
       // Navigation / Data
       { path: 'accordion', component: AccordionDemo },
