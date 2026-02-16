@@ -127,6 +127,7 @@
 .dark .tooltip-container,
 .bg-card,
 .theme-section,
+.light,
 :root {
 
   --color-white: #ffffff;
@@ -193,11 +194,11 @@
   --color-background: var(--color-body);
   --color-foreground: var(--color-gray-900);
 
-  --color-border: color-mix(in oklab, var(--color-mixture-1) 90%, var(--color-mixture-2));
-  --color-input: var(--color-border);
+  --color-border: color-mix(in oklab, var(--color-mixture-1) 92%, var(--color-mixture-2));
+  --color-input: color-mix(in oklab, var(--color-mixture-1) 90%, var(--color-mixture-2));
 
 
-  --color-secondary: color-mix(in oklab, var(--color-mixture-1) 95.5%, var(--color-mixture-2));
+  --color-secondary: color-mix(in oklab, var(--color-mixture-1) 94.8%, var(--color-mixture-2));
   --color-secondary-foreground: var(--color-foreground);
 
   --color-muted-light: var(--color-gray-50);
@@ -261,7 +262,7 @@
 
   /* Variants (vlite3 custom) */
   --color-primary-light: #212121;
-  --color-primary: #fafafa;
+  --color-primary: #E4E6EA;
   --color-primary-dark: #d4d4d8;
   --color-primary-foreground: #18181b;
   --color-primary-fg: #18181b;
