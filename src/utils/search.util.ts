@@ -105,7 +105,88 @@ export function resetSearchIndex(modelKey?: string): void {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// SECTION 4 — Index Builder
+// SECTION 4 — Nested Object Helpers
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Resolves a dot-notation path (e.g., 'name.firstName') on an object.
+ * Returns `undefined` if any segment is missing.
+ */
+function getNestedValue(obj: any, path: string): any {
+  if (!path.includes('.')) return obj?.[path]
+  const segments = path.split('.')
+  let current = obj
+  for (const seg of segments) {
+    if (current === null || current === undefined || typeof current !== 'object') return undefined
+    current = current[seg]
+  }
+  return current
+}
+
+/**
+ * Recursively collects all leaf-level dot-notation paths from an object.
+ * E.g. `{ name: { first: 'A', last: 'B' }, age: 5 }` → `['name.first', 'name.last', 'age']`
+ * Stops recursing into arrays, dates, regexps, and other non-plain objects.
+ */
+function collectPaths(obj: any, prefix: string = ''): string[] {
+  const paths: string[] = []
+  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return paths
+  for (const key of Object.keys(obj)) {
+    const fullPath = prefix ? `${prefix}.${key}` : key
+    const val = obj[key]
+    if (
+      val !== null &&
+      val !== undefined &&
+      typeof val === 'object' &&
+      !Array.isArray(val) &&
+      !(val instanceof Date) &&
+      !(val instanceof RegExp)
+    ) {
+      // Recurse into plain nested objects
+      const nested = collectPaths(val, fullPath)
+      if (nested.length > 0) {
+        paths.push(...nested)
+      } else {
+        paths.push(fullPath)
+      }
+      // Also index the parent path itself (for top-level key access)
+      paths.push(fullPath)
+    } else {
+      paths.push(fullPath)
+    }
+  }
+  return paths
+}
+
+/**
+ * Flattens a nested query object into dot-notation keys.
+ * E.g. `{ name: { firstName: 'Jesse' } }` → `{ 'name.firstName': 'Jesse' }`
+ * Operator objects like `{ $gte: 10 }` are NOT flattened — they remain as values.
+ */
+function flattenQuery(query: Record<string, any>, prefix: string = ''): Record<string, any> {
+  const result: Record<string, any> = {}
+  for (const key of Object.keys(query)) {
+    const fullKey = prefix ? `${prefix}.${key}` : key
+    const val = query[key]
+    if (
+      val !== null &&
+      val !== undefined &&
+      typeof val === 'object' &&
+      !Array.isArray(val) &&
+      !(val instanceof RegExp) &&
+      !isOperatorObject(val)
+    ) {
+      // Recurse into nested plain objects (not operator objects)
+      Object.assign(result, flattenQuery(val, fullKey))
+    } else {
+      result[fullKey] = val
+    }
+  }
+  return result
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SECTION 5 — Index Builder
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
@@ -119,7 +200,56 @@ function isCacheValid<T>(cached: DataIndex<T>, data: T[]): boolean {
 }
 
 /**
+ * Indexes a single value at a given dot-path for a row index.
+ */
+function indexValue(fieldIdx: FieldIndex, val: any, rowIndex: number): { isNum: boolean } {
+  let isNum = false
+  if (val === undefined || val === null) return { isNum }
+
+  // ── Hash index (exact match) ──
+  const hashKey = Array.isArray(val) ? JSON.stringify(val) : String(val)
+  const hashSet = fieldIdx.hash.get(hashKey)
+  if (hashSet) {
+    hashSet.add(rowIndex)
+  } else {
+    fieldIdx.hash.set(hashKey, new Set([rowIndex]))
+  }
+
+  // ── Inverted text index ──
+  if (typeof val === 'string') {
+    const lower = val.toLowerCase()
+    const invSet = fieldIdx.inverted.get(lower)
+    if (invSet) {
+      invSet.add(rowIndex)
+    } else {
+      fieldIdx.inverted.set(lower, new Set([rowIndex]))
+    }
+  } else if (Array.isArray(val)) {
+    for (const elem of val) {
+      if (typeof elem === 'string') {
+        const lower = elem.toLowerCase()
+        const invSet = fieldIdx.inverted.get(lower)
+        if (invSet) {
+          invSet.add(rowIndex)
+        } else {
+          fieldIdx.inverted.set(lower, new Set([rowIndex]))
+        }
+      }
+    }
+  }
+
+  // ── Numeric sorted index ──
+  if (typeof val === 'number' && Number.isFinite(val)) {
+    isNum = true
+    fieldIdx.sorted.push({ value: val, idx: rowIndex })
+  }
+
+  return { isNum }
+}
+
+/**
  * Builds (or retrieves from cache) the full index for a dataset.
+ * Indexes both top-level AND nested paths (dot-notation).
  */
 function getOrBuildIndex<T>(data: T[], modelKey?: string): DataIndex<T> {
   // Check cache
@@ -147,9 +277,6 @@ function getOrBuildIndex<T>(data: T[], modelKey?: string): DataIndex<T> {
     const inv = new Map<string, number[]>()
     for (let i = 0; i < data.length; i++) {
       const val = String(data[i]).toLowerCase()
-      // Index every substring of length 1..val.length (capped for perf)
-      // For efficiency, we store the full lowercase string and do substring matching at query time
-      // But we also tokenize on natural boundaries for fast lookups
       const existing = inv.get(val)
       if (existing) {
         existing.push(i)
@@ -159,20 +286,20 @@ function getOrBuildIndex<T>(data: T[], modelKey?: string): DataIndex<T> {
     }
     index.primitiveInverted = inv
   } else {
-    // ── Build field-level indexes for object arrays ──
-    const sampleKeys = new Set<string>()
-    // Collect all field names from first 100 items for schema inference
+    // ── Collect ALL dot-notation paths from first 100 items ──
+    const allPaths = new Set<string>()
     const sampleSize = Math.min(data.length, 100)
     for (let i = 0; i < sampleSize; i++) {
       const item = data[i] as Record<string, any>
       if (item && typeof item === 'object') {
-        for (const key of Object.keys(item)) {
-          sampleKeys.add(key)
+        for (const path of collectPaths(item)) {
+          allPaths.add(path)
         }
       }
     }
 
-    for (const field of sampleKeys) {
+    // ── Build indexes for every path (including nested dot-paths) ──
+    for (const fieldPath of allPaths) {
       const fieldIdx: FieldIndex = {
         hash: new Map(),
         inverted: new Map(),
@@ -186,47 +313,9 @@ function getOrBuildIndex<T>(data: T[], modelKey?: string): DataIndex<T> {
         const item = data[i] as Record<string, any>
         if (!item || typeof item !== 'object') continue
 
-        const val = item[field]
-        if (val === undefined || val === null) continue
-
-        // ── Hash index (exact match) ──
-        const hashKey = Array.isArray(val) ? JSON.stringify(val) : String(val)
-        const hashSet = fieldIdx.hash.get(hashKey)
-        if (hashSet) {
-          hashSet.add(i)
-        } else {
-          fieldIdx.hash.set(hashKey, new Set([i]))
-        }
-
-        // ── Inverted text index ──
-        if (typeof val === 'string') {
-          const lower = val.toLowerCase()
-          const invSet = fieldIdx.inverted.get(lower)
-          if (invSet) {
-            invSet.add(i)
-          } else {
-            fieldIdx.inverted.set(lower, new Set([i]))
-          }
-        } else if (Array.isArray(val)) {
-          // Index each element of array fields
-          for (const elem of val) {
-            if (typeof elem === 'string') {
-              const lower = elem.toLowerCase()
-              const invSet = fieldIdx.inverted.get(lower)
-              if (invSet) {
-                invSet.add(i)
-              } else {
-                fieldIdx.inverted.set(lower, new Set([i]))
-              }
-            }
-          }
-        }
-
-        // ── Numeric sorted index ──
-        if (typeof val === 'number' && Number.isFinite(val)) {
-          hasNumeric = true
-          fieldIdx.sorted.push({ value: val, idx: i })
-        }
+        const val = getNestedValue(item, fieldPath)
+        const { isNum } = indexValue(fieldIdx, val, i)
+        if (isNum) hasNumeric = true
       }
 
       if (hasNumeric) {
@@ -234,7 +323,7 @@ function getOrBuildIndex<T>(data: T[], modelKey?: string): DataIndex<T> {
         fieldIdx.isNumeric = true
       }
 
-      index.fields.set(field, fieldIdx)
+      index.fields.set(fieldPath, fieldIdx)
     }
   }
 
@@ -514,7 +603,10 @@ function evaluateQueryObject<T>(
   query: QueryObject<T>,
   dataIndex: DataIndex<T>
 ): Set<number> {
-  const fields = Object.keys(query) as (keyof T & string)[]
+  // Flatten nested query objects to dot-notation
+  // e.g. { name: { firstName: 'Jesse' } } → { 'name.firstName': 'Jesse' }
+  const flatQuery = flattenQuery(query as Record<string, any>)
+  const fields = Object.keys(flatQuery)
 
   if (fields.length === 0) {
     // Empty query matches everything
@@ -526,8 +618,8 @@ function evaluateQueryObject<T>(
   let resultSet: Set<number> | null = null
 
   for (const field of fields) {
-    const queryValue = (query as any)[field]
-    const fieldIdx = dataIndex.fields.get(field as string)
+    const queryValue = flatQuery[field]
+    const fieldIdx = dataIndex.fields.get(field)
 
     let fieldMatches: Set<number>
 
@@ -544,7 +636,7 @@ function evaluateQueryObject<T>(
         for (const i of candidates) {
           const item = data[i] as Record<string, any>
           if (!item || typeof item !== 'object') continue
-          const itemValue = item[field as string]
+          const itemValue = getNestedValue(item, field)
           if (isOperatorObject(queryValue)) {
             if (matchesOperators(itemValue, queryValue)) fieldMatches.add(i)
           } else {
@@ -572,7 +664,7 @@ function evaluateQueryObject<T>(
       for (const i of candidates) {
         const item = data[i] as Record<string, any>
         if (!item || typeof item !== 'object') continue
-        const itemValue = item[field as string]
+        const itemValue = getNestedValue(item, field)
         if (isOperatorObject(queryValue)) {
           if (matchesOperators(itemValue, queryValue)) fieldMatches.add(i)
         } else {
