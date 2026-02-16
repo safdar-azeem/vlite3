@@ -260,5 +260,45 @@ const menuItems: SidebarMenuItemSchema[] = [
         </Navbar>
       </div>
     </DemoSection>
+
+    <DemoSection title="Mobile Menu: Dropdown Variant" :code="sourceCode">
+      <p class="text-sm text-gray-500">
+        Using <code>mobileMenuVariant="dropdown"</code> to show a full-width dropdown instead of a
+        side panel on mobile. Resize window to see the effect.
+      </p>
+      <div
+        class="border rounded-lg overflow-hidden bg-gray-50 flex flex-col h-[400px] relative z-0">
+        <Navbar
+          variant="header"
+          mobile-menu-variant="dropdown"
+          mobileBreakpoint="xl"
+          class="bg-white border-b w-full relative z-20">
+          <template #logo>
+            <div class="font-bold text-xl">Dropdown Menu</div>
+          </template>
+          <template #left>
+            <NavbarGroup>
+              <NavbarItem label="Products" />
+              <NavbarItem label="Solutions" />
+              <NavbarItem label="Resources" />
+            </NavbarGroup>
+          </template>
+          <template #right>
+            <Button size="sm">Sign In</Button>
+          </template>
+          <template #mobile-menu>
+            <div class="flex flex-col p-2 space-y-2">
+              <NavbarItem label="Products" />
+              <NavbarItem label="Solutions" />
+              <NavbarItem label="Resources" />
+            </div>
+          </template>
+        </Navbar>
+
+        <div class="p-8 text-gray-400 bg-gray-50 flex-1 z-10 relative">
+          Page Content under the navbar. The dropdown should overlay this.
+        </div>
+      </div>
+    </DemoSection>
   </div>
 </template>
