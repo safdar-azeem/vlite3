@@ -112,7 +112,7 @@ onUnmounted(() => {
             v-if="title"
             class="flex-none flex flex-col space-y-1.5 pb-0 border-b border-border/60">
             <div
-              class="flex items-center justify-between bg-muted-light py-1 px-4 rounded-t-md"
+              class="flex items-center justify-between py-1 px-4 rounded-t-md"
               :class="headerClass">
               <h3 class="text-lg font-semibold leading-none tracking-tight">
                 {{ title }}
