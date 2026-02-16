@@ -59,8 +59,24 @@ const zeroPercentage = computed(() => {
   return ((0 - props.min) / range.value) * 100
 })
 
+const thumbWidth = computed(() => {
+  switch (props.size) {
+    case 'xs':
+      return 10
+    case 'sm':
+      return 12
+    case 'lg':
+      return 16
+    case 'md':
+    default:
+      return 14
+  }
+})
+
 const getContainedPos = (p: number) => {
-  return `calc(${p}% + (8px - ${p * 0.16}px))`
+  const offset = thumbWidth.value / 2
+  const width = thumbWidth.value
+  return `calc(${p}% + (${offset}px - ${width * (p / 100)}px))`
 }
 
 const trackStyle = computed(() => {
@@ -196,7 +212,7 @@ const sizeClasses = computed(() => {
         :style="trackStyle"></div>
 
       <div
-        class="absolute top-1/2 bg-background border border-border shadow-sm rounded-full transform -translate-y-1/2 -translate-x-1/2 pointer-events-none transition-transform duration-100 ease-out z-10"
+        class="absolute top-1/2 bg-background -ml-px border border-border shadow-sm rounded-full transform -translate-y-1/2 -translate-x-1/2 pointer-events-none transition-transform duration-100 ease-out z-10"
         :class="[
           {
             'border-primary shadow-md scale-110': isDragging,
