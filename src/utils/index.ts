@@ -1,3 +1,4 @@
 export * from './object'
 export * from './functions'
 export * from './search.util'
+export * from './env'
