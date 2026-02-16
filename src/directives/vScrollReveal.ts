@@ -14,7 +14,6 @@ const defaultOptions: scrollReveal.ScrollRevealObjectOptions = {
   opacity: 0,
   scale: 1,
   cleanup: false,
-  desktop: true,
   mobile: true,
   reset: false, // true = animations repeat on scroll up/down
   useDelay: 'always',
@@ -54,20 +53,21 @@ export const vScrollReveal: Directive = {
     let sr = srInstances.get(scrollContainer)
     if (!sr) {
       sr = ScrollReveal({
-        // If container is window/html, ScrollReveal expects 'document.documentElement' usually, 
-        // but 'container' option defaults to window.document.documentElement. 
+        // If container is window/html, ScrollReveal expects 'document.documentElement' usually,
+        // but 'container' option defaults to window.document.documentElement.
         // If it's a specific div, we pass that div.
-        container: scrollContainer === window ? document.documentElement : (scrollContainer as HTMLElement)
+        container:
+          scrollContainer === window ? document.documentElement : (scrollContainer as HTMLElement),
       })
       srInstances.set(scrollContainer, sr)
     }
 
     // 3. Reveal the element
     const options = Object.assign({}, defaultOptions, binding.value)
-    
+
     // Add a marker class
     el.classList.add('v-scroll-reveal')
-    
+
     sr.reveal(el, options)
   },
 
@@ -75,11 +75,11 @@ export const vScrollReveal: Directive = {
     if (typeof window === 'undefined') return
     // Only update if options changed deeply
     if (JSON.stringify(binding.value) !== JSON.stringify(binding.oldValue)) {
-       const scrollContainer = getScrollParent(el.parentElement)
-       const sr = srInstances.get(scrollContainer)
-       if (sr) {
-         sr.reveal(el, Object.assign({}, defaultOptions, binding.value))
-       }
+      const scrollContainer = getScrollParent(el.parentElement)
+      const sr = srInstances.get(scrollContainer)
+      if (sr) {
+        sr.reveal(el, Object.assign({}, defaultOptions, binding.value))
+      }
     }
   },
 }
