@@ -10,7 +10,7 @@ const props = withDefaults(defineProps<NavbarProps>(), {
   variant: 'header',
   position: 'sticky', // default to sticky for modern feels
   centerPosition: 'center',
-  glass: true,
+  glass: false,
   border: true,
   floating: false,
   height: 'h-16',
