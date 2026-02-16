@@ -38,6 +38,7 @@ Key features:
 - **Model-key caching** — reuse indexes across calls (Mongoose-style model names)
 - **10 query operators** — `$eq`, `$ne`, `$gt`, `$gte`, `$lt`, `$lte`, `$in`, `$nin`, `$regex`, `$exists`
 - **AND / OR semantics** — multiple rest-params = AND; array of queries = OR
+- **Nested object search** — query nested fields via dot-notation or nested objects
 - **Fully typed** — generic TypeScript with autocomplete on field names
 
 ---
@@ -152,6 +153,23 @@ search(users, [{ name: 'John' }, { age: 25 }], 'User')
 - **Number/boolean values** → **exact** match
 - **Operator objects** (`{ $gte: 10 }`) → evaluated per operator rules
 
+### 6. Nested Object Queries
+
+You can query nested object fields in two equivalent ways:
+
+**Nested object syntax (auto-flattened):**
+```ts
+search(people, { name: { firstName: 'Jesse' } })
+```
+
+**Dot-notation syntax:**
+```ts
+search(people, { 'name.firstName': 'Jesse' })
+```
+
+Both are equivalent. Nested queries are automatically flattened to dot-notation
+internally, and all nested paths are indexed for fast lookups.
+
 ---
 
 ## Operators
@@ -226,7 +244,7 @@ Data changes:  reset() or resetSearchIndex('Product')  → clears cache
 Next call:     search(newData, query, 'Product')  → rebuilds index
 ```
 
-The cache uses `WeakRef` to check if the data array reference has changed.
+The cache checks if the same data array reference is passed.
 If the same data array reference is passed, the cached index is reused.
 If a new array is passed, the index is rebuilt automatically.
 
@@ -381,6 +399,28 @@ const { results } = search(data, { email: { $exists: true } })
 // Only items that have a non-null/undefined email field
 ```
 
+### Example 11 — Nested Object Search
+
+```ts
+const people = [
+  { name: { firstName: 'Jesse', lastName: 'Bowen' }, state: 'Seattle' },
+  { name: { firstName: 'Jane', lastName: 'Doe' }, state: 'London' },
+  { name: { firstName: 'Bob', lastName: 'Smith' }, state: 'Paris' },
+]
+
+// Nested object syntax
+const { results } = search(people, { name: { firstName: 'Jesse' } }, 'Person')
+// results: [{ name: { firstName: 'Jesse', lastName: 'Bowen' }, state: 'Seattle' }]
+
+// Dot-notation syntax (equivalent)
+const { results: r2 } = search(people, { 'name.lastName': 'Doe' }, 'Person')
+// results: [{ name: { firstName: 'Jane', lastName: 'Doe' }, state: 'London' }]
+
+// With operators on nested fields
+const { results: r3 } = search(people, { name: { firstName: { $in: 'j' } } }, 'Person')
+// results: [Jesse, Jane]
+```
+
 ---
 
 ## TypeScript Types
@@ -461,3 +501,7 @@ interface SearchResult<T> {
 
 10. The search **preserves original order** — results appear in the same
     order as they do in the source array.
+
+11. **Nested objects** are automatically indexed via dot-notation paths.
+    Query with `{ name: { firstName: 'X' } }` or `{ 'name.firstName': 'X' }`.
+    Both syntaxes are equivalent and fully indexed.
