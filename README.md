@@ -62,7 +62,7 @@ In your `main.ts` or `main.js`, import `createVLite` and `vScrollReveal` and reg
 ```typescript
 import { createApp } from 'vue'
 import App from './App.vue'
-import { env, createVLite, vScrollReveal, GoogleSignInPlugin } from 'vlite3'
+import { createVLite, vScrollReveal, GoogleSignInPlugin } from 'vlite3'
 
 const app = createApp(App)
 
@@ -378,4 +378,3 @@ Follow these rules strictly to ensure visual consistency and predictable styling
 - [4-forms.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/4-forms.md)
 - [5-utility.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/5-utility.md)
 - [6-advance-components.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/6-advance-components.md)
-- [7-search-util.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/7-search-util.md)
