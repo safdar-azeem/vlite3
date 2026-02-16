@@ -57,14 +57,17 @@ vlite3 features a plugin-based architecture that allows you to register global s
 
 ### Setting up the Plugin
 
-In your `main.ts` or `main.js`, import `createVLite` and register your services:
+In your `main.ts` or `main.js`, import `createVLite` and `vScrollReveal` and register your services:
 
 ```typescript
 import { createApp } from 'vue'
 import App from './App.vue'
-import { createVLite } from 'vlite3'
+import { createVLite, vScrollReveal } from 'vlite3'
 
 const app = createApp(App)
+
+// Register global directives
+app.directive('scroll-reveal', vScrollReveal)
 
 // Initialize VLite with custom configuration
 const vlite = createVLite({
