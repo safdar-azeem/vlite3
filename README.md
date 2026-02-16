@@ -62,12 +62,16 @@ In your `main.ts` or `main.js`, import `createVLite` and `vScrollReveal` and reg
 ```typescript
 import { createApp } from 'vue'
 import App from './App.vue'
-import { createVLite, vScrollReveal } from 'vlite3'
+import { env, createVLite, vScrollReveal, GoogleSignInPlugin } from 'vlite3'
 
 const app = createApp(App)
 
 // Register global directives
 app.directive('scroll-reveal', vScrollReveal)
+
+app.use(GoogleSignInPlugin, {
+  clientId: env.VITE_GOOGLE_CLIENT_ID,
+})
 
 // Initialize VLite with custom configuration
 const vlite = createVLite({
