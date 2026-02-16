@@ -29,13 +29,13 @@ const handleError = (error: any) => {
     <DemoSection
       title="Default Button"
       code="<GoogleLogin
-  clientId='YOUR_CLIENT_ID'
-  @success='handleSuccess'
-  @error='handleError'
+ clientId='YOUR_CLIENT_ID'
+ @success='handleSuccess'
+ @error='handleError'
 />">
       <div class="max-w-sm">
         <GoogleLogin
-          :clientId="env.VITE_GOOGLE_CLIENT_ID"
+          clientId="766388665578-j7egtr3luopctq39fpnuuo9cm7sc9g1s.apps.googleusercontent.com"
           @success="handleSuccess"
           @error="handleError" />
       </div>
@@ -43,23 +43,23 @@ const handleError = (error: any) => {
 
     <DemoSection
       title="Custom Slot Override"
-      code="<GoogleLogin 
-  clientId='YOUR_CLIENT_ID' 
-  @success='handleSuccess' 
-  @error='handleError'
+      code="<GoogleLogin
+ clientId='YOUR_CLIENT_ID'
+ @success='handleSuccess'
+ @error='handleError'
 >
-  <template #default='{ login, loading, disabled }'>
-    <Button
-      variant='primary'
-      :loading='loading'
-      :disabled='disabled'
-      @click='login'
-      icon='lucide:log-in'
-      class='w-full'
-    >
-      Custom Google Sign-in
-    </Button>
-  </template>
+ <template #default='{ login, loading, disabled }'>
+  <Button
+   variant='primary'
+   :loading='loading'
+   :disabled='disabled'
+   @click='login'
+   icon='lucide:log-in'
+   class='w-full'
+  >
+   Custom Google Sign-in
+  </Button>
+ </template>
 </GoogleLogin>">
       <div class="max-w-sm">
         <GoogleLogin
