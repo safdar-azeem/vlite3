@@ -13,7 +13,7 @@ const time12hValue = ref<string>('22:05')
 const time24hValue = ref<string>('22:05')
 const dateTimeValue = ref<Date | null>(today)
 const interval15mValue = ref<Date | null>(today)
-const interval30mValue = ref<Date | null>(today)
+const interval30mValue = ref<string>('10:30')
 const restrictedValue = ref<Date | null>(today)
 
 const minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate())
