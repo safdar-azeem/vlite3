@@ -138,6 +138,59 @@ To customize the theme, simply override the CSS variables in your main CSS file:
 }
 ```
 
+## 8. Typography Scale System
+
+The system is divided into two groups:
+
+- Compact scale (prefixed with `--text--fs-*`) for smaller text
+- Progressive scale (prefixed with `--text-fs-*`) for base and larger text
+
+### Compact Text Scale
+
+```css
+--text--fs-1: 0.95em;
+--text--fs-2: 0.8em;
+--text--fs-3: 0.75em;
+--text--fs-4: 0.7em;
+--text--fs-5: 0.65em;
+--text--fs-6: 0.6em;
+--text--fs-7: 0.55em;
+--text--fs-8: 0.5em;
+--text-fs-0.5: 1.05em;
+--text-fs-1: 1.1em;
+--text-fs-1.5: 1.14em;
+--text-fs-2: 1.18em;
+--text-fs-2.5: 1.22em;
+--text-fs-3: 1.26em;
+--text-fs-3.5: 1.3em;
+--text-fs-4: 1.34em;
+--text-fs-4.5: 1.38em;
+--text-fs-5: 1.42em;
+--text-fs-5.5: 1.46em;
+--text-fs-6: 1.5em;
+--text-fs-6.5: 1.54em;
+--text-fs-7: 1.58em;
+--text-fs-7.5: 1.62em;
+--text-fs-8: 1.68em;
+--text-fs-8.5: 1.72em;
+--text-fs-9: 1.8em;
+--text-fs-9.5: 2em;
+--text-fs-10: 2.5em;
+
+--text-xs: 0.75rem --text-sm: 0.875rem --text-base: 1rem --text-lg: 1.125rem --text-xl: 1.25rem
+  --text-2xl: 1.5rem --text-3xl: 1.875rem --text-4xl: 2.25rem --text-5xl: 3rem --text-6xl: 4rem;
+```
+
+---
+
+```html
+<p class="text-fs-2">Body text</p>
+
+<span class="-text-fs-4 text-muted"> Caption text </span>
+
+<h1 class="text-xl font-semibold">Page Title</h1>
+```
+
 ## ✅ Components
 
 - **Button**
