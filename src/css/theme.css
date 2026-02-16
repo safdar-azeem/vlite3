@@ -219,6 +219,13 @@
   --date-picker-radius: var(--radius) !important;
 }
 
+.light {
+  --color-white: #ffffff !important;
+  --color-mixture-1: #ffffff !important;
+  --color-mixture-2: #0c0c0c !important;
+  background-color: var(--color-white);
+}
+
 .dark {
   --color-white: #0b0b0b !important;
   --color-mixture-1: #0c0c0c !important;
