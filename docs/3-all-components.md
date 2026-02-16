@@ -665,18 +665,19 @@ export type TabesVariant =
 
 ### Props
 
-| Prop              | Type                | Default | Description                        |
-| :---------------- | :------------------ | :------ | :--------------------------------- |
-| `show`            | `boolean`           | `false` | Binding (`v-model:show`)           |
-| `title`           | `string`            | —       | Panel title                        |
-| `description`     | `string`            | —       | Helper text below title            |
-| `position`        | `SidePanelPosition` | `right` | Slide from `left` or `right`       |
-| `size`            | `SidePanelSize`     | `md`    | Width preset (`sm` to `full`)      |
-| `closeOutside`    | `boolean`           | `true`  | Close on backdrop click            |
-| `hideCloseButton` | `boolean`           | `false` | Hide the 'X' button                |
-| `backdrop`        | `boolean`           | `true`  | Show overlay                       |
-| `body`            | `Component`         | —       | Component for lazy loading content |
-| `bodyProps`       | `object`            | —       | Props for the body component       |
+| Prop                | Type                        | Default       | Description                        |
+| :------------------ | :-------------------------- | :------------ | :--------------------------------- |
+| `show`              | `boolean`                   | `false`       | Binding (`v-model:show`)           |
+| `title`             | `string`                    | —             | Panel title                        |
+| `description`       | `string`                    | —             | Helper text below title            |
+| `position`          | `SidePanelPosition`         | `right`       | Slide from `left` or `right`       |
+| `size`              | `SidePanelSize`             | `md`          | Width preset (`sm` to `full`)      |
+| `closeOutside`      | `boolean`                   | `true`        | Close on backdrop click            |
+| `hideCloseButton`   | `boolean`                   | `false`       | Hide the 'X' button                |
+| `mobileMenuVariant` | `'sidepanel' \| 'dropdown'` | `'sidepanel'` | Mobile menu style                  |
+| `backdrop`          | `boolean`                   | `true`        | Show overlay                       |
+| `body`              | `Component`                 | —             | Component for lazy loading content |
+| `bodyProps`         | `object`                    | —             | Props for the body component       |
 
 ### Types
 
@@ -719,6 +720,30 @@ type SidePanelSize = 'sm' | 'md' | 'lg' | 'xl' | 'full'
     <Button class="w-full" @click="close">Done</Button>
   </template>
 </SidePanel>
+```
+
+#### Mobile Menu Dropdown Variant
+
+```vue
+<Navbar variant="header" mobile-menu-variant="dropdown" mobileBreakpoint="xl">
+  <template #logo>Brand</template>
+  <template #left>
+    <Button variant="ghost">Home</Button>
+    <Button variant="ghost">About</Button>
+  </template>
+  <template #right>
+    <Button>Login</Button>
+  </template>
+
+  <!-- Custom mobile menu content -->
+  <template #mobile-menu>
+    <div class="flex flex-col p-2 space-y-2">
+      <NavbarItem label="Home" />
+      <NavbarItem label="About" />
+      <Button class="w-full">Login</Button>
+    </div>
+  </template>
+</Navbar>
 ```
 
 ---
