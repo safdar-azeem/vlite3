@@ -212,6 +212,10 @@
   --tooltip-border: color-mix(in oklab, var(--color-mixture-1) 93%, var(--color-mixture-2)) !important;
   --date-picker-border: var(--color-border) !important;
   --iconPicker-border: var(--color-border) !important;
+
+  --timer-picker-bg: var(--color-background) !important;
+  --date-picker-border: var(--color-border) !important;
+  --date-picker-radius: var(--radius) !important;
 }
 
 .dark {
