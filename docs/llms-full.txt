@@ -13,72 +13,6 @@
 
 ---
 
-## 🎨 Theming & Customization
-
-vlite3 uses a semantic theming system inspired by **shadcn/ui** and compatible with **Tailwind CSS v4**. All colors are defined as CSS variables, making it easy to customize the look and feel of your application including Dark Mode support.
-
-### Semantic Colors
-
-You can customize these colors in your CSS by overriding the variables in `:root` or `.dark` classes (if you are using a class-based dark mode switcher).
-
-| Variable                   | Class Name                    | Description             | Recommended Usage                                                           |
-| :------------------------- | :---------------------------- | :---------------------- | :-------------------------------------------------------------------------- |
-| `--background`             | `bg-background`               | Default page background | The main background color of your app.                                      |
-| `--foreground`             | `text-foreground`             | Default text color      | The primary text color for content.                                         |
-| `--card`                   | `bg-card`                     | Card background         | Little Gray Background for cards, containers, surfece, panels, and dialogs. |
-| `--primary`                | `bg-primary`                  | Primary brand color     | Used for main actions (buttons, active states).                             |
-| `--primary-foreground`     | `text-primary-foreground`     | Primary text color      | Text color for content on top of primary background.                        |
-| `--secondary`              | `bg-secondary`                | Secondary background    | Used for secondary actions or muted sections.                               |
-| `--secondary-foreground`   | `text-secondary-foreground`   | Secondary text color    | Text color for content on top of secondary background.                      |
-| `--muted`                  | `bg-muted`                    | Muted background        | Subtle backgrounds (e.g., table headers, disabled states).                  |
-| `--muted`                  | `text-muted`                  | Muted Text              | Secondary text, Unactive Link, description.                                 |
-| `--muted-foreground`       | `text-muted-foreground`       | Muted text color        | Secondary text, hints, placeholders.                                        |
-| `--accent`                 | `bg-accent`                   | Accent background       | Used for hover states, selection highlights.                                |
-| `--accent-foreground`      | `text-accent-foreground`      | Accent text color       | Text color on accent backgrounds.                                           |
-| `--destructive`            | `bg-destructive`              | Destructive color       | Used for error states and destructive actions.                              |
-| `--destructive-foreground` | `text-destructive-foreground` | Destructive text color  | Text color on destructive backgrounds.                                      |
-| `--border`                 | `border`                      | Default border color    | Borders for inputs, cards, and dividers.                                    |
-| `--input`                  | `border-input`                | Input border color      | Borders specifically for form inputs.                                       |
-| `--ring`                   | `ring-ring`                   | Focus ring color        | Outline color for focused elements.                                         |
-| `--radius`                 | `rounded`                     | Border radius           | Global border radius for components.                                        |
-
-### Extended Color Variants
-
-For more complex components, vlite3 provides extended variants for main semantic colors (`primary`, `danger`, `warning`, `info`, `success`). These are useful for building nuanced UIs with subtle backgrounds, hover states, and accessible text.
-
-| Base Color  | Variant Variables                                                                                       | Usage Description                                                                                                                                                                                           |
-| :---------- | :------------------------------------------------------------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Primary** | `--color-primary-light`<br>`--color-primary-dark`<br>`--color-primary-fg`<br>`--color-primary-fg-light` | **Light**: Subtle background (e.g., 10% opacity).<br>**Dark**: Hover state for the main color.<br>**Fg**: Text color on top of the _main_ color.<br>**Fg-Light**: Text color on top of the _light_ variant. |
-| **Danger**  | `--color-danger-light`<br>`--color-danger-dark`<br>`--color-danger-fg`<br>`--color-danger-fg-light`     | **Light**: Error backgrounds (alerts).<br>**Dark**: Hover state for destructive buttons.<br>**Fg**: Text on destructive buttons.<br>**Fg-Light**: Text on error alerts.                                     |
-| **Warning** | `--color-warning-light`<br>`--color-warning-dark`<br>`--color-warning-fg`<br>`--color-warning-fg-light` | **Light**: Warning backgrounds.<br>**Dark**: Active/Determined warning states.<br>**Fg**: Text on warning badges.<br>**Fg-Light**: Text on warning backgrounds.                                             |
-| **Success** | `--color-success-light`<br>`--color-success-dark`<br>`--color-success-fg`<br>`--color-success-fg-light` | **Light**: Success backgrounds (toasts).<br>**Dark**: Hover/Active success actions.<br>**Fg**: Text on success buttons.<br>**Fg-Light**: Text on success backgrounds.                                       |
-| **Info**    | `--color-info-light`<br>`--color-info-dark`<br>`--color-info-fg`<br>`--color-info-fg-light`             | **Light**: Info backgrounds.<br>**Dark**: Hover/Active info actions.<br>**Fg**: Text on info buttons.<br>**Fg-Light**: Text on info backgrounds.                                                            |
-
-**Example Usage:**
-
-```html
-<!-- A success badge with subtle background and matching text -->
-<div class="bg-success-light text-success-fg-light border border-success/20">
-  Operation Completed
-</div>
-
-<!-- A danger button with hover effect -->
-<button class="bg-danger text-danger-fg hover:bg-danger-dark">Delete</button>
-```
-
-### Additional Colors
-
-vlite3 also provides additional utility colors for specific feedback states:
-
-| Variable          | Class Name                   | Description                             |
-| :---------------- | :--------------------------- | :-------------------------------------- |
-| `--color-success` | `text-success`, `bg-success` | For success messages/badges.            |
-| `--color-warning` | `text-warning`, `bg-warning` | For warning messages/badges.            |
-| `--color-info`    | `text-info`, `bg-info`       | For informational messages/badges.      |
-| `--color-danger`  | `text-danger`, `bg-danger`   | Alias for destructive in some contexts. |
-
----
-
 ## Table of Contents
 
 ### Components
@@ -2518,7 +2452,7 @@ onKeyStroke('cmd+k', (e) => openSearch()) // Auto-maps cmd↔ctrl cross-platform
 
 # Utility Functions
 
-**Import:** `import { debounce, deepMerge, getUniqueId,downloadFile, isAppleDevice } from 'vlite3'`
+**Import:** `import { debounce, throttle, deepMerge, getUniqueId, downloadFile, isAppleDevice, isEmpty, removeExtraProperties, flattenArray, capitalize, camelCase, slugify, randomNumber, truncate, formatCurrency, delay } from 'vlite3'`
 
 ### `debounce(fn, delay)`
 
@@ -2544,16 +2478,123 @@ Deep merges two objects. Source overwrites target. Arrays are replaced, not conc
 const merged = deepMerge(defaults, userConfig)
 ```
 
+### `getUniqueId()`
+
+Generates a unique 24-character hex string (similar to MongoDB ObjectId).
+
+```ts
+const id = getUniqueId() // e.g. '65a1b2c3d4e5f6a7b8c9d0e1'
+```
+
 ### `isAppleDevice()`
 
-Returns `true` if the current device is an Apple device (iPhone, iPad, Mac, etc.).
+Returns `true` if the current device is an Apple device (Mac, iPhone, or Safari browser).
 
-```text
-downloadFile('https://example.com/file.pdf', 'My File')
-`isEmpty(value)`
-`removeExtraProperties({ x: 1, y: 2, z: 3 }, ['x', 'y'])`
-`flattenArray([1, 2, [3, 4], 5])`
-`capitalize('hello world')`
-`camelCase('hello world')`
-const id = getUniqueId()
+```ts
+if (isAppleDevice()) { /* Apple-specific logic */ }
 ```
+
+### `downloadFile(fileUrl, fileName)`
+
+Downloads a file from a URL by fetching it as a blob and triggering a browser download.
+
+```ts
+downloadFile('https://example.com/file.pdf', 'My File')
+```
+
+### `isEmpty(value)`
+
+Returns `true` if the value is null, undefined, empty string, 0, empty array, or object with all empty values.
+
+```ts
+isEmpty(null)       // true
+isEmpty([])         // true
+isEmpty({ a: '' })  // true
+isEmpty('hello')    // false
+```
+
+### `removeExtraProperties(data, propertiesToRemove)`
+
+Recursively removes specified keys from an object or array of objects.
+
+```ts
+removeExtraProperties({ x: 1, y: 2, z: 3 }, ['x', 'y']) // { z: 3 }
+```
+
+### `flattenArray(arr)`
+
+Recursively flattens a nested array, including values from nested objects.
+
+```ts
+flattenArray([1, [2, [3]], 4]) // [1, 2, 3, 4]
+```
+
+### `capitalize(str)`
+
+Capitalizes the first letter and any letter following `.`, `!`, or `?`.
+
+```ts
+capitalize('hello world') // 'Hello world'
+```
+
+### `camelCase(str)`
+
+Lowercases the first character of a string.
+
+```ts
+camelCase('HelloWorld') // 'helloWorld'
+```
+
+### `slugify(input)`
+
+Converts a string into a URL-friendly slug. Handles Unicode via NFD normalization, strips diacritics, collapses whitespace/special characters into hyphens.
+
+```ts
+slugify('Hello World!')     // 'hello-world'
+slugify('Crème Brûlée')     // 'creme-brulee'
+slugify('  --foo  bar-- ')  // 'foo-bar'
+```
+
+### `randomNumber(min, max)`
+
+Generates a random integer between `min` and `max` (inclusive). Throws `TypeError` for non-finite values, `RangeError` if `min > max`.
+
+```ts
+randomNumber(1, 10)  // e.g. 7
+randomNumber(-5, 5)  // e.g. -2
+```
+
+### `truncate(text, length, ellipsis?)`
+
+Truncates text to a given length, breaking at the last word boundary. Default ellipsis is `'…'`.
+
+```ts
+truncate('Hello, beautiful world!', 13)        // 'Hello,…'
+truncate('Hello, beautiful world!', 13, '...')  // 'Hello,...'
+truncate('Short', 100)                          // 'Short'
+```
+
+### `formatCurrency(amount, locale?, currency?)`
+
+Formats a number as a locale-aware currency string using `Intl.NumberFormat`. Defaults to `'en-US'` locale and `'USD'` currency.
+
+```ts
+formatCurrency(1234.5)                  // '$1,234.50'
+formatCurrency(1234.5, 'de-DE', 'EUR')  // '1.234,50 €'
+formatCurrency(0)                       // '$0.00'
+```
+
+### `delay(ms)`
+
+Returns a Promise that resolves after the specified milliseconds. Rejects with `RangeError` if `ms` is negative or non-finite.
+
+```ts
+await delay(1000) // waits 1 second
+
+// Polling example
+while (polling) {
+  const data = await fetchData()
+  await delay(5000)
+}
+```
+
