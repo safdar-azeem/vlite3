@@ -279,3 +279,46 @@ export const delay = (ms: number): Promise<void> => {
   }
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
+
+/**
+ * Copies the given text to the system clipboard.
+ * Uses the modern `navigator.clipboard` API when available,
+ * with a `document.execCommand('copy')` fallback for older browsers.
+ *
+ * @param text The string to copy to the clipboard
+ * @returns A Promise that resolves to `true` on success, `false` on failure
+ *
+ * @example
+ * const ok = await copyToClipboard('Hello!')
+ * if (ok) showToast('Copied!')
+ */
+export const copyToClipboard = async (text: string): Promise<boolean> => {
+  if (typeof text !== 'string') return false
+
+  // Modern Clipboard API
+  if (navigator?.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(text)
+      return true
+    } catch {
+      // Fall through to legacy fallback
+    }
+  }
+
+  // Legacy fallback
+  try {
+    const textarea = document.createElement('textarea')
+    textarea.value = text
+    textarea.setAttribute('readonly', '')
+    textarea.style.position = 'fixed'
+    textarea.style.left = '-9999px'
+    textarea.style.opacity = '0'
+    document.body.appendChild(textarea)
+    textarea.select()
+    const success = document.execCommand('copy')
+    document.body.removeChild(textarea)
+    return success
+  } catch {
+    return false
+  }
+}
