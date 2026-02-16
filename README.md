@@ -4,13 +4,9 @@ A lightweight Vue 3 UI component library built with Tailwind CSS, created for pe
 
 ## Installation
 
-### NPM
-
 ```bash
 npm install vlite3
 ```
-
-### Yarn
 
 ```bash
 yarn add vlite3
@@ -55,34 +51,141 @@ import { Button, Input } from 'vlite3'
 </template>
 ```
 
-## 🎨 Theming & Customization
+## Global Configuration (Registry System)
 
-vlite3 uses a semantic theming system inspired by **shadcn/ui** and compatible with **Tailwind CSS v4**. All colors are defined as CSS variables, making it easy to customize the look and feel of your application including Dark Mode support.
+vlite3 features a plugin-based architecture that allows you to register global services. This is particularly useful for dependency injection, such as defining how file uploads should be handled across all `Form` components in your app.
 
-### Semantic Colors
+### Setting up the Plugin
 
-You can customize these colors in your CSS by overriding the variables in `:root` or `.dark` classes (if you are using a class-based dark mode switcher).
+In your `main.ts` or `main.js`, import `createVLite` and register your services:
 
-| Variable                   | Class Name                    | Description             | Recommended Usage                                                           |
-| :------------------------- | :---------------------------- | :---------------------- | :-------------------------------------------------------------------------- |
-| `--background`             | `bg-background`               | Default page background | The main background color of your app.                                      |
-| `--foreground`             | `text-foreground`             | Default text color      | The primary text color for content.                                         |
-| `--card`                   | `bg-card`                     | Card background         | Little Gray Background for cards, containers, surfece, panels, and dialogs. |
-| `--primary`                | `bg-primary`                  | Primary brand color     | Used for main actions (buttons, active states).                             |
-| `--primary-foreground`     | `text-primary-foreground`     | Primary text color      | Text color for content on top of primary background.                        |
-| `--secondary`              | `bg-secondary`                | Secondary background    | Used for secondary actions or muted sections.                               |
-| `--secondary-foreground`   | `text-secondary-foreground`   | Secondary text color    | Text color for content on top of secondary background.                      |
-| `--muted`                  | `bg-muted`                    | Muted background        | Subtle backgrounds (e.g., table headers, disabled states).                  |
-| `--muted`                  | `text-muted`                  | Muted Text              | Secondary text, Unactive Link, description.                                 |
-| `--muted-foreground`       | `text-muted-foreground`       | Muted text color        | Secondary text, hints, placeholders.                                        |
-| `--accent`                 | `bg-accent`                   | Accent background       | Used for hover states, selection highlights.                                |
-| `--accent-foreground`      | `text-accent-foreground`      | Accent text color       | Text color on accent backgrounds.                                           |
-| `--destructive`            | `bg-destructive`              | Destructive color       | Used for error states and destructive actions.                              |
-| `--destructive-foreground` | `text-destructive-foreground` | Destructive text color  | Text color on destructive backgrounds.                                      |
-| `--border`                 | `border`                      | Default border color    | Borders for inputs, cards, and dividers.                                    |
-| `--input`                  | `border-input`                | Input border color      | Borders specifically for form inputs.                                       |
-| `--ring`                   | `ring-ring`                   | Focus ring color        | Outline color for focused elements.                                         |
-| `--radius`                 | `rounded`                     | Border radius           | Global border radius for components.                                        |
+```typescript
+import { createApp } from 'vue'
+import App from './App.vue'
+import { createVLite } from 'vlite3'
+
+const app = createApp(App)
+
+// Initialize VLite with custom configuration
+const vlite = createVLite({
+  services: {
+    /**
+     * Global File Upload Handler
+     *
+     * This function will be called automatically by:
+     * - useFileUpload() composable
+     * - Form components (when using 'file', 'fileUploader', or 'avatarUpload' types)
+     *
+     * @param file - The File object to upload
+     * @param folderId - (Optional) Folder ID passed from component props
+     * @returns Promise<string> - The public URL of the uploaded file
+     */
+    upload: async (file, folderId) => {
+      // Example: Upload to your own backend
+      const formData = new FormData()
+      formData.append('file', file)
+      if (folderId) formData.append('folder_id', folderId)
+
+      // Replace with your actual API call (e.g., Axios, Fetch)
+      const response = await fetch(
+        '[https://api.yourdomain.com/v1/upload](https://api.yourdomain.com/v1/upload)',
+        {
+          method: 'POST',
+          body: formData,
+          headers: {
+            Authorization: 'Bearer ...',
+          },
+        }
+      )
+
+      if (!response.ok) throw new Error('Upload failed')
+
+      const data = await response.json()
+      return data.url // MUST return the file URL string
+    },
+  },
+})
+
+app.use(vlite)
+app.mount('#app')
+```
+
+### How it works
+
+Once registered, you don't need to pass upload handlers to individual components.
+
+1. **Automatic Injection**: The `Form` component detects input types like `file`, `avatarUpload`, or `fileUploader`.
+2. **Parallel Processing**: When the form is submitted, it automatically uploads all files in **parallel** using your registered `upload` service.
+3. **URL Replacement**: The File objects in your form data are replaced with the returned URLs before the final `onSubmit` event is triggered.
+
+## 4. Usage
+
+Import components directly in your Vue files:
+
+```vue
+<script setup>
+import { Button, Input, Form } from 'vlite3'
+
+// The form will automatically use the global upload service defined in main.ts
+const schema = [
+  {
+    name: 'avatar',
+    label: 'Profile Picture',
+    type: 'avatarUpload',
+  },
+  {
+    name: 'documents',
+    label: 'Attachments',
+    type: 'fileUploader',
+    props: { multiple: true },
+  },
+]
+
+const handleSubmit = (payload) => {
+  // payload.values.avatar will be a URL string (e.g., "https://api...")
+  // payload.values.documents will be an array of URL strings
+  console.log(payload.values)
+}
+</script>
+
+<template>
+  <div class="">
+    <Form :schema="schema" @onSubmit="handleSubmit" />
+  </div>
+</template>
+```
+
+# 🎨 Theming & Customization
+
+Reference guide for **vlite3** and the Tailwind CSS v4 theming system. This setup uses a semantic design token approach inspired by shadcn/ui and optimized for Tailwind CSS v4.
+
+All colors are defined as CSS variables, allowing you to customize the appearance of your application with minimal effort, including full Dark Mode support.
+
+---
+
+## Semantic Colors
+
+Override these variables in `:root` or within a `.dark` class (when using class-based dark mode) to adjust your theme.
+
+| Variable                         | Utility Class                 | Description                             | Recommended Usage                               |
+| -------------------------------- | ----------------------------- | --------------------------------------- | ----------------------------------------------- |
+| `--color-background`             | `bg-background`               | Default page background (white)         | Main application background                     |
+| `--color-foreground`             | `text-foreground`             | Default text color (gray-900)           | Primary content text                            |
+| `--color-card`                   | `bg-card`                     | Card background (gray-100)              | Cards, containers, surfaces, panels, dialogs    |
+| `--color-primary`                | `bg-primary`                  | Primary brand color (blue)              | Main actions, buttons, active states            |
+| `--color-primary-foreground`     | `text-primary-foreground`     | Text on primary background (white)      | Text/icons displayed on primary elements        |
+| `--color-secondary`              | `bg-secondary`                | Secondary background (gray-200)         | Secondary actions, muted sections               |
+| `--color-secondary-foreground`   | `text-secondary-foreground`   | Text on secondary background (gray-900) | Content displayed on secondary elements         |
+| `--color-muted`                  | `bg-muted`                    | Muted background (gray-150)             | Subtle surfaces, table headers, disabled states |
+| `--color-muted`                  | `text-muted`                  | Muted text (gray-600)                   | Secondary text, inactive links, descriptions    |
+| `--color-accent`                 | `bg-accent`                   | Accent background (gray-150)            | Hover states, selection highlights              |
+| `--color-accent-foreground`      | `text-accent-foreground`      | Text on accent background (gray-900)    | Content displayed on accent elements            |
+| `--color-destructive`            | `bg-destructive`              | Destructive color (red)                 | Errors, warnings, destructive actions           |
+| `--color-destructive-foreground` | `text-destructive-foreground` | Text on destructive background (white)  | Content displayed on destructive elements       |
+| `--color-border`                 | `border`                      | Default border color (gray-250)         | Inputs, cards, dividers                         |
+| `--radius`                       | `rounded`                     | Global border radius                    | Shared radius across components                 |
+
+---
 
 ### Extended Color Variants
 
@@ -119,31 +222,17 @@ vlite3 also provides additional utility colors for specific feedback states:
 | `--color-info`    | `text-info`, `bg-info`       | For informational messages/badges.      |
 | `--color-danger`  | `text-danger`, `bg-danger`   | Alias for destructive in some contexts. |
 
-### Example Customization
-
-To customize the theme, simply override the CSS variables in your main CSS file:
-
-```css
-@layer base {
-  :root {
-    --primary: #3b82f6; /* Blue-500 */
-    --primary-foreground: #ffffff;
-    --radius: 0.75rem;
-  }
-
-  .dark {
-    --primary: #60a5fa; /* Blue-400 */
-    --primary-foreground: #000000;
-  }
-}
-```
+---
 
 ## 8. Typography Scale System
 
-The system is divided into two groups:
+The typography system is organized into two complementary scales:
 
-- Compact scale (prefixed with `--text--fs-*`) for smaller text
-- Progressive scale (prefixed with `--text-fs-*`) for base and larger text
+- Compact scale (prefixed with `--text--fs-*`)
+- Progressive scale (prefixed with `--text-fs-*`)
+
+Use the progressive scale only when you need finer visual control beyond the standard Tailwind size tokens.
+For most layout and content needs, prefer the default Tailwind text sizes to maintain consistency.
 
 ### Compact Text Scale
 
@@ -156,6 +245,11 @@ The system is divided into two groups:
 --text--fs-6: 0.6em;
 --text--fs-7: 0.55em;
 --text--fs-8: 0.5em;
+```
+
+### Progressive Text Scale
+
+```css
 --text-fs-0.5: 1.05em;
 --text-fs-1: 1.1em;
 --text-fs-1.5: 1.14em;
@@ -176,12 +270,18 @@ The system is divided into two groups:
 --text-fs-9: 1.8em;
 --text-fs-9.5: 2em;
 --text-fs-10: 2.5em;
+```
 
+### Tailwind Size Tokens
+
+```css
 --text-xs: 0.75rem --text-sm: 0.875rem --text-base: 1rem --text-lg: 1.125rem --text-xl: 1.25rem
   --text-2xl: 1.5rem --text-3xl: 1.875rem --text-4xl: 2.25rem --text-5xl: 3rem --text-6xl: 4rem;
 ```
 
 ---
+
+### Usage Examples
 
 ```html
 <p class="text-fs-2">Body text</p>
@@ -190,6 +290,18 @@ The system is divided into two groups:
 
 <h1 class="text-xl font-semibold">Page Title</h1>
 ```
+
+## Hard Rules
+
+Follow these rules strictly to ensure visual consistency and predictable styling across the system:
+
+- Use `border` instead of `border-border` (the default border color (gray-250) is already applied).
+- Use `rounded` instead of `rounded-rounded`.
+- Use `bg-muted` instead of `bg-secondary/20`.
+- Use `gap-x-*` instead of applying `ml-*` or `mr-*` directly on sibling items.
+- Use `gap-y-*` instead of applying `mt
+
+---
 
 ## ✅ Components
 
@@ -251,7 +363,7 @@ The system is divided into two groups:
 - **ProgressBar**
 - **Spinner**
 
-# Complete reference for AI agents and developers:
+## Complete reference for AI agents and developers:
 
 - [llms.txt](https://github.com/safdar-azeem/vlite3/blob/main/llms.txt).
 - [llms-theming.txt](https://github.com/safdar-azeem/vlite3/blob/main/llms-theming.txt).
