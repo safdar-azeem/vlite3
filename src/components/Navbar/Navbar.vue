@@ -1,7 +1,7 @@
-<script setup lang="ts">
+<script setup lang="ts" name="Navbar">
 import { computed, ref, onMounted, onUnmounted, useSlots, provide, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { useBreakpoints, breakpointsTailwind } from '@vueuse/core'
+import { useBreakpoints, breakpointsTailwind, onClickOutside } from '@vueuse/core'
 import Icon from '../Icon.vue'
 import SidePanel from '../SidePanel.vue'
 import Logo from '../Logo.vue' // Assuming Logo exists or using fallback
@@ -23,6 +23,7 @@ const props = withDefaults(defineProps<NavbarProps>(), {
   contentClass: '',
   rightClass: '',
   mobileTriggerClass: '',
+  mobileMenuVariant: 'sidepanel',
 })
 
 const emit = defineEmits<{
@@ -32,6 +33,17 @@ const emit = defineEmits<{
 const isMobileMenuOpen = ref(false)
 const isScrolled = ref(false)
 const slots = useSlots()
+const mobileMenuRef = ref<HTMLElement | null>(null)
+const mobileTriggerRef = ref<HTMLElement | null>(null)
+
+// Close on click outside
+onClickOutside(
+  mobileMenuRef,
+  () => {
+    isMobileMenuOpen.value = false
+  },
+  { ignore: [mobileTriggerRef] }
+)
 
 // Scroll detection for styling effects
 const handleScroll = () => {
@@ -69,7 +81,7 @@ const containerClasses = computed(() => {
         ? 'border-r border-border'
         : 'border-b border-border'
       : '',
-    props.floating ? 'm-4 rounded-xl shadow-lg border border-border/50' : '',
+    props.floating ? 'm-4 rounded shadow-lg border border-border/50' : '',
     isScrolled.value && !props.floating && !isSidebar && props.position === 'sticky'
       ? 'shadow-sm'
       : '',
@@ -195,9 +207,10 @@ watch(isDesktop, (val) => {
           :toggle="() => (isMobileMenuOpen = !isMobileMenuOpen)">
           <button
             type="button"
+            ref="mobileTriggerRef"
             class="p-2 -ml-2 text-muted-foreground hover:bg-accent rounded-md shrink-0"
             :class="[breakpointClasses.mobileTrigger, props.mobileTriggerClass]"
-            @click="isMobileMenuOpen = true">
+            @click="isMobileMenuOpen = !isMobileMenuOpen">
             <Icon icon="lucide:menu" class="w-5 h-5" />
             <span class="sr-only">Open Menu</span>
           </button>
@@ -295,9 +308,10 @@ watch(isDesktop, (val) => {
           :toggle="() => (isMobileMenuOpen = !isMobileMenuOpen)">
           <button
             type="button"
+            ref="mobileTriggerRef"
             class="p-2 -mr-2 text-muted-foreground hover:bg-accent rounded-md"
             :class="props.mobileTriggerClass"
-            @click="isMobileMenuOpen = true">
+            @click="isMobileMenuOpen = !isMobileMenuOpen">
             <Icon icon="lucide:menu" class="w-5 h-5" />
             <span class="sr-only">Open Menu</span>
           </button>
@@ -331,7 +345,28 @@ watch(isDesktop, (val) => {
       </div>
     </template>
 
+    <template v-if="props.mobileMenuVariant === 'dropdown'">
+      <div
+        v-if="isMobileMenuOpen"
+        ref="mobileMenuRef"
+        class="absolute top-[calc(100%_+_1px)] left-0 w-full bg-body border border-border/50 shadow-xl z-50 flex flex-col transition-all duration-300 origin-top overflow-hidden will-change-transform"
+        :class="props.contentClass">
+        <div class="flex flex-col max-h-[80vh] overflow-y-auto">
+          <slot name="mobile-menu">
+            <div class="space-y-1 p-2">
+              <slot name="left" />
+            </div>
+            <div class="h-px bg-border/50 my-1 mx-2"></div>
+            <div class="space-y-1 p-2">
+              <slot name="center" />
+            </div>
+          </slot>
+        </div>
+      </div>
+    </template>
+
     <SidePanel
+      v-else
       v-model:show="isMobileMenuOpen"
       position="left"
       size="sm"
