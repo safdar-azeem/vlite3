@@ -3,8 +3,7 @@ import { ref } from 'vue'
 import DemoSection from './DemoSection.vue'
 import GoogleLogin from '@/components/GoogleLogin.vue'
 import Button from '@/components/Button.vue'
-
-const clientId = 'YOUR_GOOGLE_CLIENT_ID_HERE'
+import { env } from '@/utils'
 
 const handleSuccess = (response: any) => {
   console.log('Login Success:', response)
@@ -35,7 +34,10 @@ const handleError = (error: any) => {
   @error='handleError'
 />">
       <div class="max-w-sm">
-        <GoogleLogin :clientId="clientId" @success="handleSuccess" @error="handleError" />
+        <GoogleLogin
+          :clientId="env.VITE_GOOGLE_CLIENT_ID"
+          @success="handleSuccess"
+          @error="handleError" />
       </div>
     </DemoSection>
 
@@ -60,7 +62,10 @@ const handleError = (error: any) => {
   </template>
 </GoogleLogin>">
       <div class="max-w-sm">
-        <GoogleLogin :clientId="clientId" @success="handleSuccess" @error="handleError">
+        <GoogleLogin
+          :clientId="env.VITE_GOOGLE_CLIENT_ID"
+          @success="handleSuccess"
+          @error="handleError">
           <template #default="{ login, loading, disabled }">
             <Button
               variant="primary"
