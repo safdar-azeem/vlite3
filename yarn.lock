@@ -1519,10 +1519,10 @@ vscode-uri@^3.0.8:
   resolved "https://registry.npmjs.org/vscode-uri/-/vscode-uri-3.1.0.tgz"
   integrity sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==
 
-vue-carousel-lite@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/vue-carousel-lite/-/vue-carousel-lite-0.2.3.tgz#524f2ea15d39c01cc1b77e66a3c8c01ddff2bef0"
-  integrity sha512-tb1l8CSKAvzxILNL/vgvhlIQZQEucplPeJ+0gm12C2UGCAkSfw6srpQqF7yCk7B2MzVsBk4iMX42eac9lmxpHg==
+vue-carousel-lite@^0.2.6:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/vue-carousel-lite/-/vue-carousel-lite-0.2.6.tgz#b104579950ca0c3c3f0082eb931ba50e8cc35cbc"
+  integrity sha512-61JekCowv/VD5+VMaYH5N5oGR3QXN3OM11DG0I4X+mKJNi/vVV+84K4lhHujucGQ1KZnS4cTAaPKWYIk42ezzg==
 
 vue-router@^4.0.0:
   version "4.6.4"
