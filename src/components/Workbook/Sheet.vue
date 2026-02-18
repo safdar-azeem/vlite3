@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, nextTick, computed, onMounted } from 'vue'
+import { ref, nextTick, computed } from 'vue'
 import Icon from '../Icon.vue'
 import type { WorkbookSheet } from './types'
 import { Dropdown } from '@/components/Dropdown'
@@ -89,6 +89,11 @@ const menuOptions = computed(() => [
           confirmText: props.confirmDeleteTexts?.confirm,
           cancelText: props.confirmDeleteTexts?.cancel,
           variant: 'danger' as const,
+          onConfirm: () => {
+            if (props.canDelete) {
+              emit('delete', props.sheet.id)
+            }
+          }
         }
       : undefined,
   },
@@ -99,8 +104,18 @@ const handleMenuSelect = (option: any) => {
   if (option.value === 'duplicate') emit('duplicate', props.sheet.id)
   if (option.value === 'delete') {
     if (!props.canDelete) return
+    
+    // If confirmation is required, wait for the onConfirm callback or event
+    if (props.confirmDelete) return
+
     emit('delete', props.sheet.id)
   }
+}
+
+const handleConfirm = (option?: any) => {
+  if (option && option.value && option.value !== 'delete') return
+  if (!props.canDelete) return
+  emit('delete', props.sheet.id)
 }
 
 // Styles
@@ -117,7 +132,6 @@ const containerClass = computed(() => {
 
 <template>
   <div :class="containerClass" @click="emit('select', sheet.id)" @dblclick="startEdit">
-    <!-- Icon / IconPicker -->
     <div @click.stop class="mr-2 flex items-center shrink-0">
       <IconPicker
         v-if="(sheet.icon || isEditing) && allowIconChange"
@@ -135,21 +149,11 @@ const containerClass = computed(() => {
         </template>
       </IconPicker>
 
-      <!-- Read-only Icon (when allowIconChange is false or just showing icon) -->
       <div v-else-if="sheet.icon" class="flex items-center justify-center p-0.5">
         <Icon :icon="sheet.icon" class="w-4 h-4 opacity-70" />
       </div>
-      <!-- If no icon and not editing, maybe show nothing or default? 
-                 User said "showing the icon with the tab title". 
-                 If tab.icon is missing, usually we showed nothing? 
-                 The original code was v-if="tab.icon". 
-                 Let's stick to showing it if it exists OR if we want to allow adding one (maybe isEditing is a good trigger to show a placeholder?)
-                 For now, let's stick to replacing the existing v-if="tab.icon" block essentially, 
-                 but wrapping it in IconPicker. 
-            -->
     </div>
 
-    <!-- Title / Input -->
     <div class="flex-1 min-w-0 pr-1">
       <input
         v-if="isEditing"
@@ -165,7 +169,6 @@ const containerClass = computed(() => {
       </span>
     </div>
 
-    <!-- Hover Actions (Menu) -->
     <div
       class="opacity-0 group-hover:opacity-100 transition-opacity ml-auto pl-1 flex items-center bg-inherit">
       <Dropdown
@@ -173,7 +176,9 @@ const containerClass = computed(() => {
         :position="'bottom-end'"
         :width="'140px'"
         :teleport="true"
-        @onSelect="handleMenuSelect">
+        @onSelect="handleMenuSelect"
+        @onConfirm="handleConfirm"
+        @confirm="handleConfirm">
         <template #trigger>
           <button
             class="p-1 rounded-md hover:bg-accent text-muted-foreground hover:text-foreground transition-colors">
