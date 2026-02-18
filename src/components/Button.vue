@@ -50,7 +50,7 @@ const classes = computed(() => {
     xs: 'h-6.5 px-2',
     sm: 'h-8 px-3',
     md: 'h-9 px-4 py-2',
-    lg: 'h-10 px-8',
+    lg: 'h-10 px-6',
     xl: 'h-12 px-10',
   }
   const iconSizes: Record<ButtonSize, string> = {
