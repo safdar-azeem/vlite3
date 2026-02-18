@@ -101,14 +101,14 @@ const handleRemove = () => {
             @click="editable && !disabled ? trigger() : null">
             <div
               v-if="loading || isLoading"
-              class="absolute inset-0 flex items-center justify-center bg-black/40 text-white"
+              class="absolute inset-0 flex items-center justify-center bg-[#00000051] text-white"
               :class="rounded === 'full' ? 'rounded-full' : 'rounded-md'">
               <Icon icon="lucide:loader-2" class="animate-spin w-1/3 h-1/3" />
             </div>
 
             <div
               v-else-if="editable && !disabled"
-              class="absolute inset-0 flex items-center justify-center bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+              class="absolute inset-0 flex items-center justify-center bg-[#00000051] text-white opacity-0 group-hover:opacity-100 transition-opacity"
               :class="rounded === 'full' ? 'rounded-full' : 'rounded-md'">
               <Icon icon="lucide:camera" class="w-1/3 h-1/3" />
             </div>
