@@ -78,7 +78,7 @@ const inputBaseClass = computed(() => {
   }
 
   const sizeStyles: Record<InputSize, string> = {
-    sm: 'h-8 text-xs',
+    sm: 'h-7.5 text-xs',
     md: 'h-9 text-sm',
     lg: 'h-10 text-base',
   }
