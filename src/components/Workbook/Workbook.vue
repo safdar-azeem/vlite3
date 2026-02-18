@@ -137,7 +137,9 @@ const handleDelete = (id: string) => {
 watch(
   () => props.sheets.length,
   (newLen, oldLen) => {
-    if (newLen > oldLen && props.addable) {
+    // Only trigger auto-edit if exactly one sheet was added, and we already had sheets.
+    // This prevents triggering edit mode on initial data hydration or page refresh.
+    if (oldLen !== undefined && oldLen > 0 && newLen === oldLen + 1 && props.addable) {
       nextTick(() => {
         const lastSheet = props.sheets[props.sheets.length - 1]
         if (lastSheet.id === props.modelValue) {
@@ -164,22 +166,16 @@ const canDeleteSheet = computed(() => props.sheets.length > 1)
 
 <template>
   <div class="flex flex-col w-full font-sans">
-    <!-- Header / Workbook Bar -->
     <div class="flex items-end w-full border-b px-1 gap-2">
-      <!-- Left Slot -->
       <div v-if="$slots['left-addons']" class="flex items-center mb-1 mr-2">
         <slot name="left-addons" />
       </div>
 
-      <!-- Scrollable Area -->
       <div
         ref="scrollContainer"
         class="flex-1 flex items-end overflow-x-auto scrollbar-none overscroll-contain"
         style="scrollbar-width: none; -ms-overflow-style: none"
         @wheel="onWheel">
-        <!-- Sheets List (Drag Parent) -->
-        <!-- Replaced TransitionGroup with div and parent ref -->
-        <!-- We use a wrapper div to serve as the drag parent so add button isn't mixed in -->
         <div ref="parent" class="flex items-end">
           <SheetItem
             v-for="sheet in sheetsList"
@@ -200,16 +196,13 @@ const canDeleteSheet = computed(() => props.sheets.length > 1)
             @delete="handleDelete" />
         </div>
 
-        <!-- Attached Add Button -->
         <div v-if="addable && addButtonPosition === 'attached'" class="shrink-0 mb-1">
           <WorkbookAddButton @click="handleAdd" />
         </div>
 
-        <!-- Spacer to ensure last sheet isn't cut off if sticky right -->
         <div class="w-1 shrink-0"></div>
       </div>
 
-      <!-- Fixed Right Add Button & Right Slots -->
       <div class="flex items-center mb-0.5 z-20 sticky right-0 ml-auto box-decoration-clone">
         <div v-if="addable && addButtonPosition === 'fixed-right'">
           <WorkbookAddButton @click="handleAdd" />
@@ -221,7 +214,6 @@ const canDeleteSheet = computed(() => props.sheets.length > 1)
       </div>
     </div>
 
-    <!-- Content Area -->
     <div class="flex-1 relative bg-white w-full">
       <slot />
     </div>
