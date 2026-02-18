@@ -314,14 +314,15 @@
 
 .dark .modal-body,
 .dark .sidepanel-body {
-  --color-white: #171717 !important;
+  --color-white: #141414 !important;
   --color-mixture-1: #151515 !important;
   --color-mixture-2: #ffffff !important;
+  --color-input: color-mix(in oklab, var(--color-mixture-1) 92%, var(--color-mixture-2));
 }
 
 .dark .tooltip-container {
-  --color-white: #181818 !important;
-  --color-mixture-1: #1f2020 !important;
+  --color-white: #131313 !important;
+  --color-mixture-1: #161616 !important;
   --color-mixture-2: #ffffff !important;
 }
 
@@ -342,17 +343,17 @@
 }
 
 .dark .bg-card {
-  --color-body: #131313 !important;
-  --color-mixture-1: #191818 !important;
+  --color-body: #111 !important;
+  --color-mixture-1: #111 !important;
   --color-mixture-2: #ffffff !important;
   background-color: var(--color-body) !important;
 }
 
 .bg-card {
   --color-body: #FAFAFA !important;
-  --color-mixture-1: #fbfbfb !important;
+  --color-mixture-1: #FAFAFA !important;
   --color-mixture-2: #000000 !important;
-  background-color: #FBFBFB !important;
+  background-color: #FAFAFA !important;
   border-color: color-mix(in oklab, var(--color-mixture-1) 95%, var(--color-mixture-2));
 }
 
