@@ -42,7 +42,7 @@
     "tailwindcss": "^4.1.18",
     "v-datepicker-lite": "^0.1.6",
     "v-tooltip-lite": "^0.1.9",
-    "vue-carousel-lite": "^0.2.3",
+    "vue-carousel-lite": "^0.2.6",
     "vue3-google-signin": "^2.1.1"
   },
   "peerDependencies": {
