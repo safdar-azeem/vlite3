@@ -311,6 +311,10 @@
   --color-success-dark: #00613f;
 }
 
+@utility -text-fs-* {
+  font-size: calc(--value(--text--fs- *, [length], [number]));
+}
+
 
 .dark .modal-body,
 .dark .sidepanel-body {
