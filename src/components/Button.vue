@@ -56,9 +56,9 @@ const classes = computed(() => {
   const iconSizes: Record<ButtonSize, string> = {
     xs: 'h-6.5 w-6.5 min-h-6.5 min-w-6.5',
     sm: 'h-7 w-7 min-h-7 min-w-7',
-    md: 'h-8 w-8 min-h-8 min-w-8',
-    lg: 'h-9 w-9 min-h-9 min-w-9',
-    xl: 'h-10 w-10 min-h-10 min-w-10',
+    md: 'h-7.5 w-7.5 min-h-7.5 min-w-7.5',
+    lg: 'h-8 w-8 min-h-8 min-w-8',
+    xl: 'h-8.5 w-8.5 min-h-8.5 min-w-8.5',
   }
 
   const roundedVariants: Record<ButtonRounded, string> = {
@@ -89,7 +89,15 @@ const iconClasses = computed(() => {
     xl: 'w-4 h-4',
   }
 
-  return sizes[props.size]
+  const iconSizes: Record<ButtonSize, string> = {
+    xs: 'w-3 h-3',
+    sm: 'w-3.5 h-3.5',
+    md: 'w-3.5 h-3.5',
+    lg: 'w-4 h-4',
+    xl: 'w-4 h-4',
+  }
+
+  return isOnlyIcon.value ? iconSizes[props.size] : sizes[props.size]
 })
 </script>
 
