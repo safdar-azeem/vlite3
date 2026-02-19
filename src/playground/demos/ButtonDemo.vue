@@ -73,6 +73,7 @@ import sourceCode from './ButtonDemo.vue?raw'
         <Button icon="lucide:plus">Add New</Button>
         <Button icon-right="lucide:arrow-right">Continue</Button>
         <Button icon="lucide:settings" variant="outline">Settings</Button>
+        <Button icon="lucide:trash-2" variant="danger" size="sm" />
         <Button icon="lucide:trash-2" variant="danger" />
 
         <Button
