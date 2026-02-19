@@ -85,7 +85,6 @@ const handleAdd3 = () => {
 
 <template>
   <div class="space-y-12">
-    <!-- Title -->
     <div>
       <h2 class="text-2xl font-bold text-gray-900">Workbook</h2>
       <p class="mt-2 text-gray-500">
@@ -93,7 +92,6 @@ const handleAdd3 = () => {
       </p>
     </div>
 
-    <!-- Demo 1: Basic -->
     <div class="space-y-4">
       <div class="flex items-center justify-between">
         <h3 class="text-lg font-semibold text-gray-900">Basic Usage</h3>
@@ -115,7 +113,6 @@ const handleAdd3 = () => {
       </div>
     </div>
 
-    <!-- Demo 2: Full Featured -->
     <div class="space-y-4">
       <div class="flex items-center justify-between">
         <h3 class="text-lg font-semibold text-gray-900">Full Interactive (Draggable, Editable)</h3>
@@ -135,7 +132,6 @@ const handleAdd3 = () => {
         </div>
       </div>
       <div class="p-6 border rounded-xl bg-white shadow-sm overflow-hidden">
-        <!-- Simulation of a document editor header -->
         <Workbook
           v-model="activeSheet2"
           v-model:sheets="sheets2"
@@ -147,7 +143,6 @@ const handleAdd3 = () => {
           confirmDelete
           @delete="handleDelete2"
           @duplicate="handleDuplicate2">
-          <!-- Left Slot Example -->
           <template #left-addons>
             <div
               class="w-8 h-8 rounded bg-blue-600 text-white flex items-center justify-center font-bold mr-2 ml-1 shadow-sm">
@@ -155,13 +150,11 @@ const handleAdd3 = () => {
             </div>
           </template>
 
-          <!-- Right Slot Example -->
           <template #right-addons>
             <Button size="xs" variant="ghost" icon="lucide:more-horizontal" />
           </template>
 
           <div class="mt-4 border rounded-lg h-64 bg-white relative">
-            <!-- Toolbar Simulation -->
             <div class="border-b p-2 flex gap-2">
               <Button size="xs" variant="ghost" icon="lucide:bold" />
               <Button size="xs" variant="ghost" icon="lucide:italic" />
@@ -182,7 +175,6 @@ const handleAdd3 = () => {
     </div>
   </div>
 
-  <!-- Demo 3: Overflow -->
   <div class="space-y-4">
     <div class="flex items-center justify-between">
       <h3 class="text-lg font-semibold text-gray-900">Overflow Handling</h3>
