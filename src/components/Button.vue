@@ -55,10 +55,10 @@ const classes = computed(() => {
   }
   const iconSizes: Record<ButtonSize, string> = {
     xs: 'h-6.5 w-6.5 min-h-6.5 min-w-6.5',
-    sm: 'h-8 w-8 min-h-9 min-w-9',
-    md: 'h-9 w-9 min-h-9 min-w-9',
-    lg: 'h-10 w-10 min-h-11 min-w-11',
-    xl: 'h-12 w-12 min-h-12 min-w-12',
+    sm: 'h-7 w-7 min-h-7 min-w-7',
+    md: 'h-8 w-8 min-h-8 min-w-8',
+    lg: 'h-9 w-9 min-h-9 min-w-9',
+    xl: 'h-10 w-10 min-h-10 min-w-10',
   }
 
   const roundedVariants: Record<ButtonRounded, string> = {
