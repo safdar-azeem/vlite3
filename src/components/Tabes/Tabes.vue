@@ -101,8 +101,8 @@ const containerClasses = computed(() => {
 
 const sizeClasses = {
   sm: 'text-xs px-2.5 py-1',
-  md: 'text-xs px-3 py-1',
-  lg: 'text-base px-4 py-1.5',
+  md: '-text-fs-2 px-3 py-1',
+  lg: '-text-fs-1 px-4 py-1',
 }
 
 const itemBaseClasses = computed(() => {
