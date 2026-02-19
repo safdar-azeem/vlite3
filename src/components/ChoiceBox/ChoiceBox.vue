@@ -145,7 +145,7 @@ const gapClass = computed(() => {
           <div class="flex flex-col">
             <div class="flex items-center gap-2">
               <span
-                class="font-semibold text-foreground"
+                class="font-semibold text-foreground text-fs-1"
                 :class="{
                   'text-primary': isSelected(option.id),
                 }">
@@ -162,9 +162,7 @@ const gapClass = computed(() => {
                 {{ option.badge }}
               </span>
             </div>
-            <span
-              v-if="option.description"
-              class="mt-1 text-sm text-muted-foreground leading-relaxed">
+            <span v-if="option.description" class="mt-1 -text-fs-3 text-muted leading-relaxed">
               {{ option.description }}
             </span>
           </div>
