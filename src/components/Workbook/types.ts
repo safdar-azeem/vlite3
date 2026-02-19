@@ -25,6 +25,9 @@ export interface WorkbookProps {
   // Style
   variant?: 'chrome' | 'folder' | 'simple' | 'card'
   class?: string
+  itemClass?: string
+  activeItemClass?: string
+  inactiveItemClass?: string
 
   // Delete Confirmation
   confirmDelete?: boolean
