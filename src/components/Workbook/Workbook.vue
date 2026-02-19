@@ -166,8 +166,8 @@ const canDeleteSheet = computed(() => props.sheets.length > 1)
 
 <template>
   <div class="flex flex-col w-full font-sans">
-    <div class="flex items-end w-full border-b px-1 gap-2">
-      <div v-if="$slots['left-addons']" class="flex items-center mb-1 mr-2">
+    <div class="flex items-end w-full border-b px-1">
+      <div v-if="$slots['left-addons']" class="flex items-center">
         <slot name="left-addons" />
       </div>
 
