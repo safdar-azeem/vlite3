@@ -63,16 +63,18 @@ const initializePicker = async () => {
 			colorPicker.value.off('color:change')
 			colorPicker.value = null
 		}
+		
+		// Ensure element is clean before init to prevent duplication/glitches
+		if (pickerRef.value) {
+			pickerRef.value.innerHTML = ''
+		}
 
 		colorPicker.value = iro.ColorPicker(pickerRef.value, {
 			width: pickerWidth.value,
 			color: props.color,
 			margin: 9,
 
-			boxHeight: pickerHeight[props?.size], // Auto-scale or keep ratio? default is usually width.
-			// Let's rely on default square-ish box unless specified.
-			// But for small size, maybe we want to keep it compact.
-			// iro defaults boxHeight to width if not specified.
+			boxHeight: pickerHeight[props.size],
 
 			sliderSize: 14,
 			layout: [
@@ -113,6 +115,11 @@ const destroyPicker = () => {
 		colorPicker.value.off('color:change')
 		colorPicker.value = null
 	}
+	// Fully clear DOM bindings from iro.js to prevent resizing/mounting bugs 
+	// when re-opening dropdown
+	if (pickerRef.value) {
+		pickerRef.value.innerHTML = ''
+	}
 }
 
 watch(
@@ -131,8 +138,6 @@ watch(
 	},
 )
 
-// Re-initialize if size changes significantly?
-// iro doesn't support dynamic resizing easily without re-init.
 watch(
 	() => props.size,
 	() => {
@@ -172,7 +177,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<div class="space-y-3">
+	<div class="space-y-3 w-max">
 		<div
 			class="flex gap-2 mb-2.5 -text-fs-3 pr-0.5"
 			v-if="showHeader">
@@ -189,14 +194,17 @@ onUnmounted(() => {
 		</div>
 		<div
 			ref="pickerRef"
-			:class="`w-[${pickerWidth}px]`"></div>
-		<Button
-			v-if="isSupported && !showHeader"
-			@click="openEyeDropper"
-			icon="pepicons-pop:color-picker"
-			variant="outline"
-			size="xs"
-			class="w-full"></Button>
+			:style="{ width: pickerWidth + 'px', minHeight: pickerHeight[size] + 'px' }"></div>
+		
+		<slot name="bottom">
+			<Button
+				v-if="isSupported && !showHeader"
+				@click="openEyeDropper"
+				icon="pepicons-pop:color-picker"
+				variant="outline"
+				size="sm"
+				class="w-full"></Button>
+		</slot>
 	</div>
 </template>
 
@@ -205,3 +213,4 @@ onUnmounted(() => {
 	border-radius: 8px !important;
 }
 </style>
+
