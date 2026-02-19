@@ -18,6 +18,9 @@ interface Props {
     cancel?: string
   }
   allowIconChange?: boolean
+  itemClass?: string
+  activeItemClass?: string
+  inactiveItemClass?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -25,6 +28,9 @@ const props = withDefaults(defineProps<Props>(), {
   canDelete: true,
   confirmDelete: false,
   allowIconChange: true,
+  itemClass: '',
+  activeItemClass: '',
+  inactiveItemClass: '',
 })
 
 const emit = defineEmits<{
@@ -122,11 +128,12 @@ const handleConfirm = (option?: any) => {
 const containerClass = computed(() => {
   return [
     'group relative flex items-center min-w-[120px] max-w-[240px] h-9 px-3 border-r border-border select-none cursor-pointer transition-all duration-200 ease-out',
+    props.itemClass,
     props.isActive
-      ? 'bg-muted text-foreground ring-1 ring-border ring-b-0 z-10'
-      : 'text-muted-foreground hover:bg-accent/50',
+      ? `bg-muted text-foreground ring-1 ring-border ring-b-0 z-10 ${props.activeItemClass}`
+      : `text-muted-foreground hover:bg-accent/50 ${props.inactiveItemClass}`,
     props.isEditing ? 'cursor-text' : '',
-  ].join(' ') // "border-b-0" logic handled by parent container's bottom border or z-index
+  ].filter(Boolean).join(' ') // "border-b-0" logic handled by parent container's bottom border or z-index
 })
 </script>
 
@@ -170,7 +177,8 @@ const containerClass = computed(() => {
     </div>
 
     <div
-      class="opacity-0 group-hover:opacity-100 transition-opacity ml-auto pl-1 flex items-center bg-inherit">
+      class="opacity-0 group-hover:opacity-100 transition-opacity ml-auto pl-1 flex items-center bg-inherit"
+      @click.stop>
       <Dropdown
         :options="menuOptions"
         :position="'bottom-end'"
