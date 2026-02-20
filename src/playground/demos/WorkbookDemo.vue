@@ -134,14 +134,14 @@ const handleAdd3 = () => {
       <div class="p-6 border rounded-xl bg-white shadow-sm overflow-hidden">
         <Workbook
           v-model="activeSheet2"
-          v-model:sheets="sheets2"
+          confirmDelete
           :editable="true"
           :draggable="true"
+          @add="handleAdd2"
+          @delete="handleDelete2"
+          v-model:sheets="sheets2"
           :add-button-position="addButtonPos"
           :allow-icon-change="allowIconChange"
-          @add="handleAdd2"
-          confirmDelete
-          @delete="handleDelete2"
           @duplicate="handleDuplicate2">
           <template #left-addons>
             <div
