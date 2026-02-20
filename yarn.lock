@@ -634,6 +634,11 @@
   resolved "https://registry.yarnpkg.com/@types/scrollreveal/-/scrollreveal-0.0.11.tgz#40e33ec9e269554c2b0c5f5b32ed176629bcd124"
   integrity sha512-GDOESLkVNyd5FIS980N9rDtp45L7jfyvbDuumtaMXMPfJOFOk/7ADNvXaL/NBggXJHQJSgNNHsJBrQ2mTE7+cA==
 
+"@types/sortablejs@^1.15.8":
+  version "1.15.9"
+  resolved "https://registry.yarnpkg.com/@types/sortablejs/-/sortablejs-1.15.9.tgz#82d2337f54d4db827914d80dee5cf65539ae3c8b"
+  integrity sha512-7HP+rZGE2p886PKV9c9OJzLBI6BBJu1O7lJGYnPyG3fS4/duUCcngkNCjsLwIMV+WMqANe3tt4irrXHSIe68OQ==
+
 "@types/web-bluetooth@^0.0.21":
   version "0.0.21"
   resolved "https://registry.npmjs.org/@types/web-bluetooth/-/web-bluetooth-0.0.21.tgz"
@@ -1523,6 +1528,13 @@ vue-carousel-lite@^0.2.6:
   version "0.2.6"
   resolved "https://registry.yarnpkg.com/vue-carousel-lite/-/vue-carousel-lite-0.2.6.tgz#b104579950ca0c3c3f0082eb931ba50e8cc35cbc"
   integrity sha512-61JekCowv/VD5+VMaYH5N5oGR3QXN3OM11DG0I4X+mKJNi/vVV+84K4lhHujucGQ1KZnS4cTAaPKWYIk42ezzg==
+
+vue-draggable-plus@^0.5.3:
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/vue-draggable-plus/-/vue-draggable-plus-0.5.6.tgz#07694759e30539be98fba32917108236a1e001b8"
+  integrity sha512-RMt8YuoB534GH2LD2M60KxHDPtfjfl2C9mH3YSEsfcZBclcoRs5RyrLiEKhUM0QCAQG2T/c3ktHujzxxomqfIw==
+  dependencies:
+    "@types/sortablejs" "^1.15.8"
 
 vue-router@^4.0.0:
   version "4.6.4"
