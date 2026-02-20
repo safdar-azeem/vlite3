@@ -83,6 +83,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Pricing Plan', to: '/pricing', icon: 'lucide:credit-card' },
       { label: 'Heatmap', to: '/heatmap', icon: 'lucide:activity' },
       { label: 'File Tree', to: '/filetree', icon: 'lucide:folder-tree' },
+      { label: 'Kanban', to: '/kanban', icon: 'lucide:kanban' },
       { label: 'Workbook', to: '/workbook', icon: 'lucide:folder-edit' },
       { label: 'Carousel', to: '/carousel', icon: 'lucide:gallery-horizontal' },
     ],
@@ -119,7 +120,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       <template #right>
         <div class="flex items-center justify-between gap-2">
           <ThemeToggle />
-          <p class="text-xs text-muted-foreground">v0.2.2</p>
+          <p class="text-xs text-muted-foreground">v0.2.7</p>
         </div>
       </template>
     </Navbar>
