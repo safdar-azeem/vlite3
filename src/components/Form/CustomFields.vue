@@ -277,7 +277,7 @@ const columnHeaders = computed(() => {
 .list-move,
 .list-enter-active,
 .list-leave-active {
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .list-enter-from,
