@@ -30,7 +30,7 @@ const contactSchema: IForm[] = [
   {
     name: 'subject',
     label: 'Subject',
-    type: 'select',
+    type: 'multiSelect',
     placeholder: 'Select a subject',
     options: [
       { label: 'General Inquiry', value: 'general' },
