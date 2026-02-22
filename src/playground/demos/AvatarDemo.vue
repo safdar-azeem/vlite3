@@ -13,20 +13,20 @@ import sourceCode from './AvatarDemo.vue?raw'
 
     <DemoSection title="Sizes" :code="sourceCode">
       <div class="flex items-end gap-3 flex-wrap">
-         <Avatar size="xs" src="https://i.pravatar.cc/150?u=1" />
-         <Avatar size="sm" src="https://i.pravatar.cc/150?u=2" />
-         <Avatar size="md" src="https://i.pravatar.cc/150?u=3" />
-         <Avatar size="lg" src="https://i.pravatar.cc/150?u=4" />
-         <Avatar size="xl" src="https://i.pravatar.cc/150?u=5" />
-         <Avatar size="2xl" src="https://i.pravatar.cc/150?u=6" />
+        <Avatar size="xs" src="https://i.pravatar.cc/150?u=1" />
+        <Avatar size="sm" src="https://i.pravatar.cc/150?u=2" />
+        <Avatar size="md" src="https://i.pravatar.cc/150?u=3" />
+        <Avatar size="lg" src="https://i.pravatar.cc/150?u=4" />
+        <Avatar size="xl" src="https://i.pravatar.cc/150?u=5" />
+        <Avatar size="2xl" src="https://i.pravatar.cc/150?u=6" />
       </div>
     </DemoSection>
 
     <DemoSection title="Shapes" :code="sourceCode">
       <div class="flex gap-4">
-         <Avatar rounded="none" fallback="Sq" />
-         <Avatar rounded="md" fallback="Md" />
-         <Avatar rounded="full" fallback="Fu" />
+        <Avatar rounded="none" fallback="Sq" />
+        <Avatar rounded="md" fallback="Md" />
+        <Avatar rounded="full" fallback="Fu" />
       </div>
     </DemoSection>
 

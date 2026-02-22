@@ -1,3 +1,7 @@
+interface RippleElement extends HTMLElement {
+  _rippleHandler?: (ev: MouseEvent) => void
+}
+
 const handleRipple = (event: MouseEvent, el: HTMLElement) => {
   const rect = el.getBoundingClientRect()
   const x = event.clientX - rect.left
@@ -10,29 +14,37 @@ const handleRipple = (event: MouseEvent, el: HTMLElement) => {
   circle.style.width = circle.style.height = `${diameter}px`
   circle.style.left = `${x - radius}px`
   circle.style.top = `${y - radius}px`
+  circle.style.position = 'absolute'
+  circle.style.pointerEvents = 'none'
   circle.classList.add('ripple')
 
-  const ripple = document.getElementsByClassName('ripple')[0]
-
-  if (ripple) {
-    ripple.remove()
-  }
+  // Only remove existing ripples belonging to this specific element
+  const existingRipples = el.querySelectorAll('.ripple')
+  existingRipples.forEach((ripple) => ripple.remove())
 
   el.appendChild(circle)
 
   setTimeout(() => {
-    circle.remove()
+    if (circle && circle.parentNode) {
+      circle.remove()
+    }
   }, 600)
 }
 
 export const vRipple = {
-  mounted(el: HTMLElement) {
-    el.style.position = 'relative'
+  mounted(el: RippleElement) {
+    if (window.getComputedStyle(el).position === 'static') {
+      el.style.position = 'relative'
+    }
     el.style.overflow = 'hidden'
-    el.addEventListener('click', (ev) => handleRipple(ev, el))
+    el._rippleHandler = (ev: MouseEvent) => handleRipple(ev, el)
+    el.addEventListener('click', el._rippleHandler)
   },
-  unmounted(el: HTMLElement) {
-    // Clean up if strictly necessary, but click listeners are removed with element usually.
-    // Better practice: save the handler to remove it properly.
+  unmounted(el: RippleElement) {
+    if (el._rippleHandler) {
+      el.removeEventListener('click', el._rippleHandler)
+    }
+    const existingRipples = el.querySelectorAll('.ripple')
+    existingRipples.forEach((ripple) => ripple.remove())
   },
 }

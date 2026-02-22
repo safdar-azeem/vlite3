@@ -68,7 +68,7 @@ const inputWrapperClass = computed(() => {
 
 const inputBaseClass = computed(() => {
   const base =
-    'block w-full bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/50 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none relative focus:z-10'
+    'block w-full bg-background px-3 py-2  ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/50 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none relative focus:z-10'
 
   const variantStyles: Record<InputVariant, string> = {
     solid: 'bg-muted border-transparent focus-visible:border-primary',
@@ -78,9 +78,9 @@ const inputBaseClass = computed(() => {
   }
 
   const sizeStyles: Record<InputSize, string> = {
-    sm: 'h-7.5 text-xs',
-    md: 'h-9 text-sm',
-    lg: 'h-10 text-base',
+    sm: 'h-7.5',
+    md: 'h-9',
+    lg: 'h-10',
   }
 
   const roundedStyles: Record<InputRounded, string> = {
@@ -144,8 +144,8 @@ const inputBaseClass = computed(() => {
 })
 
 const sizeText: Record<InputSize, string> = {
-  sm: 'text-xs',
-  md: 'text-sm',
+  sm: 'text-base',
+  md: 'text-base',
   lg: 'text-base',
 }
 

@@ -156,7 +156,7 @@ const fieldProps = computed(() => {
       error: props.error,
       min: props.field.min, // kept for validation attributes if needed
       max: props.field.max,
-      class: props.field.className,
+      class: `${props.field.className}`,
     }
   }
 

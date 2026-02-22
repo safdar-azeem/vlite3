@@ -12,7 +12,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const classes = computed(() => {
   return [
-    'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
+    'text-sm  leading-none text-gray-800 peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
     props.class,
   ].join(' ')
 })

@@ -105,14 +105,14 @@ onUnmounted(() => {
         :class="backdrop && 'backdrop-blur-[2px]'"
         @click="handleBackdropClick">
         <div
-          class="modal-body relative w-full rounded border border-border bg-body shadow-lg text-foreground flex flex-col max-h-[85vh] sm:max-h-[90vh]"
+          class="modal-body relative w-full rounded border border-border/60 bg-body shadow-lg text-foreground flex flex-col max-h-[85vh] sm:max-h-[90vh]"
           :class="[maxWidth]"
           @click.stop>
           <div
             v-if="title"
             class="flex-none flex flex-col space-y-1.5 pb-0 border-b border-border/90">
             <div
-              class="flex items-center justify-between py-1.5 px-4 rounded-t-md"
+              class="flex items-center justify-between py-2 px-4 rounded-t-md"
               :class="headerClass">
               <h3 class="text-lg font-semibold leading-none tracking-tight">
                 {{ title }}
@@ -128,7 +128,7 @@ onUnmounted(() => {
           </div>
 
           <div class="flex-1 overflow-y-auto px-4 pt-4 pb-3.5 min-h-0" :class="bodyClass">
-            <p v-if="description" class="text-sm text-muted-foreground mb-2">
+            <p v-if="description" class="text-sm text-muted-foreground mb-6.5">
               {{ description }}
             </p>
             <template v-if="body">
@@ -142,7 +142,7 @@ onUnmounted(() => {
           <div
             v-if="$slots.footer"
             :class="footerClass"
-            class="flex-none flex items-center px-4 py-3 border-t border-border/60 rounded-b-xl bg">
+            class="flex-none flex items-center px-4 py-3 border-t border-border/75 rounded-b-xl bg">
             <slot name="footer" :close="close" />
           </div>
         </div>

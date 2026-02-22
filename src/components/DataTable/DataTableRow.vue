@@ -157,7 +157,7 @@ const handleSelect = () => {
       :key="header.field"
       class="align-middle overflow-hidden"
       :class="[
-        compact ? 'p-2 text-xs' : 'py-3! px-3 text-sm',
+        compact ? 'p-2' : 'py-3! px-3 -text-fs-1.5!',
         alignClass(header),
         header.hideOnMobile ? 'hidden md:table-cell' : '',
         getCellClass(header, getNestedValue(row, header.field), row),

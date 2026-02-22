@@ -274,7 +274,7 @@ const containerClass = computed(() => {
 })
 
 const tableClass = computed(() => {
-  return ['w-full caption-bottom text-sm', props.tableClass].join(' ')
+  return ['w-full caption-bottom', props.tableClass].join(' ')
 })
 
 const getColumnWidth = (header: any) => {

@@ -93,7 +93,7 @@ const clearAll = () => {
 // Styling
 const triggerClasses = computed(() => {
   return [
-    'flex items-center justify-between w-full min-h-[40px] px-3 py-1.5 rounded-md border text-sm transition-colors cursor-pointer',
+    'flex items-center justify-between w-full px-3 py-1.5 rounded-md border text-sm transition-colors cursor-pointer',
     props.disabled ? 'opacity-50 cursor-not-allowed bg-muted' : 'bg-background hover:bg-gray-50/70',
     props.variant === 'outline' ? 'border-input' : 'border-transparent bg-muted',
     isOpen.value ? 'border-primary/20' : '',

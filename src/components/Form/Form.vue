@@ -379,7 +379,7 @@ const handleCancel = () => {
         'form-footer flex items-center justify-end gap-3',
         footerClass,
         isInsideModal
-          ? 'sticky bottom-0 z-20 bg-body pt-4 border-t border-border/40 -mx-4 px-4  mt-4'
+          ? 'sticky bottom-0 z-20 bg-body pt-4 border-t border-border/75 -mx-4 px-4  mt-4'
           : 'mt-6',
       ]">
       <Button

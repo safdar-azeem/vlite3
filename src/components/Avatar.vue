@@ -62,9 +62,9 @@ const sizeClasses: Record<AvatarSize, string> = {
   xs: 'h-6 w-6 text-[10px]',
   sm: 'h-8 w-8 text-xs',
   md: 'h-10 w-10 text-sm',
-  lg: 'h-14 w-14 text-base',
-  xl: 'h-20 w-20 text-lg',
-  '2xl': 'h-22 w-22 text-xl',
+  lg: 'h-12 w-12 text-base',
+  xl: 'h-15 w-15 text-lg',
+  '2xl': 'h-21 w-21 text-xl',
 }
 
 const roundedClasses: Record<AvatarRounded, string> = {
