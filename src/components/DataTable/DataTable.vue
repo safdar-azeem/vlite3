@@ -440,7 +440,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <div v-if="showPagination && pageInfo && pageInfo.totalItems > 0">
+    <div v-if="showPagination && pageInfo && pageInfo.totalPages > 1">
       <Pagination
         :current-page="currentPage"
         :total-pages="pageInfo.totalPages"
