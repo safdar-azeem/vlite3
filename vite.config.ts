@@ -39,7 +39,7 @@ export default defineConfig({
           '@vueuse/core',
           '@iconify/vue',
           'vue-router',
-          '@formkit/drag-and-drop',
+          'vue-draggable-plus',
           '@jaames/iro',
           'iconify-icon-picker',
           'vue3-google-signin',
