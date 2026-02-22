@@ -44,7 +44,6 @@ const emit = defineEmits<{
 
 // Internal rows state with unique ID for transitions
 const rows = ref<(Record<string, any> & { _id: string })[]>([])
-
 const generateId = () => `row_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
 // Sync with modelValue
@@ -136,7 +135,6 @@ const columnHeaders = computed(() => {
 
 <template>
   <div class="custom-fields-wrapper">
-    <!-- Header / Label Area -->
     <div class="flex justify-between items-center mb-2">
       <Label class="text-sm font-medium text-foreground">
         {{ label }}
@@ -151,9 +149,7 @@ const columnHeaders = computed(() => {
         @click="addRow" />
     </div>
 
-    <!-- Table Container -->
     <div class="custom-fields-table border border-border rounded overflow-hidden bg-background">
-      <!-- Table Header -->
       <div
         v-if="columnHeaders.length > 0"
         class="flex border-b border-border bg-muted/50 text-gray-800 text-xs font-semibold uppercase tracking-wider">
@@ -170,20 +166,17 @@ const columnHeaders = computed(() => {
         <div v-if="canRemoveRow" class="w-10 flex-none p-3"></div>
       </div>
 
-      <!-- Table Body (Rows) -->
       <TransitionGroup name="list" tag="div" class="divide-y divide-border">
         <div
           v-for="(row, rowIndex) in rows"
           :key="row._id"
           class="flex group bg-white transition-colors">
-          <!-- Row Number -->
           <div
             v-if="showRowNumbers"
             class="w-10 flex-none flex items-center justify-center text-xs text-muted-foreground border-r border-border bg-muted/20">
             {{ rowIndex + 1 }}
           </div>
 
-          <!-- Fields -->
           <div
             v-for="(field, fIdx) in schema"
             :key="field.name"
@@ -202,7 +195,6 @@ const columnHeaders = computed(() => {
               @change="(payload) => handleFieldChange(rowIndex, field.name, payload)" />
           </div>
 
-          <!-- Remove Button -->
           <div
             v-if="canRemoveRow"
             class="w-10 flex-none flex items-center justify-center border-l border-border bg-muted/20">
@@ -217,7 +209,6 @@ const columnHeaders = computed(() => {
         </div>
       </TransitionGroup>
 
-      <!-- Empty State -->
       <div
         v-if="rows.length === 0"
         class="flex flex-col items-center justify-center py-6 text-center bg-muted/5">
@@ -273,22 +264,13 @@ const columnHeaders = computed(() => {
   height: 100%;
 }
 
-/* Transitions */
-.list-move,
-.list-enter-active,
-.list-leave-active {
-  transition: all 0.1s cubic-bezier(0.16, 1, 0.3, 1);
+/* Transitions - ONLY for adding. Removing is instant. */
+.list-enter-active {
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.list-enter-from,
-.list-leave-to {
+.list-enter-from {
   opacity: 0;
-  transform: translateY(-10px);
-}
-
-.list-leave-active {
-  position: absolute;
-  width: 100%;
-  z-index: 0;
+  transform: translateY(-5px);
 }
 </style>
