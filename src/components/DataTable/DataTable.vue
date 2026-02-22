@@ -321,7 +321,7 @@ onMounted(() => {
 
     <div :class="containerClass">
       <div class="overflow-x-auto w-full">
-        <table :class="tableClass" class="">
+        <table :class="tableClass" class="data-table">
           <thead
             :class="[
               '[&_tr]:border-b [&_tr]:border-border/70! bg-muted',
@@ -465,12 +465,3 @@ onMounted(() => {
       @cancel="showDeleteConfirmation = false" />
   </div>
 </template>
-
-<style scoped>
-table th:first-child,
-table td:first-child {
-  width: 48px !important;
-  max-width: 48px !important;
-  min-width: 48px !important;
-}
-</style>
