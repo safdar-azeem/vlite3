@@ -117,7 +117,6 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
           </span>
 
           <template v-else>
-            <!-- Visible Badges -->
             <Badge
               v-for="opt in visibleSelections"
               :key="opt.value"
@@ -126,13 +125,13 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
               <span class="truncate">{{ opt.label }}</span>
               <button
                 v-if="!disabled"
+                type="button"
                 @click.stop="removeOption(opt.value)"
                 class="hover:bg-destructive/10 hover:text-destructive rounded-full p-0.5 transition-colors">
                 <Icon icon="lucide:x" class="w-3 h-3" />
               </button>
             </Badge>
 
-            <!-- +N Badge -->
             <Badge
               v-if="hiddenCount > 0"
               variant="secondary"
