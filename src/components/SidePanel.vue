@@ -21,6 +21,7 @@ interface Props {
   bodyClass?: string
   headerClass?: string
   triggerClass?: string
+  footerClass?: string
   backdrop?: boolean
   body?: Component
   bodyProps?: Record<string, any>
@@ -36,6 +37,9 @@ const props = withDefaults(defineProps<Props>(), {
   class: '',
   overlayClass: '',
   triggerClass: '',
+  footerClass: '',
+  bodyClass: '',
+  headerClass: '',
 })
 
 const emit = defineEmits<{
@@ -171,7 +175,10 @@ const transitionName = computed(() => {
           </template>
         </div>
 
-        <div v-if="$slots.footer" class="flex-none px-6 py-4 border-t border-border bg-muted-light">
+        <div
+          v-if="$slots.footer"
+          class="flex-none px-6 py-3 border-t border-border"
+          :class="footerClass">
           <slot name="footer" :close="close" />
         </div>
       </div>
