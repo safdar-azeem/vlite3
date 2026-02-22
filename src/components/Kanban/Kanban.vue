@@ -9,6 +9,9 @@ const props = withDefaults(defineProps<{
   loadData?: (columnId: string | number, page: number) => Promise<KanbanLoadDataResult>
   data?: Record<string | number, any[]>
   boardClass?: string
+  headerClass?: string
+  bodyClass?: string
+  draggableClass?: string
   ghostClass?: string
   class?: string
 }>(), {
@@ -48,6 +51,9 @@ const columnData = (colId: string | number) => {
       :load-data="loadData"
       :column-data="columnData(column.id)"
       :board-class="boardClass"
+      :header-class="headerClass"
+      :body-class="bodyClass"
+      :draggable-class="draggableClass"
       :ghost-class="ghostClass"
       @change="handleChange"
       @update:columnData="(items) => updateColumnData(column.id, items)"
@@ -83,3 +89,4 @@ const columnData = (colId: string | number) => {
   border-radius: 10px;
 }
 </style>
+
