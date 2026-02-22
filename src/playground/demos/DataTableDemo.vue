@@ -185,6 +185,22 @@ const handleDelete = (rows: User[]) => {
         empty-description="We couldn't find any users matching your search criteria."
         @change="handleTableChange"
         @delete="handleDelete">
+        <template #toolbar-left>
+          <div class="w-max flex-1 mr-auto">
+            <div>
+              <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Products & Services</h1>
+              <p class="text-gray-500 mt-1">
+                Manage your catalog to quickly add items to your invoices.
+              </p>
+            </div>
+          </div>
+        </template>
+        <template #toolbar-right>
+          <div class="">
+            <Button variant="primary" icon="lucide:plus"> Add Product </Button>
+          </div>
+        </template>
+
         <template #name="{ value, row }">
           <div class="flex items-center gap-3">
             <Avatar :src="row.avatar" :alt="value" size="sm" />
@@ -208,11 +224,7 @@ const handleDelete = (rows: User[]) => {
         <template #action="{ row }">
           <div class="flex items-center justify-end gap-1">
             <Button variant="ghost" size="xs" icon="lucide:eye" @click.stop="handleView(row)" />
-            <Button
-              variant="ghost"
-              size="xs"
-              icon="lucide:pencil"
-              @click.stop="handleEdit(row)" />
+            <Button variant="ghost" size="xs" icon="lucide:pencil" @click.stop="handleEdit(row)" />
           </div>
         </template>
       </DataTable>
