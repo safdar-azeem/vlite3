@@ -41,7 +41,7 @@ export interface ToastConfig {
 
 const globalConfig = ref<ToastConfig>({
   position: 'bottom-right',
-  duration: 4000,
+  duration: 1000,
   expand: false,
   variant: 'default',
 })
@@ -86,7 +86,8 @@ function createToast(
 
   // Determine if this is the first toast for this position
   const notificationsAtPosition = notifications.value.filter((n) => n.position === finalPosition)
-  const isFirst = notificationsAtPosition.length === 0 && !firstToastShownByPosition.get(finalPosition)
+  const isFirst =
+    notificationsAtPosition.length === 0 && !firstToastShownByPosition.get(finalPosition)
 
   // Mark position as having had its first toast
   if (isFirst) {
@@ -141,27 +142,20 @@ function resumeTimers() {
   })
 }
 
-function showToast(
-  message: string,
-  type?: Notification['type'],
-  options?: ToastOptions
-): number {
+function showToast(message: string, type?: Notification['type'], options?: ToastOptions): number {
   const finalType = type ?? 'default'
   const finalOptions = options ?? {}
   return createToast(message, finalType, finalOptions)
 }
 
-const toast = (message: string, options?: ToastOptions) =>
-  createToast(message, 'default', options)
+const toast = (message: string, options?: ToastOptions) => createToast(message, 'default', options)
 
 toast.success = (message: string, options?: ToastOptions) =>
   createToast(message, 'success', options)
 
-toast.error = (message: string, options?: ToastOptions) =>
-  createToast(message, 'error', options)
+toast.error = (message: string, options?: ToastOptions) => createToast(message, 'error', options)
 
-toast.info = (message: string, options?: ToastOptions) =>
-  createToast(message, 'info', options)
+toast.info = (message: string, options?: ToastOptions) => createToast(message, 'info', options)
 
 toast.warning = (message: string, options?: ToastOptions) =>
   createToast(message, 'warning', options)
@@ -183,8 +177,7 @@ toast.promise = <T = any>(
     })
     .catch((err) => {
       removeToast(id)
-      const errMsg =
-        typeof data.error === 'function' ? data.error(err) : data.error
+      const errMsg = typeof data.error === 'function' ? data.error(err) : data.error
       toast.error(errMsg)
     })
 
