@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent, markRaw, type Component } from 'vue'
+import { computed, markRaw, type Component } from 'vue'
 import type { IForm, IFormAddon, IFormFieldChangePayload } from './types'
 import type { InputVariant, InputSize, InputRounded } from '@/types'
 import { isComponent } from './utils/form.utils'
@@ -15,11 +15,11 @@ import FilePicker from '@/components/FilePicker/FilePicker.vue'
 import AvatarUploader from '@/components/AvatarUploader/AvatarUploader.vue'
 import Dropdown from '@/components/Dropdown/Dropdown.vue'
 
-const MultiSelect = defineAsyncComponent(() => import('@/components/MultiSelect/MultiSelect.vue'))
-const DatePicker = defineAsyncComponent(() => import('@/components/DatePicker.vue'))
-const ColorPicker = defineAsyncComponent(() => import('@/components/ColorPicker/ColorPicker.vue'))
-const IconPicker = defineAsyncComponent(() => import('@/components/IconPicker.vue'))
-const CustomFieldsComponent = defineAsyncComponent(() => import('./CustomFields.vue'))
+import MultiSelect from '@/components/MultiSelect/MultiSelect.vue'
+import DatePicker from '@/components/DatePicker.vue'
+import ColorPicker from '@/components/ColorPicker/ColorPicker.vue'
+import IconPicker from '@/components/IconPicker.vue'
+import CustomFieldsComponent from './CustomFields.vue'
 
 interface Props {
   field: IForm
