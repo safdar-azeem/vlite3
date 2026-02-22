@@ -55,8 +55,17 @@ const columnData = (colId: string | number) => {
       <template #header="slotProps">
         <slot name="column-header" v-bind="slotProps" />
       </template>
+
+      <template #prepend-item="slotProps">
+        <slot name="prepend-item" v-bind="slotProps" />
+      </template>
+
       <template #item="slotProps">
         <slot name="item" v-bind="slotProps" />
+      </template>
+
+      <template #append-item="slotProps">
+        <slot name="append-item" v-bind="slotProps" />
       </template>
     </KanbanBoard>
   </div>
