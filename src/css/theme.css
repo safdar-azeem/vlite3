@@ -330,13 +330,6 @@
   --color-mixture-2: #ffffff !important;
 }
 
-.dark .bg-card {
-  --color-body: #131313 !important;
-  --color-mixture-1: #191818 !important;
-  --color-mixture-2: #ffffff !important;
-  background-color: var(--color-body) !important;
-}
-
 .dark .modal-body .bg-card,
 .dark .sidepanel-body .bg-card,
 .dark .tooltip-container .bg-card {
@@ -347,14 +340,18 @@
 }
 
 .dark .bg-card {
-  --color-body: #111 !important;
+  --color-body: #0B0B0B !important;
   --color-mixture-1: #111 !important;
   --color-mixture-2: #ffffff !important;
-  background-color: var(--color-body) !important;
+  background-color: #111 !important;
+}
+
+.dark .bg-card .bg-body {
+  --color-mixture-1: #0f0f0f !important;
+  --color-mixture-2: #ffffff !important;
 }
 
 .bg-card {
-  --color-body: #FAFAFA !important;
   --color-mixture-1: #FAFAFA !important;
   --color-mixture-2: #000000 !important;
   background-color: #FAFAFA !important;
