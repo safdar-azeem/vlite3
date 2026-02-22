@@ -306,15 +306,17 @@ onMounted(() => {
       <template #left v-if="$slots?.['toolbar-left']">
         <slot name="toolbar-left" />
       </template>
-      <template #right v-if="$slots?.['toolbar-right'] || selectedIds.size > 0">
+      <template #delete v-if="selectedIds.size > 0">
         <Button
           v-if="selectedIds.size > 0"
           rounded="full"
-          variant="ghost"
+          variant="outline"
+          size="lg"
           icon="lucide:trash-2"
-          class="text-destructive! bg-destructive/10 hover:bg-destructive/15"
           @click="showDeleteConfirmation = true">
         </Button>
+      </template>
+      <template #right v-if="$slots?.['toolbar-right']">
         <slot name="toolbar-right" />
       </template>
     </DataTableToolbar>
