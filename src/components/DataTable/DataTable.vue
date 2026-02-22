@@ -17,6 +17,8 @@ import type {
 } from './types'
 
 const getNestedValue = (obj: any, path: string): any => {
+  if (!obj || !path) return undefined
+  if (!path.includes('.')) return obj[path]
   return path.split('.').reduce((acc, part) => acc?.[part], obj)
 }
 
@@ -143,10 +145,6 @@ const isIndeterminate = computed(() => {
 })
 
 const selectedRowsComputed = computed(() => {
-  // Only visible rows + rows in props.selectedRows that confirm to selection
-  // But simply, we need the full list of selected objects to emit.
-  // Since we might have selected items not on current page (if we supported that),
-  // we should reconstruct based on selectedIds + (props.rows + props.selectedRows).
   const allAvailable = [...(props.selectedRows || []), ...props.rows]
   const map = new Map()
   allAvailable.forEach((r) => map.set(getRowId(r, props.keyField), r))
@@ -301,12 +299,10 @@ onMounted(() => {
 
 <template>
   <div class="space-y-4">
-    <!-- Internal Toolbar -->
     <DataTableToolbar
       v-model="internalSearch"
       :show-search="showSearch"
       :placeholder="searchPlaceholder">
-      <!-- Forward Slots -->
       <template #left v-if="$slots?.['toolbar-left']">
         <slot name="toolbar-left" />
       </template>
