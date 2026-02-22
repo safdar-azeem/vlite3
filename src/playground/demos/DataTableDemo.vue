@@ -135,7 +135,6 @@ const handleDelete = (rows: User[]) => {
 
 <template>
   <div class="space-y-8">
-    <!-- Header -->
     <div class="space-y-2">
       <div class="flex items-center justify-between flex-wrap gap-4">
         <h1 class="text-2xl font-bold">DataTable</h1>
@@ -166,7 +165,6 @@ const handleDelete = (rows: User[]) => {
       </p>
     </div>
 
-    <!-- Main Demo -->
     <DemoSection title="User Management" :code="sourceCode">
       <h2 class="text-lg font-semibold">User Management</h2>
 
@@ -187,37 +185,34 @@ const handleDelete = (rows: User[]) => {
         empty-description="We couldn't find any users matching your search criteria."
         @change="handleTableChange"
         @delete="handleDelete">
-        <!-- Custom User Cell with Avatar -->
-        <template #name="{ value }">
+        <template #name="{ value, row }">
           <div class="flex items-center gap-3">
-            <Avatar :src="value.avatar" :alt="value.name" size="sm" />
+            <Avatar :src="row.avatar" :alt="value" size="sm" />
             <div class="min-w-0">
               <p class="font-medium text-foreground truncate">
-                {{ value.name }}
+                {{ value }}
               </p>
               <p class="text-xs text-muted-foreground truncate md:hidden">
-                {{ value.email }}
+                {{ row.email }}
               </p>
             </div>
           </div>
         </template>
 
-        <!-- Status Badge -->
         <template #status="{ value }">
-          <Badge :variant="getStatusVariant(value.status)">
-            {{ value.status }}
+          <Badge :variant="getStatusVariant(value)">
+            {{ value }}
           </Badge>
         </template>
 
-        <!-- Actions Column -->
-        <template #action="{ value }">
+        <template #action="{ row }">
           <div class="flex items-center justify-end gap-1">
-            <Button variant="ghost" size="xs" icon="lucide:eye" @click.stop="handleView(value)" />
+            <Button variant="ghost" size="xs" icon="lucide:eye" @click.stop="handleView(row)" />
             <Button
               variant="ghost"
               size="xs"
               icon="lucide:pencil"
-              @click.stop="handleEdit(value)" />
+              @click.stop="handleEdit(row)" />
           </div>
         </template>
       </DataTable>
