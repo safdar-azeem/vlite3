@@ -256,6 +256,7 @@ const fieldProps = computed(() => {
   // AvatarUploader
   if (type === 'avatarUpload') {
     return {
+      size: '2xl',
       ...baseProps,
       modelValue: props.value,
       editable: !props.readonly,
