@@ -351,6 +351,10 @@
   --color-mixture-2: #ffffff !important;
 }
 
+.dark .hover\:bg-card:hover {
+  background-color: var(--color-gray-50);
+}
+
 .bg-card {
   --color-mixture-1: #FAFAFA !important;
   --color-mixture-2: #000000 !important;
@@ -412,4 +416,8 @@
 
 @utility text-muted {
   color: var(--color-gray-600) !important;
+}
+
+.dark .text-destructive {
+  color: rgb(187, 1, 1) !important
 }
