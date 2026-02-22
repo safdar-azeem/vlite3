@@ -168,3 +168,21 @@ html {
   --date-picker-border: var(--color-border) !important;
   --date-picker-radius: var(--radius) !important;
 }
+
+
+.data-table tr td:first-child,
+.data-table tr th:first-child {
+  padding-left: 16px !important;
+  padding-right: 16px !important;
+}
+
+.data-table tr td:last-child,
+.data-table tr th:last-child {
+  padding-left: 6px !important;
+  padding-right: 16px !important;
+}
+
+.data-table tr td,
+.data-table tr th {
+  padding-right: 10px !important;
+}
