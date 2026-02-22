@@ -98,8 +98,14 @@ const onUpdateEvent = (e: any) => {
       @scroll="handleScroll">
       <div
         v-if="isInitialLoading && items.length === 0"
-        class="flex-1 flex items-center justify-center min-h-[100px]">
-        <Spinner size="md" color="primary" />
+        class="flex-1 flex flex-col gap-3 min-h-[50px] py-1">
+        <div
+          v-for="i in 3"
+          :key="'skeleton-' + i"
+          class="bg-card p-3 rounded-md shadow-sm border border-border animate-pulse flex flex-col gap-3">
+          <div class="h-4 bg-muted/60 rounded w-2/3"></div>
+          <div class="h-3 bg-muted/60 rounded w-1/3"></div>
+        </div>
       </div>
 
       <template v-else>
