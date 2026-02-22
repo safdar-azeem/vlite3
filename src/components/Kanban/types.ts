@@ -28,6 +28,10 @@ export interface KanbanProps {
   loadData?: (columnId: string | number, page: number) => Promise<KanbanLoadDataResult>
   data?: Record<string | number, any[]>
   boardClass?: string
+  headerClass?: string
+  bodyClass?: string
+  draggableClass?: string
   ghostClass?: string
   class?: string
 }
+
