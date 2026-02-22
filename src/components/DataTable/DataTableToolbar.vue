@@ -26,10 +26,13 @@ const searchValue = computed({
 
 <template>
   <div class="flex flex-col sm:flex-row items-center gap-4 p-1">
-    <div class="flex items-center gap-3" v-if="$slots?.left">
+    <div class="flex items-center gap-3 mr-auto" v-if="$slots?.left">
       <slot name="left" />
     </div>
-    <div class="w-full sm:w-72! mr-auto!" v-if="showSearch">
+    <div class="ml-auto">
+      <slot name="delete" />
+    </div>
+    <div class="w-full sm:w-72!" v-if="showSearch">
       <Input
         v-model="searchValue"
         :placeholder="placeholder"
@@ -38,7 +41,7 @@ const searchValue = computed({
         class="bg-background"
         :show-clear-button="true" />
     </div>
-    <div class="ml-auto flex items-center gap-3">
+    <div class="flex items-center gap-3">
       <slot name="right" />
     </div>
   </div>
