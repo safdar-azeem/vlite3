@@ -223,8 +223,8 @@ const handleDelete = (rows: User[]) => {
 
         <template #action="{ row }">
           <div class="flex items-center justify-end gap-1">
-            <Button variant="ghost" size="xs" icon="lucide:eye" @click.stop="handleView(row)" />
-            <Button variant="ghost" size="xs" icon="lucide:pencil" @click.stop="handleEdit(row)" />
+            <Button variant="ghost" size="sm" icon="lucide:eye" @click.stop="handleView(row)" />
+            <Button variant="ghost" size="sm" icon="lucide:pencil" @click.stop="handleEdit(row)" />
           </div>
         </template>
       </DataTable>
