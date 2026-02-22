@@ -30,6 +30,8 @@ const emit = defineEmits<{
 }>()
 
 const getNestedValue = (obj: any, path: string): any => {
+  if (!obj || !path) return undefined
+  if (!path.includes('.')) return obj[path]
   return path.split('.').reduce((acc, part) => acc?.[part], obj)
 }
 
@@ -160,7 +162,12 @@ const handleSelect = () => {
         header.hideOnMobile ? 'hidden md:table-cell' : '',
         getCellClass(header, getNestedValue(row, header.field), row),
       ]">
-      <slot :name="header.field" :value="row" :row="row" :index="index" :field="header.field">
+      <slot
+        :name="header.field"
+        :value="getNestedValue(row, header.field)"
+        :row="row"
+        :index="index"
+        :field="header.field">
         <span
           class="truncate block"
           :title="String(getNestedValue(row, header.field))"
