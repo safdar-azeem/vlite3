@@ -42,15 +42,18 @@ html {
   h3,
   .h3,
   h4,
+  bold,
+  b,
+  strong,
   .h4 {
-    @apply font-bold text-foreground;
+    @apply font-bold text-gray-900;
   }
 
   h5,
   .h5,
   h6,
   .h6 {
-    @apply font-sans text-foreground;
+    @apply font-sans text-gray-900;
   }
 
   h1,
@@ -172,14 +175,14 @@ html {
 
 .data-table tr td:first-child,
 .data-table tr th:first-child {
-  padding-left: 16px !important;
-  padding-right: 16px !important;
+  padding-left: 18px !important;
+  padding-right: 18px !important;
 }
 
 .data-table tr td:last-child,
 .data-table tr th:last-child {
   padding-left: 6px !important;
-  padding-right: 16px !important;
+  padding-right: 18px !important;
 }
 
 .data-table tr td,
