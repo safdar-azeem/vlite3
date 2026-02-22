@@ -1519,10 +1519,10 @@ vscode-uri@^3.0.8:
   resolved "https://registry.npmjs.org/vscode-uri/-/vscode-uri-3.1.0.tgz"
   integrity sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==
 
-vue-carousel-lite@^0.2.6:
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/vue-carousel-lite/-/vue-carousel-lite-0.2.6.tgz#b104579950ca0c3c3f0082eb931ba50e8cc35cbc"
-  integrity sha512-61JekCowv/VD5+VMaYH5N5oGR3QXN3OM11DG0I4X+mKJNi/vVV+84K4lhHujucGQ1KZnS4cTAaPKWYIk42ezzg==
+vue-carousel-lite@^0.2.7:
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/vue-carousel-lite/-/vue-carousel-lite-0.2.7.tgz#c14096af777309a48fb98916530de31440ba2211"
+  integrity sha512-OdyEg0T0Jq+ZsqyNCX7Uriyc9/STLz59K8AD4eetAuYhm+2pgUH+wk08JCWaJwnk8gGZTraheDicFgx2cOBSzw==
 
 vue-draggable-plus@^0.5.3:
   version "0.5.6"
