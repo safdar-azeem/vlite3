@@ -22,7 +22,7 @@ const emit = defineEmits<{
 
 const scrollContainer = ref<HTMLElement | null>(null)
 
-const { items, isLoading, pageInfo, loadInitial, loadMore } = useKanbanBoard(
+const { items, isInitialLoading, isLoadingMore, pageInfo, loadInitial, loadMore } = useKanbanBoard(
   props.column.id,
   props.loadData,
   props.columnData
@@ -53,6 +53,7 @@ onMounted(() => {
 
 const handleScroll = (e: Event) => {
   const target = e.target as HTMLElement
+  // Trigger loadMore when scrolled near the bottom (within 50px)
   if (target.scrollTop + target.clientHeight >= target.scrollHeight - 50) {
     loadMore()
   }
@@ -92,31 +93,43 @@ const onUpdateEvent = (e: any) => {
       ref="scrollContainer"
       class="flex-1 flex flex-col overflow-y-auto p-3 custom-scrollbar"
       @scroll="handleScroll">
-      <VueDraggable
-        :model-value="items"
-        @update:model-value="handleItemsUpdate"
-        :group="group"
-        :animation="150"
-        :ghostClass="ghostClass || 'kanban-ghost'"
-        class="flex-1 flex flex-col gap-3 min-h-[100px]"
-        @add="onAdd"
-        @remove="onRemove"
-        @update="onUpdateEvent">
-        <div
-          v-for="item in items"
-          :key="item[itemKey || 'id']"
-          class="cursor-grab active:cursor-grabbing">
-          <slot name="item" :item="item" :column="column">
-            <div class="bg-card p-3 rounded-md shadow-sm border border-border text-sm">
-              {{ item.title || item.name || item.id }}
-            </div>
-          </slot>
-        </div>
-      </VueDraggable>
-
-      <div v-if="isLoading" class="py-4 flex justify-center">
-        <Spinner size="sm" variant="dots" color="primary" />
+      <div
+        v-if="isInitialLoading && items.length === 0"
+        class="flex-1 flex items-center justify-center min-h-[100px]">
+        <Spinner size="md" color="primary" />
       </div>
+
+      <template v-else>
+        <slot name="prepend-item" :column="column" :items="items" />
+
+        <VueDraggable
+          :model-value="items"
+          @update:model-value="handleItemsUpdate"
+          :group="group"
+          :animation="150"
+          :ghostClass="ghostClass || 'kanban-ghost'"
+          class="flex-1 flex flex-col gap-3 min-h-[50px] py-1"
+          @add="onAdd"
+          @remove="onRemove"
+          @update="onUpdateEvent">
+          <div
+            v-for="item in items"
+            :key="item[itemKey || 'id']"
+            class="cursor-grab active:cursor-grabbing">
+            <slot name="item" :item="item" :column="column">
+              <div class="bg-card p-3 rounded-md shadow-sm border border-border text-sm">
+                {{ item.title || item.name || item.id }}
+              </div>
+            </slot>
+          </div>
+        </VueDraggable>
+
+        <slot name="append-item" :column="column" :items="items" />
+
+        <div v-if="isLoadingMore" class="py-4 flex justify-center shrink-0">
+          <Spinner size="sm" variant="dots" color="primary" />
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -133,5 +146,3 @@ const onUpdateEvent = (e: any) => {
   border-radius: 10px;
 }
 </style>
-
-<style></style>
