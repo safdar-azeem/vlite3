@@ -31,7 +31,6 @@
     "./style.css": "./style.css"
   },
   "dependencies": {
-    "@formkit/drag-and-drop": "^0.5.3",
     "@iconify/vue": "5.0.0",
     "@jaames/iro": "^5.5.2",
     "@tailwindcss/vite": "^4.1.18",
