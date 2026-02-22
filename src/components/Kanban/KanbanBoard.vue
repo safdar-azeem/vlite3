@@ -12,6 +12,9 @@ const props = defineProps<{
   loadData?: (columnId: string | number, page: number) => Promise<KanbanLoadDataResult>
   columnData?: any[]
   boardClass?: string
+  headerClass?: string
+  bodyClass?: string
+  draggableClass?: string
   ghostClass?: string
 }>()
 
@@ -78,7 +81,7 @@ const onUpdateEvent = (e: any) => {
       'flex flex-col bg-muted/40 rounded-lg overflow-hidden shrink-0 border border-border/50',
       boardClass || 'w-80',
     ]">
-    <div class="p-3 border-b border-border/50 bg-background/50">
+    <div :class="['p-3 border-b border-border/50 bg-background/50', headerClass]">
       <slot name="header" :column="column" :pageInfo="pageInfo">
         <div class="flex items-center justify-between font-semibold text-foreground">
           <span>{{ column.title }}</span>
@@ -91,7 +94,7 @@ const onUpdateEvent = (e: any) => {
 
     <div
       ref="scrollContainer"
-      class="flex-1 flex flex-col overflow-y-auto p-3 custom-scrollbar"
+      :class="['flex-1 flex flex-col overflow-y-auto p-3 custom-scrollbar', bodyClass]"
       @scroll="handleScroll">
       <div
         v-if="isInitialLoading && items.length === 0"
@@ -108,7 +111,7 @@ const onUpdateEvent = (e: any) => {
           :group="group"
           :animation="150"
           :ghostClass="ghostClass || 'kanban-ghost'"
-          class="flex-1 flex flex-col gap-3 min-h-[50px] py-1"
+          :class="['flex-1 flex flex-col gap-3 min-h-[50px] py-1', draggableClass]"
           @add="onAdd"
           @remove="onRemove"
           @update="onUpdateEvent">
