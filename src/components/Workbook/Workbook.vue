@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, nextTick, computed } from 'vue'
-import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
-import { animations } from '@formkit/drag-and-drop'
+import { VueDraggable } from 'vue-draggable-plus'
 import type { WorkbookSheet, WorkbookProps, AddButtonPosition } from './types'
 import SheetItem from './Sheet.vue'
 import WorkbookAddButton from './WorkbookAddButton.vue'
@@ -38,20 +37,8 @@ const emit = defineEmits<{
 const scrollContainer = ref<HTMLElement | null>(null)
 const editingTabId = ref<string | null>(null)
 
-// Drag and Drop
-const [parent, sheetsList] = useDragAndDrop(props.sheets, {
-  plugins: [animations()],
-  draggable: (el) => {
-    // Only allow dragging if enabled and not currently editing
-    // We check props.draggable and ensure we aren't in edit mode
-    return props.draggable && !editingTabId.value
-  },
-  onSort: (state) => {
-    // Sync order changes back to parent
-    // Cast state.values to WorkbookSheet[] if needed, typically it infers correctly
-    emit('update:sheets', state.values as WorkbookSheet[])
-  },
-})
+// Drag and Drop State
+const sheetsList = ref<WorkbookSheet[]>([...props.sheets])
 
 // Watch for external updates to sheets prop
 watch(
@@ -63,6 +50,11 @@ watch(
   },
   { deep: true }
 )
+
+const handleSheetsUpdate = (newItems: WorkbookSheet[]) => {
+  sheetsList.value = newItems
+  emit('update:sheets', newItems)
+}
 
 const handleSelect = (id: string) => {
   emit('update:modelValue', id)
@@ -179,7 +171,12 @@ const canDeleteSheet = computed(() => props.sheets.length > 1)
         class="flex-1 flex items-end overflow-x-auto scrollbar-none overscroll-contain"
         style="scrollbar-width: none; -ms-overflow-style: none"
         @wheel="onWheel">
-        <div ref="parent" class="flex items-end">
+        <VueDraggable
+          :model-value="sheetsList"
+          @update:model-value="handleSheetsUpdate"
+          :disabled="!props.draggable || !!editingTabId"
+          :animation="150"
+          class="flex items-end">
           <SheetItem
             v-for="sheet in sheetsList"
             :key="sheet.id"
@@ -200,7 +197,7 @@ const canDeleteSheet = computed(() => props.sheets.length > 1)
             @edit-end="handleEditEnd"
             @duplicate="handleDuplicate"
             @delete="handleDelete" />
-        </div>
+        </VueDraggable>
 
         <div v-if="addable && addButtonPosition === 'attached'" class="shrink-0 mb-1">
           <WorkbookAddButton @click="handleAdd" />
@@ -227,5 +224,4 @@ const canDeleteSheet = computed(() => props.sheets.length > 1)
 </template>
 
 <style scoped>
-/* Removed TransitionGroup styles as FormKit/drag-and-drop handles animations */
 </style>
