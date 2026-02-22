@@ -78,23 +78,20 @@ const onUpdateEvent = (e: any) => {
 <template>
   <div
     :class="[
-      'flex flex-col bg-muted/40 rounded-lg overflow-hidden shrink-0 border border-border/50',
+      'flex flex-col bg-card rounded-lg overflow-hidden shrink-0 border border-border/60',
       boardClass || 'w-80',
     ]">
-    <div :class="['p-3 border-b border-border/50 bg-background/50', headerClass]">
+    <div :class="['p-3 border-b border-border/80 ', headerClass]">
       <slot name="header" :column="column" :pageInfo="pageInfo">
         <div class="flex items-center justify-between font-semibold text-foreground">
           <span>{{ column.title }}</span>
-          <span class="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-medium">
-            {{ pageInfo.totalItems }}
-          </span>
         </div>
       </slot>
     </div>
 
     <div
       ref="scrollContainer"
-      :class="['flex-1 flex flex-col overflow-y-auto p-3 custom-scrollbar', bodyClass]"
+      :class="['flex-1 flex flex-col overflow-y-auto p-3  custom-scrollbar', bodyClass]"
       @scroll="handleScroll">
       <div
         v-if="isInitialLoading && items.length === 0"
@@ -102,7 +99,7 @@ const onUpdateEvent = (e: any) => {
         <div
           v-for="i in 3"
           :key="'skeleton-' + i"
-          class="bg-card p-3 rounded-md shadow-sm border border-border animate-pulse flex flex-col gap-3">
+          class="bg-body p-3 rounded-md shadow-sm border border-border animate-pulse flex flex-col gap-3">
           <div class="h-4 bg-muted/60 rounded w-2/3"></div>
           <div class="h-3 bg-muted/60 rounded w-1/3"></div>
         </div>
@@ -117,7 +114,7 @@ const onUpdateEvent = (e: any) => {
           :group="group"
           :animation="150"
           :ghostClass="ghostClass || 'kanban-ghost'"
-          :class="['flex-1 flex flex-col gap-3 min-h-[50px] py-1', draggableClass]"
+          :class="['flex-1 flex flex-col  gap-2 min-h-[50px] py-1', draggableClass]"
           @add="onAdd"
           @remove="onRemove"
           @update="onUpdateEvent">
@@ -126,7 +123,7 @@ const onUpdateEvent = (e: any) => {
             :key="item[itemKey || 'id']"
             class="cursor-grab active:cursor-grabbing">
             <slot name="item" :item="item" :column="column">
-              <div class="bg-card p-3 rounded-md shadow-sm border border-border text-sm">
+              <div class="bg-body p-3 rounded-md shadow-sm border border-border text-sm">
                 {{ item.title || item.name || item.id }}
               </div>
             </slot>
@@ -145,7 +142,7 @@ const onUpdateEvent = (e: any) => {
 
 <style scoped>
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
+  width: 0px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
