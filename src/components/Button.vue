@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useSlots } from 'vue'
+import { computed, inject, useSlots } from 'vue'
 import Icon from './Icon.vue'
 import { vRipple } from '../directives/vRipple'
 import type { ButtonVariant, ButtonSize, ButtonRounded, ButtonProps } from '@/types'
@@ -16,6 +16,10 @@ const props = withDefaults(defineProps<ButtonProps>(), {
 
 const slots = useSlots()
 const isOnlyIcon = computed(() => props.icon && !props.text && !slots.default)
+
+// Detect if inside a ButtonGroup — in groups, icon-only buttons use text button sizing (height auto via CSS)
+const buttonGroup = inject<{ isInGroup: boolean } | null>('buttonGroup', null)
+const isInGroup = computed(() => !!buttonGroup?.isInGroup)
 
 const classes = computed(() => {
   const baseClasses =
@@ -53,12 +57,22 @@ const classes = computed(() => {
     lg: 'h-10 px-6',
     xl: 'h-12 px-10',
   }
+
   const iconSizes: Record<ButtonSize, string> = {
     xs: 'h-6.5 w-6.5 min-h-6.5 min-w-6.5',
     sm: 'h-7 w-7 min-h-7 min-w-7',
     md: 'h-7.5 w-7.5 min-h-7.5 min-w-7.5',
     lg: 'h-8 w-8 min-h-8 min-w-8',
     xl: 'h-8.5 w-8.5 min-h-8.5 min-w-8.5',
+  }
+
+  // Inside a ButtonGroup: icon-only buttons use text button px but no fixed height (height comes from CSS stretch)
+  const groupIconSizes: Record<ButtonSize, string> = {
+    xs: 'px-2',
+    sm: 'px-3',
+    md: 'px-4',
+    lg: 'px-6',
+    xl: 'px-10',
   }
 
   const roundedVariants: Record<ButtonRounded, string> = {
@@ -71,11 +85,18 @@ const classes = computed(() => {
     full: 'rounded-full',
   }
 
+  let sizeClass: string
+  if (isOnlyIcon.value) {
+    sizeClass = isInGroup.value ? groupIconSizes[props.size] : iconSizes[props.size]
+  } else {
+    sizeClass = sizes[props.size]
+  }
+
   return [
     baseClasses,
     variants[props.variant],
     roundedVariants[props.rounded],
-    isOnlyIcon.value ? iconSizes[props.size] : sizes[props.size],
+    sizeClass,
     props.class,
   ].join(' ')
 })
