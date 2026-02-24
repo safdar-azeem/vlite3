@@ -6,9 +6,11 @@ const { theme, toggleTheme } = useTheme()
 </script>
 
 <template>
-  <Button
-    :icon="theme === 'light' ? 'lucide:sun' : 'lucide:moon'"
-    variant="secondary"
-    :title="theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'"
-    @click="toggleTheme" />
+  <slot :toggleTheme="toggleTheme" :theme="theme">
+    <Button
+      :icon="theme === 'light' ? 'lucide:sun' : 'lucide:moon'"
+      variant="secondary"
+      :title="theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'"
+      @click="toggleTheme" />
+  </slot>
 </template>
