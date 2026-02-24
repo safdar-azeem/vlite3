@@ -1477,10 +1477,18 @@ v-datepicker-lite@^0.1.6:
   dependencies:
     v-tooltip-lite "^0.1.0"
 
-v-tooltip-lite@^0.1.0, v-tooltip-lite@^0.1.9:
+v-tooltip-lite@^0.1.0:
   version "0.1.9"
   resolved "https://registry.npmjs.org/v-tooltip-lite/-/v-tooltip-lite-0.1.9.tgz"
   integrity sha512-j9XWxDiXHkHrN2Pt795XuBAMgbWXfWqXYPK7e7Tj0dJZMid7sSNfvVog2UN739JqeauNlETl7pIgljYGhZxanA==
+  dependencies:
+    "@popperjs/core" "^2.11.8"
+    clickout-lite "^0.0.1"
+
+v-tooltip-lite@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/v-tooltip-lite/-/v-tooltip-lite-0.2.1.tgz#3b5aec6c9849061d4bb392f07a59b6f32af4d85d"
+  integrity sha512-B3ovdkYfXhKNN2Cg9CAgq3k+bOHQYOZQS+IxQIxwHzM1KpmdbcbtvgG9Fuo5eLOaXeDdanD7ja1MFRRKg4XEaw==
   dependencies:
     "@popperjs/core" "^2.11.8"
     clickout-lite "^0.0.1"
