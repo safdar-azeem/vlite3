@@ -32,6 +32,8 @@ const props = withDefaults(defineProps<DataTableProps>(), {
   search: '',
   showSearch: true,
   searchPlaceholder: 'Search...',
+  toolbarClass: '',
+  toolbarSearchClass: '',
   headers: () => [],
   keyField: '_id',
   loading: false,
@@ -268,7 +270,7 @@ const containerClass = computed(() => {
     'w-full flex flex-col',
     isRaised ? 'bg-background shadow-sm p-2 rounded-lg' : 'bg-background rounded',
     'overflow-hidden',
-    props.bordered ? 'border border-border/60' : '',
+    props.bordered ? 'border border-border' : '',
     props.class,
   ].join(' ')
 })
@@ -298,11 +300,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="space-y-4">
+  <div class="space-y-6.5">
     <DataTableToolbar
       v-model="internalSearch"
       :show-search="showSearch"
-      :placeholder="searchPlaceholder">
+      :placeholder="searchPlaceholder"
+      :class="toolbarClass"
+      :search-class="toolbarSearchClass">
       <template #left v-if="$slots?.['toolbar-left']">
         <slot name="toolbar-left" />
       </template>
@@ -326,7 +330,7 @@ onMounted(() => {
         <table :class="tableClass" class="data-table">
           <thead
             :class="[
-              '[&_tr]:border-b [&_tr]:border-border/70! bg-muted',
+              '[&_tr]:border-b [&_tr]:border-border bg-muted',
               variant === 'raised'
                 ? '[&_th:first-child]:rounded-tl-lg [&_th:last-child]:rounded-tr-lg'
                 : '',
@@ -366,7 +370,7 @@ onMounted(() => {
               <tr
                 v-for="i in Math.min(internalItemsPerPage, 15)"
                 :key="'skeleton-' + i"
-                class="border-b border-border/50 bg-background transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                class="border-b border-border/70 bg-background transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                 <td
                   v-if="selectable"
                   class="w-[48px] px-0 py-4 align-middle text-center"
