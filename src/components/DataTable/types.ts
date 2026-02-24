@@ -54,6 +54,8 @@ export interface DataTableProps {
   search?: string
   showSearch?: boolean
   searchPlaceholder?: string
+  toolbarClass?: string
+  toolbarSearchClass?: string
   headers: TableHeader[]
   keyField?: string
   loading?: boolean
@@ -87,3 +89,4 @@ export interface RowClickPayload {
   row: any
   index: number
 }
+
