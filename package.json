@@ -40,7 +40,7 @@
     "scrollreveal": "^4.0.9",
     "tailwindcss": "^4.1.18",
     "v-datepicker-lite": "^0.1.6",
-    "v-tooltip-lite": "^0.1.9",
+    "v-tooltip-lite": "^0.2.1",
     "vue-carousel-lite": "^0.2.7",
     "vue-draggable-plus": "^0.5.3",
     "vue3-google-signin": "^2.1.1"
