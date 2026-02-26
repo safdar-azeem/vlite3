@@ -31,14 +31,9 @@ onMounted(() => {
   fetchData()
 })
 
-const handlePageChange = (page: number) => {
-  currentPage.value = page
-  fetchData()
-}
-
-const handleLimitChange = (limit: number) => {
-  itemsPerPage.value = limit
-  currentPage.value = 1
+const handleChange = (payload: { page: number; limit: number }) => {
+  currentPage.value = payload.page
+  itemsPerPage.value = payload.limit
   fetchData()
 }
 </script>
@@ -65,8 +60,7 @@ const handleLimitChange = (limit: number) => {
           :loading="loading"
           :page-info="result?.pageInfo"
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
-          @page-change="handlePageChange"
-          @update:items-per-page="handleLimitChange">
+          @change="handleChange">
           <template #skeleton>
             <div
               class="bg-card border border-border rounded-xl p-4 shadow-sm animate-pulse h-[116px] flex flex-col justify-between">
@@ -109,12 +103,11 @@ const handleLimitChange = (limit: number) => {
           :item="UserCard"
           :skeleton="UserSkeleton"
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
-          @page-change="handlePageChange"
           :pagination-props="{
             alignment: 'between',
             showItemsPerPage: true,
           }"
-          @update:items-per-page="handleLimitChange" />
+          @change="handleChange" />
       </div>
     </DemoSection>
   </div>
