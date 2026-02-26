@@ -2,26 +2,11 @@
 import { computed } from 'vue'
 import Icon from '../Icon.vue'
 import Button from '@/components/Button.vue'
+import { PaginationProps } from '.'
 
-interface Props {
-  currentPage?: number
-  totalPages: number
-  siblingCount?: number
-  disabled?: boolean
-  showEdges?: boolean
-
-  // New Feature Props
-  showPageInfo?: boolean // "Page 1 of 10"
-  showItemsPerPage?: boolean // "Show 10"
-  itemsPerPage?: number
-  itemsPerPageOptions?: number[]
-  navType?: 'text' | 'icon' // Default 'text' (responsive) vs 'icon' (always arrows)
-  alignment?: 'start' | 'center' | 'end' | 'between'
-}
-
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<PaginationProps>(), {
   currentPage: 1,
-  siblingCount: 1,
+  totalItems: 1,
   disabled: false,
   showEdges: false,
   showPageInfo: false,
@@ -60,14 +45,14 @@ const handleItemsPerPageChange = (event: Event) => {
 
 // Logic to generate the range of page numbers
 const paginationRange = computed(() => {
-  const totalPageNumbers = props.siblingCount * 2 + 5
+  const totalPageNumbers = props.totalItems * 2 + 5
 
   if (totalPageNumbers >= props.totalPages) {
     return range(1, props.totalPages)
   }
 
-  const leftSiblingIndex = Math.max(props.currentPage - props.siblingCount, 1)
-  const rightSiblingIndex = Math.min(props.currentPage + props.siblingCount, props.totalPages)
+  const leftSiblingIndex = Math.max(props.currentPage - props.totalItems, 1)
+  const rightSiblingIndex = Math.min(props.currentPage + props.totalItems, props.totalPages)
 
   const shouldShowLeftDots = leftSiblingIndex > 2
   const shouldShowRightDots = rightSiblingIndex < props.totalPages - 2
@@ -76,13 +61,13 @@ const paginationRange = computed(() => {
   const lastPageIndex = props.totalPages
 
   if (!shouldShowLeftDots && shouldShowRightDots) {
-    let leftItemCount = 3 + 2 * props.siblingCount
+    let leftItemCount = 3 + 2 * props.totalItems
     let leftRange = range(1, leftItemCount)
     return [...leftRange, 'DOTS', lastPageIndex]
   }
 
   if (shouldShowLeftDots && !shouldShowRightDots) {
-    let rightItemCount = 3 + 2 * props.siblingCount
+    let rightItemCount = 3 + 2 * props.totalItems
     let rightRange = range(props.totalPages - rightItemCount + 1, props.totalPages)
     return [firstPageIndex, 'DOTS', ...rightRange]
   }
@@ -109,7 +94,7 @@ const alignmentClass = computed(() => {
       case 'end':
         return 'justify-end'
       case 'between':
-        return 'justify-between'
+        return 'justify-between!'
       case 'center':
       default:
         return 'justify-center'
