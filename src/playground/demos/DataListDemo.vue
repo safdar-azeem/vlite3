@@ -109,9 +109,11 @@ const handleLimitChange = (limit: number) => {
           :item="UserCard"
           :skeleton="UserSkeleton"
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
-          pagination-position="end"
-          show-items-per-page
           @page-change="handlePageChange"
+          :pagination-props="{
+            alignment: 'between',
+            showItemsPerPage: true,
+          }"
           @update:items-per-page="handleLimitChange" />
       </div>
     </DemoSection>
