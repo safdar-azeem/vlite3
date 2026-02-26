@@ -184,6 +184,14 @@ export function useForm(options: UseFormOptions): UseFormReturn {
       }
     }
 
+    // Max Files limit validation
+    if (!error && (field.type === 'file' || field.type === 'fileUploader') && (field.props?.multiple || field.maxFiles)) {
+      const maxFiles = field.maxFiles || field.props?.maxFiles
+      if (maxFiles && Array.isArray(value) && value.length > maxFiles) {
+        error = `Maximum ${maxFiles} files allowed`
+      }
+    }
+
     // Custom validation (only if required passed or not required)
     if (!error && field.validation) {
       error = field.validation({
