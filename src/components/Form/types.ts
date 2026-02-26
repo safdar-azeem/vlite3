@@ -148,6 +148,8 @@ export interface IForm {
   max?: number
   /** Maximum file size in MB for file/avatar uploads */
   maxFileSize?: number
+  /** Maximum number of files allowed when multiple is true */
+  maxFiles?: number
   /** i18n keys */
   labelI8n?: string
   placeholderI8n?: string
