@@ -72,6 +72,7 @@ const menuItems: SidebarMenuItemSchema[] = [
     icon: 'lucide:navigation',
     children: [
       { label: 'DataTable', to: '/datatable', icon: 'lucide:table-2' },
+      { label: 'DataList', to: '/datalist', icon: 'lucide:layout-grid' },
       { label: 'Sidebar Menu', to: '/sidebarmenu', icon: 'lucide:sidebar' },
       { label: 'Navbar', to: '/navbar', icon: 'lucide:layout-template' },
       { label: 'Link/Label', to: '/label', icon: 'lucide:type' },
@@ -113,7 +114,7 @@ const menuItems: SidebarMenuItemSchema[] = [
           <SidebarMenu
             :items="menuItems"
             :allow-multiple="true"
-            :default-expanded="['Core', 'Feedback & Overlays']" />
+            :default-expanded="['Core', 'Feedback & Overlays', 'Navigation & Data']" />
         </div>
       </template>
 
