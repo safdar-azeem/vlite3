@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { Pagination } from '../Pagination'
 import Icon from '../Icon.vue'
 import type { DataListProps } from './types'
+import { PaginationProps } from '../Pagination'
 
 const props = withDefaults(defineProps<DataListProps>(), {
   data: () => [],
@@ -13,9 +14,13 @@ const props = withDefaults(defineProps<DataListProps>(), {
   emptyDescription: 'We could not find any items to display here.',
   emptyIcon: 'lucide:inbox',
   showPagination: true,
-  paginationPosition: 'between',
-  itemsPerPageOptions: () => [10, 25, 50, 100],
-  showItemsPerPage: false,
+  paginationProps: () => ({
+    alignment: 'end',
+    navType: 'icon',
+    showItemsPerPage: false,
+    itemsPerPageOptions: [10, 25, 50, 100],
+    showPageInfo: false,
+  }),
 })
 
 const emit = defineEmits<{
@@ -48,7 +53,9 @@ const totalPages = computed(() => props.pageInfo?.totalPages || 1)
       </template>
     </div>
 
-    <div v-else-if="!data || data.length === 0" class="flex flex-col items-center justify-center p-12 text-center bg-gray-50 border border-gray-200 rounded-lg">
+    <div
+      v-else-if="!data || data.length === 0"
+      class="flex flex-col items-center justify-center p-12 text-center bg-gray-50 border border-gray-200 rounded-lg">
       <slot name="empty">
         <div class="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 mb-4">
           <Icon :icon="emptyIcon" class="h-6 w-6 text-gray-500" />
@@ -61,22 +68,26 @@ const totalPages = computed(() => props.pageInfo?.totalPages || 1)
     <div v-else :class="className">
       <template v-for="(itemData, index) in data" :key="index">
         <slot name="item" :item="itemData" :data="data" :index="index">
-          <component v-if="item" :is="item" :item="itemData" :data="data" :index="index" v-bind="itemProps" />
+          <component
+            v-if="item"
+            :is="item"
+            :item="itemData"
+            :data="data"
+            :index="index"
+            v-bind="itemProps" />
         </slot>
       </template>
     </div>
 
-    <div v-if="showPagination && pageInfo && totalPages > 1" class="mt-8">
+    <div v-if="showPagination && pageInfo && totalPages > 1" class="mt-8 w-full">
       <Pagination
-        :current-page="currentPage"
-        :total-pages="totalPages"
-        :alignment="paginationPosition"
-        :show-items-per-page="showItemsPerPage"
-        :items-per-page="pageInfo?.itemsPerPage"
-        :items-per-page-options="itemsPerPageOptions"
+        :current-page="pageInfo?.currentPage"
+        :total-pages="pageInfo?.totalPages"
+        :total-items="pageInfo?.totalItems"
+        navType="icon"
+        v-bind="paginationProps"
         @change="handlePageChange"
-        @update:items-per-page="handleItemsPerPageChange"
-      />
+        @update:items-per-page="handleItemsPerPageChange" />
     </div>
   </div>
 </template>
