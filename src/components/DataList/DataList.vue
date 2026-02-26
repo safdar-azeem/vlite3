@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { Pagination } from '../Pagination'
 import Icon from '../Icon.vue'
 import type { DataListProps } from './types'
-import { PaginationProps } from '../Pagination'
 
 const props = withDefaults(defineProps<DataListProps>(), {
   data: () => [],
@@ -24,16 +23,41 @@ const props = withDefaults(defineProps<DataListProps>(), {
 })
 
 const emit = defineEmits<{
-  (e: 'page-change', page: number): void
-  (e: 'update:itemsPerPage', limit: number): void
+  (e: 'change', payload: { page: number; limit: number }): void
 }>()
 
+const internalLimit = ref(props.pageInfo?.itemsPerPage || props.paginationProps?.itemsPerPage || 10)
+
+watch(
+  () => props.pageInfo?.itemsPerPage,
+  (newVal) => {
+    if (newVal !== undefined) internalLimit.value = newVal
+  }
+)
+
+watch(
+  () => props.paginationProps?.itemsPerPage,
+  (newVal) => {
+    if (newVal !== undefined) internalLimit.value = newVal
+  }
+)
+
+let debounceTimer: ReturnType<typeof setTimeout> | null = null
+
+const triggerChange = (page: number, limit: number) => {
+  if (debounceTimer) clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(() => {
+    emit('change', { page, limit })
+  }, 10)
+}
+
 const handlePageChange = (page: number) => {
-  emit('page-change', page)
+  triggerChange(page, internalLimit.value)
 }
 
 const handleItemsPerPageChange = (limit: number) => {
-  emit('update:itemsPerPage', limit)
+  internalLimit.value = limit
+  triggerChange(props.pageInfo?.currentPage || 1, limit)
 }
 
 const currentPage = computed(() => props.pageInfo?.currentPage || 1)
