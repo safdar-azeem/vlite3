@@ -30,22 +30,22 @@ export interface DataListPageInfo {
   totalItems?: number
   itemsPerPage?: number
 }
+
 ```
 
 ### Slots
 
-| Slot       | Description                                         |
-| ---------- | --------------------------------------------------- |
-| `item`     | Custom item layout (props: `{ item, data, index }`) |
-| `skeleton` | Custom skeleton loader layout (props: `{ index }`)  |
-| `empty`    | Custom empty state layout                           |
+| Slot | Description |
+| --- | --- |
+| `item` | Custom item layout (props: `{ item, data, index }`) |
+| `skeleton` | Custom skeleton loader layout (props: `{ index }`) |
+| `empty` | Custom empty state layout |
 
 ### Events
 
-| Event                 | Payload         | Description                             |
-| --------------------- | --------------- | --------------------------------------- |
-| `page-change`         | `page: number`  | Fired when the pagination page changes  |
-| `update:itemsPerPage` | `limit: number` | Fired when items per page limit changes |
+| Event | Payload | Description |
+| --- | --- | --- |
+| `change` | `{ page: number, limit: number }` | Fired when pagination or limit changes |
 
 ### Usage
 
@@ -64,6 +64,7 @@ export interface DataListPageInfo {
     </div>
   </template>
 </DataList>
+
 ```
 
 **Component Prop-based Rendering:**
@@ -73,8 +74,8 @@ export interface DataListPageInfo {
 import ItemCard from './ItemCard.vue'
 import ItemSkeleton from './ItemSkeleton.vue'
 
-const handlePageChange = (page) => {
-  console.log('Fetching page:', page)
+const handleChange = (payload) => {
+  console.log('Fetching page:', payload.page, 'with limit:', payload.limit)
 }
 </script>
 
@@ -87,6 +88,8 @@ const handlePageChange = (page) => {
     :skeleton="ItemSkeleton"
     :item-props="{ extraProp: true }"
     class-name="flex flex-col gap-4"
-    @page-change="handlePageChange" />
+    @change="handleChange" />
 </template>
+
 ```
+
