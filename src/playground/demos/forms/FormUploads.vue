@@ -18,6 +18,7 @@ const uploadSchema: IForm[] = [
     label: 'ID Proof (Input Style)',
     type: 'file',
     required: true,
+    maxFileSize: 1,
     placeholder: 'Select ID document',
     props: {
       accept: 'image/*,.pdf',
