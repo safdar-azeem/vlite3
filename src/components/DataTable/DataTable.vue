@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import Icon from '../Icon.vue'
 import CheckBox from '../CheckBox.vue'
 import Button from '../Button.vue'
@@ -42,9 +42,13 @@ const props = withDefaults(defineProps<DataTableProps>(), {
   emptyDescription: 'No results found. Try adjusting your filters or search terms.',
   emptyIcon: 'lucide:inbox',
   showPagination: true,
-  itemsPerPage: 10,
-  itemsPerPageOptions: () => [10, 25, 50, 100],
-  showItemsPerPage: true,
+  paginationProps: () => ({
+    alignment: 'between',
+    navType: 'icon',
+    showItemsPerPage: true,
+    itemsPerPageOptions: [10, 25, 50, 100],
+    showPageInfo: false,
+  }),
   striped: false,
   hoverable: true,
   bordered: true,
@@ -63,7 +67,7 @@ const emit = defineEmits<{
 }>()
 
 const sortConfig = ref<SortConfig>({ field: '', order: '' })
-const internalItemsPerPage = ref(props.itemsPerPage)
+const internalItemsPerPage = ref(props.pageInfo?.itemsPerPage || props.paginationProps?.itemsPerPage || 10)
 const currentPage = ref(props.pageInfo?.currentPage || 1)
 const internalSearch = ref(props.search || '')
 const showDeleteConfirmation = ref(false)
@@ -92,11 +96,11 @@ watch(
   }
 )
 
-// Debounce search emit
-let debounceTimer: ReturnType<typeof setTimeout> | null = null
+// Debounce search emit to prevent spamming the API while typing
+let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null
 watch(internalSearch, (newVal) => {
-  if (debounceTimer) clearTimeout(debounceTimer)
-  debounceTimer = setTimeout(() => {
+  if (searchDebounceTimer) clearTimeout(searchDebounceTimer)
+  searchDebounceTimer = setTimeout(() => {
     currentPage.value = 1
     loadingCause.value = 'search'
     emitChange()
@@ -104,9 +108,16 @@ watch(internalSearch, (newVal) => {
 })
 
 watch(
-  () => props.itemsPerPage,
+  () => props.pageInfo?.itemsPerPage,
   (newVal) => {
-    internalItemsPerPage.value = newVal
+    if (newVal !== undefined) internalItemsPerPage.value = newVal
+  }
+)
+
+watch(
+  () => props.paginationProps?.itemsPerPage,
+  (newVal) => {
+    if (newVal !== undefined) internalItemsPerPage.value = newVal
   }
 )
 
@@ -191,7 +202,7 @@ const emitSelection = () => {
     }
   })
 
-  // Add rows that were previously selected but not currently visible (preserve them)
+  // Add rows that were previously selected but not previously visible (preserve them)
   currentSelected.forEach((row) => {
     const id = getRowId(row, props.keyField)
     if (!seenIds.has(id) && selectedIds.value.has(id)) {
@@ -253,15 +264,20 @@ const onDeleteConfirm = () => {
   showDeleteConfirmation.value = false
 }
 
+// Emitting change with a small debounce handles synchronous updates gracefully and ensures performance
+let emitDebounceTimer: ReturnType<typeof setTimeout> | null = null
 const emitChange = () => {
-  emit('change', {
-    pagination: {
-      page: currentPage.value,
-      limit: internalItemsPerPage.value,
-    },
-    sorting: { ...sortConfig.value },
-    search: internalSearch.value,
-  })
+  if (emitDebounceTimer) clearTimeout(emitDebounceTimer)
+  emitDebounceTimer = setTimeout(() => {
+    emit('change', {
+      pagination: {
+        page: currentPage.value,
+        limit: internalItemsPerPage.value,
+      },
+      sorting: { ...sortConfig.value },
+      search: internalSearch.value,
+    })
+  }, 10)
 }
 
 const containerClass = computed(() => {
@@ -293,10 +309,6 @@ watch(
     selectedIds.value = new Set([...selectedIds.value].filter((id) => validIds.has(id)))
   }
 )
-
-onMounted(() => {
-  emitChange()
-})
 </script>
 
 <template>
@@ -450,12 +462,8 @@ onMounted(() => {
       <Pagination
         :current-page="currentPage"
         :total-pages="pageInfo.totalPages"
-        :show-page-info="false"
-        :show-items-per-page="showItemsPerPage"
-        :items-per-page="internalItemsPerPage"
-        :items-per-page-options="itemsPerPageOptions"
-        nav-type="icon"
-        :alignment="props.paginationPosition"
+        :total-items="pageInfo.totalItems"
+        v-bind="paginationProps"
         @change="handlePageChange"
         @update:items-per-page="handleItemsPerPageChange" />
     </div>
