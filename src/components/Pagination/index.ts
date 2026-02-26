@@ -4,6 +4,7 @@ export interface PageInfo {
   currentPage: number
   totalPages: number
   totalItems?: number
+  itemsPerPage?: number
 }
 
 export interface PaginationProps {
