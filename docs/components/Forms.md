@@ -51,6 +51,8 @@ A schema-driven form builder with built-in validation, multi-step wizards, group
 | `addonLeft`    | `string \| IFormAddon`           | Left addon — plain text or addon config object         |
 | `addonRight`   | `string \| IFormAddon`           | Right addon — plain text or addon config object        |
 | `props`        | `Record<string, any>`            | Extra props forwarded to the field component           |
+| `maxFileSize`  | `number`                         | Maximum file size in MB for file/avatar uploads        |
+| `maxFiles`     | `number`                         | Maximum number of files allowed when multiple is true  |
 
 ### Addon Interface (`IFormAddon`)
 
@@ -182,7 +184,7 @@ const schema = [
 
 #### File Uploads
 
-Support for single file, multiple files, and different UI variants.
+Support for single file, multiple files, size limits, file count limits, and different UI variants.
 
 ```javascript
 const schema = [
@@ -190,18 +192,22 @@ const schema = [
     name: 'avatar',
     label: 'Avatar',
     type: 'avatarUpload', // Specialized avatar uploader
+    maxFileSize: 5, // Maximum file size of 5MB
   },
   {
     name: 'resume',
     label: 'Resume',
     type: 'fileUploader', // Dropzone style
     props: { accept: '.pdf' },
+    maxFileSize: 10, // Maximum file size of 10MB
   },
   {
     name: 'documents',
     label: 'Documents',
     type: 'file', // Standard input style
     props: { multiple: true },
+    maxFiles: 5, // Limit to a maximum of 5 files
+    maxFileSize: 2, // Maximum 2MB per file
   },
 ]
 ```
@@ -263,7 +269,6 @@ const schema = [
       type: 'button',
       text: 'Check',
       action: 'checkAvailability',
-      action: 'checkAvailability',
     },
   },
   {
@@ -292,7 +297,6 @@ const handleAddonAction = (action) => {
 
 <template>
   <Form :schema="schema" @onSubmit="handleSubmit" @onAddonAction="handleAddonAction" />
-  <!-- Submitted values: { protocol: 'https://', domain: '...', currency: 'USD', amount: '...' } -->
 </template>
 ```
 
@@ -340,7 +344,6 @@ const handleCreateFolder = async (payload: any, close) => {
 
 <template>
   <div class="p-4">
-    <!-- Note: Modal body already handles some padding styles etc -->
     <Form
       :schema="[
         {
