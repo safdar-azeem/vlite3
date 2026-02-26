@@ -67,7 +67,9 @@ const emit = defineEmits<{
 }>()
 
 const sortConfig = ref<SortConfig>({ field: '', order: '' })
-const internalItemsPerPage = ref(props.pageInfo?.itemsPerPage || props.paginationProps?.itemsPerPage || 10)
+const internalItemsPerPage = ref(
+  props.pageInfo?.itemsPerPage || props.paginationProps?.itemsPerPage || 10
+)
 const currentPage = ref(props.pageInfo?.currentPage || 1)
 const internalSearch = ref(props.search || '')
 const showDeleteConfirmation = ref(false)
@@ -314,6 +316,7 @@ watch(
 <template>
   <div class="space-y-6.5">
     <DataTableToolbar
+      v-if="showSearch || $slots?.['toolbar-left'] || $slots?.['toolbar-right']"
       v-model="internalSearch"
       :show-search="showSearch"
       :placeholder="searchPlaceholder"
