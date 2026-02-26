@@ -250,6 +250,7 @@ const fieldProps = computed(() => {
       placeholder: props.field.placeholder,
       size: props.size,
       rounded: props.rounded,
+      maxSize: props.field.maxFileSize ? props.field.maxFileSize * 1024 * 1024 : undefined,
     }
   }
 
@@ -260,6 +261,7 @@ const fieldProps = computed(() => {
       ...baseProps,
       modelValue: props.value,
       editable: !props.readonly,
+      maxSize: props.field.maxFileSize ? props.field.maxFileSize * 1024 * 1024 : undefined,
     }
   }
 
@@ -437,7 +439,7 @@ const useAddonSlots = computed(() => hasObjectAddons.value && isInputType.value)
 
 // Handle addon select change
 const handleAddonSelect = (addon: IFormAddon, payload: { value: any; data?: any }) => {
-  emit('addonChange', addon.name, { value: payload.value })
+  emit('addonChange', addon.name as string, { value: payload.value })
 }
 
 // Handle addon button click
@@ -449,7 +451,6 @@ const handleAddonAction = (addon: IFormAddon) => {
 </script>
 
 <template>
-  <!-- Input with object addon slots -->
   <Input
     v-if="useAddonSlots"
     v-bind="{
@@ -458,10 +459,9 @@ const handleAddonAction = (addon: IFormAddon) => {
     }"
     v-on="fieldEvents">
     <template v-if="isAddonObject(field.addonLeft)" #addon-left>
-      <!-- Select addon -->
       <Dropdown
         v-if="field.addonLeft.type === 'select'"
-        :modelValue="values[field.addonLeft.name]"
+        :modelValue="field.addonLeft.name ? values[field.addonLeft.name] : undefined"
         :options="field.addonLeft.options || []"
         v-bind="field.addonLeft.props || {}"
         @onSelect="(payload: any) => handleAddonSelect(field.addonLeft as IFormAddon, payload)">
@@ -471,7 +471,6 @@ const handleAddonAction = (addon: IFormAddon) => {
           </Button>
         </template>
       </Dropdown>
-      <!-- Button addon -->
       <Button
         v-else-if="field.addonLeft.type === 'button'"
         variant="outline"
@@ -482,10 +481,9 @@ const handleAddonAction = (addon: IFormAddon) => {
     </template>
 
     <template v-if="isAddonObject(field.addonRight)" #addon-right>
-      <!-- Select addon -->
       <Dropdown
         v-if="field.addonRight.type === 'select'"
-        :modelValue="values[field.addonRight.name]"
+        :modelValue="field.addonRight.name ? values[field.addonRight.name] : undefined"
         :options="field.addonRight.options || []"
         v-bind="field.addonRight.props || {}"
         @onSelect="(payload: any) => handleAddonSelect(field.addonRight as IFormAddon, payload)">
@@ -495,7 +493,6 @@ const handleAddonAction = (addon: IFormAddon) => {
           </Button>
         </template>
       </Dropdown>
-      <!-- Button addon -->
       <Button
         v-else-if="field.addonRight.type === 'button'"
         variant="outline"
@@ -506,7 +503,6 @@ const handleAddonAction = (addon: IFormAddon) => {
     </template>
   </Input>
 
-  <!-- Default: bare component rendering (no object addons) -->
   <component
     v-else
     :is="fieldComponent"
