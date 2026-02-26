@@ -1,3 +1,6 @@
+import { PageInfo, PaginationProps } from '../Pagination'
+export type DataTablePaginationProps = Omit<PaginationProps, 'currentPage' | 'totalPages'>
+
 export interface PaginationConfig {
   page: number
   limit: number
@@ -40,13 +43,6 @@ export interface TableHeader {
   type?: 'text' | 'price' | 'date' | 'number'
 }
 
-export interface PageInfo {
-  currentPage: number
-  totalPages: number
-  totalItems: number
-  itemsPerPage?: number
-}
-
 export interface DataTableProps {
   rows: any[]
   selectedRows?: any[]
@@ -64,11 +60,8 @@ export interface DataTableProps {
   emptyDescription?: string
   emptyIcon?: string
   showPagination?: boolean
-  paginationPosition?: 'start' | 'center' | 'end' | 'between'
+  paginationProps?: DataTablePaginationProps
   pageInfo?: PageInfo
-  itemsPerPage?: number
-  itemsPerPageOptions?: number[]
-  showItemsPerPage?: boolean
   striped?: boolean
   hoverable?: boolean
   bordered?: boolean
@@ -89,4 +82,3 @@ export interface RowClickPayload {
   row: any
   index: number
 }
-
