@@ -71,6 +71,7 @@ const menuItems: SidebarMenuItemSchema[] = [
     label: 'Navigation & Data',
     icon: 'lucide:navigation',
     children: [
+      { label: 'Screen', to: '/screen', icon: 'lucide:monitor' },
       { label: 'DataTable', to: '/datatable', icon: 'lucide:table-2' },
       { label: 'DataList', to: '/datalist', icon: 'lucide:layout-grid' },
       { label: 'Sidebar Menu', to: '/sidebarmenu', icon: 'lucide:sidebar' },
