@@ -24,6 +24,7 @@ interface Props {
   loading?: boolean
   disabled?: boolean
   maxSize?: number
+  maxFiles?: number
   variant?: 'dropzone' | 'input'
   placeholder?: string
   size?: InputSize
@@ -92,6 +93,15 @@ const displayFiles = computed(() => {
 
 const triggerInput = () => {
   if (props.disabled || props.loading || isProcessing.value) return
+  
+  if (props.multiSelect && props.maxFiles) {
+    const existingCount = Array.isArray(props.modelValue) ? props.modelValue.length : (props.modelValue ? 1 : 0)
+    if (existingCount >= props.maxFiles) {
+      emit('error', `Maximum ${props.maxFiles} files allowed`)
+      return
+    }
+  }
+  
   fileInput.value?.click()
 }
 
@@ -159,7 +169,24 @@ const processFiles = async (fileList: FileList) => {
   const files = Array.from(fileList)
 
   // Single select validation
-  const filesToProcess = props.multiSelect ? files : [files[0]]
+  let filesToProcess = props.multiSelect ? files : [files[0]]
+  
+  // Enforce Limit
+  if (props.multiSelect && props.maxFiles) {
+    const existingCount = Array.isArray(props.modelValue) ? props.modelValue.length : (props.modelValue ? 1 : 0)
+    const availableSlots = props.maxFiles - existingCount
+    
+    if (availableSlots <= 0) {
+      emit('error', `Maximum ${props.maxFiles} files allowed`)
+      isProcessing.value = false
+      return
+    }
+    
+    if (filesToProcess.length > availableSlots) {
+      errors.push(`Only ${availableSlots} more file(s) allowed. Maximum ${props.maxFiles} files.`)
+      filesToProcess = filesToProcess.slice(0, availableSlots)
+    }
+  }
 
   try {
     for (const file of filesToProcess) {
@@ -217,7 +244,7 @@ const processFiles = async (fileList: FileList) => {
     if (processed.length > 0) {
       let result: FilePickerValue | FilePickerValue[]
       if (props.multiSelect) {
-        const existing = Array.isArray(props.modelValue) ? props.modelValue : []
+        const existing = Array.isArray(props.modelValue) ? props.modelValue : (props.modelValue ? [props.modelValue] : [])
         result = [...existing, ...processed]
       } else {
         result = processed[0]
@@ -407,7 +434,7 @@ const inputBaseClass = computed(() => {
             </div>
           </div>
 
-          <div class="flex gap-2" v-if="multiSelect">
+          <div class="flex gap-2" v-if="multiSelect && (!maxFiles || displayFiles.length < maxFiles)">
             <Button
               size="sm"
               variant="outline"
