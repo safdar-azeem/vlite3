@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { DataTable } from '@/components/DataTable'
 import Input from '@/components/Input.vue'
 import Button from '@/components/Button.vue'
@@ -9,7 +9,6 @@ import type {
   TableHeader,
   TableFilter,
   PageInfo,
-  PaginationConfig,
   SortConfig,
   SelectionState,
   TableState,
@@ -22,7 +21,6 @@ const searchQuery = ref('')
 const isTableSortable = ref(true)
 const isRaised = ref(false)
 const paginationPosition = ref<'start' | 'center' | 'end' | 'between'>('between')
-// selectedCount definition removed (ref defined later)
 
 const { result, loading, refetch } = useGetUsers()
 
@@ -86,6 +84,12 @@ const currentTableState = ref<TableState>({
   search: '',
 })
 
+const paginationProps = computed(() => ({
+  alignment: paginationPosition.value,
+  showItemsPerPage: true,
+  itemsPerPageOptions: [10, 25, 50, 100],
+}))
+
 const handleTableChange = async (state: TableState) => {
   console.log('handleTableChange', state)
   currentTableState.value = state
@@ -103,6 +107,11 @@ const refreshData = async () => {
   console.log('Fetching data with:', filter)
   await refetch(filter)
 }
+
+// Fetch initial data on mount natively without relying on component emitting changes
+onMounted(() => {
+  refreshData()
+})
 
 const handleEdit = (user: User) => {
   console.log('Edit user:', user)
@@ -176,7 +185,7 @@ const handleDelete = (rows: User[]) => {
         :search="searchQuery"
         :sortable="isTableSortable"
         :variant="isRaised ? 'raised' : 'default'"
-        :pagination-position="paginationPosition"
+        :pagination-props="paginationProps"
         key-field="_id"
         selectable
         hoverable
