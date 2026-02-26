@@ -244,6 +244,7 @@ const fieldProps = computed(() => {
       ...baseProps,
       modelValue: props.value,
       multiSelect: props.field.props?.multiple || false,
+      maxFiles: props.field.maxFiles || props.field.props?.maxFiles,
       fileTypes: props.field.props?.accept ? props.field.props.accept.split(',') : [],
       returnFormat: 'base64',
       variant: type === 'file' ? 'input' : 'dropzone',
