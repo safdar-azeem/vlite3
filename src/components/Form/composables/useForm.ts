@@ -169,6 +169,21 @@ export function useForm(options: UseFormOptions): UseFormReturn {
       }
     }
 
+    // Max File Size validation
+    if (!error && field.maxFileSize) {
+      const maxBytes = field.maxFileSize * 1024 * 1024
+      if (value !== undefined && value !== null && value !== '') {
+        const files = Array.isArray(value) ? value : [value]
+        for (const f of files) {
+          const fileSize = f instanceof File ? f.size : (f?.fileSize || f?.file?.size || f?.size)
+          if (fileSize !== undefined && fileSize > maxBytes) {
+            error = `${field.label || field.name} size must be less than ${field.maxFileSize}MB`
+            break
+          }
+        }
+      }
+    }
+
     // Custom validation (only if required passed or not required)
     if (!error && field.validation) {
       error = field.validation({
@@ -393,4 +408,3 @@ export function useForm(options: UseFormOptions): UseFormReturn {
     flatSchema,
   }
 }
-
