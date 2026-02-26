@@ -34,7 +34,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string | null): void
+  (e: 'update:modelValue', value: string | null | any): void
   (e: 'change', value: FilePickerValue | null): void
   (e: 'error', error: string): void
 }>()
@@ -42,7 +42,15 @@ const emit = defineEmits<{
 const previewUrl = ref<string | null>(null)
 
 const currentImage = computed(() => {
-  return previewUrl.value || props.modelValue
+  if (previewUrl.value) return previewUrl.value
+  if (typeof props.modelValue === 'string') return props.modelValue
+  if (props.modelValue && props.modelValue.base64) return props.modelValue.base64
+  if (props.modelValue && props.modelValue.file instanceof File) {
+    try {
+      return URL.createObjectURL(props.modelValue.file)
+    } catch (e) {}
+  }
+  return null
 })
 
 const handleFileChange = (fileVal: FilePickerValue | FilePickerValue[] | null) => {
@@ -56,6 +64,11 @@ const handleFileChange = (fileVal: FilePickerValue | FilePickerValue[] | null) =
   if (fileVal.base64) {
     previewUrl.value = fileVal.base64
     emit('update:modelValue', fileVal.base64)
+  } else if (fileVal.file) {
+    try {
+      previewUrl.value = URL.createObjectURL(fileVal.file)
+      emit('update:modelValue', fileVal as any)
+    } catch (e) {}
   }
 
   emit('change', fileVal)
@@ -117,7 +130,7 @@ const handleRemove = () => {
       </FilePicker>
 
       <button
-        v-if="currentImage && editable && !disabled && !loading"
+        v-if="(currentImage || modelValue) && editable && !disabled && !loading"
         type="button"
         class="absolute -top-1 -right-1 z-10 p-1 bg-background border border-border rounded-full text-muted-foreground shadow-sm hover:text-destructive hover:border-destructive transition-all opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100"
         @click.stop="handleRemove"
