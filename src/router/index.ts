@@ -54,6 +54,7 @@ import FileTreeDemo from '../playground/demos/FileTreeDemo.vue'
 import DataTableDemo from '../playground/demos/DataTableDemo.vue'
 import CarouselDemo from '../playground/demos/CarouselDemo.vue'
 import KanbanDemo from '../playground/demos/KanbanDemo.vue'
+import DataListDemo from '../playground/demos/DataListDemo.vue'
 
 import GoogleLoginDemo from '../playground/GoogleLoginDemo.vue'
 
@@ -115,6 +116,7 @@ const routes = [
       { path: 'heatmap', component: HeatmapDemo },
       { path: 'filetree', component: FileTreeDemo },
       { path: 'datatable', component: DataTableDemo },
+      { path: 'datalist', component: DataListDemo },
       { path: 'carousel', component: CarouselDemo },
       { path: 'kanban', component: KanbanDemo },
     ],
