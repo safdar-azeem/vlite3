@@ -1,14 +1,12 @@
-export interface DataListPageInfo {
-  currentPage: number
-  totalPages: number
-  totalItems?: number
-  itemsPerPage?: number
-}
+import { PageInfo, PaginationProps } from '../Pagination'
+
+// create a new pageInfo type and Omit the currentPage and totalPages
+export type DataListMetaInfo = Omit<PaginationProps, 'currentPage' | 'totalPages'>
 
 export interface DataListProps {
   data?: any[]
   loading?: boolean
-  pageInfo?: DataListPageInfo
+  pageInfo?: PageInfo
   className?: string
   item?: any
   skeleton?: any
@@ -18,7 +16,5 @@ export interface DataListProps {
   emptyDescription?: string
   emptyIcon?: string
   showPagination?: boolean
-  paginationPosition?: 'start' | 'center' | 'end' | 'between'
-  itemsPerPageOptions?: number[]
-  showItemsPerPage?: boolean
+  paginationProps?: DataListMetaInfo
 }
