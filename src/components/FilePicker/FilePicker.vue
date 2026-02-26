@@ -186,14 +186,19 @@ const processFiles = async (fileList: FileList) => {
         }
       }
 
+      let isTooLarge = false
       if (props.maxSize && file.size > props.maxSize) {
         errors.push(`File too large: ${file.name}`)
-        continue
+        isTooLarge = true
       }
 
       let base64 = ''
-      if (props.returnFormat === 'base64') {
-        base64 = await readFileAsBase64(file)
+      if (props.returnFormat === 'base64' && !isTooLarge) {
+        try {
+          base64 = await readFileAsBase64(file)
+        } catch (e) {
+          console.error('Base64 read failed', e)
+        }
       }
 
       processed.push({
