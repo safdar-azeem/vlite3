@@ -146,6 +146,8 @@ export interface IForm {
   min?: number
   /** Max value for number inputs */
   max?: number
+  /** Maximum file size in MB for file/avatar uploads */
+  maxFileSize?: number
   /** i18n keys */
   labelI8n?: string
   placeholderI8n?: string
@@ -224,3 +226,4 @@ export interface IFormFieldChangePayload {
   value: any
   data?: any
 }
+
