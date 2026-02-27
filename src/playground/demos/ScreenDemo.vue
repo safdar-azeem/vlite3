@@ -52,10 +52,12 @@ const handleAdd = () => {
           :refetch="fetchData"
           :list="UserList"
           :table="UserTable"
+          filter-type="dropdown"
           :filter-schema="[
             {
               name: 'user',
               type: 'text',
+              label: 'User',
             },
           ]"
           empty-title="No users found"
