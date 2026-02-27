@@ -8,7 +8,6 @@ import Avatar from '@/components/Avatar.vue'
 import type {
   TableHeader,
   TableFilter,
-  PageInfo,
   SortConfig,
   SelectionState,
   TableState,
@@ -16,6 +15,7 @@ import type {
 import { useGetUsers, type User } from '../composables/useGetUsers'
 import DemoSection from '../DemoSection.vue'
 import sourceCode from './DataTableDemo.vue?raw'
+import { PageInfo } from '@/components/Pagination'
 
 const searchQuery = ref('')
 const isTableSortable = ref(true)
