@@ -33,26 +33,27 @@ A schema-driven form builder with built-in validation, multi-step wizards, group
 
 ### Schema Interface (`IForm`)
 
-| Property       | Type                             | Description                                            |
-| :------------- | :------------------------------- | :----------------------------------------------------- |
-| `name`         | `string`                         | Field key in values object (supports dot notation)     |
-| `label`        | `string`                         | Display label                                          |
-| `type`         | `IFormFieldType`                 | Input type (text, email, password, select, file, etc.) |
-| `required`     | `boolean`                        | Marks field as required                                |
-| `placeholder`  | `string`                         | Input placeholder                                      |
-| `options`      | `IDropdownOptions`               | Options for select/multiSelect/radio                   |
-| `validation`   | `(ctx) => string`                | Return error message or empty string                   |
-| `when`         | `(ctx) => boolean`               | Conditionally show/hide field                          |
-| `updateValues` | `(ctx) => Record\<string, any\>` | Dynamically update other fields on change              |
-| `itemClass`    | `string`                         | Class for field wrapper (e.g. `col-span-2`)            |
-| `disabled`     | `boolean \| (ctx) => boolean`    | Disable field                                          |
-| `icon`         | `string`                         | Left icon (Iconify ID)                                 |
-| `iconRight`    | `string`                         | Right icon (Iconify ID)                                |
-| `addonLeft`    | `string \| IFormAddon`           | Left addon — plain text or addon config object         |
-| `addonRight`   | `string \| IFormAddon`           | Right addon — plain text or addon config object        |
-| `props`        | `Record<string, any>`            | Extra props forwarded to the field component           |
-| `maxFileSize`  | `number`                         | Maximum file size in MB for file/avatar uploads        |
-| `maxFiles`     | `number`                         | Maximum number of files allowed when multiple is true  |
+| Property           | Type                             | Description                                                |
+| :----------------- | :------------------------------- | :--------------------------------------------------------- |
+| `name`             | `string`                         | Field key in values object (supports dot notation)         |
+| `label`            | `string`                         | Display label                                              |
+| `type`             | `IFormFieldType`                 | Input type (text, email, password, select, file, etc.)     |
+| `required`         | `boolean`                        | Marks field as required                                    |
+| `placeholder`      | `string`                         | Input placeholder                                          |
+| `options`          | `IDropdownOptions`               | Options for select/multiSelect/radio                       |
+| `validation`       | `(ctx) => string`                | Return error message or empty string                       |
+| `when`             | `(ctx) => boolean`               | Conditionally show/hide field                              |
+| `updateValues`     | `(ctx) => Record\<string, any\>` | Dynamically update other fields on change                  |
+| `itemClass`        | `string`                         | Class for field wrapper (e.g. `col-span-2`)                |
+| `disabled`         | `boolean \| (ctx) => boolean`    | Disable field                                              |
+| `icon`             | `string`                         | Left icon (Iconify ID)                                     |
+| `iconRight`        | `string`                         | Right icon (Iconify ID)                                    |
+| `addonLeft`        | `string \| IFormAddon`           | Left addon — plain text or addon config object             |
+| `addonRight`       | `string \| IFormAddon`           | Right addon — plain text or addon config object            |
+| `props`            | `Record<string, any>`            | Extra props forwarded to the field component               |
+| `maxFileSize`      | `number`                         | Maximum file size in MB for file/avatar uploads            |
+| `maxFiles`         | `number`                         | Maximum number of files allowed when multiple is true      |
+| `returnFileObject` | `boolean`                        | Output `{fileName, fileUrl, fileType, fileSize}` on upload |
 
 ### Addon Interface (`IFormAddon`)
 
@@ -200,6 +201,7 @@ const schema = [
     type: 'fileUploader', // Dropzone style
     props: { accept: '.pdf' },
     maxFileSize: 10, // Maximum file size of 10MB
+    returnFileObject: true, // Output { fileName, fileUrl, fileType, fileSize } instead of just URL
   },
   {
     name: 'documents',
