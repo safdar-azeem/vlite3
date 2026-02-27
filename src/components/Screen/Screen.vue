@@ -3,6 +3,7 @@ import { ref, watch, computed } from 'vue'
 import Input from '../Input.vue'
 import Button from '../Button.vue'
 import Icon from '../Icon.vue'
+import Modal from '../Modal.vue'
 import { Pagination } from '../Pagination'
 import type { ScreenProps } from './types'
 
@@ -102,55 +103,109 @@ const hasData = computed(() => props.data && props.data.length > 0)
   <div class="flex flex-col w-full space-y-8">
     <div
       v-if="!customHeader"
-      class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      class="flex flex-col md:flex-row sm:items-center justify-between gap-4">
       <div class="flex flex-col">
         <slot name="title">
-          <h1 v-if="title" class="text-2xl font-bold text-foreground">{{ title }}</h1>
+          <h1 v-if="title" class="text-fs-7.5 font-bold text-foreground">{{ title }}</h1>
         </slot>
         <slot name="description">
-          <p v-if="description" class="text-sm text-gray-700 mt-1.5">{{ description }}</p>
+          <p v-if="description" class="text-sm text-gray-700 mt-1.5 md:max-w-[450px]">
+            {{ description }}
+          </p>
         </slot>
       </div>
 
-      <div class="flex items-center gap-3">
-        <div v-if="table && list" class="flex items-center p-1 rounded-md border border-border">
-          <button
-            @click="activeView = 'list'"
-            class="p-1.5 rounded transition-colors"
-            :class="[
-              activeView === 'list'
-                ? 'bg-secondary/70 shadow-sm text-foreground'
-                : 'text-muted-foreground hover:text-foreground',
-            ]"
-            title="List View">
-            <Icon icon="lucide:layout-grid" class="w-4 h-4" />
-          </button>
-          <button
-            @click="activeView = 'table'"
-            class="p-1.5 rounded transition-colors"
-            :class="[
-              activeView === 'table'
-                ? 'bg-secondary/70 shadow-sm text-foreground'
-                : 'text-muted-foreground hover:text-foreground',
-            ]"
-            title="Table View">
-            <Icon icon="lucide:list" class="w-4 h-4" />
-          </button>
-        </div>
-        <div v-if="canSearch" class="w-full sm:w-64!">
-          <Input
-            v-model="searchQuery"
-            icon="lucide:search"
-            placeholder="Search..."
-            variant="outline"
-            class="bg-background w-full"
-            :show-clear-button="true" />
+      <div class="grid grid-cols-1 sm:flex items-center gap-3 max-md:w-full">
+        <div class="flex items-center gap-3 w-full">
+          <div v-if="table && list" class="flex items-center p-1 rounded-md border border-border">
+            <button
+              @click="activeView = 'list'"
+              class="p-1.5 rounded transition-colors"
+              :class="[
+                activeView === 'list'
+                  ? 'bg-secondary/70 shadow-sm text-foreground'
+                  : 'text-muted-foreground hover:text-foreground',
+              ]"
+              title="List View">
+              <Icon icon="lucide:layout-grid" class="w-4 h-4" />
+            </button>
+            <button
+              @click="activeView = 'table'"
+              class="p-1.5 rounded transition-colors"
+              :class="[
+                activeView === 'table'
+                  ? 'bg-secondary/70 shadow-sm text-foreground'
+                  : 'text-muted-foreground hover:text-foreground',
+              ]"
+              title="Table View">
+              <Icon icon="lucide:list" class="w-4 h-4" />
+            </button>
+          </div>
+          <div v-if="canSearch" class="w-full! md:w-64!">
+            <Input
+              v-model="searchQuery"
+              icon="lucide:search"
+              placeholder="Search..."
+              variant="outline"
+              class="bg-background w-full"
+              :show-clear-button="true" />
+          </div>
         </div>
         <slot name="actions">
           <component v-if="addComponent" :is="addComponent" />
-          <Button v-else-if="canAdd" icon="lucide:plus" variant="primary" @click="$emit('add')">
-            Add
-          </Button>
+          <template v-else-if="canAdd">
+            <template v-if="addBtn">
+              <Modal
+                v-if="addBtn.modal"
+                :body="addBtn.modal"
+                v-bind="addBtn.modalProps"
+                :refetch="refetch"
+                :data="data"
+                :loading="loading">
+                <template #trigger>
+                  <Button
+                    class="w-full"
+                    :icon="addBtn.icon || 'lucide:plus'"
+                    :variant="addBtn.variant || 'primary'"
+                    v-bind="addBtn.buttonProps">
+                    {{ addBtn.label || 'Add' }}
+                  </Button>
+                </template>
+              </Modal>
+
+              <router-link v-else-if="addBtn.to" :to="addBtn.to" class="inline-flex">
+                <Button
+                  :icon="addBtn.icon || 'lucide:plus'"
+                  :variant="addBtn.variant || 'primary'"
+                  v-bind="addBtn.buttonProps">
+                  {{ addBtn.label || 'Add' }}
+                </Button>
+              </router-link>
+
+              <a
+                v-else-if="addBtn.href"
+                :href="addBtn.href"
+                :target="addBtn.target"
+                class="inline-flex">
+                <Button
+                  :icon="addBtn.icon || 'lucide:plus'"
+                  :variant="addBtn.variant || 'primary'"
+                  v-bind="addBtn.buttonProps">
+                  {{ addBtn.label || 'Add' }}
+                </Button>
+              </a>
+
+              <Button
+                v-else
+                :icon="addBtn.icon || 'lucide:plus'"
+                :variant="addBtn.variant || 'primary'"
+                v-bind="addBtn.buttonProps"
+                @click="addBtn.onClick ? addBtn.onClick() : $emit('add')">
+                {{ addBtn.label || 'Add' }}
+              </Button>
+            </template>
+            <Button v-else icon="lucide:plus" variant="primary" @click="$emit('add')"> Add </Button>
+          </template>
         </slot>
       </div>
     </div>
@@ -169,9 +224,54 @@ const hasData = computed(() => props.data && props.data.length > 0)
             <p class="mt-2 text-sm text-muted-foreground max-w-sm">{{ emptyDescription }}</p>
             <div class="mt-6">
               <component v-if="addComponent" :is="addComponent" />
-              <Button v-else-if="canAdd" icon="lucide:plus" variant="outline" @click="$emit('add')">
-                Add New
-              </Button>
+              <template v-else-if="canAdd">
+                <template v-if="addBtn">
+                  <Modal v-if="addBtn.modal" :body="addBtn.modal" v-bind="addBtn.modalProps">
+                    <template #trigger>
+                      <Button
+                        :icon="addBtn.icon || 'lucide:plus'"
+                        :variant="addBtn.variant || 'outline'"
+                        v-bind="addBtn.buttonProps">
+                        {{ addBtn.label || 'Add New' }}
+                      </Button>
+                    </template>
+                  </Modal>
+
+                  <router-link v-else-if="addBtn.to" :to="addBtn.to" class="inline-flex">
+                    <Button
+                      :icon="addBtn.icon || 'lucide:plus'"
+                      :variant="addBtn.variant || 'outline'"
+                      v-bind="addBtn.buttonProps">
+                      {{ addBtn.label || 'Add New' }}
+                    </Button>
+                  </router-link>
+
+                  <a
+                    v-else-if="addBtn.href"
+                    :href="addBtn.href"
+                    :target="addBtn.target"
+                    class="inline-flex">
+                    <Button
+                      :icon="addBtn.icon || 'lucide:plus'"
+                      :variant="addBtn.variant || 'outline'"
+                      v-bind="addBtn.buttonProps">
+                      {{ addBtn.label || 'Add New' }}
+                    </Button>
+                  </a>
+
+                  <Button
+                    v-else
+                    :icon="addBtn.icon || 'lucide:plus'"
+                    :variant="addBtn.variant || 'outline'"
+                    v-bind="addBtn.buttonProps"
+                    @click="addBtn.onClick ? addBtn.onClick() : $emit('add')">
+                    {{ addBtn.label || 'Add New' }}
+                  </Button>
+                </template>
+                <Button v-else icon="lucide:plus" variant="outline" @click="$emit('add')">
+                  Add New
+                </Button>
+              </template>
             </div>
           </div>
         </slot>
@@ -192,7 +292,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
       </template>
     </div>
 
-    <div v-if="pagination && pageInfo && pageInfo.totalPages > 1" class="pt-2">
+    <div v-if="pagination && pageInfo && pageInfo.totalPages > 1" class="md:pt-2">
       <Pagination
         :current-page="pageInfo.currentPage"
         :total-pages="pageInfo.totalPages"
