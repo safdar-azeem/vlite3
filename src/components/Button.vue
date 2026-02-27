@@ -53,6 +53,7 @@ const classes = computed(() => {
   const sizes: Record<ButtonSize, string> = {
     xs: 'h-6.5 px-2',
     sm: 'h-7.5 px-3',
+    sm2: 'h-8 px-3',
     md: 'h-9 px-4 py-2',
     lg: 'h-10 px-6',
     xl: 'h-12 px-10',
@@ -61,6 +62,7 @@ const classes = computed(() => {
   const iconSizes: Record<ButtonSize, string> = {
     xs: 'h-6.5 w-6.5 min-h-6.5 min-w-6.5',
     sm: 'h-7 w-7 min-h-7 min-w-7',
+    sm2: 'h-7 w-7 min-h-7 min-w-7',
     md: 'h-7.5 w-7.5 min-h-7.5 min-w-7.5',
     lg: 'h-8 w-8 min-h-8 min-w-8',
     xl: 'h-8.5 w-8.5 min-h-8.5 min-w-8.5',
@@ -70,6 +72,7 @@ const classes = computed(() => {
   const groupIconSizes: Record<ButtonSize, string> = {
     xs: 'px-2',
     sm: 'px-3',
+    sm2: 'px-3',
     md: 'px-4',
     lg: 'px-6',
     xl: 'px-10',
@@ -78,6 +81,7 @@ const classes = computed(() => {
   const roundedVariants: Record<ButtonRounded, string> = {
     none: 'rounded-none',
     sm: 'rounded-sm',
+    sm2: 'rounded-sm',
     md: 'rounded',
     lg: 'rounded-lg',
     xl: 'rounded-xl',
@@ -105,6 +109,7 @@ const iconClasses = computed(() => {
   const sizes: Record<ButtonSize, string> = {
     xs: 'w-3 h-3',
     sm: 'w-4 h-4',
+    sm2: 'w-4 h-4',
     md: 'w-4 h-4',
     lg: 'w-4 h-4',
     xl: 'w-4 h-4',
@@ -113,6 +118,7 @@ const iconClasses = computed(() => {
   const iconSizes: Record<ButtonSize, string> = {
     xs: 'w-3 h-3',
     sm: 'w-3.5 h-3.5',
+    sm2: 'w-3.5 h-3.5',
     md: 'w-3.5 h-3.5',
     lg: 'w-4 h-4',
     xl: 'w-4 h-4',
