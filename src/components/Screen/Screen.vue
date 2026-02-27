@@ -37,15 +37,6 @@ const props = withDefaults(defineProps<ScreenProps>(), {
 const emit = defineEmits<{
   (e: 'add'): void
   (e: 'delete', items: any[]): void
-  (
-    e: 'change',
-    payload: {
-      pageinfo: { page: number; limit: number }
-      pagination: { page: number; limit: number }
-      search: string
-      filter: Record<string, any>
-    }
-  ): void
 }>()
 
 const activeViewKey = computed(() => props.name || props.title || 'default-screen')
@@ -133,7 +124,6 @@ const triggerChange = () => {
     search: searchQuery.value,
     filter: activeFilters.value,
   }
-  emit('change', payload)
   if (props.refetch) {
     props.refetch(payload)
   }
@@ -162,36 +152,9 @@ const hasData = computed(() => props.data && props.data.length > 0)
         </slot>
       </div>
 
-      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full justify-end">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2.5 w-full justify-end">
         <div
-          class="flex items-center gap-3 w-full sm:w-auto flex-1 md:flex-none justify-start sm:justify-end">
-          <div
-            v-if="table && list"
-            class="flex items-center p-1 rounded-md border border-border shrink-0">
-            <button
-              @click="activeView = 'list'"
-              class="p-1.5 rounded transition-colors"
-              :class="[
-                activeView === 'list'
-                  ? 'bg-secondary/70 shadow-sm text-foreground'
-                  : 'text-muted-foreground hover:text-foreground',
-              ]"
-              title="List View">
-              <Icon icon="lucide:layout-grid" class="w-4 h-4" />
-            </button>
-            <button
-              @click="activeView = 'table'"
-              class="p-1.5 rounded transition-colors"
-              :class="[
-                activeView === 'table'
-                  ? 'bg-secondary/70 shadow-sm text-foreground'
-                  : 'text-muted-foreground hover:text-foreground',
-              ]"
-              title="Table View">
-              <Icon icon="lucide:list" class="w-4 h-4" />
-            </button>
-          </div>
-
+          class="flex items-center gap-2 w-full sm:w-auto flex-1 md:flex-none justify-start sm:justify-end">
           <Button
             v-if="selectedRows.length > 0"
             variant="outline"
@@ -199,6 +162,32 @@ const hasData = computed(() => props.data && props.data.length > 0)
             icon="lucide:trash-2"
             title="Delete Selected"
             @click="requestDelete(selectedRows)" />
+          <div
+            v-if="table && list"
+            class="flex items-center p-1 rounded-md border border-border shrink-0">
+            <button
+              @click="activeView = 'list'"
+              class="p-1.5 rounded"
+              :class="[
+                activeView === 'list'
+                  ? 'bg-secondary/85 dark:bg-gray-250 shadow-sm text-foreground'
+                  : 'text-muted-foreground hover:text-foreground',
+              ]"
+              title="List View">
+              <Icon icon="lucide:layout-grid" class="w-4 h-4" />
+            </button>
+            <button
+              @click="activeView = 'table'"
+              class="p-1.5 rounded"
+              :class="[
+                activeView === 'table'
+                  ? 'bg-secondary/85 dark:bg-gray-250 shadow-sm text-foreground'
+                  : 'text-muted-foreground hover:text-foreground',
+              ]"
+              title="Table View">
+              <Icon icon="lucide:list" class="w-4 h-4" />
+            </button>
+          </div>
 
           <slot name="before-search" />
 
@@ -219,8 +208,9 @@ const hasData = computed(() => props.data && props.data.length > 0)
             v-model="activeFilters"
             @change="triggerChange" />
 
-          <div v-if="canSearch" class="w-full md:w-64! max-sm:order-last">
+          <div v-if="canSearch" class="w-full md:w-60! max-sm:order-last">
             <Input
+              lazy
               v-model="searchQuery"
               icon="lucide:search"
               placeholder="Search..."
@@ -391,7 +381,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
       </template>
     </div>
 
-    <div v-if="pagination && pageInfo && pageInfo.totalPages > 1">
+    <div v-if="pagination && pageInfo && pageInfo.totalPages > 1" class="-mt-2">
       <Pagination
         :current-page="pageInfo.currentPage"
         :total-pages="pageInfo.totalPages"
