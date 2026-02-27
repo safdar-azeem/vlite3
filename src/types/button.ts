@@ -36,4 +36,5 @@ export interface ButtonProps {
   textClass?: string
   iconLeftClass?: string
   iconRightClass?: string
+  asIcon?: boolean
 }
