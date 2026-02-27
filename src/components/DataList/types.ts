@@ -17,4 +17,5 @@ export interface DataListProps {
   emptyIcon?: string
   showPagination?: boolean
   paginationProps?: DataListMetaInfo
+  delete?: (items: any[]) => void // Injected delete function prop from Screen
 }
