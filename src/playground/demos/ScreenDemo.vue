@@ -29,6 +29,13 @@ onMounted(() => {
 const handleAdd = () => {
   alert('Open Add Modal')
 }
+
+const handleDelete = (items: any[]) => {
+  console.log('Items to delete:', items)
+  alert(`Deleted ${items.length} item(s) successfully!`)
+  // Re-fetch data after successful deletion
+  fetchData()
+}
 </script>
 
 <template>
@@ -37,13 +44,14 @@ const handleAdd = () => {
       <h2 class="text-2xl font-bold text-gray-900 mb-2">Screen Component</h2>
       <p class="text-gray-500">
         A high-level page wrapper that automatically manages Title, Search, Pagination, Add Actions,
-        and effortlessly toggles between custom Table and List child components.
+        and effortlessly toggles between custom Table and List child components. View state is persisted.
       </p>
     </div>
 
     <DemoSection title="Screen Default Usage" :code="sourceCode">
       <div class="">
         <Screen
+          name="users-directory-demo"
           title="Users Directory"
           description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
           :data="result?.users"
@@ -62,6 +70,7 @@ const handleAdd = () => {
           ]"
           empty-title="No users found"
           empty-description="We couldn't find any users matching your search criteria."
+          @delete="handleDelete"
           :add-btn="{
             modal: AddUser,
             label: 'Add User',
