@@ -146,7 +146,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
           <h1 v-if="title" class="text-fs-7.5 font-bold text-foreground">{{ title }}</h1>
         </slot>
         <slot name="description">
-          <p v-if="description" class="text-sm text-gray-700 mt-1.5 md:max-w-[450px]">
+          <p v-if="description" class="text-sm text-gray-700 mt-1 md:max-w-[450px]">
             {{ description }}
           </p>
         </slot>
@@ -236,7 +236,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
                   <template #trigger>
                     <Button
                       class="w-full"
-                      :icon="addBtn.icon || 'lucide:plus'"
+                      :icon="addBtn.icon || 'fluent:add-16-filled'"
                       :variant="addBtn.variant || 'primary'"
                       v-bind="addBtn.buttonProps">
                       {{ addBtn.label || 'Add' }}
@@ -250,7 +250,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
                   class="inline-flex w-full sm:w-auto">
                   <Button
                     class="w-full"
-                    :icon="addBtn.icon || 'lucide:plus'"
+                    :icon="addBtn.icon || 'fluent:add-16-filled'"
                     :variant="addBtn.variant || 'primary'"
                     v-bind="addBtn.buttonProps">
                     {{ addBtn.label || 'Add' }}
@@ -264,7 +264,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
                   class="inline-flex w-full sm:w-auto">
                   <Button
                     class="w-full"
-                    :icon="addBtn.icon || 'lucide:plus'"
+                    :icon="addBtn.icon || 'fluent:add-16-filled'"
                     :variant="addBtn.variant || 'primary'"
                     v-bind="addBtn.buttonProps">
                     {{ addBtn.label || 'Add' }}
@@ -274,7 +274,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
                 <Button
                   v-else
                   class="w-full sm:w-auto"
-                  :icon="addBtn.icon || 'lucide:plus'"
+                  :icon="addBtn.icon || 'fluent:add-16-filled'"
                   :variant="addBtn.variant || 'primary'"
                   v-bind="addBtn.buttonProps"
                   @click="addBtn.onClick ? addBtn.onClick() : $emit('add')">
@@ -284,7 +284,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
               <Button
                 v-else
                 class="w-full sm:w-auto"
-                icon="lucide:plus"
+                icon="fluent:add-16-filled"
                 variant="primary"
                 @click="$emit('add')">
                 Add
@@ -315,7 +315,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
                   <Modal v-if="addBtn.modal" :body="addBtn.modal" v-bind="addBtn.modalProps">
                     <template #trigger>
                       <Button
-                        :icon="addBtn.icon || 'lucide:plus'"
+                        :icon="addBtn.icon || 'fluent:add-16-filled'"
                         :variant="addBtn.variant || 'outline'"
                         v-bind="addBtn.buttonProps">
                         {{ addBtn.label || 'Add New' }}
@@ -325,7 +325,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
 
                   <router-link v-else-if="addBtn.to" :to="addBtn.to" class="inline-flex">
                     <Button
-                      :icon="addBtn.icon || 'lucide:plus'"
+                      :icon="addBtn.icon || 'fluent:add-16-filled'"
                       :variant="addBtn.variant || 'outline'"
                       v-bind="addBtn.buttonProps">
                       {{ addBtn.label || 'Add New' }}
