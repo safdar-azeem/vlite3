@@ -44,7 +44,8 @@ const handleDelete = (items: any[]) => {
       <h2 class="text-2xl font-bold text-gray-900 mb-2">Screen Component</h2>
       <p class="text-gray-500">
         A high-level page wrapper that automatically manages Title, Search, Pagination, Add Actions,
-        and effortlessly toggles between custom Table and List child components. View state is persisted.
+        and effortlessly toggles between custom Table and List child components. View state is
+        persisted.
       </p>
     </div>
 
@@ -60,7 +61,7 @@ const handleDelete = (items: any[]) => {
           :refetch="fetchData"
           :list="UserList"
           :table="UserTable"
-          filter-type="dropdown"
+          show-refresh
           :filter-schema="[
             {
               name: 'user',
