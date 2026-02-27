@@ -6,6 +6,7 @@ import Icon from '../Icon.vue'
 import Modal from '../Modal.vue'
 import ConfirmationModal from '../ConfirmationModal.vue'
 import { Pagination } from '../Pagination'
+import { Empty } from '../Empty'
 import ScreenFilter from './ScreenFilter.vue'
 import type { ScreenProps } from './types'
 import { usePersistentState } from '../../utils/usePersistentState'
@@ -21,7 +22,7 @@ const props = withDefaults(defineProps<ScreenProps>(), {
   canAdd: true,
   pagination: true,
   emptyTitle: 'No records found',
-  emptyDescription: 'We could not find any records matching your criteria.',
+  emptyDescription: 'There are currently no items to show',
   emptyIcon: 'lucide:inbox',
   filterSchema: () => [],
   filterType: 'modal',
@@ -140,6 +141,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
   <div class="flex flex-col w-full space-y-8">
     <div
       v-if="!customHeader"
+      :class="headerClass"
       class="flex flex-col md:flex-row sm:items-start md:items-center justify-between gap-4">
       <div class="flex flex-col shrink-0">
         <slot name="title">
@@ -298,17 +300,11 @@ const hasData = computed(() => props.data && props.data.length > 0)
 
     <slot name="custom-header" v-else />
 
-    <div class="flex-1 w-full relative min-h-[300px]">
+    <div class="flex-1 w-full relative min-h-[300px]" :class="containerClass">
       <template v-if="!hasData && !loading">
         <slot name="empty">
-          <div
-            class="flex flex-col items-center justify-center py-16 px-4 text-center bg-card border border-border rounded-lg shadow-sm">
-            <div class="flex h-16 w-16 items-center justify-center rounded-full bg-muted mb-4">
-              <Icon :icon="emptyIcon" class="h-8 w-8 text-muted-foreground" />
-            </div>
-            <h3 class="text-lg font-semibold text-foreground">{{ emptyTitle }}</h3>
-            <p class="mt-2 text-sm text-muted-foreground max-w-sm">{{ emptyDescription }}</p>
-            <div class="mt-6">
+          <Empty :title="emptyTitle" :description="emptyDescription" :icon="emptyIcon">
+            <template #action>
               <component v-if="addComponent" :is="addComponent" />
               <template v-else-if="canAdd">
                 <template v-if="addBtn">
@@ -316,7 +312,9 @@ const hasData = computed(() => props.data && props.data.length > 0)
                     <template #trigger>
                       <Button
                         :icon="addBtn.icon || 'fluent:add-16-filled'"
-                        :variant="addBtn.variant || 'outline'"
+                        :variant="addBtn.variant || 'primary'"
+                        rounded="full"
+                        class="px-6!"
                         v-bind="addBtn.buttonProps">
                         {{ addBtn.label || 'Add New' }}
                       </Button>
@@ -358,8 +356,8 @@ const hasData = computed(() => props.data && props.data.length > 0)
                   Add New
                 </Button>
               </template>
-            </div>
-          </div>
+            </template>
+          </Empty>
         </slot>
       </template>
 
