@@ -47,4 +47,6 @@ export interface ScreenProps {
   pagination?: boolean
   filterSchema?: IForm[]
   filterType?: 'modal' | 'dropdown'
+  showRefresh?: boolean
 }
+
