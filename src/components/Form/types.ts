@@ -150,6 +150,8 @@ export interface IForm {
   maxFileSize?: number
   /** Maximum number of files allowed when multiple is true */
   maxFiles?: number
+  /** Return file values as objects { fileName, fileUrl, fileType, fileSize } instead of string URLs */
+  returnFileObject?: boolean
 }
 
 /**
