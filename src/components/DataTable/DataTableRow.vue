@@ -133,7 +133,7 @@ const handleSelect = () => {
 
 <template>
   <tr
-    class="border-b transition-colors data-[state=selected]:bg-muted h-full"
+    class="border-b data-[state=selected]:bg-muted h-full"
     :class="[
       hoverable ? 'hover:bg-muted/20' : '',
       striped && index % 2 === 1 ? 'bg-muted/20' : 'bg-background',
