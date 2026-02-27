@@ -77,7 +77,7 @@ const showDeleteConfirmation = ref(false)
 const loadingCause = ref<'initial' | 'page' | 'search' | 'sort' | 'limit' | 'idle'>('initial')
 
 const shouldShowSkeleton = computed(() => {
-  return props.loading && (loadingCause.value === 'initial' || loadingCause.value === 'page')
+  return props.loading
 })
 
 watch(
