@@ -5,6 +5,7 @@ import CheckBox from '../CheckBox.vue'
 import Button from '../Button.vue'
 import ConfirmationModal from '../ConfirmationModal.vue'
 import { Pagination } from '../Pagination'
+import { Empty } from '../Empty'
 import DataTableHeader from './DataTableHeader.vue'
 import DataTableRow from './DataTableRow.vue'
 import DataTableToolbar from './DataTableToolbar.vue'
@@ -436,24 +437,18 @@ watch(
             <tr v-else>
               <td
                 :colspan="selectable ? headers.length + 1 : headers.length"
-                class="h-96 text-center align-middle hover:bg-transparent">
-                <div
-                  class="flex flex-col items-center justify-center gap-2 text-muted-foreground p-8">
-                  <div class="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-                    <Icon :icon="emptyIcon" class="h-6 w-6 text-muted-foreground/80" />
-                  </div>
-                  <h3 class="mt-1 text-base font-semibold text-foreground">
-                    {{ emptyTitle }}
-                  </h3>
-                  <p class="text-sm max-w-sm mx-auto">
-                    <slot name="empty-description">
-                      {{ emptyDescription }}
-                    </slot>
-                  </p>
-                  <div class="mt-4" v-if="$slots['empty-action']">
-                    <slot name="empty-action" />
-                  </div>
-                </div>
+                class="align-middle hover:bg-transparent">
+                <slot name="empty">
+                  <Empty
+                    :title="emptyTitle"
+                    :description="emptyDescription"
+                    :icon="emptyIcon"
+                    class="border-none! bg-transparent! py-16!">
+                    <template #action v-if="$slots['empty-action']">
+                      <slot name="empty-action" />
+                    </template>
+                  </Empty>
+                </slot>
               </td>
             </tr>
           </tbody>
