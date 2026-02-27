@@ -19,8 +19,8 @@ export type ButtonVariant =
   | 'ghost'
   | 'link'
 
-export type ButtonSize = 'xs' | 'md' | 'sm' | 'lg' | 'xl'
-export type ButtonRounded = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
+export type ButtonSize = 'xs' | 'sm' | 'sm2' | 'md' | 'lg' | 'xl'
+export type ButtonRounded = 'none' | 'sm' | 'sm2' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
 
 export interface ButtonProps {
   variant?: ButtonVariant
