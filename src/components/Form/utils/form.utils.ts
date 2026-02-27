@@ -146,8 +146,8 @@ export function filterNullCustomFields(
 export function collectFileFields(
   schema: IForm[] | IForm[][],
   values: Record<string, any>
-): Array<{ name: string; value: any; type: string }> {
-  const fileFields: Array<{ name: string; value: any; type: string }> = []
+): Array<{ name: string; value: any; type: string; field: IForm }> {
+  const fileFields: Array<{ name: string; value: any; type: string; field: IForm }> = []
 
   const flatSchema = Array.isArray(schema[0]) ? (schema as IForm[][]).flat() : (schema as IForm[])
 
@@ -162,6 +162,7 @@ export function collectFileFields(
           name: field.name,
           value,
           type: fieldType as string,
+          field,
         })
       }
     }
@@ -184,6 +185,7 @@ export function collectFileFields(
                   name: `${field.name}.${index}.${fileField.name}`,
                   value,
                   type: fileField.type as string,
+                  field: fileField,
                 })
               }
             })
