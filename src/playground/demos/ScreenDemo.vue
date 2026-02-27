@@ -9,6 +9,7 @@ import Button from '@/components/Button.vue'
 // Custom List and Table components specific to the Screen
 import UserList from './ScreenDemoComponents/UserList.vue'
 import UserTable from './ScreenDemoComponents/UserTable.vue'
+import AddUser from './ScreenDemoComponents/AddUser.vue'
 
 const { result, loading, refetch } = useGetUsers()
 
@@ -44,7 +45,7 @@ const handleAdd = () => {
       <div class="">
         <Screen
           title="Users Directory"
-          description="Manage your platform users and their permissions."
+          description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
           :data="result?.users"
           :loading="loading"
           :page-info="result?.pageInfo"
@@ -53,7 +54,13 @@ const handleAdd = () => {
           :table="UserTable"
           empty-title="No users found"
           empty-description="We couldn't find any users matching your search criteria."
-          @add="handleAdd" />
+          :add-btn="{
+            modal: AddUser,
+            label: 'Add User',
+            modalProps: {
+              title: 'Add User',
+            },
+          }" />
       </div>
     </DemoSection>
   </div>
