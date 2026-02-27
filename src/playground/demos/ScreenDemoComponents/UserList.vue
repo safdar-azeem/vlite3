@@ -1,39 +1,46 @@
 <script setup lang="ts">
 import { DataList } from '@/components/DataList'
-import Badge from '@/components/Badge.vue'
-import Avatar from '@/components/Avatar.vue'
+import Button from '@/components/Button.vue'
+import Icon from '@/components/Icon.vue'
 
-defineProps<{
-  data: any[]
-  loading: boolean
+const props = defineProps<{
+  data?: any[]
+  loading?: boolean
+  delete?: (items: any[]) => void
 }>()
 </script>
 
 <template>
-  <DataList :data="data" :loading="loading" :show-pagination="false" className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-    <template #skeleton>
-      <div class="bg-card border border-border rounded-xl p-4 shadow-sm animate-pulse h-[120px] flex flex-col justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-muted rounded-full"></div>
-          <div class="space-y-2 flex-1">
-            <div class="h-4 bg-muted rounded w-1/2"></div>
-            <div class="h-3 bg-muted rounded w-1/3"></div>
-          </div>
-        </div>
-      </div>
-    </template>
+  <DataList :data="data || []" :loading="loading" class-name="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
     <template #item="{ item }">
-      <div class="bg-card border border-border rounded-xl p-4 shadow-sm hover:border-primary/50 transition-colors flex flex-col justify-between h-full">
-        <div class="flex items-center gap-3">
-          <Avatar :src="item.avatar" :alt="item.name" size="md" />
-          <div class="min-w-0 flex-1">
-            <h3 class="font-medium text-foreground truncate">{{ item.name }}</h3>
-            <p class="text-sm text-muted-foreground truncate">{{ item.email }}</p>
+      <div class="p-5 border border-border rounded-xl bg-card shadow-sm hover:shadow-md transition-shadow flex flex-col gap-4">
+        <div class="flex items-start justify-between">
+          <div class="flex flex-col">
+            <h3 class="font-semibold text-foreground text-lg">{{ item.name }}</h3>
+            <p class="text-sm text-muted-foreground">{{ item.email }}</p>
           </div>
+          <span
+            class="text-xs px-2.5 py-1 rounded-full font-medium capitalize"
+            :class="item.status === 'active' ? 'bg-success/10 text-success' : 'bg-muted text-muted-foreground'"
+          >
+            {{ item.status }}
+          </span>
         </div>
-        <div class="mt-4 flex items-center justify-between gap-2">
-          <Badge :variant="item.status === 'active' ? 'success' : 'secondary'">{{ item.status }}</Badge>
-          <span class="text-xs text-muted-foreground capitalize font-medium">{{ item.role }}</span>
+        
+        <div class="mt-auto flex justify-between items-center pt-4 border-t border-border">
+          <div class="flex items-center text-sm text-muted-foreground gap-1.5">
+            <Icon icon="lucide:shield" class="w-4 h-4" />
+            <span class="capitalize">{{ item.role || 'User' }}</span>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            icon="lucide:trash-2"
+            class="text-destructive border-destructive hover:bg-destructive/10"
+            @click="props.delete?.([item])"
+          >
+            Delete
+          </Button>
         </div>
       </div>
     </template>
