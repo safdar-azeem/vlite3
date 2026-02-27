@@ -90,7 +90,7 @@ const clearFilters = () => {
       <Button
         v-if="filterCount > 0"
         variant="secondary"
-        class="flex items-center gap-1.5 pl-3 pr-1.5 shrink-0"
+        class="flex items-center gap-1.5 pl-3 pr-1.5 shrink-0 bg-gray-150! hover:bg-gray-100!"
         style="pointer-events: auto">
         <Icon icon="ci:filter" class="w-4 h-4" />
         <span>Filters ({{ filterCount }})</span>
@@ -110,7 +110,7 @@ const clearFilters = () => {
     </template>
 
     <div
-      class="p-4 w-[300px] sm:w-[320px] max-h-[85vh] overflow-y-auto bg-card rounded-md border border-border shadow-lg text-left">
+      class="py-3 px-3.5 w-[300px] sm:w-[320px] max-h-[85vh] overflow-y-auto bg-card rounded-md border border-border shadow-lg text-left">
       <Form
         :schema="schema"
         :values="modelValue"
@@ -118,6 +118,7 @@ const clearFilters = () => {
         :submit-props="{
           size: 'sm',
           class: 'w-full',
+          textClass: '-text-fs-1!',
         }"
         @on-submit="applyFilters" />
     </div>
