@@ -12,7 +12,7 @@ const headers = [
   { field: 'name', title: 'User' },
   { field: 'email', title: 'Email' },
   { field: 'role', title: 'Role', capitalize: true },
-  { field: 'status', title: 'Status', capitalize: true }
+  { field: 'status', title: 'Status', capitalize: true },
 ]
 </script>
 
@@ -25,7 +25,7 @@ const headers = [
     :show-pagination="false"
     hoverable
     bordered
-  >
+    selectable>
     <template #name="{ value, row }">
       <div class="flex items-center gap-3">
         <Avatar :src="row.avatar" :alt="value" size="sm" />
