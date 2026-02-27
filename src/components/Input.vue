@@ -215,16 +215,12 @@ const rightAddonClass = computed(() => {
 })
 
 const handleInput = (event: Event) => {
-  if (props.lazy) return
   const target = event.target as HTMLInputElement
   emit('update:modelValue', target.value)
 }
 
 const handleChange = (event: Event) => {
   const target = event.target as HTMLInputElement
-  if (props.lazy) {
-    emit('update:modelValue', target.value)
-  }
   emit('change', target.value)
 }
 
