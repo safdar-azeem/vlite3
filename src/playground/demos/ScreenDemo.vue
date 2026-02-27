@@ -52,6 +52,12 @@ const handleAdd = () => {
           :refetch="fetchData"
           :list="UserList"
           :table="UserTable"
+          :filter-schema="[
+            {
+              name: 'user',
+              type: 'text',
+            },
+          ]"
           empty-title="No users found"
           empty-description="We couldn't find any users matching your search criteria."
           :add-btn="{
