@@ -34,7 +34,7 @@ export interface ButtonProps {
   text?: string
   rounded?: ButtonRounded
   textClass?: string
-  iconLeftClass?: string
+  iconClass?: string
   iconRightClass?: string
   asIcon?: boolean
 }
