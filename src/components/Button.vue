@@ -134,14 +134,17 @@ const iconClasses = computed(() => {
       v-else-if="icon"
       :icon="icon"
       class="pointer-events-none"
-      :class="[iconClasses, isOnlyIcon ? 'mx-auto' : '']" />
+      :class="[iconLeftClass, iconClasses, isOnlyIcon ? 'mx-auto' : '']" />
 
-    <slot>{{ text }}</slot>
+    <span v-if="textClass" :class="textClass">
+      <slot>{{ text }}</slot>
+    </span>
+    <slot v-else>{{ text }}</slot>
 
     <Icon
       v-if="iconRight && !loading"
       :icon="iconRight"
-      :class="iconClasses"
+      :class="[iconRightClass, iconClasses]"
       class="h-4 w-4 pointer-events-none" />
   </button>
 </template>
