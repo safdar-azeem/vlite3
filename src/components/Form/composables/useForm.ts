@@ -175,7 +175,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
       if (value !== undefined && value !== null && value !== '') {
         const files = Array.isArray(value) ? value : [value]
         for (const f of files) {
-          const fileSize = f instanceof File ? f.size : (f?.fileSize || f?.file?.size || f?.size)
+          const fileSize = f instanceof File ? f.size : f?.fileSize || f?.file?.size || f?.size
           if (fileSize !== undefined && fileSize > maxBytes) {
             error = `${field.label || field.name} size must be less than ${field.maxFileSize}MB`
             break
@@ -185,7 +185,11 @@ export function useForm(options: UseFormOptions): UseFormReturn {
     }
 
     // Max Files limit validation
-    if (!error && (field.type === 'file' || field.type === 'fileUploader') && (field.props?.multiple || field.maxFiles)) {
+    if (
+      !error &&
+      (field.type === 'file' || field.type === 'fileUploader') &&
+      (field.props?.multiple || field.maxFiles)
+    ) {
       const maxFiles = field.maxFiles || field.props?.maxFiles
       if (maxFiles && Array.isArray(value) && value.length > maxFiles) {
         error = `Maximum ${maxFiles} files allowed`
@@ -270,10 +274,28 @@ export function useForm(options: UseFormOptions): UseFormReturn {
     const values = deepClone(formValues.value)
     const fileFields = collectFileFields(schema, values)
 
+    // Helper to format detailed object output if returnFileObject is true
+    const buildDetailedOutput = (item: any, url: string) => {
+      let fileObj = null
+      if (item instanceof File) {
+        fileObj = item
+      } else if (item && typeof item === 'object' && item.file instanceof File) {
+        fileObj = item.file
+      }
+
+      return {
+        fileName: item?.fileName || fileObj?.name || url.split('/').pop() || 'unknown',
+        fileUrl: url,
+        fileType: item?.fileType || fileObj?.type || 'application/octet-stream',
+        fileSize: item?.fileSize || fileObj?.size || 0,
+      }
+    }
+
     // Create a list of promises for each field that needs updating
     // This allows all uploads across all fields to happen in parallel
     const fieldUpdatePromises = fileFields.map(async (fileField) => {
-      const { name, value } = fileField
+      const { name, value, field } = fileField
+      const isDetailed = field.returnFileObject === true
 
       // CASE 1: Array of files (Multiple)
       if (Array.isArray(value)) {
@@ -285,10 +307,12 @@ export function useForm(options: UseFormOptions): UseFormReturn {
             item instanceof File || (item && typeof item === 'object' && item.file instanceof File)
 
           if (needsUpload) {
-            // Upload and return the new URL
+            // Upload and return the new URL or Object
             const url = await handleUploadFile(item, folderId)
-            // If upload fails (returns null), we return null (or could keep original if needed, but here assuming fail)
-            return url || null
+            if (url) {
+              return isDetailed ? buildDetailedOutput(item, url) : url
+            }
+            return null
           }
 
           // If it's already a string (URL) or doesn't match upload criteria, return as is
@@ -297,7 +321,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
 
         // Wait for all items in this array to finish
         const newArray = await Promise.all(itemPromises)
-        
+
         // Return the update instruction
         return { name, value: newArray }
       }
@@ -305,15 +329,16 @@ export function useForm(options: UseFormOptions): UseFormReturn {
       // CASE 2: Single Value
       else {
         const needsUpload =
-          value instanceof File || (value && typeof value === 'object' && value.file instanceof File)
+          value instanceof File ||
+          (value && typeof value === 'object' && value.file instanceof File)
 
         if (needsUpload) {
           const url = await handleUploadFile(value, folderId)
           if (url) {
-            return { name, value: url }
+            return { name, value: isDetailed ? buildDetailedOutput(value, url) : url }
           }
         }
-        
+
         // No update needed for this field
         return null
       }
