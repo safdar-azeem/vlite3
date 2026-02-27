@@ -150,9 +150,6 @@ export interface IForm {
   maxFileSize?: number
   /** Maximum number of files allowed when multiple is true */
   maxFiles?: number
-  /** i18n keys */
-  labelI8n?: string
-  placeholderI8n?: string
 }
 
 /**
@@ -228,4 +225,3 @@ export interface IFormFieldChangePayload {
   value: any
   data?: any
 }
-
