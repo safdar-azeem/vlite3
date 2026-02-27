@@ -1,6 +1,7 @@
 import type { Component } from 'vue'
 import type { PageInfo, PaginationProps } from '../Pagination'
 import { ButtonVariant } from '@/types'
+import { IForm } from '../Form'
 
 export interface ScreenPaginationProps extends Omit<
   PaginationProps,
@@ -44,5 +45,6 @@ export interface ScreenProps {
   canSearch?: boolean
   canAdd?: boolean
   pagination?: boolean
-  filterSchema?: any[]
+  filterSchema?: IForm[]
+  filterType?: 'modal' | 'dropdown'
 }
