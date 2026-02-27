@@ -38,6 +38,7 @@ const uploadSchema: IForm[] = [
     label: 'Project Gallery (Multiple Files)',
     type: 'fileUploader',
     maxFiles: 3,
+    returnFileObject: true,
     props: {
       multiple: true,
       accept: 'image/*',
