@@ -22,6 +22,7 @@ export interface AddBtnConfig {
 }
 
 export interface ScreenProps {
+  name?: string
   title?: string
   description?: string
   pageInfo?: PageInfo
@@ -49,4 +50,3 @@ export interface ScreenProps {
   filterType?: 'modal' | 'dropdown'
   showRefresh?: boolean
 }
-
