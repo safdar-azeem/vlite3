@@ -134,7 +134,7 @@ const iconClasses = computed(() => {
       v-else-if="icon"
       :icon="icon"
       class="pointer-events-none"
-      :class="[iconLeftClass, iconClasses, isOnlyIcon ? 'mx-auto' : '']" />
+      :class="[iconClass, iconClasses, isOnlyIcon ? 'mx-auto' : '']" />
 
     <span v-if="textClass" :class="textClass">
       <slot>{{ text }}</slot>
