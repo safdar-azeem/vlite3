@@ -172,7 +172,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
               class="p-1.5 rounded"
               :class="[
                 activeView === 'list'
-                  ? 'bg-secondary/85 dark:bg-gray-250 shadow-sm text-foreground'
+                  ? 'bg-secondary/85 dark:bg-secondary shadow-sm text-foreground'
                   : 'text-muted-foreground hover:text-foreground',
               ]"
               title="List View">
@@ -183,7 +183,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
               class="p-1.5 rounded"
               :class="[
                 activeView === 'table'
-                  ? 'bg-secondary/85 dark:bg-gray-250 shadow-sm text-foreground'
+                  ? 'bg-secondary/85 dark:bg-secondary shadow-sm text-foreground'
                   : 'text-muted-foreground hover:text-foreground',
               ]"
               title="Table View">
@@ -392,7 +392,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
     <ConfirmationModal
       v-model:show="showDeleteConfirmation"
       title="Confirm Deletion"
-      description="Are you sure you want to delete the selected items? This action cannot be undone."
+      :description="`Are you sure you want to delete the selected ${itemsToDelete.length > 1 ? 'items' : 'item'}?`"
       confirm-text="Delete"
       cancel-text="Cancel"
       variant="danger"
