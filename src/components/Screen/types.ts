@@ -27,8 +27,10 @@ export interface ScreenProps {
   data?: any[]
   loading?: boolean
   refetch?: (payload: {
+    pageinfo: { page: number; limit: number }
     pagination: { page: number; limit: number }
-    filter: { search: string }
+    search: string
+    filter: Record<string, any>
   }) => void
   paginationProps?: ScreenPaginationProps
   emptyTitle?: string
@@ -42,4 +44,5 @@ export interface ScreenProps {
   canSearch?: boolean
   canAdd?: boolean
   pagination?: boolean
+  filterSchema?: any[]
 }
