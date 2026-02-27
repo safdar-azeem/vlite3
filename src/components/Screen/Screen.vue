@@ -21,6 +21,7 @@ const props = withDefaults(defineProps<ScreenProps>(), {
   emptyDescription: 'We could not find any records matching your criteria.',
   emptyIcon: 'lucide:inbox',
   filterSchema: () => [],
+  filterType: 'modal',
   paginationProps: () => ({
     alignment: 'end',
     navType: 'icon',
@@ -161,6 +162,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
           <ScreenFilter
             v-if="filterSchema && filterSchema.length > 0"
             :schema="filterSchema"
+            :type="filterType"
             v-model="activeFilters"
             @change="triggerChange" />
 
@@ -333,7 +335,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
       </template>
     </div>
 
-    <div v-if="pagination && pageInfo && pageInfo.totalPages > 1" class="md:pt-2">
+    <div v-if="pagination && pageInfo && pageInfo.totalPages > 1">
       <Pagination
         :current-page="pageInfo.currentPage"
         :total-pages="pageInfo.totalPages"
