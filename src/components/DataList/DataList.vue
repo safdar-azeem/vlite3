@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { Pagination } from '../Pagination'
-import Icon from '../Icon.vue'
+import { Empty } from '../Empty'
 import type { DataListProps } from './types'
 
 const props = withDefaults(defineProps<DataListProps>(), {
@@ -77,17 +77,15 @@ const totalPages = computed(() => props.pageInfo?.totalPages || 1)
       </template>
     </div>
 
-    <div
-      v-else-if="!data || data.length === 0"
-      class="flex flex-col items-center justify-center p-12 text-center bg-gray-50 border border-gray-200 rounded-lg">
+    <template v-else-if="!data || data.length === 0">
       <slot name="empty">
-        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 mb-4">
-          <Icon :icon="emptyIcon" class="h-6 w-6 text-gray-500" />
-        </div>
-        <h3 class="text-lg font-semibold text-gray-900">{{ emptyTitle }}</h3>
-        <p class="mt-2 text-sm text-gray-500">{{ emptyDescription }}</p>
+        <Empty
+          :title="emptyTitle"
+          :description="emptyDescription"
+          :icon="emptyIcon"
+        />
       </slot>
-    </div>
+    </template>
 
     <div v-else :class="className">
       <template v-for="(itemData, index) in data" :key="index">
