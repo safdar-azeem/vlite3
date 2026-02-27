@@ -33,8 +33,6 @@ const cancel = () => {
 <template>
   <Modal
     :show="show"
-    :title="title"
-    :description="description"
     footerClass="border-t-0! pt-0! pb-3.5!"
     max-width="max-w-[400px]"
     @close="cancel"
@@ -44,12 +42,21 @@ const cancel = () => {
         <slot />
       </slot>
     </template>
+    <div class="py-2 px-[2px]">
+      <h3 class="mb-1.5">
+        {{ title }}
+      </h3>
+      <p class="text-sm text-muted">
+        {{ description }}
+      </p>
+    </div>
     <template #footer="{ close }">
-      <div class="flex w-full items-center justify-end space-x-2">
+      <div class="flex w-full items-center justify-end space-x-2 px-[2px]">
         <Button
-          variant="outline"
+          variant="secondary"
           :text="cancelText"
           :disabled="loading"
+          size="sm2"
           @click="
             () => {
               close?.()
@@ -57,6 +64,7 @@ const cancel = () => {
             }
           " />
         <Button
+          size="sm2"
           :variant="variant"
           :text="confirmText"
           :loading="loading"
