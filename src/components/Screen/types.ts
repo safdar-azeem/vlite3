@@ -49,4 +49,6 @@ export interface ScreenProps {
   filterSchema?: IForm[]
   filterType?: 'modal' | 'dropdown'
   showRefresh?: boolean
+  containerClass?: string
+  headerClass?: string
 }
