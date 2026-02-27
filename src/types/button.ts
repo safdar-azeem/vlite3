@@ -33,4 +33,7 @@ export interface ButtonProps {
   type?: 'button' | 'submit' | 'reset'
   text?: string
   rounded?: ButtonRounded
+  textClass?: string
+  iconLeftClass?: string
+  iconRightClass?: string
 }
