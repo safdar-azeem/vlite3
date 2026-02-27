@@ -22,6 +22,7 @@ const props = withDefaults(defineProps<ScreenProps>(), {
   emptyIcon: 'lucide:inbox',
   filterSchema: () => [],
   filterType: 'modal',
+  showRefresh: false,
   paginationProps: () => ({
     alignment: 'end',
     navType: 'icon',
@@ -158,6 +159,17 @@ const hasData = computed(() => props.data && props.data.length > 0)
           </div>
 
           <slot name="before-search" />
+
+          <Button
+            v-if="showRefresh"
+            variant="outline"
+            icon="lucide:refresh-cw"
+            size="lg"
+            class="shrink-0 h-9! w-9!"
+            title="Refresh"
+            :disabled="loading"
+            @click="triggerChange"
+          />
 
           <ScreenFilter
             v-if="filterSchema && filterSchema.length > 0"
@@ -346,3 +358,4 @@ const hasData = computed(() => props.data && props.data.length > 0)
     </div>
   </div>
 </template>
+
