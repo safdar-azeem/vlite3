@@ -199,8 +199,9 @@
       var(--color-mixture-1, #ffffff) 27%,
       var(--color-mixture-2, #000000));
 
+
   --color-gray-800: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 16%,
+      var(--color-mixture-1, #ffffff) 17%,
       var(--color-mixture-2, #000000));
 
   --color-gray-850: color-mix(in oklab,
@@ -226,7 +227,9 @@
 
   --color-muted-light: var(--color-gray-50);
   --color-muted: var(--color-gray-100);
-  --color-muted-foreground: var(--color-foreground);
+  --color-muted-foreground: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 23%,
+      var(--color-mixture-2, #000000));
 
   --color-accent: var(--color-gray-150);
   --color-accent-foreground: var(--color-foreground);
