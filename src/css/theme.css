@@ -249,7 +249,10 @@
   background-color: var(--color-white);
 }
 
-.dark {
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+@utility dark {
   --color-white: #0b0b0b !important;
   --color-mixture-1: #0c0c0c !important;
   --color-mixture-2: #ffffff !important;
