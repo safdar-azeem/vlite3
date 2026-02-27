@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<ButtonProps>(), {
 })
 
 const slots = useSlots()
-const isOnlyIcon = computed(() => props.icon && !props.text && !slots.default)
+const isOnlyIcon = computed(() => props?.asIcon || (props.icon && !props.text && !slots.default))
 
 // Detect if inside a ButtonGroup — in groups, icon-only buttons use text button sizing (height auto via CSS)
 const buttonGroup = inject<{ isInGroup: boolean } | null>('buttonGroup', null)
