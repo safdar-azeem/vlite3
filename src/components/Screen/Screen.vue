@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, provide } from 'vue'
 import Input from '../Input.vue'
 import Button from '../Button.vue'
 import Icon from '../Icon.vue'
 import Modal from '../Modal.vue'
+import ConfirmationModal from '../ConfirmationModal.vue'
 import { Pagination } from '../Pagination'
 import ScreenFilter from './ScreenFilter.vue'
 import type { ScreenProps } from './types'
+import { usePersistentState } from '../../utils/usePersistentState'
 
 const props = withDefaults(defineProps<ScreenProps>(), {
+  name: '',
   title: '',
   description: '',
   data: () => [],
@@ -33,6 +36,7 @@ const props = withDefaults(defineProps<ScreenProps>(), {
 
 const emit = defineEmits<{
   (e: 'add'): void
+  (e: 'delete', items: any[]): void
   (
     e: 'change',
     payload: {
@@ -44,11 +48,41 @@ const emit = defineEmits<{
   ): void
 }>()
 
-const activeView = ref<'table' | 'list'>(props.table ? 'table' : 'list')
+const activeViewKey = computed(() => props.name || props.title || 'default-screen')
+const activeView = usePersistentState<'table' | 'list'>(
+  `view-mode-${activeViewKey.value}`,
+  props.table ? 'table' : 'list'
+)
+
 const searchQuery = ref('')
 const activeFilters = ref<Record<string, any>>({})
 const internalPage = ref(props.pageInfo?.currentPage || 1)
 const internalLimit = ref(props.pageInfo?.itemsPerPage || props.paginationProps?.itemsPerPage || 10)
+
+// Selection & Deletion State
+const selectedRows = ref<any[]>([])
+const itemsToDelete = ref<any[]>([])
+const showDeleteConfirmation = ref(false)
+
+// Provide context to child components (list/table) dynamically
+provide('screen-selected-rows', selectedRows)
+provide('screen-request-delete', (items: any[]) => requestDelete(items))
+
+const requestDelete = (items: any[]) => {
+  itemsToDelete.value = items
+  showDeleteConfirmation.value = true
+}
+
+const confirmDelete = () => {
+  emit('delete', itemsToDelete.value)
+  showDeleteConfirmation.value = false
+  selectedRows.value = []
+}
+
+const handleComponentDelete = (items: any[]) => {
+  emit('delete', items)
+  selectedRows.value = []
+}
 
 // Sync page info
 watch(
@@ -158,6 +192,14 @@ const hasData = computed(() => props.data && props.data.length > 0)
             </button>
           </div>
 
+          <Button
+            v-if="selectedRows.length > 0"
+            variant="outline"
+            class="hover:bg-destructive/10 shrink-0 h-9! w-9!"
+            icon="lucide:trash-2"
+            title="Delete Selected"
+            @click="requestDelete(selectedRows)" />
+
           <slot name="before-search" />
 
           <Button
@@ -168,8 +210,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
             class="shrink-0 h-9! w-9!"
             title="Refresh"
             :disabled="loading"
-            @click="triggerChange"
-          />
+            @click="triggerChange" />
 
           <ScreenFilter
             v-if="filterSchema && filterSchema.length > 0"
@@ -338,7 +379,10 @@ const hasData = computed(() => props.data && props.data.length > 0)
           v-if="activeComponent"
           :data="data"
           :loading="loading"
-          :refetch="refetch" />
+          :refetch="refetch"
+          v-model:selectedRows="selectedRows"
+          :delete="requestDelete"
+          @delete="handleComponentDelete" />
         <div
           v-else
           class="p-8 text-center text-muted-foreground border border-dashed border-border rounded-lg">
@@ -356,6 +400,15 @@ const hasData = computed(() => props.data && props.data.length > 0)
         @change="handlePageChange"
         @update:items-per-page="handleItemsPerPageChange" />
     </div>
+
+    <ConfirmationModal
+      v-model:show="showDeleteConfirmation"
+      title="Confirm Deletion"
+      description="Are you sure you want to delete the selected items? This action cannot be undone."
+      confirm-text="Delete"
+      cancel-text="Cancel"
+      variant="danger"
+      @confirm="confirmDelete"
+      @cancel="showDeleteConfirmation = false" />
   </div>
 </template>
-
