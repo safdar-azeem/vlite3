@@ -44,6 +44,7 @@ const previewUrl = ref<string | null>(null)
 const currentImage = computed(() => {
   if (previewUrl.value) return previewUrl.value
   if (typeof props.modelValue === 'string') return props.modelValue
+  if (props.modelValue && props.modelValue.fileUrl) return props.modelValue.fileUrl
   if (props.modelValue && props.modelValue.base64) return props.modelValue.base64
   if (props.modelValue && props.modelValue.file instanceof File) {
     try {
