@@ -9,13 +9,13 @@ export interface SearchMatch {
 export interface FileNode {
   id: string
   label: string
+  labelI18n?: string
   isFolder?: boolean
   children?: FileNode[]
   icon?: string
   disabled?: boolean
   isLoaded?: boolean
   data?: any
-  // Search specific props
   searchMatch?: SearchMatch
 }
 
@@ -31,6 +31,8 @@ export interface FileTreeProps {
   highlightSearch?: boolean
   searchQuery?: string
   class?: string
+  emptyText?: string
+  emptyTextI18n?: string
 }
 
 export interface FileTreeEvents {
@@ -39,3 +41,4 @@ export interface FileTreeEvents {
   (e: 'expand', node: FileNode, expanded: boolean): void
   (e: 'node-click', node: FileNode): void
 }
+
