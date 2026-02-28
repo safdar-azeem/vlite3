@@ -285,12 +285,18 @@ export function useForm(options: UseFormOptions): UseFormReturn {
         fileObj = item.file
       }
 
-      return {
+      // Preserve existing properties, override specifics, and remove the file object
+      // so it doesn't get re-uploaded on subsequent failed form resubmissions.
+      const output = {
+        ...(typeof item === 'object' ? item : {}),
         fileName: item?.fileName || fileObj?.name || url.split('/').pop() || 'unknown',
         fileUrl: url,
         fileType: item?.fileType || fileObj?.type || 'application/octet-stream',
         fileSize: item?.fileSize || fileObj?.size || 0,
       }
+      
+      delete output.file
+      return output
     }
 
     // Create a list of promises for each field that needs updating
@@ -349,10 +355,12 @@ export function useForm(options: UseFormOptions): UseFormReturn {
     // Wait for ALL field updates to complete
     const updates = await Promise.all(fieldUpdatePromises)
 
-    // Apply the updates to the values object
+    // Apply the updates to the payload values AND the active form state 
+    // to preserve uploaded references upon failed DB mutations.
     updates.forEach((update) => {
       if (update) {
         Object.assign(values, setNestedValue(values, update.name, update.value))
+        formValues.value = setNestedValue(formValues.value, update.name, update.value)
       }
     })
 
