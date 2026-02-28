@@ -1,5 +1,6 @@
 export interface TabesOption {
   label: string
+  labelI18n?: string
   value: string | number
   icon?: string
   disabled?: boolean
@@ -15,3 +16,4 @@ export type TabesVariant =
   | 'success'
   | 'outline'
   | 'line'
+
