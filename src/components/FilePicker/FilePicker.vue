@@ -53,7 +53,22 @@ const emit = defineEmits<{
 }>()
 
 const displayPlaceholder = computed(() => props.placeholderI18n ? $t(props.placeholderI18n) : (props.placeholder || 'Select file...'))
-const displayText = computed(() => props.textI18n ? $t(props.textI18n) : 'Click to upload')
+
+const displayText = computed(() => {
+  if (props.textI18n) return $t(props.textI18n)
+  const res = $t('vlite.filePicker.clickToUpload')
+  return res !== 'vlite.filePicker.clickToUpload' ? res : 'Click to upload'
+})
+
+const tDragAndDrop = computed(() => {
+  const res = $t('vlite.filePicker.dragAndDrop')
+  return res !== 'vlite.filePicker.dragAndDrop' ? res : 'or drag and drop'
+})
+
+const tAddMore = computed(() => {
+  const res = $t('vlite.filePicker.addMore')
+  return res !== 'vlite.filePicker.addMore' ? res : 'Add more'
+})
 
 const fileInput = ref<HTMLInputElement | null>(null)
 const isDragging = ref(false)
@@ -398,7 +413,7 @@ const inputBaseClass = computed(() => {
           <div class="space-y-1">
             <p class="text-sm font-medium text-foreground">
               <span class="text-primary hover:underline">{{ displayText }}</span>
-              or drag and drop
+              {{ tDragAndDrop }}
             </p>
             <p v-if="fileTypes.length" class="text-xs text-muted-foreground">
               {{ fileTypes.join(', ') }}
@@ -445,7 +460,7 @@ const inputBaseClass = computed(() => {
               size="sm"
               variant="outline"
               icon="lucide:plus"
-              text="Add more"
+              :text="tAddMore"
               :disabled="disabled || loading || isProcessing"
               @click="triggerInput" />
           </div>
