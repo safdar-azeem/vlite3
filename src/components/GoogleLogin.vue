@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useTokenClient } from 'vue3-google-signin'
 import Button from '@/components/Button.vue'
+import { $t } from '@/utils/i18n'
 
 export interface GoogleLoginProps {
   buttonText?: string
+  buttonTextI18n?: string
   btnClass?: string
   variant?: any
   size?: any
@@ -13,7 +15,6 @@ export interface GoogleLoginProps {
 }
 
 const props = withDefaults(defineProps<GoogleLoginProps>(), {
-  buttonText: 'Sign in with Google',
   variant: 'outline',
   size: 'md',
   rounded: 'md',
@@ -49,6 +50,13 @@ const triggerLogin = () => {
     emit('error', error)
   }
 }
+
+const displayButtonText = computed(() => {
+  if (props.buttonTextI18n) return $t(props.buttonTextI18n)
+  if (props.buttonText) return props.buttonText
+  const res = $t('vlite.googleLogin.buttonText')
+  return res !== 'vlite.googleLogin.buttonText' ? res : 'Sign in with Google'
+})
 </script>
 
 <template>
@@ -64,8 +72,9 @@ const triggerLogin = () => {
         icon="flat-color-icons:google"
         @click="triggerLogin"
         class="w-full">
-        <span class="font-medium">{{ buttonText }}</span>
+        <span class="font-medium">{{ displayButtonText }}</span>
       </Button>
     </slot>
   </div>
 </template>
+
