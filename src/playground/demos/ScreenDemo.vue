@@ -55,7 +55,7 @@ const handleDelete = (items: any[]) => {
           name="users-directory-demo"
           title="Users Directory"
           description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-          :data="result?.users"
+          :data="[]"
           :loading="loading"
           :page-info="result?.pageInfo"
           :refetch="fetchData"
@@ -69,8 +69,6 @@ const handleDelete = (items: any[]) => {
               label: 'User',
             },
           ]"
-          empty-title="No users found"
-          empty-description="We couldn't find any users matching your search criteria."
           @delete="handleDelete"
           :add-btn="{
             modal: AddUser,
