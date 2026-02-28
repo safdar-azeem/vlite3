@@ -18,6 +18,9 @@ A recursive tree component for displaying hierarchical data (files, folders, cat
 | `searchQuery`         | `string`                        | —          | Filter nodes by name or content    |
 | `highlightSearch`     | `boolean`                       | `false`    | Highlight matching text            |
 | `defaultExpandedKeys` | `string[]`                      | `[]`       | Initially expanded nodes           |
+| `emptyText`           | `string`                        | —          | Text for empty state               |
+| `emptyTextI18n`       | `string`                        | —          | I18n key for empty text            |
+| `class`               | `string`                        | —          | CSS class for tree container       |
 
 ### Type Definitions
 
