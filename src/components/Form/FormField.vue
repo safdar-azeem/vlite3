@@ -6,6 +6,7 @@ import { isComponent } from './utils/form.utils'
 import { isAddonObject } from './utils/form.utils'
 import NumberInput from '@/components/NumberInput.vue'
 import Button from '@/components/Button.vue'
+import { $t } from '@/utils/i18n'
 
 import Input from '@/components/Input.vue'
 import Switch from '@/components/Switch.vue'
@@ -130,6 +131,8 @@ const fieldProps = computed(() => {
     ...(props.field.props || {}),
   }
 
+  const resolvedPlaceholder = props.field.placeholderI18n ? $t(props.field.placeholderI18n) : props.field.placeholder
+
   // Input-based components
   if (
     type === 'text' ||
@@ -144,7 +147,7 @@ const fieldProps = computed(() => {
       ...baseProps,
       modelValue: props.value ?? '',
       type: type || 'text',
-      placeholder: props.field.placeholder,
+      placeholder: resolvedPlaceholder,
       icon: props.field.icon,
       iconRight: props.field.iconRight,
       // Only pass addon strings; object addons are rendered via slots
@@ -172,7 +175,7 @@ const fieldProps = computed(() => {
       mode: props.field.props?.mode ?? 'outline',
       size: props.size,
       rounded: props.rounded,
-      placeholder: props.field.placeholder,
+      placeholder: resolvedPlaceholder,
       class: props.field.className,
     }
   }
@@ -182,7 +185,7 @@ const fieldProps = computed(() => {
     return {
       ...baseProps,
       modelValue: props.value ?? '',
-      placeholder: props.field.placeholder,
+      placeholder: resolvedPlaceholder,
       rows: props.field.props?.rows || 3,
       class: props.field.className,
     }
@@ -212,7 +215,7 @@ const fieldProps = computed(() => {
       ...baseProps,
       modelValue: props.value,
       options: props.field.options || [],
-      placeholder: props.field.placeholder,
+      placeholder: resolvedPlaceholder,
       selectable: true,
       closeOnSelect: true,
     }
@@ -224,7 +227,7 @@ const fieldProps = computed(() => {
       ...baseProps,
       modelValue: Array.isArray(props.value) ? props.value : [],
       options: props.field.options || [],
-      placeholder: props.field.placeholder,
+      placeholder: resolvedPlaceholder,
     }
   }
 
@@ -234,7 +237,7 @@ const fieldProps = computed(() => {
       ...baseProps,
       modelValue: props.value,
       mode: type === 'time' ? 'time' : 'date',
-      placeholder: props.field.placeholder,
+      placeholder: resolvedPlaceholder,
     }
   }
 
@@ -248,7 +251,7 @@ const fieldProps = computed(() => {
       fileTypes: props.field.props?.accept ? props.field.props.accept.split(',') : [],
       returnFormat: 'base64',
       variant: type === 'file' ? 'input' : 'dropzone',
-      placeholder: props.field.placeholder,
+      placeholder: resolvedPlaceholder,
       size: props.size,
       rounded: props.rounded,
       maxSize: props.field.maxFileSize ? props.field.maxFileSize * 1024 * 1024 : undefined,
