@@ -7,6 +7,7 @@ import {
   type Notification,
 } from '@/composables/useNotifications'
 import Button from './Button.vue'
+import { $t } from '@/utils/i18n'
 
 const props = defineProps<{
   position?: ToastPosition
@@ -15,7 +16,6 @@ const props = defineProps<{
 
 const { notifications, removeToast, globalConfig, pauseTimers, resumeTimers } = useNotifications()
 
-// Configuration
 const VISIBLE_TOASTS = 3
 const GAP = 14
 
@@ -268,3 +268,4 @@ const getTransformOrigin = (pos: ToastPosition) => {
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 </style>
+
