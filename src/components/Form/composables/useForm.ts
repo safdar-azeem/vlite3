@@ -8,6 +8,7 @@ import {
   filterNullCustomFields,
   collectFileFields,
   deepClone,
+  cleanSubmitValues,
 } from '../utils/form.utils'
 import { useFileUpload } from './useFileUpload'
 
@@ -16,6 +17,8 @@ export interface UseFormOptions {
   values?: Record<string, any>
   isUpdate?: boolean
   folderId?: string
+  emitFields?: string[]
+  ignoreFields?: string[]
   onSubmit?: (payload: IFormSubmitPayload) => void | Promise<void>
 }
 
@@ -392,6 +395,9 @@ export function useForm(options: UseFormOptions): UseFormReturn {
 
       // Clean up customFields
       processedValues = cleanCustomFieldsValues(processedValues)
+
+      // Clean payload based on schema and emit/ignore fields
+      processedValues = cleanSubmitValues(processedValues, schema, options.emitFields, options.ignoreFields)
 
       // Call onSubmit callback
       if (onSubmit) {
