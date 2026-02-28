@@ -8,7 +8,18 @@ A dedicated button component to toggle between light and dark modes. It utilizes
 
 ### Props
 
-This component does not accept specific props. It inherits all attributes (like `class`) and passes them to the underlying button.
+| Prop      | Type            | Default     | Description          |
+| :-------- | :-------------- | :---------- | :------------------- |
+| `variant` | `ButtonVariant` | `secondary` | Visual style         |
+| `size`    | `ButtonSize`    | —           | Button dimensions    |
+| `rounded` | `ButtonRounded` | `md`        | Border radius        |
+| `class`   | `string`        | —           | Custom wrapper class |
+
+### Slots
+
+| Slot      | Description                              | Props                                      |
+| :-------- | :--------------------------------------- | :----------------------------------------- |
+| `default` | Custom content to replace default button | `{ toggleTheme: Function, theme: string }` |
 
 ### Usage
 
