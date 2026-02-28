@@ -12,6 +12,13 @@ const props = withDefaults(defineProps<SidebarMenuProps>(), {
   defaultExpanded: () => [],
   compact: false,
   showCompactLabels: false,
+  renderMode: 'tree',
+  iconSize: '16px',
+  compactIconSize: '20px',
+  labelClass: 'text-sm',
+  compactLabelClass: 'text-[11.5px] mt-1',
+  itemPadding: 'py-2 px-2',
+  compactItemPadding: 'py-2 px-1',
 })
 
 const route = useRoute()
@@ -103,7 +110,7 @@ const setActive = (id: string | null) => {
   activeItem.value = id
 }
 
-// Provide context
+// Provide context with type assertion to bypass strict generic literal check
 const context = reactive({
   activeItem,
   expandedItems,
@@ -114,13 +121,23 @@ const context = reactive({
   renderMode: computed(() => props.renderMode || 'tree'),
   compact: computed(() => props.compact),
   showCompactLabels: computed(() => props.showCompactLabels),
-})
+  iconSize: computed(() => props.iconSize),
+  compactIconSize: computed(() => props.compactIconSize),
+  labelClass: computed(() => props.labelClass),
+  compactLabelClass: computed(() => props.compactLabelClass),
+  itemPadding: computed(() => props.itemPadding),
+  compactItemPadding: computed(() => props.compactItemPadding),
+}) as unknown as SidebarMenuContext
 
 provide('sidebar-menu-ctx', context)
 </script>
 
 <template>
-  <nav class="flex flex-col space-y-1 w-full" role="tree" aria-label="Sidebar Menu">
+  <nav
+    class="flex flex-col space-y-0 w-full"
+    :class="props.compact ? '' : 'space-y-1'"
+    role="tree"
+    aria-label="Sidebar Menu">
     <SidebarMenuItem v-for="item in items" :key="item.id || item.label" :item="item" />
   </nav>
 </template>
