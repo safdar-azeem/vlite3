@@ -4,22 +4,24 @@
 
 ### Props
 
-| Prop                  | Type                                        | Default                                                               | Description                                    |
-| :-------------------- | :------------------------------------------ | :-------------------------------------------------------------------- | :--------------------------------------------- |
-| `data`                | `any[]`                                     | `[]`                                                                  | Array of items to display                      |
-| `loading`             | `boolean`                                   | `false`                                                               | Show loading skeleton                          |
-| `pageInfo`            | `DataListPageInfo`                          | —                                                                     | Pagination information object                  |
-| `className`           | `string`                                    | `grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6` | CSS classes for the grid/list container        |
-| `item`                | `Component`                                 | —                                                                     | Vue component to render each item              |
-| `skeleton`            | `Component`                                 | —                                                                     | Vue component to render while loading          |
-| `itemProps`           | `Record<string, any>`                       | `{}`                                                                  | Additional props to pass to the item component |
-| `showPagination`      | `boolean`                                   | `true`                                                                | Show footer pagination                         |
-| `paginationPosition`  | `'start' \| 'center' \| 'end' \| 'between'` | `between`                                                             | Alignment of the pagination                    |
-| `itemsPerPageOptions` | `number[]`                                  | `[10, 25, 50, 100]`                                                   | Options for items per page dropdown            |
-| `showItemsPerPage`    | `boolean`                                   | `false`                                                               | Show items per page selector                   |
-| `emptyTitle`          | `string`                                    | `No data found`                                                       | Title displayed when data is empty             |
-| `emptyDescription`    | `string`                                    | `We could not find any items to display here.`                        | Description displayed when data is empty       |
-| `emptyIcon`           | `string`                                    | `lucide:inbox`                                                        | Icon displayed when data is empty              |
+| Prop                   | Type                                        | Default                                             | Description                                    |
+| :--------------------- | :------------------------------------------ | :-------------------------------------------------- | :--------------------------------------------- |
+| `data`                 | `any[]`                                     | `[]`                                                | Array of items to display                      |
+| `loading`              | `boolean`                                   | `false`                                             | Show loading skeleton                          |
+| `pageInfo`             | `DataListPageInfo`                          | —                                                   | Pagination information object                  |
+| `className`            | `string`                                    | `grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3...` | CSS classes for the grid/list container        |
+| `item`                 | `Component`                                 | —                                                   | Vue component to render each item              |
+| `skeleton`             | `Component`                                 | —                                                   | Vue component to render while loading          |
+| `itemProps`            | `Record<string, any>`                       | `{}`                                                | Additional props to pass to the item component |
+| `showPagination`       | `boolean`                                   | `true`                                              | Show footer pagination                         |
+| `paginationPosition`   | `'start' \| 'center' \| 'end' \| 'between'` | `between`                                           | Alignment of the pagination                    |
+| `itemsPerPageOptions`  | `number[]`                                  | `[10, 25, 50, 100]`                                 | Options for items per page dropdown            |
+| `showItemsPerPage`     | `boolean`                                   | `false`                                             | Show items per page selector                   |
+| `emptyTitle`           | `string`                                    | `No data found`                                     | Title displayed when data is empty             |
+| `emptyTitleI18n`       | `string`                                    | —                                                   | I18n translation key for empty title           |
+| `emptyDescription`     | `string`                                    | `We could not find any items to display here.`      | Description displayed when data is empty       |
+| `emptyDescriptionI18n` | `string`                                    | —                                                   | I18n translation key for empty description     |
+| `emptyIcon`            | `string`                                    | `lucide:inbox`                                      | Icon displayed when data is empty              |
 
 ### Types
 
@@ -30,21 +32,20 @@ export interface DataListPageInfo {
   totalItems?: number
   itemsPerPage?: number
 }
-
 ```
 
 ### Slots
 
-| Slot | Description |
-| --- | --- |
-| `item` | Custom item layout (props: `{ item, data, index }`) |
-| `skeleton` | Custom skeleton loader layout (props: `{ index }`) |
-| `empty` | Custom empty state layout |
+| Slot       | Description                                         |
+| ---------- | --------------------------------------------------- |
+| `item`     | Custom item layout (props: `{ item, data, index }`) |
+| `skeleton` | Custom skeleton loader layout (props: `{ index }`)  |
+| `empty`    | Custom empty state layout                           |
 
 ### Events
 
-| Event | Payload | Description |
-| --- | --- | --- |
+| Event    | Payload                           | Description                            |
+| -------- | --------------------------------- | -------------------------------------- |
 | `change` | `{ page: number, limit: number }` | Fired when pagination or limit changes |
 
 ### Usage
@@ -64,7 +65,6 @@ export interface DataListPageInfo {
     </div>
   </template>
 </DataList>
-
 ```
 
 **Component Prop-based Rendering:**
@@ -90,6 +90,4 @@ const handleChange = (payload) => {
     class-name="flex flex-col gap-4"
     @change="handleChange" />
 </template>
-
 ```
-
