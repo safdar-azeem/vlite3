@@ -3,6 +3,7 @@ import { computed, onUnmounted, ref, watch, type Component } from 'vue'
 import Button from './Button.vue'
 import { useKeyStroke } from '../composables/useKeyStroke'
 import type { SidePanelPosition, SidePanelSize } from '@/types'
+import { $t } from '@/utils/i18n'
 
 defineOptions({
   inheritAttrs: false,
@@ -11,7 +12,9 @@ defineOptions({
 interface Props {
   show?: boolean
   title?: string
+  titleI18n?: string
   description?: string
+  descriptionI18n?: string
   position?: SidePanelPosition
   size?: SidePanelSize
   closeOutside?: boolean
@@ -76,11 +79,9 @@ const handleBackdropClick = () => {
   }
 }
 
-// Escape key handling
 const { onKeyStroke } = useKeyStroke()
 onKeyStroke('Escape', close)
 
-// Prevent body scroll when open
 watch(visible, (val) => {
   if (val) {
     document.body.style.overflow = 'hidden'
@@ -89,7 +90,6 @@ watch(visible, (val) => {
   }
 })
 
-// Clean up on unmount
 onUnmounted(() => {
   document.body.style.overflow = ''
 })
@@ -109,6 +109,9 @@ const positionClasses = computed(() => {
 const transitionName = computed(() => {
   return props.position === 'left' ? 'slide-left' : 'slide-right'
 })
+
+const displayTitle = computed(() => props.titleI18n ? $t(props.titleI18n) : props.title)
+const displayDescription = computed(() => props.descriptionI18n ? $t(props.descriptionI18n) : props.description)
 </script>
 
 <template>
@@ -143,16 +146,16 @@ const transitionName = computed(() => {
         class="sidepanel-body fixed inset-y-0 z-50 flex flex-col bg-body shadow-sm border transition-transform duration-300 ease-in-out w-full"
         :class="[sizeClasses[size], positionClasses, props.class]">
         <div
-          v-if="title || $slots.header"
+          v-if="displayTitle || $slots.header"
           :class="headerClass"
           class="flex-none flex items-center justify-between px-6 py-2 border-b border-border">
           <slot name="header">
             <div>
               <h3 class="text-lg font-bold text-foreground">
-                {{ title }}
+                {{ displayTitle }}
               </h3>
-              <p v-if="description" class="mt-1 text-sm text-muted-foreground">
-                {{ description }}
+              <p v-if="displayDescription" class="mt-1 text-sm text-muted-foreground">
+                {{ displayDescription }}
               </p>
             </div>
           </slot>
@@ -204,3 +207,4 @@ const transitionName = computed(() => {
   transform: translateX(-100%);
 }
 </style>
+
