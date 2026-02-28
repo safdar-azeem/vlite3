@@ -1,6 +1,7 @@
 export interface WorkbookSheet {
   id: string
   title: string
+  titleI18n?: string
   icon?: string
   content?: string
   closable?: boolean
@@ -19,17 +20,14 @@ export interface WorkbookProps {
   draggable?: boolean
   addButtonPosition?: AddButtonPosition
 
-  // Limits
   maxSheets?: number
 
-  // Style
   variant?: 'chrome' | 'folder' | 'simple' | 'card'
   class?: string
   itemClass?: string
   activeItemClass?: string
   inactiveItemClass?: string
 
-  // Delete Confirmation
   confirmDelete?: boolean
   confirmDeleteTexts?: {
     title?: string
@@ -38,7 +36,6 @@ export interface WorkbookProps {
     cancel?: string
   }
 
-  // Configuration
   allowIconChange?: boolean
 }
 
@@ -47,3 +44,4 @@ export interface SheetEvent {
   sheet: WorkbookSheet
   originalEvent?: Event
 }
+
