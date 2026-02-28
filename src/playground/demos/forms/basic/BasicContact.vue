@@ -7,51 +7,112 @@ import sourceCode from './BasicContact.vue?raw'
 
 const contactSchema: IForm[] = [
   {
-    name: 'image',
-    label: 'Avatar',
+    name: 'profilePicture',
+    label: 'Profile Picture',
     type: 'avatarUpload',
-    placeholder: 'John Doe',
+    itemClass: 'col-span-2 mb-3',
+  },
+  {
+    name: 'type',
+    label: 'Profile Type',
+    type: 'select',
     required: true,
+    value: 'RECEIVING',
+    options: [
+      {
+        label: 'Receiving (Income)',
+        value: 'RECEIVING',
+        description: 'Incoming revenue / sales',
+      },
+      {
+        label: 'Giving (Expense)',
+        value: 'GIVING',
+        description: 'Outgoing payments / expenses',
+      },
+      {
+        label: 'Dual (Both)',
+        value: 'DUAL',
+        description: 'Both receiving and giving',
+      },
+    ],
+  },
+  {
+    name: 'userName',
+    label: 'Username',
+    type: 'text',
+    required: true,
+    placeholder: 'e.g. acmecorp_123',
   },
   {
     name: 'name',
-    label: 'Full Name',
+    label: 'Full Name / Company Name',
     type: 'text',
-    placeholder: 'John Doe',
     required: true,
+    placeholder: 'e.g. Acme Corp',
   },
   {
     name: 'email',
-    label: 'Email',
+    label: 'Email Address',
     type: 'email',
-    placeholder: 'john@example.com',
-    required: true,
+    placeholder: 'e.g. billing@acme.com',
   },
   {
-    name: 'subject',
-    label: 'Subject',
-    type: 'multiSelect',
-    placeholder: 'Select a subject',
-    options: [
-      { label: 'General Inquiry', value: 'general' },
-      { label: 'Support', value: 'support' },
-      { label: 'Sales', value: 'sales' },
-      { label: 'Partnership', value: 'partnership' },
-    ],
-    required: true,
+    name: 'phone',
+    label: 'Phone Number',
+    type: 'text',
+    placeholder: 'e.g. +1 234 567 890',
   },
   {
-    name: 'message',
-    label: 'Message',
+    name: 'billingAddress',
+    label: 'Billing Address',
     type: 'textarea',
-    placeholder: 'Your message...',
-    props: { rows: 4 },
+    placeholder: 'Enter full billing address',
     itemClass: 'col-span-2',
-    required: true,
+  },
+  {
+    name: 'shippingAddress',
+    label: 'Shipping Address',
+    type: 'textarea',
+    placeholder: 'Enter full shipping address',
+    itemClass: 'col-span-2',
+  },
+  {
+    name: 'attachments',
+    label: 'Attachments',
+    type: 'fileUploader',
+    props: { multiple: true },
+    maxFiles: 10,
+    maxFileSize: 50,
+    itemClass: 'col-span-2',
+    returnFileObject: true,
   },
 ]
 
 const submittedValues = ref<any>(null)
+
+const item = {
+  __typename: 'Customer',
+  id: 'cmm5imywg0000yavlepy21jdj',
+  type: 'RECEIVING',
+  userName: 'customer1',
+  name: 'Client',
+  email: 'client@gmail.com',
+  phone: '032231192',
+  profilePicture: 'https://via.placeholder.com/150',
+  billingAddress: 'Lorem ipsum dolor sit amet',
+  shippingAddress: 'Lorem ipsum dolor sit amet',
+  attachments: [
+    {
+      __typename: 'AttachmentFile',
+      fileName: 'placeholder_thumbnail.png',
+      fileUrl: 'https://via.placeholder.com/150',
+      fileType: 'image/png',
+      fileSize: 8815,
+    },
+  ],
+  createdAt: '2026-02-27T23:20:57.136Z',
+  updatedAt: '2026-02-28T00:01:32.755Z',
+}
 
 const handleSubmit = (payload: IFormSubmitPayload) => {
   submittedValues.value = payload.values
@@ -62,19 +123,7 @@ const handleSubmit = (payload: IFormSubmitPayload) => {
   <DemoSection title="Contact Form" :code="sourceCode">
     <div class="flex flex-col lg:flex-row gap-6">
       <div class="flex-1 max-w-2xl">
-        <Form
-          :values="{
-            avatar: '',
-            name: 'safdar',
-            email: 'safdar@gmail.com',
-            subject: 'general',
-            message: 'hello',
-            __typename: 'Form',
-          }"
-          :schema="contactSchema"
-          class-name="grid-cols-2"
-          submitText="Send Message"
-          @onSubmit="handleSubmit" />
+        <Form :schema="contactSchema" :values="item" @on-submit="handleSubmit" />
       </div>
       <!-- Inline Submitted Values -->
       <div v-if="submittedValues" class="flex-1 max-w-md">
