@@ -33,7 +33,7 @@ const handleToggle = (newValue: boolean) => {
     ]"
     @click.stop="handleToggle(!value)">
     <div class="flex items-center gap-2 flex-1 min-w-0">
-      <Icon v-if="option.icon" :icon="option.icon" class="h-4 w-4 shrink-0 opacity-70" />
+      <Icon v-if="option.icon || option.emoji" :icon="option.icon" :emoji="option.emoji" class="h-4 w-4 shrink-0 opacity-70" />
       <span class="truncate font-medium">{{ displayLabel }}</span>
     </div>
     <Switch
