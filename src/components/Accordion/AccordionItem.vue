@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import type { AccordionItemSchema, AccordionVariant, AccordionSize, IconVariant } from './types'
 import AccordionTrigger from './AccordionTrigger.vue'
 import AccordionContent from './AccordionContent.vue'
+import { $t } from '@/utils/i18n'
 
 interface Props {
   item: AccordionItemSchema
@@ -125,6 +126,9 @@ const computedContentClass = computed(() => {
   }
   return `${base} ${defaultPaddings[size]} px-0`
 })
+
+const displayTitle = computed(() => props.item.titleI18n ? $t(props.item.titleI18n) : props.item.title)
+const displayDescription = computed(() => props.item.descriptionI18n ? $t(props.item.descriptionI18n) : props.item.description)
 </script>
 
 <template>
@@ -149,11 +153,11 @@ const computedContentClass = computed(() => {
         :class="computedTriggerClass"
         @click="handleToggle">
         <span class="font-medium">
-          {{ item.title }}
+          {{ displayTitle }}
         </span>
 
-        <span v-if="item.description" class="ml-2 text-sm text-muted-foreground font-normal">
-          {{ item.description }}
+        <span v-if="displayDescription" class="ml-2 text-sm text-muted-foreground font-normal">
+          {{ displayDescription }}
         </span>
       </AccordionTrigger>
     </slot>
@@ -173,3 +177,4 @@ const computedContentClass = computed(() => {
     </AccordionContent>
   </div>
 </template>
+
