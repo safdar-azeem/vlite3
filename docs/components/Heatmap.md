@@ -8,19 +8,25 @@ An interactive heatmap suitable for visualizing activity, time-series data, or d
 
 ### Props
 
-| Prop             | Type                     | Default                | Description                               |
-| :--------------- | :----------------------- | :--------------------- | :---------------------------------------- |
-| `data`           | `HeatmapDataPoint[]`     | required               | Array of data points                      |
-| `layout`         | `'grid' \| 'sequential'` | `'grid'`               | Layout mode                               |
-| `interactive`    | `boolean`                | `true`                 | Enable hover and click effects            |
-| `showLegend`     | `boolean`                | `true`                 | Show gradient legend at bottom            |
-| `showLabels`     | `boolean`                | `false`                | Show values inside cells                  |
-| `responsive`     | `boolean`                | `true`                 | Auto-calculate cell size to fit container |
-| `minValue`       | `number`                 | calculated             | Min value for color normalization         |
-| `maxValue`       | `number`                 | calculated             | Max value for color normalization         |
-| `color-config`   | `HeatmapColorConfig`     | `{ scheme: 'github' }` | Color scheme configuration                |
-| `grid-config`    | `object`                 | `{ rows: 7, gap: 3 }`  | Config for grid layout                    |
-| `tooltip-config` | `object`                 | `{ enabled: true }`    | Tooltip settings                          |
+| Prop               | Type                     | Default                | Description                               |
+| :----------------- | :----------------------- | :--------------------- | :---------------------------------------- |
+| `data`             | `HeatmapDataPoint[]`     | required               | Array of data points                      |
+| `layout`           | `'grid' \| 'sequential'` | `'grid'`               | Layout mode                               |
+| `interactive`      | `boolean`                | `true`                 | Enable hover and click effects            |
+| `showLegend`       | `boolean`                | `true`                 | Show gradient legend at bottom            |
+| `showLabels`       | `boolean`                | `false`                | Show values inside cells                  |
+| `responsive`       | `boolean`                | `true`                 | Auto-calculate cell size to fit container |
+| `minValue`         | `number`                 | calculated             | Min value for color normalization         |
+| `maxValue`         | `number`                 | calculated             | Max value for color normalization         |
+| `colorConfig`      | `HeatmapColorConfig`     | `{ scheme: 'github' }` | Color scheme configuration                |
+| `gridConfig`       | `object`                 | `{ rows: 7, gap: 3 }`  | Config for grid layout                    |
+| `sequentialConfig` | `object`                 | `{ itemsPerRow: 7 }`   | Config for sequential layout              |
+| `tooltipConfig`    | `object`                 | `{ enabled: true }`    | Tooltip settings                          |
+| `minCellSize`      | `number`                 | `8`                    | Minimum cell size                         |
+| `maxCellSize`      | `number`                 | `20`                   | Maximum cell size                         |
+| `class`            | `string`                 | —                      | Container class                           |
+| `cellClass`        | `string`                 | —                      | Extra class for cells                     |
+| `emptyCellClass`   | `string`                 | —                      | Extra class for empty cells               |
 
 ### Data Format (`HeatmapDataPoint`)
 
