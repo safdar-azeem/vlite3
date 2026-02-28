@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import Icon from '../Icon.vue'
 import type { IDropdownOption } from '@/types'
+import { $t } from '@/utils/i18n'
 
 interface Props {
   option: IDropdownOption
@@ -10,12 +12,16 @@ interface Props {
   index?: number
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 
 const emit = defineEmits<{
   (e: 'click', option: IDropdownOption): void
   (e: 'mouseenter', index: number): void
 }>()
+
+const displayLabel = computed(() => props.option.labelI18n ? $t(props.option.labelI18n) : props.option.label)
+const displaySubtitle = computed(() => props.option.subtitleI18n ? $t(props.option.subtitleI18n) : props.option.subtitle)
+const displayDescription = computed(() => props.option.descriptionI18n ? $t(props.option.descriptionI18n) : props.option.description)
 </script>
 
 <template>
@@ -34,17 +40,17 @@ const emit = defineEmits<{
       <Icon v-if="option.icon" :icon="option.icon" class="mr-2 h-4 w-4 shrink-0 mt-0.5" />
       <div class="flex flex-col flex-1 min-w-0">
         <div class="flex items-center justify-between gap-2">
-          <span class="truncate font-medium">{{ option.label }}</span>
+          <span class="truncate font-medium">{{ displayLabel }}</span>
           <span
-            v-if="option.subtitle"
+            v-if="displaySubtitle"
             class="text-xs text-muted-foreground whitespace-nowrap opacity-90"
-            >{{ option.subtitle }}</span
+            >{{ displaySubtitle }}</span
           >
         </div>
         <span
-          v-if="option.description"
+          v-if="displayDescription"
           class="text-[10px] text-muted-foreground truncate opacity-70"
-          >{{ option.description }}</span
+          >{{ displayDescription }}</span
         >
       </div>
       <Icon
