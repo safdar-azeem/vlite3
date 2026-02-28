@@ -4,38 +4,40 @@
 
 ### Props
 
-| Prop                 | Type                                              | Default     | Description                            |
-| :------------------- | :------------------------------------------------ | :---------- | :------------------------------------- |
-| `variant`            | `'header' \| 'sidebar'`                           | `header`    | Layout mode                            |
-| `position`           | `'fixed' \| 'sticky' \| 'relative' \| 'absolute'` | `sticky`    | CSS positioning                        |
-| `centerPosition`     | `'center' \| 'left' \| 'right'`                   | `center`    | Alignment of center slot (Header only) |
-| `glass`              | `boolean`                                         | `true`      | Blur effect on scroll                  |
-| `border`             | `boolean`                                         | `true`      | Show border (bottom or right)          |
-| `floating`           | `boolean`                                         | `false`     | Floating card style                    |
-| `compact`            | `boolean`                                         | `false`     | Compact interaction mode               |
-| `mobileBreakpoint`   | `'sm' \| 'md' \| 'lg' \| 'xl'`                    | `md`        | Breakpoint to switch to mobile menu    |
-| `height`             | `string`                                          | `h-16`      | Header height class                    |
-| `width`              | `string`                                          | `w-64`      | Sidebar width class                    |
-| `class`              | `string`                                          | —           | Custom class for wrapper               |
-| `logoClass`          | `string`                                          | —           | Classes for logo container             |
-| `contentClass`       | `string`                                          | —           | Classes for main content area          |
-| `menuClass`          | `string`                                          | —           | Classes for the menu container         |
-| `rightClass`         | `string`                                          | —           | Classes for right actions area         |
-| `mobileTriggerClass` | `string`                                          | —           | Classes for hamburger button           |
-| `mobileMenuVariant`  | `'sidepanel' \| 'dropdown'`                       | `sidepanel` | Mobile menu render behavior            |
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `variant` | `'header' \| 'sidebar'` | `'header'` | Layout mode |
+| `position` | `'fixed' \| 'sticky' \| 'relative' \| 'absolute'` | `'sticky'` | CSS positioning |
+| `centerPosition` | `'center' \| 'left' \| 'right'` | `'center'` | Alignment of center slot (Header only) |
+| `glass` | `boolean` | `false` | Blur effect on scroll |
+| `border` | `boolean` | `true` | Show border (bottom or right) |
+| `floating` | `boolean` | `false` | Floating card style |
+| `class` | `string` | `''` | Custom class for wrapper |
+| `height` | `string` | `'h-16'` | Header height class |
+| `width` | `string` | `'w-64'` | Sidebar width class |
+| `compact` | `boolean` | `false` | Compact interaction mode |
+| `logo` | `string` | — | Logo image source URL |
+| `logoAlt` | `string` | — | Alt text for the logo |
+| `mobileBreakpoint` | `'sm' \| 'md' \| 'lg' \| 'xl'` | `'md'` | Breakpoint to switch to mobile menu |
+| `logoClass` | `string` | `''` | Classes for logo container |
+| `contentClass` | `string` | `''` | Classes for main content area |
+| `menuClass` | `string` | `''` | Classes for the menu container |
+| `rightClass` | `string` | `''` | Classes for right actions area |
+| `mobileTriggerClass` | `string` | `''` | Classes for hamburger button |
+| `mobileMenuVariant` | `'sidepanel' \| 'dropdown'` | `'sidepanel'` | Mobile menu render behavior |
 
 ### Slots
 
-| Slot             | Description                                          | Props                |
-| :--------------- | :--------------------------------------------------- | :------------------- |
-| `header`         | **New:** Full-width top header (enables Layout mode) | `{ isOpen, toggle }` |
-| `main`           | **New:** Main content area (enables Layout mode)     | —                    |
-| `logo`           | Branding area                                        | —                    |
-| `left`           | Left content (Header) or Top content (Sidebar)       | —                    |
-| `center`         | Center content (Header) or Middle content (Sidebar)  | —                    |
-| `right`          | Right actions (Header) or Bottom content (Sidebar)   | —                    |
-| `mobile-trigger` | Custom hamburger button                              | `{ isOpen, toggle }` |
-| `mobile-menu`    | Custom mobile menu content                           | —                    |
+| Slot | Description | Props |
+| :--- | :--- | :--- |
+| `header` | Full-width top header (enables Layout mode) | `{ isOpen, toggle }` |
+| `main` | Main content area (enables Layout mode) | — |
+| `logo` | Branding area | — |
+| `left` | Left content (Header) or Top content (Sidebar) | — |
+| `center` | Center content (Header) or Middle content (Sidebar) | — |
+| `right` | Right actions (Header) or Bottom content (Sidebar) | — |
+| `mobile-trigger` | Custom hamburger button | `{ isOpen, toggle }` |
+| `mobile-menu` | Custom mobile menu content | — |
 
 ### Usage
 
@@ -104,10 +106,95 @@
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `label` | `string` | — | Link text |
 | `to` | `string` | — | Router link target |
 | `href` | `string` | — | External link URL |
+| `label` | `string` | — | Link text |
 | `icon` | `string` | — | Leading icon |
+| `iconRight` | `string` | — | Trailing icon |
 | `active` | `boolean` | `false` | Forced active state |
-| `variant` | `'default' | 'pill' | 'underline' | 'ghost'` | `ghost` | Visual style |
+| `disabled` | `boolean` | `false` | Disable interactions |
+| `class` | `string` | `''` | Additional CSS classes |
+| `orientation` | `'horizontal' | 'vertical'` | `'horizontal'` | Layout orientation |
+| `variant` | `'default' | 'pill' | 'underline' | 'ghost'` | `'ghost'` | Visual style |
+| EOF |  |  |  |
+
+cat << 'EOF' > "/Users/safdar/Projects/vlite3/docs/components/SidebarMenu.md"
+
+# SidebarMenu
+
+**Import:** `import { SidebarMenu } from 'vlite3'`
+**Types:** `import type { SidebarMenuItemSchema } from 'vlite3'`
+
+### Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `items` | `SidebarMenuItemSchema[]` | `[]` | Menu structure |
+| `allowMultiple` | `boolean` | `true` | Allow multiple submenus open |
+| `indentSize` | `number` | `12` | Indentation pixels per level |
+| `variant` | `'default' | 'ghost'` | `'default'` | Visual theme |
+| `defaultExpanded` | `string[]` | `[]` | IDs of default expanded menus |
+| `compact` | `boolean` | `false` | Collapsed mode (icons only) |
+| `showCompactLabels` | `boolean` | `false` | Show small labels in compact mode |
+| `renderMode` | `'tree' | 'popover'` | `'tree'` | Submenu rendering style |
+| `iconSize` | `string` | `'16px'` | Icon size CSS string |
+| `compactIconSize` | `string` | `'20px'` | Icon size when in compact mode |
+| `labelClass` | `string` | `'text-sm'` | Tailwind class for labels |
+| `compactLabelClass` | `string` | `'text-[11.5px] mt-1'` | Tailwind class for compact labels |
+| `itemPadding` | `string` | `'py-2 px-2'` | Padding classes for items |
+| `compactItemPadding` | `string` | `'py-2 px-1'` | Padding classes for compact items |
+| `nestedMenuWidth` | `string` | `'220px'` | Width of nested popover menu |
+| `nestedMenuMaxHeight` | `string` | `'300px'` | Max height of nested popover menu |
+
+### Type Definition
+
+```ts
+interface SidebarMenuItemSchema {
+  id?: string
+  label: string
+  labelI18n?: string
+  icon?: string
+  to?: string | { path: string; [key: string]: any }
+  href?: string
+  children?: SidebarMenuItemSchema[]
+  badge?: string | number
+  badgeClass?: string
+  disabled?: boolean
+  renderMode?: 'tree' | 'popover'
+  action?: (item: SidebarMenuItemSchema) => void
+  class?: string
+}
+
+```
+
+### Usage
+
+```vue
+<script setup>
+const items = [
+  {
+    label: 'Dashboard',
+    icon: 'lucide:home',
+    to: '/dashboard',
+  },
+  {
+    label: 'Projects',
+    icon: 'lucide:folder',
+    children: [
+      { label: 'Active', to: '/projects/active' },
+      { label: 'Archived', to: '/projects/archived' },
+    ],
+  },
+]
+</script>
+
+<template>
+  <SidebarMenu
+    :items="items"
+    icon-size="18px"
+    compact-icon-size="24px"
+  />
+</template>
+
+```
 
