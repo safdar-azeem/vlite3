@@ -4,19 +4,22 @@
 
 ### Props
 
-| Prop           | Type                                           | Default      | Description                                 |
-| :------------- | :--------------------------------------------- | :----------- | :------------------------------------------ |
-| `modelValue`   | `FilePickerValue \| FilePickerValue[] \| null` | `null`       | Binding (`v-model`)                         |
-| `variant`      | `'dropzone' \| 'input'`                        | `'dropzone'` | Display variant                             |
-| `multiSelect`  | `boolean`                                      | `false`      | Allow multiple file selection               |
-| `fileTypes`    | `string[]`                                     | `[]`         | Allowed types (e.g., `['image/*', '.pdf']`) |
-| `returnFormat` | `'file' \| 'base64'`                           | `'file'`     | Output format for file data                 |
-| `maxSize`      | `number`                                       | —            | Max file size in bytes                      |
-| `loading`      | `boolean`                                      | `false`      | Show loading state                          |
-| `disabled`     | `boolean`                                      | `false`      | Disable interaction                         |
-| `placeholder`  | `string`                                       | —            | Placeholder (for `input` variant)           |
-| `size`         | `InputSize`                                    | `'md'`       | Size (for `input` variant)                  |
-| `rounded`      | `InputRounded`                                 | `'md'`       | Border radius (for `input` variant)         |
+| Prop              | Type                                           | Default      | Description                                 |
+| :---------------- | :--------------------------------------------- | :----------- | :------------------------------------------ |
+| `modelValue`      | `FilePickerValue \| FilePickerValue[] \| null` | `null`       | Binding (`v-model`)                         |
+| `variant`         | `'dropzone' \| 'input'`                        | `'dropzone'` | Display variant                             |
+| `multiSelect`     | `boolean`                                      | `false`      | Allow multiple file selection               |
+| `fileTypes`       | `string[]`                                     | `[]`         | Allowed types (e.g., `['image/*', '.pdf']`) |
+| `returnFormat`    | `'file' \| 'base64'`                           | `'file'`     | Output format for file data                 |
+| `maxSize`         | `number`                                       | —            | Max file size in bytes                      |
+| `maxFiles`        | `number`                                       | —            | Max number of allowed files                 |
+| `loading`         | `boolean`                                      | `false`      | Show loading state                          |
+| `disabled`        | `boolean`                                      | `false`      | Disable interaction                         |
+| `placeholder`     | `string`                                       | —            | Placeholder (for `input` variant)           |
+| `placeholderI18n` | `string`                                       | —            | I18n key for input placeholder              |
+| `textI18n`        | `string`                                       | —            | I18n key for dropzone text                  |
+| `size`            | `InputSize`                                    | `'md'`       | Size (for `input` variant)                  |
+| `rounded`         | `InputRounded`                                 | `'md'`       | Border radius (for `input` variant)         |
 
 ### Types
 
