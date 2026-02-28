@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import Icon from './Icon.vue'
+import { $t } from '@/utils/i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -8,6 +9,7 @@ const props = withDefaults(
     max?: number
     step?: number
     label?: string
+    labelI18n?: string
     icon?: string
     disabled?: boolean
     showValue?: boolean
@@ -167,6 +169,8 @@ const sizeClasses = computed(() => {
   }
   return sizes[props.size]
 })
+
+const displayLabel = computed(() => props.labelI18n ? $t(props.labelI18n) : props.label)
 </script>
 
 <template>
@@ -176,14 +180,14 @@ const sizeClasses = computed(() => {
     @mouseenter="isHovered = true"
     @mouseleave="isHovered = false">
     <div
-      v-if="label || icon"
+      v-if="displayLabel || icon"
       class="flex items-center gap-2 min-w-fit cursor-pointer transition-colors"
       :class="[{ 'text-primary': isDragging || isHovered }, labelClass || 'text-muted-foreground']"
       @click="emit('iconClick')"
       :title="`Double-click to reset`">
       <Icon v-if="icon" :icon="icon" class="h-4 w-4" />
-      <label v-if="label" class="text-sm font-medium whitespace-nowrap cursor-pointer">
-        {{ label }}
+      <label v-if="displayLabel" class="text-sm font-medium whitespace-nowrap cursor-pointer">
+        {{ displayLabel }}
       </label>
     </div>
 
@@ -246,3 +250,4 @@ const sizeClasses = computed(() => {
     </span>
   </div>
 </template>
+
