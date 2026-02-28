@@ -104,6 +104,18 @@ export interface IFormCustomFieldsProps {
 export interface IForm {
   /** Field name - supports dot notation for nested paths (e.g., 'pricing.baseAmount') */
   name: string
+  /** Read initial value from a different key in the incoming data (defaults to name) */
+  mapFrom?: string
+  /** Write submit value to a different key in the payload (defaults to name) */
+  mapTo?: string
+  /** Key to extract from object or array of objects. Useful for mapping arrays of objects to simple values. */
+  valueKey?: string
+  /** Alias for valueKey */
+  key?: string
+  /** Format raw value before passing to form state */
+  format?: (value: any, rawValues: Record<string, any>) => any
+  /** Transform form value before submitting */
+  transform?: (value: any, formValues: Record<string, any>) => any
   /** Field label - can be string or Vue component */
   label?: string | Component
   /** Placeholder text */
@@ -231,3 +243,4 @@ export interface IFormFieldChangePayload {
   value: any
   data?: any
 }
+
