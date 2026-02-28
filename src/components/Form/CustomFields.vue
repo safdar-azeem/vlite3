@@ -5,6 +5,7 @@ import type { InputVariant, InputSize, InputRounded } from '@/types'
 import FormField from './FormField.vue'
 import Button from '@/components/Button.vue'
 import Label from '../Label.vue'
+import { $t } from '@/utils/i18n'
 
 interface Props {
   modelValue?: Record<string, any>[]
@@ -17,7 +18,9 @@ interface Props {
   minRows?: number
   maxRows?: number
   addButtonText?: string
-  label: string
+  textI18n?: string
+  label?: string
+  labelI18n?: string
   showRowNumbers?: boolean
   /** All form values for context */
   values?: Record<string, any>
@@ -41,6 +44,8 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: Record<string, any>[]): void
   (e: 'change', value: Record<string, any>[]): void
 }>()
+
+const displayLabel = computed(() => props.labelI18n ? $t(props.labelI18n) : props.label)
 
 // Internal rows state with unique ID for transitions
 const rows = ref<(Record<string, any> & { _id: string })[]>([])
@@ -136,8 +141,8 @@ const columnHeaders = computed(() => {
 <template>
   <div class="custom-fields-wrapper">
     <div class="flex justify-between items-center mb-2">
-      <Label class="text-sm font-medium text-foreground">
-        {{ label }}
+      <Label v-if="displayLabel" class="text-sm font-medium text-foreground">
+        {{ displayLabel }}
       </Label>
       <Button
         type="button"
