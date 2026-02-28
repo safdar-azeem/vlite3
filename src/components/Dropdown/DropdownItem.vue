@@ -37,7 +37,7 @@ const displayDescription = computed(() => props.option.descriptionI18n ? $t(prop
     @click="emit('click', option)"
     @mouseenter="$emit('mouseenter', index ?? -1)">
     <slot name="default" v-bind="{ option, index, selected }">
-      <Icon v-if="option.icon" :icon="option.icon" class="mr-2 h-4 w-4 shrink-0 mt-0.5" />
+      <Icon v-if="option.icon || option.emoji" :icon="option.icon" :emoji="option.emoji" class="mr-2 h-4 w-4 shrink-0 mt-0.5" />
       <div class="flex flex-col flex-1 min-w-0">
         <div class="flex items-center justify-between gap-2">
           <span class="truncate font-medium">{{ displayLabel }}</span>
