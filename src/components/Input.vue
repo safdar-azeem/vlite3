@@ -97,7 +97,6 @@ const inputBaseClass = computed(() => {
     full: 'rounded-full',
   }
 
-  // Handle Input Rounded Corners based on addons
   let roundedClass = roundedStyles[props.rounded]
 
   if (hasAddonLeft.value) {
@@ -153,22 +152,16 @@ const sizeText: Record<InputSize, string> = {
   lg: 'text-base',
 }
 
-// Common logic to auto-style child buttons/inputs passed into slots
 const getAutoAddonClasses = (side: 'left' | 'right') => {
   const isLeft = side === 'left'
-  // Targeted selectors for buttons, anchors, and common wrappers
   return [
-    // Ensure height matches
     '[&_button]:w-full [&_a]:w-full! [&_.v-btn]:w-full! [&_.tooltip-trigger]:w-full',
-    // Handle borders (Connect sides)
     isLeft
       ? '[&_button]:rounded-r-none [&_a]:rounded-r-none [&_.v-btn]:rounded-r-none'
       : '[&_button]:rounded-l-none [&_a]:rounded-l-none [&_.v-btn]:rounded-l-none',
-    // Ensure focus ring appears on top
     '[&_button]:relative [&_button]:focus:z-20',
-    // Merge borders (Negative margin to overlap single pixels)
     isLeft ? '-mr-px' : '-ml-px',
-    'z-10', // Ensure addons sit visually above input border if needed
+    'z-10', 
   ].join(' ')
 }
 
@@ -364,3 +357,4 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
