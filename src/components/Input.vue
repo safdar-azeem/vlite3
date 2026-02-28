@@ -4,6 +4,7 @@ import Icon from './Icon.vue'
 import Label from './Label.vue'
 import Textarea from './Textarea.vue'
 import type { InputProps, InputRounded, InputSize, InputVariant } from '@/types'
+import { $t } from '@/utils/i18n'
 
 const props = withDefaults(defineProps<InputProps>(), {
   modelValue: '',
@@ -32,6 +33,9 @@ const emit = defineEmits<{
   (e: 'click:icon', event: MouseEvent): void
   (e: 'click:icon-right', event: MouseEvent): void
 }>()
+
+const displayLabel = computed(() => props.labelI18n ? $t(props.labelI18n) : props.label)
+const displayPlaceholder = computed(() => props.placeholderI18n ? $t(props.placeholderI18n) : props.placeholder)
 
 const slots = useSlots()
 const inputRef = ref<HTMLInputElement | null>(null)
@@ -260,10 +264,10 @@ onMounted(() => {
 <template>
   <div :class="wrapperClass">
     <Label
-      v-if="label"
-      :for="label"
+      v-if="displayLabel"
+      :for="displayLabel"
       :class="['mb-1.5', labelPosition !== 'top' ? 'mb-0' : ''].join(' ')">
-      {{ label }}
+      {{ displayLabel }}
     </Label>
 
     <div :class="inputWrapperClass">
@@ -275,7 +279,7 @@ onMounted(() => {
         <Textarea
           v-if="type === 'textarea'"
           :model-value="String(modelValue)"
-          :placeholder="placeholder"
+          :placeholder="displayPlaceholder"
           :disabled="disabled"
           :rows="rows"
           :class="inputBaseClass"
@@ -288,7 +292,7 @@ onMounted(() => {
           ref="inputRef"
           :type="computedType"
           :value="modelValue"
-          :placeholder="placeholder"
+          :placeholder="displayPlaceholder"
           :disabled="disabled"
           :min="min"
           :max="max"
