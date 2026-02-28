@@ -12,9 +12,12 @@ export type ISize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
 
 export type IDropdownOption = {
   label: string
+  labelI18n?: string
   value?: any
   subtitle?: string
+  subtitleI18n?: string
   description?: string
+  descriptionI18n?: string
   icon?: string
   emoji?: string
   disabled?: Boolean
