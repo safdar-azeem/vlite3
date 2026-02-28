@@ -89,10 +89,11 @@ const itemStyle = computed(() => {
 })
 
 const itemClass = computed(() => {
-  const base =
-    'group flex items-center justify-between text-sm font-medium rounded-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 relative border border-transparent select-none cursor-pointer w-full'
+  const base = `group flex items-center justify-between font-medium rounded-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 relative border border-transparent select-none cursor-pointer w-full ${context.labelClass}`
 
-  const layout = context.compact ? 'justify-center py-2 px-1' : 'justify-between py-2 px-2'
+  const layout = context.compact
+    ? `justify-center ${context.compactItemPadding}`
+    : `justify-between ${context.itemPadding}`
 
   let variantClass = ''
   if (isActive.value) {
@@ -112,7 +113,9 @@ const showCompactLabel = computed(() => {
   return context.compact && context.showCompactLabels
 })
 
-const displayLabel = computed(() => props.item.labelI18n ? $t(props.item.labelI18n) : props.item.label)
+const displayLabel = computed(() =>
+  props.item.labelI18n ? $t(props.item.labelI18n) : props.item.label
+)
 
 // Mappers for Dropdown
 const mapItemToDropdown = (item: SidebarMenuItemSchema): IDropdownOption => {
@@ -203,7 +206,8 @@ const componentProps = computed(() => {
           <Icon
             v-if="item.icon"
             :icon="item.icon"
-            class="shrink-0 transition-colors opacity-80 group-hover:opacity-100" />
+            class="shrink-0 transition-colors opacity-80 group-hover:opacity-100"
+            :style="{ width: context.compactIconSize, height: context.compactIconSize }" />
           {{ displayLabel }}
         </div>
       </template>
@@ -236,16 +240,17 @@ const componentProps = computed(() => {
                 <Icon
                   v-if="item.icon"
                   :icon="item.icon"
-                  class="shrink-0 transition-colors opacity-70 group-hover:opacity-100"
-                  :class="[
-                    isActive || isOpen ? 'opacity-100' : '',
-                    context.compact ? 'h-5 w-5' : 'h-4 w-4',
-                  ]" />
+                  class="shrink-0 transition-colors opacity-80 group-hover:opacity-100"
+                  :class="[isActive || isOpen ? 'opacity-100' : '']"
+                  :style="{
+                    width: context.compact ? context.compactIconSize : context.iconSize,
+                    height: context.compact ? context.compactIconSize : context.iconSize,
+                  }" />
 
                 <span
                   class="truncate leading-none pt-0.5"
                   :class="{
-                    'text-[10px]': showCompactLabel,
+                    [context.compactLabelClass]: showCompactLabel,
                     hidden: context.compact && !showCompactLabel,
                     'md:hidden': context.compact && !showCompactLabel,
                   }">
@@ -280,7 +285,11 @@ const componentProps = computed(() => {
           :href="option.data?.href"
           target="option.data?.href ? '_blank' : undefined"
           class="flex items-center w-full gap-2 text-sm">
-          <Icon v-if="option.icon" :icon="option.icon" class="h-4 w-4 shrink-0 opacity-70" />
+          <Icon
+            v-if="option.icon"
+            :icon="option.icon"
+            class="shrink-0 opacity-80"
+            :style="{ width: context.iconSize, height: context.iconSize }" />
           <span class="truncate flex-1">{{ option.label }}</span>
           <span
             v-if="option.data?.badge"
@@ -318,13 +327,17 @@ const componentProps = computed(() => {
             <Icon
               v-if="item.icon"
               :icon="item.icon"
-              class="shrink-0 transition-colors opacity-70 group-hover:opacity-100"
-              :class="[isActive ? 'opacity-100' : '', context.compact ? 'h-5 w-5' : 'h-4 w-4']" />
+              class="shrink-0 transition-colors opacity-80 group-hover:opacity-100"
+              :class="[isActive ? 'opacity-100' : '']"
+              :style="{
+                width: context.compact ? context.compactIconSize : context.iconSize,
+                height: context.compact ? context.compactIconSize : context.iconSize,
+              }" />
 
             <span
               class="truncate leading-none pt-0.5"
               :class="{
-                'text-[10px]': showCompactLabel,
+                [context.compactLabelClass]: showCompactLabel,
                 hidden: context.compact && !showCompactLabel,
                 'md:hidden': context.compact && !showCompactLabel,
               }">
@@ -346,7 +359,7 @@ const componentProps = computed(() => {
             v-if="hasChildren"
             role="button"
             tabindex="0"
-            class="ml-1.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-sm text-muted-foreground hover:bg-accent/50 hover:text-foreground transition-all"
+            class="ml-1.5 flex shrink-0 items-center justify-center rounded-sm text-muted-foreground hover:bg-accent/50 hover:text-foreground transition-all"
             :class="{ 'md:hidden': context.compact }"
             @click="handleChevronClick"
             @keydown.enter.space.prevent="handleChevronClick">
@@ -401,4 +414,3 @@ const componentProps = computed(() => {
   margin-right: 4px !important;
 }
 </style>
-
