@@ -61,8 +61,6 @@ interface Props {
   timelineTextPosition?: TimelineTextPosition
   /** Fields to explicitly include in the submit payload */
   emitFields?: string[]
-  /** Fields to explicitly remove from the submit payload */
-  ignoreFields?: string[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -85,7 +83,7 @@ const props = withDefaults(defineProps<Props>(), {
   headerClass: '',
   footerClass: '',
   timelineTextPosition: 'bottom',
-  ignoreFields: () => ['__typename'],
+  emitFields: () => ['__typename'],
 })
 
 const emit = defineEmits<{
@@ -168,7 +166,6 @@ const {
   isUpdate: props.isUpdate,
   folderId: props.folderId,
   emitFields: props.emitFields,
-  ignoreFields: props.ignoreFields,
   onSubmit: (payload) => {
     emit('onSubmit', payload, modalContext?.close)
   },
