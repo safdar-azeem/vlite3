@@ -4,15 +4,19 @@
 
 ### Props
 
-| Prop          | Type      | Default  | Description                                           |
-| :------------ | :-------- | :------- | :---------------------------------------------------- |
-| `show`        | `boolean` | `false`  | Binding (`v-model:show`)                              |
-| `title`       | `string`  | required | Modal title                                           |
-| `description` | `string`  | required | Description text                                      |
-| `loading`     | `boolean` | `false`  | Show loading spinner on confirm button                |
-| `confirmText` | `string`  | `Delete` | Text for confirm button                               |
-| `cancelText`  | `string`  | `Cancel` | Text for cancel button                                |
-| `variant`     | `string`  | `danger` | Button variant (`primary`, `danger`, `warning`, etc.) |
+| Prop              | Type      | Default     | Description                                           |
+| :---------------- | :-------- | :---------- | :---------------------------------------------------- |
+| `show`            | `boolean` | `false`     | Binding (`v-model:show`)                              |
+| `title`           | `string`  | required    | Modal title                                           |
+| `titleI18n`       | `string`  | —           | I18n Translation key for title                        |
+| `description`     | `string`  | required    | Description text                                      |
+| `descriptionI18n` | `string`  | —           | I18n Translation key for description                  |
+| `loading`         | `boolean` | `false`     | Show loading spinner on confirm button                |
+| `confirmText`     | `string`  | `'Confirm'` | Text for confirm button                               |
+| `confirmTextI18n` | `string`  | —           | I18n translation key for confirm button               |
+| `cancelText`      | `string`  | `'Cancel'`  | Text for cancel button                                |
+| `cancelTextI18n`  | `string`  | —           | I18n translation key for cancel button                |
+| `variant`         | `string`  | `'danger'`  | Button variant (`primary`, `danger`, `warning`, etc.) |
 
 ### Events
 
