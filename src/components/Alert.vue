@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, useSlots } from 'vue'
 import Icon from './Icon.vue'
 import type { AlertVariant } from '@/types'
-import Button from './Button.vue'
+import { $t } from '@/utils/i18n'
 
 interface Props {
   title?: string
+  titleI18n?: string
   description?: string
+  descriptionI18n?: string
   icon?: string
   variant?: AlertVariant
   closable?: boolean
@@ -31,6 +33,9 @@ const handleClose = () => {
   emit('close')
 }
 
+const displayTitle = computed(() => props.titleI18n ? $t(props.titleI18n) : props.title)
+const displayDescription = computed(() => props.descriptionI18n ? $t(props.descriptionI18n) : props.description)
+
 const variantClasses = computed(() => {
   const variants: Record<AlertVariant, string> = {
     primary: 'bg-primary-light text-primary border-primary/15',
@@ -51,16 +56,12 @@ const iconClasses = computed(() => {
   return variants[props.variant]
 })
 
-const isTitleOnly = computed(() => !props.description && !useSlots().default)
-
-// Helper to check if default slot is present (requires import useSlots)
-import { useSlots } from 'vue'
+const isTitleOnly = computed(() => !displayDescription.value && !useSlots().default)
 
 const containerClasses = computed(() => {
   return [
     'relative w-full rounded-lg border px-4 [&>svg]:absolute [&>svg]:left-4 [&>svg]:text-foreground',
     isTitleOnly.value ? 'py-3' : 'pt-4 pb-2',
-    // Icon Position: Center vertically if title only, otherwise top-4
     isTitleOnly.value
       ? '[&>svg]:top-1/2 [&>svg]:-translate-y-1/2'
       : '[&>svg]:top-4 top-4 [&>svg+div]:translate-y-[-3px]',
@@ -89,12 +90,12 @@ const computedRole = computed(() => {
     </slot>
 
     <div :class="{ 'pl-7': icon || $slots.icon, 'pr-6': closable }">
-      <h5 :class="titleClasses" v-if="title">
-        {{ title }}
+      <h5 :class="titleClasses" v-if="displayTitle">
+        {{ displayTitle }}
       </h5>
-      <div v-if="description || $slots.default" class="text-sm opacity-90 [&_p]:leading-relaxed">
+      <div v-if="displayDescription || $slots.default" class="text-sm opacity-90 [&_p]:leading-relaxed">
         <slot>
-          {{ description }}
+          {{ displayDescription }}
         </slot>
       </div>
     </div>
@@ -110,3 +111,4 @@ const computedRole = computed(() => {
     </button>
   </div>
 </template>
+
