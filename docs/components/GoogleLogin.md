@@ -8,14 +8,16 @@ A lightweight component integrating `vue3-google-login` for seamless Google OAut
 
 ### Props
 
-| Prop         | Type      | Default               | Description                       |
-| :----------- | :-------- | :-------------------- | :-------------------------------- |
-| `clientId`   | `string`  | required              | Google OAuth Client ID            |
-| `buttonText` | `string`  | `Sign in with Google` | Label text for the default button |
-| `variant`    | `string`  | `outline`             | Visual style variant of button    |
-| `size`       | `string`  | `md`                  | Dimensions scale                  |
-| `rounded`    | `string`  | `md`                  | Border radius                     |
-| `disabled`   | `boolean` | `false`               | Disable the interaction           |
+| Prop             | Type      | Default               | Description                       |
+| :--------------- | :-------- | :-------------------- | :-------------------------------- |
+| `clientId`       | `string`  | required              | Google OAuth Client ID            |
+| `buttonText`     | `string`  | `Sign in with Google` | Label text for the default button |
+| `buttonTextI18n` | `string`  | —                     | I18n translation key for text     |
+| `btnClass`       | `string`  | —                     | Custom class for the button       |
+| `variant`        | `string`  | `outline`             | Visual style variant of button    |
+| `size`           | `string`  | `md`                  | Dimensions scale                  |
+| `rounded`        | `string`  | `md`                  | Border radius                     |
+| `disabled`       | `boolean` | `false`               | Disable the interaction           |
 
 ### Events
 
