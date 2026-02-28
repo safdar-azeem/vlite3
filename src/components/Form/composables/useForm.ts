@@ -302,6 +302,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
       }
       
       delete output.file
+      delete output.base64
       return output
     }
 
@@ -330,6 +331,13 @@ export function useForm(options: UseFormOptions): UseFormReturn {
           }
 
           // If it's already a string (URL) or doesn't match upload criteria, return as is
+          if (item && typeof item === 'object') {
+            const cleanItem = { ...item }
+            delete cleanItem.file
+            delete cleanItem.base64
+            return cleanItem
+          }
+
           return item
         })
 
@@ -351,6 +359,11 @@ export function useForm(options: UseFormOptions): UseFormReturn {
           if (url) {
             return { name, value: isDetailed ? buildDetailedOutput(value, url) : url }
           }
+        } else if (value && typeof value === 'object') {
+          const cleanItem = { ...value }
+          delete cleanItem.file
+          delete cleanItem.base64
+          return { name, value: cleanItem }
         }
 
         // No update needed for this field
