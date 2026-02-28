@@ -12,6 +12,7 @@ export interface KanbanLoadDataResult<T = any> {
 export interface KanbanColumn {
   id: string | number
   title: string
+  titleI18n?: string
   [key: string]: any
 }
 
