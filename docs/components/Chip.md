@@ -9,10 +9,12 @@
 | `variant`   | `ChipVariant`                    | `subtle` | Visual style                     |
 | `size`      | `'small' \| 'medium' \| 'large'` | `medium` | Dimensions                       |
 | `text`      | `string`                         | —        | Label text                       |
+| `textI18n`  | `string`                         | —        | I18n translation key for text    |
 | `icon`      | `string`                         | —        | Leading icon                     |
 | `clickable` | `boolean`                        | `false`  | Enable interaction styles/events |
 | `deletable` | `boolean`                        | `false`  | Show delete button               |
 | `disabled`  | `boolean`                        | `false`  | Disable interactions             |
+| `class`     | `string`                         | —        | Custom CSS classes               |
 
 ### Events
 
