@@ -15,6 +15,8 @@
 | `size`        | `NumberInputSize`    | `md`        | Dimensions              |
 | `rounded`     | `NumberInputRounded` | `md`        | Border radius           |
 | `placeholder` | `string`             | —           | Input placeholder       |
+| `name`        | `string`             | —           | Input name attribute    |
+| `id`          | `string`             | —           | Input ID attribute      |
 | `disabled`    | `boolean`            | `false`     | Disable interaction     |
 | `readonly`    | `boolean`            | `false`     | Read-only state         |
 
