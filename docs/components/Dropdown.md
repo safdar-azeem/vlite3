@@ -4,23 +4,31 @@
 
 ### Props
 
-| Prop                 | Type                | Default      | Description                             |
-| :------------------- | :------------------ | :----------- | :-------------------------------------- |
-| `modelValue`         | `any`               | —            | Binding (`v-model`)                     |
-| `selected`           | `any`               | —            | Selected value (alternative to v-model) |
-| `options`            | `IDropdownOptions`  | `[]`         | Array of options                        |
-| `placeholder`        | `string`            | —            | Placeholder text                        |
-| `disabled`           | `boolean`           | `false`      | Disable dropdown                        |
-| `loading`            | `boolean`           | `false`      | Show loading state                      |
-| `searchable`         | `boolean`           | `true`       | Enable search input                     |
-| `closeOnSelect`      | `boolean`           | `true`       | Close dropdown after selection          |
-| `position`           | `TooltTipPlacement` | `bottom-end` | Dropdown position                       |
-| `width`              | `string`            | —            | Custom width                            |
-| `maxHeight`          | `string`            | `300px`      | Max height of menu                      |
-| `teleport`           | `boolean`           | `true`       | Teleport menu to body                   |
-| `doubleConfirmation` | `boolean`           | `false`      | Require confirmation for selection      |
-| `remote`             | `boolean`           | `false`      | Enable remote data loading              |
-| `hasMore`            | `boolean`           | `false`      | Show "Load More" indicator              |
+| Prop                 | Type                     | Default      | Description                             |
+| :------------------- | :----------------------- | :----------- | :-------------------------------------- |
+| `modelValue`         | `any`                    | —            | Binding (`v-model`)                     |
+| `selected`           | `any`                    | —            | Selected value (alternative to v-model) |
+| `options`            | `IDropdownOptions`       | `[]`         | Array of options                        |
+| `placeholder`        | `string`                 | —            | Placeholder text                        |
+| `disabled`           | `boolean`                | `false`      | Disable dropdown                        |
+| `loading`            | `boolean`                | `false`      | Show loading state                      |
+| `searchable`         | `boolean`                | `true`       | Enable search input                     |
+| `closeOnSelect`      | `boolean`                | `true`       | Close dropdown after selection          |
+| `position`           | `TooltTipPlacement`      | `bottom-end` | Dropdown position                       |
+| `width`              | `string`                 | —            | Custom width                            |
+| `maxHeight`          | `string`                 | `300px`      | Max height of menu                      |
+| `teleport`           | `boolean`                | `true`       | Teleport menu to body                   |
+| `doubleConfirmation` | `boolean`                | `false`      | Require confirmation for selection      |
+| `remote`             | `boolean`                | `false`      | Enable remote data loading              |
+| `hasMore`            | `boolean`                | `false`      | Show "Load More" indicator              |
+| `layout`             | `'default' \| 'grouped'` | `'default'`  | Layout mode for options                 |
+| `columns`            | `number \| string`       | `3`          | Number of columns in grouped layout     |
+| `direction`          | `'ltr' \| 'rtl'`         | `'ltr'`      | Text/layout direction                   |
+| `menuId`             | `string`                 | —            | HTML ID for the menu container          |
+| `nestedPosition`     | `TooltipPlacement`       | —            | Position for nested children            |
+| `nestedOffset`       | `[number, number]`       | —            | Offset for nested children              |
+| `showSelectedLabel`  | `boolean`                | `true`       | Show the selected label in trigger      |
+| `selectable`         | `boolean`                | `true`       | Enable item selection styles            |
 
 ### Types
 
