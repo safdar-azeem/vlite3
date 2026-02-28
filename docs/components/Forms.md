@@ -14,10 +14,12 @@ A schema-driven form builder with built-in validation, multi-step wizards, group
 | `values`                   | `Record<string, any>`  | `{}`        | Initial form values                                                    |
 | `variant`                  | `InputVariant`         | `'outline'` | Style variant for all inputs                                           |
 | `size`                     | `InputSize`            | `'md'`      | Size of inputs                                                         |
-| `columns`                  | `number`               | —           | Number of grid columns (default 1)                                     |
-| `className`                | `string`               | —           | Custom class for grid (e.g., `'grid-cols-2'`)                          |
+| `rounded`                  | `InputRounded`         | `'md'`      | Border radius of inputs                                                |
+| `class`                    | `string`               | —           | Custom class for form element                                          |
+| `className`                | `string`               | —           | Custom class for grid                                                  |
 | `loading`                  | `boolean`              | `false`     | Loading state on submit button                                         |
 | `submitText`               | `string`               | `'Submit'`  | Label for submit button                                                |
+| `submitProps`              | `ButtonProps`          | —           | Extra props for submit button                                          |
 | `isUpdate`                 | `boolean`              | `false`     | Mode for update/edit operations                                        |
 | `tabs`                     | `IFormStep[]`          | —           | Configuration for multi-step wizard                                    |
 | `groupsHeadings`           | `string[]`             | —           | Headings for grouped layout                                            |
