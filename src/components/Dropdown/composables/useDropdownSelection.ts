@@ -1,6 +1,7 @@
 import { computed } from 'vue'
 import { deepMerge } from '@/utils/object'
 import type { IDropdownOption, IDropdownOptions } from '@/types'
+import { $t } from '@/utils/i18n'
 
 interface UseDropdownSelectionProps {
   modelValue: any
@@ -22,19 +23,21 @@ export function useDropdownSelection(props: UseDropdownSelectionProps, emit: Emi
   // Label Resolution
   const getLabelFromValue = (options: IDropdownOptions = [], value: any): string => {
     for (const opt of options) {
+      const displayLabel = opt.labelI18n ? $t(opt.labelI18n) : opt.label
+      
       // Exact match
-      if (opt.value === value) return opt.label
+      if (opt.value === value) return displayLabel
 
       // Key/Object match
       if (opt.key && typeof value === 'object' && value !== null && opt.key in value) {
         if (opt.children) {
           const childLabel = getLabelFromValue(opt.children, value[opt.key])
-          if (childLabel) return `${opt.label} / ${childLabel}`
+          if (childLabel) return `${displayLabel} / ${childLabel}`
         }
         // If no children but key matched (top level leaf with key)
-        if (opt.value === value[opt.key]) return opt.label
+        if (opt.value === value[opt.key]) return displayLabel
 
-        return opt.label
+        return displayLabel
       }
     }
     return ''
