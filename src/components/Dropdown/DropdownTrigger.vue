@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Button from '@/components/Button.vue'
+import { ButtonProps } from '@/types'
 
 interface Props {
   selectedLabel?: string
@@ -8,6 +9,7 @@ interface Props {
   disabled?: boolean
   className?: string
   direction?: 'ltr' | 'rtl'
+  triggerProps?: ButtonProps
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -25,6 +27,7 @@ const props = withDefaults(defineProps<Props>(), {
     variant="outline"
     :disabled="disabled"
     :dir="direction"
+    v-bind="triggerProps"
     class="w-full justify-between! font-normal"
     :class="className" />
 </template>
