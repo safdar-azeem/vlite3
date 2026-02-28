@@ -63,6 +63,14 @@ const handleSubmit = (payload: IFormSubmitPayload) => {
     <div class="flex flex-col lg:flex-row gap-6">
       <div class="flex-1 max-w-2xl">
         <Form
+          :values="{
+            avatar: '',
+            name: 'safdar',
+            email: 'safdar@gmail.com',
+            subject: 'general',
+            message: 'hello',
+            __typename: 'Form',
+          }"
           :schema="contactSchema"
           class-name="grid-cols-2"
           submitText="Send Message"
