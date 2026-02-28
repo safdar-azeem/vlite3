@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import Switch from '../Switch.vue'
 import Icon from '../Icon.vue'
 import type { IDropdownOption } from '@/types'
+import { $t } from '@/utils/i18n'
 
 interface Props {
   option: IDropdownOption
@@ -14,6 +16,8 @@ const props = defineProps<Props>()
 const emit = defineEmits<{
   (e: 'change', value: boolean, option: IDropdownOption): void
 }>()
+
+const displayLabel = computed(() => props.option.labelI18n ? $t(props.option.labelI18n) : props.option.label)
 
 const handleToggle = (newValue: boolean) => {
   emit('change', newValue, props.option)
@@ -30,7 +34,7 @@ const handleToggle = (newValue: boolean) => {
     @click.stop="handleToggle(!value)">
     <div class="flex items-center gap-2 flex-1 min-w-0">
       <Icon v-if="option.icon" :icon="option.icon" class="h-4 w-4 shrink-0 opacity-70" />
-      <span class="truncate font-medium">{{ option.label }}</span>
+      <span class="truncate font-medium">{{ displayLabel }}</span>
     </div>
     <Switch
       :model-value="value"
