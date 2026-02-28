@@ -137,8 +137,8 @@ const menuItems: SidebarMenuItemSchema[] = [
             :render-mode="renderMode"
             :compact="compact"
             :show-compact-labels="showCompactLabels"
-            :icon-size="iconSize"
-            :compact-icon-size="compactIconSize" />
+            :icon-size="`${iconSize}px`"
+            :compact-icon-size="`${compactIconSize}px`" />
         </div>
 
         <div class="p-4 border-t bg-gray-50">
