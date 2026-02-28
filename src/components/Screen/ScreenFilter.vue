@@ -5,6 +5,7 @@ import Modal from '../Modal.vue'
 import { Dropdown } from '../Dropdown'
 import Icon from '../Icon.vue'
 import { Form } from '../Form'
+import { $t } from '@/utils/i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -44,10 +45,14 @@ const clearFilters = () => {
   emit('update:modelValue', {})
   emit('change', {})
 }
+
+const txtFilters = computed(() => { const r = $t('vlite.screen.filters'); return r !== 'vlite.screen.filters' ? r : 'Filters' })
+const txtApplyFilters = computed(() => { const r = $t('vlite.screen.applyFilters'); return r !== 'vlite.screen.applyFilters' ? r : 'Apply Filters' })
+const txtFilter = computed(() => { const r = $t('vlite.screen.filter'); return r !== 'vlite.screen.filter' ? r : 'Filter' })
 </script>
 
 <template>
-  <Modal v-if="type === 'modal'" title="Filters" v-model:show="isOpen" max-width="sm:max-w-md">
+  <Modal v-if="type === 'modal'" :title="txtFilters" v-model:show="isOpen" max-width="sm:max-w-md">
     <template #trigger>
       <Button
         v-if="filterCount > 0"
@@ -55,7 +60,7 @@ const clearFilters = () => {
         class="flex items-center gap-1.5 pl-3 pr-1.5 shrink-0"
         @click="isOpen = true">
         <Icon icon="ci:filter" class="w-4 h-4" />
-        <span>Filters ({{ filterCount }})</span>
+        <span>{{ txtFilters }} ({{ filterCount }})</span>
         <div
           @click.stop="clearFilters"
           class="ml-1 p-1 hover:bg-black/10 dark:hover:bg-white/10 rounded-full transition-colors cursor-pointer">
@@ -66,7 +71,7 @@ const clearFilters = () => {
         v-else
         variant="outline"
         @click="isOpen = true"
-        title="Filter"
+        :title="txtFilter"
         size="lg"
         asIcon
         class="shrink-0 h-9! w-9!">
@@ -91,7 +96,7 @@ const clearFilters = () => {
       <Form
         :schema="schema"
         :values="modelValue"
-        submit-text="Apply Filters"
+        :submit-text="txtApplyFilters"
         @on-submit="applyFilters" />
     </div>
   </Modal>
@@ -109,7 +114,7 @@ const clearFilters = () => {
         class="flex items-center gap-1.5 pl-3 pr-1.5 shrink-0 bg-gray-150! hover:bg-gray-100!"
         style="pointer-events: auto">
         <Icon icon="ci:filter" class="w-4 h-4" />
-        <span>Filters ({{ filterCount }})</span>
+        <span>{{ txtFilters }} ({{ filterCount }})</span>
         <div
           @click.stop="clearFilters"
           class="ml-1 p-1 hover:bg-black/10 dark:hover:bg-white/10 rounded-full transition-colors cursor-pointer">
@@ -120,7 +125,7 @@ const clearFilters = () => {
         v-else
         variant="outline"
         icon="hugeicons:filter-add"
-        title="Filter"
+        :title="txtFilter"
         size="lg"
         class="shrink-0 h-9! w-9!" />
     </template>
@@ -130,7 +135,7 @@ const clearFilters = () => {
       <Form
         :schema="schema"
         :values="modelValue"
-        submit-text="Apply Filters"
+        :submit-text="txtApplyFilters"
         :submit-props="{
           size: 'sm',
           class: 'w-full',
@@ -140,3 +145,4 @@ const clearFilters = () => {
     </div>
   </Dropdown>
 </template>
+
