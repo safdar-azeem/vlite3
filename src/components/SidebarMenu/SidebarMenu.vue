@@ -19,6 +19,8 @@ const props = withDefaults(defineProps<SidebarMenuProps>(), {
   compactLabelClass: 'text-[11.5px] mt-1',
   itemPadding: 'py-2 px-2',
   compactItemPadding: 'py-2 px-1',
+  nestedMenuWidth: '220px',
+  nestedMenuMaxHeight: '300px',
 })
 
 const route = useRoute()
@@ -127,6 +129,8 @@ const context = reactive({
   compactLabelClass: computed(() => props.compactLabelClass),
   itemPadding: computed(() => props.itemPadding),
   compactItemPadding: computed(() => props.compactItemPadding),
+  nestedMenuWidth: computed(() => props.nestedMenuWidth),
+  nestedMenuMaxHeight: computed(() => props.nestedMenuMaxHeight),
 }) as unknown as SidebarMenuContext
 
 provide('sidebar-menu-ctx', context)
@@ -141,3 +145,4 @@ provide('sidebar-menu-ctx', context)
     <SidebarMenuItem v-for="item in items" :key="item.id || item.label" :item="item" />
   </nav>
 </template>
+
