@@ -5,6 +5,7 @@ import type { InputVariant, InputSize, InputRounded } from '@/types'
 import { getNestedValue, isComponent } from './utils/form.utils'
 import Label from '@/components/Label.vue'
 import FormField from './FormField.vue'
+import { $t } from '@/utils/i18n'
 
 interface Props {
   schema: IForm[]
@@ -75,6 +76,12 @@ const checkFieldReadonly = (field: IForm): boolean => {
   return field.readonly === true
 }
 
+// Get the translated or direct label for the field
+const getFieldLabel = (field: IForm) => {
+  if (field.labelI18n) return $t(field.labelI18n)
+  return field.label
+}
+
 // Render label as component or string
 const renderLabel = (label: string | Component | undefined): string | Component | undefined => {
   if (!label) return undefined
@@ -107,28 +114,26 @@ const handleAddonAction = (action: string) => {
   <div class="grid gap-4" :class="className">
     <template v-for="field in schema" :key="field.name">
       <div v-if="checkFieldVisible(field)" :class="['form-field-item', getItemClass(field)]">
-        <!-- Label -->
         <Label
           v-if="
-            field.label &&
+            getFieldLabel(field) &&
             field.type !== 'switch' &&
             field.type !== 'check' &&
             field.type !== 'customFields'
           "
           :for="field.name"
           class="mb-2 block text-sm font-medium">
-          <component v-if="isComponent(field.label)" :is="renderLabel(field.label)" />
+          <component v-if="isComponent(getFieldLabel(field))" :is="renderLabel(getFieldLabel(field))" />
           <template v-else>
-            {{ field.label }}
+            {{ getFieldLabel(field) }}
             <span v-if="field.required" class="text-destructive ml-0.5">*</span>
           </template>
         </Label>
 
-        <!-- Field Component -->
         <FormField
           :field="field"
           :value="getFieldValue(field)"
-          :label="field.type === 'customFields' ? field.label : undefined"
+          :label="field.type === 'customFields' ? getFieldLabel(field) : undefined"
           :values="values"
           :variant="variant"
           :size="size"
@@ -141,16 +146,14 @@ const handleAddonAction = (action: string) => {
           @addonChange="handleAddonChange"
           @addonAction="handleAddonAction" />
 
-        <!-- Inline Label for Switch/Checkbox -->
         <Label
-          v-if="field.label && (field.type === 'switch' || field.type === 'check')"
+          v-if="getFieldLabel(field) && (field.type === 'switch' || field.type === 'check')"
           :for="field.name"
           class="ml-2 text-sm font-medium cursor-pointer">
-          {{ field.label }}
+          {{ getFieldLabel(field) }}
           <span v-if="field.required" class="text-destructive ml-0.5">*</span>
         </Label>
 
-        <!-- Error Message -->
         <p v-if="getFieldError(field)" class="mt-1 text-sm text-destructive">
           {{ getFieldError(field) }}
         </p>
