@@ -83,6 +83,23 @@ const dummyDictionary: Record<string, string> = {
   'vlite.workbook.duplicate': 'Duplicar (Translated)',
   'vlite.workbook.delete': 'Eliminar (Translated)',
   'vlite.workbook.addSheet': 'Añadir Hoja (Translated)',
+
+  // Confirmation Modal
+  'vlite.confirmation.confirm': 'Confirmar (Translated)',
+  'vlite.confirmation.cancel': 'Cancelar (Translated)',
+
+  // DatePicker
+  'vlite.datePicker.placeholder': 'Seleccionar fecha (Translated)',
+
+  // GoogleLogin
+  'vlite.googleLogin.buttonText': 'Iniciar sesión con Google (Translated)',
+
+  // IconPicker
+  'vlite.iconPicker.search': 'Buscar más de 1000 iconos... (Translated)',
+
+  // ThemeToggle
+  'vlite.themeToggle.switchToDark': 'Cambiar a modo oscuro (Translated)',
+  'vlite.themeToggle.switchToLight': 'Cambiar a modo claro (Translated)',
 }
 
 // Setup vLite with global i18n handler
