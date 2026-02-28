@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed, inject } from 'vue'
+import { useRouter } from 'vue-router'
 import Icon from '../Icon.vue'
 import Tooltip from '@/components/Tooltip.vue'
 import type { SidebarMenuItemSchema, SidebarMenuContext } from './types'
 import { Dropdown } from '@/components/Dropdown'
-import type { IDropdownOptions, IDropdownOption } from '@/types/styles'
+import type { IDropdownOptions, IDropdownOption } from '@/types'
 import { $t } from '@/utils/i18n'
 
 interface Props {
@@ -17,6 +18,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const context = inject<SidebarMenuContext>('sidebar-menu-ctx')
+const router = useRouter()
 
 if (!context) {
   throw new Error('SidebarMenuItem must be used within a SidebarMenu')
@@ -140,6 +142,13 @@ const handleDropdownSelect = (option: any) => {
     if (schema.action) schema.action(schema)
     const id = schema.id || schema.label || (typeof schema.to === 'string' ? schema.to : '')
     if (id) context.setActive(id)
+    
+    // Handle Navigation Programmatically
+    if (schema.to) {
+      router.push(schema.to).catch(() => {})
+    } else if (schema.href) {
+      window.open(schema.href, '_blank')
+    }
   }
 }
 
@@ -196,7 +205,8 @@ const componentProps = computed(() => {
       :offset="[0, 10]"
       class="w-full"
       :searchable="false"
-      width="220px"
+      :width="context.nestedMenuWidth"
+      :maxHeight="context.nestedMenuMaxHeight"
       :options="dropdownOptions"
       @onSelect="handleDropdownSelect">
       <template #header>
@@ -279,12 +289,7 @@ const componentProps = computed(() => {
       </template>
 
       <template #item="{ option }">
-        <component
-          :is="option.data?.to ? 'router-link' : option.data?.href ? 'a' : 'div'"
-          :to="option.data?.to"
-          :href="option.data?.href"
-          target="option.data?.href ? '_blank' : undefined"
-          class="flex items-center w-full gap-2 text-sm">
+        <div class="flex items-center w-full gap-2 text-sm">
           <Icon
             v-if="option.icon"
             :icon="option.icon"
@@ -297,7 +302,7 @@ const componentProps = computed(() => {
             :class="option.data?.badgeClass || 'bg-muted text-muted-foreground'">
             {{ option.data.badge }}
           </span>
-        </component>
+        </div>
       </template>
     </Dropdown>
 
