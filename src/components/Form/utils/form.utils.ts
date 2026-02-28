@@ -87,14 +87,48 @@ export function initializeFormValues(
   for (const field of flatSchema) {
     if (!field.name) continue
 
-    // Only set default if value not already present in initialValues
-    const existingValue = getNestedValue(values, field.name)
-    if (existingValue === undefined) {
-      const defaultValue = typeof field.value === 'function' ? field.value() : field.value
+    const sourceName = field.mapFrom || field.name
+    let existingValue = initialValues ? getNestedValue(initialValues, sourceName) : undefined
 
-      if (defaultValue !== undefined) {
-        Object.assign(values, setNestedValue(values, field.name, defaultValue))
+    // Apply smart formatting if value exists
+    if (existingValue !== undefined && existingValue !== null) {
+      const extractionKey = field.valueKey || field.key
+      if (extractionKey) {
+        if (Array.isArray(existingValue)) {
+          existingValue = existingValue.map((item: any) =>
+            item && typeof item === 'object' ? getNestedValue(item, extractionKey) : item
+          )
+        } else if (typeof existingValue === 'object') {
+          existingValue = getNestedValue(existingValue, extractionKey)
+        }
       }
+
+      if (field.format) {
+        existingValue = field.format(existingValue, initialValues || {})
+      }
+    }
+
+    // Seed value
+    if (existingValue === undefined) {
+      // If we didn't find anything from source, try fallback to field.name if mapFrom was used
+      // This helps if they passed a partially constructed object
+      if (field.mapFrom && initialValues) {
+        const fallbackValue = getNestedValue(initialValues, field.name)
+        if (fallbackValue !== undefined) {
+          existingValue = fallbackValue
+        }
+      }
+
+      if (existingValue === undefined) {
+        const defaultValue = typeof field.value === 'function' ? field.value() : field.value
+        if (defaultValue !== undefined) {
+          Object.assign(values, setNestedValue(values, field.name, defaultValue))
+        }
+      } else {
+        Object.assign(values, setNestedValue(values, field.name, existingValue))
+      }
+    } else {
+      Object.assign(values, setNestedValue(values, field.name, existingValue))
     }
 
     // Seed addon default values
@@ -241,6 +275,7 @@ export function isComponent(value: any): boolean {
 /**
  * Cleans the submit payload by extracting only schema fields,
  * injecting specified emitFields, and removing ignoreFields recursively.
+ * Also processes mapped output and transformation functions.
  */
 export function cleanSubmitValues(
   values: Record<string, any>,
@@ -248,29 +283,47 @@ export function cleanSubmitValues(
   emitFields?: string[],
   ignoreFields?: string[]
 ): Record<string, any> {
-  if (emitFields === undefined && ignoreFields === undefined) {
-    return deepClone(values)
-  }
-
-  const fieldsToEmit = emitFields || []
-  const fieldsToIgnore = ignoreFields || []
+  const isPassthrough = emitFields === undefined && ignoreFields === undefined
+  const result: Record<string, any> = isPassthrough ? deepClone(values) : {}
 
   const flatSchema = Array.isArray(schema[0]) ? (schema as IForm[][]).flat() : (schema as IForm[])
-  const result: Record<string, any> = {}
+  const fieldsToEmit = emitFields || []
+  const fieldsToIgnore = ignoreFields || []
 
   for (const field of flatSchema) {
     if (!field.name) continue
 
-    const val = getNestedValue(values, field.name)
+    let val = getNestedValue(values, field.name)
     if (val === undefined) continue
 
     if (field.type === 'customFields' && field.props?.schema && Array.isArray(val)) {
       const nestedSchema = field.props.schema as IForm[]
-      const cleanedArray = val.map((item: any) =>
-        cleanSubmitValues(item, nestedSchema, fieldsToEmit, fieldsToIgnore)
+      val = val.map((item: any) =>
+        cleanSubmitValues(item, nestedSchema, emitFields, ignoreFields)
       )
-      Object.assign(result, setNestedValue(result, field.name, cleanedArray))
+    }
+
+    let needsUpdate = false
+
+    // Apply transform for submit payload
+    if (field.transform) {
+      val = field.transform(val, values)
+      needsUpdate = true
+    }
+
+    const targetName = field.mapTo || field.name
+    if (targetName !== field.name) {
+      needsUpdate = true
+      // Cleanup original passthrough key if dynamically relocated top-level
+      if (isPassthrough && !field.name.includes('.')) {
+        delete result[field.name]
+      }
+    }
+
+    if (!isPassthrough || needsUpdate) {
+      Object.assign(result, setNestedValue(result, targetName, val))
     } else {
+      // Standard passthrough overwrite to ensure correctly processed nested arrays persist
       Object.assign(result, setNestedValue(result, field.name, val))
     }
   }
@@ -326,3 +379,4 @@ export function cleanSubmitValues(
 
   return result
 }
+
