@@ -9,6 +9,7 @@ import { Empty } from '../Empty'
 import DataTableHeader from './DataTableHeader.vue'
 import DataTableRow from './DataTableRow.vue'
 import DataTableToolbar from './DataTableToolbar.vue'
+import { $t } from '@/utils/i18n'
 import type {
   SortConfig,
   DataTableProps,
@@ -32,15 +33,10 @@ const props = withDefaults(defineProps<DataTableProps>(), {
   selectedRows: () => [],
   search: '',
   showSearch: true,
-  searchPlaceholder: 'Search...',
-  toolbarClass: '',
-  toolbarSearchClass: '',
   headers: () => [],
   keyField: '_id',
   loading: false,
   selectable: false,
-  emptyTitle: 'No data available',
-  emptyDescription: 'No results found. Try adjusting your filters or search terms.',
   emptyIcon: 'lucide:inbox',
   showPagination: true,
   paginationProps: () => ({
@@ -99,7 +95,6 @@ watch(
   }
 )
 
-// Debounce search emit to prevent spamming the API while typing
 let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null
 watch(internalSearch, (newVal) => {
   if (searchDebounceTimer) clearTimeout(searchDebounceTimer)
@@ -133,14 +128,12 @@ watch(
 
 const getRowIdForTemplate = (row: any) => getRowId(row, props.keyField)
 
-// Initialize selectedIds from props.selectedRows
 const selectedIds = ref<Set<any>>(new Set())
 
 watch(
   () => props.selectedRows,
   (newVal) => {
     const newIds = new Set((newVal || []).map((row) => getRowId(row, props.keyField)))
-    // Only update if different to avoid infinite loops if parent mutates array reference
     if (
       newIds.size !== selectedIds.value.size ||
       [...newIds].some((id) => !selectedIds.value.has(id))
@@ -175,7 +168,6 @@ const toggleSelectAll = (checked: boolean) => {
     props.rows.forEach((row) => selectedIds.value.add(getRowId(row, props.keyField)))
   } else {
     if (selectedIds.value.size > 0) {
-      // Remove currently visible rows
       props.rows.forEach((row) => selectedIds.value.delete(getRowId(row, props.keyField)))
     }
   }
@@ -196,7 +188,6 @@ const emitSelection = () => {
   const seenIds = new Set<any>()
   const newSelected: any[] = []
 
-  // Add rows that are currently selected and visible
   props.rows.forEach((row) => {
     const id = getRowId(row, props.keyField)
     if (selectedIds.value.has(id)) {
@@ -205,7 +196,6 @@ const emitSelection = () => {
     }
   })
 
-  // Add rows that were previously selected but not previously visible (preserve them)
   currentSelected.forEach((row) => {
     const id = getRowId(row, props.keyField)
     if (!seenIds.has(id) && selectedIds.value.has(id)) {
@@ -267,7 +257,6 @@ const onDeleteConfirm = () => {
   showDeleteConfirmation.value = false
 }
 
-// Emitting change with a small debounce handles synchronous updates gracefully and ensures performance
 let emitDebounceTimer: ReturnType<typeof setTimeout> | null = null
 const emitChange = () => {
   if (emitDebounceTimer) clearTimeout(emitDebounceTimer)
@@ -312,6 +301,13 @@ watch(
     selectedIds.value = new Set([...selectedIds.value].filter((id) => validIds.has(id)))
   }
 )
+
+const txtEmptyTitle = computed(() => props.emptyTitleI18n ? $t(props.emptyTitleI18n) : props.emptyTitle)
+const txtEmptyDesc = computed(() => props.emptyDescriptionI18n ? $t(props.emptyDescriptionI18n) : props.emptyDescription)
+const txtDeleteConfirmTitle = computed(() => { const r = $t('vlite.dataTable.confirmDeleteTitle'); return r !== 'vlite.dataTable.confirmDeleteTitle' ? r : 'Confirm Deletion' })
+const txtDeleteConfirmDesc = computed(() => { const r = $t('vlite.dataTable.confirmDeleteDesc'); return r !== 'vlite.dataTable.confirmDeleteDesc' ? r : 'Are you sure you want to delete the selected items?' })
+const txtDeleteBtn = computed(() => { const r = $t('vlite.dataTable.deleteBtn'); return r !== 'vlite.dataTable.deleteBtn' ? r : 'Delete' })
+const txtCancelBtn = computed(() => { const r = $t('vlite.dataTable.cancelBtn'); return r !== 'vlite.dataTable.cancelBtn' ? r : 'Cancel' })
 </script>
 
 <template>
@@ -321,6 +317,7 @@ watch(
       v-model="internalSearch"
       :show-search="showSearch"
       :placeholder="searchPlaceholder"
+      :placeholderI18n="searchPlaceholderI18n"
       :class="toolbarClass"
       :search-class="toolbarSearchClass">
       <template #left v-if="$slots?.['toolbar-left']">
@@ -440,8 +437,8 @@ watch(
                 class="align-middle hover:bg-transparent">
                 <slot name="empty">
                   <Empty
-                    :title="emptyTitle"
-                    :description="emptyDescription"
+                    :title="txtEmptyTitle"
+                    :description="txtEmptyDesc"
                     :icon="emptyIcon"
                     class="border-none! bg-transparent! py-16!">
                     <template #action v-if="$slots['empty-action']">
@@ -468,12 +465,13 @@ watch(
 
     <ConfirmationModal
       v-model:show="showDeleteConfirmation"
-      title="Confirm Deletion"
-      description="Are you sure you want to delete the selected items?"
-      confirm-text="Delete"
-      cancel-text="Cancel"
+      :title="txtDeleteConfirmTitle"
+      :description="txtDeleteConfirmDesc"
+      :confirm-text="txtDeleteBtn"
+      :cancel-text="txtCancelBtn"
       variant="danger"
       @confirm="onDeleteConfirm"
       @cancel="showDeleteConfirmation = false" />
   </div>
 </template>
+
