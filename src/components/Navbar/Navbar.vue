@@ -9,7 +9,7 @@ import type { NavbarProps } from '@/types/navbar.type'
 
 const props = withDefaults(defineProps<NavbarProps>(), {
   variant: 'header',
-  position: 'sticky', // default to sticky for modern feels
+  position: 'sticky',
   centerPosition: 'center',
   glass: false,
   border: true,
@@ -37,6 +37,9 @@ const slots = useSlots()
 const mobileMenuRef = ref<HTMLElement | null>(null)
 const mobileTriggerRef = ref<HTMLElement | null>(null)
 
+// If the user provides a header or main slot, we switch to Layout Mode
+const isLayoutMode = computed(() => !!(slots.header || slots.main))
+
 // Close on click outside
 onClickOutside(
   mobileMenuRef,
@@ -63,11 +66,12 @@ onUnmounted(() => {
 const containerClasses = computed(() => {
   const isSidebar = props.variant === 'sidebar'
 
+  // When inside a layout wrapper, the navbar becomes strictly a flex child sidebar.
   const positionClasses = {
-    fixed: 'fixed top-0 left-0 z-40',
-    sticky: 'sticky top-0 z-40',
+    fixed: isLayoutMode.value ? 'relative z-40' : 'fixed top-0 left-0 z-40',
+    sticky: isLayoutMode.value ? 'relative z-40' : 'sticky top-0 z-40',
     relative: 'relative z-10',
-    absolute: 'absolute top-0 left-0 w-full z-40',
+    absolute: isLayoutMode.value ? 'relative z-40' : 'absolute top-0 left-0 w-full z-40',
   }
 
   const base = 'bg-body'
@@ -91,14 +95,8 @@ const containerClasses = computed(() => {
   // Layout
   let layout = ''
   if (isSidebar) {
-    // Sidebar logic: Use dynamic breakpoint classes
-    // Sidebar: Mobile (auto height, full width) -> Desktop (fixed width based on prop, full height constrained to viewport)
-    // We use max-h-screen to ensure that if the sidebar is sticky/fixed, it never exceeds the viewport height,
-    // allowing internal scrolling to work correctly regardless of the main content height.
     layout = breakpointClasses.value.sidebarLayout
   } else {
-    // Header Navbar
-    // Flexbox with standard gap. Alignment is handled by child margins.
     layout = `flex items-center gap-4 w-full px-4 sm:px-6 lg:px-8 ${props.height}`
   }
 
@@ -107,9 +105,6 @@ const containerClasses = computed(() => {
 
 const breakpointClasses = computed(() => {
   const bp = props.mobileBreakpoint || 'md'
-
-  // We use static lookups so Tailwind scanner picks up the full class names.
-  // Dynamic string interpolation (e.g. `${bp}:hidden`) is NOT detected by Tailwind.
 
   const mobileTriggerClasses: Record<string, string> = {
     sm: 'sm:hidden',
@@ -158,17 +153,13 @@ const breakpointClasses = computed(() => {
 const centerClasses = computed(() => {
   if (props.variant === 'sidebar') return 'flex-1 py-4 overflow-y-auto'
 
-  // Header logic
   switch (props.centerPosition) {
     case 'left':
-      // Sits next to Left section. No special margin needed other than global gap.
       return 'flex items-center justify-start'
     case 'right':
-      // Pushed to the right (ml-auto), sitting next to Right section.
       return 'flex items-center justify-end ml-auto'
     case 'center':
     default:
-      // Tried to center in available space. mx-auto in a flex container pushes against siblings.
       return `${breakpointClasses.value.desktopContent} items-center justify-center mx-auto`
   }
 })
@@ -196,12 +187,194 @@ watch(isDesktop, (val) => {
 </script>
 
 <template>
-  <nav :class="containerClasses" role="navigation">
-    <!-- HEADER LAYOUT -->
+  <div v-if="isLayoutMode" class="vlite-app-layout flex flex-col w-full h-full bg-body overflow-hidden">
+    <header v-if="$slots.header" class="w-full shrink-0 z-50 flex flex-col relative">
+      <slot
+        name="header"
+        :is-open="isMobileMenuOpen"
+        :toggle="() => (isMobileMenuOpen = !isMobileMenuOpen)">
+      </slot>
+    </header>
+
+    <div class="flex flex-1 w-full overflow-hidden relative">
+      <nav :class="containerClasses" role="navigation">
+        <template v-if="variant === 'header'">
+          <div class="flex items-center gap-4 shrink-0 z-10">
+            <slot
+              name="mobile-trigger"
+              :is-open="isMobileMenuOpen"
+              :toggle="() => (isMobileMenuOpen = !isMobileMenuOpen)">
+              <button
+                type="button"
+                ref="mobileTriggerRef"
+                class="p-2 -ml-2 text-muted-foreground hover:bg-accent rounded-md shrink-0"
+                :class="[breakpointClasses.mobileTrigger, props.mobileTriggerClass]"
+                @click="isMobileMenuOpen = !isMobileMenuOpen">
+                <Icon icon="lucide:menu" class="w-5 h-5" />
+                <span class="sr-only">Open Menu</span>
+              </button>
+            </slot>
+
+            <div class="shrink-0" :class="props.logoClass" v-if="$slots?.logo">
+              <slot name="logo">
+                <component
+                  :is="props.logo ? 'img' : 'div'"
+                  :src="props.logo"
+                  class="h-8 w-auto font-bold text-xl flex items-center gap-2">
+                  <Logo v-if="!props.logo" class="h-6 w-6" />
+                  <span v-if="!props.logo && props.logoAlt">{{ props.logoAlt }}</span>
+                  <span v-else-if="!props.logo">Brand</span>
+                </component>
+              </slot>
+            </div>
+
+            <div
+              v-if="$slots?.left"
+              class="items-center gap-1 overflow-x-auto no-scrollbar mask-gradient"
+              :class="breakpointClasses.desktopContent">
+              <slot name="left" />
+            </div>
+          </div>
+
+          <div
+            :class="[
+              centerClasses,
+              'max-w-full',
+              props.contentClass,
+            ]"
+            v-if="$slots?.center">
+            <slot name="center" />
+          </div>
+
+          <div
+            class="flex items-center gap-2 shrink-0 max-w-[40%] z-10"
+            :class="[
+              {
+                'ml-auto': centerPosition === 'left' || centerPosition === 'center',
+              },
+              props.rightClass,
+            ]">
+            <slot name="right" />
+          </div>
+        </template>
+
+        <template v-else>
+          <div v-if="!$slots.header" :class="breakpointClasses.mobileHeader">
+            <slot name="logo" v-if="$slots?.logo">
+              <div class="font-bold text-xl truncate">Brand</div>
+            </slot>
+
+            <slot
+              name="mobile-trigger"
+              :is-open="isMobileMenuOpen"
+              :toggle="() => (isMobileMenuOpen = !isMobileMenuOpen)">
+              <button
+                type="button"
+                ref="mobileTriggerRef"
+                class="p-2 -mr-2 text-muted-foreground hover:bg-accent rounded-md"
+                :class="props.mobileTriggerClass"
+                @click="isMobileMenuOpen = !isMobileMenuOpen">
+                <Icon icon="lucide:menu" class="w-5 h-5" />
+                <span class="sr-only">Open Menu</span>
+              </button>
+            </slot>
+          </div>
+
+          <div :class="breakpointClasses.desktopSidebar">
+            <div
+              class="py-4.5 flex items-center px-4.5 z-10"
+              :class="props.logoClass"
+              v-if="$slots?.logo">
+              <slot name="logo">
+                <div class="font-bold text-xl truncate">Brand</div>
+              </slot>
+            </div>
+
+            <div
+              class="flex-1 px-2.5 pt-0 pb-4 overflow-y-auto space-y-4 scrollbar-thin"
+              :class="props.contentClass">
+              <slot name="left" />
+              <slot />
+              <slot name="center" />
+            </div>
+
+            <div
+              class="p-2 border-t border-border shrink-0 bg-background mt-auto"
+              :class="props.rightClass"
+              v-if="$slots?.right">
+              <slot name="right" />
+            </div>
+          </div>
+        </template>
+
+        <template v-if="props.mobileMenuVariant === 'dropdown'">
+          <div
+            v-if="isMobileMenuOpen"
+            ref="mobileMenuRef"
+            class="absolute top-[calc(100%_+_1px)] left-0 w-full bg-body border border-border/50 shadow-xl z-50 flex flex-col transition-all duration-300 origin-top overflow-hidden will-change-transform"
+            :class="props.menuClass">
+            <div class="flex flex-col max-h-[80vh] overflow-y-auto">
+              <slot name="mobile-menu">
+                <div class="space-y-1 p-2">
+                  <slot name="left" />
+                </div>
+                <div class="h-px bg-border/50 my-1 mx-2"></div>
+                <div class="space-y-1 p-2">
+                  <slot name="center" />
+                </div>
+              </slot>
+            </div>
+          </div>
+        </template>
+
+        <SidePanel
+          v-else
+          v-model:show="isMobileMenuOpen"
+          position="left"
+          size="sm"
+          :triggerClass="breakpointClasses.mobileTrigger"
+          class="z-60"
+          headerClass="pl-3! pr-4.5! py-3!"
+          bodyClass="p-0!"
+          :class="breakpointClasses.mobileTrigger">
+          <template #header>
+            <slot name="logo">Brand</slot>
+          </template>
+
+          <div class="flex flex-col space-y-6 pt-4 h-full">
+            <template v-if="variant === 'header'">
+              <div class="flex flex-col space-y-1">
+                <slot name="mobile-menu">
+                  <slot name="left" />
+                  <div class="h-px bg-border my-2"></div>
+                  <slot name="center" />
+                </slot>
+              </div>
+            </template>
+            <template v-else>
+              <div class="flex flex-col space-y-4 flex-1 overflow-y-auto px-3.5!">
+                <slot name="left" />
+                <slot />
+                <slot name="center" />
+              </div>
+            </template>
+
+            <div class="mt-auto pt-2 border-t border-border px-3! py-2!" v-if="$slots?.right">
+              <slot name="right" />
+            </div>
+          </div>
+        </SidePanel>
+      </nav>
+
+      <main v-if="$slots.main" class="flex-1 overflow-y-auto w-full relative h-full">
+        <slot name="main" />
+      </main>
+    </div>
+  </div>
+
+  <nav v-else :class="containerClasses" role="navigation">
     <template v-if="variant === 'header'">
-      <!-- Left Section -->
       <div class="flex items-center gap-4 shrink-0 z-10">
-        <!-- Mobile Toggle -->
         <slot
           name="mobile-trigger"
           :is-open="isMobileMenuOpen"
@@ -217,7 +390,6 @@ watch(isDesktop, (val) => {
           </button>
         </slot>
 
-        <!-- Logo Slot -->
         <div class="shrink-0" :class="props.logoClass" v-if="$slots?.logo">
           <slot name="logo">
             <component
@@ -231,7 +403,6 @@ watch(isDesktop, (val) => {
           </slot>
         </div>
 
-        <!-- Left Slot Content -->
         <div
           v-if="$slots?.left"
           class="items-center gap-1 overflow-x-auto no-scrollbar mask-gradient"
@@ -240,11 +411,9 @@ watch(isDesktop, (val) => {
         </div>
       </div>
 
-      <!-- Center Section -->
       <div
         :class="[
           centerClasses,
-          // Width constraint to ensure it doesn't crush others, but allows simple resizing
           'max-w-full',
           props.contentClass,
         ]"
@@ -252,44 +421,11 @@ watch(isDesktop, (val) => {
         <slot name="center" />
       </div>
 
-      <!-- Right Section -->
-      <!-- 
-                ml-auto ensures this section is ALWAYS pushed to the end.
-                Even if centerPosition is 'right', the Center section has ml-auto, so they will stack at the end.
-                This logic relies on Flexbox behavior: multiple auto-margins split the available space.
-                
-                Scenario 1: Center='left'. Left -> Center -> (space) -> Right (ml-auto). Correct.
-                Scenario 2: Center='center'. Left -> (space/2) -> Center (mx-auto) -> (space/2) -> Right. Correct-ish (Right might need its own push if Center isn't perfect).
-                            Actually if Center is mx-auto, it consumes equal space on both sides. Right naturally sits at end? 
-                            No, if Center is mx-auto, it tries to centers itself between Left and Right.
-                            BUT to guarantee Right is at EDGE:
-                            If we put ml-auto on Right, it consumes all right-side space.
-                            If Center ALSO has mx-auto (ml-auto + mr-auto), space is shared.
-                            
-                            To strictly enforce Right at End:
-                            We should rely on `ml-auto` on the Right section primarily. 
-                            AND modify Center logic:
-                             - If Right has `ml-auto`, it pins to right.
-                             - If Center is 'center', it should assume `mx-auto`.
-                             - If Center is 'right', it also needs `ml-auto` but `mr-4` (gap).
-                             
-                             Let's keep it simple: Right always gets `ml-0` by default, but if layout gap handles it...
-                             Wait, `justify-between` on parent was safer for 'center'.
-                             Let's try:
-                             Left (natural)
-                             Center (flex-1 flex justify-center, IF center='center') -> This centers it in remaining space.
-                             Right (shrink-0)
-            -->
       <div
         class="flex items-center gap-2 shrink-0 max-w-[40%] z-10"
         :class="[
           {
-            // Always push to end unless Center is pushing it.
-            // If Center is 'center' (mx-auto) or 'right' (ml-auto), this naturally falls to end.
-            // If Center is 'left', we MUST have ml-auto here.
             'ml-auto': centerPosition === 'left' || centerPosition === 'center',
-            // If center is 'right', Center has ml-auto. Right just sits next to it.
-            // But if we add ml-auto here too, they might split space? No, flexbox parses strictly.
           },
           props.rightClass,
         ]">
@@ -384,15 +520,12 @@ watch(isDesktop, (val) => {
         <template v-if="variant === 'header'">
           <div class="flex flex-col space-y-1">
             <slot name="mobile-menu">
-              <!-- Fallback to using left+center content if no mobile-specific menu provided -->
               <slot name="left" />
               <div class="h-px bg-border my-2"></div>
               <slot name="center" />
             </slot>
           </div>
         </template>
-
-        <!-- Sidebar Variant Menu (Just replicate sidebar content) -->
         <template v-else>
           <div class="flex flex-col space-y-4 flex-1 overflow-y-auto px-3.5!">
             <slot name="left" />
