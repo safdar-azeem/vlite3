@@ -4,6 +4,7 @@ import Icon from '../Icon.vue'
 import type { WorkbookSheet } from './types'
 import { Dropdown } from '@/components/Dropdown'
 import IconPicker from '@/components/IconPicker.vue'
+import { $t } from '@/utils/i18n'
 
 interface Props {
   sheet: WorkbookSheet
@@ -46,7 +47,8 @@ const emit = defineEmits<{
 const inputRef = ref<HTMLInputElement | null>(null)
 const localTitle = ref(props.sheet.title)
 
-// Focus input when editing starts
+const displayTitle = computed(() => props.sheet.titleI18n ? $t(props.sheet.titleI18n) : props.sheet.title)
+
 const startEdit = () => {
   localTitle.value = props.sheet.title
   emit('edit-start', props.sheet.id)
@@ -62,7 +64,6 @@ const saveEdit = () => {
   if (val) {
     emit('update:title', props.sheet.id, val)
   } else {
-    // Revert if empty
     localTitle.value = props.sheet.title
   }
   emit('edit-end', props.sheet.id)
@@ -78,12 +79,19 @@ const handleKeyDown = (e: KeyboardEvent) => {
   if (e.key === 'Escape') cancelEdit()
 }
 
-// Menu Actions
 const menuOptions = computed(() => [
-  { label: 'Rename', value: 'rename', icon: 'lucide:pencil' },
-  { label: 'Duplicate', value: 'duplicate', icon: 'lucide:copy' },
+  { 
+    label: $t('vlite.workbook.rename') !== 'vlite.workbook.rename' ? $t('vlite.workbook.rename') : 'Rename', 
+    value: 'rename', 
+    icon: 'lucide:pencil' 
+  },
+  { 
+    label: $t('vlite.workbook.duplicate') !== 'vlite.workbook.duplicate' ? $t('vlite.workbook.duplicate') : 'Duplicate', 
+    value: 'duplicate', 
+    icon: 'lucide:copy' 
+  },
   {
-    label: 'Delete',
+    label: $t('vlite.workbook.delete') !== 'vlite.workbook.delete' ? $t('vlite.workbook.delete') : 'Delete',
     value: 'delete',
     icon: 'lucide:trash-2',
     class: 'text-danger',
@@ -110,10 +118,7 @@ const handleMenuSelect = (option: any) => {
   if (option.value === 'duplicate') emit('duplicate', props.sheet.id)
   if (option.value === 'delete') {
     if (!props.canDelete) return
-    
-    // If confirmation is required, wait for the onConfirm callback or event
     if (props.confirmDelete) return
-
     emit('delete', props.sheet.id)
   }
 }
@@ -124,7 +129,6 @@ const handleConfirm = (option?: any) => {
   emit('delete', props.sheet.id)
 }
 
-// Styles
 const containerClass = computed(() => {
   return [
     'group relative flex items-center min-w-[120px] max-w-[240px] h-9 px-3 border-r border-border select-none cursor-pointer transition-all duration-200 ease-out',
@@ -133,7 +137,7 @@ const containerClass = computed(() => {
       ? `bg-muted text-foreground ring-1 ring-border ring-b-0 z-10 ${props.activeItemClass}`
       : `text-muted-foreground hover:bg-accent/50 ${props.inactiveItemClass}`,
     props.isEditing ? 'cursor-text' : '',
-  ].filter(Boolean).join(' ') // "border-b-0" logic handled by parent container's bottom border or z-index
+  ].filter(Boolean).join(' ') 
 })
 </script>
 
@@ -172,7 +176,7 @@ const containerClass = computed(() => {
         @keydown="handleKeyDown"
         @click.stop />
       <span v-else class="block truncate text-sm font-medium leading-normal">
-        {{ sheet.title }}
+        {{ displayTitle }}
       </span>
     </div>
 
@@ -203,3 +207,4 @@ const containerClass = computed(() => {
     </div>
   </div>
 </template>
+
