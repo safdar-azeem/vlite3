@@ -18,7 +18,6 @@ export interface UseFormOptions {
   isUpdate?: boolean
   folderId?: string
   emitFields?: string[]
-  ignoreFields?: string[]
   onSubmit?: (payload: IFormSubmitPayload) => void | Promise<void>
 }
 
@@ -397,7 +396,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
       processedValues = cleanCustomFieldsValues(processedValues)
 
       // Clean payload based on schema and emit/ignore fields
-      processedValues = cleanSubmitValues(processedValues, schema, options.emitFields, options.ignoreFields)
+      processedValues = cleanSubmitValues(processedValues, schema, options.emitFields, [])
 
       // Call onSubmit callback
       if (onSubmit) {
