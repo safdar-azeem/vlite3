@@ -7,6 +7,7 @@
 | Prop      | Type           | Default   | Description |
 | --------- | -------------- | --------- | ----------- |
 | `variant` | `BadgeVariant` | `default` | Color theme |
+| `class`   | `string`       | —         | Custom CSS  |
 
 ### Types
 
