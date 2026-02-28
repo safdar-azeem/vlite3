@@ -9,6 +9,7 @@
 | :------------------ | :------------------------ | :-------- | :-------------------------------- |
 | `items`             | `SidebarMenuItemSchema[]` | `[]`      | Menu structure                    |
 | `allowMultiple`     | `boolean`                 | `true`    | Allow multiple submenus open      |
+| `defaultExpanded`   | `string[]`                | `[]`      | IDs of default expanded menus     |
 | `indentSize`        | `number`                  | `12`      | Indentation pixels per level      |
 | `variant`           | `'default' \| 'ghost'`    | `default` | Visual theme                      |
 | `compact`           | `boolean`                 | `false`   | Collapsed mode (icons only)       |
