@@ -4,20 +4,21 @@
 
 ### Props
 
-| Prop          | Type                                | Default             | Description                      |
-| :------------ | :---------------------------------- | :------------------ | :------------------------------- |
-| `modelValue`  | `any[]`                             | `[]`                | Selected values                  |
-| `options`     | `IDropdownOptions`                  | `[]`                | Options to display               |
-| `placeholder` | `string`                            | `'Select items...'` | Placeholder text                 |
-| `searchable`  | `boolean`                           | `true`              | Enable search functionality      |
-| `disabled`    | `boolean`                           | `false`             | Disable interaction              |
-| `loading`     | `boolean`                           | `false`             | Show loading state               |
-| `variant`     | `'default' \| 'outline' \| 'solid'` | `'outline'`         | Visual style variant             |
-| `size`        | `'sm' \| 'md' \| 'lg'`              | `'md'`              | Component size                   |
-| `maxVisible`  | `number`                            | `2`                 | Max tags to show before +N badge |
-| `hasMore`     | `boolean`                           | `false`             | Show "Load More" trigger         |
-| `remote`      | `boolean`                           | `false`             | Enable remote search mode        |
-| `layout`      | `'default' \| 'grouped'`            | `'default'`         | Option layout mode               |
+| Prop              | Type                                | Default             | Description                      |
+| :---------------- | :---------------------------------- | :------------------ | :------------------------------- |
+| `modelValue`      | `any[]`                             | `[]`                | Selected values                  |
+| `options`         | `IDropdownOptions`                  | `[]`                | Options to display               |
+| `placeholder`     | `string`                            | `'Select items...'` | Placeholder text                 |
+| `placeholderI18n` | `string`                            | —                   | I18n key for the placeholder     |
+| `searchable`      | `boolean`                           | `true`              | Enable search functionality      |
+| `disabled`        | `boolean`                           | `false`             | Disable interaction              |
+| `loading`         | `boolean`                           | `false`             | Show loading state               |
+| `variant`         | `'default' \| 'outline' \| 'solid'` | `'outline'`         | Visual style variant             |
+| `size`            | `'sm' \| 'md' \| 'lg'`              | `'md'`              | Component size                   |
+| `maxVisible`      | `number`                            | `2`                 | Max tags to show before +N badge |
+| `hasMore`         | `boolean`                           | `false`             | Show "Load More" trigger         |
+| `remote`          | `boolean`                           | `false`             | Enable remote search mode        |
+| `layout`          | `'default' \| 'grouped'`            | `'default'`         | Option layout mode               |
 
 ### Events
 
