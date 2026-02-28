@@ -298,9 +298,7 @@ export function cleanSubmitValues(
 
     if (field.type === 'customFields' && field.props?.schema && Array.isArray(val)) {
       const nestedSchema = field.props.schema as IForm[]
-      val = val.map((item: any) =>
-        cleanSubmitValues(item, nestedSchema, emitFields, ignoreFields)
-      )
+      val = val.map((item: any) => cleanSubmitValues(item, nestedSchema, emitFields, ignoreFields))
     }
 
     let needsUpdate = false
@@ -379,4 +377,3 @@ export function cleanSubmitValues(
 
   return result
 }
-
