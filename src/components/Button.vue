@@ -3,6 +3,7 @@ import { computed, inject, useSlots } from 'vue'
 import Icon from './Icon.vue'
 import { vRipple } from '../directives/vRipple'
 import type { ButtonVariant, ButtonSize, ButtonRounded, ButtonProps } from '@/types'
+import { $t } from '@/utils/i18n'
 
 const props = withDefaults(defineProps<ButtonProps>(), {
   variant: 'primary',
@@ -14,8 +15,10 @@ const props = withDefaults(defineProps<ButtonProps>(), {
   class: '',
 })
 
+const displayText = computed(() => props.textI18n ? $t(props.textI18n) : props.text)
+
 const slots = useSlots()
-const isOnlyIcon = computed(() => props?.asIcon || (props.icon && !props.text && !slots.default))
+const isOnlyIcon = computed(() => props?.asIcon || (props.icon && !displayText.value && !slots.default))
 
 // Detect if inside a ButtonGroup — in groups, icon-only buttons use text button sizing (height auto via CSS)
 const buttonGroup = inject<{ isInGroup: boolean } | null>('buttonGroup', null)
@@ -143,9 +146,9 @@ const iconClasses = computed(() => {
       :class="[iconClass, iconClasses, isOnlyIcon ? 'mx-auto' : '']" />
 
     <span v-if="textClass" :class="textClass">
-      <slot>{{ text }}</slot>
+      <slot>{{ displayText }}</slot>
     </span>
-    <slot v-else>{{ text }}</slot>
+    <slot v-else>{{ displayText }}</slot>
 
     <Icon
       v-if="iconRight && !loading"
