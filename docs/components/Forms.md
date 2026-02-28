@@ -54,6 +54,7 @@ A schema-driven form builder with built-in validation, multi-step wizards, group
 | `maxFileSize`      | `number`                         | Maximum file size in MB for file/avatar uploads            |
 | `maxFiles`         | `number`                         | Maximum number of files allowed when multiple is true      |
 | `returnFileObject` | `boolean`                        | Output `{fileName, fileUrl, fileType, fileSize}` on upload |
+| `ignoreFields`     | `string[]`                       | Fields to ignore when submitting the form                  |
 
 ### Addon Interface (`IFormAddon`)
 
