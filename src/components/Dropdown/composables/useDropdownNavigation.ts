@@ -1,5 +1,6 @@
-import { ref, computed, nextTick, type Ref } from 'vue'
+import { ref, computed, type Ref } from 'vue'
 import type { IDropdownOption, IDropdownOptions } from '@/types'
+import { $t } from '@/utils/i18n'
 
 interface UseDropdownNavigationProps {
   options: Ref<IDropdownOptions>
@@ -18,7 +19,10 @@ export function useDropdownNavigation(props: UseDropdownNavigationProps) {
     if (!props.searchQuery.value) return opts
 
     const query = props.searchQuery.value.toLowerCase()
-    return opts.filter((option) => option.label.toLowerCase().includes(query))
+    return opts.filter((option) => {
+      const displayLabel = option.labelI18n ? $t(option.labelI18n) : option.label
+      return displayLabel.toLowerCase().includes(query)
+    })
   })
 
   const scrollToIndex = (index: number) => {
