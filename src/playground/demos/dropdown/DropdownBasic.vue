@@ -27,6 +27,11 @@ const val1 = ref('1')
           },
           {
             value: '3',
+            label: 'Profile',
+            emoji: '🚀',
+          },
+          {
+            value: '4',
             label: 'Logout',
             icon: 'lucide:log-out',
             disabled: true,
