@@ -9,8 +9,6 @@ const props = withDefaults(defineProps<DataListProps>(), {
   loading: false,
   className: 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6',
   itemProps: () => ({}),
-  emptyTitle: 'No data found',
-  emptyDescription: 'We could not find any items to display here.',
   emptyIcon: 'lucide:inbox',
   showPagination: true,
   paginationProps: () => ({
@@ -81,7 +79,9 @@ const totalPages = computed(() => props.pageInfo?.totalPages || 1)
       <slot name="empty">
         <Empty
           :title="emptyTitle"
+          :titleI18n="emptyTitleI18n"
           :description="emptyDescription"
+          :descriptionI18n="emptyDescriptionI18n"
           :icon="emptyIcon"
         />
       </slot>
@@ -113,3 +113,4 @@ const totalPages = computed(() => props.pageInfo?.totalPages || 1)
     </div>
   </div>
 </template>
+
