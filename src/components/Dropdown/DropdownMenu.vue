@@ -122,7 +122,7 @@ const handleSelect = (option: IDropdownOption, index?: number) => {
 const {
   focusedIndex,
   isKeyboardMode,
-  filteredOptions: navFilteredOptions, // rename
+  filteredOptions: navFilteredOptions,
   handleKeyDown,
   handleMouseMove,
   onMouseEnterItem,
@@ -135,10 +135,6 @@ const {
   handleSelect: (opt, idx) => handleSelect(opt, idx),
 })
 
-// Fix for Remote Filtering:
-// If remote is true:
-//  - If Query is empty: Show Cached Options (Full History)
-//  - If Query exists: Show Props.Options (Current Search Results)
 const filteredOptions = computed(() => {
   if (props.remote) {
     if (!searchQuery.value) {
@@ -219,8 +215,6 @@ const scrollToSelected = async () => {
   await nextTick()
   let targetIndex = -1
 
-  // Scroll logic mainly for 'default' linear list.
-  // For grouped, we might need different logic, but skip for now as 'scrollToIndex' assumes linear list refs.
   if (props.layout === 'grouped') return
 
   if (props.selectedIndex !== null && props.selectedIndex >= 0) {
@@ -336,8 +330,9 @@ const getDisplayLabel = (option: IDropdownOption) => option.labelI18n ? $t(optio
                   @mouseenter="onMouseEnterItem(index)">
                   <div class="flex items-center gap-2 flex-1 min-w-0">
                     <Icon
-                      v-if="option.icon"
+                      v-if="option.icon || option.emoji"
                       :icon="option.icon"
+                      :emoji="option.emoji"
                       class="mr-2 h-4 w-4 shrink-0 mt-0.5" />
                     <span class="truncate">{{ getDisplayLabel(option) }}</span>
                   </div>
