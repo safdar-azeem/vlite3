@@ -7,7 +7,9 @@ export type IconVariant = 'simple' | 'solid' | 'outline' | 'primary' | 'ghost'
 export interface AccordionItemSchema {
   id: string
   title: string
+  titleI18n?: string
   description?: string
+  descriptionI18n?: string
   content?: string
   icon?: string
   disabled?: boolean
@@ -25,14 +27,13 @@ export interface AccordionProps {
   attached?: boolean
   disabled?: boolean
   showIndex?: boolean
-  // Icons
   openIcon?: string
   closeIcon?: string
   iconVariant?: IconVariant
   activeIconVariant?: IconVariant
-  // Classes
   class?: string
   triggerClass?: string
   contentClass?: string
   itemClass?: string
 }
+
