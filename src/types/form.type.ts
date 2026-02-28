@@ -18,7 +18,9 @@ export interface InputProps {
   modelValue?: string | number
   type?: InputType
   label?: string
+  labelI18n?: string
   placeholder?: string
+  placeholderI18n?: string
   disabled?: boolean
   loading?: boolean
   error?: string
