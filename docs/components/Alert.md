@@ -4,15 +4,17 @@
 
 ### Props
 
-| Prop          | Type                            | Default   | Description                          |
-| :------------ | :------------------------------ | :-------- | :----------------------------------- |
-| `title`       | `string`                        | —         | Alert title                          |
-| `description` | `string`                        | —         | Alert description                    |
-| `icon`        | `string`                        | —         | Custom icon (overrides variant icon) |
-| `variant`     | `AlertVariant`                  | `primary` | Visual style theme                   |
-| `closable`    | `boolean`                       | `false`   | Show close button                    |
-| `role`        | `'alert' \| 'status' \| 'none'` | —         | ARIA role                            |
-| `class`       | `string`                        | —         | Custom classes                       |
+| Prop              | Type                            | Default   | Description                          |
+| :---------------- | :------------------------------ | :-------- | :----------------------------------- |
+| `title`           | `string`                        | —         | Alert title                          |
+| `titleI18n`       | `string`                        | —         | I18n translation key for title       |
+| `description`     | `string`                        | —         | Alert description                    |
+| `descriptionI18n` | `string`                        | —         | I18n key for description             |
+| `icon`            | `string`                        | —         | Custom icon (overrides variant icon) |
+| `variant`         | `AlertVariant`                  | `primary` | Visual style theme                   |
+| `closable`        | `boolean`                       | `false`   | Show close button                    |
+| `role`            | `'alert' \| 'status' \| 'none'` | —         | ARIA role                            |
+| `class`           | `string`                        | —         | Custom classes                       |
 
 ### Types
 
