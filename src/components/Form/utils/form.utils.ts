@@ -296,6 +296,8 @@ export function cleanSubmitValues(
     let val = getNestedValue(values, field.name)
     if (val === undefined) continue
 
+    val = deepClone(val) // Prevent mutation of original form values
+
     if (field.type === 'customFields' && field.props?.schema && Array.isArray(val)) {
       const nestedSchema = field.props.schema as IForm[]
       val = val.map((item: any) => cleanSubmitValues(item, nestedSchema, emitFields, ignoreFields))
@@ -332,6 +334,19 @@ export function cleanSubmitValues(
       if (!target || typeof target !== 'object') return
 
       if (Array.isArray(source) && Array.isArray(target)) {
+        // Infer missing emitFields from siblings in the source array
+        // (Useful for newly added items like file uploads that lack a __typename)
+        for (const key of fieldsToEmit) {
+          const siblingValue = source.find((item: any) => item && typeof item === 'object' && item[key] !== undefined)?.[key]
+          if (siblingValue !== undefined) {
+            target.forEach((tItem: any) => {
+              if (tItem && typeof tItem === 'object' && tItem[key] === undefined) {
+                tItem[key] = deepClone(siblingValue)
+              }
+            })
+          }
+        }
+
         source.forEach((sItem, i) => {
           if (target[i]) injectEmits(sItem, target[i])
         })
