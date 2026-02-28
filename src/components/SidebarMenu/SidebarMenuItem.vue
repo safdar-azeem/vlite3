@@ -5,6 +5,7 @@ import Tooltip from '@/components/Tooltip.vue'
 import type { SidebarMenuItemSchema, SidebarMenuContext } from './types'
 import { Dropdown } from '@/components/Dropdown'
 import type { IDropdownOptions, IDropdownOption } from '@/types/styles'
+import { $t } from '@/utils/i18n'
 
 interface Props {
   item: SidebarMenuItemSchema
@@ -78,8 +79,6 @@ const handleChevronClick = (e: Event) => {
 // Styling
 const indentSize = computed(() => context.indentSize || 12)
 const itemStyle = computed(() => {
-  // If in compact mode, we want full width regardless of depth (usually depth is 0 for root)
-  // unless strictly in tree mode inside compact sidebar (uncommon).
   if (context.compact) {
     return { width: '100%' }
   }
@@ -93,7 +92,6 @@ const itemClass = computed(() => {
   const base =
     'group flex items-center justify-between text-sm font-medium rounded-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 relative border border-transparent select-none cursor-pointer w-full'
 
-  // Center content if compact and on desktop
   const layout = context.compact ? 'justify-center py-2 px-1' : 'justify-between py-2 px-2'
 
   let variantClass = ''
@@ -114,10 +112,12 @@ const showCompactLabel = computed(() => {
   return context.compact && context.showCompactLabels
 })
 
+const displayLabel = computed(() => props.item.labelI18n ? $t(props.item.labelI18n) : props.item.label)
+
 // Mappers for Dropdown
 const mapItemToDropdown = (item: SidebarMenuItemSchema): IDropdownOption => {
   return {
-    label: item.label,
+    label: item.labelI18n ? $t(item.labelI18n) : item.label,
     value: item.id || item.label,
     icon: item.icon,
     disabled: item.disabled,
@@ -140,7 +140,6 @@ const handleDropdownSelect = (option: any) => {
   }
 }
 
-// Animation Hooks (Tree only)
 const beforeEnter = (el: Element) => {
   const element = el as HTMLElement
   element.style.height = '0'
@@ -205,13 +204,13 @@ const componentProps = computed(() => {
             v-if="item.icon"
             :icon="item.icon"
             class="shrink-0 transition-colors opacity-80 group-hover:opacity-100" />
-          {{ item.label }}
+          {{ displayLabel }}
         </div>
       </template>
 
       <template #trigger="{ isOpen }">
         <Tooltip
-          :content="item.label"
+          :content="displayLabel"
           placement="right"
           className="sidebar-menu-tooltip"
           :disabled="!context.compact || isOpen"
@@ -250,7 +249,7 @@ const componentProps = computed(() => {
                     hidden: context.compact && !showCompactLabel,
                     'md:hidden': context.compact && !showCompactLabel,
                   }">
-                  {{ item.label }}
+                  {{ displayLabel }}
                 </span>
 
                 <span
@@ -295,7 +294,7 @@ const componentProps = computed(() => {
 
     <template v-else>
       <Tooltip
-        :content="item.label"
+        :content="displayLabel"
         placement="right"
         :disabled="!context.compact"
         class="w-full block">
@@ -329,7 +328,7 @@ const componentProps = computed(() => {
                 hidden: context.compact && !showCompactLabel,
                 'md:hidden': context.compact && !showCompactLabel,
               }">
-              {{ item.label }}
+              {{ displayLabel }}
             </span>
 
             <span
@@ -402,3 +401,4 @@ const componentProps = computed(() => {
   margin-right: 4px !important;
 }
 </style>
+
