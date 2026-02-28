@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import Input from '../Input.vue'
+import { $t } from '@/utils/i18n'
 
 interface Props {
   modelValue?: string
   showSearch?: boolean
   placeholder?: string
+  placeholderI18n?: string
   class?: string
   searchClass?: string
 }
@@ -13,7 +15,6 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   modelValue: '',
   showSearch: true,
-  placeholder: 'Search...',
   class: '',
   searchClass: '',
 })
@@ -25,6 +26,13 @@ const emit = defineEmits<{
 const searchValue = computed({
   get: () => props.modelValue,
   set: (val) => emit('update:modelValue', val),
+})
+
+const displayPlaceholder = computed(() => {
+  if (props.placeholderI18n) return $t(props.placeholderI18n)
+  if (props.placeholder) return props.placeholder
+  const res = $t('vlite.dataTable.searchPlaceholder')
+  return res !== 'vlite.dataTable.searchPlaceholder' ? res : 'Search...'
 })
 </script>
 
@@ -39,7 +47,7 @@ const searchValue = computed({
     <div class="w-full sm:w-72!" :class="searchClass" v-if="showSearch">
       <Input
         v-model="searchValue"
-        :placeholder="placeholder"
+        :placeholder="displayPlaceholder"
         icon="lucide:search"
         variant="outline"
         class="bg-background"
