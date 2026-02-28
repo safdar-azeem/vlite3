@@ -6,10 +6,12 @@ import type { ButtonSize, ButtonVariant } from '@/types'
 import { Dropdown } from './Dropdown'
 import DatePicker, { TimePicker } from 'v-datepicker-lite'
 import 'v-datepicker-lite/style.css'
+import { $t } from '@/utils/i18n'
 
 const props = withDefaults(
   defineProps<{
     placeholder?: string
+    placeholderI18n?: string
     modelValue?: any
     value?: any
     mode: DatePickerMode
@@ -79,6 +81,13 @@ const displayValue = computed(() => {
   }
 })
 
+const displayPlaceholder = computed(() => {
+  if (props.placeholderI18n) return $t(props.placeholderI18n)
+  if (props.placeholder) return props.placeholder
+  const res = $t('vlite.datePicker.placeholder')
+  return res !== 'vlite.datePicker.placeholder' ? res : 'Select date'
+})
+
 const handleDateChange = (val: any) => {
   actualValue.value = val
 }
@@ -95,7 +104,7 @@ const handleDateChange = (val: any) => {
     <template #trigger>
       <slot :value="actualValue" :displayValue="displayValue">
         <Button
-          :text="displayValue || placeholder || 'Select date'"
+          :text="displayValue || displayPlaceholder"
           :variant="variant || 'outline'"
           :size="size || 'md'"
           :icon="icon || 'lucide:calendar'"
@@ -134,7 +143,7 @@ const handleDateChange = (val: any) => {
     :readonly="readonly"
     @update:modelValue="handleDateChange">
     <Button
-      :text="displayValue || placeholder || 'Select date'"
+      :text="displayValue || displayPlaceholder"
       :variant="variant || 'outline'"
       :size="size || 'md'"
       :icon="icon || (mode === 'time' ? 'lucide:clock' : 'lucide:calendar')"
@@ -143,3 +152,4 @@ const handleDateChange = (val: any) => {
       class="w-full justify-start text-left font-normal" />
   </TimePicker>
 </template>
+
