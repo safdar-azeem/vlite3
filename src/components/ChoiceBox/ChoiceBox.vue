@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import Icon from '../Icon.vue'
+import { $t } from '@/utils/i18n'
 
 export interface ChoiceBoxOption {
   id: string | number
   title: string
+  titleI18n?: string
   description?: string
+  descriptionI18n?: string
   icon?: string
   disabled?: boolean
   badge?: string
+  badgeI18n?: string
 }
 
 interface Props {
@@ -16,7 +20,9 @@ interface Props {
   options: ChoiceBoxOption[]
   multiple?: boolean
   title?: string
+  titleI18n?: string
   description?: string
+  descriptionI18n?: string
   disabled?: boolean
   grid?: number
   gap?: number
@@ -34,6 +40,13 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: string | number | (string | number)[] | null): void
   (e: 'change', value: string | number | (string | number)[] | null): void
 }>()
+
+const displayTitle = computed(() => props.titleI18n ? $t(props.titleI18n) : props.title)
+const displayDescription = computed(() => props.descriptionI18n ? $t(props.descriptionI18n) : props.description)
+
+const getOptionTitle = (opt: ChoiceBoxOption) => opt.titleI18n ? $t(opt.titleI18n) : opt.title
+const getOptionDesc = (opt: ChoiceBoxOption) => opt.descriptionI18n ? $t(opt.descriptionI18n) : opt.description
+const getOptionBadge = (opt: ChoiceBoxOption) => opt.badgeI18n ? $t(opt.badgeI18n) : opt.badge
 
 const isSelected = (id: string | number) => {
   if (Array.isArray(props.modelValue)) {
@@ -59,7 +72,6 @@ const toggleOption = (id: string | number) => {
     }
     newValue = current
   } else {
-    // If clickable again, do we unselect? Usually radio behavior implies no unselect on click, but let's stick to standard "select this one"
     newValue = id
   }
 
@@ -102,17 +114,15 @@ const gapClass = computed(() => {
 
 <template>
   <div class="w-full">
-    <!-- Group Header -->
-    <div v-if="title || description" class="mb-4">
-      <h3 v-if="title" class="text-base font-semibold text-foreground">
-        {{ title }}
+    <div v-if="displayTitle || displayDescription" class="mb-4">
+      <h3 v-if="displayTitle" class="text-base font-semibold text-foreground">
+        {{ displayTitle }}
       </h3>
-      <p v-if="description" class="text-sm text-muted-foreground mt-1">
-        {{ description }}
+      <p v-if="displayDescription" class="text-sm text-muted-foreground mt-1">
+        {{ displayDescription }}
       </p>
     </div>
 
-    <!-- Grid Container -->
     <div class="grid" :class="[gridClass, gapClass]">
       <div
         v-for="option in options"
@@ -128,7 +138,6 @@ const gapClass = computed(() => {
         tabindex="0"
         @keydown.enter.space.prevent="toggleOption(option.id)">
         <div class="flex flex-1 gap-3">
-          <!-- Icon -->
           <div v-if="option.icon" class="shrink-0 pt-0.5">
             <div
               class="flex h-10 w-10 items-center justify-center rounded-full transition-colors"
@@ -141,7 +150,6 @@ const gapClass = computed(() => {
             </div>
           </div>
 
-          <!-- Content -->
           <div class="flex flex-col">
             <div class="flex items-center gap-2">
               <span
@@ -149,26 +157,25 @@ const gapClass = computed(() => {
                 :class="{
                   'text-primary': isSelected(option.id),
                 }">
-                {{ option.title }}
+                {{ getOptionTitle(option) }}
               </span>
               <span
-                v-if="option.badge"
+                v-if="option.badge || option.badgeI18n"
                 class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium"
                 :class="
                   isSelected(option.id)
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-muted text-muted-foreground'
                 ">
-                {{ option.badge }}
+                {{ getOptionBadge(option) }}
               </span>
             </div>
-            <span v-if="option.description" class="mt-1 -text-fs-3 text-muted leading-relaxed">
-              {{ option.description }}
+            <span v-if="option.description || option.descriptionI18n" class="mt-1 -text-fs-3 text-muted leading-relaxed">
+              {{ getOptionDesc(option) }}
             </span>
           </div>
         </div>
 
-        <!-- Check Indicator (Top Right) -->
         <div v-if="isSelected(option.id)" class="absolute top-4 right-4 text-primary">
           <Icon v-if="multiple" icon="lucide:check-square" class="h-5 w-5" />
           <Icon v-else icon="lucide:check-circle-2" class="h-5 w-5" />
@@ -177,3 +184,4 @@ const gapClass = computed(() => {
     </div>
   </div>
 </template>
+
