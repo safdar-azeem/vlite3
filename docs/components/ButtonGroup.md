@@ -6,8 +6,11 @@
 
 | Prop        | Type                         | Default      | Description                   |
 | ----------- | ---------------------------- | ------------ | ----------------------------- |
+| `variant`   | `ButtonVariant`              | —            | Group button variant          |
+| `size`      | `ButtonSize`                 | —            | Group button size             |
 | `direction` | `'horizontal' \| 'vertical'` | `horizontal` | Layout axis                   |
 | `attached`  | `boolean`                    | `true`       | Fuse borders (false adds gap) |
+| `class`     | `string`                     | —            | Custom class                  |
 
 ### Usage
 
