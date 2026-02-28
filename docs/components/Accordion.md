@@ -6,6 +6,8 @@
 
 | Prop                | Type                    | Default   | Description                       |
 | :------------------ | :---------------------- | :-------- | :-------------------------------- |
+| `modelValue`        | `string \| string[]`    | `[]`      | Controlled value for open items   |
+| `defaultValue`      | `string \| string[]`    | `[]`      | Initial value for open items      |
 | `items`             | `AccordionItemSchema[]` | `[]`      | Data source for items             |
 | `allowMultiple`     | `boolean`               | `false`   | Allow multiple items open at once |
 | `variant`           | `AccordionVariant`      | `default` | Visual style                      |
@@ -17,6 +19,7 @@
 | `closeIcon`         | `string`                | —         | Icon when closed                  |
 | `iconVariant`       | `IconVariant`           | `simple`  | Style of the toggle icon          |
 | `activeIconVariant` | `IconVariant`           | —         | Style when active                 |
+| `class`             | `string`                | —         | Custom class for container        |
 | `triggerClass`      | `string`                | —         | Custom class for trigger          |
 | `contentClass`      | `string`                | —         | Custom class for content          |
 | `itemClass`         | `string`                | —         | Custom class for item wrapper     |
@@ -27,7 +30,9 @@
 export interface AccordionItemSchema {
   id: string
   title: string
+  titleI18n?: string
   description?: string
+  descriptionI18n?: string
   content?: string
   icon?: string
   disabled?: boolean
