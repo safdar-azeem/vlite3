@@ -4,7 +4,7 @@
 
 ### Description
 
-A schema-driven form builder with built-in validation, multi-step wizards, grouped layouts, and dynamic field dependencies.
+A schema-driven form builder with built-in validation, multi-step wizards, grouped layouts, dynamic field dependencies, and automatic data mapping.
 
 ### Props
 
@@ -30,31 +30,37 @@ A schema-driven form builder with built-in validation, multi-step wizards, group
 | `footerClass`              | `string`               | —           | Custom class for footer                                                |
 | `timelineTextPosition`     | `TimelineTextPosition` | `'bottom'`  | Text position for timeline tabs                                        |
 | `footer`                   | `boolean`              | `true`      | Show footer and submit button                                          |
+| `emitFields`               | `string[]`             | —           | Explicitly include these fields in the submit payload                  |
 
 ### Schema Interface (`IForm`)
 
-| Property           | Type                             | Description                                                |
-| :----------------- | :------------------------------- | :--------------------------------------------------------- |
-| `name`             | `string`                         | Field key in values object (supports dot notation)         |
-| `label`            | `string`                         | Display label                                              |
-| `type`             | `IFormFieldType`                 | Input type (text, email, password, select, file, etc.)     |
-| `required`         | `boolean`                        | Marks field as required                                    |
-| `placeholder`      | `string`                         | Input placeholder                                          |
-| `options`          | `IDropdownOptions`               | Options for select/multiSelect/radio                       |
-| `validation`       | `(ctx) => string`                | Return error message or empty string                       |
-| `when`             | `(ctx) => boolean`               | Conditionally show/hide field                              |
-| `updateValues`     | `(ctx) => Record\<string, any\>` | Dynamically update other fields on change                  |
-| `itemClass`        | `string`                         | Class for field wrapper (e.g. `col-span-2`)                |
-| `disabled`         | `boolean \| (ctx) => boolean`    | Disable field                                              |
-| `icon`             | `string`                         | Left icon (Iconify ID)                                     |
-| `iconRight`        | `string`                         | Right icon (Iconify ID)                                    |
-| `addonLeft`        | `string \| IFormAddon`           | Left addon — plain text or addon config object             |
-| `addonRight`       | `string \| IFormAddon`           | Right addon — plain text or addon config object            |
-| `props`            | `Record<string, any>`            | Extra props forwarded to the field component               |
-| `maxFileSize`      | `number`                         | Maximum file size in MB for file/avatar uploads            |
-| `maxFiles`         | `number`                         | Maximum number of files allowed when multiple is true      |
-| `returnFileObject` | `boolean`                        | Output `{fileName, fileUrl, fileType, fileSize}` on upload |
-| `ignoreFields`     | `string[]`                       | Fields to ignore when submitting the form                  |
+| Property           | Type                             | Description                                                          |
+| :----------------- | :------------------------------- | :------------------------------------------------------------------- |
+| `name`             | `string`                         | Field key in values object (supports dot notation)                   |
+| `mapFrom`          | `string`                         | Key to read initial value from the incoming `values` object          |
+| `mapTo`            | `string`                         | Key to write the final value to in the submit payload                |
+| `valueKey`         | `string`                         | Property to extract from nested objects or arrays of objects         |
+| `key`              | `string`                         | Alias for `valueKey`                                                 |
+| `format`           | `(val, rawValues) => any`        | Function to format raw incoming data before it enters the form state |
+| `transform`        | `(val, formValues) => any`       | Function to transform the form's state value before submission       |
+| `label`            | `string \| Component`            | Display label                                                        |
+| `type`             | `IFormFieldType`                 | Input type (text, email, password, select, file, etc.)               |
+| `required`         | `boolean`                        | Marks field as required                                              |
+| `placeholder`      | `string`                         | Input placeholder                                                    |
+| `options`          | `IDropdownOptions`               | Options for select/multiSelect/radio                                 |
+| `validation`       | `(ctx) => string`                | Return error message or empty string                                 |
+| `when`             | `(ctx) => boolean`               | Conditionally show/hide field                                        |
+| `updateValues`     | `(ctx) => Record\<string, any\>` | Dynamically update other fields on change                            |
+| `itemClass`        | `string`                         | Class for field wrapper (e.g. `col-span-2`)                          |
+| `disabled`         | `boolean \| (ctx) => boolean`    | Disable field                                                        |
+| `icon`             | `string`                         | Left icon (Iconify ID)                                               |
+| `iconRight`        | `string`                         | Right icon (Iconify ID)                                              |
+| `addonLeft`        | `string \| IFormAddon`           | Left addon — plain text or addon config object                       |
+| `addonRight`       | `string \| IFormAddon`           | Right addon — plain text or addon config object                      |
+| `props`            | `Record<string, any>`            | Extra props forwarded to the field component                         |
+| `maxFileSize`      | `number`                         | Maximum file size in MB for file/avatar uploads                      |
+| `maxFiles`         | `number`                         | Maximum number of files allowed when multiple is true                |
+| `returnFileObject` | `boolean`                        | Output `{fileName, fileUrl, fileType, fileSize}` on upload           |
 
 ### Addon Interface (`IFormAddon`)
 
@@ -124,6 +130,46 @@ const schema = [
     when: ({ values }) => values.role === 'admin',
     // Custom validation
     validation: ({ value }) => (value === 'SECRET' ? '' : 'Invalid code'),
+  },
+]
+```
+
+#### Data Mapping & Formatting
+
+The Form component can automatically extract, format, and transform complex API data structures so you don't have to write boilerplate mapping code.
+
+```javascript
+// Example API Response:
+// {
+//   id: 'prod_123',
+//   taxes: [{ id: 'tax_1', rate: 20 }, { id: 'tax_2', rate: 5 }],
+//   inventory_sizes: [{ sizeId: 'sz_m', qty: "10" }]
+// }
+
+const schema = [
+  {
+    name: 'taxIds', // Internal form state name
+    mapFrom: 'taxes', // Read from 'taxes' array in the incoming data
+    valueKey: 'id', // Automatically extract just the 'id' property from the objects in the array
+    type: 'multiSelect',
+    options: [
+      { label: 'VAT', value: 'tax_1' },
+      { label: 'Sales Tax', value: 'tax_2' },
+    ],
+  },
+  {
+    name: 'sizes', // Internal form state name
+    mapFrom: 'inventory_sizes', // Read from 'inventory_sizes' in incoming data
+    mapTo: 'inventory_sizes', // Write back to 'inventory_sizes' in the submit payload
+    type: 'customFields',
+    // Transform data before submission (e.g., ensure quantities are Numbers)
+    transform: (val) => val.map((s) => ({ ...s, qty: Number(s.qty) })),
+    props: {
+      schema: [
+        { name: 'sizeId', type: 'select' /* options... */ },
+        { name: 'qty', type: 'number' },
+      ],
+    },
   },
 ]
 ```
@@ -305,7 +351,7 @@ const handleAddonAction = (action) => {
 
 > **Note:** Plain string addons (e.g. `addonLeft: '$'`) still work exactly as before — fully backward compatible.
 
-#### 3. Form in Lazy Modal (Real-world Example)
+#### Form in Lazy Modal (Real-world Example)
 
 A common pattern is using a Form inside a lazy modal. The `close` method is automatically passed to the component, allowing you to close the modal after a successful submission.
 
