@@ -4,9 +4,10 @@
 
 ### Props
 
-| Prop  | Type     | Default | Description                   |
-| ----- | -------- | ------- | ----------------------------- |
-| `for` | `string` | —       | ID of the target form element |
+| Prop    | Type     | Default | Description                   |
+| :------ | :------- | :------ | :---------------------------- |
+| `for`   | `string` | —       | ID of the target form element |
+| `class` | `string` | —       | Custom CSS class              |
 
 ### Usage
 
