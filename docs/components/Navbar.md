@@ -4,22 +4,25 @@
 
 ### Props
 
-| Prop                 | Type                                              | Default  | Description                            |
-| :------------------- | :------------------------------------------------ | :------- | :------------------------------------- |
-| `variant`            | `'header' \| 'sidebar'`                           | `header` | Layout mode                            |
-| `position`           | `'fixed' \| 'sticky' \| 'relative' \| 'absolute'` | `sticky` | CSS positioning                        |
-| `centerPosition`     | `'center' \| 'left' \| 'right'`                   | `center` | Alignment of center slot (Header only) |
-| `glass`              | `boolean`                                         | `true`   | Blur effect on scroll                  |
-| `border`             | `boolean`                                         | `true`   | Show border (bottom or right)          |
-| `floating`           | `boolean`                                         | `false`  | Floating card style                    |
-| `compact`            | `boolean`                                         | `false`  | Compact interaction mode               |
-| `mobileBreakpoint`   | `'sm' \| 'md' \| 'lg' \| 'xl'`                    | `md`     | Breakpoint to switch to mobile menu    |
-| `height`             | `string`                                          | `h-16`   | Header height class                    |
-| `width`              | `string`                                          | `w-64`   | Sidebar width class                    |
-| `logoClass`          | `string`                                          | —        | Classes for logo container             |
-| `contentClass`       | `string`                                          | —        | Classes for main content area          |
-| `rightClass`         | `string`                                          | —        | Classes for right actions area         |
-| `mobileTriggerClass` | `string`                                          | —        | Classes for hamburger button           |
+| Prop                 | Type                                              | Default     | Description                            |
+| :------------------- | :------------------------------------------------ | :---------- | :------------------------------------- |
+| `variant`            | `'header' \| 'sidebar'`                           | `header`    | Layout mode                            |
+| `position`           | `'fixed' \| 'sticky' \| 'relative' \| 'absolute'` | `sticky`    | CSS positioning                        |
+| `centerPosition`     | `'center' \| 'left' \| 'right'`                   | `center`    | Alignment of center slot (Header only) |
+| `glass`              | `boolean`                                         | `true`      | Blur effect on scroll                  |
+| `border`             | `boolean`                                         | `true`      | Show border (bottom or right)          |
+| `floating`           | `boolean`                                         | `false`     | Floating card style                    |
+| `compact`            | `boolean`                                         | `false`     | Compact interaction mode               |
+| `mobileBreakpoint`   | `'sm' \| 'md' \| 'lg' \| 'xl'`                    | `md`        | Breakpoint to switch to mobile menu    |
+| `height`             | `string`                                          | `h-16`      | Header height class                    |
+| `width`              | `string`                                          | `w-64`      | Sidebar width class                    |
+| `class`              | `string`                                          | —           | Custom class for wrapper               |
+| `logoClass`          | `string`                                          | —           | Classes for logo container             |
+| `contentClass`       | `string`                                          | —           | Classes for main content area          |
+| `menuClass`          | `string`                                          | —           | Classes for the menu container         |
+| `rightClass`         | `string`                                          | —           | Classes for right actions area         |
+| `mobileTriggerClass` | `string`                                          | —           | Classes for hamburger button           |
+| `mobileMenuVariant`  | `'sidepanel' \| 'dropdown'`                       | `sidepanel` | Mobile menu render behavior            |
 
 ### Slots
 
