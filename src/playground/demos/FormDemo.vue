@@ -11,6 +11,7 @@ import FormCustom from './forms/FormCustom.vue'
 import FormUploads from './forms/FormUploads.vue'
 import FormNumber from './forms/FormNumber.vue'
 import FormAddons from './forms/FormAddons.vue'
+import FormDataMapping from './forms/FormDataMapping.vue'
 
 const activeTab = ref('basic')
 
@@ -29,6 +30,12 @@ const tabs = [
   { id: 'uploads', label: 'Uploads', icon: 'lucide:upload-cloud', component: FormUploads },
   { id: 'number', label: 'Number', icon: 'lucide:hash', component: FormNumber },
   { id: 'addons', label: 'Addons', icon: 'lucide:puzzle', component: FormAddons },
+  {
+    id: 'data-mapping',
+    label: 'Data Mapping',
+    icon: 'lucide:database',
+    component: FormDataMapping,
+  },
 ]
 </script>
 
