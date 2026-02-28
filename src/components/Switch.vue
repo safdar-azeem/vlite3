@@ -25,7 +25,7 @@ const toggle = () => {
   emit('update:modelValue', !props.modelValue)
 }
 
-const displayLabel = computed(() => props.labelI18n ? $t(props.labelI18n) : props.label)
+const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : props.label))
 </script>
 
 <template>
@@ -42,7 +42,9 @@ const displayLabel = computed(() => props.labelI18n ? $t(props.labelI18n) : prop
       <span
         aria-hidden="true"
         class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-background shadow-lg ring-0 transition duration-200 ease-in-out"
-        :class="modelValue ? 'translate-x-5' : 'translate-x-0'" />
+        :class="
+          modelValue ? 'translate-x-5  rtl:translate-x-0' : 'translate-x-0 rtl:-translate-x-5'
+        " />
     </button>
     <label
       v-if="displayLabel"
@@ -53,4 +55,3 @@ const displayLabel = computed(() => props.labelI18n ? $t(props.labelI18n) : prop
     </label>
   </div>
 </template>
-
