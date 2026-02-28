@@ -13,6 +13,8 @@ const variant = ref<'default' | 'ghost'>('default')
 const renderMode = ref<'tree' | 'popover'>('tree')
 const compact = ref(false)
 const showCompactLabels = ref(false)
+const iconSize = ref(16)
+const compactIconSize = ref(20)
 
 const toggleVariant = () => {
   variant.value = variant.value === 'default' ? 'ghost' : 'default'
@@ -105,6 +107,18 @@ const menuItems: SidebarMenuItemSchema[] = [
           Compact: {{ compact ? 'On' : 'Off' }}
         </Button>
       </div>
+      <div class="flex flex-wrap items-center gap-6 mt-2">
+        <div class="flex items-center gap-2">
+          <label class="text-xs font-medium text-gray-500">Icon Size ({{ iconSize }}px)</label>
+          <input type="range" v-model.number="iconSize" min="12" max="32" class="w-24" />
+        </div>
+        <div class="flex items-center gap-2">
+          <label class="text-xs font-medium text-gray-500"
+            >Compact Icon ({{ compactIconSize }}px)</label
+          >
+          <input type="range" v-model.number="compactIconSize" min="16" max="40" class="w-24" />
+        </div>
+      </div>
     </div>
 
     <div class="flex h-[600px] border rounded-xl overflow-hidden bg-white shadow-sm">
@@ -122,7 +136,9 @@ const menuItems: SidebarMenuItemSchema[] = [
             :variant="variant"
             :render-mode="renderMode"
             :compact="compact"
-            :show-compact-labels="showCompactLabels" />
+            :show-compact-labels="showCompactLabels"
+            :icon-size="iconSize"
+            :compact-icon-size="compactIconSize" />
         </div>
 
         <div class="p-4 border-t bg-gray-50">
@@ -152,4 +168,3 @@ const menuItems: SidebarMenuItemSchema[] = [
     </div>
   </div>
 </template>
-
