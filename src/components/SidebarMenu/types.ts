@@ -3,26 +3,32 @@ export interface SidebarMenuItemSchema {
   label: string
   labelI18n?: string
   icon?: string
-  to?: string | Record<string, any>
+  to?: string | { path: string; [key: string]: any }
   href?: string
   children?: SidebarMenuItemSchema[]
   badge?: string | number
   badgeClass?: string
   disabled?: boolean
-  class?: string
-  action?: (item: SidebarMenuItemSchema) => void
   renderMode?: 'tree' | 'popover'
+  action?: (item: SidebarMenuItemSchema) => void
+  class?: string
 }
 
 export interface SidebarMenuProps {
-  items: SidebarMenuItemSchema[]
+  items?: SidebarMenuItemSchema[]
   allowMultiple?: boolean
   indentSize?: number
   variant?: 'default' | 'ghost'
   defaultExpanded?: string[]
   compact?: boolean
-  renderMode?: 'tree' | 'popover'
   showCompactLabels?: boolean
+  renderMode?: 'tree' | 'popover'
+  iconSize?: string
+  compactIconSize?: string
+  labelClass?: string
+  compactLabelClass?: string
+  itemPadding?: string
+  compactItemPadding?: string
 }
 
 export interface SidebarMenuContext {
@@ -35,5 +41,10 @@ export interface SidebarMenuContext {
   renderMode: 'tree' | 'popover'
   compact: boolean
   showCompactLabels: boolean
+  iconSize: string
+  compactIconSize: string
+  labelClass: string
+  compactLabelClass: string
+  itemPadding: string
+  compactItemPadding: string
 }
-
