@@ -58,6 +58,7 @@ import DataListDemo from '../playground/demos/DataListDemo.vue'
 import ScreenDemo from '../playground/demos/ScreenDemo.vue'
 
 import GoogleLoginDemo from '../playground/GoogleLoginDemo.vue'
+import I18nDemo from '../playground/demos/I18nDemo.vue'
 
 const routes = [
   {
@@ -121,6 +122,9 @@ const routes = [
       { path: 'screen', component: ScreenDemo },
       { path: 'carousel', component: CarouselDemo },
       { path: 'kanban', component: KanbanDemo },
+      
+      // Utilities
+      { path: 'i18n', component: I18nDemo },
     ],
   },
 ]
