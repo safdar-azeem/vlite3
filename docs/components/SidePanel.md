@@ -8,13 +8,21 @@
 | :------------------ | :-------------------------- | :------------ | :--------------------------------- |
 | `show`              | `boolean`                   | `false`       | Binding (`v-model:show`)           |
 | `title`             | `string`                    | —             | Panel title                        |
+| `titleI18n`         | `string`                    | —             | I18n key for title                 |
 | `description`       | `string`                    | —             | Helper text below title            |
+| `descriptionI18n`   | `string`                    | —             | I18n key for helper text           |
 | `position`          | `SidePanelPosition`         | `right`       | Slide from `left` or `right`       |
 | `size`              | `SidePanelSize`             | `md`          | Width preset (`sm` to `full`)      |
 | `closeOutside`      | `boolean`                   | `true`        | Close on backdrop click            |
 | `hideCloseButton`   | `boolean`                   | `false`       | Hide the 'X' button                |
 | `mobileMenuVariant` | `'sidepanel' \| 'dropdown'` | `'sidepanel'` | Mobile menu style                  |
 | `backdrop`          | `boolean`                   | `true`        | Show overlay                       |
+| `class`             | `string`                    | —             | Custom container class             |
+| `overlayClass`      | `string`                    | —             | Custom backdrop class              |
+| `triggerClass`      | `string`                    | —             | Custom trigger element class       |
+| `headerClass`       | `string`                    | —             | Custom header area class           |
+| `bodyClass`         | `string`                    | —             | Custom internal body class         |
+| `footerClass`       | `string`                    | —             | Custom footer area class           |
 | `body`              | `Component`                 | —             | Component for lazy loading content |
 | `bodyProps`         | `object`                    | —             | Props for the body component       |
 
