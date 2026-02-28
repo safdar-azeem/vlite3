@@ -110,8 +110,10 @@ const transitionName = computed(() => {
   return props.position === 'left' ? 'slide-left' : 'slide-right'
 })
 
-const displayTitle = computed(() => props.titleI18n ? $t(props.titleI18n) : props.title)
-const displayDescription = computed(() => props.descriptionI18n ? $t(props.descriptionI18n) : props.description)
+const displayTitle = computed(() => (props.titleI18n ? $t(props.titleI18n) : props.title))
+const displayDescription = computed(() =>
+  props.descriptionI18n ? $t(props.descriptionI18n) : props.description
+)
 </script>
 
 <template>
@@ -188,23 +190,3 @@ const displayDescription = computed(() => props.descriptionI18n ? $t(props.descr
     </Transition>
   </Teleport>
 </template>
-
-<style scoped>
-.slide-right-enter-active,
-.slide-right-leave-active,
-.slide-left-enter-active,
-.slide-left-leave-active {
-  transition: transform 0.3s ease-in-out;
-}
-
-.slide-right-enter-from,
-.slide-right-leave-to {
-  transform: translateX(100%);
-}
-
-.slide-left-enter-from,
-.slide-left-leave-to {
-  transform: translateX(-100%);
-}
-</style>
-
