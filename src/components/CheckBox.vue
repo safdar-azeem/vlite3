@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import Icon from './Icon.vue'
 import Label from './Label.vue'
 import type { CheckboxSize, CheckboxRounded } from '@/types'
+import { $t } from '@/utils/i18n'
 
 interface Props {
   modelValue?: boolean
@@ -10,6 +11,7 @@ interface Props {
   disabled?: boolean
   indeterminate?: boolean
   label?: string
+  labelI18n?: string
   id?: string
   class?: string
   size?: CheckboxSize
@@ -29,6 +31,8 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void
   (e: 'update:checked', value: boolean): void
 }>()
+
+const displayLabel = computed(() => props.labelI18n ? $t(props.labelI18n) : props.label)
 
 const toggle = () => {
   if (props.disabled) return
@@ -67,11 +71,11 @@ const roundedClasses: Record<CheckboxRounded, string> = {
 const buttonClass = computed(() => {
   return [
     'peer shrink-0 border border-primary transition-all duration-200 ease-in-out',
-    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2', // Kept ring for accessibility visibility on small elements
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
     'disabled:cursor-not-allowed disabled:opacity-50',
     'data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground',
     'data-[state=indeterminate]:bg-primary data-[state=indeterminate]:text-primary-foreground',
-    'cursor-pointer bg-transparent', // Default background
+    'cursor-pointer bg-transparent', 
     sizeClasses[props.size],
     roundedClasses[props.rounded || props.size],
     props.class,
@@ -122,11 +126,12 @@ const iconClass = computed(() => {
       </div>
     </button>
     <Label
-      v-if="label"
+      v-if="displayLabel"
       :for="id"
       class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
       @click="toggle">
-      {{ label }}
+      {{ displayLabel }}
     </Label>
   </div>
 </template>
+
