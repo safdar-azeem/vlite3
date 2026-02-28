@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import type { FileNode, FileTreeSelectionMode } from './types'
 import Icon from '../Icon.vue'
 import CheckBox from '../CheckBox.vue'
+import { $t } from '@/utils/i18n'
 
 defineOptions({
   name: 'FileTreeNode',
@@ -48,9 +49,11 @@ const paddingLeft = computed(() => {
   return props.depth * 20 + 'px' // 20px per level
 })
 
+const displayLabel = computed(() => props.node.labelI18n ? $t(props.node.labelI18n) : props.node.label)
+
 // Truncation Helper
 const truncatedLabel = computed(() => {
-  const label = props.node.label
+  const label = displayLabel.value
   const maxLength = 35 // Max chars before truncation logic kicks in
 
   if (label.length <= maxLength) return label
@@ -146,7 +149,7 @@ const handleClick = (e: MouseEvent) => {
         'opacity-50 pointer-events-none': node.disabled,
       }"
       @click="handleClick"
-      :title="node.label"
+      :title="displayLabel"
     >
       <div class="flex items-center py-1 pr-2 min-h-[32px]" :style="{ paddingLeft }">
         <button
@@ -253,3 +256,4 @@ const handleClick = (e: MouseEvent) => {
     </div>
   </div>
 </template>
+
