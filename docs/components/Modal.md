@@ -4,20 +4,22 @@
 
 ### Props
 
-| Prop           | Type        | Default       | Description                                 |
-| :------------- | :---------- | :------------ | :------------------------------------------ |
-| `show`         | `boolean`   | `false`       | Binding (`v-model:show`) - Visibility state |
-| `title`        | `string`    | —             | Modal title text                            |
-| `description`  | `string`    | —             | Helper text below title                     |
-| `maxWidth`     | `string`    | `sm:max-w-lg` | Tailwind max-width class (e.g. `max-w-2xl`) |
-| `closeOutside` | `boolean`   | `true`        | Close when clicking backdrop                |
-| `backdrop`     | `boolean`   | `true`        | Show dark overlay                           |
-| `triggerClass` | `string`    | —             | Classes for the trigger wrapper             |
-| `headerClass`  | `string`    | —             | Classes for the header section              |
-| `bodyClass`    | `string`    | —             | Classes for the content section             |
-| `footerClass`  | `string`    | —             | Classes for the footer section              |
-| `body`         | `Component` | —             | Component to render lazily inside           |
-| `bodyProps`    | `object`    | —             | Props to pass to the `body` component       |
+| Prop              | Type        | Default       | Description                                 |
+| :---------------- | :---------- | :------------ | :------------------------------------------ |
+| `show`            | `boolean`   | `false`       | Binding (`v-model:show`) - Visibility state |
+| `title`           | `string`    | —             | Modal title text                            |
+| `titleI18n`       | `string`    | —             | I18n key for the title text                 |
+| `description`     | `string`    | —             | Helper text below title                     |
+| `descriptionI18n` | `string`    | —             | I18n key for the helper text                |
+| `maxWidth`        | `string`    | `sm:max-w-lg` | Tailwind max-width class (e.g. `max-w-2xl`) |
+| `closeOutside`    | `boolean`   | `true`        | Close when clicking backdrop                |
+| `backdrop`        | `boolean`   | `true`        | Show dark overlay                           |
+| `triggerClass`    | `string`    | —             | Classes for the trigger wrapper             |
+| `headerClass`     | `string`    | —             | Classes for the header section              |
+| `bodyClass`       | `string`    | —             | Classes for the content section             |
+| `footerClass`     | `string`    | —             | Classes for the footer section              |
+| `body`            | `Component` | —             | Component to render lazily inside           |
+| `bodyProps`       | `object`    | —             | Props to pass to the `body` component       |
 
 ### Events
 
@@ -78,8 +80,8 @@ This component executes its setup/API calls only when mounted (i.e., when the mo
 <script setup lang="ts">
 // Props passed from the parent via 'body-props' or direct binding on Modal/SidePanel
 const props = defineProps<{
-   user: { name: string; email: string }
-   close?: () => void // Automatically passed by Modal/SidePanel
+  user: { name: string; email: string }
+  close?: () => void // Automatically passed by Modal/SidePanel
 }>()
 
 // Operations here (e.g., fetching details) run only when modal opens
@@ -87,13 +89,13 @@ console.log('UserInfo mounted, fetching data for:', props.user.name)
 </script>
 
 <template>
-   <div class="space-y-4">
-      <h2 class="text-lg font-bold">{{ user.name }}</h2>
-      <p class="text-gray-600">{{ user.email }}</p>
-      <div class="flex justify-end">
-         <button @click="close" class="btn btn-secondary">Close</button>
-      </div>
-   </div>
+  <div class="space-y-4">
+    <h2 class="text-lg font-bold">{{ user.name }}</h2>
+    <p class="text-gray-600">{{ user.email }}</p>
+    <div class="flex justify-end">
+      <button @click="close" class="btn btn-secondary">Close</button>
+    </div>
+  </div>
 </template>
 ```
 
@@ -109,18 +111,18 @@ import UserInfo from './UserInfo.vue' // Import the component definition, do not
 import { Modal, Button } from 'vlite3'
 
 const currentUser = ref({
-   name: 'John Doe',
-   email: 'john@example.com',
+  name: 'John Doe',
+  email: 'john@example.com',
 })
 </script>
 
 <template>
-   <Modal title="Edit User" :body="UserInfo" :user="currentUser">
-      <!-- :user="currentUser" is automatically passed to UserInfo props -->
-      <template #trigger>
-         <Button>Open User Info</Button>
-      </template>
-   </Modal>
+  <Modal title="Edit User" :body="UserInfo" :user="currentUser">
+    <!-- :user="currentUser" is automatically passed to UserInfo props -->
+    <template #trigger>
+      <Button>Open User Info</Button>
+    </template>
+  </Modal>
 </template>
 ```
 
