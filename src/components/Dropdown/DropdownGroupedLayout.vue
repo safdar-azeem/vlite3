@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import Icon from '../Icon.vue'
 import type { IDropdownOptions, IDropdownOption } from '@/types'
 import DropdownItem from './DropdownItem.vue'
+import { $t } from '@/utils/i18n'
 
 interface Props {
   options: IDropdownOptions
@@ -53,10 +54,8 @@ const isSelected = (option: IDropdownOption) => {
   return props.selected === option.value
 }
 
-// Flat list for simple linear index emulation if needed,
-// but here we just render structurally.
-// Keyboard nav relying on 'filteredOptions' in parent might need to map to this structure.
-// For now, we render semantically.
+const getGroupLabel = (group: IDropdownOption) => group.labelI18n ? $t(group.labelI18n) : group.label
+
 </script>
 
 <template>
@@ -65,24 +64,18 @@ const isSelected = (option: IDropdownOption) => {
       v-for="(group, gIndex) in options"
       :key="group.key || group.value || gIndex"
       class="flex flex-col space-y-2 min-w-[150px]">
-      <!-- Group Header -->
       <div class="flex items-center gap-2 px-2 py-1 mb-1" :class="headerClass">
         <span class="font-semibold text-sm text-foreground">
-          {{ group.label }}
+          {{ getGroupLabel(group) }}
         </span>
         <Icon v-if="group.icon" :icon="group.icon" class="w-4 h-4 text-muted-foreground" />
       </div>
 
-      <!-- Divider if needed? -->
-      <!-- <div class="h-px bg-border w-full mb-2"></div> -->
-
-      <!-- Children Items -->
       <div class="flex flex-col space-y-1">
         <template v-if="group.children && group.children.length">
           <template
             v-for="(child, cIndex) in group.children"
             :key="child.key || child.value || cIndex">
-            <!-- Standard Item -->
             <DropdownItem
               :option="child"
               :selected="isSelected(child)"
@@ -90,8 +83,6 @@ const isSelected = (option: IDropdownOption) => {
               class="w-full"
               @click="$emit('select', child)" />
 
-            <!-- Grandchildren (Flattened with Indent) -->
-            <!-- If we want to support 3rd level in grouped view, usually it's just indented below parent -->
             <template v-if="child.children && child.children.length">
               <div class="flex flex-col space-y-1 ml-3 pl-3 border-l border-border mt-0.5 mb-1.5">
                 <DropdownItem
@@ -107,7 +98,6 @@ const isSelected = (option: IDropdownOption) => {
           </template>
         </template>
 
-        <!-- Empty State for Group -->
         <div v-else class="px-2 text-xs text-muted-foreground italic">No items</div>
       </div>
     </div>
