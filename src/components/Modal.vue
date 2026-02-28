@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted, provide, type Component } from 'vue'
+import { ref, watch, onUnmounted, provide, type Component, computed } from 'vue'
 import Button from './Button.vue'
 import { useKeyStroke } from '../composables/useKeyStroke'
+import { $t } from '@/utils/i18n'
 
 defineOptions({
   inheritAttrs: false,
@@ -10,10 +11,12 @@ defineOptions({
 interface Props {
   show?: boolean
   title?: string
+  titleI18n?: string
   maxWidth?: string
   closeOutside?: boolean
   backdrop?: boolean
   description?: string
+  descriptionI18n?: string
   triggerClass?: string
   bodyClass?: string
   headerClass?: string
@@ -55,7 +58,6 @@ const close = () => {
   emit('close')
 }
 
-// Provide the close method to descendants (e.g., Form.vue)
 provide('modal-context', { close })
 
 const handleBackdropClick = () => {
@@ -64,11 +66,9 @@ const handleBackdropClick = () => {
   }
 }
 
-// Escape key handling
 const { onKeyStroke } = useKeyStroke()
 onKeyStroke('Escape', close)
 
-// Prevent body scroll when open
 watch(visible, (val) => {
   if (val) {
     document.body.style.overflow = 'hidden'
@@ -77,10 +77,12 @@ watch(visible, (val) => {
   }
 })
 
-// Clean up on unmount
 onUnmounted(() => {
   document.body.style.overflow = ''
 })
+
+const displayTitle = computed(() => props.titleI18n ? $t(props.titleI18n) : props.title)
+const displayDescription = computed(() => props.descriptionI18n ? $t(props.descriptionI18n) : props.description)
 </script>
 
 <template>
@@ -109,13 +111,13 @@ onUnmounted(() => {
           :class="[maxWidth]"
           @click.stop>
           <div
-            v-if="title"
+            v-if="displayTitle"
             class="flex-none flex flex-col space-y-1.5 pb-0 border-b border-border/90">
             <div
               class="flex items-center justify-between py-2 px-4 rounded-t-md"
               :class="headerClass">
               <h3 class="text-lg font-semibold leading-none tracking-tight">
-                {{ title }}
+                {{ displayTitle }}
               </h3>
               <Button
                 rounded="full"
@@ -128,8 +130,8 @@ onUnmounted(() => {
           </div>
 
           <div class="flex-1 overflow-y-auto px-4 pt-4 pb-3.5 min-h-0" :class="bodyClass">
-            <p v-if="description" class="text-sm text-muted-foreground mb-6.5">
-              {{ description }}
+            <p v-if="displayDescription" class="text-sm text-muted-foreground mb-6.5">
+              {{ displayDescription }}
             </p>
             <template v-if="body">
               <component :is="body" v-bind="{ ...bodyProps, ...$attrs }" :close="close" />
@@ -142,7 +144,7 @@ onUnmounted(() => {
           <div
             v-if="$slots.footer"
             :class="footerClass"
-            class="flex-none flex items-center px-4 py-3 border-t border-border/75 rounded-b-xl bg">
+            class="flex-none flex items-center px-4 py-3 border-t border-border/75 rounded-b-xl bg-body">
             <slot name="footer" :close="close" />
           </div>
         </div>
@@ -150,3 +152,4 @@ onUnmounted(() => {
     </Transition>
   </Teleport>
 </template>
+
