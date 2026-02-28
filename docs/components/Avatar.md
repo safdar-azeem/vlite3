@@ -11,6 +11,7 @@
 | `fallback` | `string`        | —        | Explicit text fallback (e.g. "JD")    |
 | `size`     | `AvatarSize`    | `md`     | Dimensions                            |
 | `rounded`  | `AvatarRounded` | `full`   | Shape                                 |
+| `class`    | `string`        | —        | Custom classes                        |
 
 ### Types
 
@@ -22,6 +23,6 @@ type AvatarRounded = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
 ### Usage
 
 ```vue
-<Avatar src="[https://i.pravatar.cc/150](https://i.pravatar.cc/150)" size="lg" />
+<Avatar src="https://i.pravatar.cc/150" size="lg" />
 <Avatar alt="John Doe" fallback="JD" rounded="md" />
 ```
