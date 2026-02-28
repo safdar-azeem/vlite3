@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import Icon from '../Icon.vue'
+import { $t } from '@/utils/i18n'
 import type { TableHeader, SortConfig } from './types'
 
 interface Props {
@@ -50,6 +51,8 @@ const alignClass = computed(() => {
   }
   return alignMap[props.header.align || 'left']
 })
+
+const displayTitle = computed(() => props.header.titleI18n ? $t(props.header.titleI18n) : props.header.title)
 </script>
 
 <template>
@@ -64,7 +67,7 @@ const alignClass = computed(() => {
     @click="handleSort">
     <div class="flex items-center gap-2 space-x-2" :class="alignClass">
       <span class="text-xs font-bold! uppercase tracking-wider text-gray-900 truncate">{{
-        header.title
+        displayTitle
       }}</span>
 
       <span v-if="tableSortable && header.sortable !== false" class="w-4 h-4 shrink-0">
@@ -78,3 +81,4 @@ const alignClass = computed(() => {
     </div>
   </th>
 </template>
+
