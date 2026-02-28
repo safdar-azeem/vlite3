@@ -10,6 +10,7 @@ export interface ScreenPaginationProps extends Omit<
 
 export interface AddBtnConfig {
   label?: string
+  labelI18n?: string
   icon?: string
   variant?: ButtonVariant
   to?: string | Record<string, any>
@@ -24,7 +25,9 @@ export interface AddBtnConfig {
 export interface ScreenProps {
   name?: string
   title?: string
+  titleI18n?: string
   description?: string
+  descriptionI18n?: string
   pageInfo?: PageInfo
   data?: any[]
   loading?: boolean
@@ -36,7 +39,9 @@ export interface ScreenProps {
   }) => void
   paginationProps?: ScreenPaginationProps
   emptyTitle?: string
+  emptyTitleI18n?: string
   emptyDescription?: string
+  emptyDescriptionI18n?: string
   emptyIcon?: string
   addComponent?: Component | any
   addBtn?: AddBtnConfig
@@ -52,3 +57,4 @@ export interface ScreenProps {
   containerClass?: string
   headerClass?: string
 }
+
