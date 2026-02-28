@@ -1,16 +1,32 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import Icon from '../Icon.vue'
+import { $t } from '@/utils/i18n'
 
 interface Props {
   title?: string
+  titleI18n?: string
   description?: string
+  descriptionI18n?: string
   icon?: string
 }
 
-withDefaults(defineProps<Props>(), {
-  title: 'No data found',
-  description: 'There is nothing to display here right now.',
+const props = withDefaults(defineProps<Props>(), {
   icon: 'lucide:inbox',
+})
+
+const displayTitle = computed(() => {
+  if (props.titleI18n) return $t(props.titleI18n)
+  if (props.title) return props.title
+  const res = $t('vlite.empty.title')
+  return res !== 'vlite.empty.title' ? res : 'No data found'
+})
+
+const displayDescription = computed(() => {
+  if (props.descriptionI18n) return $t(props.descriptionI18n)
+  if (props.description) return props.description
+  const res = $t('vlite.empty.description')
+  return res !== 'vlite.empty.description' ? res : 'There is nothing to display here right now.'
 })
 </script>
 
@@ -23,11 +39,12 @@ withDefaults(defineProps<Props>(), {
     </div>
     <div class="text-center space-y-1">
       <h3 class="text-fs-5 font-semibold text-foreground tracking-tight">
-        {{ title }}
+        {{ displayTitle }}
       </h3>
-      <p class="text-sm text-gray-700 font-light leading-relaxed" v-html="description"></p>
+      <p class="text-sm text-gray-700 font-light leading-relaxed" v-html="displayDescription"></p>
     </div>
     <slot name="action" />
     <slot />
   </div>
 </template>
+
