@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch, computed } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
 import Spinner from '../Spinner/Spinner.vue'
 import { useKanbanBoard } from './useKanbanBoard'
 import type { KanbanColumn, KanbanLoadDataResult, KanbanChangeEvent } from './types'
+import { $t } from '@/utils/i18n'
 
 const props = defineProps<{
   column: KanbanColumn
@@ -31,13 +32,11 @@ const { items, isInitialLoading, isLoadingMore, pageInfo, loadInitial, loadMore 
   props.columnData
 )
 
-// Sync up: Propagate internal drag-and-drop changes up to parent
 const handleItemsUpdate = (newItems: any[]) => {
   items.value = newItems
   emit('update:columnData', newItems)
 }
 
-// Sync down: Only update local state if parent explicitly forces new distinct data
 watch(
   () => props.columnData,
   (newVal) => {
@@ -56,7 +55,6 @@ onMounted(() => {
 
 const handleScroll = (e: Event) => {
   const target = e.target as HTMLElement
-  // Trigger loadMore when scrolled near the bottom (within 50px)
   if (target.scrollTop + target.clientHeight >= target.scrollHeight - 50) {
     loadMore()
   }
@@ -73,6 +71,8 @@ const onRemove = (e: any) => {
 const onUpdateEvent = (e: any) => {
   emit('change', { type: 'update', event: e, columnId: props.column.id })
 }
+
+const displayTitle = computed(() => props.column.titleI18n ? $t(props.column.titleI18n) : props.column.title)
 </script>
 
 <template>
@@ -84,7 +84,7 @@ const onUpdateEvent = (e: any) => {
     <div :class="['p-3 border-b border-border/80 ', headerClass]">
       <slot name="header" :column="column" :pageInfo="pageInfo">
         <div class="flex items-center justify-between font-semibold text-foreground">
-          <span>{{ column.title }}</span>
+          <span>{{ displayTitle }}</span>
         </div>
       </slot>
     </div>
@@ -152,3 +152,4 @@ const onUpdateEvent = (e: any) => {
   border-radius: 10px;
 }
 </style>
+
