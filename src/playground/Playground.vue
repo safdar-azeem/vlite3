@@ -114,7 +114,6 @@ const menuItems: SidebarMenuItemSchema[] = [
       <template #default>
         <div class="space-y-6">
           <SidebarMenu
-            compact
             :items="menuItems"
             :allow-multiple="true"
             :default-expanded="[
