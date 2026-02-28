@@ -116,7 +116,12 @@ const menuItems: SidebarMenuItemSchema[] = [
           <SidebarMenu
             :items="menuItems"
             :allow-multiple="true"
-            :default-expanded="['Core', 'Forms & Auth', 'Feedback & Overlays', 'Navigation & Data']" />
+            :default-expanded="[
+              'Core',
+              'Forms & Auth',
+              'Feedback & Overlays',
+              'Navigation & Data',
+            ]" />
         </div>
       </template>
 
