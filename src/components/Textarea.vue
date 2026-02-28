@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { $t } from '@/utils/i18n'
 
 interface Props {
   modelValue?: string
   placeholder?: string
+  placeholderI18n?: string
   disabled?: boolean
   rows?: number
   class?: string
@@ -33,6 +35,8 @@ const handleInput = (event: Event) => {
   const target = event.target as HTMLTextAreaElement
   emit('update:modelValue', target.value)
 }
+
+const displayPlaceholder = computed(() => props.placeholderI18n ? $t(props.placeholderI18n) : props.placeholder)
 </script>
 
 <template>
@@ -40,9 +44,10 @@ const handleInput = (event: Event) => {
     :value="modelValue"
     :rows="rows"
     :disabled="disabled"
-    :placeholder="placeholder"
+    :placeholder="displayPlaceholder"
     :class="classes"
     @input="handleInput"
     @focus="emit('focus', $event)"
     @blur="emit('blur', $event)" />
 </template>
+
