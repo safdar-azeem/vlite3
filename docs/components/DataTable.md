@@ -4,26 +4,30 @@
 
 ### Props
 
-| Prop                  | Type                        | Default             | Description                 |
-| :-------------------- | :-------------------------- | :------------------ | :-------------------------- |
-| `rows`                | `any[]`                     | `[]`                | Data array to display       |
-| `headers`             | `TableHeader[]`             | `[]`                | Column definitions          |
-| `search`              | `string`                    | —                   | Search query string         |
-| `showSearch`          | `boolean`                   | `true`              | Show search input           |
-| `searchPlaceholder`   | `string`                    | `Search...`         | Placeholder for search      |
-| `loading`             | `boolean`                   | `false`             | Show loading state/skeleton |
-| `selectable`          | `boolean`                   | `false`             | Enable row selection        |
-| `sortable`            | `boolean`                   | `false`             | Enable column sorting       |
-| `showPagination`      | `boolean`                   | `true`              | Show footer pagination      |
-| `paginationProps`     | `DataTablePaginationProps`  | Default Config      | Control Pagination UI       |
-| `striped`             | `boolean`                   | `false`             | Zebra striping              |
-| `hoverable`           | `boolean`                   | `true`              | Highlight row on hover      |
-| `bordered`            | `boolean`                   | `true`              | Outer border                |
-| `compact`             | `boolean`                   | `false`             | Reduced padding             |
-| `variant`             | `'default' \| 'raised'`     | `default`           | Table style                 |
-| `emptyTitle`          | `string`                    | `No data available` | Empty state title           |
-| `emptyDescription`    | `string`                    | —                   | Empty state text            |
-| `emptyIcon`           | `string`                    | `lucide:inbox`      | Empty state icon            |
+| Prop                    | Type                       | Default             | Description                     |
+| :---------------------- | :------------------------- | :------------------ | :------------------------------ |
+| `rows`                  | `any[]`                    | `[]`                | Data array to display           |
+| `headers`               | `TableHeader[]`            | `[]`                | Column definitions              |
+| `keyField`              | `string`                   | `'_id'`             | Unique row identifier field     |
+| `search`                | `string`                   | —                   | Search query string             |
+| `showSearch`            | `boolean`                  | `true`              | Show search input               |
+| `searchPlaceholder`     | `string`                   | `Search...`         | Placeholder for search          |
+| `searchPlaceholderI18n` | `string`                   | —                   | I18n key for search placeholder |
+| `loading`               | `boolean`                  | `false`             | Show loading state/skeleton     |
+| `selectable`            | `boolean`                  | `false`             | Enable row selection            |
+| `sortable`              | `boolean`                  | `false`             | Enable column sorting           |
+| `showPagination`        | `boolean`                  | `true`              | Show footer pagination          |
+| `paginationProps`       | `DataTablePaginationProps` | Default Config      | Control Pagination UI           |
+| `striped`               | `boolean`                  | `false`             | Zebra striping                  |
+| `hoverable`             | `boolean`                  | `true`              | Highlight row on hover          |
+| `bordered`              | `boolean`                  | `true`              | Outer border                    |
+| `compact`               | `boolean`                  | `false`             | Reduced padding                 |
+| `variant`               | `'default' \| 'raised'`    | `default`           | Table style                     |
+| `emptyTitle`            | `string`                   | `No data available` | Empty state title               |
+| `emptyTitleI18n`        | `string`                   | —                   | I18n key for empty title        |
+| `emptyDescription`      | `string`                   | —                   | Empty state text                |
+| `emptyDescriptionI18n`  | `string`                   | —                   | I18n key for empty desc         |
+| `emptyIcon`             | `string`                   | `lucide:inbox`      | Empty state icon                |
 
 ### Types
 
@@ -55,17 +59,16 @@ export interface TableState {
   sorting: SortConfig
   search: string
 }
-
 ```
 
 ### Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot             | Description                                         |
+| ---------------- | --------------------------------------------------- |
 | `[header.field]` | Custom cell content (e.g. `#name="{ value, row }"`) |
-| `toolbar-left` | Left side of toolbar |
-| `toolbar-right` | Right side of toolbar |
-| `empty-action` | Action button in empty state |
+| `toolbar-left`   | Left side of toolbar                                |
+| `toolbar-right`  | Right side of toolbar                               |
+| `empty-action`   | Action button in empty state                        |
 
 ### Usage
 
@@ -81,6 +84,4 @@ export interface TableState {
     <Button icon="lucide:plus">New User</Button>
   </template>
 </DataTable>
-
 ```
-
