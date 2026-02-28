@@ -396,7 +396,12 @@ export function useForm(options: UseFormOptions): UseFormReturn {
       processedValues = cleanCustomFieldsValues(processedValues)
 
       // Clean payload based on schema and emit/ignore fields
-      processedValues = cleanSubmitValues(processedValues, schema, options.emitFields, [])
+      processedValues = cleanSubmitValues(
+        processedValues,
+        schema,
+        options.emitFields,
+        options.emitFields
+      )
 
       // Call onSubmit callback
       if (onSubmit) {
