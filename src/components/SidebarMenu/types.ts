@@ -1,6 +1,7 @@
 export interface SidebarMenuItemSchema {
   id?: string
   label: string
+  labelI18n?: string
   icon?: string
   to?: string | Record<string, any>
   href?: string
@@ -35,3 +36,4 @@ export interface SidebarMenuContext {
   compact: boolean
   showCompactLabels: boolean
 }
+
