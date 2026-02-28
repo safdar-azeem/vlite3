@@ -11,6 +11,7 @@ import {
   cleanSubmitValues,
 } from '../utils/form.utils'
 import { useFileUpload } from './useFileUpload'
+import { $t } from '@/utils/i18n'
 
 export interface UseFormOptions {
   schema: IForm[] | IForm[][]
@@ -158,6 +159,11 @@ export function useForm(options: UseFormOptions): UseFormReturn {
     const value = getFieldValue(field.name)
     let error = ''
 
+    // Resolve translation for error messages
+    const fieldLabel = field.labelI18n 
+      ? $t(field.labelI18n) 
+      : (typeof field.label === 'string' ? field.label : field.name)
+
     // Required validation
     if (field.required) {
       const isEmpty =
@@ -167,7 +173,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
         (Array.isArray(value) && value.length === 0)
 
       if (isEmpty) {
-        error = `${field.label || field.name} is required`
+        error = `${fieldLabel} is required`
       }
     }
 
@@ -179,7 +185,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
         for (const f of files) {
           const fileSize = f instanceof File ? f.size : f?.fileSize || f?.file?.size || f?.size
           if (fileSize !== undefined && fileSize > maxBytes) {
-            error = `${field.label || field.name} size must be less than ${field.maxFileSize}MB`
+            error = `${fieldLabel} size must be less than ${field.maxFileSize}MB`
             break
           }
         }
