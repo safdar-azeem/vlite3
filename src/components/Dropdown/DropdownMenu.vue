@@ -17,6 +17,7 @@ import DropdownBooleanItem from './DropdownBooleanItem.vue'
 import DropdownGroupedLayout from './DropdownGroupedLayout.vue'
 import { useDropdownNavigation } from './composables/useDropdownNavigation'
 import { useDropdownIds } from './composables/useDropdownIds'
+import { $t } from '@/utils/i18n'
 
 // Async import for recursion
 const Dropdown = defineAsyncComponent(() => import('./Dropdown.vue'))
@@ -69,6 +70,17 @@ const emit = defineEmits<{
 const containerRef = ref<HTMLElement | null>(null)
 const searchQuery = ref('')
 const { getMenuId, getAllRecursiveIds } = useDropdownIds()
+
+// --- Internal Translations ---
+const tEmpty = computed(() => {
+  const res = $t('vlite.dropdown.empty')
+  return res !== 'vlite.dropdown.empty' ? res : 'No options found'
+})
+
+const tSearch = computed(() => {
+  const res = $t('vlite.dropdown.search')
+  return res !== 'vlite.dropdown.search' ? res : 'Search...'
+})
 
 // --- Search Logic ---
 const showSearch = computed(() => {
@@ -237,6 +249,8 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleKeyDown)
 })
+
+const getDisplayLabel = (option: IDropdownOption) => option.labelI18n ? $t(option.labelI18n) : option.label
 </script>
 
 <template>
@@ -244,7 +258,7 @@ onBeforeUnmount(() => {
     <div v-if="showSearch" class="bg-body border-b mb-1 z-10 rounded-t-md shrink-0">
       <Input
         v-model="searchQuery"
-        placeholder="Search..."
+        :placeholder="tSearch"
         icon="lucide:search"
         size="sm"
         class="font-medium!"
@@ -271,7 +285,7 @@ onBeforeUnmount(() => {
       <div
         v-if="filteredOptions.length === 0 && options?.length > 0 && !loading"
         class="px-2 py-6 text-center text-sm text-muted-foreground">
-        No options found
+        {{ tEmpty }}
       </div>
 
       <template v-if="layout === 'grouped'">
@@ -325,7 +339,7 @@ onBeforeUnmount(() => {
                       v-if="option.icon"
                       :icon="option.icon"
                       class="mr-2 h-4 w-4 shrink-0 mt-0.5" />
-                    <span class="truncate">{{ option.label }}</span>
+                    <span class="truncate">{{ getDisplayLabel(option) }}</span>
                   </div>
                   <Icon
                     :icon="direction === 'rtl' ? 'lucide:chevron-left' : 'lucide:chevron-right'"
