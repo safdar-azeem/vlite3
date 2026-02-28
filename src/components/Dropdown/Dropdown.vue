@@ -2,7 +2,7 @@
 import ToolTip from 'v-tooltip-lite'
 import 'v-tooltip-lite/style.css'
 import { computed, ref, watch, reactive, toRefs } from 'vue'
-import type { IDropdownOptions, IDropdownOption } from '@/types'
+import type { IDropdownOptions, IDropdownOption, ButtonProps } from '@/types'
 import type { TooltTipPlacement } from 'v-tooltip-lite/types'
 import DropdownMenu from './DropdownMenu.vue'
 import DropdownTrigger from './DropdownTrigger.vue'
@@ -42,6 +42,7 @@ const props = withDefaults(
     hasMore?: boolean
     searchable?: boolean
     remote?: boolean
+    triggerProps?: ButtonProps
     direction?: 'ltr' | 'rtl'
   }>(),
   {
@@ -312,19 +313,18 @@ const handleClose = () => {
           @close="handleClose"
           @load-more="$emit('load-more')"
           @search="(q) => $emit('search', q)">
-          
           <template #menu v-if="$slots.menu">
             <slot name="menu" />
           </template>
-          
+
           <template #item="slotProps" v-if="$slots.item">
             <slot name="item" v-bind="slotProps" />
           </template>
-          
+
           <template #header v-if="$slots.header">
             <slot name="header" />
           </template>
-          
+
           <template #footer v-if="$slots.footer">
             <slot name="footer" />
           </template>
