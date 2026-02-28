@@ -34,12 +34,8 @@ const gridStyle = computed(() => {
   return { gridTemplateColumns: cols } // Allow custom string like '200px 1fr'
 })
 
-// Check selection helper (reusing logic visual)
+// Check selection helper
 const isSelected = (option: IDropdownOption) => {
-  // Similar logic to parent, but we rely on simple check here for UI
-  // The parent DropdownMenu logic handles the 'selected' prop complexity usually.
-  // If selected is complex object, simple equality might fail, but let's assume parent passes relevant checker or we check values.
-  // Actually the parent `DropdownMenu` passes `selected` which is the value.
   if (!props.selected) return false
 
   // Array check
@@ -68,7 +64,7 @@ const getGroupLabel = (group: IDropdownOption) => group.labelI18n ? $t(group.lab
         <span class="font-semibold text-sm text-foreground">
           {{ getGroupLabel(group) }}
         </span>
-        <Icon v-if="group.icon" :icon="group.icon" class="w-4 h-4 text-muted-foreground" />
+        <Icon v-if="group.icon || group.emoji" :icon="group.icon" :emoji="group.emoji" class="w-4 h-4 text-muted-foreground" />
       </div>
 
       <div class="flex flex-col space-y-1">
