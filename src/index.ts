@@ -59,6 +59,7 @@ export { createVLite, useVLiteConfig } from './core'
 export { GoogleSignInPlugin }
 
 export * from './utils'
+export { $t } from './utils/i18n'
 
 export * from './types'
 export * from './components/DataList'
