@@ -4,11 +4,13 @@
 
 ### Props
 
-| Prop       | Type                | Default                 | Description                         |
-| :--------- | :------------------ | :---------------------- | :---------------------------------- |
-| `value`    | `string`            | `'tabler:icons-filled'` | Selected icon name                  |
-| `position` | `TooltTipPlacement` | `'bottom'`              | Picker dropdown position            |
-| `btnProps` | `ButtonProps`       | —                       | Props to pass to the trigger button |
+| Prop              | Type                | Default                 | Description                         |
+| :---------------- | :------------------ | :---------------------- | :---------------------------------- |
+| `value`           | `string`            | `'tabler:icons-filled'` | Selected icon name                  |
+| `position`        | `TooltTipPlacement` | `'bottom'`              | Picker dropdown position            |
+| `btnProps`        | `ButtonProps`       | —                       | Props to pass to the trigger button |
+| `placeholder`     | `string`            | —                       | Placeholder for the search input    |
+| `placeholderI18n` | `string`            | —                       | I18n key for the placeholder        |
 
 ### Events
 
