@@ -3,6 +3,7 @@ import { ref, computed, useSlots } from 'vue'
 import Icon from '../Icon.vue'
 import Button from '@/components/Button.vue'
 import type { InputVariant, InputSize, InputRounded } from '@/types'
+import { $t } from '@/utils/i18n'
 
 defineOptions({
   name: 'FilePicker',
@@ -27,6 +28,8 @@ interface Props {
   maxFiles?: number
   variant?: 'dropzone' | 'input'
   placeholder?: string
+  placeholderI18n?: string
+  textI18n?: string
   size?: InputSize
   rounded?: InputRounded
 }
@@ -48,6 +51,9 @@ const emit = defineEmits<{
   (e: 'change', value: FilePickerValue | FilePickerValue[] | null): void
   (e: 'error', error: string): void
 }>()
+
+const displayPlaceholder = computed(() => props.placeholderI18n ? $t(props.placeholderI18n) : (props.placeholder || 'Select file...'))
+const displayText = computed(() => props.textI18n ? $t(props.textI18n) : 'Click to upload')
 
 const fileInput = ref<HTMLInputElement | null>(null)
 const isDragging = ref(false)
@@ -341,7 +347,7 @@ const inputBaseClass = computed(() => {
         <input
           type="text"
           :value="inputDisplayValue"
-          :placeholder="placeholder || 'Select file...'"
+          :placeholder="displayPlaceholder"
           readonly
           :class="inputBaseClass"
           :disabled="disabled || loading || isProcessing" />
@@ -391,7 +397,7 @@ const inputBaseClass = computed(() => {
 
           <div class="space-y-1">
             <p class="text-sm font-medium text-foreground">
-              <span class="text-primary hover:underline">Click to upload</span>
+              <span class="text-primary hover:underline">{{ displayText }}</span>
               or drag and drop
             </p>
             <p v-if="fileTypes.length" class="text-xs text-muted-foreground">
