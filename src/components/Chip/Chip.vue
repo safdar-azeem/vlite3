@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import Icon from '../Icon.vue'
 import Button from '../Button.vue'
 import type { ChipProps, ChipVariant } from './types'
+import { $t } from '@/utils/i18n'
 
 const props = withDefaults(defineProps<ChipProps>(), {
   variant: 'subtle',
@@ -18,6 +19,8 @@ const emit = defineEmits<{
   (e: 'click', event: MouseEvent): void
   (e: 'delete', event: MouseEvent): void
 }>()
+
+const displayText = computed(() => props.textI18n ? $t(props.textI18n) : props.text)
 
 const isInteractive = computed(() => props.clickable && !props.disabled)
 
@@ -81,9 +84,8 @@ const variantClasses = computed(() => {
     solid: `bg-primary text-primary-fg border-transparent ${isInteractive.value ? 'hover:bg-primary/90' : ''}`,
     outline: `bg-transparent border-input text-foreground ${isInteractive.value ? 'hover:bg-accent hover:text-accent-foreground' : ''}`,
     ghost: `bg-transparent border-transparent text-muted-foreground ${isInteractive.value ? 'hover:bg-accent hover:text-accent-foreground' : ''}`,
-    subtle: `bg-accent/50 text-foreground border-transparent ${isInteractive.value ? 'hover:bg-accent' : ''}`, // Default neutral
+    subtle: `bg-accent/50 text-foreground border-transparent ${isInteractive.value ? 'hover:bg-accent' : ''}`,
 
-    // Semantic Variants
     secondary: `bg-secondary text-secondary-foreground border-transparent ${isInteractive.value ? 'hover:bg-secondary/80' : ''}`,
     success: `bg-success text-success-fg border-transparent ${isInteractive.value ? 'hover:bg-success/80' : ''}`,
     warning: `bg-warning text-warning-fg border-transparent ${isInteractive.value ? 'hover:bg-warning/80' : ''}`,
@@ -98,7 +100,6 @@ const rootClasses = computed(() => {
   return [baseClasses, sizeClasses.value, variantClasses.value, props.class].join(' ')
 })
 
-// Icon sizing adjustment based on chip size
 const iconSizeClass = computed(() => {
   switch (props.size) {
     case 'small':
@@ -111,7 +112,6 @@ const iconSizeClass = computed(() => {
   }
 })
 
-// Close button sizing
 const closeIconSizeClass = computed(() => {
   switch (props.size) {
     case 'small':
@@ -132,17 +132,14 @@ const closeIconSizeClass = computed(() => {
     :tabindex="isInteractive || deletable ? 0 : undefined"
     @click="handleClick"
     @keydown="handleKeyDown">
-    <!-- Start Icon / Avatar -->
     <slot name="icon">
-      <Icon v-if="icon" :icon="icon" :class="[iconSizeClass, 'shrink-0', text ? '-ml-0.5' : '']" />
+      <Icon v-if="icon" :icon="icon" :class="[iconSizeClass, 'shrink-0', displayText ? '-ml-0.5' : '']" />
     </slot>
 
-    <!-- Text -->
-    <span v-if="text || $slots.default" class="truncate">
-      <slot>{{ text }}</slot>
+    <span v-if="displayText || $slots.default" class="truncate">
+      <slot>{{ displayText }}</slot>
     </span>
 
-    <!-- Delete Action -->
     <Button
       v-if="deletable"
       variant="ghost"
@@ -150,9 +147,10 @@ const closeIconSizeClass = computed(() => {
       rounded="full"
       :disabled="disabled"
       class="ml-auto p-0.5! h-auto! w-auto! hover:bg-[#8282823c]"
-      :class="[text ? (size === 'small' ? '-mr-0.5' : '-mr-1') : '']"
+      :class="[displayText ? (size === 'small' ? '-mr-0.5' : '-mr-1') : '']"
       @click="handleDelete">
       <Icon icon="lucide:x" :class="closeIconSizeClass" />
     </Button>
   </div>
 </template>
+
