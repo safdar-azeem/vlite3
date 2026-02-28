@@ -3,6 +3,7 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useResizeObserver } from '@vueuse/core'
 import type { TabesOption, TabesSize, TabesVariant } from './types'
 import Icon from '../Icon.vue'
+import { $t } from '@/utils/i18n'
 
 interface Props {
   options: TabesOption[]
@@ -180,11 +181,12 @@ const getMarkerColorClass = () => {
   }
   return variantActiveStyles[props.variant]
 }
+
+const getOptionLabel = (opt: TabesOption) => opt.labelI18n ? $t(opt.labelI18n) : opt.label
 </script>
 
 <template>
   <div ref="containerRef" :class="containerClasses" role="tablist">
-    <!-- Active Marker -->
     <div
       v-if="modelValue !== undefined"
       :class="[markerClasses, getMarkerColorClass()]"
@@ -201,7 +203,8 @@ const getMarkerColorClass = () => {
       @click="handleSelect(opt)"
       type="button">
       <Icon v-if="opt.icon" :icon="opt.icon" :class="size === 'sm' ? 'w-3.5 h-3.5' : 'w-4 h-4'" />
-      <span class="whitespace-nowrap z-20 relative" :class="textClass">{{ opt.label }}</span>
+      <span class="whitespace-nowrap z-20 relative" :class="textClass">{{ getOptionLabel(opt) }}</span>
     </button>
   </div>
 </template>
+
