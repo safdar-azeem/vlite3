@@ -4,19 +4,20 @@ import Icon from '../Icon.vue'
 import { Dropdown, DropdownMenu } from '@/components/Dropdown'
 import Badge from '@/components/Badge.vue'
 import type { IDropdownOption, IDropdownOptions } from '@/types'
+import { $t } from '@/utils/i18n'
 
 // Props
 interface Props {
   modelValue?: any[]
   options?: IDropdownOptions
   placeholder?: string
+  placeholderI18n?: string
   disabled?: boolean
   searchable?: boolean
 
   variant?: 'default' | 'outline' | 'solid'
   size?: 'sm' | 'md' | 'lg'
-  maxVisible?: number // Max tabs to show before +N
-  // Advanced Dropdown Props
+  maxVisible?: number 
   loading?: boolean
   hasMore?: boolean
   remote?: boolean
@@ -26,7 +27,6 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   modelValue: () => [],
   options: () => [],
-  placeholder: 'Select items...',
   disabled: false,
   searchable: true,
   variant: 'outline',
@@ -46,6 +46,13 @@ const emit = defineEmits<{
 }>()
 
 const isOpen = ref(false)
+
+const displayPlaceholder = computed(() => {
+  if (props.placeholderI18n) return $t(props.placeholderI18n)
+  if (props.placeholder) return props.placeholder
+  const res = $t('vlite.multiSelect.placeholder')
+  return res !== 'vlite.multiSelect.placeholder' ? res : 'Select items...'
+})
 
 // Computed
 const selectedOptions = computed(() => {
@@ -76,7 +83,6 @@ const handleSelect = (option: IDropdownOption) => {
 
   emit('update:modelValue', newValue)
   emit('change', newValue)
-  // Do not close on select for multi-select
 }
 
 const removeOption = (value: any) => {
@@ -113,7 +119,7 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
       <div :class="triggerClasses">
         <div class="flex flex-wrap gap-1.5 items-center flex-1 min-w-0 py-0.5">
           <span v-if="selectedOptions.length === 0" class="text-muted-foreground pl-1">
-            {{ placeholder }}
+            {{ displayPlaceholder }}
           </span>
 
           <template v-else>
@@ -122,7 +128,7 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
               :key="opt.value"
               variant="secondary"
               class="gap-1 pr-1 truncate max-w-[150px]">
-              <span class="truncate">{{ opt.label }}</span>
+              <span class="truncate">{{ opt.labelI18n ? $t(opt.labelI18n) : opt.label }}</span>
               <button
                 v-if="!disabled"
                 type="button"
@@ -173,3 +179,4 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
     </template>
   </Dropdown>
 </template>
+
