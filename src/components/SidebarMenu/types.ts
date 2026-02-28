@@ -29,6 +29,8 @@ export interface SidebarMenuProps {
   compactLabelClass?: string
   itemPadding?: string
   compactItemPadding?: string
+  nestedMenuWidth?: string
+  nestedMenuMaxHeight?: string
 }
 
 export interface SidebarMenuContext {
@@ -47,4 +49,7 @@ export interface SidebarMenuContext {
   compactLabelClass: string
   itemPadding: string
   compactItemPadding: string
+  nestedMenuWidth: string
+  nestedMenuMaxHeight: string
 }
+
