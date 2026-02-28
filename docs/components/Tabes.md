@@ -18,6 +18,7 @@
 ```ts
 export interface TabesOption {
   label: string
+  labelI18n?: string
   value: string | number
   icon?: string
   disabled?: boolean
@@ -34,6 +35,11 @@ export type TabesVariant =
   | 'outline'
   | 'line'
 ```
+
+### Events
+
+- `@update:modelValue`: Emitted on tab selection (v-model binding)
+- `@change`: Emitted when tab selection changes
 
 ### Usage
 
