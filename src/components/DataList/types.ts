@@ -1,6 +1,5 @@
 import { PageInfo, PaginationProps } from '../Pagination'
 
-// create a new pageInfo type and Omit the currentPage and totalPages
 export type DataListMetaInfo = Omit<PaginationProps, 'currentPage' | 'totalPages'>
 
 export interface DataListProps {
@@ -10,12 +9,15 @@ export interface DataListProps {
   className?: string
   item?: any
   skeleton?: any
-  skelton?: any // Alias to support requested prop spelling
+  skelton?: any
   itemProps?: Record<string, any>
   emptyTitle?: string
+  emptyTitleI18n?: string
   emptyDescription?: string
+  emptyDescriptionI18n?: string
   emptyIcon?: string
   showPagination?: boolean
   paginationProps?: DataListMetaInfo
-  delete?: (items: any[]) => void // Injected delete function prop from Screen
+  delete?: (items: any[]) => void
 }
+
