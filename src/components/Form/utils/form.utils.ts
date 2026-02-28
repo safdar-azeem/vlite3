@@ -237,3 +237,92 @@ export function isComponent(value: any): boolean {
       value.name !== undefined)
   )
 }
+
+/**
+ * Cleans the submit payload by extracting only schema fields,
+ * injecting specified emitFields, and removing ignoreFields recursively.
+ */
+export function cleanSubmitValues(
+  values: Record<string, any>,
+  schema: IForm[] | IForm[][],
+  emitFields?: string[],
+  ignoreFields?: string[]
+): Record<string, any> {
+  if (emitFields === undefined && ignoreFields === undefined) {
+    return deepClone(values)
+  }
+
+  const fieldsToEmit = emitFields || []
+  const fieldsToIgnore = ignoreFields || []
+
+  const flatSchema = Array.isArray(schema[0]) ? (schema as IForm[][]).flat() : (schema as IForm[])
+  const result: Record<string, any> = {}
+
+  for (const field of flatSchema) {
+    if (!field.name) continue
+
+    const val = getNestedValue(values, field.name)
+    if (val === undefined) continue
+
+    if (field.type === 'customFields' && field.props?.schema && Array.isArray(val)) {
+      const nestedSchema = field.props.schema as IForm[]
+      const cleanedArray = val.map((item: any) =>
+        cleanSubmitValues(item, nestedSchema, fieldsToEmit, fieldsToIgnore)
+      )
+      Object.assign(result, setNestedValue(result, field.name, cleanedArray))
+    } else {
+      Object.assign(result, setNestedValue(result, field.name, val))
+    }
+  }
+
+  if (fieldsToEmit.length > 0) {
+    const injectEmits = (source: any, target: any) => {
+      if (!source || typeof source !== 'object') return
+      if (!target || typeof target !== 'object') return
+
+      if (Array.isArray(source) && Array.isArray(target)) {
+        source.forEach((sItem, i) => {
+          if (target[i]) injectEmits(sItem, target[i])
+        })
+      } else {
+        for (const key of fieldsToEmit) {
+          if (source[key] !== undefined && target[key] === undefined) {
+            target[key] = deepClone(source[key])
+          }
+        }
+        for (const key in target) {
+          if (typeof target[key] === 'object' && typeof source[key] === 'object') {
+            injectEmits(source[key], target[key])
+          }
+        }
+      }
+    }
+
+    for (const key of fieldsToEmit) {
+      if (values[key] !== undefined && result[key] === undefined) {
+        result[key] = deepClone(values[key])
+      }
+    }
+
+    injectEmits(values, result)
+  }
+
+  if (fieldsToIgnore.length > 0) {
+    const removeIgnores = (obj: any) => {
+      if (!obj || typeof obj !== 'object') return
+      if (Array.isArray(obj)) {
+        obj.forEach(removeIgnores)
+      } else {
+        for (const key of fieldsToIgnore) {
+          delete obj[key]
+        }
+        for (const key in obj) {
+          removeIgnores(obj[key])
+        }
+      }
+    }
+    removeIgnores(result)
+  }
+
+  return result
+}
