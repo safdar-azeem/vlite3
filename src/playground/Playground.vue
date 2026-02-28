@@ -29,6 +29,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Chip', to: '/chip', icon: 'lucide:sticker' },
       { label: 'Avatar', to: '/avatar', icon: 'lucide:user' },
       { label: 'Avatar Uploader', to: '/avatar-uploader', icon: 'lucide:camera' },
+      { label: 'i18n Support', to: '/i18n', icon: 'lucide:globe' },
     ],
   },
   {
@@ -115,14 +116,14 @@ const menuItems: SidebarMenuItemSchema[] = [
           <SidebarMenu
             :items="menuItems"
             :allow-multiple="true"
-            :default-expanded="['Core', 'Feedback & Overlays', 'Navigation & Data']" />
+            :default-expanded="['Core', 'Forms & Auth', 'Feedback & Overlays', 'Navigation & Data']" />
         </div>
       </template>
 
       <template #right>
         <div class="flex items-center justify-between gap-2">
           <ThemeToggle />
-          <p class="text-xs text-muted-foreground">v0.2.7</p>
+          <p class="text-xs text-muted-foreground">v0.4.6</p>
         </div>
       </template>
     </Navbar>
