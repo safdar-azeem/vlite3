@@ -2,6 +2,7 @@
 import { ref, watch, computed } from 'vue'
 import type { FileNode, FileTreeProps, FileTreeEvents } from './types'
 import FileTreeNode from './FileTreeNode.vue'
+import { $t } from '@/utils/i18n'
 
 const props = withDefaults(defineProps<FileTreeProps>(), {
   modelValue: () => [],
@@ -172,18 +173,14 @@ const handleToggleSelect = (node: FileNode) => {
 
 // --- Search Filtering ---
 const filteredData = computed(() => {
-  // Pass through if no query, OR if nodes already have matches attached (externally handled).
-  // If `searchQuery` is provided, we filter.
-  // Note: content search matches are usually provided in `data` by parent.
-  // If `node.searchMatch` exists, we include it regardless of label match.
-
   if (!props.searchQuery) return props.data
 
   const query = props.searchQuery.toLowerCase()
 
   const filterNode = (node: FileNode): FileNode | null => {
-    // Match by Name
-    const nameMatch = node.label.toLowerCase().includes(query)
+    // Match by Name (or Translated Name)
+    const nodeLabel = node.labelI18n ? $t(node.labelI18n) : node.label
+    const nameMatch = nodeLabel.toLowerCase().includes(query)
 
     // Match by Content (pre-populated)
     const contentMatch = !!node.searchMatch
@@ -223,7 +220,8 @@ watch(
           }
         }
 
-        const selfMatch = node.label.toLowerCase().includes(query) || !!node.searchMatch
+        const nodeLabel = node.labelI18n ? $t(node.labelI18n) : node.label
+        const selfMatch = nodeLabel.toLowerCase().includes(query) || !!node.searchMatch
 
         if (childMatch) {
           toExpand.add(node.id)
@@ -238,6 +236,13 @@ watch(
   },
   { deep: true }
 )
+
+const displayEmptyText = computed(() => {
+  if (props.emptyTextI18n) return $t(props.emptyTextI18n)
+  if (props.emptyText) return props.emptyText
+  const res = $t('vlite.fileTree.emptyText')
+  return res !== 'vlite.fileTree.emptyText' ? res : 'No results found.'
+})
 </script>
 
 <template>
@@ -259,6 +264,7 @@ watch(
         @toggle-select="handleToggleSelect"
         @click-node="(n) => emit('node-click', n)" />
     </template>
-    <div v-else class="text-sm text-muted-foreground p-4 text-center">No results found.</div>
+    <div v-else class="text-sm text-muted-foreground p-4 text-center">{{ displayEmptyText }}</div>
   </div>
 </template>
+
