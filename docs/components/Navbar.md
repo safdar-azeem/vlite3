@@ -26,18 +26,42 @@
 
 ### Slots
 
-| Slot             | Description                                         | Props                |
-| :--------------- | :-------------------------------------------------- | :------------------- |
-| `logo`           | Branding area                                       | —                    |
-| `left`           | Left content (Header) or Top content (Sidebar)      | —                    |
-| `center`         | Center content (Header) or Middle content (Sidebar) | —                    |
-| `right`          | Right actions (Header) or Bottom content (Sidebar)  | —                    |
-| `mobile-trigger` | Custom hamburger button                             | `{ isOpen, toggle }` |
-| `mobile-menu`    | Custom mobile menu content                          | —                    |
+| Slot             | Description                                          | Props                |
+| :--------------- | :--------------------------------------------------- | :------------------- |
+| `header`         | **New:** Full-width top header (enables Layout mode) | `{ isOpen, toggle }` |
+| `main`           | **New:** Main content area (enables Layout mode)     | —                    |
+| `logo`           | Branding area                                        | —                    |
+| `left`           | Left content (Header) or Top content (Sidebar)       | —                    |
+| `center`         | Center content (Header) or Middle content (Sidebar)  | —                    |
+| `right`          | Right actions (Header) or Bottom content (Sidebar)   | —                    |
+| `mobile-trigger` | Custom hamburger button                              | `{ isOpen, toggle }` |
+| `mobile-menu`    | Custom mobile menu content                           | —                    |
 
 ### Usage
 
-#### Header
+#### App Layout Mode (Full Structure)
+
+```vue
+<Navbar variant="sidebar">
+  <template #header="{ toggle }">
+    <div class="h-14 border-b bg-white w-full flex items-center px-4">
+      <button @click="toggle" class="md:hidden mr-4">Menu</button>
+      <span class="font-bold">App Header</span>
+    </div>
+  </template>
+
+  <template #default>
+    <SidebarMenu :items="items" />
+  </template>
+
+  <template #main>
+    <main class="p-8">Dashboard page content...</main>
+  </template>
+</Navbar>
+
+```
+
+#### Standard Header
 
 ```vue
 <Navbar variant="header" position="sticky">
@@ -56,9 +80,10 @@
     <Button size="sm">Logout</Button>
   </template>
 </Navbar>
+
 ```
 
-#### Sidebar
+#### Standard Sidebar
 
 ```vue
 <Navbar variant="sidebar" class="h-screen">
@@ -72,15 +97,17 @@
     <div class="p-4">User Profile</div>
   </template>
 </Navbar>
+
 ```
 
 ### NavbarItem Props
 
-| Prop      | Type                                            | Default | Description         |
-| :-------- | :---------------------------------------------- | :------ | :------------------ |
-| `label`   | `string`                                        | —       | Link text           |
-| `to`      | `string`                                        | —       | Router link target  |
-| `href`    | `string`                                        | —       | External link URL   |
-| `icon`    | `string`                                        | —       | Leading icon        |
-| `active`  | `boolean`                                       | `false` | Forced active state |
-| `variant` | `'default' \| 'pill' \| 'underline' \| 'ghost'` | `ghost` | Visual style        |
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `label` | `string` | — | Link text |
+| `to` | `string` | — | Router link target |
+| `href` | `string` | — | External link URL |
+| `icon` | `string` | — | Leading icon |
+| `active` | `boolean` | `false` | Forced active state |
+| `variant` | `'default' | 'pill' | 'underline' | 'ghost'` | `ghost` | Visual style |
+
