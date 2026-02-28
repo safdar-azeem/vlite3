@@ -9,9 +9,11 @@ defineOptions({
 const props = withDefaults(
   defineProps<{
     icon?: string
+    emoji?: string
   }>(),
   {
     icon: '',
+    emoji: '',
   }
 )
 
@@ -29,19 +31,18 @@ const isLink = computed(() => {
   }
 
   // Check for local paths that look like images (relative or absolute)
-  // Usually handled by bundlers? If passing '/assets/img.png', we might treat as image.
-  // But user specifically asked for extensions logic.
   const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.ico', '.avif']
   return imageExtensions.some((ext) => props.icon.toLowerCase().endsWith(ext))
 })
 </script>
 
 <template>
+  <span v-if="emoji" v-bind="$attrs" class="inline-flex items-center justify-center font-normal">{{ emoji }}</span>
   <img
-    v-if="icon && isLink"
+    v-else-if="icon && isLink"
     :src="icon"
     v-bind="$attrs"
     alt="icon"
     class="rounded-full scale-105" />
-  <IconifyIcon v-else :icon="icon" v-bind="$attrs" />
+  <IconifyIcon v-else-if="icon" :icon="icon" v-bind="$attrs" />
 </template>
