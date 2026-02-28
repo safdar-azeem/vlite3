@@ -4,17 +4,18 @@
 
 ### Props
 
-| Prop         | Type             | Default  | Description                                 |
-| :----------- | :--------------- | :------- | :------------------------------------------ |
-| `modelValue` | `string \| null` | `null`   | Binding (`v-model`) - usually Base64 or URL |
-| `size`       | `AvatarSize`     | `'xl'`   | Size of the avatar                          |
-| `rounded`    | `AvatarRounded`  | `'full'` | Border radius                               |
-| `editable`   | `boolean`        | `true`   | Enable upload/remove actions                |
-| `loading`    | `boolean`        | `false`  | Show loading overlay                        |
-| `disabled`   | `boolean`        | `false`  | Disable interactions                        |
-| `fallback`   | `string`         | —        | Fallback image/text                         |
-| `maxSize`    | `number`         | —        | Max file size in bytes                      |
-| `className`  | `string`         | —        | Custom class for Avatar                     |
+| Prop         | Type             | Default    | Description                                 |
+| :----------- | :--------------- | :--------- | :------------------------------------------ |
+| `modelValue` | `string \| null` | `null`     | Binding (`v-model`) - usually Base64 or URL |
+| `size`       | `AvatarSize`     | `'xl'`     | Size of the avatar                          |
+| `rounded`    | `AvatarRounded`  | `'full'`   | Border radius                               |
+| `editable`   | `boolean`        | `true`     | Enable upload/remove actions                |
+| `loading`    | `boolean`        | `false`    | Show loading overlay                        |
+| `disabled`   | `boolean`        | `false`    | Disable interactions                        |
+| `fallback`   | `string`         | —          | Fallback image/text                         |
+| `alt`        | `string`         | `'Avatar'` | Alt text for accessible reading             |
+| `maxSize`    | `number`         | —          | Max file size in bytes                      |
+| `className`  | `string`         | —          | Custom class for Avatar                     |
 
 ### Events
 
