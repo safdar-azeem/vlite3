@@ -13,6 +13,7 @@ export type ChipSize = 'small' | 'medium' | 'large'
 
 export interface ChipProps {
   text?: string
+  textI18n?: string
   icon?: string
   variant?: ChipVariant
   size?: ChipSize
@@ -21,3 +22,4 @@ export interface ChipProps {
   deletable?: boolean
   class?: string
 }
+
