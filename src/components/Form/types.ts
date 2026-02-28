@@ -118,8 +118,12 @@ export interface IForm {
   transform?: (value: any, formValues: Record<string, any>) => any
   /** Field label - can be string or Vue component */
   label?: string | Component
+  /** I18n translation key for the label */
+  labelI18n?: string
   /** Placeholder text */
   placeholder?: string
+  /** I18n translation key for the placeholder */
+  placeholderI18n?: string
   /** Field type - determines which component renders */
   type?: IFormFieldType
   /** Initial/default value - can be static or function */
