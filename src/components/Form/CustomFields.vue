@@ -47,6 +47,17 @@ const emit = defineEmits<{
 
 const displayLabel = computed(() => props.labelI18n ? $t(props.labelI18n) : props.label)
 
+// Global i18n Fallbacks for Custom Fields
+const displayEmptyTitle = computed(() => {
+  const res = $t('vlite.customFields.emptyTitle')
+  return res !== 'vlite.customFields.emptyTitle' ? res : 'No items added'
+})
+
+const displayEmptyDescription = computed(() => {
+  const res = $t('vlite.customFields.emptyDescription')
+  return res !== 'vlite.customFields.emptyDescription' ? res : 'Add a new item to get started'
+})
+
 // Internal rows state with unique ID for transitions
 const rows = ref<(Record<string, any> & { _id: string })[]>([])
 const generateId = () => `row_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
@@ -134,7 +145,9 @@ const canRemoveRow = computed(() => {
 
 const columnHeaders = computed(() => {
   if (props.headers && props.headers.length > 0) return props.headers
-  return props.schema.map((field) => field.label || field.name)
+  return props.schema.map((field) => {
+    return field.labelI18n ? $t(field.labelI18n) : field.label || field.name
+  })
 })
 </script>
 
@@ -217,8 +230,8 @@ const columnHeaders = computed(() => {
       <div
         v-if="rows.length === 0"
         class="flex flex-col items-center justify-center py-6 text-center bg-muted/5">
-        <p class="text-sm font-medium text-foreground">No items added</p>
-        <p class="text-xs text-muted-foreground mt-1">Add a new item to get started</p>
+        <p class="text-sm font-medium text-foreground">{{ displayEmptyTitle }}</p>
+        <p class="text-xs text-muted-foreground mt-1">{{ displayEmptyDescription }}</p>
       </div>
     </div>
   </div>
