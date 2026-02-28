@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import Icon from '../Icon.vue'
 import Button from '@/components/Button.vue'
 import { PaginationProps } from '.'
+import { $t } from '@/utils/i18n'
 
 const props = withDefaults(defineProps<PaginationProps>(), {
   currentPage: 1,
@@ -38,12 +39,10 @@ const handleItemsPerPageChange = (event: Event) => {
   emit('update:itemsPerPage', value)
   emit('change:itemsPerPage', value)
 
-  // Reset to page 1 is usually good practice when changing limit, but let parent decide
   emit('update:currentPage', 1)
   emit('change', 1)
 }
 
-// Logic to generate the range of page numbers
 const paginationRange = computed(() => {
   const totalPageNumbers = props.totalItems * 2 + 5
 
@@ -86,7 +85,6 @@ const range = (start: number, end: number) => {
 }
 
 const alignmentClass = computed(() => {
-  // If explicitly provided, respect it
   if (props.alignment) {
     switch (props.alignment) {
       case 'start':
@@ -101,22 +99,24 @@ const alignmentClass = computed(() => {
     }
   }
 
-  // Otherwise, use smart defaults based on content
-  // If we show extra info (page count or items per page), default to 'between'
-  // If we only show pagination buttons, default to 'center'
   return props.showPageInfo || props.showItemsPerPage ? 'justify-between' : 'justify-center'
 })
+
+const txtShow = computed(() => { const r = $t('vlite.pagination.show'); return r !== 'vlite.pagination.show' ? r : 'Show' })
+const txtPerPage = computed(() => { const r = $t('vlite.pagination.perPage'); return r !== 'vlite.pagination.perPage' ? r : 'per page' })
+const txtPage = computed(() => { const r = $t('vlite.pagination.page'); return r !== 'vlite.pagination.page' ? r : 'Page' })
+const txtOf = computed(() => { const r = $t('vlite.pagination.of'); return r !== 'vlite.pagination.of' ? r : 'of' })
+const txtPrev = computed(() => { const r = $t('vlite.pagination.previous'); return r !== 'vlite.pagination.previous' ? r : 'Previous' })
+const txtNext = computed(() => { const r = $t('vlite.pagination.next'); return r !== 'vlite.pagination.next' ? r : 'Next' })
 </script>
 
 <template>
   <div class="flex flex-col md:flex-row items-center gap-4 w-full" :class="[alignmentClass]">
-    <!-- Left Group: Page Info & Items Per Page -->
     <div
       v-if="showPageInfo || showItemsPerPage"
       class="flex flex-wrap items-center justify-center md:justify-start gap-4 order-2 md:order-1">
-      <!-- Items Per Page -->
       <div v-if="showItemsPerPage" class="flex items-center gap-2 text-sm text-muted-foreground">
-        <span class="whitespace-nowrap">Show</span>
+        <span class="whitespace-nowrap">{{ txtShow }}</span>
         <div class="relative">
           <select
             :value="itemsPerPage"
@@ -131,22 +131,18 @@ const alignmentClass = computed(() => {
             icon="lucide:chevron-down"
             class="absolute right-1.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
         </div>
-        <span class="whitespace-nowrap">per page</span>
+        <span class="whitespace-nowrap">{{ txtPerPage }}</span>
       </div>
 
-      <!-- Separator if both present (optional, or just gap) -->
       <div v-if="showItemsPerPage && showPageInfo" class="hidden md:block w-px h-4 bg-border"></div>
 
-      <!-- Page Info -->
       <span v-if="showPageInfo" class="text-sm text-muted-foreground whitespace-nowrap">
-        Page <span class="font-medium text-foreground">{{ currentPage }}</span> of
+        {{ txtPage }} <span class="font-medium text-foreground">{{ currentPage }}</span> {{ txtOf }}
         <span class="font-medium text-foreground">{{ totalPages }}</span>
       </span>
     </div>
 
-    <!-- Navigation (Right or Center) -->
     <nav class="flex items-center justify-center gap-1 order-1 md:order-2" aria-label="Pagination">
-      <!-- First -->
       <Button
         v-if="showEdges"
         variant="ghost"
@@ -155,8 +151,6 @@ const alignmentClass = computed(() => {
         :disabled="disabled || currentPage === 1"
         @click="handlePageChange(1)" />
 
-      <!-- Previous -->
-      <!-- Icon Only Mode -->
       <Button
         v-if="navType === 'icon'"
         variant="ghost"
@@ -165,7 +159,6 @@ const alignmentClass = computed(() => {
         :disabled="disabled || currentPage === 1"
         @click="handlePageChange(currentPage - 1)" />
 
-      <!-- Text Mode (Responsive) -->
       <template v-else>
         <Button
           variant="ghost"
@@ -173,7 +166,7 @@ const alignmentClass = computed(() => {
           class="hidden sm:flex"
           :disabled="disabled || currentPage === 1"
           @click="handlePageChange(currentPage - 1)">
-          Previous
+          {{ txtPrev }}
         </Button>
         <Button
           variant="ghost"
@@ -184,7 +177,6 @@ const alignmentClass = computed(() => {
           @click="handlePageChange(currentPage - 1)" />
       </template>
 
-      <!-- Numbers -->
       <template v-for="(page, index) in paginationRange" :key="index">
         <div v-if="page === 'DOTS'" class="px-2 text-gray-400 select-none">...</div>
         <Button
@@ -202,8 +194,6 @@ const alignmentClass = computed(() => {
         </Button>
       </template>
 
-      <!-- Next -->
-      <!-- Icon Only Mode -->
       <Button
         v-if="navType === 'icon'"
         variant="ghost"
@@ -212,7 +202,6 @@ const alignmentClass = computed(() => {
         :disabled="disabled || currentPage === totalPages"
         @click="handlePageChange(currentPage + 1)" />
 
-      <!-- Text Mode (Responsive) -->
       <template v-else>
         <Button
           variant="ghost"
@@ -220,7 +209,7 @@ const alignmentClass = computed(() => {
           class="hidden sm:flex"
           :disabled="disabled || currentPage === totalPages"
           @click="handlePageChange(currentPage + 1)">
-          Next
+          {{ txtNext }}
         </Button>
         <Button
           variant="ghost"
@@ -231,7 +220,6 @@ const alignmentClass = computed(() => {
           @click="handlePageChange(currentPage + 1)" />
       </template>
 
-      <!-- Last -->
       <Button
         v-if="showEdges"
         variant="ghost"
@@ -242,3 +230,4 @@ const alignmentClass = computed(() => {
     </nav>
   </div>
 </template>
+
