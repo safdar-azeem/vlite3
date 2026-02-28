@@ -4,22 +4,29 @@
 
 ### Props
 
-| Prop                   | Type                               | Default           | Description                                            |
-| :--------------------- | :--------------------------------- | :---------------- | :----------------------------------------------------- |
-| `data`                 | `any[]`                            | `[]`              | Array of items to render                               |
-| `pagination`           | `string \| string[] \| boolean`    | `'dots'`          | Pagination type: `dots`, `buttons`, or array of both   |
-| `paginationSize`       | `'sm' \| 'md' \| 'lg'`             | `'md'`            | Size of pagination elements                            |
-| `paginationPosition`   | `string \| string[]`               | `'bottom-center'` | Position(s) of pagination                              |
-| `paginationVisibility` | `string \| string[]`               | `'always'`        | Visibility: `always`, `hover`                          |
-| `direction`            | `'horizontal' \| 'vertical'`       | `'horizontal'`    | Scroll direction                                       |
-| `itemsToShow`          | `number \| Record<number, number>` | `1`               | Number of items or responsive map (e.g., `{ 768: 2 }`) |
-| `gap`                  | `number`                           | `0`               | Space between items in pixels                          |
-| `autoPlay`             | `boolean`                          | `false`           | Enable auto-scrolling                                  |
-| `autoPlayInterval`     | `number`                           | `3000`            | Delay between auto-plays                               |
-| `draggable`            | `boolean`                          | `false`           | Enable mouse/touch dragging                            |
-| `loop`                 | `boolean`                          | `false`           | Infinite loop mode                                     |
-| `speed`                | `number`                           | `300`             | Transition speed in ms                                 |
-| `mousewheel`           | `boolean`                          | `true`            | Enable scrolling via mousewheel                        |
+| Prop                            | Type                               | Default           | Description                                            |
+| :------------------------------ | :--------------------------------- | :---------------- | :----------------------------------------------------- |
+| `data`                          | `any[]`                            | `[]`              | Array of items to render                               |
+| `pagination`                    | `string \| string[] \| boolean`    | `'dots'`          | Pagination type: `dots`, `buttons`, or array of both   |
+| `paginationSize`                | `'sm' \| 'md' \| 'lg'`             | `'md'`            | Size of pagination elements                            |
+| `paginationPosition`            | `string \| string[]`               | `'bottom-center'` | Position(s) of pagination                              |
+| `paginationVisibility`          | `string \| string[]`               | `'always'`        | Visibility: `always`, `hover`                          |
+| `paginationHoverInitialTimeout` | `number`                           | —                 | Timeout before hiding on hover mode                    |
+| `paginationHoverEdgeThreshold`  | `number`                           | —                 | Edge threshold for hover mode                          |
+| `direction`                     | `'horizontal' \| 'vertical'`       | `'horizontal'`    | Scroll direction                                       |
+| `itemsToShow`                   | `number \| Record<number, number>` | `1`               | Number of items or responsive map (e.g., `{ 768: 2 }`) |
+| `gap`                           | `number`                           | `0`               | Space between items in pixels                          |
+| `autoPlay`                      | `boolean`                          | `false`           | Enable auto-scrolling                                  |
+| `autoPlayInterval`              | `number`                           | `3000`            | Delay between auto-plays                               |
+| `draggable`                     | `boolean`                          | `false`           | Enable mouse/touch dragging                            |
+| `loop`                          | `boolean`                          | `false`           | Infinite loop mode                                     |
+| `speed`                         | `number`                           | `300`             | Transition speed in ms                                 |
+| `easing`                        | `string`                           | `'ease'`          | CSS easing function                                    |
+| `mousewheel`                    | `boolean`                          | `true`            | Enable scrolling via mousewheel                        |
+| `currentItem`                   | `number`                           | `0`               | Index of the current item                              |
+| `bufferSize`                    | `number`                           | `5`               | DOM nodes rendered outside view                        |
+| `maxDomElements`                | `number`                           | `10`              | Max DOM elements to render                             |
+| `updateKey`                     | `string \| number`                 | —                 | Force carousel update when changed                     |
 
 ### Exposed Methods
 
