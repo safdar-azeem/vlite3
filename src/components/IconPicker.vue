@@ -1,16 +1,19 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { Dropdown } from '@/components/Dropdown'
 import Button from '@/components/Button.vue'
 import IconPicker from 'iconify-icon-picker'
 import 'iconify-icon-picker/style.css'
 import type { ButtonProps } from '@/types'
 import type { TooltTipPlacement } from 'v-tooltip-lite/types'
+import { $t } from '@/utils/i18n'
 
 interface Props {
   btnProps?: ButtonProps
   value?: string
   position?: TooltTipPlacement
+  placeholder?: string
+  placeholderI18n?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -34,6 +37,13 @@ const handleSelect = (value: string, svg: string) => {
   emit('onSelect', value, svg)
   close()
 }
+
+const displayPlaceholder = computed(() => {
+  if (props.placeholderI18n) return $t(props.placeholderI18n)
+  if (props.placeholder) return props.placeholder
+  const res = $t('vlite.iconPicker.search')
+  return res !== 'vlite.iconPicker.search' ? res : 'Search 1000+ icons...'
+})
 
 const defaultIcons = [
   'ri:alert-line',
@@ -128,7 +138,7 @@ const defaultIcons = [
       <slot name="menu-top" :close="close" />
       <IconPicker
         id="icon-picker"
-        placeholder="Search 1000+ icons..."
+        :placeholder="displayPlaceholder"
         :items-per-page="35"
         :value="value"
         @on-select="handleSelect"
@@ -136,3 +146,4 @@ const defaultIcons = [
     </template>
   </Dropdown>
 </template>
+
