@@ -10,19 +10,16 @@ import { Empty } from '../Empty'
 import ScreenFilter from './ScreenFilter.vue'
 import type { ScreenProps } from './types'
 import { usePersistentState } from '../../utils/usePersistentState'
+import { $t } from '@/utils/i18n'
 
 const props = withDefaults(defineProps<ScreenProps>(), {
   name: '',
-  title: '',
-  description: '',
   data: () => [],
   loading: false,
   customHeader: false,
   canSearch: true,
   canAdd: true,
   pagination: true,
-  emptyTitle: 'No records found',
-  emptyDescription: 'There are currently no items to show',
   emptyIcon: 'lucide:inbox',
   filterSchema: () => [],
   filterType: 'modal',
@@ -51,12 +48,10 @@ const activeFilters = ref<Record<string, any>>({})
 const internalPage = ref(props.pageInfo?.currentPage || 1)
 const internalLimit = ref(props.pageInfo?.itemsPerPage || props.paginationProps?.itemsPerPage || 10)
 
-// Selection & Deletion State
 const selectedRows = ref<any[]>([])
 const itemsToDelete = ref<any[]>([])
 const showDeleteConfirmation = ref(false)
 
-// Provide context to child components (list/table) dynamically
 provide('screen-selected-rows', selectedRows)
 provide('screen-request-delete', (items: any[]) => requestDelete(items))
 
@@ -76,7 +71,6 @@ const handleComponentDelete = (items: any[]) => {
   selectedRows.value = []
 }
 
-// Sync page info
 watch(
   () => props.pageInfo?.currentPage,
   (newVal) => {
@@ -91,7 +85,6 @@ watch(
   }
 )
 
-// Debounced Search
 let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null
 watch(searchQuery, (newVal) => {
   if (searchDebounceTimer) clearTimeout(searchDebounceTimer)
@@ -135,6 +128,27 @@ const activeComponent = computed(() => {
 })
 
 const hasData = computed(() => props.data && props.data.length > 0)
+
+const displayTitle = computed(() => props.titleI18n ? $t(props.titleI18n) : props.title)
+const displayDescription = computed(() => props.descriptionI18n ? $t(props.descriptionI18n) : props.description)
+
+const txtDeleteSelected = computed(() => { const r = $t('vlite.screen.deleteSelected'); return r !== 'vlite.screen.deleteSelected' ? r : 'Delete Selected' })
+const txtListView = computed(() => { const r = $t('vlite.screen.listView'); return r !== 'vlite.screen.listView' ? r : 'List View' })
+const txtTableView = computed(() => { const r = $t('vlite.screen.tableView'); return r !== 'vlite.screen.tableView' ? r : 'Table View' })
+const txtRefresh = computed(() => { const r = $t('vlite.screen.refresh'); return r !== 'vlite.screen.refresh' ? r : 'Refresh' })
+const txtSearch = computed(() => { const r = $t('vlite.screen.searchPlaceholder'); return r !== 'vlite.screen.searchPlaceholder' ? r : 'Search...' })
+const txtConfirmDeleteTitle = computed(() => { const r = $t('vlite.screen.confirmDeleteTitle'); return r !== 'vlite.screen.confirmDeleteTitle' ? r : 'Confirm Deletion' })
+const txtConfirmDeleteDesc = computed(() => { const r = $t('vlite.screen.confirmDeleteDesc', { count: itemsToDelete.value.length }); return r !== 'vlite.screen.confirmDeleteDesc' ? r : `Are you sure you want to delete the selected ${itemsToDelete.value.length > 1 ? 'items' : 'item'}?` })
+const txtConfirmDeleteBtn = computed(() => { const r = $t('vlite.screen.confirmDeleteBtn'); return r !== 'vlite.screen.confirmDeleteBtn' ? r : 'Delete' })
+const txtCancelBtn = computed(() => { const r = $t('vlite.screen.cancelBtn'); return r !== 'vlite.screen.cancelBtn' ? r : 'Cancel' })
+const txtMissingView = computed(() => { const r = $t('vlite.screen.missingView'); return r !== 'vlite.screen.missingView' ? r : 'Please provide a `:list` or `:table` component.' })
+
+const getAddBtnLabel = computed(() => {
+  if (props.addBtn?.labelI18n) return $t(props.addBtn.labelI18n)
+  if (props.addBtn?.label) return props.addBtn.label
+  const res = $t('vlite.screen.addNew')
+  return res !== 'vlite.screen.addNew' ? res : 'Add New'
+})
 </script>
 
 <template>
@@ -145,11 +159,11 @@ const hasData = computed(() => props.data && props.data.length > 0)
       class="flex flex-col md:flex-row sm:items-start md:items-center justify-between gap-4">
       <div class="flex flex-col shrink-0">
         <slot name="title">
-          <h1 v-if="title" class="text-fs-7.5 font-bold text-foreground">{{ title }}</h1>
+          <h1 v-if="displayTitle" class="text-fs-7.5 font-bold text-foreground">{{ displayTitle }}</h1>
         </slot>
         <slot name="description">
-          <p v-if="description" class="text-sm text-gray-700 mt-1 md:max-w-[450px]">
-            {{ description }}
+          <p v-if="displayDescription" class="text-sm text-gray-700 mt-1 md:max-w-[450px]">
+            {{ displayDescription }}
           </p>
         </slot>
       </div>
@@ -162,7 +176,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
             variant="outline"
             class="hover:bg-destructive/10 shrink-0 h-9! w-9!"
             icon="lucide:trash-2"
-            title="Delete Selected"
+            :title="txtDeleteSelected"
             @click="requestDelete(selectedRows)" />
           <div
             v-if="table && list"
@@ -175,7 +189,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
                   ? 'bg-secondary/85 dark:bg-secondary shadow-sm text-foreground'
                   : 'text-muted-foreground hover:text-foreground',
               ]"
-              title="List View">
+              :title="txtListView">
               <Icon icon="lucide:layout-grid" class="w-4 h-4" />
             </button>
             <button
@@ -186,7 +200,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
                   ? 'bg-secondary/85 dark:bg-secondary shadow-sm text-foreground'
                   : 'text-muted-foreground hover:text-foreground',
               ]"
-              title="Table View">
+              :title="txtTableView">
               <Icon icon="lucide:list" class="w-4 h-4" />
             </button>
           </div>
@@ -199,7 +213,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
             icon="lucide:refresh-cw"
             size="lg"
             class="shrink-0 h-9! w-9!"
-            title="Refresh"
+            :title="txtRefresh"
             :disabled="loading"
             @click="triggerChange" />
 
@@ -215,7 +229,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
               lazy
               v-model="searchQuery"
               icon="lucide:search"
-              placeholder="Search..."
+              :placeholder="txtSearch"
               variant="outline"
               class="bg-background w-full"
               :show-clear-button="true" />
@@ -241,7 +255,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
                       :icon="addBtn.icon || 'fluent:add-16-filled'"
                       :variant="addBtn.variant || 'primary'"
                       v-bind="addBtn.buttonProps">
-                      {{ addBtn.label || 'Add' }}
+                      {{ getAddBtnLabel }}
                     </Button>
                   </template>
                 </Modal>
@@ -255,7 +269,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
                     :icon="addBtn.icon || 'fluent:add-16-filled'"
                     :variant="addBtn.variant || 'primary'"
                     v-bind="addBtn.buttonProps">
-                    {{ addBtn.label || 'Add' }}
+                    {{ getAddBtnLabel }}
                   </Button>
                 </router-link>
 
@@ -269,7 +283,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
                     :icon="addBtn.icon || 'fluent:add-16-filled'"
                     :variant="addBtn.variant || 'primary'"
                     v-bind="addBtn.buttonProps">
-                    {{ addBtn.label || 'Add' }}
+                    {{ getAddBtnLabel }}
                   </Button>
                 </a>
 
@@ -280,7 +294,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
                   :variant="addBtn.variant || 'primary'"
                   v-bind="addBtn.buttonProps"
                   @click="addBtn.onClick ? addBtn.onClick() : $emit('add')">
-                  {{ addBtn.label || 'Add' }}
+                  {{ getAddBtnLabel }}
                 </Button>
               </template>
               <Button
@@ -289,7 +303,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
                 icon="fluent:add-16-filled"
                 variant="primary"
                 @click="$emit('add')">
-                Add
+                {{ getAddBtnLabel }}
               </Button>
             </template>
           </slot>
@@ -303,7 +317,12 @@ const hasData = computed(() => props.data && props.data.length > 0)
     <div class="flex-1 w-full relative min-h-[300px]" :class="containerClass">
       <template v-if="!hasData && !loading">
         <slot name="empty">
-          <Empty :title="emptyTitle" :description="emptyDescription" :icon="emptyIcon">
+          <Empty 
+            :title="emptyTitle" 
+            :titleI18n="emptyTitleI18n"
+            :description="emptyDescription" 
+            :descriptionI18n="emptyDescriptionI18n"
+            :icon="emptyIcon">
             <template #action>
               <component v-if="addComponent" :is="addComponent" />
               <template v-else-if="canAdd">
@@ -316,7 +335,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
                         rounded="full"
                         class="px-6!"
                         v-bind="addBtn.buttonProps">
-                        {{ addBtn.label || 'Add New' }}
+                        {{ getAddBtnLabel }}
                       </Button>
                     </template>
                   </Modal>
@@ -326,7 +345,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
                       :icon="addBtn.icon || 'fluent:add-16-filled'"
                       :variant="addBtn.variant || 'outline'"
                       v-bind="addBtn.buttonProps">
-                      {{ addBtn.label || 'Add New' }}
+                      {{ getAddBtnLabel }}
                     </Button>
                   </router-link>
 
@@ -339,7 +358,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
                       :icon="addBtn.icon || 'lucide:plus'"
                       :variant="addBtn.variant || 'outline'"
                       v-bind="addBtn.buttonProps">
-                      {{ addBtn.label || 'Add New' }}
+                      {{ getAddBtnLabel }}
                     </Button>
                   </a>
 
@@ -349,11 +368,11 @@ const hasData = computed(() => props.data && props.data.length > 0)
                     :variant="addBtn.variant || 'outline'"
                     v-bind="addBtn.buttonProps"
                     @click="addBtn.onClick ? addBtn.onClick() : $emit('add')">
-                    {{ addBtn.label || 'Add New' }}
+                    {{ getAddBtnLabel }}
                   </Button>
                 </template>
                 <Button v-else icon="lucide:plus" variant="outline" @click="$emit('add')">
-                  Add New
+                  {{ getAddBtnLabel }}
                 </Button>
               </template>
             </template>
@@ -374,7 +393,7 @@ const hasData = computed(() => props.data && props.data.length > 0)
         <div
           v-else
           class="p-8 text-center text-muted-foreground border border-dashed border-border rounded-lg">
-          Please provide a `:list` or `:table` component.
+          {{ txtMissingView }}
         </div>
       </template>
     </div>
@@ -391,12 +410,13 @@ const hasData = computed(() => props.data && props.data.length > 0)
 
     <ConfirmationModal
       v-model:show="showDeleteConfirmation"
-      title="Confirm Deletion"
-      :description="`Are you sure you want to delete the selected ${itemsToDelete.length > 1 ? 'items' : 'item'}?`"
-      confirm-text="Delete"
-      cancel-text="Cancel"
+      :title="txtConfirmDeleteTitle"
+      :description="txtConfirmDeleteDesc"
+      :confirm-text="txtConfirmDeleteBtn"
+      :cancel-text="txtCancelBtn"
       variant="danger"
       @confirm="confirmDelete"
       @cancel="showDeleteConfirmation = false" />
   </div>
 </template>
+
