@@ -224,8 +224,6 @@ export interface IFormProps {
   footerClass?: string
   /** Fields to explicitly include in the submit payload (e.g., ['__typename', 'id']) */
   emitFields?: string[]
-  /** Fields to explicitly remove from the submit payload */
-  ignoreFields?: string[]
 }
 
 /**
@@ -243,4 +241,3 @@ export interface IFormFieldChangePayload {
   value: any
   data?: any
 }
-
