@@ -31,6 +31,7 @@ export interface TableFilter {
 export interface TableHeader {
   field: string
   title: string
+  titleI18n?: string
   width?: string
   minWidth?: string
   sortable?: boolean
@@ -46,10 +47,10 @@ export interface TableHeader {
 export interface DataTableProps {
   rows: any[]
   selectedRows?: any[]
-  // Toolbar Props
   search?: string
   showSearch?: boolean
   searchPlaceholder?: string
+  searchPlaceholderI18n?: string
   toolbarClass?: string
   toolbarSearchClass?: string
   headers: TableHeader[]
@@ -57,7 +58,9 @@ export interface DataTableProps {
   loading?: boolean
   selectable?: boolean
   emptyTitle?: string
+  emptyTitleI18n?: string
   emptyDescription?: string
+  emptyDescriptionI18n?: string
   emptyIcon?: string
   showPagination?: boolean
   paginationProps?: DataTablePaginationProps
@@ -82,3 +85,4 @@ export interface RowClickPayload {
   row: any
   index: number
 }
+
