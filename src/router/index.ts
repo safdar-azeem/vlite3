@@ -56,6 +56,8 @@ import CarouselDemo from '../playground/demos/CarouselDemo.vue'
 import KanbanDemo from '../playground/demos/KanbanDemo.vue'
 import DataListDemo from '../playground/demos/DataListDemo.vue'
 import ScreenDemo from '../playground/demos/ScreenDemo.vue'
+import BarcodeDemo from '../playground/demos/BarcodeDemo.vue'
+import QRCodeDemo from '../playground/demos/QRCodeDemo.vue'
 
 import GoogleLoginDemo from '../playground/GoogleLoginDemo.vue'
 import I18nDemo from '../playground/demos/I18nDemo.vue'
@@ -122,7 +124,9 @@ const routes = [
       { path: 'screen', component: ScreenDemo },
       { path: 'carousel', component: CarouselDemo },
       { path: 'kanban', component: KanbanDemo },
-      
+      { path: 'barcode', component: BarcodeDemo },
+      { path: 'qrcode', component: QRCodeDemo },
+
       // Utilities
       { path: 'i18n', component: I18nDemo },
     ],
