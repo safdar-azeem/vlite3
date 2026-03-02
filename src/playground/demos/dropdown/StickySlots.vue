@@ -33,7 +33,7 @@ const val1 = ref('1')
 
       <template #header>
         <div
-          class="p-2 border-b bg-gray-50 text-xs font-semibold uppercase tracking-wider text-gray-500 flex justify-between items-center">
+          class="p-2 border-b bg-gray-150 text-xs font-semibold uppercase tracking-wider text-gray-500 flex justify-between items-center">
           <span>Filter Options</span>
           <Button size="xs" variant="ghost">Clear</Button>
         </div>
