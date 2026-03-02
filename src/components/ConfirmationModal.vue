@@ -33,8 +33,10 @@ const cancel = () => {
   emit('cancel')
 }
 
-const displayTitle = computed(() => props.titleI18n ? $t(props.titleI18n) : props.title)
-const displayDescription = computed(() => props.descriptionI18n ? $t(props.descriptionI18n) : props.description)
+const displayTitle = computed(() => (props.titleI18n ? $t(props.titleI18n) : props.title))
+const displayDescription = computed(() =>
+  props.descriptionI18n ? $t(props.descriptionI18n) : props.description
+)
 
 const displayConfirmText = computed(() => {
   if (props.confirmTextI18n) return $t(props.confirmTextI18n)
@@ -63,7 +65,7 @@ const displayCancelText = computed(() => {
         <slot />
       </slot>
     </template>
-    <div class="py-2 px-[2px]">
+    <div class="pb-2 px-[2px]">
       <h3 class="mb-1.5 font-semibold text-lg">
         {{ displayTitle }}
       </h3>
@@ -94,4 +96,3 @@ const displayCancelText = computed(() => {
     </template>
   </Modal>
 </template>
-
