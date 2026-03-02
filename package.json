@@ -36,7 +36,10 @@
     "@tailwindcss/vite": "^4.1.18",
     "@types/scrollreveal": "^0.0.11",
     "@vueuse/core": "^14.1.0",
+    "@vueuse/integrations": "^14.2.1",
     "iconify-icon-picker": "^1.0.3",
+    "jsbarcode": "^3.12.3",
+    "qrcode": "^1.5.4",
     "scrollreveal": "^4.0.9",
     "tailwindcss": "^4.1.18",
     "v-datepicker-lite": "^0.1.6",
@@ -50,7 +53,9 @@
     "vue-router": "4"
   },
   "devDependencies": {
+    "@types/jsbarcode": "^3.11.4",
     "@types/node": "^25.0.10",
+    "@types/qrcode": "^1.5.6",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/tsconfig": "^0.8.1",
     "typescript": "~5.9.3",
