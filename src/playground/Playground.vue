@@ -30,6 +30,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Avatar', to: '/avatar', icon: 'lucide:user' },
       { label: 'Avatar Uploader', to: '/avatar-uploader', icon: 'lucide:camera' },
       { label: 'i18n Support', to: '/i18n', icon: 'lucide:globe' },
+      { label: 'ProgressBar', to: '/progressbar', icon: 'lucide:bar-chart-3' },
     ],
   },
   {
@@ -50,6 +51,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'ColorPicker', to: '/colorpicker', icon: 'lucide:palette' },
       { label: 'IconPicker', to: '/iconpicker', icon: 'lucide:smile' },
       { label: 'DatePicker', to: '/datepicker', icon: 'lucide:calendar' },
+      { label: 'DateRangePicker', to: '/daterangepicker', icon: 'lucide:calendar-range' },
       { label: 'Google Login', to: '/googlelogin', icon: 'lucide:chrome' },
     ],
   },
@@ -64,7 +66,6 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Tooltip', to: '/tooltip', icon: 'lucide:message-square' },
       { label: 'Toast', to: '/toast', icon: 'lucide:bell' },
       { label: 'Spinner', to: '/spinner', icon: 'lucide:loader-2' },
-      { label: 'ProgressBar', to: '/progressbar', icon: 'lucide:bar-chart-3' },
       { label: 'Scroll Reveal', to: '/scroll-reveal', icon: 'lucide:move-down' },
     ],
   },
