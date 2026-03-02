@@ -7,7 +7,6 @@ import {
   onBeforeUnmount,
   defineAsyncComponent,
   nextTick,
-  toRef,
 } from 'vue'
 import Icon from '../Icon.vue'
 import type { IDropdownOptions, IDropdownOption } from '@/types'
@@ -19,11 +18,10 @@ import { useDropdownNavigation } from './composables/useDropdownNavigation'
 import { useDropdownIds } from './composables/useDropdownIds'
 import { $t } from '@/utils/i18n'
 
-// Async import for recursion
 const Dropdown = defineAsyncComponent(() => import('./Dropdown.vue'))
 
 interface Props {
-  options?: IDropdownOptions
+  options?: (IDropdownOption | string | number)[]
   cachedOptions?: IDropdownOptions
   selected?: any
   selectedIndex?: number | null
@@ -34,7 +32,6 @@ interface Props {
   selectable?: boolean
   layout?: 'default' | 'grouped'
   columns?: number | string
-  // Pagination & Search
   loading?: boolean
   hasMore?: boolean
   searchable?: boolean
@@ -71,7 +68,6 @@ const containerRef = ref<HTMLElement | null>(null)
 const searchQuery = ref('')
 const { getMenuId, getAllRecursiveIds } = useDropdownIds()
 
-// --- Internal Translations ---
 const tEmpty = computed(() => {
   const res = $t('vlite.dropdown.empty')
   return res !== 'vlite.dropdown.empty' ? res : 'No options found'
@@ -82,11 +78,20 @@ const tSearch = computed(() => {
   return res !== 'vlite.dropdown.search' ? res : 'Search...'
 })
 
-// --- Search Logic ---
+// Normalize string options into option objects internally
+const normalizedOptions = computed<IDropdownOption[]>(() => {
+  if (!props.options) return []
+  return props.options.map((opt) => {
+    if (typeof opt === 'string' || typeof opt === 'number') {
+      return { label: String(opt), value: String(opt) }
+    }
+    return opt as IDropdownOption
+  })
+})
+
 const showSearch = computed(() => {
-  // If remote, respect searchable prop. If local, use existing > 10 logic or force searchable.
   if (props.remote) return props.searchable
-  return props.searchable && (props.options?.length || 0) > 9
+  return props.searchable && (normalizedOptions.value.length || 0) > 9
 })
 
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
@@ -102,10 +107,8 @@ watch(searchQuery, (newQuery) => {
   }
 })
 
-// --- Scroll / Pagination Logic ---
 const handleScroll = (e: Event) => {
   const el = e.target as HTMLElement
-  // Threshold: 20px from bottom (or 50px?)
   const threshold = 50
   const isNearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - threshold
 
@@ -128,7 +131,7 @@ const {
   onMouseEnterItem,
   scrollToIndex,
 } = useDropdownNavigation({
-  options: toRef(props, 'options'),
+  options: normalizedOptions,
   searchQuery,
   containerRef,
   emit: (event: string, ...args: any[]) => (emit as any)(event, ...args),
@@ -138,14 +141,13 @@ const {
 const filteredOptions = computed(() => {
   if (props.remote) {
     if (!searchQuery.value) {
-      return props.cachedOptions.length ? props.cachedOptions : props.options
+      return props.cachedOptions.length ? props.cachedOptions : normalizedOptions.value
     }
-    return props.options
+    return normalizedOptions.value
   }
   return navFilteredOptions.value
 })
 
-// Recursive Helper
 const getChildSelected = (option: IDropdownOption) => {
   if (!props.selected || typeof props.selected !== 'object') return undefined
   if (option.key && option.key in props.selected) {
@@ -170,7 +172,6 @@ const isOptionSelected = (option: IDropdownOption) => {
   return props.selected === option.value
 }
 
-// Boolean option helpers
 const getBooleanValue = (option: IDropdownOption): boolean => {
   if (!option.key || !props.selected || typeof props.selected !== 'object') {
     return false
@@ -210,7 +211,6 @@ const handleRecursiveSelect = (
   emit('select', virtualOption)
 }
 
-// Initial Scroll Logic
 const scrollToSelected = async () => {
   await nextTick()
   let targetIndex = -1
@@ -220,7 +220,7 @@ const scrollToSelected = async () => {
   if (props.selectedIndex !== null && props.selectedIndex >= 0) {
     targetIndex = props.selectedIndex
   } else if (props.selected !== undefined && typeof props.selected !== 'object') {
-    targetIndex = props.options.findIndex((opt) => opt.value === props.selected)
+    targetIndex = normalizedOptions.value.findIndex((opt) => opt.value === props.selected)
   }
 
   if (targetIndex !== -1) {
@@ -244,19 +244,22 @@ onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleKeyDown)
 })
 
-const getDisplayLabel = (option: IDropdownOption) => option.labelI18n ? $t(option.labelI18n) : option.label
+const getDisplayLabel = (option: IDropdownOption) =>
+  option.labelI18n ? $t(option.labelI18n) : option.label
 </script>
 
 <template>
   <div class="dropdown-menu w-full min-w-[150px] flex flex-col" :dir="direction">
-    <div v-if="showSearch" class="bg-body border-b mb-1 z-10 rounded-t-md shrink-0">
+    <div v-if="showSearch" class="bg-body border-b z-10 rounded-t-md shrink-0">
       <Input
         v-model="searchQuery"
         :placeholder="tSearch"
         icon="lucide:search"
         size="sm"
         class="font-medium!"
+        input-class="-ml-1"
         variant="transparent"
+        icon-class="h-3.5! w-3.5!"
         :show-clear-button="false" />
     </div>
 
@@ -268,7 +271,7 @@ const getDisplayLabel = (option: IDropdownOption) => option.labelI18n ? $t(optio
       ref="containerRef"
       tabindex="0"
       role="menu"
-      v-if="props?.options.length > 0 || $slots.menu"
+      v-if="normalizedOptions.length > 0 || $slots.menu"
       :class="[
         'w-full p-1 space-y-0.5 overflow-y-auto overflow-x-hidden focus:outline-none flex-1',
         props.class,
@@ -277,7 +280,7 @@ const getDisplayLabel = (option: IDropdownOption) => option.labelI18n ? $t(optio
       @mousemove="handleMouseMove"
       @scroll="handleScroll">
       <div
-        v-if="filteredOptions.length === 0 && options?.length > 0 && !loading"
+        v-if="filteredOptions.length === 0 && normalizedOptions.length > 0 && !loading"
         class="px-2 py-6 text-center text-sm text-muted-foreground">
         {{ tEmpty }}
       </div>
@@ -367,7 +370,7 @@ const getDisplayLabel = (option: IDropdownOption) => option.labelI18n ? $t(optio
       <slot name="menu" />
     </div>
 
-    <div v-if="$slots.footer" class="shrink-0 border-t mt-1 pt-1">
+    <div v-if="$slots.footer" class="shrink-0">
       <slot name="footer" />
     </div>
   </div>
