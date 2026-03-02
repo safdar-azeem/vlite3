@@ -34,8 +34,10 @@ const emit = defineEmits<{
   (e: 'click:icon-right', event: MouseEvent): void
 }>()
 
-const displayLabel = computed(() => props.labelI18n ? $t(props.labelI18n) : props.label)
-const displayPlaceholder = computed(() => props.placeholderI18n ? $t(props.placeholderI18n) : props.placeholder)
+const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : props.label))
+const displayPlaceholder = computed(() =>
+  props.placeholderI18n ? $t(props.placeholderI18n) : props.placeholder
+)
 
 const slots = useSlots()
 const inputRef = ref<HTMLInputElement | null>(null)
@@ -161,7 +163,7 @@ const getAutoAddonClasses = (side: 'left' | 'right') => {
       : '[&_button]:rounded-l-none [&_a]:rounded-l-none [&_.v-btn]:rounded-l-none',
     '[&_button]:relative [&_button]:focus:z-20',
     isLeft ? '-mr-px' : '-ml-px',
-    'z-10', 
+    'z-10',
   ].join(' ')
 }
 
@@ -302,7 +304,7 @@ onMounted(() => {
             'absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center text-muted-foreground z-20 pointer-events-none',
             disabled ? 'opacity-50' : '',
           ]">
-          <Icon :icon="icon" class="h-4 w-4" />
+          <Icon :icon="icon" class="h-4 w-4" :class="iconClass" />
         </div>
 
         <div
@@ -320,7 +322,7 @@ onMounted(() => {
               disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:text-foreground',
             ]"
             @click="!disabled && emit('click:icon-right', $event)">
-            <Icon :icon="iconRight" class="h-4 w-4" />
+            <Icon :icon="iconRight" class="h-4 w-4" :class="iconRightClass" />
           </div>
 
           <button
@@ -357,4 +359,3 @@ onMounted(() => {
     </div>
   </div>
 </template>
-
