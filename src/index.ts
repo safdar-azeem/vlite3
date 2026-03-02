@@ -46,6 +46,8 @@ export { default as Timeline } from './components/Timeline.vue'
 export { default as ToastNotification } from './components/ToastNotification.vue'
 export { default as Tooltip } from './components/Tooltip.vue'
 export * from './components/Workbook'
+export * from './components/Barcode'
+export * from './components/QRCode'
 export { default as GoogleLogin } from './components/GoogleLogin.vue'
 export * from './components/ProgressBar'
 
