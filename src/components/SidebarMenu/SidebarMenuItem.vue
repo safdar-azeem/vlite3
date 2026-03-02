@@ -11,6 +11,7 @@ import { $t } from '@/utils/i18n'
 interface Props {
   item: SidebarMenuItemSchema
   depth?: number
+  menuOffset?: [number, number]
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -142,7 +143,7 @@ const handleDropdownSelect = (option: any) => {
     if (schema.action) schema.action(schema)
     const id = schema.id || schema.label || (typeof schema.to === 'string' ? schema.to : '')
     if (id) context.setActive(id)
-    
+
     // Handle Navigation Programmatically
     if (schema.to) {
       router.push(schema.to).catch(() => {})
@@ -202,7 +203,7 @@ const componentProps = computed(() => {
     <Dropdown
       v-if="usePopover"
       position="right-start"
-      :offset="[0, 10]"
+      :offset="menuOffset"
       class="w-full"
       :searchable="false"
       :width="context.nestedMenuWidth"
@@ -216,8 +217,7 @@ const componentProps = computed(() => {
           <Icon
             v-if="item.icon"
             :icon="item.icon"
-            class="shrink-0 transition-colors opacity-80 group-hover:opacity-100"
-            :style="{ width: context.compactIconSize, height: context.compactIconSize }" />
+            class="shrink-0 transition-colors opacity-80 group-hover:opacity-100" />
           {{ displayLabel }}
         </div>
       </template>
@@ -295,7 +295,7 @@ const componentProps = computed(() => {
             :icon="option.icon"
             class="shrink-0 opacity-80"
             :style="{ width: context.iconSize, height: context.iconSize }" />
-          <span class="truncate flex-1">{{ option.label }}</span>
+          <span class="truncate flex-1 font-medium">{{ option.label }}</span>
           <span
             v-if="option.data?.badge"
             class="ml-auto inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium"
