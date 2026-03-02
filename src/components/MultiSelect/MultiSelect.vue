@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import Icon from '../Icon.vue'
 import { Dropdown, DropdownMenu } from '@/components/Dropdown'
 import Badge from '@/components/Badge.vue'
-import type { IDropdownOption, IDropdownOptions } from '@/types'
+import type { IDropdownOption } from '@/types'
 import { $t } from '@/utils/i18n'
 
 // Props
 interface Props {
   modelValue?: any[]
-  options?: IDropdownOptions
+  options?: (IDropdownOption | string | number)[]
   placeholder?: string
   placeholderI18n?: string
   disabled?: boolean
@@ -54,9 +54,19 @@ const displayPlaceholder = computed(() => {
   return res !== 'vlite.multiSelect.placeholder' ? res : 'Select items...'
 })
 
-// Computed
+// Normalize incoming options into object format for rendering logic consistency
+const normalizedOptions = computed<IDropdownOption[]>(() => {
+  if (!props.options) return []
+  return props.options.map((opt) => {
+    if (typeof opt === 'string' || typeof opt === 'number') {
+      return { label: String(opt), value: String(opt) }
+    }
+    return opt as IDropdownOption
+  })
+})
+
 const selectedOptions = computed(() => {
-  return props.options.filter((opt) => {
+  return normalizedOptions.value.filter((opt) => {
     const val = opt.value ?? opt.label
     return props.modelValue.includes(val)
   })
@@ -164,7 +174,7 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
 
     <template #default>
       <DropdownMenu
-        :options="options"
+        :options="normalizedOptions"
         :selected="modelValue"
         class="min-w-[300px]"
         :loading="loading"
@@ -179,4 +189,3 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
     </template>
   </Dropdown>
 </template>
-
