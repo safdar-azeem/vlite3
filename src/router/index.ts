@@ -59,6 +59,7 @@ import DataListDemo from '../playground/demos/DataListDemo.vue'
 import ScreenDemo from '../playground/demos/ScreenDemo.vue'
 import BarcodeDemo from '../playground/demos/BarcodeDemo.vue'
 import QRCodeDemo from '../playground/demos/QRCodeDemo.vue'
+import StatsDemo from '../playground/demos/StatsDemo.vue'
 
 import GoogleLoginDemo from '../playground/GoogleLoginDemo.vue'
 import I18nDemo from '../playground/demos/I18nDemo.vue'
@@ -128,6 +129,7 @@ const routes = [
       { path: 'kanban', component: KanbanDemo },
       { path: 'barcode', component: BarcodeDemo },
       { path: 'qrcode', component: QRCodeDemo },
+      { path: 'stats', component: StatsDemo },
 
       // Utilities
       { path: 'i18n', component: I18nDemo },
