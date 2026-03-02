@@ -25,9 +25,12 @@ const props = withDefaults(defineProps<BarcodeProps>(), {
 })
 
 const barcodeRef = ref<SVGSVGElement | null>(null)
+const error = ref('')
 
 const generateBarcode = () => {
+  error.value = ''
   if (barcodeRef.value && props.value) {
+    barcodeRef.value.innerHTML = ''
     try {
       // Find the correct case-sensitive format if it matches the constant
       const formatObj = barcodesConstants.find(
@@ -44,8 +47,10 @@ const generateBarcode = () => {
         background: props.background,
         margin: props.margin,
       })
-    } catch (e) {
+    } catch (e: any) {
       console.error('Failed to generate barcode:', e)
+      error.value =
+        typeof e === 'string' ? e : e?.message || 'Invalid barcode value for this format'
     }
   }
 }
@@ -58,8 +63,14 @@ watch(() => props, generateBarcode, { deep: true })
 </script>
 
 <template>
-  <div class="inline-flex justify-center items-center max-w-full">
+  <div class="inline-flex justify-center items-center max-w-full flex-col gap-2">
+    <div
+      v-if="error"
+      class="text-sm text-destructive px-4 py-2 bg-destructive/10 rounded-md border border-destructive/20 text-center whitespace-normal overflow-wrap-anywhere">
+      {{ error }}
+    </div>
     <svg
+      v-show="!error"
       ref="barcodeRef"
       class="w-full h-auto max-w-full"
       preserveAspectRatio="xMidYMid meet"></svg>
