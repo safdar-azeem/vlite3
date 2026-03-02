@@ -24,6 +24,7 @@ import SliderDemo from '../playground/demos/SliderDemo.vue'
 import ColorPickerDemo from '../playground/demos/ColorPickerDemo.vue'
 import IconPickerDemo from '../playground/demos/IconPickerDemo.vue'
 import DatePickerDemo from '../playground/demos/DatePickerDemo.vue'
+import DateRangePickerDemo from '../playground/demos/DateRangePickerDemo.vue'
 import FormDemo from '../playground/demos/FormDemo.vue'
 
 // Feedback / Overlays
@@ -91,6 +92,7 @@ const routes = [
       { path: 'colorpicker', component: ColorPickerDemo },
       { path: 'iconpicker', component: IconPickerDemo },
       { path: 'datepicker', component: DatePickerDemo },
+      { path: 'daterangepicker', component: DateRangePickerDemo },
       { path: 'form', component: FormDemo },
       { path: 'googlelogin', component: GoogleLoginDemo },
 
