@@ -28,6 +28,8 @@ export interface ScreenProps {
   titleI18n?: string
   description?: string
   descriptionI18n?: string
+  info?: string
+  infoI18n?: string
   pageInfo?: PageInfo
   data?: any[]
   loading?: boolean
@@ -57,4 +59,3 @@ export interface ScreenProps {
   containerClass?: string
   headerClass?: string
 }
-
