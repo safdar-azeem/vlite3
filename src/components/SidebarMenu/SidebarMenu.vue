@@ -21,6 +21,7 @@ const props = withDefaults(defineProps<SidebarMenuProps>(), {
   compactItemPadding: 'py-2 px-1',
   nestedMenuWidth: '220px',
   nestedMenuMaxHeight: '300px',
+  menuOffset: () => [0, 10],
 })
 
 const route = useRoute()
@@ -142,7 +143,10 @@ provide('sidebar-menu-ctx', context)
     :class="props.compact ? '' : 'space-y-1'"
     role="tree"
     aria-label="Sidebar Menu">
-    <SidebarMenuItem v-for="item in items" :key="item.id || item.label" :item="item" />
+    <SidebarMenuItem
+      v-for="item in items"
+      :key="item.id || item.label"
+      :item="item"
+      :menuOffset="menuOffset" />
   </nav>
 </template>
-
