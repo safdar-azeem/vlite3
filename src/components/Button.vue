@@ -15,10 +15,12 @@ const props = withDefaults(defineProps<ButtonProps>(), {
   class: '',
 })
 
-const displayText = computed(() => props.textI18n ? $t(props.textI18n) : props.text)
+const displayText = computed(() => (props.textI18n ? $t(props.textI18n) : props.text))
 
 const slots = useSlots()
-const isOnlyIcon = computed(() => props?.asIcon || (props.icon && !displayText.value && !slots.default))
+const isOnlyIcon = computed(
+  () => props?.asIcon || (props.icon && !displayText.value && !slots.default)
+)
 
 // Detect if inside a ButtonGroup — in groups, icon-only buttons use text button sizing (height auto via CSS)
 const buttonGroup = inject<{ isInGroup: boolean } | null>('buttonGroup', null)
@@ -64,11 +66,11 @@ const classes = computed(() => {
 
   const iconSizes: Record<ButtonSize, string> = {
     xs: 'h-6.5 w-6.5 min-h-6.5 min-w-6.5',
-    sm: 'h-7 w-7 min-h-7 min-w-7',
-    sm2: 'h-7 w-7 min-h-7 min-w-7',
-    md: 'h-7.5 w-7.5 min-h-7.5 min-w-7.5',
-    lg: 'h-8 w-8 min-h-8 min-w-8',
-    xl: 'h-8.5 w-8.5 min-h-8.5 min-w-8.5',
+    sm: 'h-7.5 w-7.5 min-h-7.5 min-w-7.5',
+    sm2: 'h-8 w-8 min-h-8 min-w-8',
+    md: 'h-9 w-9 min-h-9 min-w-9',
+    lg: 'h-9.5 w-9.5 min-h-9.5 min-w-9.5',
+    xl: 'h-10 w-10 min-h-10 min-w-10',
   }
 
   // Inside a ButtonGroup: icon-only buttons use text button px but no fixed height (height comes from CSS stretch)
@@ -120,9 +122,9 @@ const iconClasses = computed(() => {
 
   const iconSizes: Record<ButtonSize, string> = {
     xs: 'w-3 h-3',
-    sm: 'w-3.5 h-3.5',
-    sm2: 'w-3.5 h-3.5',
-    md: 'w-3.5 h-3.5',
+    sm: 'w-4 h-4',
+    sm2: 'w-4 h-4',
+    md: 'w-4 h-4',
     lg: 'w-4 h-4',
     xl: 'w-4 h-4',
   }
