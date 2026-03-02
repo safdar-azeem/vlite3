@@ -19,7 +19,7 @@ const props = withDefaults(
     position?: TooltTipPlacement
     closeOnSelect?: boolean
     toggleSelection?: boolean
-    options?: IDropdownOptions
+    options?: (IDropdownOption | string | number)[]
     canCloseOutside?: boolean
     caret?: boolean
     offset?: [number, number]
@@ -46,11 +46,10 @@ const props = withDefaults(
     direction?: 'ltr' | 'rtl'
   }>(),
   {
+    options: () => [],
     canCloseOutside: true,
     closeOnSelect: true,
     toggleSelection: true,
-    // Default position will be computed based on direction if not provided
-    // position: 'bottom-end',
     emptyMessage: 'No options found',
     offset: () => [0, 8],
     isOpen: undefined,
@@ -76,7 +75,6 @@ const emit = defineEmits<{
   (e: 'onOpen'): void
   (e: 'onClose'): void
   (e: 'update:isOpen', value: boolean): void
-  // new events
   (e: 'load-more'): void
   (e: 'search', query: string): void
 }>()
@@ -107,8 +105,6 @@ const finalNestedPosition = computed(() => {
   return props.direction === 'rtl' ? 'left-start' : 'right-start'
 })
 
-// Internal State for Open/Close
-// We need this because if no v-model:isOpen is passed, we still need to force close logic.
 const internalIsOpen = ref(props.isOpen || false)
 
 watch(
@@ -127,24 +123,29 @@ const handleVisibilityChange = (val: boolean) => {
   else emit('onClose')
 }
 
-// Internal Options Caching Logic
+// Normalize options to cleanly handle both generic strings/numbers and IDropdownOption objects
+const normalizedPropsOptions = computed<IDropdownOption[]>(() => {
+  if (!props.options) return []
+  return props.options.map((opt) => {
+    if (typeof opt === 'string' || typeof opt === 'number') {
+      return { label: String(opt), value: String(opt) }
+    }
+    return opt as IDropdownOption
+  })
+})
+
 const internalOptions = ref<IDropdownOptions>([])
 
 watch(
-  () => props.options,
+  normalizedPropsOptions,
   (newVal) => {
     if (!newVal) return
 
     if (props.remote) {
-      // Merge logic: Add new options to internalOptions if not already present
       const newOptions = [...internalOptions.value]
       newVal.forEach((opt) => {
         const exists = newOptions.some((existing) => {
-          // Unique check: Value or Label
           if (existing.value !== undefined && opt.value !== undefined) {
-            // Check for object value equality if necessary, but typically value is primitive or has ID
-            // For complex objects, simple equality might trigger dupes. Assuming primitive or stable ref.
-            // If value is object, maybe check key?
             if (typeof existing.value === 'object' && existing.key && opt.key) {
               return existing.key === opt.key && existing.value[existing.key] === opt.value[opt.key]
             }
@@ -167,33 +168,28 @@ watch(
 
 const { getAllRecursiveIds } = useDropdownIds()
 
-// useDropdownSelection needs ALL options to resolve labels correctly, especially for cached items not in current props.options
-// We construct a reactive props proxy to inject internalOptions
 const selectionProps = reactive({
   ...toRefs(props),
   options: internalOptions,
 })
 
 const { currentValue, selectedLabel, selectOption } = useDropdownSelection(
-  selectionProps as any, // Cast to any to satisfy strict prop types if needed, or define interface
+  selectionProps as any,
   emit
 )
 
 const finalIgnoreClickOutside = computed(() => {
   const propsList = props.ignoreClickOutside || []
-  // Use internalOptions to include cached recursive IDs
   const recursiveIds = getAllRecursiveIds(internalOptions.value)
   return [...new Set([...propsList, ...recursiveIds])]
 })
 
 const handleOptionSelect = (option: import('@/types').IDropdownOption) => {
-  // Check if double confirmation is enabled globally or per-option
   const needsConfirmation = props.doubleConfirmation || !!option.confirmation
 
   if (needsConfirmation) {
     pendingOption.value = option
 
-    // Configure Modal
     if (typeof option.confirmation === 'object') {
       confirmationConfig.value = {
         title: option.confirmation.title || 'Confirm Selection',
@@ -204,7 +200,6 @@ const handleOptionSelect = (option: import('@/types').IDropdownOption) => {
         variant: option.confirmation.variant || 'primary',
       }
     } else {
-      // Default / Global
       confirmationConfig.value = {
         title: 'Confirm Selection',
         description: `Are you sure you want to select "${option.label}"?`,
@@ -215,12 +210,6 @@ const handleOptionSelect = (option: import('@/types').IDropdownOption) => {
     }
 
     showConfirmation.value = true
-    // Close dropdown immediately? Or wait?
-    // Requirement: "Visually state should only change after confirmation" implies we wait.
-    // So we don't close until confirm? Or we close dropdown to show modal?
-    // Modal usually overlays everything. Better to close dropdown to reduce clutter,
-    // but if we cancel, users might expect dropdown to stay open?
-    // Let's close dropdown to properly focus on modal.
     handleClose()
   } else {
     performSelection(option)
@@ -286,14 +275,14 @@ const handleClose = () => {
 
         <DropdownMenu
           v-if="
-            options?.length ||
+            normalizedPropsOptions.length ||
             internalOptions.length ||
             $slots.menu ||
             $slots.item ||
             remote ||
             searchable
           "
-          :options="options"
+          :options="normalizedPropsOptions"
           :cachedOptions="internalOptions"
           :class="className"
           :selected="currentValue"
