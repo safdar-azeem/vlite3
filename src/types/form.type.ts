@@ -25,7 +25,9 @@ export interface InputProps {
   loading?: boolean
   error?: string
   icon?: string
+  iconClass?: string
   iconRight?: string
+  iconRightClass?: string
   showClearButton?: boolean
   autofocus?: boolean
   class?: string
