@@ -3,6 +3,7 @@ import { ref, watch, computed, provide } from 'vue'
 import Input from '../Input.vue'
 import Button from '../Button.vue'
 import Icon from '../Icon.vue'
+import Tooltip from '../Tooltip.vue'
 import Modal from '../Modal.vue'
 import ConfirmationModal from '../ConfirmationModal.vue'
 import { Pagination } from '../Pagination'
@@ -129,19 +130,53 @@ const activeComponent = computed(() => {
 
 const hasData = computed(() => props.data && props.data.length > 0)
 
-const displayTitle = computed(() => props.titleI18n ? $t(props.titleI18n) : props.title)
-const displayDescription = computed(() => props.descriptionI18n ? $t(props.descriptionI18n) : props.description)
+const displayTitle = computed(() => (props.titleI18n ? $t(props.titleI18n) : props.title))
+const displayDescription = computed(() =>
+  props.descriptionI18n ? $t(props.descriptionI18n) : props.description
+)
 
-const txtDeleteSelected = computed(() => { const r = $t('vlite.screen.deleteSelected'); return r !== 'vlite.screen.deleteSelected' ? r : 'Delete Selected' })
-const txtListView = computed(() => { const r = $t('vlite.screen.listView'); return r !== 'vlite.screen.listView' ? r : 'List View' })
-const txtTableView = computed(() => { const r = $t('vlite.screen.tableView'); return r !== 'vlite.screen.tableView' ? r : 'Table View' })
-const txtRefresh = computed(() => { const r = $t('vlite.screen.refresh'); return r !== 'vlite.screen.refresh' ? r : 'Refresh' })
-const txtSearch = computed(() => { const r = $t('vlite.screen.searchPlaceholder'); return r !== 'vlite.screen.searchPlaceholder' ? r : 'Search...' })
-const txtConfirmDeleteTitle = computed(() => { const r = $t('vlite.screen.confirmDeleteTitle'); return r !== 'vlite.screen.confirmDeleteTitle' ? r : 'Confirm Deletion' })
-const txtConfirmDeleteDesc = computed(() => { const r = $t('vlite.screen.confirmDeleteDesc', { count: itemsToDelete.value.length }); return r !== 'vlite.screen.confirmDeleteDesc' ? r : `Are you sure you want to delete the selected ${itemsToDelete.value.length > 1 ? 'items' : 'item'}?` })
-const txtConfirmDeleteBtn = computed(() => { const r = $t('vlite.screen.confirmDeleteBtn'); return r !== 'vlite.screen.confirmDeleteBtn' ? r : 'Delete' })
-const txtCancelBtn = computed(() => { const r = $t('vlite.screen.cancelBtn'); return r !== 'vlite.screen.cancelBtn' ? r : 'Cancel' })
-const txtMissingView = computed(() => { const r = $t('vlite.screen.missingView'); return r !== 'vlite.screen.missingView' ? r : 'Please provide a `:list` or `:table` component.' })
+const txtDeleteSelected = computed(() => {
+  const r = $t('vlite.screen.deleteSelected')
+  return r !== 'vlite.screen.deleteSelected' ? r : 'Delete Selected'
+})
+const txtListView = computed(() => {
+  const r = $t('vlite.screen.listView')
+  return r !== 'vlite.screen.listView' ? r : 'List View'
+})
+const txtTableView = computed(() => {
+  const r = $t('vlite.screen.tableView')
+  return r !== 'vlite.screen.tableView' ? r : 'Table View'
+})
+const txtRefresh = computed(() => {
+  const r = $t('vlite.screen.refresh')
+  return r !== 'vlite.screen.refresh' ? r : 'Refresh'
+})
+const txtSearch = computed(() => {
+  const r = $t('vlite.screen.searchPlaceholder')
+  return r !== 'vlite.screen.searchPlaceholder' ? r : 'Search...'
+})
+const txtConfirmDeleteTitle = computed(() => {
+  const r = $t('vlite.screen.confirmDeleteTitle')
+  return r !== 'vlite.screen.confirmDeleteTitle' ? r : 'Confirm Deletion'
+})
+const txtConfirmDeleteDesc = computed(() => {
+  const r = $t('vlite.screen.confirmDeleteDesc', { count: itemsToDelete.value.length })
+  return r !== 'vlite.screen.confirmDeleteDesc'
+    ? r
+    : `Are you sure you want to delete the selected ${itemsToDelete.value.length > 1 ? 'items' : 'item'}?`
+})
+const txtConfirmDeleteBtn = computed(() => {
+  const r = $t('vlite.screen.confirmDeleteBtn')
+  return r !== 'vlite.screen.confirmDeleteBtn' ? r : 'Delete'
+})
+const txtCancelBtn = computed(() => {
+  const r = $t('vlite.screen.cancelBtn')
+  return r !== 'vlite.screen.cancelBtn' ? r : 'Cancel'
+})
+const txtMissingView = computed(() => {
+  const r = $t('vlite.screen.missingView')
+  return r !== 'vlite.screen.missingView' ? r : 'Please provide a `:list` or `:table` component.'
+})
 
 const getAddBtnLabel = computed(() => {
   if (props.addBtn?.labelI18n) return $t(props.addBtn.labelI18n)
@@ -159,7 +194,14 @@ const getAddBtnLabel = computed(() => {
       class="flex flex-col md:flex-row sm:items-start md:items-center justify-between gap-4">
       <div class="flex flex-col shrink-0">
         <slot name="title">
-          <h1 v-if="displayTitle" class="text-fs-7.5 font-bold text-foreground">{{ displayTitle }}</h1>
+          <div v-if="displayTitle" class="flex items-center! gap-2">
+            <h1 class="text-fs-7.5 font-bold text-foreground">{{ displayTitle }}</h1>
+            <Tooltip v-if="info || infoI18n" :content="info" :content-i18n="infoI18n">
+              <Icon
+                icon="lucide:info"
+                class="w-[18px] h-[18px] mt-3! text-muted-foreground hover:text-foreground cursor-pointer transition-colors outline-none" />
+            </Tooltip>
+          </div>
         </slot>
         <slot name="description">
           <p v-if="displayDescription" class="text-sm text-gray-700 mt-1 md:max-w-[450px]">
@@ -317,10 +359,10 @@ const getAddBtnLabel = computed(() => {
     <div class="flex-1 w-full relative min-h-[300px]" :class="containerClass">
       <template v-if="!hasData && !loading">
         <slot name="empty">
-          <Empty 
-            :title="emptyTitle" 
+          <Empty
+            :title="emptyTitle"
             :titleI18n="emptyTitleI18n"
-            :description="emptyDescription" 
+            :description="emptyDescription"
             :descriptionI18n="emptyDescriptionI18n"
             :icon="emptyIcon">
             <template #action>
@@ -419,4 +461,3 @@ const getAddBtnLabel = computed(() => {
       @cancel="showDeleteConfirmation = false" />
   </div>
 </template>
-
