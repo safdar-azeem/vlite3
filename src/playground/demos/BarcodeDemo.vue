@@ -9,6 +9,30 @@ const barcodeValue = ref('Vlite3-1234')
 const barcodeFormat = ref('CODE128')
 
 const formatOptions = barcodesConstants
+
+import { watch } from 'vue'
+
+watch(barcodeFormat, (newFormat) => {
+  if (newFormat === 'CODE128' || newFormat === 'CODE39') {
+    barcodeValue.value = 'Vlite3-1234'
+  } else if (newFormat === 'UPC') {
+    barcodeValue.value = '123456789012'
+  } else if (newFormat === 'EAN13') {
+    barcodeValue.value = '1234567890128'
+  } else if (newFormat === 'ITF14') {
+    barcodeValue.value = '12345678901234'
+  } else if (newFormat === 'EAN8') {
+    barcodeValue.value = '12345670'
+  } else if (newFormat === 'EAN5') {
+    barcodeValue.value = '12345'
+  } else if (newFormat === 'MSI') {
+    barcodeValue.value = '123456'
+  } else if (newFormat === 'pharmacode') {
+    barcodeValue.value = '123456'
+  } else if (newFormat === 'EAN2') {
+    barcodeValue.value = '12'
+  }
+})
 </script>
 
 <template>
@@ -38,8 +62,8 @@ const formatOptions = barcodesConstants
         </div>
 
         <div
-          class="flex items-center justify-center bg-gray-50 dark:bg-gray-800 rounded-lg p-8 border border-border min-h-[300px]">
-          <Barcode :value="barcodeValue" :format="barcodeFormat" class="w-full" />
+          class="flex items-center justify-center bg-gray-50 dark:bg-gray-800 rounded-lg p-8 border border-border min-h-[30px]">
+          <Barcode :value="barcodeValue" :format="barcodeFormat" class="w-full h-20" />
         </div>
       </div>
     </DemoSection>
