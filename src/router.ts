@@ -1,0 +1,46 @@
+import { createRouter, createWebHistory } from 'vue-router'
+import Playground from './playground/Playground.vue'
+
+// Import all demos dynamically
+const demoModules = import.meta.glob('./playground/demos/*Demo.vue')
+
+const children = Object.entries(demoModules).map(([path, component]) => {
+  // Extract file name without "Demo.vue" and path
+  const rawName = path.split('/').pop()?.replace('Demo.vue', '') || ''
+  
+  // Format the route path. Examples:
+  // "AvatarUploader" -> "/avatar-uploader"
+  // "ButtonGroup" -> "/buttongroup" (keeping consistent with existing playground paths)
+  let routePath = rawName.toLowerCase()
+  if (rawName === 'AvatarUploader') routePath = 'avatar-uploader'
+  if (rawName === 'DateRangePicker') routePath = 'daterangepicker'
+  if (rawName === 'ThemeToggle') routePath = 'themetoggle'
+  if (rawName === 'ScrollReveal') routePath = 'scroll-reveal'
+  if (rawName === 'SidebarMenu') routePath = 'sidebarmenu'
+
+  return {
+    path: `/${routePath}`,
+    name: rawName,
+    component
+  }
+})
+
+// Add an empty default component or redirect to a specific demo
+children.push({
+  path: '',
+  name: 'Default',
+  redirect: '/button'
+})
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    {
+      path: '/',
+      component: Playground,
+      children
+    }
+  ]
+})
+
+export default router
