@@ -89,6 +89,8 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Kanban', to: '/kanban', icon: 'lucide:kanban' },
       { label: 'Workbook', to: '/workbook', icon: 'lucide:folder-edit' },
       { label: 'Carousel', to: '/carousel', icon: 'lucide:gallery-horizontal' },
+      { label: 'Barcode', to: '/barcode', icon: 'lucide:barcode' },
+      { label: 'QRCode', to: '/qrcode', icon: 'lucide:qr-code' },
     ],
   },
 ]
