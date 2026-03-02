@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { Dropdown } from './Dropdown'
 import Button from './Button.vue'
 import Icon from './Icon.vue'
@@ -36,6 +36,14 @@ const props = withDefaults(
 const emit = defineEmits(['update:modelValue', 'change'])
 
 const isDropdownOpen = ref(false)
+const pickerKey = ref(0) // Used to force-sync the opaque VDatePicker components
+
+// Ensure date pickers re-sync and reflect the correct date whenever the dropdown opens
+watch(isDropdownOpen, (isOpen) => {
+  if (isOpen) {
+    pickerKey.value++
+  }
+})
 
 const range = computed({
   get: () => props.modelValue || { start: null, end: null },
@@ -207,6 +215,7 @@ const handleQuickRangeSelect = (option: IDropdownOption) => {
   }
 
   range.value = { start, end }
+  pickerKey.value++ // Force pickers to refresh natively to reflect exact quick range selection
   isDropdownOpen.value = false
 }
 </script>
@@ -263,6 +272,7 @@ const handleQuickRangeSelect = (option: IDropdownOption) => {
         <div class="flex flex-col sm:flex-row items-center gap-4 py-2 p-3">
           <div class="border border-border rounded-md overflow-hidden bg-background">
             <VDatePicker
+              :key="'start-' + pickerKey"
               :value="range.start"
               @change="updateStart"
               mode="date"
@@ -283,6 +293,7 @@ const handleQuickRangeSelect = (option: IDropdownOption) => {
 
           <div class="border border-border rounded-md overflow-hidden bg-background">
             <VDatePicker
+              :key="'end-' + pickerKey"
               :value="range.end"
               @change="updateEnd"
               mode="date"
