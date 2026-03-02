@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { Dropdown } from './Dropdown'
 import Button from './Button.vue'
+import Icon from './Icon.vue'
 import type { ButtonSize, ButtonVariant, IDropdownOption } from '@/types'
 import { $t } from '@/utils/i18n'
 import VDatePicker from 'v-datepicker-lite'
@@ -78,16 +79,6 @@ const formatDate = (date: any) => {
     return ''
   }
 }
-
-const displayValue = computed(() => {
-  const start = formatDate(range.value.start)
-  const end = formatDate(range.value.end)
-
-  if (start && end) return `${start} - ${end}`
-  if (start) return `${start} - ${props.placeholderEnd}`
-  if (end) return `${props.placeholderStart} - ${end}`
-  return `${props.placeholderStart} - ${props.placeholderEnd}`
-})
 
 const quickRanges = computed<IDropdownOption[]>(() => [
   {
@@ -229,20 +220,31 @@ const handleQuickRangeSelect = (option: IDropdownOption) => {
     maxHeight="none">
     <template #trigger="{ isOpen }">
       <Button
-        :text="displayValue"
         icon="lucide:calendar"
         :variant="variant || 'outline'"
         :size="size || 'md'"
         :disabled="disabled"
         class="w-full sm:min-w-[280px] justify-start text-left font-normal"
-        :class="{ 'ring-2 ring-ring ring-offset-2': isOpen }" />
+        :class="{ 'ring-2 ring-ring ring-offset-2': isOpen }">
+        <div class="flex items-center gap-2">
+          <span :class="{ 'text-muted-foreground': !range.start }">
+            {{ range.start ? formatDate(range.start) : placeholderStart }}
+          </span>
+          <Icon
+            icon="lucide:arrow-right"
+            class="w-4 h-4 text-muted-foreground opacity-50 shrink-0" />
+          <span :class="{ 'text-muted-foreground': !range.end }">
+            {{ range.end ? formatDate(range.end) : placeholderEnd }}
+          </span>
+        </div>
+      </Button>
     </template>
 
     <template #menu>
       <div class="flex flex-col sm:flex-row bg-background rounded-md">
         <div
           v-if="showQuickRanges"
-          class="flex flex-col gap-1 sm:pr-3 py-2 sm:border-r border-border max-h-[305px]">
+          class="flex flex-col gap-1 sm:pr-3 py-2 sm:border-r border-border max-h-[280px]">
           <div
             class="text-xs pl-2 pb-2 font-semibold text-muted-foreground uppercase tracking-wider">
             Quick Ranges
@@ -258,35 +260,36 @@ const handleQuickRangeSelect = (option: IDropdownOption) => {
             @click="handleQuickRangeSelect(rangeOption)" />
         </div>
 
-        <div class="flex flex-col sm:flex-row gap-6 py-2 p-3">
-          <div class="space-y-3">
-            <div class="text-sm font-medium text-center text-foreground">
-              {{ placeholderStart }}
-            </div>
-            <div class="border border-border rounded-md overflow-hidden bg-background">
-              <VDatePicker
-                :value="range.start"
-                @change="updateStart"
-                mode="date"
-                :max-date="startMaxDate"
-                :min-date="minDate"
-                :disabled="disabled"
-                :readonly="readonly" />
-            </div>
+        <div class="flex flex-col sm:flex-row items-center gap-4 py-2 p-3">
+          <div class="border border-border rounded-md overflow-hidden bg-background">
+            <VDatePicker
+              :value="range.start"
+              @change="updateStart"
+              mode="date"
+              :max-date="startMaxDate"
+              :min-date="minDate"
+              :disabled="disabled"
+              :readonly="readonly" />
           </div>
 
-          <div class="space-y-3">
-            <div class="text-sm font-medium text-center text-foreground">{{ placeholderEnd }}</div>
-            <div class="border border-border rounded-md overflow-hidden bg-background">
-              <VDatePicker
-                :value="range.end"
-                @change="updateEnd"
-                mode="date"
-                :min-date="endMinDate"
-                :max-date="maxDate"
-                :disabled="disabled"
-                :readonly="readonly" />
-            </div>
+          <div class="flex items-center justify-center shrink-0">
+            <Icon
+              icon="lucide:arrow-right"
+              class="w-5 h-5 text-muted-foreground hidden sm:block opacity-50" />
+            <Icon
+              icon="lucide:arrow-down"
+              class="w-5 h-5 text-muted-foreground sm:hidden opacity-50" />
+          </div>
+
+          <div class="border border-border rounded-md overflow-hidden bg-background">
+            <VDatePicker
+              :value="range.end"
+              @change="updateEnd"
+              mode="date"
+              :min-date="endMinDate"
+              :max-date="maxDate"
+              :disabled="disabled"
+              :readonly="readonly" />
           </div>
         </div>
       </div>
