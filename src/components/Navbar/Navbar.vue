@@ -92,6 +92,18 @@ const containerClasses = computed(() => {
       : '',
   ]
 
+  const bp = props.mobileBreakpoint || 'md'
+  const hideNavClasses: Record<string, string> = {
+    sm: 'max-sm:hidden',
+    md: 'max-md:hidden',
+    lg: 'max-lg:hidden',
+    xl: 'max-xl:hidden',
+  }
+
+  // HIDE the `<nav>` on mobile when in Layout Mode AND variant is sidebar.
+  // This prevents it from taking up width and pushing the <main> block downwards.
+  const hideOnMobile = isLayoutMode.value && isSidebar ? hideNavClasses[bp] : ''
+
   // Layout
   let layout = ''
   if (isSidebar) {
@@ -100,7 +112,9 @@ const containerClasses = computed(() => {
     layout = `flex items-center gap-4 w-full px-4 sm:px-6 lg:px-8 ${props.height}`
   }
 
-  return [base, positionClasses[props.position], ...effects, layout, props.class].join(' ')
+  return [base, positionClasses[props.position], ...effects, layout, hideOnMobile, props.class]
+    .filter(Boolean)
+    .join(' ')
 })
 
 const breakpointClasses = computed(() => {
@@ -121,10 +135,10 @@ const breakpointClasses = computed(() => {
   }
 
   const sidebarLayoutClasses: Record<string, string> = {
-    sm: `flex flex-col max-sm:w-full ${props.compact ? 'w-20' : props.width} h-auto sm:h-full sm:max-h-screen`,
-    md: `flex flex-col max-md:w-full ${props.compact ? 'w-20' : props.width} h-auto md:h-full md:max-h-screen`,
-    lg: `flex flex-col max-lg:w-full ${props.compact ? 'w-20' : props.width} h-auto lg:h-full lg:max-h-screen`,
-    xl: `flex flex-col max-xl:w-full ${props.compact ? 'w-20' : props.width} h-auto xl:h-full xl:max-h-screen`,
+    sm: `flex flex-col max-sm:w-full ${props.compact ? 'w-20' : props.width} h-auto sm:h-full sm:max-h-screen shrink-0`,
+    md: `flex flex-col max-md:w-full ${props.compact ? 'w-20' : props.width} h-auto md:h-full md:max-h-screen shrink-0`,
+    lg: `flex flex-col max-lg:w-full ${props.compact ? 'w-20' : props.width} h-auto lg:h-full lg:max-h-screen shrink-0`,
+    xl: `flex flex-col max-xl:w-full ${props.compact ? 'w-20' : props.width} h-auto xl:h-full xl:max-h-screen shrink-0`,
   }
 
   const mobileHeaderClasses: Record<string, string> = {
@@ -306,69 +320,69 @@ watch(isDesktop, (val) => {
             </div>
           </div>
         </template>
-
-        <template v-if="props.mobileMenuVariant === 'dropdown'">
-          <div
-            v-if="isMobileMenuOpen"
-            ref="mobileMenuRef"
-            class="absolute top-[calc(100%_+_1px)] left-0 w-full bg-body border border-border/50 shadow-xl z-50 flex flex-col transition-all duration-300 origin-top overflow-hidden will-change-transform"
-            :class="props.menuClass">
-            <div class="flex flex-col max-h-[80vh] overflow-y-auto">
-              <slot name="mobile-menu">
-                <div class="space-y-1 p-2">
-                  <slot name="left" />
-                </div>
-                <div class="h-px bg-border/50 my-1 mx-2"></div>
-                <div class="space-y-1 p-2">
-                  <slot name="center" />
-                </div>
-              </slot>
-            </div>
-          </div>
-        </template>
-
-        <SidePanel
-          v-else
-          v-model:show="isMobileMenuOpen"
-          position="left"
-          size="sm"
-          :triggerClass="breakpointClasses.mobileTrigger"
-          class="z-60"
-          headerClass="pl-3! pr-4.5! py-3!"
-          bodyClass="p-0!"
-          :class="breakpointClasses.mobileTrigger">
-          <template #header>
-            <slot name="logo">Brand</slot>
-          </template>
-
-          <div class="flex flex-col space-y-6 pt-4 h-full">
-            <template v-if="variant === 'header'">
-              <div class="flex flex-col space-y-1">
-                <slot name="mobile-menu">
-                  <slot name="left" />
-                  <div class="h-px bg-border my-2"></div>
-                  <slot name="center" />
-                </slot>
-              </div>
-            </template>
-            <template v-else>
-              <div class="flex flex-col space-y-4 flex-1 overflow-y-auto px-3.5!">
-                <slot name="left" />
-                <slot />
-                <slot name="center" />
-              </div>
-            </template>
-
-            <div class="mt-auto pt-2 border-t border-border px-3! py-2!" v-if="$slots?.right">
-              <slot name="right" />
-            </div>
-          </div>
-        </SidePanel>
       </nav>
 
       <main v-if="$slots.main" class="flex-1 overflow-y-auto w-full relative h-full">
         <slot name="main" />
       </main>
+
+      <template v-if="props.mobileMenuVariant === 'dropdown'">
+        <div
+          v-if="isMobileMenuOpen"
+          ref="mobileMenuRef"
+          class="absolute top-[calc(100%_+_1px)] left-0 w-full bg-body border border-border/50 shadow-xl z-50 flex flex-col transition-all duration-300 origin-top overflow-hidden will-change-transform"
+          :class="props.menuClass">
+          <div class="flex flex-col max-h-[80vh] overflow-y-auto">
+            <slot name="mobile-menu">
+              <div class="space-y-1 p-2">
+                <slot name="left" />
+              </div>
+              <div class="h-px bg-border/50 my-1 mx-2"></div>
+              <div class="space-y-1 p-2">
+                <slot name="center" />
+              </div>
+            </slot>
+          </div>
+        </div>
+      </template>
+
+      <SidePanel
+        v-else
+        v-model:show="isMobileMenuOpen"
+        position="left"
+        size="sm"
+        :triggerClass="breakpointClasses.mobileTrigger"
+        class="z-60"
+        headerClass="pl-3! pr-4.5! py-3!"
+        bodyClass="p-0!"
+        :class="breakpointClasses.mobileTrigger">
+        <template #header>
+          <slot name="logo">Brand</slot>
+        </template>
+
+        <div class="flex flex-col space-y-6 pt-4 h-full">
+          <template v-if="variant === 'header'">
+            <div class="flex flex-col space-y-1">
+              <slot name="mobile-menu">
+                <slot name="left" />
+                <div class="h-px bg-border my-2"></div>
+                <slot name="center" />
+              </slot>
+            </div>
+          </template>
+          <template v-else>
+            <div class="flex flex-col space-y-4 flex-1 overflow-y-auto px-3.5!">
+              <slot name="left" />
+              <slot />
+              <slot name="center" />
+            </div>
+          </template>
+
+          <div class="mt-auto pt-2 border-t border-border px-3! py-2!" v-if="$slots?.right">
+            <slot name="right" />
+          </div>
+        </div>
+      </SidePanel>
     </div>
   </div>
 
