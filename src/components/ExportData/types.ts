@@ -14,4 +14,6 @@ export interface ExportDataProps {
   filename?: string
   buttonText?: string
   buttonIcon?: string
+  mode?: 'frontend' | 'backend'
+  onExport?: (format: ExportFormat) => Promise<void> | void
 }
