@@ -131,6 +131,17 @@ const vlite = createVLite({
         }, 1500)
       })
     },
+    exportApi: async (entity, payload) => {
+      console.log(`[VLite Mock API] Exporting from ${entity}...`, payload)
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          console.log(
+            `[VLite Mock API] Successfully generated backend ${payload.format} export for ${entity}.`
+          )
+          resolve(true)
+        }, 1000)
+      })
+    },
   },
 })
 
