@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import Papa from 'papaparse'
 import Icon from '../Icon.vue'
 import Button from '../Button.vue'
+import Textarea from '../Textarea.vue'
 import type { ImportField } from './types'
 import { showToast } from '../../composables/useNotifications'
 import { $t } from '../../utils/i18n'
@@ -124,14 +125,11 @@ const handleFileInputChange = (e: Event) => {
 }
 
 const txtUpload = computed(() => t('vlite.importData.uploadData', 'Upload Data'))
-const txtDragDrop = computed(() =>
-  t('vlite.importData.dragDrop', 'Drag & drop a file here or click to browse')
-)
-const txtCsvOnlyHint = computed(() =>
-  t('vlite.importData.csvOnlyHint', 'Only CSV files are supported')
-)
+const txtDragDrop = computed(() => t('vlite.importData.dragDrop', 'Drag & drop a file here or click to browse'))
+const txtCsvOnlyHint = computed(() => t('vlite.importData.csvOnlyHint', 'Only CSV files are supported'))
 const txtPasteData = computed(() => t('vlite.importData.pasteData', 'Or paste CSV/Excel data'))
 const txtProcess = computed(() => t('vlite.importData.process', 'Process Data'))
+const txtPastePlaceholder = computed(() => t('vlite.importData.pastePlaceholder', 'id, name, email\n1, John Doe, john@example.com'))
 </script>
 
 <template>
@@ -158,8 +156,7 @@ const txtProcess = computed(() => t('vlite.importData.process', 'Process Data'))
           accept=".csv"
           @change="handleFileInputChange" />
         <div class="flex flex-col items-center justify-center pointer-events-none">
-          <div
-            class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-primary">
+          <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-primary">
             <Icon icon="lucide:upload-cloud" class="w-6 h-6" />
           </div>
           <p class="font-medium text-foreground mb-1">{{ txtDragDrop }}</p>
@@ -180,18 +177,20 @@ const txtProcess = computed(() => t('vlite.importData.process', 'Process Data'))
             : 'border-border',
         ]">
         <div class="flex items-center gap-3 mb-4">
-          <div
-            class="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center text-secondary-foreground">
+          <div class="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center text-secondary-foreground">
             <Icon icon="lucide:clipboard-paste" class="w-4 h-4" />
           </div>
           <div>
             <p class="font-medium text-foreground leading-none">{{ txtPasteData }}</p>
           </div>
         </div>
-        <textarea
+        
+        <Textarea
           v-model="pasteTextarea"
-          class="w-full h-32 border border-input rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
-          placeholder="id, name, email&#10;1, John Doe, john@example.com"></textarea>
+          class="w-full h-32"
+          :placeholder="txtPastePlaceholder"
+        />
+        
         <div class="flex justify-end mt-3">
           <Button variant="secondary" size="sm" @click="handlePaste" :disabled="!pasteTextarea">
             {{ txtProcess }}
