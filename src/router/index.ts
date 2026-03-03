@@ -60,6 +60,8 @@ import ScreenDemo from '../playground/demos/ScreenDemo.vue'
 import BarcodeDemo from '../playground/demos/BarcodeDemo.vue'
 import QRCodeDemo from '../playground/demos/QRCodeDemo.vue'
 import StatsDemo from '../playground/demos/StatsDemo.vue'
+import ExportDataDemo from '../playground/demos/ExportDataDemo.vue'
+import ImportDataDemo from '../playground/demos/ImportDataDemo.vue'
 
 import GoogleLoginDemo from '../playground/GoogleLoginDemo.vue'
 import I18nDemo from '../playground/demos/I18nDemo.vue'
@@ -130,6 +132,8 @@ const routes = [
       { path: 'barcode', component: BarcodeDemo },
       { path: 'qrcode', component: QRCodeDemo },
       { path: 'stats', component: StatsDemo },
+      { path: 'export-data', component: ExportDataDemo },
+      { path: 'import-data', component: ImportDataDemo },
 
       // Utilities
       { path: 'i18n', component: I18nDemo },
