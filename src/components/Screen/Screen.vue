@@ -609,8 +609,9 @@ const handleImportComplete = () => {
       </template>
     </Modal>
 
-    <div v-if="showImportDataModal">
+    <div v-if="hasExportOrImport">
       <ImportData
+        v-model:show="showImportDataModal"
         ref="importDataRef"
         :fields="resolveImportFields"
         :processBatch="handleImportBatch"
