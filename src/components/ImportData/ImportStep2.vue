@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import Icon from '../Icon.vue'
 import { Dropdown } from '../Dropdown'
+import CheckBox from '../CheckBox.vue'
 import { $t } from '../../utils/i18n'
 
 const props = defineProps<{
@@ -48,15 +49,11 @@ const getDropdownOptions = () => {
 }
 
 const txtAssign = computed(() => t('vlite.importData.assignFields', 'Assign Fields'))
-const txtAssignDesc = computed(() =>
-  t('vlite.importData.assignDesc', 'Match your CSV columns to the correct system fields.')
-)
+const txtAssignDesc = computed(() => t('vlite.importData.assignDesc', 'Match your CSV columns to the correct system fields.'))
 const txtCsvHeader = computed(() => t('vlite.importData.csvHeader', 'CSV Header'))
 const txtFieldMap = computed(() => t('vlite.importData.fieldMapping', 'System Field'))
 const txtPreview = computed(() => t('vlite.importData.preview', 'Data Preview'))
-const txtNoHeaders = computed(() =>
-  t('vlite.importData.noHeaders', 'No headers mapped. Data will not be imported properly.')
-)
+const txtNoHeaders = computed(() => t('vlite.importData.noHeaders', 'No headers mapped. Data will not be imported properly.'))
 </script>
 
 <template>
@@ -81,9 +78,7 @@ const txtNoHeaders = computed(() =>
             <tr
               v-for="header in headers"
               :key="header"
-              :class="
-                removedHeaders.includes(header) ? 'bg-muted/30 opacity-60' : 'hover:bg-muted/10'
-              ">
+              :class="removedHeaders.includes(header) ? 'bg-muted/30 opacity-60' : 'hover:bg-muted/10'">
               <td class="px-4 py-3 font-medium text-foreground whitespace-nowrap">
                 {{ header }}
               </td>
@@ -107,17 +102,14 @@ const txtNoHeaders = computed(() =>
                   </div>
                 </div>
               </td>
-              <td class="px-4 py-3 text-center">
-                <button
-                  type="button"
-                  @click="toggleHeaderMapping(header)"
-                  class="w-5 h-5 rounded-md border border-border inline-flex items-center justify-center text-foreground hover:text-foreground hover:bg-muted transition-colors bg-background">
-                  <Icon
-                    v-if="removedHeaders.includes(header)"
-                    icon="lucide:check"
-                    class="w-3.5 h-3.5" />
-                  <Icon v-else icon="lucide:x" class="w-3.5 h-3.5 opacity-0 hover:opacity-100" />
-                </button>
+              <td class="px-4 py-3 text-center align-middle">
+                <div class="flex justify-center items-center h-full">
+                  <CheckBox
+                    :checked="removedHeaders.includes(header)"
+                    @update:checked="toggleHeaderMapping(header)"
+                    size="sm"
+                  />
+                </div>
               </td>
             </tr>
           </tbody>
