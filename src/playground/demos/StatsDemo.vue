@@ -65,7 +65,7 @@ const minimalItems = [
           <Stats :items="standardItems" variant="outline" />
         </div>
 
-        <div class="bg-muted p-6 -mx-6 rounded-xl">
+        <div class="">
           <h4 class="text-sm font-medium text-muted-foreground mb-3">Solid</h4>
           <Stats :items="standardItems" variant="solid" />
         </div>
@@ -75,7 +75,7 @@ const minimalItems = [
           <Stats :items="standardItems" variant="shadow" />
         </div>
 
-        <div class="bg-muted p-6 -mx-6 rounded-xl">
+        <div class="">
           <h4 class="text-sm font-medium text-muted-foreground mb-3">Transparent</h4>
           <Stats :items="standardItems" variant="transparent" />
         </div>
@@ -92,7 +92,7 @@ const minimalItems = [
           <h4 class="text-sm font-medium text-muted-foreground mb-3">Attached Shadow</h4>
           <Stats :items="standardItems" attached variant="shadow" />
         </div>
-        <div class="bg-muted p-6 -mx-6 rounded-xl">
+        <div class="">
           <h4 class="text-sm font-medium text-muted-foreground mb-3">Attached Transparent</h4>
           <Stats :items="standardItems" attached variant="transparent" />
         </div>
