@@ -47,6 +47,13 @@ export interface ScreenProps {
   emptyIcon?: string
   addComponent?: Component | any
   addBtn?: AddBtnConfig
+
+  /** Generic properties for Export and Import capabilities */
+  schema?: any[]
+  exportProps?: Record<string, any> | boolean
+  importProps?: Record<string, any> | boolean
+  importType?: string
+
   list?: Component | any
   table?: Component | any
   customHeader?: boolean
