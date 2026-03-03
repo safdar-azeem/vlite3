@@ -29,7 +29,8 @@ const props = withDefaults(defineProps<ScreenProps>(), {
   filterSchema: () => [],
   filterType: 'modal',
   showRefresh: false,
-  schema: () => [],
+  exportSchema: () => [],
+  importSchema: () => [],
   exportProps: false,
   importProps: false,
   importType: '',
@@ -196,11 +197,11 @@ const getAddBtnLabel = computed(() => {
 })
 
 const hasExportOrImport = computed(() => {
-  return (
-    props.schema &&
-    props.schema.length > 0 &&
-    (props.exportProps !== false || props.importProps !== false)
-  )
+  const hasExport =
+    props.exportSchema && props.exportSchema.length > 0 && props.exportProps !== false
+  const hasImport =
+    props.importSchema && props.importSchema.length > 0 && props.importProps !== false
+  return hasExport || hasImport
 })
 
 const txtExportData = computed(() => {
@@ -238,16 +239,16 @@ const handleDropdownSelect = (opt: any) => {
 }
 
 const resolveExportFields = computed(() => {
-  if (!props.schema) return []
-  return props.schema.map((s) => ({
+  if (!props.exportSchema) return []
+  return props.exportSchema.map((s) => ({
     field: s.name || s.field,
     title: s.label || s.title || s.name || s.field,
   }))
 })
 
 const resolveImportFields = computed(() => {
-  if (!props.schema) return []
-  return props.schema.map((s) => ({
+  if (!props.importSchema) return []
+  return props.importSchema.map((s) => ({
     field: s.name || s.field,
     title: s.label || s.title || s.name || s.field,
     required: s.required || false,
@@ -443,6 +444,7 @@ const handleImportComplete = () => {
           <Dropdown
             v-if="hasExportOrImport"
             closeOnSelect
+            position="bottom-end"
             :options="dropdownOptions"
             @on-select="handleDropdownSelect">
             <template #trigger>
