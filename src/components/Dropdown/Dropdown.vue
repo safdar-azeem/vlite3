@@ -42,6 +42,8 @@ const props = withDefaults(
     hasMore?: boolean
     searchable?: boolean
     remote?: boolean
+    debounceTime?: number
+    fetchSelected?: (ids: any[]) => Promise<IDropdownOption[]>
     triggerProps?: ButtonProps
     direction?: 'ltr' | 'rtl'
   }>(),
@@ -65,6 +67,7 @@ const props = withDefaults(
     hasMore: false,
     searchable: true,
     remote: false,
+    debounceTime: 300,
     direction: 'ltr',
   }
 )
@@ -166,11 +169,66 @@ watch(
   { immediate: true, deep: true }
 )
 
+// --- HYDRATION & SELECTED BUFFER LOGIC ---
+const selectedBuffer = ref<Map<any, IDropdownOption>>(new Map())
+const isHydrating = ref(false)
+
+const hydrateSelected = async (val: any) => {
+  if (!props.fetchSelected || val === undefined || val === null) return
+  let idsToFetch: any[] = []
+
+  if (Array.isArray(val)) {
+    idsToFetch = val
+  } else if (typeof val === 'object') {
+    idsToFetch = Object.values(val)
+  } else {
+    idsToFetch = [val]
+  }
+
+  // Filter out IDs that are already in the buffer or currently visible options
+  const missingIds = idsToFetch.filter((id) => {
+    const inBuffer = selectedBuffer.value.has(id)
+    const inOptions = internalOptions.value.some((opt) => (opt.value ?? opt.label) === id)
+    return !inBuffer && !inOptions
+  })
+
+  if (!missingIds.length) return
+
+  isHydrating.value = true
+  try {
+    const fetched = await props.fetchSelected(missingIds)
+    fetched.forEach((opt) => {
+      selectedBuffer.value.set(opt.value ?? opt.label, opt)
+    })
+  } catch (e) {
+    console.error('[Dropdown] Hydration failed:', e)
+  } finally {
+    isHydrating.value = false
+  }
+}
+
+// Combine internal options with buffered selections
+const combinedOptions = computed(() => {
+  const result = [...internalOptions.value]
+  const existingValues = new Set(result.map((o) => o.value ?? o.label))
+
+  // Ensure buffered selections always appear so labels resolve correctly
+  selectedBuffer.value.forEach((opt, val) => {
+    if (!existingValues.has(val)) {
+      result.unshift(opt)
+      existingValues.add(val)
+    }
+  })
+  return result
+})
+// -----------------------------------------
+
 const { getAllRecursiveIds } = useDropdownIds()
 
+// Use combinedOptions instead of just internalOptions to resolve labels properly
 const selectionProps = reactive({
   ...toRefs(props),
-  options: internalOptions,
+  options: combinedOptions,
 })
 
 const { currentValue, selectedLabel, selectOption } = useDropdownSelection(
@@ -178,9 +236,17 @@ const { currentValue, selectedLabel, selectOption } = useDropdownSelection(
   emit
 )
 
+watch(
+  () => currentValue.value,
+  (newVal) => {
+    hydrateSelected(newVal)
+  },
+  { immediate: true, deep: true }
+)
+
 const finalIgnoreClickOutside = computed(() => {
   const propsList = props.ignoreClickOutside || []
-  const recursiveIds = getAllRecursiveIds(internalOptions.value)
+  const recursiveIds = getAllRecursiveIds(combinedOptions.value)
   return [...new Set([...propsList, ...recursiveIds])]
 })
 
@@ -220,6 +286,11 @@ const handleOptionSelect = (option: import('@/types').IDropdownOption) => {
 }
 
 const performSelection = (option: import('@/types').IDropdownOption) => {
+  // Store in buffer so it survives pagination/searches
+  const val = option.value ?? option.label
+  if (!selectedBuffer.value.has(val)) {
+    selectedBuffer.value.set(val, option)
+  }
   selectOption(option)
 }
 
@@ -276,14 +347,14 @@ const handleClose = () => {
         <DropdownMenu
           v-if="
             normalizedPropsOptions.length ||
-            internalOptions.length ||
+            combinedOptions.length ||
             $slots.menu ||
             $slots.item ||
             remote ||
             searchable
           "
           :options="normalizedPropsOptions"
-          :cachedOptions="internalOptions"
+          :cachedOptions="combinedOptions"
           :class="className"
           :selected="currentValue"
           :selectedIndex="selectedIndex"
@@ -294,10 +365,11 @@ const handleClose = () => {
           :direction="direction"
           :layout="layout"
           :columns="columns"
-          :loading="loading"
+          :loading="loading || isHydrating"
           :hasMore="hasMore"
           :searchable="searchable"
           :remote="remote"
+          :debounceTime="debounceTime"
           @select="handleOptionSelect"
           @close="handleClose"
           @load-more="$emit('load-more')"
