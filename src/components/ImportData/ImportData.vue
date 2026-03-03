@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import Modal from '../Modal.vue'
 import Button from '../Button.vue'
+import Timeline from '../Timeline.vue'
 import ImportStep1 from './ImportStep1.vue'
 import ImportStep2 from './ImportStep2.vue'
 import ImportStep3 from './ImportStep3.vue'
@@ -9,13 +10,25 @@ import ImportStep4 from './ImportStep4.vue'
 import type { ImportDataProps, ImportOptions, ImportProgress } from './types'
 import { showToast } from '../../composables/useNotifications'
 import { $t } from '../../utils/i18n'
-import Timeline from '../Timeline.vue'
 
 const props = withDefaults(defineProps<ImportDataProps>(), {
   title: 'Import Data',
   buttonText: 'Import',
   buttonIcon: 'lucide:upload',
   batchSize: 200,
+})
+
+const t = (key: string, fallback: string, args?: Record<string, any>) => {
+  const res = args ? $t(key, args) : $t(key)
+  return res !== key ? res : fallback
+}
+
+const displayTitle = computed(() => {
+  if (props.titleI18n) {
+    const res = $t(props.titleI18n)
+    if (res !== props.titleI18n) return res
+  }
+  return props.title
 })
 
 const currentStep = ref(1)
@@ -128,7 +141,6 @@ const organizeData = (data: any[], maps: Record<string, string>) => {
         if (fieldDef.expectedType === 'number') val = Number(val) || 0
         if (fieldDef.expectedType === 'boolean')
           val = Boolean(val && val.toString().toLowerCase() !== 'false' && val !== '0')
-        // string, object, array handling can be expanded
       }
 
       if (fieldDef?.onMatch) {
@@ -164,7 +176,6 @@ const startImport = async () => {
       batches.push(organizedData.slice(i, i + props.batchSize))
     }
 
-    // Fake progress simulation while processing
     const simInterval = setInterval(() => {
       if (progress.value.percentage < 90) {
         progress.value.percentage += Math.floor(Math.random() * 5) + 1
@@ -193,32 +204,35 @@ const startImport = async () => {
     progress.value.percentage = 100
 
     if (progress.value.failed === 0) {
-      showToast($t('vlite.importData.success', 'Data imported successfully.'), 'success')
+      showToast(t('vlite.importData.success', 'Data imported successfully.'), 'success')
     } else {
-      showToast($t('vlite.importData.partial', 'Import completed with some errors.'), 'warning')
+      showToast(t('vlite.importData.partial', 'Import completed with some errors.'), 'warning')
     }
 
     if (props.onComplete) props.onComplete()
   } catch (error) {
     console.error(error)
-    showToast($t('vlite.importData.error', 'A critical error occurred during import.'), 'error')
+    showToast(t('vlite.importData.error', 'A critical error occurred during import.'), 'error')
   } finally {
     isProcessing.value = false
   }
 }
 
-const displayTitle = computed(() => (props.titleI18n ? $t(props.titleI18n) : props.title))
-
 const availableFields = computed(() => {
   return props.fields.map((f) => ({ value: f.field, label: f.title, required: f.required }))
 })
 
-const timelineSteps = [
-  { id: 1, title: 'Upload', icon: 'lucide:upload' },
-  { id: 2, title: 'Mapping', icon: 'lucide:git-pull-request' },
-  { id: 3, title: 'Options', icon: 'lucide:settings-2' },
-  { id: 4, title: 'Import', icon: 'lucide:loader' },
-]
+const timelineSteps = computed(() => [
+  { id: 1, title: t('vlite.importData.stepUpload', 'Upload'), icon: 'lucide:upload' },
+  { id: 2, title: t('vlite.importData.stepMapping', 'Mapping'), icon: 'lucide:git-pull-request' },
+  { id: 3, title: t('vlite.importData.stepOptions', 'Options'), icon: 'lucide:settings-2' },
+  { id: 4, title: t('vlite.importData.stepImport', 'Import'), icon: 'lucide:loader' },
+])
+
+const txtBack = computed(() => t('vlite.importData.btnBack', 'Back'))
+const txtNext = computed(() => t('vlite.importData.btnNext', 'Next'))
+const txtStart = computed(() => t('vlite.importData.btnStart', 'Start Import'))
+const txtDone = computed(() => t('vlite.importData.btnDone', 'Done'))
 </script>
 
 <template>
@@ -235,7 +249,7 @@ const timelineSteps = [
 
     <template #default="{ close }">
       <div class="px-2 sm:px-4 py-2">
-        <Timeline :steps="timelineSteps" :active-step="currentStep - 1" class="mb-8" />
+        <Timeline :steps="timelineSteps" :active-step="currentStep - 1" class="mb-13" />
 
         <div class="min-h-[300px]">
           <ImportStep1
@@ -279,7 +293,7 @@ const timelineSteps = [
           @click="prevStep"
           :disabled="isProcessing"
           icon="lucide:arrow-left">
-          Back
+          {{ txtBack }}
         </Button>
         <div v-else></div>
 
@@ -289,7 +303,7 @@ const timelineSteps = [
           @click="nextStep"
           :disabled="(currentStep === 1 && !importMethod) || isProcessing"
           icon-right="lucide:arrow-right">
-          Next
+          {{ txtNext }}
         </Button>
 
         <Button
@@ -298,14 +312,14 @@ const timelineSteps = [
           icon="lucide:play"
           @click="startImport"
           :loading="isProcessing">
-          Start Import
+          {{ txtStart }}
         </Button>
 
         <Button
           v-else-if="currentStep === 4 && progress.percentage >= 100"
           variant="primary"
           @click="close">
-          Done
+          {{ txtDone }}
         </Button>
       </div>
     </template>
