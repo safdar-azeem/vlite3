@@ -35,6 +35,12 @@ export interface VLiteServices {
    * Used by the generic Screen component for the `ImportData` process.
    */
   importApi?: (entity: string, payload: any) => Promise<any>
+
+  /**
+   * Global export API handler.
+   * Used by the generic Screen component for the `ExportData` process in backend mode.
+   */
+  exportApi?: (entity: string, payload: any) => Promise<any>
 }
 
 /**
@@ -52,5 +58,12 @@ export interface VLiteConfig {
   importData?: {
     batchMode?: boolean
     batchSize?: number
+  }
+
+  /**
+   * ExportData specific configs.
+   */
+  exportData?: {
+    mode?: 'frontend' | 'backend'
   }
 }
