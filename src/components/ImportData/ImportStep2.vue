@@ -14,6 +14,11 @@ const props = defineProps<{
 const emits = defineEmits(['next', 'prev', 'update:mappings'])
 const removedHeaders = ref<string[]>([])
 
+const t = (key: string, fallback: string) => {
+  const res = $t(key)
+  return res !== key ? res : fallback
+}
+
 const headersWithMapping = computed(() => {
   return props.headers.filter((header) => props.mappings[header] !== '')
 })
@@ -36,18 +41,22 @@ const toggleHeaderMapping = (header: string) => {
 }
 
 const getDropdownOptions = () => {
-  return props.availableFields.map(f => ({
+  return props.availableFields.map((f) => ({
     label: f.required ? `${f.label} *` : f.label,
-    value: f.value
+    value: f.value,
   }))
 }
 
-const txtAssign = computed(() => $t('vlite.importData.assignFields', 'Assign Fields'))
-const txtAssignDesc = computed(() => $t('vlite.importData.assignDesc', 'Match your CSV columns to the correct system fields.'))
-const txtCsvHeader = computed(() => $t('vlite.importData.csvHeader', 'CSV Header'))
-const txtFieldMap = computed(() => $t('vlite.importData.fieldMapping', 'System Field'))
-const txtPreview = computed(() => $t('vlite.importData.preview', 'Data Preview'))
-const txtNoHeaders = computed(() => $t('vlite.importData.noHeaders', 'No headers mapped. Data will not be imported properly.'))
+const txtAssign = computed(() => t('vlite.importData.assignFields', 'Assign Fields'))
+const txtAssignDesc = computed(() =>
+  t('vlite.importData.assignDesc', 'Match your CSV columns to the correct system fields.')
+)
+const txtCsvHeader = computed(() => t('vlite.importData.csvHeader', 'CSV Header'))
+const txtFieldMap = computed(() => t('vlite.importData.fieldMapping', 'System Field'))
+const txtPreview = computed(() => t('vlite.importData.preview', 'Data Preview'))
+const txtNoHeaders = computed(() =>
+  t('vlite.importData.noHeaders', 'No headers mapped. Data will not be imported properly.')
+)
 </script>
 
 <template>
@@ -57,10 +66,10 @@ const txtNoHeaders = computed(() => $t('vlite.importData.noHeaders', 'No headers
       <p class="text-sm text-muted-foreground">{{ txtAssignDesc }}</p>
     </div>
 
-    <div class="border border-border rounded-xl overflow-hidden bg-card">
+    <div class="border border-border rounded-xl overflow-hidden">
       <div class="overflow-x-auto max-h-[400px]">
         <table class="w-full text-sm text-left">
-          <thead class="text-xs text-muted-foreground uppercase bg-muted/50 sticky top-0 z-10">
+          <thead class="text-xs text-muted-foreground uppercase bg-muted sticky top-0 z-10">
             <tr>
               <th class="px-4 py-3 font-medium">{{ txtCsvHeader }}</th>
               <th class="px-4 py-3 font-medium">{{ txtFieldMap }}</th>
@@ -69,7 +78,12 @@ const txtNoHeaders = computed(() => $t('vlite.importData.noHeaders', 'No headers
             </tr>
           </thead>
           <tbody class="divide-y divide-border">
-            <tr v-for="header in headers" :key="header" :class="removedHeaders.includes(header) ? 'bg-muted/30 opacity-60' : 'hover:bg-muted/10'">
+            <tr
+              v-for="header in headers"
+              :key="header"
+              :class="
+                removedHeaders.includes(header) ? 'bg-muted/30 opacity-60' : 'hover:bg-muted/10'
+              ">
               <td class="px-4 py-3 font-medium text-foreground whitespace-nowrap">
                 {{ header }}
               </td>
@@ -83,8 +97,7 @@ const txtNoHeaders = computed(() => $t('vlite.importData.noHeaders', 'No headers
                   variant="outline"
                   showCaret
                   :btn-props="{ class: 'w-full justify-between' }"
-                  @onSelect="mappings[header] = $event.value"
-                />
+                  @onSelect="mappings[header] = $event.value" />
                 <span v-else class="text-xs italic text-muted-foreground">Ignored</span>
               </td>
               <td class="px-4 py-3 text-muted-foreground min-w-[200px] max-w-[300px]">
@@ -98,9 +111,11 @@ const txtNoHeaders = computed(() => $t('vlite.importData.noHeaders', 'No headers
                 <button
                   type="button"
                   @click="toggleHeaderMapping(header)"
-                  class="w-6 h-6 rounded-md border border-border inline-flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 bg-background"
-                >
-                  <Icon v-if="removedHeaders.includes(header)" icon="lucide:check" class="w-3.5 h-3.5" />
+                  class="w-5 h-5 rounded-md border border-border inline-flex items-center justify-center text-foreground hover:text-foreground hover:bg-muted transition-colors bg-background">
+                  <Icon
+                    v-if="removedHeaders.includes(header)"
+                    icon="lucide:check"
+                    class="w-3.5 h-3.5" />
                   <Icon v-else icon="lucide:x" class="w-3.5 h-3.5 opacity-0 hover:opacity-100" />
                 </button>
               </td>
@@ -110,7 +125,9 @@ const txtNoHeaders = computed(() => $t('vlite.importData.noHeaders', 'No headers
       </div>
     </div>
 
-    <div v-if="headersWithMapping.length === 0" class="text-center text-sm text-warning font-medium p-4 bg-warning/10 rounded-lg border border-warning/20">
+    <div
+      v-if="headersWithMapping.length === 0"
+      class="text-center text-sm text-warning font-medium p-4 bg-warning/10 rounded-lg border border-warning/20">
       {{ txtNoHeaders }}
     </div>
   </div>
