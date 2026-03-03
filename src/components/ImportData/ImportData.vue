@@ -11,11 +11,21 @@ import type { ImportDataProps, ImportOptions, ImportProgress } from './types'
 import { showToast } from '../../composables/useNotifications'
 import { $t } from '../../utils/i18n'
 
-const props = withDefaults(defineProps<ImportDataProps>(), {
+const props = withDefaults(defineProps<ImportDataProps & { show?: boolean }>(), {
   title: 'Import Data',
   buttonText: 'Import',
   buttonIcon: 'lucide:upload',
   batchSize: 200,
+  show: false,
+})
+
+const emit = defineEmits<{
+  (e: 'update:show', value: boolean): void
+}>()
+
+const isModalOpen = computed({
+  get: () => props.show,
+  set: (val) => emit('update:show', val),
 })
 
 const t = (key: string, fallback: string, args?: Record<string, any>) => {
@@ -237,13 +247,14 @@ const txtDone = computed(() => t('vlite.importData.btnDone', 'Done'))
 
 <template>
   <Modal
+    v-model:show="isModalOpen"
     :title="displayTitle"
     max-width="sm:max-w-4xl"
     @close="resetState"
     :close-outside="!isProcessing">
     <template #trigger>
       <slot name="trigger">
-        <Button :text="buttonText" :icon="buttonIcon" variant="outline" />
+        <Button v-if="!show" :text="buttonText" :icon="buttonIcon" variant="outline" />
       </slot>
     </template>
 
