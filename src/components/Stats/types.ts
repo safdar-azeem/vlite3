@@ -1,5 +1,15 @@
 export type StatsVariant = 'solid' | 'outline' | 'shadow' | 'transparent'
-export type StatsLayout = 'icon-left' | 'icon-right' | 'icon-top'
+export type StatsLayout =
+  | 'icon-left'
+  | 'icon-right'
+  | 'icon-top'
+  | 'title-top-icon-bottom-right'
+  | 'centered-value-title'
+  | 'floating-icon'
+  | 'split-bar'
+
+export type IconBoxShape = 'rounded' | 'full-rounded' | 'none'
+export type IconBoxStyle = 'filled' | 'transparent'
 
 export interface StatTrend {
   value: string | number
@@ -27,5 +37,7 @@ export interface StatsProps {
   titleSize?: string
   valueSize?: string
   iconSize?: string
+  iconBoxShape?: IconBoxShape
+  iconBoxStyle?: IconBoxStyle
   class?: string
 }
