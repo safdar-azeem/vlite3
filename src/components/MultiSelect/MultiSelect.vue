@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import Icon from '../Icon.vue'
 import { Dropdown, DropdownMenu } from '@/components/Dropdown'
 import Badge from '@/components/Badge.vue'
@@ -21,6 +21,8 @@ interface Props {
   loading?: boolean
   hasMore?: boolean
   remote?: boolean
+  debounceTime?: number
+  fetchSelected?: (ids: any[]) => Promise<IDropdownOption[]>
   layout?: 'default' | 'grouped'
 }
 
@@ -35,6 +37,7 @@ const props = withDefaults(defineProps<Props>(), {
   loading: false,
   hasMore: false,
   remote: false,
+  debounceTime: 300,
   layout: 'default',
 })
 
@@ -65,8 +68,61 @@ const normalizedOptions = computed<IDropdownOption[]>(() => {
   })
 })
 
+// --- HYDRATION & SELECTED BUFFER LOGIC ---
+const selectedBuffer = ref<Map<any, IDropdownOption>>(new Map())
+const isHydrating = ref(false)
+
+const hydrateSelected = async (values: any[]) => {
+  if (!props.fetchSelected || !values?.length) return
+
+  // Find IDs that are neither in the buffer nor in the currently fetched options
+  const missingIds = values.filter((v) => {
+    const inBuffer = selectedBuffer.value.has(v)
+    const inOptions = normalizedOptions.value.some((opt) => (opt.value ?? opt.label) === v)
+    return !inBuffer && !inOptions
+  })
+
+  if (!missingIds.length) return
+
+  isHydrating.value = true
+  try {
+    const fetched = await props.fetchSelected(missingIds)
+    fetched.forEach((opt) => {
+      selectedBuffer.value.set(opt.value ?? opt.label, opt)
+    })
+  } catch (e) {
+    console.error('[MultiSelect] Hydration failed:', e)
+  } finally {
+    isHydrating.value = false
+  }
+}
+
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    hydrateSelected(newVal || [])
+  },
+  { immediate: true, deep: true }
+)
+
+// The combined list of options (API items + Buffered selections)
+const combinedOptions = computed(() => {
+  const result = [...normalizedOptions.value]
+  const existingValues = new Set(result.map((o) => o.value ?? o.label))
+
+  selectedBuffer.value.forEach((opt, val) => {
+    if (!existingValues.has(val)) {
+      result.unshift(opt)
+      existingValues.add(val)
+    }
+  })
+  return result
+})
+// -----------------------------------------
+
+// Compute selections based on combined Options so labels resolve properly even if off-page
 const selectedOptions = computed(() => {
-  return normalizedOptions.value.filter((opt) => {
+  return combinedOptions.value.filter((opt) => {
     const val = opt.value ?? opt.label
     return props.modelValue.includes(val)
   })
@@ -82,6 +138,12 @@ const hiddenCount = computed(() => {
 
 const handleSelect = (option: IDropdownOption) => {
   const val = option.value ?? option.label
+  
+  // Save to buffer immediately so it persists across searches
+  if (!selectedBuffer.value.has(val)) {
+    selectedBuffer.value.set(val, option)
+  }
+
   const newValue = [...props.modelValue]
   const index = newValue.indexOf(val)
 
@@ -175,12 +237,14 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
     <template #default>
       <DropdownMenu
         :options="normalizedOptions"
+        :cachedOptions="combinedOptions"
         :selected="modelValue"
         class="min-w-[300px]"
-        :loading="loading"
+        :loading="loading || isHydrating"
         :hasMore="hasMore"
         :searchable="searchable"
         :remote="remote"
+        :debounceTime="debounceTime"
         :layout="layout"
         @select="handleSelect"
         @close="isOpen = false"
