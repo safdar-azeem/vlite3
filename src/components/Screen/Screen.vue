@@ -9,8 +9,12 @@ import ConfirmationModal from '../ConfirmationModal.vue'
 import { Pagination } from '../Pagination'
 import { Empty } from '../Empty'
 import ScreenFilter from './ScreenFilter.vue'
+import Dropdown from '../Dropdown/Dropdown.vue'
+import ExportData from '../ExportData/ExportData.vue'
+import ImportData from '../ImportData/ImportData.vue'
 import type { ScreenProps } from './types'
 import { usePersistentState } from '../../utils/usePersistentState'
+import { useVLiteConfig } from '../../core/config'
 import { $t } from '@/utils/i18n'
 
 const props = withDefaults(defineProps<ScreenProps>(), {
@@ -25,6 +29,10 @@ const props = withDefaults(defineProps<ScreenProps>(), {
   filterSchema: () => [],
   filterType: 'modal',
   showRefresh: false,
+  schema: () => [],
+  exportProps: false,
+  importProps: false,
+  importType: '',
   paginationProps: () => ({
     alignment: 'end',
     navType: 'icon',
@@ -32,6 +40,8 @@ const props = withDefaults(defineProps<ScreenProps>(), {
     itemsPerPageOptions: [10, 25, 50, 100],
   }),
 })
+
+const vliteConfig = useVLiteConfig()
 
 const emit = defineEmits<{
   (e: 'add'): void
@@ -184,6 +194,86 @@ const getAddBtnLabel = computed(() => {
   const res = $t('vlite.screen.addNew')
   return res !== 'vlite.screen.addNew' ? res : 'Add New'
 })
+
+const hasExportOrImport = computed(() => {
+  return (
+    props.schema &&
+    props.schema.length > 0 &&
+    (props.exportProps !== false || props.importProps !== false)
+  )
+})
+
+const txtExportData = computed(() => {
+  const r = $t('vlite.screen.exportData')
+  return r !== 'vlite.screen.exportData' ? r : 'Export Data'
+})
+
+const txtImportData = computed(() => {
+  const r = $t('vlite.screen.importData')
+  return r !== 'vlite.screen.importData' ? r : 'Import Data'
+})
+
+const dropdownOptions = computed(() => {
+  const opts = []
+  if (props.exportProps !== false) {
+    opts.push({ value: 'export', label: txtExportData.value, icon: 'lucide:download' })
+  }
+  if (props.importProps !== false) {
+    opts.push({ value: 'import', label: txtImportData.value, icon: 'lucide:upload' })
+  }
+  return opts
+})
+
+const exportDataRef = ref<any>(null)
+const importDataRef = ref<any>(null)
+const showExportDataModal = ref(false)
+const showImportDataModal = ref(false)
+
+const handleDropdownSelect = (opt: any) => {
+  if (opt.value === 'export') {
+    showExportDataModal.value = true
+  } else if (opt.value === 'import') {
+    showImportDataModal.value = true
+  }
+}
+
+const resolveExportFields = computed(() => {
+  if (!props.schema) return []
+  return props.schema.map((s) => ({
+    field: s.name || s.field,
+    title: s.label || s.title || s.name || s.field,
+  }))
+})
+
+const resolveImportFields = computed(() => {
+  if (!props.schema) return []
+  return props.schema.map((s) => ({
+    field: s.name || s.field,
+    title: s.label || s.title || s.name || s.field,
+    required: s.required || false,
+  }))
+})
+
+const handleImportBatch = async (payload: any) => {
+  if (vliteConfig?.services?.importApi && props.importType) {
+    return await vliteConfig.services.importApi(props.importType, payload)
+  }
+  console.warn(
+    'VLite Screen: No importApi configured or no importType provided for generic import.'
+  )
+  return {
+    processed: payload.data.length,
+    created: payload.data.length,
+    updated: 0,
+    skipped: 0,
+    failed: 0,
+    errors: [],
+  }
+}
+
+const handleImportComplete = () => {
+  triggerChange()
+}
 </script>
 
 <template>
@@ -349,6 +439,25 @@ const getAddBtnLabel = computed(() => {
               </Button>
             </template>
           </slot>
+
+          <Dropdown
+            v-if="hasExportOrImport"
+            closeOnSelect
+            :options="dropdownOptions"
+            @on-select="handleDropdownSelect">
+            <template #trigger>
+              <Button
+                variant="outline"
+                icon="lucide:more-vertical"
+                class="px-2!"
+                :title="
+                  $t('vlite.screen.moreOptions') !== 'vlite.screen.moreOptions'
+                    ? $t('vlite.screen.moreOptions')
+                    : 'More Options'
+                " />
+            </template>
+          </Dropdown>
+
           <slot name="after-add" />
         </div>
       </div>
@@ -459,5 +568,56 @@ const getAddBtnLabel = computed(() => {
       variant="danger"
       @confirm="confirmDelete"
       @cancel="showDeleteConfirmation = false" />
+
+    <Modal
+      v-if="showExportDataModal"
+      v-model:show="showExportDataModal"
+      :title="txtExportData"
+      max-width="sm:max-w-[400px]">
+      <template #default="{ close }">
+        <ExportData
+          ref="exportDataRef"
+          :data="data || []"
+          :fields="resolveExportFields"
+          v-bind="typeof exportProps === 'object' ? exportProps : {}"
+          :title="txtExportData"
+          class="hidden!" />
+        <div class="px-1 py-1 text-sm">
+          <h6 class="font-medium mb-3 text-muted-foreground">
+            {{
+              $t('vlite.exportData.selectFormat') !== 'vlite.exportData.selectFormat'
+                ? $t('vlite.exportData.selectFormat')
+                : 'Select Export Format'
+            }}
+          </h6>
+          <div class="space-y-3">
+            <Button
+              v-for="format in exportDataRef?.availableFormats || [
+                { value: 'excel', label: 'Excel (.xlsx)', icon: 'lucide:file-spreadsheet' },
+                { value: 'csv', label: 'CSV (.csv)', icon: 'lucide:file-text' },
+                { value: 'json', label: 'JSON (.json)', icon: 'lucide:file-json' },
+              ]"
+              :key="format.value"
+              variant="outline"
+              class="w-full flex items-center justify-start gap-3 h-12"
+              @click="exportDataRef?.exportData(format.value, close)">
+              <Icon :icon="format.icon" class="text-muted-foreground h-5 w-5" />
+              <span>{{ format.label }}</span>
+            </Button>
+          </div>
+        </div>
+      </template>
+    </Modal>
+
+    <div v-if="showImportDataModal">
+      <ImportData
+        ref="importDataRef"
+        :fields="resolveImportFields"
+        :processBatch="handleImportBatch"
+        @complete="handleImportComplete"
+        v-bind="typeof importProps === 'object' ? importProps : {}"
+        :title="txtImportData"
+        class="hidden!" />
+    </div>
   </div>
 </template>
