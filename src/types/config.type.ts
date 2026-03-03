@@ -23,12 +23,18 @@ export interface VLiteServices {
    * Used by useFileUpload composable.
    */
   upload?: FileUploadHandler
-  
+
   /**
    * Global translation function implementation.
    * Used by components to support i18n.
    */
   t?: TranslationHandler
+
+  /**
+   * Global import API handler.
+   * Used by the generic Screen component for the `ImportData` process.
+   */
+  importApi?: (entity: string, payload: any) => Promise<any>
 }
 
 /**
@@ -39,4 +45,12 @@ export interface VLiteConfig {
    * Service registry for dependency injection.
    */
   services?: VLiteServices
+
+  /**
+   * ImportData specific configs.
+   */
+  importData?: {
+    batchMode?: boolean
+    batchSize?: number
+  }
 }
