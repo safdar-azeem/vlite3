@@ -115,6 +115,22 @@ const vlite = createVLite({
       }
       return translation
     },
+    importApi: async (entity, payload) => {
+      console.log(`[VLite Mock API] Importing to ${entity}...`)
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          console.log(`[VLite Mock API] Received payload:`, payload)
+          resolve({
+            processed: payload.data.length,
+            created: payload.data.length,
+            updated: 0,
+            skipped: 0,
+            failed: 0,
+            errors: [],
+          })
+        }, 1500)
+      })
+    },
   },
 })
 
