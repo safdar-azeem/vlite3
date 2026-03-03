@@ -36,6 +36,7 @@ interface Props {
   hasMore?: boolean
   searchable?: boolean
   remote?: boolean
+  debounceTime?: number
   direction?: 'ltr' | 'rtl'
 }
 
@@ -54,6 +55,7 @@ const props = withDefaults(defineProps<Props>(), {
   hasMore: false,
   searchable: true,
   remote: false,
+  debounceTime: 300,
   direction: 'ltr',
 })
 
@@ -100,10 +102,10 @@ watch(searchQuery, (newQuery) => {
   if (props.remote) {
     if (debounceTimer) clearTimeout(debounceTimer)
     debounceTimer = setTimeout(() => {
-      if (newQuery) {
+      if (newQuery !== undefined) {
         emit('search', newQuery)
       }
-    }, 100)
+    }, props.debounceTime)
   }
 })
 
