@@ -2,6 +2,8 @@ import type { Component } from 'vue'
 import type { PageInfo, PaginationProps } from '../Pagination'
 import { ButtonVariant } from '@/types'
 import { IForm } from '../Form'
+import type { ExportField } from '../ExportData/types'
+import type { ImportField } from '../ImportData/types'
 
 export interface ScreenPaginationProps extends Omit<
   PaginationProps,
@@ -49,7 +51,8 @@ export interface ScreenProps {
   addBtn?: AddBtnConfig
 
   /** Generic properties for Export and Import capabilities */
-  schema?: any[]
+  exportSchema?: ExportField[] | any[]
+  importSchema?: ImportField[] | any[]
   exportProps?: Record<string, any> | boolean
   importProps?: Record<string, any> | boolean
   importType?: string
