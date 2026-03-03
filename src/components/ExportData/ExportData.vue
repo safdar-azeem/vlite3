@@ -15,6 +15,7 @@ const props = withDefaults(defineProps<ExportDataProps>(), {
   formats: () => ['excel', 'csv', 'json'],
   buttonText: 'Export',
   buttonIcon: 'lucide:download',
+  mode: 'frontend',
 })
 
 // Local helper to ensure proper fallback if translation is not setup
@@ -56,7 +57,19 @@ const processDataForExport = (): any[] => {
   })
 }
 
-const exportData = (format: ExportFormat, close?: () => void) => {
+const exportData = async (format: ExportFormat, close?: () => void) => {
+  if (props.mode === 'backend' && props.onExport) {
+    try {
+      await props.onExport(format)
+      if (close) close()
+      return
+    } catch (error) {
+      console.error('Backend export error:', error)
+      showToast(t('vlite.exportData.error', 'An error occurred while exporting data.'), 'error')
+      return
+    }
+  }
+
   if (!props.data || props.data.length === 0) {
     showToast(t('vlite.exportData.noData', 'No data available to export.'), 'warning')
     return
