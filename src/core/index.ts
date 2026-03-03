@@ -38,6 +38,9 @@ export function createVLite(options: VLiteConfig = {}) {
         if (options.importData) {
           configState.importData = { ...configState.importData, ...options.importData }
         }
+        if (options.exportData) {
+          configState.exportData = { ...configState.exportData, ...options.exportData }
+        }
       }
 
       // 2. Provide the config to the application tree
