@@ -86,6 +86,8 @@ const handleDelete = (items: any[]) => {
           ]"
           export-props
           import-props
+          export-mode="backend"
+          export-type="user"
           import-type="user"
           @delete="handleDelete"
           :add-btn="{
