@@ -275,6 +275,25 @@ const handleImportBatch = async (payload: any) => {
 const handleImportComplete = () => {
   triggerChange()
 }
+
+const effectiveExportMode = computed(() => {
+  return props.exportMode || vliteConfig?.exportData?.mode || 'frontend'
+})
+
+const handleBackendExport = async (format: string) => {
+  if (vliteConfig?.services?.exportApi && props.exportType) {
+    const payload = {
+      format,
+      search: searchQuery.value,
+      filter: activeFilters.value,
+    }
+    await vliteConfig.services.exportApi(props.exportType, payload)
+  } else {
+    console.warn(
+      'VLite Screen: No exportApi configured or no exportType provided for generic backend export.'
+    )
+  }
+}
 </script>
 
 <template>
@@ -581,6 +600,8 @@ const handleImportComplete = () => {
           ref="exportDataRef"
           :data="data || []"
           :fields="resolveExportFields"
+          :mode="effectiveExportMode"
+          :on-export="handleBackendExport"
           v-bind="typeof exportProps === 'object' ? exportProps : {}"
           :title="txtExportData"
           class="hidden!" />
