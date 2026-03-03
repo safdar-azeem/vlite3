@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { ref, computed } from 'vue'
 import Papa from 'papaparse'
 import Icon from '../Icon.vue'
 import Button from '../Button.vue'
@@ -19,6 +19,11 @@ const props = defineProps<{
 
 const emits = defineEmits(['update:importMethod', 'update:csvFile', 'update:mappings', 'next'])
 
+const t = (key: string, fallback: string, args?: Record<string, any>) => {
+  const res = args ? $t(key, args) : $t(key)
+  return res !== key ? res : fallback
+}
+
 const fileInput = ref<HTMLInputElement | null>(null)
 const dragActive = ref(false)
 const pasteTextarea = ref('')
@@ -31,7 +36,7 @@ const handleDrop = (e: DragEvent) => {
     if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
       handleFileUpload(file)
     } else {
-      showToast($t('vlite.importData.csvOnly', 'Please upload a CSV file'), 'error')
+      showToast(t('vlite.importData.csvOnly', 'Please upload a CSV file'), 'error')
     }
   }
 }
@@ -72,7 +77,7 @@ const processCSVData = (content: string) => {
       skipEmptyLines: true,
       complete: (result) => {
         if (!result.data || result.data.length === 0) {
-          showToast($t('vlite.importData.emptyCsv', 'The CSV file is empty.'), 'warning')
+          showToast(t('vlite.importData.emptyCsv', 'The CSV file is empty.'), 'warning')
           return
         }
 
@@ -101,12 +106,12 @@ const processCSVData = (content: string) => {
       },
       error: (error: any) =>
         showToast(
-          $t('vlite.importData.parseError', 'Failed to parse CSV: ') + error.message,
+          t('vlite.importData.parseError', 'Failed to parse CSV: ') + error.message,
           'error'
         ),
     })
   } catch (error) {
-    showToast($t('vlite.importData.processError', 'Error processing CSV data'), 'error')
+    showToast(t('vlite.importData.processError', 'Error processing CSV data'), 'error')
     console.error(error)
   }
 }
@@ -118,20 +123,20 @@ const handleFileInputChange = (e: Event) => {
   }
 }
 
-const txtUpload = computed(() => $t('vlite.importData.uploadData', 'Upload Data'))
+const txtUpload = computed(() => t('vlite.importData.uploadData', 'Upload Data'))
 const txtDragDrop = computed(() =>
-  $t('vlite.importData.dragDrop', 'Drag & drop a file here or click to browse')
+  t('vlite.importData.dragDrop', 'Drag & drop a file here or click to browse')
 )
-const txtCsvOnly = computed(() =>
-  $t('vlite.importData.csvOnlyHint', 'Only CSV files are supported')
+const txtCsvOnlyHint = computed(() =>
+  t('vlite.importData.csvOnlyHint', 'Only CSV files are supported')
 )
-const txtPasteData = computed(() => $t('vlite.importData.pasteData', 'Or paste CSV/Excel data'))
-const txtProcess = computed(() => $t('vlite.importData.process', 'Process Data'))
+const txtPasteData = computed(() => t('vlite.importData.pasteData', 'Or paste CSV/Excel data'))
+const txtProcess = computed(() => t('vlite.importData.process', 'Process Data'))
 </script>
 
 <template>
-  <div class="space-y-6">
-    <h4 class="font-medium text-lg">{{ txtUpload }}</h4>
+  <div class="space-y-2">
+    <h5 class="font-medium text-md">{{ txtUpload }}</h5>
 
     <div class="space-y-6">
       <div
@@ -158,7 +163,7 @@ const txtProcess = computed(() => $t('vlite.importData.process', 'Process Data')
             <Icon icon="lucide:upload-cloud" class="w-6 h-6" />
           </div>
           <p class="font-medium text-foreground mb-1">{{ txtDragDrop }}</p>
-          <p class="text-sm text-muted-foreground">{{ txtCsvOnly }}</p>
+          <p class="text-sm text-muted-foreground">{{ txtCsvOnlyHint }}</p>
           <p
             v-if="csvFile"
             class="mt-4 text-sm font-semibold text-primary bg-background px-3 py-1 rounded-md border border-border shadow-sm inline-block">
