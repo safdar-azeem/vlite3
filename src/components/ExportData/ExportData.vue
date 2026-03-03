@@ -108,6 +108,11 @@ const exportData = (format: ExportFormat, close?: () => void) => {
 }
 
 const txtSelectFormat = computed(() => t('vlite.exportData.selectFormat', 'Select Export Format'))
+
+defineExpose({
+  exportData,
+  availableFormats,
+})
 </script>
 
 <template>
