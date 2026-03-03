@@ -34,11 +34,15 @@
     "@iconify/vue": "5.0.0",
     "@jaames/iro": "^5.5.2",
     "@tailwindcss/vite": "^4.1.18",
+    "@types/file-saver": "^2.0.7",
+    "@types/papaparse": "^5.5.2",
     "@types/scrollreveal": "^0.0.11",
     "@vueuse/core": "^14.1.0",
     "@vueuse/integrations": "^14.2.1",
+    "file-saver": "^2.0.5",
     "iconify-icon-picker": "^1.0.3",
     "jsbarcode": "^3.12.3",
+    "papaparse": "^5.5.3",
     "qrcode": "^1.5.4",
     "scrollreveal": "^4.0.9",
     "tailwindcss": "^4.1.18",
@@ -46,7 +50,8 @@
     "v-tooltip-lite": "^0.2.1",
     "vue-carousel-lite": "^0.2.7",
     "vue-draggable-plus": "^0.5.3",
-    "vue3-google-signin": "^2.1.1"
+    "vue3-google-signin": "^2.1.1",
+    "xlsx": "^0.18.5"
   },
   "peerDependencies": {
     "vue": "^3.5.24",
