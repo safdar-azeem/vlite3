@@ -55,7 +55,9 @@ export interface ScreenProps {
   importSchema?: ImportField[] | any[]
   exportProps?: Record<string, any> | boolean
   importProps?: Record<string, any> | boolean
+  exportMode?: 'frontend' | 'backend'
   importType?: string
+  exportType?: string
 
   list?: Component | any
   table?: Component | any
