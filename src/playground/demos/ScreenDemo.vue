@@ -70,6 +70,16 @@ const handleDelete = (items: any[]) => {
               label: 'User',
             },
           ]"
+          :schema="[
+            { field: 'id', title: 'ID', required: true },
+            { field: 'name', title: 'Name', required: true },
+            { field: 'email', title: 'Email Address', required: true },
+            { field: 'role', title: 'Role' },
+            { field: 'status', title: 'Account Status' },
+          ]"
+          export-props
+          import-props
+          import-type="user"
           @delete="handleDelete"
           :add-btn="{
             modal: AddUser,
