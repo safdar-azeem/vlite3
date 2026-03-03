@@ -132,7 +132,6 @@ const txtSelectFormat = computed(() => t('vlite.exportData.selectFormat', 'Selec
               v-for="format in availableFormats"
               :key="format.value"
               variant="outline"
-              full-width
               class="w-full flex items-center justify-start gap-3 h-12"
               @click="exportData(format.value, close)">
               <Icon :icon="format.icon" class="text-muted-foreground h-5 w-5" />
