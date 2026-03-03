@@ -1,13 +1,13 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import Playground from './playground/Playground.vue'
 
 // Import all demos dynamically
 const demoModules = import.meta.glob('./playground/demos/*Demo.vue')
 
-const children = Object.entries(demoModules).map(([path, component]) => {
+const children: RouteRecordRaw[] = Object.entries(demoModules).map(([path, component]) => {
   // Extract file name without "Demo.vue" and path
   const rawName = path.split('/').pop()?.replace('Demo.vue', '') || ''
-  
+
   // Format the route path. Examples:
   // "AvatarUploader" -> "/avatar-uploader"
   // "ButtonGroup" -> "/buttongroup" (keeping consistent with existing playground paths)
@@ -17,11 +17,14 @@ const children = Object.entries(demoModules).map(([path, component]) => {
   if (rawName === 'ThemeToggle') routePath = 'themetoggle'
   if (rawName === 'ScrollReveal') routePath = 'scroll-reveal'
   if (rawName === 'SidebarMenu') routePath = 'sidebarmenu'
+  if (rawName === 'ExportData') routePath = 'export-data'
+  if (rawName === 'ImportData') routePath = 'import-data'
+  if (rawName === 'PricingPlan') routePath = 'pricing'
 
   return {
     path: `/${routePath}`,
     name: rawName,
-    component
+    component,
   }
 })
 
@@ -29,7 +32,7 @@ const children = Object.entries(demoModules).map(([path, component]) => {
 children.push({
   path: '',
   name: 'Default',
-  redirect: '/button'
+  redirect: '/button',
 })
 
 const router = createRouter({
@@ -38,9 +41,9 @@ const router = createRouter({
     {
       path: '/',
       component: Playground,
-      children
-    }
-  ]
+      children,
+    },
+  ],
 })
 
 export default router
