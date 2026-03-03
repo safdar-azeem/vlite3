@@ -17,6 +17,12 @@ const props = withDefaults(defineProps<ExportDataProps>(), {
   buttonIcon: 'lucide:download',
 })
 
+// Local helper to ensure proper fallback if translation is not setup
+const t = (key: string, fallback: string, args?: Record<string, any>) => {
+  const res = args ? $t(key, args) : $t(key)
+  return res !== key ? res : fallback
+}
+
 const getNestedValue = (obj: any, path: string): any => {
   if (!obj || !path) return undefined
   if (!path.includes('.')) return obj[path]
@@ -35,32 +41,32 @@ const availableFormats = computed(() => {
 const processDataForExport = (): any[] => {
   return props.data.map((item) => {
     const processedItem: Record<string, any> = {}
-    
+
     props.fields.forEach((field) => {
       const rawValue = getNestedValue(item, field.field)
-      
+
       if (field.format) {
         processedItem[field.title] = field.format(rawValue, item)
       } else {
         processedItem[field.title] = rawValue !== undefined && rawValue !== null ? rawValue : ''
       }
     })
-    
+
     return processedItem
   })
 }
 
 const exportData = (format: ExportFormat, close?: () => void) => {
   if (!props.data || props.data.length === 0) {
-    showToast($t('vlite.exportData.noData', 'No data available to export.'), 'warning')
+    showToast(t('vlite.exportData.noData', 'No data available to export.'), 'warning')
     return
   }
 
   try {
-    const baseFilename = props.filename 
-      ? props.filename 
+    const baseFilename = props.filename
+      ? props.filename
       : `${props.title.toLowerCase().replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}`
-    
+
     const processedData = processDataForExport()
 
     switch (format) {
@@ -87,19 +93,21 @@ const exportData = (format: ExportFormat, close?: () => void) => {
         break
       }
     }
-    
-    showToast($t('vlite.exportData.success', `Data exported successfully as ${format.toUpperCase()}`), 'success')
+
+    showToast(
+      t('vlite.exportData.success', `Data exported successfully as ${format.toUpperCase()}`, {
+        format: format.toUpperCase(),
+      }),
+      'success'
+    )
     if (close) close()
   } catch (error) {
     console.error('Export error:', error)
-    showToast($t('vlite.exportData.error', 'An error occurred while exporting data.'), 'error')
+    showToast(t('vlite.exportData.error', 'An error occurred while exporting data.'), 'error')
   }
 }
 
-const txtSelectFormat = computed(() => {
-  const r = $t('vlite.exportData.selectFormat')
-  return r !== 'vlite.exportData.selectFormat' ? r : 'Select Export Format'
-})
+const txtSelectFormat = computed(() => t('vlite.exportData.selectFormat', 'Select Export Format'))
 </script>
 
 <template>
@@ -109,8 +117,7 @@ const txtSelectFormat = computed(() => {
       :text="buttonText"
       :icon="buttonIcon"
       variant="outline"
-      @click="exportData(formats[0])"
-    />
+      @click="exportData(formats[0])" />
 
     <Modal v-else :title="title" max-width="sm:max-w-[400px]">
       <template #trigger>
@@ -118,8 +125,8 @@ const txtSelectFormat = computed(() => {
       </template>
 
       <template #default="{ close }">
-        <div class="px-2 pb-4 text-sm">
-          <h6 class="font-medium mb-4 text-muted-foreground">{{ txtSelectFormat }}</h6>
+        <div class="px-1 py-1 text-sm">
+          <h6 class="font-medium mb-3 text-muted-foreground">{{ txtSelectFormat }}</h6>
           <div class="space-y-3">
             <Button
               v-for="format in availableFormats"
@@ -127,8 +134,7 @@ const txtSelectFormat = computed(() => {
               variant="outline"
               full-width
               class="w-full flex items-center justify-start gap-3 h-12"
-              @click="exportData(format.value, close)"
-            >
+              @click="exportData(format.value, close)">
               <Icon :icon="format.icon" class="text-muted-foreground h-5 w-5" />
               <span>{{ format.label }}</span>
             </Button>
