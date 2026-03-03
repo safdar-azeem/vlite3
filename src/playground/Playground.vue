@@ -93,6 +93,8 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Carousel', to: '/carousel', icon: 'lucide:gallery-horizontal' },
       { label: 'Barcode', to: '/barcode', icon: 'lucide:barcode' },
       { label: 'QRCode', to: '/qrcode', icon: 'lucide:qr-code' },
+      { label: 'Export Data', to: '/export-data', icon: 'lucide:file-down' },
+      { label: 'Import Data', to: '/import-data', icon: 'lucide:file-up' },
     ],
   },
 ]
