@@ -107,6 +107,7 @@ const handleSubmit = (payload: IFormSubmitPayload) => {
           <div class="flex-1 max-w-3xl">
             <Form
               :schema="customFieldsSchema"
+              variant="floating"
               class-name="grid-cols-2"
               submitText="Save Project"
               @onSubmit="handleSubmit" />
