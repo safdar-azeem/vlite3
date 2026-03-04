@@ -510,7 +510,7 @@ const handleAddonAction = (addon: IFormAddon) => {
   <component
     v-else
     :is="fieldComponent"
-    class="w-full"
+    :class="['switch', 'check'].includes(field?.type as string) ? '' : 'w-full'"
     v-bind="{
       ...fieldProps,
       ...(field?.props || {}),
