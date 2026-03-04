@@ -252,7 +252,7 @@ const componentProps = computed(() => {
           :content="displayLabel"
           :placement="isHorizontal ? 'bottom' : 'right'"
           className="sidebar-menu-tooltip"
-          :disabled="(!context.compact && !isHorizontal) || isOpen"
+          :disabled="!context.showTooltip || (!context.compact && !isHorizontal) || isOpen"
           class="w-full block">
           <div class="w-full">
             <component
@@ -335,7 +335,7 @@ const componentProps = computed(() => {
       <Tooltip
         :content="displayLabel"
         :placement="isHorizontal ? 'bottom' : 'right'"
-        :disabled="(!context.compact && !isHorizontal)"
+        :disabled="!context.showTooltip || (!context.compact && !isHorizontal)"
         class="w-full block">
         <component
           :is="componentIs"
