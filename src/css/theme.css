@@ -160,7 +160,7 @@
       var(--color-mixture-2, #000000));
 
   --color-gray-50: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 98.5%,
+      var(--color-mixture-1, #ffffff) 98.2%,
       var(--color-mixture-2, #000000));
 
   --color-gray-100: color-mix(in oklab,
@@ -261,7 +261,7 @@
   --color-mixture-2: #ffffff !important;
 
   --color-gray-50: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 95%,
+      var(--color-mixture-1, #ffffff) 96%,
       var(--color-mixture-2, #000000));
 
   --color-gray-100: color-mix(in oklab,
@@ -285,7 +285,9 @@
       var(--color-mixture-2, #000000));
 
   --color-secondary: color-mix(in oklab, var(--color-mixture-1) 89%, var(--color-mixture-2));
-  --color-muted: var(--color-gray-50);
+  --color-muted: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 95%,
+      var(--color-mixture-2, #000000));
   --color-destructive: #7f1d1d;
   --color-destructive-foreground: #fafafa;
 
