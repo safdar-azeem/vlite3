@@ -89,7 +89,7 @@ const isStripedOdd = computed(() => props.variant === 'striped' && props.index %
   <div
     class="list-field-row flex justify-between gap-3 px-3 py-2.5 transition-colors"
     :class="[
-      showBorderBottom && !isLast ? 'border-b border-border/70' : '',
+      showBorderBottom && !isLast ? 'border-b border-border' : '',
       isStripedOdd ? 'bg-muted/40' : '',
       variant === 'compact' ? 'py-1.5!' : '',
       variant === 'minimal' ? 'px-0!' : '',
@@ -97,11 +97,8 @@ const isStripedOdd = computed(() => props.variant === 'striped' && props.index %
     role="row">
     <!-- Label -->
     <div class="flex items-center gap-1.5 shrink-0 min-w-0 max-w-[48%]">
-      <Icon
-        v-if="field.icon"
-        :icon="field.icon"
-        class="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-      <span class="text-sm font-medium text-gray-700 truncate leading-snug">
+      <Icon v-if="field.icon" :icon="field.icon" class="w-3.5 h-3.5 text-gray-800 shrink-0" />
+      <span class="text-sm font-medium text-gray-800 truncate leading-snug">
         {{ labelText }}{{ showColon ? ':' : '' }}
       </span>
     </div>
@@ -125,7 +122,7 @@ const isStripedOdd = computed(() => props.variant === 'striped' && props.index %
           class="text-sm text-gray-600 text-right break-words"
           :class="valueClass"
           v-html="resolvedValue" />
-        <span v-else class="text-sm text-gray-400 tracking-widest select-none" aria-hidden="true">
+        <span v-else class="text-sm text-gray-600 tracking-widest select-none" aria-hidden="true">
           &#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;
         </span>
         <button
@@ -148,7 +145,7 @@ const isStripedOdd = computed(() => props.variant === 'striped' && props.index %
       <!-- Default rendered value -->
       <template v-else>
         <span
-          class="text-sm text-gray-600 text-right break-words leading-snug"
+          class="text-sm text-gray-900 text-right break-words leading-snug"
           :class="valueClass"
           v-html="resolvedValue" />
       </template>
