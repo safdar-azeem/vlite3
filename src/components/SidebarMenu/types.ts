@@ -42,6 +42,7 @@ export interface SidebarMenuContext {
   indentSize: number
   variant: 'default' | 'ghost'
   renderMode: 'tree' | 'popover'
+  renderNestedTabs: boolean
   compact: boolean
   showCompactLabels: boolean
   iconSize: string
