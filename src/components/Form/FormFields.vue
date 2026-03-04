@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, type Component } from 'vue'
+import { computed, ref, type Component } from 'vue'
 import type { IForm, IFormFieldChangePayload } from './types'
 import type { InputVariant, InputSize, InputRounded } from '@/types'
 import { getNestedValue, isComponent } from './utils/form.utils'
@@ -108,6 +108,33 @@ const handleAddonChange = (addonName: string, payload: IFormFieldChangePayload) 
 const handleAddonAction = (action: string) => {
   emit('addonAction', action)
 }
+
+// Support for floating labels
+const focusedFields = ref<Record<string, boolean>>({})
+
+const handleFocusIn = (fieldName: string) => {
+  focusedFields.value[fieldName] = true
+}
+
+const handleFocusOut = (fieldName: string) => {
+  focusedFields.value[fieldName] = false
+}
+
+const isFloatingActive = (field: IForm) => {
+  const hasValue =
+    getFieldValue(field) !== undefined &&
+    getFieldValue(field) !== null &&
+    getFieldValue(field) !== ''
+  return focusedFields.value[field.name] || hasValue
+}
+
+// Only hide external label if we're using floating variant AND the field supports it
+const shouldHideExternalLabel = (field: IForm) => {
+  if (props.variant !== 'floating') return false
+  const type = field.type || 'text'
+  const unfloatingTypes = ['switch', 'check', 'customFields']
+  return !unfloatingTypes.includes(type as string)
+}
 </script>
 
 <template>
@@ -119,32 +146,63 @@ const handleAddonAction = (action: string) => {
             getFieldLabel(field) &&
             field.type !== 'switch' &&
             field.type !== 'check' &&
-            field.type !== 'customFields'
+            field.type !== 'customFields' &&
+            !shouldHideExternalLabel(field)
           "
           :for="field.name"
           class="mb-2 block text-sm font-medium">
-          <component v-if="isComponent(getFieldLabel(field))" :is="renderLabel(getFieldLabel(field))" />
+          <component
+            v-if="isComponent(getFieldLabel(field))"
+            :is="renderLabel(getFieldLabel(field))" />
           <template v-else>
             {{ getFieldLabel(field) }}
             <span v-if="field.required" class="text-destructive ml-0.5">*</span>
           </template>
         </Label>
 
-        <FormField
-          :field="field"
-          :value="getFieldValue(field)"
-          :label="field.type === 'customFields' ? getFieldLabel(field) : undefined"
-          :values="values"
-          :variant="variant"
-          :size="size"
-          :rounded="rounded"
-          :disabled="checkFieldDisabled(field)"
-          :readonly="checkFieldReadonly(field)"
-          :error="getFieldError(field)"
-          :isUpdate="isUpdate"
-          @change="(payload) => handleFieldChange(field, payload)"
-          @addonChange="handleAddonChange"
-          @addonAction="handleAddonAction" />
+        <!-- Wrapper for Floating Label Positioning -->
+        <div
+          class="relative w-full"
+          @focusin="handleFocusIn(field.name)"
+          @focusout="handleFocusOut(field.name)">
+          <label
+            v-if="shouldHideExternalLabel(field) && getFieldLabel(field)"
+            :for="field.name"
+            :class="[
+              'absolute left-3 transition-all duration-200 ease-in-out pointer-events-none z-20',
+              isFloatingActive(field)
+                ? '-top-2.5 text-xs bg-background px-1 text-primary shadow-[0_4px_4px_-4px_bg-background]'
+                : 'top-2.5 text-sm text-muted-foreground/70',
+            ]">
+            <component
+              v-if="isComponent(getFieldLabel(field))"
+              :is="renderLabel(getFieldLabel(field))" />
+            <template v-else>
+              {{ getFieldLabel(field) }}
+              <span v-if="field.required" class="text-destructive ml-0.5">*</span>
+            </template>
+          </label>
+
+          <FormField
+            :field="
+              props.variant === 'floating'
+                ? { ...field, placeholder: undefined, placeholderI18n: undefined }
+                : field
+            "
+            :value="getFieldValue(field)"
+            :label="field.type === 'customFields' ? getFieldLabel(field) : undefined"
+            :values="values"
+            :variant="variant === 'floating' ? 'outline' : variant"
+            :size="size"
+            :rounded="rounded"
+            :disabled="checkFieldDisabled(field)"
+            :readonly="checkFieldReadonly(field)"
+            :error="getFieldError(field)"
+            :isUpdate="isUpdate"
+            @change="(payload) => handleFieldChange(field, payload)"
+            @addonChange="handleAddonChange"
+            @addonAction="handleAddonAction" />
+        </div>
 
         <Label
           v-if="getFieldLabel(field) && (field.type === 'switch' || field.type === 'check')"
