@@ -245,6 +245,7 @@ provide('sidebar-menu-ctx', context)
       v-for="item in items"
       :key="item.id || item.label"
       :item="item"
+      :itemClass="itemClass"
       :menuOffset="menuOffset" />
   </nav>
 </template>
