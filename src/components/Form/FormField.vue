@@ -79,13 +79,11 @@ const fieldComponent = computed(() => {
     case 'tel':
     case 'url':
     case 'search':
+    case 'textarea':
       return Input
 
     case 'number':
       return NumberInput
-
-    case 'textarea':
-      return Textarea
 
     case 'switch':
       return Switch
@@ -144,6 +142,7 @@ const fieldProps = computed(() => {
     type === 'tel' ||
     type === 'url' ||
     type === 'search' ||
+    type === 'textarea' ||
     !type
   ) {
     return {
@@ -163,6 +162,7 @@ const fieldProps = computed(() => {
       error: props.error,
       min: props.field.min, // kept for validation attributes if needed
       max: props.field.max,
+      rows: type === 'textarea' ? props.field.props?.rows || 3 : undefined,
       class: `${props.field.className}`,
     }
   }
@@ -180,17 +180,6 @@ const fieldProps = computed(() => {
       size: props.size,
       rounded: props.rounded,
       placeholder: resolvedPlaceholder,
-      class: props.field.className,
-    }
-  }
-
-  // Textarea
-  if (type === 'textarea') {
-    return {
-      ...baseProps,
-      modelValue: props.value ?? '',
-      placeholder: resolvedPlaceholder,
-      rows: props.field.props?.rows || 3,
       class: props.field.className,
     }
   }
