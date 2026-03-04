@@ -11,6 +11,7 @@ export type ButtonVariant =
   | 'success'
   | 'success-light'
   | 'outline'
+  | 'outline-floating'
   | 'outline-primary'
   | 'outline-danger'
   | 'outline-warning'
