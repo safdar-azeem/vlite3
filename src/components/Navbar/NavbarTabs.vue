@@ -1,0 +1,250 @@
+<script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
+import Icon from '../Icon.vue'
+
+export interface NavbarTabItem {
+  label: string
+  labelI18n?: string
+  to: string
+  icon?: string
+  iconRight?: string
+  disabled?: boolean
+  exact?: boolean
+}
+
+export type NavbarTabsVariant = 'line' | 'pill' | 'solid' | 'ghost'
+export type NavbarTabsSize = 'sm' | 'md' | 'lg'
+
+interface Props {
+  items: NavbarTabItem[]
+  variant?: NavbarTabsVariant
+  size?: NavbarTabsSize
+  activeClass?: string
+  inactiveClass?: string
+  class?: string
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  variant: 'solid',
+  size: 'md',
+  activeClass: '',
+  inactiveClass: '',
+  class: '',
+})
+
+const scrollRef = ref<HTMLElement | null>(null)
+const canScrollLeft = ref(false)
+const canScrollRight = ref(false)
+
+const updateScrollState = () => {
+  const el = scrollRef.value
+  if (!el) return
+  canScrollLeft.value = el.scrollLeft > 2
+  canScrollRight.value = el.scrollLeft + el.clientWidth < el.scrollWidth - 2
+}
+
+const scrollBy = (direction: 'left' | 'right') => {
+  const el = scrollRef.value
+  if (!el) return
+  const amount = el.clientWidth * 0.6
+  el.scrollBy({ left: direction === 'right' ? amount : -amount, behavior: 'smooth' })
+}
+
+onMounted(() => {
+  nextTick(() => {
+    updateScrollState()
+    scrollRef.value?.addEventListener('scroll', updateScrollState, { passive: true })
+  })
+})
+
+onUnmounted(() => {
+  scrollRef.value?.removeEventListener('scroll', updateScrollState)
+})
+
+const route = useRoute()
+
+watch(
+  () => route.path,
+  () => nextTick(updateScrollState)
+)
+
+const itemRefs = ref<Map<string, HTMLElement>>(new Map())
+
+const setItemRef = (el: any, to: string) => {
+  const element = el?.$el ?? el
+  if (element instanceof HTMLElement) {
+    itemRefs.value.set(to, element)
+  } else {
+    itemRefs.value.delete(to)
+  }
+}
+
+watch(
+  () => route.path,
+  (path) => {
+    nextTick(() => {
+      const active = props.items.find((item) => isActive(item))
+      if (!active) return
+      const el = itemRefs.value.get(active.to)
+      el?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' })
+    })
+  },
+  { immediate: true }
+)
+
+const containerVariantClasses: Record<NavbarTabsVariant, string> = {
+  line: 'flex border-b border-border gap-0',
+  pill: 'flex gap-1 p-1 bg-secondary/80 rounded-lg',
+  solid: 'flex gap-0',
+  ghost: 'flex gap-1',
+}
+
+const sizeClasses: Record<NavbarTabsSize, string> = {
+  sm: 'px-2.5 py-1.5 text-xs',
+  md: 'px-3.5 py-2 text-sm',
+  lg: 'px-5 py-2.5 text-base',
+}
+
+const variantItemActive: Record<NavbarTabsVariant, string> = {
+  line: 'text-primary border-b-2 border-primary -mb-px',
+  pill: 'bg-background text-foreground shadow-sm',
+  solid: 'bg-primary-light text-primary-dark',
+  ghost: 'bg-accent text-accent-foreground',
+}
+
+const variantItemInactive: Record<NavbarTabsVariant, string> = {
+  line: 'text-muted-foreground border-b-2 border-transparent hover:text-foreground hover:border-border',
+  pill: 'text-muted-foreground hover:text-foreground hover:bg-accent/60',
+  solid: 'text-muted-foreground hover:text-foreground hover:bg-accent',
+  ghost: 'text-muted-foreground hover:text-foreground hover:bg-accent/60',
+}
+
+/**
+ * Active check:
+ * - If item.exact is set, require an exact path match.
+ * - Otherwise use startsWith BUT also require that the next character
+ *   after the matched prefix is either end-of-string or '/' or '?'.
+ *   This prevents /button matching /buttongroup.
+ */
+const isActive = (item: NavbarTabItem): boolean => {
+  const current = route.path
+  const target = item.to
+
+  if (item.exact || target === '/') {
+    return current === target
+  }
+
+  if (current === target) return true
+
+  // startsWith with a boundary check so /button does not match /buttongroup
+  if (current.startsWith(target)) {
+    const next = current[target.length]
+    return next === '/' || next === '?' || next === '#' || next === undefined
+  }
+
+  return false
+}
+
+const getItemClasses = (item: NavbarTabItem): string => {
+  const base =
+    'group relative inline-flex items-center justify-center gap-2 font-medium whitespace-nowrap shrink-0 select-none cursor-pointer outline-none transition-all duration-150  focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-1'
+
+  const disabled = item.disabled ? 'opacity-50 pointer-events-none cursor-not-allowed' : ''
+
+  const active = isActive(item)
+  const stateClass = active
+    ? props.activeClass || variantItemActive[props.variant]
+    : props.inactiveClass || variantItemInactive[props.variant]
+
+  return [base, sizeClasses[props.size], stateClass, disabled].filter(Boolean).join(' ')
+}
+</script>
+
+<template>
+  <div :class="['relative flex items-center w-full min-w-0 border-b', props.class]">
+    <Transition name="fade-x">
+      <div
+        v-if="canScrollLeft"
+        class="absolute left-0 top-0 bottom-0 z-10 flex items-center pointer-events-none">
+        <div class="w-8 h-full bg-gradient-to-r from-background to-transparent" />
+        <button
+          type="button"
+          class="pointer-events-auto absolute left-0 h-full px-1 flex items-center text-muted-foreground hover:text-foreground transition-colors"
+          aria-label="Scroll tabs left"
+          tabindex="-1"
+          @click="scrollBy('left')">
+          <Icon icon="lucide:chevron-left" class="w-4 h-4" />
+        </button>
+      </div>
+    </Transition>
+
+    <nav
+      ref="scrollRef"
+      role="tablist"
+      :class="[
+        'flex-1 overflow-x-auto scroll-smooth navbar-tabs-no-scrollbar',
+        containerVariantClasses[variant],
+      ]"
+      aria-label="Page tabs">
+      <RouterLink
+        v-for="item in items"
+        :key="item.to"
+        :ref="(el) => setItemRef(el, item.to)"
+        :to="item.to"
+        role="tab"
+        :aria-selected="isActive(item)"
+        :aria-disabled="item.disabled || undefined"
+        :tabindex="item.disabled ? -1 : 0"
+        :class="getItemClasses(item)"
+        @click.prevent="!item.disabled && $router.push(item.to)">
+        <Icon
+          v-if="item.icon"
+          :icon="item.icon"
+          class="shrink-0"
+          :class="size === 'sm' ? 'w-3.5 h-3.5' : 'w-4 h-4'" />
+        <span class="truncate">{{ item.label }}</span>
+        <Icon
+          v-if="item.iconRight"
+          :icon="item.iconRight"
+          class="shrink-0 opacity-70"
+          :class="size === 'sm' ? 'w-3.5 h-3.5' : 'w-4 h-4'" />
+      </RouterLink>
+    </nav>
+
+    <Transition name="fade-x">
+      <div
+        v-if="canScrollRight"
+        class="absolute right-0 top-0 bottom-0 z-10 flex items-center justify-end pointer-events-none">
+        <div class="w-8 h-full bg-gradient-to-l from-background to-transparent" />
+        <button
+          type="button"
+          class="pointer-events-auto absolute right-0 h-full px-1 flex items-center text-muted-foreground hover:text-foreground transition-colors"
+          aria-label="Scroll tabs right"
+          tabindex="-1"
+          @click="scrollBy('right')">
+          <Icon icon="lucide:chevron-right" class="w-4 h-4" />
+        </button>
+      </div>
+    </Transition>
+  </div>
+</template>
+
+<style>
+.navbar-tabs-no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.navbar-tabs-no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.fade-x-enter-active,
+.fade-x-leave-active {
+  transition: opacity 0.15s ease;
+}
+.fade-x-enter-from,
+.fade-x-leave-to {
+  opacity: 0;
+}
+</style>
