@@ -211,6 +211,9 @@ const fieldProps = computed(() => {
       placeholder: resolvedPlaceholder,
       selectable: true,
       closeOnSelect: true,
+      triggerProps: {
+        variant: props.variant === 'floating' ? 'outline-floating' : props.variant || 'outline',
+      },
     }
   }
 
@@ -221,6 +224,7 @@ const fieldProps = computed(() => {
       modelValue: Array.isArray(props.value) ? props.value : [],
       options: props.field.options || [],
       placeholder: resolvedPlaceholder,
+      variant: props.variant,
     }
   }
 
@@ -231,6 +235,9 @@ const fieldProps = computed(() => {
       modelValue: props.value,
       mode: type === 'time' ? 'time' : 'date',
       placeholder: resolvedPlaceholder,
+      btnProps: {
+        variant: props.variant === 'floating' ? 'outline-floating' : props.variant || 'outline',
+      },
     }
   }
 
