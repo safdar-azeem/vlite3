@@ -1,3 +1,5 @@
 export { default as Navbar } from './Navbar.vue'
 export { default as NavbarItem } from './NavbarItem.vue'
 export { default as NavbarGroup } from './NavbarGroup.vue'
+export { default as NavbarTabs } from './NavbarTabs.vue'
+export type { NavbarTabItem, NavbarTabsVariant, NavbarTabsSize } from './NavbarTabs.vue'
