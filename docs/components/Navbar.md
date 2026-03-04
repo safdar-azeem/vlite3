@@ -198,3 +198,58 @@ const items = [
 
 ```
 
+
+---
+
+## NavbarTabs
+
+**Import:** `import { NavbarTabs } from 'vlite3'`
+
+### Props
+
+| Prop            | Type                 | Default    | Description                                   |
+| :-------------- | :------------------- | :--------- | :-------------------------------------------- |
+| `items`         | `NavbarTabItem[]`    | required   | Array of tab definitions                      |
+| `variant`       | `NavbarTabsVariant`  | `'line'`   | Visual style                                  |
+| `size`          | `NavbarTabsSize`     | `'md'`     | Tab size                                      |
+| `activeClass`   | `string`             | `''`       | Override active tab classes                   |
+| `inactiveClass` | `string`             | `''`       | Override inactive tab classes                 |
+| `class`         | `string`             | `''`       | Custom class on root wrapper                  |
+
+### Types
+```ts
+export interface NavbarTabItem {
+  label: string
+  labelI18n?: string
+  to: string            // vue-router path
+  icon?: string         // optional leading icon
+  iconRight?: string    // optional trailing icon
+  disabled?: boolean
+  exact?: boolean       // use exact route matching
+}
+
+export type NavbarTabsVariant = 'line' | 'pill' | 'solid' | 'ghost'
+export type NavbarTabsSize    = 'sm' | 'md' | 'lg'
+```
+
+### Features
+
+- Uses `<RouterLink>` for navigation with proper active-class handling
+- Horizontal overflow with hidden scrollbar (visible scroll still works)
+- Fade gradient + chevron buttons appear automatically when tabs overflow
+- Active tab scrolled into view on route change
+- Keyboard accessible (`tab` focus, `enter` to navigate)
+- Fully reactive to route changes
+
+### Usage
+```vue
+<NavbarTabs
+  :items="[
+    { label: 'Overview',  to: '/project/overview' },
+    { label: 'Issues',    to: '/project/issues'   },
+    { label: 'Settings',  to: '/project/settings' },
+  ]"
+  variant="line"
+  size="md"
+/>
+```
