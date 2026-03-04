@@ -159,7 +159,7 @@ const getSafeLabel = (field: IForm) => {
 </script>
 
 <template>
-  <div class="grid gap-4" :class="className">
+  <div :class="['grid', variant === 'floating' ? 'gap-6' : 'gap-4', className]">
     <template v-for="field in schema" :key="field.name">
       <div v-if="checkFieldVisible(field)" :class="['form-field-item', getItemClass(field)]">
         <Label
