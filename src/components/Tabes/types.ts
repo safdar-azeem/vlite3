@@ -4,6 +4,8 @@ export interface TabesOption {
   value: string | number
   icon?: string
   disabled?: boolean
+  to?: string | { path: string; [key: string]: any }
+  href?: string
 }
 
 export type TabesSize = 'sm' | 'md' | 'lg'
@@ -16,4 +18,3 @@ export type TabesVariant =
   | 'success'
   | 'outline'
   | 'line'
-
