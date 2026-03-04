@@ -31,6 +31,7 @@ export interface SidebarMenuProps {
   compactItemPadding?: string
   nestedMenuWidth?: string
   nestedMenuMaxHeight?: string
+  itemClass?: string
   menuOffset?: [number, number]
 }
 
