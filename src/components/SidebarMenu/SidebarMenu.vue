@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { provide, ref, watch, reactive, computed, inject } from 'vue'
 import { useRoute } from 'vue-router'
+import { useBreakpoints, breakpointsTailwind } from '@vueuse/core'
 import type { SidebarMenuProps, SidebarMenuItemSchema, SidebarMenuContext } from './types'
 import SidebarMenuItem from './SidebarMenuItem.vue'
 
@@ -25,20 +26,33 @@ const props = withDefaults(defineProps<SidebarMenuProps>(), {
   nestedMenuWidth: '220px',
   nestedMenuMaxHeight: '300px',
   menuOffset: () => [0, 10],
+  orientation: 'vertical',
+  mobileBreakpoint: 'none',
 })
 
 const route = useRoute()
+const breakpoints = useBreakpoints(breakpointsTailwind)
 
 // Internal State
 const expandedItems = ref<string[]>([...props.defaultExpanded])
 const activeItem = ref<string | null>(null)
 
+// Handle Responsiveness
+const isDesktop = computed(() => {
+  if (!props.mobileBreakpoint || props.mobileBreakpoint === 'none') return true
+  return breakpoints.greaterOrEqual(props.mobileBreakpoint as any).value
+})
+
+const currentOrientation = computed(() => {
+  if (!isDesktop.value) {
+    return props.orientation === 'horizontal' ? 'vertical' : 'horizontal'
+  }
+  return props.orientation || 'vertical'
+})
+
 // Helper: Check if item is active
 const isItemActive = (item: SidebarMenuItemSchema, path: string): boolean => {
-  // 1. Check ID equality with activeItem (manual set)
   if (activeItem.value === item.id) return true
-
-  // 2. Check Route Path
   if (item.to) {
     const itemPath = typeof item.to === 'string' ? item.to : (item.to as any).path
     if (itemPath) {
@@ -57,27 +71,19 @@ const syncWithRoute = (
 ): boolean => {
   let found = false
   for (const item of items) {
-    // Match logic in SidebarMenuItem: ID > to (if string) > label
     const id = item.id || (typeof item.to === 'string' ? item.to : null) || item.label
-
-    // Recurse first to see if child matches
     let childFound = false
     if (item.children) {
       childFound = syncWithRoute(item.children, path, [...parents, id])
-      if (childFound) {
-        found = true
-      }
+      if (childFound) found = true
     }
 
-    // Check if this item is the active one directly or through a child (in nested layout tabs mode)
     const isDirectlyActive = isItemActive(item, path)
     const isParentActiveViaTabs =
       childFound && navbarCtx?.renderNestedTabs?.value && parents.length === 0
 
     if (isDirectlyActive || isParentActiveViaTabs) {
       activeItem.value = id
-
-      // Expand all parents
       parents.forEach((pId) => {
         if (!expandedItems.value.includes(pId)) expandedItems.value.push(pId)
       })
@@ -91,12 +97,8 @@ const syncWithRoute = (
 const updateNestedTabs = (path: string) => {
   if (!navbarCtx?.renderNestedTabs?.value) return
 
-  // Find the top-level active parent
   const topLevelActive = props.items.find((item) => {
-    // Exact match top
     if (activeItem.value === (item.id || item.label || item.to)) return true
-
-    // Parent match
     const childFound = item.children?.some((child) => {
       return (
         activeItem.value === (child.id || child.label || child.to) ||
@@ -121,15 +123,12 @@ const updateNestedTabs = (path: string) => {
       href: child.href,
     }))
 
-    // Attempt to figure out which child tab is currently active
     let activeChildTab = tabsForNav[0].value
     if (activeItem.value) {
-      // Is active item one of the children directly?
       const directMatch = tabsForNav.find((t) => t.value === activeItem.value)
       if (directMatch) {
         activeChildTab = directMatch.value
       } else {
-        // Is the active item deeply nested? Let's check which child owns it
         const owningChild = topLevelActive.children.find((child) => {
           return child.children?.some(
             (grandChild) =>
@@ -144,10 +143,8 @@ const updateNestedTabs = (path: string) => {
         }
       }
     }
-
     navbarCtx.setNestedTabs(tabsForNav, activeChildTab)
   } else {
-    // Reset if it's not a top-parent tab
     const isChild = props.items.some((i) =>
       i.children?.some((c) => (c.id || c.label || c.to) === activeItem.value)
     )
@@ -157,7 +154,6 @@ const updateNestedTabs = (path: string) => {
   }
 }
 
-// Watch Route
 watch(
   () => route?.path,
   (path) => {
@@ -169,7 +165,6 @@ watch(
   { immediate: true }
 )
 
-// Also watch items change to re-sync
 watch(
   () => props.items,
   () => {
@@ -181,11 +176,9 @@ watch(
   { deep: true }
 )
 
-// Watch active item change to push nested tabs when clicked directly
 watch(
   () => activeItem.value,
   () => {
-    // If layout tabs active, push the new context
     if (navbarCtx?.renderNestedTabs?.value) {
       updateNestedTabs(route?.path || '')
     }
@@ -194,12 +187,11 @@ watch(
 
 const toggleExpand = (id: string) => {
   const isExpanded = expandedItems.value.includes(id)
-
   if (isExpanded) {
     expandedItems.value = expandedItems.value.filter((item) => item !== id)
   } else {
-    if (props.allowMultiple) {
-      expandedItems.value.push(id)
+    if (!props.allowMultiple) {
+      expandedItems.value = [id]
     } else {
       expandedItems.value.push(id)
     }
@@ -210,7 +202,6 @@ const setActive = (id: string | null) => {
   activeItem.value = id
 }
 
-// Provide context with type assertion to bypass strict generic literal check
 const context = reactive({
   activeItem,
   expandedItems,
@@ -230,6 +221,7 @@ const context = reactive({
   compactItemPadding: computed(() => props.compactItemPadding),
   nestedMenuWidth: computed(() => props.nestedMenuWidth),
   nestedMenuMaxHeight: computed(() => props.nestedMenuMaxHeight),
+  currentOrientation,
 }) as unknown as SidebarMenuContext
 
 provide('sidebar-menu-ctx', context)
@@ -237,8 +229,11 @@ provide('sidebar-menu-ctx', context)
 
 <template>
   <nav
-    class="flex flex-col space-y-0 w-full"
-    :class="props.compact ? '' : 'space-y-1'"
+    class="flex w-full transition-all duration-300"
+    :class="[
+      currentOrientation === 'horizontal' ? 'flex-row flex-wrap gap-2 items-center' : 'flex-col',
+      currentOrientation === 'vertical' && !props.compact ? 'space-y-1' : ''
+    ]"
     role="tree"
     aria-label="Sidebar Menu">
     <SidebarMenuItem
