@@ -35,6 +35,7 @@ export interface SidebarMenuProps {
   menuOffset?: [number, number]
   orientation?: 'vertical' | 'horizontal'
   mobileBreakpoint?: 'sm' | 'md' | 'lg' | 'xl' | 'none'
+  showTooltip?: boolean
 }
 
 export interface SidebarMenuContext {
@@ -57,4 +58,5 @@ export interface SidebarMenuContext {
   nestedMenuWidth: string
   nestedMenuMaxHeight: string
   currentOrientation: 'vertical' | 'horizontal'
+  showTooltip: boolean
 }
