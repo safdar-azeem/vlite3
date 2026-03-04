@@ -113,32 +113,20 @@ const menuItems: SidebarMenuItemSchema[] = [
       <template #header="{ toggleSidebar, toggle }">
         <div class="h-13 border-b bg-white flex items-center justify-between px-6 w-full shadow-sm">
           <div class="flex items-center w-full justify-between gap-8">
-            <div class="flex gap-4">
+            <div class="flex gap-3 items-center">
+              <Button variant="ghost" icon="lucide:menu" @click="toggle" class="md:hidden" />
               <Button
                 variant="ghost"
-                size="sm"
-                icon="lucide:menu"
-                @click="toggle"
-                class="md:hidden" />
-              <Button
-                variant="ghost"
-                size="sm"
                 icon="lucide:menu"
                 @click="toggleSidebar"
                 class="max-md:hidden" />
               <div class="font-bold text-lg flex items-center gap-2 mr-6">
-                <div class="w-8 h-8 rounded bg-primary text-white flex items-center justify-center">
-                  B
+                <div class="w-7 h-7 rounded bg-primary text-white flex items-center justify-center">
+                  V
                 </div>
-                Builto
+                Vlite
               </div>
 
-              <!--
-              NavbarCommandPalette is placed directly in the header slot.
-              It self-registers Meta+K globally and renders its own modal.
-              The trigger button is hidden on mobile via its internal hidden md:inline-flex class.
-              Pass :menu-items="menuItems" to auto-populate all nav links with zero extra work.
-            -->
               <NavbarCommandPalette
                 :enabled="true"
                 :menu-items="menuItems"
