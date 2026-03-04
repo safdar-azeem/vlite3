@@ -211,8 +211,13 @@ const getSafeLabel = (field: IForm) => {
           <FormField
             :field="
               props.variant === 'floating'
-                ? { ...field, placeholder: undefined, placeholderI18n: undefined }
-                : field
+                ? {
+                    ...field,
+                    placeholder: undefined,
+                    placeholderI18n: undefined,
+                    props: { ...(field.props || {}), id: field.name },
+                  }
+                : { ...field, props: { ...(field.props || {}), id: field.name } }
             "
             :value="getFieldValue(field)"
             :label="
