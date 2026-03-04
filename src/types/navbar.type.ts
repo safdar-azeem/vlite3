@@ -13,6 +13,16 @@ export interface NavbarItemProps {
   class?: string
 }
 
+export interface NavbarTabItem {
+  label: string
+  labelI18n?: string
+  value: string | number
+  icon?: string
+  disabled?: boolean
+  to?: string | any
+  href?: string
+}
+
 export interface NavbarProps {
   variant?: NavbarVariant
   position?: NavbarPosition
@@ -24,6 +34,7 @@ export interface NavbarProps {
   height?: string // For header variant
   width?: string // For sidebar variant
   compact?: boolean
+  renderNestedTabs?: boolean
   logo?: string
   logoAlt?: string
   mobileBreakpoint?: 'sm' | 'md' | 'lg' | 'xl'
