@@ -182,7 +182,8 @@ const getSafeLabel = (field: IForm) => {
         </Label>
 
         <div
-          class="relative w-full"
+          class="relative"
+          :class="['switch', 'check'].includes(field.type as string) ? 'w-auto' : 'w-full'"
           @focusin="handleFocusIn(field.name)"
           @focusout="handleFocusOut(field.name)">
           <label
@@ -261,5 +262,6 @@ const getSafeLabel = (field: IForm) => {
 .form-field-item:has([role='checkbox']) {
   flex-direction: row;
   align-items: center;
+  justify-content: flex-start;
 }
 </style>
