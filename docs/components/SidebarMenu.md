@@ -14,13 +14,13 @@
 | `variant`           | `'default' \| 'ghost'`    | `default`                                      | Visual theme                      |
 | `compact`           | `boolean`                 | `false`                                        | Collapsed mode (icons only)       |
 | `renderMode`        | `'tree' \| 'popover'`     | `tree`                                         | Submenu rendering style           |
+| `orientation`       | `'vertical' \| 'horizontal'`| `vertical`                                     | Layout direction of the menu      |
+| `mobileBreakpoint`  | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'none'`| `none`                               | Responsive screen breakpoint switch |
 | `showCompactLabels` | `boolean`                 | `false`                                        | Show small labels in compact mode |
 | `iconSize`          | `number`                  | `16`                                           | Icon size in pixels               |
 | `compactIconSize`   | `number`                  | `20`                                           | Icon size when in compact mode    |
 | `labelSize`         | `string`                  | `text-sm`                                      | Base tailwind class for labels    |
 | `compactLabelSize`  | `string`                  | `text-[10px]`                                  | Tailwind class for compact labels |
-| `activeClass`       | `string`                  | `bg-primary-light text-primary-fg-light`       | Classes for the active item       |
-| `inactiveClass`     | `string`                  | `text-muted hover:bg-accent/80 hover:text-foreground`| Classes for the inactive item     |
 
 ### Type Definition
 
@@ -67,9 +67,9 @@ const items = [
 <template>
   <SidebarMenu
     :items="items"
-    :icon-size="18"
-    :compact-icon-size="24"
-    active-class="bg-blue-500 text-white shadow-md"
+    orientation="horizontal"
+    mobile-breakpoint="md"
+    icon-size="18px"
   />
 </template>
 
