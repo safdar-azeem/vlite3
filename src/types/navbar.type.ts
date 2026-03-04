@@ -50,4 +50,22 @@ export interface NavbarProps {
    * Mobile breakpoint behavior is completely unaffected.
    */
   sidebarToggle?: boolean
+
+  /**
+   * When true, automatically renders a Breadcrumb inside the #main slot area
+   * based on the current route path. Works in Layout Mode.
+   */
+  breadcrumb?: boolean
+  /** Breadcrumb visual variant (default: 'default') */
+  breadcrumbVariant?: import('@/components/Breadcrumb/types').BreadcrumbVariant
+  /** Breadcrumb separator style (default: 'chevron') */
+  breadcrumbSeparator?: import('@/components/Breadcrumb/types').BreadcrumbSeparator
+  /** Breadcrumb size (default: 'sm') */
+  breadcrumbSize?: import('@/components/Breadcrumb/types').BreadcrumbSize
+  /** Override auto-generated labels by path, e.g. { '/settings': 'Preferences' } */
+  breadcrumbLabels?: Record<string, string>
+  /** Home icon (default: 'lucide:home') */
+  breadcrumbHomeIcon?: string
+  /** Extra CSS classes for the breadcrumb wrapper */
+  breadcrumbClass?: string
 }
