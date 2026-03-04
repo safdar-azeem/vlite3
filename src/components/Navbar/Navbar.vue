@@ -1,11 +1,12 @@
-<script setup lang="ts" name="Navbar">
+<script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted, useSlots, provide, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useBreakpoints, breakpointsTailwind, onClickOutside } from '@vueuse/core'
 import Icon from '../Icon.vue'
 import SidePanel from '../SidePanel.vue'
 import Logo from '../Logo.vue' // Assuming Logo exists or using fallback
-import type { NavbarProps } from '@/types/navbar.type'
+import type { NavbarProps, NavbarTabItem } from '@/types/navbar.type'
+import NavbarTabs from './NavbarTabs.vue'
 
 const props = withDefaults(defineProps<NavbarProps>(), {
   variant: 'header',
@@ -25,6 +26,20 @@ const props = withDefaults(defineProps<NavbarProps>(), {
   rightClass: '',
   mobileTriggerClass: '',
   mobileMenuVariant: 'sidepanel',
+  renderNestedTabs: false,
+})
+
+const nestedTabsItems = ref<NavbarTabItem[]>([])
+const activeNestedTab = ref<string | number>('')
+
+// Provide the context early
+provide('navbar-context', {
+  compact: computed(() => props.compact),
+  renderNestedTabs: computed(() => props.renderNestedTabs),
+  setNestedTabs: (tabs: NavbarTabItem[], activeTab: string | number) => {
+    nestedTabsItems.value = tabs
+    activeNestedTab.value = activeTab
+  },
 })
 
 const emit = defineEmits<{
@@ -37,9 +52,28 @@ const slots = useSlots()
 const mobileMenuRef = ref<HTMLElement | null>(null)
 const mobileTriggerRef = ref<HTMLElement | null>(null)
 
+// Handle layout nested tabs routing
+const handleNestedTabClick = (val: string | number) => {
+  const targetTab = nestedTabsItems.value.find((t) => t.value === val)
+  if (!targetTab) return
+
+  // In our nestedTabsItems payload mapping, 'value' is often the id or the path.
+  // We can push to router if it looks like a path or we mapped it explicitly
+  if (typeof val === 'string' && val.startsWith('/')) {
+    route.path !== val && useRoute().path // trick to grab router inside setup if needed
+    // The better way is to use router instance
+    import('vue-router').then(({ useRouter }) => {
+      const router = useRouter()
+      router.push(val).catch(() => {})
+    })
+  } else {
+    // If not a clear path, just let the active item change.
+    activeNestedTab.value = val
+  }
+}
+
 // If the user provides a header or main slot, we switch to Layout Mode
 const isLayoutMode = computed(() => !!(slots.header || slots.main))
-
 // Close on click outside
 onClickOutside(
   mobileMenuRef,
@@ -170,19 +204,10 @@ const centerClasses = computed(() => {
   switch (props.centerPosition) {
     case 'left':
       return 'flex items-center justify-start'
-    case 'right':
-      return 'flex items-center justify-end ml-auto'
-    case 'center':
-    default:
-      return `${breakpointClasses.value.desktopContent} items-center justify-center mx-auto`
   }
 })
 
-provide('navbar-context', {
-  compact: computed(() => props.compact),
-})
 const route = useRoute()
-
 watch(
   () => route.path,
   () => {
@@ -201,7 +226,9 @@ watch(isDesktop, (val) => {
 </script>
 
 <template>
-  <div v-if="isLayoutMode" class="vlite-app-layout flex flex-col w-full h-full bg-body overflow-hidden">
+  <div
+    v-if="isLayoutMode"
+    class="vlite-app-layout flex flex-col w-full h-full bg-body overflow-hidden">
     <header v-if="$slots.header" class="w-full shrink-0 z-50 flex flex-col relative">
       <slot
         name="header"
@@ -250,13 +277,7 @@ watch(isDesktop, (val) => {
             </div>
           </div>
 
-          <div
-            :class="[
-              centerClasses,
-              'max-w-full',
-              props.contentClass,
-            ]"
-            v-if="$slots?.center">
+          <div :class="[centerClasses, 'max-w-full', props.contentClass]" v-if="$slots?.center">
             <slot name="center" />
           </div>
 
@@ -322,8 +343,18 @@ watch(isDesktop, (val) => {
         </template>
       </nav>
 
-      <main v-if="$slots.main" class="flex-1 overflow-y-auto w-full relative h-full">
-        <slot name="main" />
+      <main v-if="$slots.main" class="flex-1 overflow-y-auto w-full relative h-full flex flex-col">
+        <div
+          v-if="props.renderNestedTabs && nestedTabsItems.length > 0"
+          class="shrink-0 w-full">
+          <NavbarTabs
+            v-model="activeNestedTab"
+            @change="handleNestedTabClick"
+            :items="nestedTabsItems" />
+        </div>
+        <div class="flex-1 overflow-y-auto w-full relative h-full">
+          <slot name="main" />
+        </div>
       </main>
 
       <template v-if="props.mobileMenuVariant === 'dropdown'">
@@ -425,13 +456,7 @@ watch(isDesktop, (val) => {
         </div>
       </div>
 
-      <div
-        :class="[
-          centerClasses,
-          'max-w-full',
-          props.contentClass,
-        ]"
-        v-if="$slots?.center">
+      <div :class="[centerClasses, 'max-w-full', props.contentClass]" v-if="$slots?.center">
         <slot name="center" />
       </div>
 
