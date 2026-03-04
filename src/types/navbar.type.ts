@@ -32,7 +32,6 @@ export interface NavbarProps {
   floating?: boolean // For floating navbar effect
   class?: string
   height?: string // For header variant
-  width?: string // For sidebar variant
   compact?: boolean
   renderNestedTabs?: boolean
   logo?: string
