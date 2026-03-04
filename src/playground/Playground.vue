@@ -110,6 +110,8 @@ const menuItems: SidebarMenuItemSchema[] = [
       variant="sidebar"
       mobileBreakpoint="md"
       sidebarToggle
+      breadcrumb
+      render-nested-tabs
       class="bg-body border-r border-border h-max shrink-0 z-20">
       <template #header="{ toggleSidebar, toggle }">
         <div class="h-13 border-b bg-white flex items-center justify-between px-6 w-full shadow-sm">
