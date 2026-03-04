@@ -215,7 +215,7 @@ const borderColors = [
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto p-6 space-y-14">
+  <div class="space-y-14">
     <!-- Semantic -->
     <div v-for="group in semanticColors" :key="group.title" class="space-y-4">
       <h2 class="text-lg font-semibold text-foreground">{{ group.title }}</h2>
