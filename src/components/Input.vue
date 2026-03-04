@@ -134,11 +134,12 @@ const inputBaseClass = computed(() => {
   return [
     base,
     variantStyles[props.variant],
-    sizeStyles[props.size],
+    props.type === 'textarea' ? '' : sizeStyles[props.size],
     roundedClass,
     props.error ? 'border-destructive focus-visible:ring-destructive' : '',
     props.icon ? 'pl-9' : isMinimal && !hasAddonLeft.value ? 'pl-0' : '',
-    isFloating ? 'pt-3 pb-1' : '', // Add padding for floating label
+    isFloating && props.type !== 'textarea' ? 'pt-3 pb-3' : '', // Add padding for floating label but ignore for textarea
+    isFloating && props.type === 'textarea' ? 'pt-3.5' : '', // Textareas need top padding but normal bottom
     (props.showClearButton && hasValue.value) ||
     props.type === 'password' ||
     props.loading ||
