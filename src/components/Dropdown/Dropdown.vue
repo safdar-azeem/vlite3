@@ -337,6 +337,7 @@ const handleClose = () => {
             :selected-label="selectedLabel"
             :is-open="isOpen"
             :direction="direction"
+            :triggerProps="triggerProps"
             class="w-full" />
         </slot>
       </template>
