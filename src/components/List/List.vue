@@ -72,6 +72,9 @@ const columnLayout = computed<ColumnLayout>(() => {
 })
 
 const hasFullItems = computed(() => columnLayout.value.full.length > 0)
+const hasColumnItems = computed(
+  () => columnLayout.value.left.length > 0 || columnLayout.value.right.length > 0,
+)
 
 // ── Title ─────────────────────────────────────────────
 const displayTitle = computed(() => {
@@ -109,7 +112,7 @@ const leftDividerClass = computed(() => {
 
 // Collect passthrough slot names (everything except structural ones)
 const fieldSlotNames = computed(() =>
-  Object.keys(slots).filter((k) => !['title', 'header', 'footer'].includes(k))
+  Object.keys(slots).filter((k) => !['title', 'header', 'footer'].includes(k)),
 )
 
 // ── Skeleton ──────────────────────────────────────────
@@ -153,6 +156,17 @@ const skeletonItems = computed(() => Array.from({ length: props.skeletonRows }))
     </template>
 
     <template v-else>
+      <!--
+        FIX: Double-border between columned rows and full-width (lineByLine) rows.
+
+        Root cause: the last row in each column had `border-b border-border` and
+        the full-width wrapper had `border-t border-border`, producing two
+        overlapping 1px borders that appeared as a thicker/doubled line.
+
+        Solution: the last row in each column omits its `border-b` when
+        `hasFullItems` is true. The `border-t` on the full-width wrapper becomes
+        the sole visual separator — one clean line every time.
+      -->
       <div :class="gridClass">
         <!-- Left column -->
         <div v-if="columnLayout.left.length > 0" :class="leftDividerClass">
@@ -164,8 +178,11 @@ const skeletonItems = computed(() => Array.from({ length: props.skeletonRows }))
             :index="idx"
             :variant="variant"
             :show-colon="showColon"
-            :is-last="idx === columnLayout.left.length - 1 && !hasFullItems"
-            :show-border-bottom="!(idx === columnLayout.left.length - 1 && !hasFullItems)">
+            :is-last="idx === columnLayout.left.length - 1"
+            :show-border-bottom="
+              idx < columnLayout.left.length - 1 ||
+              (idx === columnLayout.left.length - 1 && !hasFullItems)
+            ">
             <template
               v-for="slotName in fieldSlotNames"
               :key="slotName"
@@ -185,8 +202,11 @@ const skeletonItems = computed(() => Array.from({ length: props.skeletonRows }))
             :index="idx"
             :variant="variant"
             :show-colon="showColon"
-            :is-last="idx === columnLayout.right.length - 1 && !hasFullItems"
-            :show-border-bottom="!(idx === columnLayout.right.length - 1 && !hasFullItems)">
+            :is-last="idx === columnLayout.right.length - 1"
+            :show-border-bottom="
+              idx < columnLayout.right.length - 1 ||
+              (idx === columnLayout.right.length - 1 && !hasFullItems)
+            ">
             <template
               v-for="slotName in fieldSlotNames"
               :key="slotName"
@@ -202,14 +222,12 @@ const skeletonItems = computed(() => Array.from({ length: props.skeletonRows }))
         </div>
       </div>
 
-      <!-- Full-width / lineByLine items -->
-      <div
-        v-if="hasFullItems"
-        :class="
-          columnLayout.left.length > 0 || columnLayout.right.length > 0
-            ? 'border-t border-border'
-            : ''
-        ">
+      <!--
+        Full-width / lineByLine items.
+        border-t is the SOLE separator — column rows have already suppressed
+        their last border-b when this section is present.
+      -->
+      <div v-if="hasFullItems" :class="hasColumnItems ? 'border-t border-border' : ''">
         <ListFieldRow
           v-for="(field, idx) in columnLayout.full"
           :key="field.key + idx"
