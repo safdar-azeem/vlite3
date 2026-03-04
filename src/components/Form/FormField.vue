@@ -33,6 +33,7 @@ interface Props {
   readonly?: boolean
   error?: string
   isUpdate?: boolean
+  label?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -131,7 +132,9 @@ const fieldProps = computed(() => {
     ...(props.field.props || {}),
   }
 
-  const resolvedPlaceholder = props.field.placeholderI18n ? $t(props.field.placeholderI18n) : props.field.placeholder
+  const resolvedPlaceholder = props.field.placeholderI18n
+    ? $t(props.field.placeholderI18n)
+    : props.field.placeholder
 
   // Input-based components
   if (
@@ -148,6 +151,7 @@ const fieldProps = computed(() => {
       modelValue: props.value ?? '',
       type: type || 'text',
       placeholder: resolvedPlaceholder,
+      label: props.label,
       icon: props.field.icon,
       iconRight: props.field.iconRight,
       // Only pass addon strings; object addons are rendered via slots
