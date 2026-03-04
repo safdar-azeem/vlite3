@@ -279,10 +279,10 @@ onMounted(() => {
           v-if="displayLabel && variant === 'floating'"
           :for="displayLabel"
           :class="[
-            'absolute left-3 transition-all duration-200 ease-in-out pointer-events-none z-20',
+            'absolute transition-all duration-200 ease-in-out pointer-events-none z-20',
             isFocused || hasValue
-              ? '-top-2.5 text-xs bg-background px-1 text-primary shadow-[0_4px_4px_-4px_bg-background]'
-              : 'top-2.5 text-sm text-muted-foreground/70',
+              ? '-top-2.5 left-3 text-xs bg-background px-1 text-primary shadow-[0_4px_4px_-4px_bg-background]'
+              : `top-2.5 text-sm text-muted-foreground/70 ${icon ? 'left-9' : 'left-3'}`,
           ]">
           {{ displayLabel }}
         </label>
