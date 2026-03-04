@@ -7,6 +7,8 @@ import type { SidebarMenuItemSchema } from '@/components/SidebarMenu'
 import Icon from '@/components/Icon.vue'
 import ThemeToggle from '@/components/ThemeToggle.vue'
 import Button from '@/components/Button.vue'
+import Input from '@/components/Input.vue'
+import Avatar from '@/components/Avatar.vue'
 
 const router = useRouter()
 
@@ -105,16 +107,36 @@ const menuItems: SidebarMenuItemSchema[] = [
     <Navbar
       variant="sidebar"
       mobileBreakpoint="md"
-      class="bg-body border-r border-border h-max shrink-0 z-20"
+      class="bg-body border-r border-border h-max shrink-0 z-20 w-[100px]!"
       renderNestedTabs
-      width="w-64">
-      <template #logo>
-        <div class="flex items-center gap-2 font-bold text-xl tracking-tight">
-          <div
-            class="w-8 h-8 bg-primary text-primary-fg rounded-lg flex items-center justify-center shrink-0">
-            <Icon icon="lucide:box" class="w-5 h-5" />
+      content-class="p-0!"
+      compact>
+      <template #header="{ toggle }">
+        <div class="h-13 border-b bg-white flex items-center justify-between px-6 w-full shadow-sm">
+          <div class="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              icon="lucide:menu"
+              class="md:hidden -ml-2"
+              @click="toggle" />
+            <div class="font-bold text-lg flex items-center gap-2">
+              <div class="w-8 h-8 rounded bg-primary text-white flex items-center justify-center">
+                B
+              </div>
+              Builto
+            </div>
           </div>
-          vLite3
+          <div class="flex items-center gap-3">
+            <Input
+              placeholder="Search..."
+              icon="lucide:search"
+              size="sm"
+              rounded="full"
+              class="bg-gray-100 hidden sm:flex w-64" />
+            <Button variant="ghost" size="sm" icon="lucide:bell" rounded="full" />
+            <Avatar size="sm" fallback="JD" class="bg-primary/20 text-primary" />
+          </div>
         </div>
       </template>
 
@@ -123,6 +145,9 @@ const menuItems: SidebarMenuItemSchema[] = [
           <SidebarMenu
             :items="menuItems"
             :allow-multiple="true"
+            compact
+            show-compact-labels
+            itemClass="rounded-none!"
             :default-expanded="[
               'Core',
               'Forms & Auth',
@@ -142,7 +167,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       <template #main>
         <div class="flex-1 w-full flex flex-col h-full bg-body relative z-0">
           <div class="flex-1 overflow-y-auto scroll-smooth">
-            <div class="max-w-6xl mx-auto px-6 py-6 md:py-12">
+            <div class="max-w-[1350px] mx-auto px-6 py-6 md:py-12">
               <div
                 class="mb-10 pb-6 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
