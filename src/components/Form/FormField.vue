@@ -503,6 +503,7 @@ const handleAddonAction = (addon: IFormAddon) => {
   <component
     v-else
     :is="fieldComponent"
+    class="w-full"
     v-bind="{
       ...fieldProps,
       ...(field?.props || {}),
