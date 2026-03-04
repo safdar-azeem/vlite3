@@ -12,6 +12,7 @@ interface Props {
   item: SidebarMenuItemSchema
   depth?: number
   menuOffset?: [number, number]
+  itemClass?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -48,6 +49,12 @@ const isExpanded = computed(() => {
   if (usePopover.value) return false
   if (context.renderNestedTabs && props.depth === 0) return false // Prevent showing children block if handling via Navbar Tabes at top level
   return context.expandedItems.includes(itemId.value)
+})
+
+const showChevron = computed(() => {
+  if (!hasChildren.value) return false
+  if (context.renderNestedTabs && props.depth === 0) return false
+  return true
 })
 
 const isActive = computed(() => {
@@ -106,7 +113,7 @@ const itemStyle = computed(() => {
 })
 
 const itemClass = computed(() => {
-  const base = `group flex items-center justify-between font-medium rounded-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 relative border border-transparent select-none cursor-pointer w-full ${context.labelClass}`
+  const base = `group flex items-center justify-between font-medium rounded-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 relative border border-transparent select-none cursor-pointer w-full ${props?.itemClass} ${context.labelClass}`
 
   const layout = context.compact
     ? `justify-center ${context.compactItemPadding}`
@@ -331,7 +338,7 @@ const componentProps = computed(() => {
           v-bind="componentProps"
           :class="itemClass"
           :style="itemStyle"
-          :aria-expanded="hasChildren ? isExpanded : undefined"
+          :aria-expanded="showChevron ? isExpanded : undefined"
           :aria-current="isActive ? 'page' : undefined"
           @click="handleClick">
           <div
@@ -354,7 +361,7 @@ const componentProps = computed(() => {
               }" />
 
             <span
-              class="truncate leading-none pt-0.5"
+              class="truncate leading-none pt-0.5 wrap-break-word flex-wrap text-wrap"
               :class="{
                 [context.compactLabelClass]: showCompactLabel,
                 hidden: context.compact && !showCompactLabel,
@@ -375,7 +382,7 @@ const componentProps = computed(() => {
           </div>
 
           <div
-            v-if="hasChildren"
+            v-if="showChevron"
             role="button"
             tabindex="0"
             class="ml-1.5 flex shrink-0 items-center justify-center rounded-sm text-muted-foreground hover:bg-accent/50 hover:text-foreground transition-all"
