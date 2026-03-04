@@ -32,6 +32,7 @@ const computedRenderMode = computed(() => {
 })
 
 const usePopover = computed(() => {
+  if (context.renderNestedTabs && props.depth === 0) return false
   return computedRenderMode.value === 'popover' && hasChildren.value
 })
 
@@ -45,6 +46,7 @@ const hasChildren = computed(() => !!props.item.children?.length)
 
 const isExpanded = computed(() => {
   if (usePopover.value) return false
+  if (context.renderNestedTabs && props.depth === 0) return false // Prevent showing children block if handling via Navbar Tabes at top level
   return context.expandedItems.includes(itemId.value)
 })
 
@@ -54,6 +56,12 @@ const isActive = computed(() => {
 
 const handleClick = (e: MouseEvent) => {
   if (props.item.disabled) return
+
+  if (context.renderNestedTabs && props.depth === 0) {
+    if (props.item.action) props.item.action(props.item)
+    context.setActive(itemId.value)
+    return
+  }
 
   if (hasChildren.value) {
     if (!props.item.to && !props.item.href) {
@@ -74,6 +82,12 @@ const handleClick = (e: MouseEvent) => {
 
 const handleChevronClick = (e: Event) => {
   e.stopPropagation()
+  if (context.renderNestedTabs && props.depth === 0) {
+    if (props.item.action) props.item.action(props.item)
+    context.setActive(itemId.value)
+    return
+  }
+
   if (!usePopover.value) {
     context.toggleExpand(itemId.value)
   }
