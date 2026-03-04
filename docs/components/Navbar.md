@@ -593,3 +593,64 @@ export interface NavbarProps {
 - The `compact` prop is propagated via `provide/inject`. Any `NavbarItem` or `SidebarMenu` inside the Navbar automatically receives this value — you do not need to pass it manually.
 - When using `mobileMenuVariant="dropdown"`, the dropdown positions itself with `absolute` below the `<nav>`, so the parent must have `position: relative` (or be a positioned container) for correct stacking.
 - The mobile `SidePanel` and `dropdown` menus render the `#left`, `#center`, and `#right` slot content. If you use `#mobile-menu` to override the mobile content, those default slot mirrors are replaced entirely.
+
+---
+
+## Sidebar Toggle (Desktop)
+
+When using Layout Mode, you can enable a sidebar toggle button on large screens by passing the `sidebarToggle` prop. This renders a `lucide:panel-left` bars button **before the logo** inside the `#header` slot scope, accessible via the `toggleSidebar` and `sidebarVisible` scoped props.
+
+The user's preference is automatically saved in `localStorage` under the key `vlite-navbar-sidebar-visible` and restored on the next session.
+
+**Mobile breakpoints are completely unaffected.** The toggle button is only visible above the `mobileBreakpoint` threshold. The mobile SidePanel drawer behavior is preserved as-is.
+
+### Prop
+
+| Prop            | Type      | Default | Description                                                                                                   |
+| :-------------- | :-------- | :------ | :------------------------------------------------------------------------------------------------------------ |
+| `sidebarToggle` | `boolean` | `false` | Enables the desktop sidebar toggle feature. Only functional in Layout Mode (when `#header` + `#main` are used). |
+
+### Updated `#header` Slot Scoped Props
+
+| Prop             | Type         | Description                                                         |
+| :--------------- | :----------- | :------------------------------------------------------------------ |
+| `isOpen`         | `boolean`    | Mobile menu open state (unchanged).                                 |
+| `toggle`         | `() => void` | Mobile menu toggle (unchanged).                                     |
+| `sidebarVisible` | `boolean`    | Whether the sidebar is currently visible on desktop.                |
+| `toggleSidebar`  | `() => void` | Call this to show/hide the desktop sidebar.                         |
+
+### Usage
+```vue
+<Navbar variant="sidebar" :sidebar-toggle="true">
+  <template #header="{ toggle, toggleSidebar, sidebarVisible }">
+    <div class="h-16 border-b bg-white flex items-center justify-between px-6 w-full">
+      <div class="flex items-center gap-4">
+        <!-- Mobile hamburger — only visible below mobileBreakpoint -->
+        <button class="md:hidden" @click="toggle">
+          <Icon icon="lucide:menu" />
+        </button>
+
+        <!-- Desktop sidebar toggle — only visible above mobileBreakpoint -->
+        <button
+          class="hidden md:flex p-2 rounded-md text-muted-foreground hover:bg-accent transition-colors"
+          :aria-label="sidebarVisible ? 'Hide sidebar' : 'Show sidebar'"
+          @click="toggleSidebar">
+          <Icon icon="lucide:panel-left" class="w-5 h-5" />
+        </button>
+
+        <span class="font-bold text-lg">My App</span>
+      </div>
+    </div>
+  </template>
+
+  <template #default>
+    <SidebarMenu :items="menuItems" />
+  </template>
+
+  <template #main>
+    <div class="p-6">
+      <RouterView />
+    </div>
+  </template>
+</Navbar>
+```
