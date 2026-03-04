@@ -28,6 +28,7 @@ const props = withDefaults(defineProps<SidebarMenuProps>(), {
   menuOffset: () => [0, 10],
   orientation: 'vertical',
   mobileBreakpoint: 'none',
+  showTooltip: true,
 })
 
 const route = useRoute()
@@ -44,8 +45,10 @@ const isDesktop = computed(() => {
 })
 
 const currentOrientation = computed(() => {
+  // If we are on mobile (below the breakpoint), we force a vertical layout
+  // because horizontal menus typically do not fit well on small screens.
   if (!isDesktop.value) {
-    return props.orientation === 'horizontal' ? 'vertical' : 'horizontal'
+    return 'vertical'
   }
   return props.orientation || 'vertical'
 })
@@ -222,6 +225,7 @@ const context = reactive({
   nestedMenuWidth: computed(() => props.nestedMenuWidth),
   nestedMenuMaxHeight: computed(() => props.nestedMenuMaxHeight),
   currentOrientation,
+  showTooltip: computed(() => props.showTooltip),
 }) as unknown as SidebarMenuContext
 
 provide('sidebar-menu-ctx', context)
