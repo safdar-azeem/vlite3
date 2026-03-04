@@ -117,15 +117,8 @@ const menuItems: SidebarMenuItemSchema[] = [
             </div>
           </template>
 
-          <template #logo>
-            <div
-              class="hidden md:block px-2 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-              Navigation
-            </div>
-          </template>
-
           <template #default>
-            <SidebarMenu :items="menuItems" />
+            <SidebarMenu :items="menuItems" class="pt-3" />
           </template>
 
           <template #main>
@@ -145,6 +138,52 @@ const menuItems: SidebarMenuItemSchema[] = [
                   Card 3
                 </div>
               </div>
+            </div>
+          </template>
+        </Navbar>
+      </div>
+    </DemoSection>
+
+    <DemoSection title="Nested Menus as Layout Tabs" :code="sourceCode">
+      <p class="text-sm text-gray-500 mb-4">
+        When using <code>renderNestedTabs="true"</code>, clicking a primary Sidebar navigation item
+        that has children won't expand downwards. Instead, its children are instantly extracted and
+        rendered dynamically at the top of the <code>main</code> slot layout as a tab bar.
+      </p>
+      <div class="border rounded-lg overflow-hidden h-[500px] relative z-0 flex flex-col w-full">
+        <Navbar variant="sidebar" class="bg-white border-r" renderNestedTabs>
+          <template #header="{ toggle }">
+            <div
+              class="h-16 border-b bg-white flex items-center justify-between px-6 w-full shadow-sm">
+              <div class="flex items-center gap-4">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  icon="lucide:menu"
+                  class="md:hidden -ml-2"
+                  @click="toggle" />
+                <div class="font-bold text-lg flex items-center gap-2">
+                  <div
+                    class="w-8 h-8 rounded bg-primary text-white flex items-center justify-center">
+                    T
+                  </div>
+                  TabApp
+                </div>
+              </div>
+            </div>
+          </template>
+
+          <template #default>
+            <SidebarMenu :items="menuItems" :default-expanded="['Analytics']" class="pt-2" />
+          </template>
+
+          <template #main>
+            <div class="p-6 h-full bg-gray-50 flex flex-col items-center justify-center">
+              <div class="text-4xl text-gray-400 mb-4">👆</div>
+              <p class="text-gray-500 text-center max-w-sm">
+                Clicking on "Analytics", "Projects", or "Team" will route their children up to the
+                Navbar layout tabs automatically!
+              </p>
             </div>
           </template>
         </Navbar>
