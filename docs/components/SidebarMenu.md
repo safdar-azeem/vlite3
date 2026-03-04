@@ -16,6 +16,7 @@
 | `renderMode`        | `'tree' \| 'popover'`     | `tree`                                         | Submenu rendering style           |
 | `orientation`       | `'vertical' \| 'horizontal'`| `vertical`                                     | Layout direction of the menu      |
 | `mobileBreakpoint`  | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'none'`| `none`                               | Responsive screen breakpoint switch |
+| `showTooltip`       | `boolean`                 | `true`                                         | Display tooltips on menu items    |
 | `showCompactLabels` | `boolean`                 | `false`                                        | Show small labels in compact mode |
 | `iconSize`          | `number`                  | `16`                                           | Icon size in pixels               |
 | `compactIconSize`   | `number`                  | `20`                                           | Icon size when in compact mode    |
@@ -70,6 +71,7 @@ const items = [
     orientation="horizontal"
     mobile-breakpoint="md"
     icon-size="18px"
+    :show-tooltip="false"
   />
 </template>
 
