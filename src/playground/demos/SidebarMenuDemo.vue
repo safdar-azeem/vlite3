@@ -13,6 +13,7 @@ const variant = ref<'default' | 'ghost'>('default')
 const renderMode = ref<'tree' | 'popover'>('tree')
 const compact = ref(false)
 const showCompactLabels = ref(false)
+const showTooltip = ref(true)
 const iconSize = ref(16)
 const compactIconSize = ref(20)
 
@@ -100,6 +101,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       <div class="flex flex-wrap items-center gap-4">
         <CheckBox v-model="allowMultiple" label="Allow Multiple Expanded" />
         <CheckBox v-model="showCompactLabels" label="Show Compact Labels" :disabled="!compact" />
+        <CheckBox v-model="showTooltip" label="Show Tooltips" />
         <Button size="sm" variant="outline" @click="toggleMode"> Mode: {{ renderMode }} </Button>
         <Button size="sm" variant="outline" @click="toggleVariant"> Variant: {{ variant }} </Button>
         <Button size="sm" variant="outline" @click="toggleCompact">
@@ -129,8 +131,9 @@ const menuItems: SidebarMenuItemSchema[] = [
         <SidebarMenu
           :items="menuItems"
           orientation="horizontal"
-          mobile-breakpoint="none"
+          mobile-breakpoint="md"
           :variant="variant"
+          :show-tooltip="showTooltip"
           :icon-size="`${iconSize}px`" />
       </div>
     </DemoSection>
@@ -152,6 +155,7 @@ const menuItems: SidebarMenuItemSchema[] = [
               :variant="variant"
               :render-mode="renderMode"
               :compact="compact"
+              :show-tooltip="showTooltip"
               :show-compact-labels="showCompactLabels"
               :icon-size="`${iconSize}px`"
               :compact-icon-size="`${compactIconSize}px`" />
