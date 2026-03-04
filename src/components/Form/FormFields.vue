@@ -147,7 +147,7 @@ const getFloatingLeftClass = (field: IForm) => {
 const shouldHideExternalLabel = (field: IForm) => {
   if (props.variant !== 'floating') return false
   const type = field.type || 'text'
-  const unfloatingTypes = ['switch', 'check', 'customFields']
+  const unfloatingTypes = ['switch', 'check', 'customFields', 'avatarUpload', 'number']
   return !unfloatingTypes.includes(type as string)
 }
 
