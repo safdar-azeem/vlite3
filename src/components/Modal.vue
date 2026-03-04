@@ -39,6 +39,9 @@ const emit = defineEmits<{
 }>()
 
 const visible = ref(props.show)
+const isChildSubmitting = ref(false)
+const showBlink = ref(false)
+let blinkTimeout: ReturnType<typeof setTimeout> | null = null
 
 watch(
   () => props.show,
@@ -52,13 +55,26 @@ const handleOpen = () => {
   visible.value = true
 }
 
+const setSubmitting = (val: boolean) => {
+  isChildSubmitting.value = val
+}
+
 const close = () => {
+  if (isChildSubmitting.value) {
+    showBlink.value = true
+    if (blinkTimeout) clearTimeout(blinkTimeout)
+    blinkTimeout = setTimeout(() => {
+      showBlink.value = false
+    }, 1000)
+    return
+  }
+
   visible.value = false
   emit('update:show', false)
   emit('close')
 }
 
-provide('modal-context', { close })
+provide('modal-context', { close, setSubmitting })
 
 const handleBackdropClick = () => {
   if (props.closeOutside) {
@@ -79,10 +95,13 @@ watch(visible, (val) => {
 
 onUnmounted(() => {
   document.body.style.overflow = ''
+  if (blinkTimeout) clearTimeout(blinkTimeout)
 })
 
-const displayTitle = computed(() => props.titleI18n ? $t(props.titleI18n) : props.title)
-const displayDescription = computed(() => props.descriptionI18n ? $t(props.descriptionI18n) : props.description)
+const displayTitle = computed(() => (props.titleI18n ? $t(props.titleI18n) : props.title))
+const displayDescription = computed(() =>
+  props.descriptionI18n ? $t(props.descriptionI18n) : props.description
+)
 </script>
 
 <template>
@@ -124,7 +143,8 @@ const displayDescription = computed(() => props.descriptionI18n ? $t(props.descr
                 size="sm"
                 icon="lucide:x"
                 variant="ghost"
-                class="hover:bg-gray-250/25!"
+                class="hover:bg-gray-250/25! transition-all"
+                :class="{ 'blink-bg': showBlink }"
                 @click="close" />
             </div>
           </div>
@@ -153,3 +173,30 @@ const displayDescription = computed(() => props.descriptionI18n ? $t(props.descr
   </Teleport>
 </template>
 
+<style scoped>
+.blink-bg {
+  animation: blink-animation 1s infinite;
+}
+
+@keyframes blink-animation {
+  0% {
+    background-color: inherit;
+  }
+
+  15% {
+    background-color: var(--color-gray-250);
+  }
+
+  35% {
+    background-color: inherit;
+  }
+
+  75% {
+    background-color: var(--color-gray-250);
+  }
+
+  100% {
+    background-color: inherit;
+  }
+}
+</style>
