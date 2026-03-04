@@ -9,7 +9,7 @@ export type InputType =
   | 'search'
   | 'textarea'
 
-export type InputVariant = 'solid' | 'outline' | 'outline-b' | 'transparent'
+export type InputVariant = 'solid' | 'outline' | 'outline-b' | 'transparent' | 'floating'
 export type InputSize = 'sm' | 'md' | 'lg'
 export type InputRounded = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full' | string
 export type LabelPosition = 'top' | 'left' | 'right'
