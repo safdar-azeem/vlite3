@@ -132,6 +132,7 @@ const routes = [
       { path: 'barcode', component: BarcodeDemo },
       { path: 'qrcode', component: QRCodeDemo },
       { path: 'stats', component: StatsDemo },
+      { path: 'list', component: ListDemo },
       { path: 'export-data', component: ExportDataDemo },
       { path: 'import-data', component: ImportDataDemo },
 
