@@ -182,7 +182,19 @@ const getMarkerColorClass = () => {
   return variantActiveStyles[props.variant]
 }
 
-const getOptionLabel = (opt: TabesOption) => opt.labelI18n ? $t(opt.labelI18n) : opt.label
+const getOptionLabel = (opt: TabesOption) => (opt.labelI18n ? $t(opt.labelI18n) : opt.label)
+
+const getComponentIs = (opt: TabesOption) => {
+  if (opt.to) return 'router-link'
+  if (opt.href) return 'a'
+  return 'button'
+}
+
+const getComponentProps = (opt: TabesOption) => {
+  if (opt.to) return { to: opt.to }
+  if (opt.href) return { href: opt.href, target: '_blank', rel: 'noopener noreferrer' }
+  return { type: 'button' }
+}
 </script>
 
 <template>
@@ -192,19 +204,21 @@ const getOptionLabel = (opt: TabesOption) => opt.labelI18n ? $t(opt.labelI18n) :
       :class="[markerClasses, getMarkerColorClass()]"
       :style="markerStyle"></div>
 
-    <button
+    <component
+      :is="getComponentIs(opt)"
       v-for="opt in options"
       :key="opt.value"
-      :ref="(el) => setItemRef(el, opt.value)"
+      :ref="(el: any) => setItemRef(el?.$el || el, opt.value)"
       role="tab"
       :aria-selected="modelValue === opt.value"
       :disabled="opt.disabled"
       :class="[getItemClasses(opt), sizeClasses[props.size]]"
-      @click="handleSelect(opt)"
-      type="button">
+      v-bind="getComponentProps(opt)"
+      @click="handleSelect(opt)">
       <Icon v-if="opt.icon" :icon="opt.icon" :class="size === 'sm' ? 'w-3.5 h-3.5' : 'w-4 h-4'" />
-      <span class="whitespace-nowrap z-20 relative" :class="textClass">{{ getOptionLabel(opt) }}</span>
-    </button>
+      <span class="whitespace-nowrap z-20 relative" :class="textClass">{{
+        getOptionLabel(opt)
+      }}</span>
+    </component>
   </div>
 </template>
-
