@@ -38,7 +38,7 @@ const menuItems: SidebarMenuItemSchema[] = [
   {
     label: 'Analytics',
     icon: 'lucide:bar-chart-3',
-    // Example of mixed mode: Force dropdown on this specific item if needed?
+    // Example of mixed mode: Force dropdown on this specific item if needed
     renderMode: 'popover',
     children: [
       { label: 'Overview', to: '/analytics/overview' },
@@ -76,7 +76,6 @@ const menuItems: SidebarMenuItemSchema[] = [
   {
     label: 'Documents',
     icon: 'lucide:file-text',
-    // Example of simple action instead of route
     action: () => alert('Documents clicked!'),
   },
   {
@@ -121,50 +120,68 @@ const menuItems: SidebarMenuItemSchema[] = [
       </div>
     </div>
 
-    <div class="flex h-[600px] border rounded-xl overflow-hidden bg-white shadow-sm">
-      <div
-        class="border-r bg-gray-50/50 flex flex-col transition-all duration-300"
-        :class="compact ? 'w-20' : 'w-64'">
-        <div class="p-4 border-b h-16 flex items-center justify-center font-bold text-lg">
-          {{ compact ? 'A.' : 'App Name' }}
-        </div>
+    <DemoSection title="Horizontal Navigation (Responsive)" :code="sourceCode">
+      <div class="border rounded-xl bg-white shadow-sm p-4 w-full flex flex-col gap-4">
+        <p class="text-sm text-gray-500">
+          This menu displays horizontally on screens <code>md</code> and larger. Resize your browser
+          window to see it elegantly collapse into a vertical menu layout.
+        </p>
+        <SidebarMenu
+          :items="menuItems"
+          orientation="horizontal"
+          mobile-breakpoint="none"
+          :variant="variant"
+          :icon-size="`${iconSize}px`" />
+      </div>
+    </DemoSection>
 
-        <div class="flex-1 overflow-y-auto p-2">
-          <SidebarMenu
-            :items="menuItems"
-            :allow-multiple="allowMultiple"
-            :variant="variant"
-            :render-mode="renderMode"
-            :compact="compact"
-            :show-compact-labels="showCompactLabels"
-            :icon-size="`${iconSize}px`"
-            :compact-icon-size="`${compactIconSize}px`" />
-        </div>
+    <DemoSection title="Vertical Sidebar Configuration" :code="sourceCode">
+      <div class="flex h-[600px] border rounded-xl overflow-hidden bg-white shadow-sm w-full">
+        <div
+          class="border-r bg-gray-50/50 flex flex-col transition-all duration-300"
+          :class="compact ? 'w-20' : 'w-64'">
+          <div class="p-4 border-b h-16 flex items-center justify-center font-bold text-lg">
+            {{ compact ? 'A.' : 'App Name' }}
+          </div>
 
-        <div class="p-4 border-t bg-gray-50">
-          <div class="flex items-center justify-center gap-3" :class="{ 'flex-col': compact }">
-            <div
-              class="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold shrink-0">
-              U
+          <div class="flex-1 overflow-y-auto p-2">
+            <SidebarMenu
+              :items="menuItems"
+              orientation="vertical"
+              :allow-multiple="allowMultiple"
+              :variant="variant"
+              :render-mode="renderMode"
+              :compact="compact"
+              :show-compact-labels="showCompactLabels"
+              :icon-size="`${iconSize}px`"
+              :compact-icon-size="`${compactIconSize}px`" />
+          </div>
+
+          <div class="p-4 border-t bg-gray-50">
+            <div class="flex items-center justify-center gap-3" :class="{ 'flex-col': compact }">
+              <div
+                class="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold shrink-0">
+                U
+              </div>
+              <div class="text-sm overflow-hidden" :class="{ hidden: compact }">
+                <div class="font-medium truncate">User Name</div>
+                <div class="text-gray-500 text-xs truncate">user@example.com</div>
+              </div>
             </div>
-            <div class="text-sm overflow-hidden" :class="{ hidden: compact }">
-              <div class="font-medium truncate">User Name</div>
-              <div class="text-gray-500 text-xs truncate">user@example.com</div>
+          </div>
+        </div>
+
+        <div class="flex-1 flex flex-col bg-white">
+          <div class="h-16 border-b flex items-center px-6 text-gray-400 text-sm">Header</div>
+          <div class="flex-1 p-8 flex items-center justify-center text-gray-400 bg-gray-50/20">
+            <div class="text-center space-y-2">
+              <div class="text-4xl">👋</div>
+              <p>Select an item from the sidebar to see active states.</p>
+              <p class="text-xs text-gray-400">(Routing is simulated in this demo)</p>
             </div>
           </div>
         </div>
       </div>
-
-      <div class="flex-1 flex flex-col bg-white">
-        <div class="h-16 border-b flex items-center px-6 text-gray-400 text-sm">Header</div>
-        <div class="flex-1 p-8 flex items-center justify-center text-gray-400 bg-gray-50/20">
-          <div class="text-center space-y-2">
-            <div class="text-4xl">👋</div>
-            <p>Select an item from the sidebar to see active states.</p>
-            <p class="text-xs text-gray-400">(Routing is simulated in this demo)</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    </DemoSection>
   </div>
 </template>
