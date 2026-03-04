@@ -8,6 +8,7 @@ interface Props {
   label?: string
   labelI18n?: string
   class?: string
+  id?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -31,6 +32,7 @@ const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : pro
 <template>
   <div class="flex items-center gap-2">
     <button
+      :id="id"
       type="button"
       role="switch"
       :aria-checked="modelValue"
