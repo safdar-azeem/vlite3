@@ -109,6 +109,41 @@ const handleAddonAction = (action: string) => {
   emit('addonAction', action)
 }
 
+// Support for floating labels for non-input components
+const focusedFields = ref<Record<string, boolean>>({})
+
+const handleFocusIn = (fieldName: string) => {
+  focusedFields.value[fieldName] = true
+}
+
+const handleFocusOut = (fieldName: string) => {
+  focusedFields.value[fieldName] = false
+}
+
+const isFloatingActive = (field: IForm) => {
+  const val = getFieldValue(field)
+  const hasValue =
+    val !== undefined && val !== null && val !== '' && !(Array.isArray(val) && val.length === 0)
+  return focusedFields.value[field.name] || hasValue
+}
+
+const delegatesFloatingLabel = (field: IForm) => {
+  const type = field.type || 'text'
+  return ['text', 'email', 'password', 'tel', 'url', 'search', 'textarea'].includes(type as string)
+}
+
+const getFloatingLeftClass = (field: IForm) => {
+  // If it's a split number input, we need space for the left minus button
+  if (field.type === 'number' && field.props?.variant !== 'stacked') {
+    return 'left-10'
+  }
+  // DatePicker and ColorPicker have icons/previews hardcoded at left-3
+  if (field.type === 'date' || field.type === 'time' || field.type === 'color') {
+    return 'left-9'
+  }
+  return 'left-3'
+}
+
 const shouldHideExternalLabel = (field: IForm) => {
   if (props.variant !== 'floating') return false
   const type = field.type || 'text'
@@ -146,7 +181,32 @@ const getSafeLabel = (field: IForm) => {
           </template>
         </Label>
 
-        <div class="relative w-full">
+        <div
+          class="relative w-full"
+          @focusin="handleFocusIn(field.name)"
+          @focusout="handleFocusOut(field.name)">
+          <label
+            v-if="
+              shouldHideExternalLabel(field) &&
+              getSafeLabel(field) &&
+              !delegatesFloatingLabel(field)
+            "
+            :for="field.name"
+            :class="[
+              'absolute transition-all duration-200 ease-in-out pointer-events-none z-20',
+              isFloatingActive(field)
+                ? `-top-2.5 left-3 text-xs bg-background px-1 text-primary shadow-[0_4px_4px_-4px_bg-background]`
+                : `top-2.5 text-sm text-muted-foreground/70 ${getFloatingLeftClass(field)}`,
+            ]">
+            <component
+              v-if="isComponent(getFieldLabel(field))"
+              :is="renderLabel(getFieldLabel(field))" />
+            <template v-else>
+              {{ getFieldLabel(field) }}
+              <span v-if="field.required" class="text-destructive ml-0.5">*</span>
+            </template>
+          </label>
+
           <FormField
             :field="
               props.variant === 'floating'
