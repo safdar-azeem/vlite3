@@ -1,7 +1,5 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import Playground from './playground/Playground.vue'
-
-// Import all demos dynamically
 const demoModules = import.meta.glob('./playground/demos/*Demo.vue')
 
 const children: RouteRecordRaw[] = Object.entries(demoModules).map(([path, component]) => {
