@@ -108,18 +108,25 @@ const menuItems: SidebarMenuItemSchema[] = [
     <Navbar
       variant="sidebar"
       mobileBreakpoint="md"
+      sidebarToggle
       class="bg-body border-r border-border h-max shrink-0 z-20">
-      <template #header="{ toggle }">
+      <template #header="{ toggleSidebar, toggle }">
         <div class="h-13 border-b bg-white flex items-center justify-between px-6 w-full shadow-sm">
-          <div class="flex items-center w-full justify-between gap-4">
+          <div class="flex items-center w-full justify-between gap-8">
             <div class="flex gap-4">
               <Button
                 variant="ghost"
                 size="sm"
                 icon="lucide:menu"
-                class="md:hidden -ml-2"
-                @click="toggle" />
-              <div class="font-bold text-lg flex items-center gap-2">
+                @click="toggle"
+                class="md:hidden" />
+              <Button
+                variant="ghost"
+                size="sm"
+                icon="lucide:menu"
+                @click="toggleSidebar"
+                class="max-md:hidden" />
+              <div class="font-bold text-lg flex items-center gap-2 mr-6">
                 <div class="w-8 h-8 rounded bg-primary text-white flex items-center justify-center">
                   B
                 </div>
@@ -171,7 +178,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       <template #main>
         <div class="flex-1 w-full flex flex-col h-full bg-body relative z-0">
           <div class="flex-1 overflow-y-auto scroll-smooth">
-            <div class="max-w-[1350px] mx-auto px-14 py-6 md:py-5">
+            <div class="max-w-[1950px] mx-auto px-14 py-6 md:py-5">
               <div
                 class="mb-10 pb-6 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
