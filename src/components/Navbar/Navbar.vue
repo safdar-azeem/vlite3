@@ -16,7 +16,6 @@ const props = withDefaults(defineProps<NavbarProps>(), {
   border: true,
   floating: false,
   height: 'h-16',
-  width: 'w-64',
   compact: false,
   class: '',
   mobileBreakpoint: 'md',
@@ -169,10 +168,10 @@ const breakpointClasses = computed(() => {
   }
 
   const sidebarLayoutClasses: Record<string, string> = {
-    sm: `flex flex-col max-sm:w-full ${props.compact ? 'w-20' : props.width} h-auto sm:h-full sm:max-h-screen shrink-0`,
-    md: `flex flex-col max-md:w-full ${props.compact ? 'w-20' : props.width} h-auto md:h-full md:max-h-screen shrink-0`,
-    lg: `flex flex-col max-lg:w-full ${props.compact ? 'w-20' : props.width} h-auto lg:h-full lg:max-h-screen shrink-0`,
-    xl: `flex flex-col max-xl:w-full ${props.compact ? 'w-20' : props.width} h-auto xl:h-full xl:max-h-screen shrink-0`,
+    sm: `flex flex-col max-sm:w-full ${props.compact ? 'w-20' : ''} h-auto sm:h-full sm:max-h-screen shrink-0`,
+    md: `flex flex-col max-md:w-full ${props.compact ? 'w-20' : ''} h-auto md:h-full md:max-h-screen shrink-0`,
+    lg: `flex flex-col max-lg:w-full ${props.compact ? 'w-20' : ''} h-auto lg:h-full lg:max-h-screen shrink-0`,
+    xl: `flex flex-col max-xl:w-full ${props.compact ? 'w-20' : ''} h-auto xl:h-full xl:max-h-screen shrink-0`,
   }
 
   const mobileHeaderClasses: Record<string, string> = {
@@ -344,9 +343,7 @@ watch(isDesktop, (val) => {
       </nav>
 
       <main v-if="$slots.main" class="flex-1 overflow-y-auto w-full relative h-full flex flex-col">
-        <div
-          v-if="props.renderNestedTabs && nestedTabsItems.length > 0"
-          class="shrink-0 w-full">
+        <div v-if="props.renderNestedTabs && nestedTabsItems.length > 0" class="shrink-0 w-full">
           <NavbarTabs
             v-model="activeNestedTab"
             @change="handleNestedTabClick"
