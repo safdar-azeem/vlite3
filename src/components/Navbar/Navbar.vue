@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted, useSlots, provide, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { useBreakpoints, breakpointsTailwind, onClickOutside } from '@vueuse/core'
+import { useBreakpoints, breakpointsTailwind, onClickOutside, useLocalStorage } from '@vueuse/core'
 import Icon from '../Icon.vue'
 import SidePanel from '../SidePanel.vue'
-import Logo from '../Logo.vue' // Assuming Logo exists or using fallback
+import Logo from '../Logo.vue'
 import type { NavbarProps, NavbarTabItem } from '@/types/navbar.type'
 import NavbarTabs from './NavbarTabs.vue'
 
@@ -26,12 +26,12 @@ const props = withDefaults(defineProps<NavbarProps>(), {
   mobileTriggerClass: '',
   mobileMenuVariant: 'sidepanel',
   renderNestedTabs: false,
+  sidebarToggle: false,
 })
 
 const nestedTabsItems = ref<NavbarTabItem[]>([])
 const activeNestedTab = ref<string | number>('')
 
-// Provide the context early
 provide('navbar-context', {
   compact: computed(() => props.compact),
   renderNestedTabs: computed(() => props.renderNestedTabs),
@@ -51,29 +51,33 @@ const slots = useSlots()
 const mobileMenuRef = ref<HTMLElement | null>(null)
 const mobileTriggerRef = ref<HTMLElement | null>(null)
 
-// Handle layout nested tabs routing
+// Sidebar visibility state — persisted in localStorage
+// Only used when sidebarToggle prop is enabled and in layout mode on large screens
+const isSidebarVisible = useLocalStorage<boolean>('vlite-navbar-sidebar-visible', true)
+
 const handleNestedTabClick = (val: string | number) => {
   const targetTab = nestedTabsItems.value.find((t) => t.value === val)
   if (!targetTab) return
-
-  // In our nestedTabsItems payload mapping, 'value' is often the id or the path.
-  // We can push to router if it looks like a path or we mapped it explicitly
   if (typeof val === 'string' && val.startsWith('/')) {
-    route.path !== val && useRoute().path // trick to grab router inside setup if needed
-    // The better way is to use router instance
     import('vue-router').then(({ useRouter }) => {
       const router = useRouter()
       router.push(val).catch(() => {})
     })
   } else {
-    // If not a clear path, just let the active item change.
     activeNestedTab.value = val
   }
 }
 
-// If the user provides a header or main slot, we switch to Layout Mode
 const isLayoutMode = computed(() => !!(slots.header || slots.main))
-// Close on click outside
+
+// Whether the sidebar toggle feature is active (only in layout mode with the prop enabled)
+const isSidebarToggleEnabled = computed(() => props.sidebarToggle && isLayoutMode.value)
+
+// Toggle sidebar visibility and persist preference
+const toggleSidebar = () => {
+  isSidebarVisible.value = !isSidebarVisible.value
+}
+
 onClickOutside(
   mobileMenuRef,
   () => {
@@ -82,7 +86,6 @@ onClickOutside(
   { ignore: [mobileTriggerRef] }
 )
 
-// Scroll detection for styling effects
 const handleScroll = () => {
   isScrolled.value = window.scrollY > 10
 }
@@ -95,11 +98,9 @@ onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
 })
 
-// CSS Classes Construction
 const containerClasses = computed(() => {
   const isSidebar = props.variant === 'sidebar'
 
-  // When inside a layout wrapper, the navbar becomes strictly a flex child sidebar.
   const positionClasses = {
     fixed: isLayoutMode.value ? 'relative z-40' : 'fixed top-0 left-0 z-40',
     sticky: isLayoutMode.value ? 'relative z-40' : 'sticky top-0 z-40',
@@ -109,7 +110,6 @@ const containerClasses = computed(() => {
 
   const base = 'bg-body'
 
-  // Effects
   const effects = [
     props.glass && (isScrolled.value || isSidebar || props.floating)
       ? 'backdrop-blur-md bg-background/80 supports-[backdrop-filter]:bg-background/60'
@@ -133,11 +133,8 @@ const containerClasses = computed(() => {
     xl: 'max-xl:hidden',
   }
 
-  // HIDE the `<nav>` on mobile when in Layout Mode AND variant is sidebar.
-  // This prevents it from taking up width and pushing the <main> block downwards.
   const hideOnMobile = isLayoutMode.value && isSidebar ? hideNavClasses[bp] : ''
 
-  // Layout
   let layout = ''
   if (isSidebar) {
     layout = breakpointClasses.value.sidebarLayout
@@ -188,12 +185,22 @@ const breakpointClasses = computed(() => {
     xl: 'hidden xl:flex flex-col h-full w-full overflow-hidden',
   }
 
+  // Desktop-only show classes for the sidebar toggle button
+  // (inverse of mobile trigger — visible only above the breakpoint)
+  const desktopOnlyClasses: Record<string, string> = {
+    sm: 'hidden sm:flex',
+    md: 'hidden md:flex',
+    lg: 'hidden lg:flex',
+    xl: 'hidden xl:flex',
+  }
+
   return {
     mobileTrigger: mobileTriggerClasses[bp],
     desktopContent: desktopContentClasses[bp],
     sidebarLayout: sidebarLayoutClasses[bp],
     mobileHeader: mobileHeaderClasses[bp],
     desktopSidebar: desktopSidebarClasses[bp],
+    desktopOnly: desktopOnlyClasses[bp],
   }
 })
 
@@ -222,6 +229,13 @@ watch(isDesktop, (val) => {
     isMobileMenuOpen.value = false
   }
 })
+
+// Computed sidebar visibility: only hides on desktop when toggle is enabled
+// On mobile the sidebar is already handled by the mobile menu (SidePanel),
+// so we never touch that logic here.
+const sidebarHidden = computed(() => {
+  return isSidebarToggleEnabled.value && !isSidebarVisible.value
+})
 </script>
 
 <template>
@@ -232,115 +246,134 @@ watch(isDesktop, (val) => {
       <slot
         name="header"
         :is-open="isMobileMenuOpen"
-        :toggle="() => (isMobileMenuOpen = !isMobileMenuOpen)">
+        :toggle="() => (isMobileMenuOpen = !isMobileMenuOpen)"
+        :sidebar-visible="isSidebarVisible"
+        :toggle-sidebar="toggleSidebar">
       </slot>
     </header>
 
     <div class="flex flex-1 w-full overflow-hidden relative">
-      <nav :class="containerClasses" role="navigation">
-        <template v-if="variant === 'header'">
-          <div class="flex items-center gap-4 shrink-0 z-10">
-            <slot
-              name="mobile-trigger"
-              :is-open="isMobileMenuOpen"
-              :toggle="() => (isMobileMenuOpen = !isMobileMenuOpen)">
-              <button
-                type="button"
-                ref="mobileTriggerRef"
-                class="p-2 -ml-2 text-muted-foreground hover:bg-accent rounded-md shrink-0"
-                :class="[breakpointClasses.mobileTrigger, props.mobileTriggerClass]"
-                @click="isMobileMenuOpen = !isMobileMenuOpen">
-                <Icon icon="lucide:menu" class="w-5 h-5" />
-                <span class="sr-only">Open Menu</span>
-              </button>
-            </slot>
-
-            <div class="shrink-0" :class="props.logoClass" v-if="$slots?.logo">
-              <slot name="logo">
-                <component
-                  :is="props.logo ? 'img' : 'div'"
-                  :src="props.logo"
-                  class="h-8 w-auto font-bold text-xl flex items-center gap-2">
-                  <Logo v-if="!props.logo" class="h-6 w-6" />
-                  <span v-if="!props.logo && props.logoAlt">{{ props.logoAlt }}</span>
-                  <span v-else-if="!props.logo">Brand</span>
-                </component>
+      <!--
+        Sidebar nav: hidden on mobile (handled by SidePanel), and additionally
+        hidden on desktop when the sidebar toggle is enabled and user turned it off.
+        Smooth width transition ensures no jarring layout jump.
+      -->
+      <Transition
+        enter-active-class="transition-all duration-300 ease-in-out overflow-hidden"
+        leave-active-class="transition-all duration-300 ease-in-out overflow-hidden"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0">
+        <nav
+          v-show="!sidebarHidden"
+          :class="containerClasses"
+          role="navigation"
+          :style="isSidebarToggleEnabled ? 'transition: width 0.3s ease, opacity 0.3s ease;' : ''">
+          <template v-if="variant === 'header'">
+            <div class="flex items-center gap-4 shrink-0 z-10">
+              <slot
+                name="mobile-trigger"
+                :is-open="isMobileMenuOpen"
+                :toggle="() => (isMobileMenuOpen = !isMobileMenuOpen)">
+                <button
+                  type="button"
+                  ref="mobileTriggerRef"
+                  class="p-2 -ml-2 text-muted-foreground hover:bg-accent rounded-md shrink-0"
+                  :class="[breakpointClasses.mobileTrigger, props.mobileTriggerClass]"
+                  @click="isMobileMenuOpen = !isMobileMenuOpen">
+                  <Icon icon="lucide:menu" class="w-5 h-5" />
+                  <span class="sr-only">Open Menu</span>
+                </button>
               </slot>
+
+              <div class="shrink-0" :class="props.logoClass" v-if="$slots?.logo">
+                <slot name="logo">
+                  <component
+                    :is="props.logo ? 'img' : 'div'"
+                    :src="props.logo"
+                    class="h-8 w-auto font-bold text-xl flex items-center gap-2">
+                    <Logo v-if="!props.logo" class="h-6 w-6" />
+                    <span v-if="!props.logo && props.logoAlt">{{ props.logoAlt }}</span>
+                    <span v-else-if="!props.logo">Brand</span>
+                  </component>
+                </slot>
+              </div>
+
+              <div
+                v-if="$slots?.left"
+                class="items-center gap-1 overflow-x-auto no-scrollbar mask-gradient"
+                :class="breakpointClasses.desktopContent">
+                <slot name="left" />
+              </div>
             </div>
 
-            <div
-              v-if="$slots?.left"
-              class="items-center gap-1 overflow-x-auto no-scrollbar mask-gradient"
-              :class="breakpointClasses.desktopContent">
-              <slot name="left" />
-            </div>
-          </div>
-
-          <div :class="[centerClasses, 'max-w-full', props.contentClass]" v-if="$slots?.center">
-            <slot name="center" />
-          </div>
-
-          <div
-            class="flex items-center gap-2 shrink-0 max-w-[40%] z-10"
-            :class="[
-              {
-                'ml-auto': centerPosition === 'left' || centerPosition === 'center',
-              },
-              props.rightClass,
-            ]">
-            <slot name="right" />
-          </div>
-        </template>
-
-        <template v-else>
-          <div v-if="!$slots.header" :class="breakpointClasses.mobileHeader">
-            <slot name="logo" v-if="$slots?.logo">
-              <div class="font-bold text-xl truncate">Brand</div>
-            </slot>
-
-            <slot
-              name="mobile-trigger"
-              :is-open="isMobileMenuOpen"
-              :toggle="() => (isMobileMenuOpen = !isMobileMenuOpen)">
-              <button
-                type="button"
-                ref="mobileTriggerRef"
-                class="p-2 -mr-2 text-muted-foreground hover:bg-accent rounded-md"
-                :class="props.mobileTriggerClass"
-                @click="isMobileMenuOpen = !isMobileMenuOpen">
-                <Icon icon="lucide:menu" class="w-5 h-5" />
-                <span class="sr-only">Open Menu</span>
-              </button>
-            </slot>
-          </div>
-
-          <div :class="breakpointClasses.desktopSidebar">
-            <div
-              class="py-4.5 flex items-center px-4.5 z-10"
-              :class="props.logoClass"
-              v-if="$slots?.logo">
-              <slot name="logo">
-                <div class="font-bold text-xl truncate">Brand</div>
-              </slot>
-            </div>
-
-            <div
-              class="flex-1 px-2.5 pt-0 pb-4 overflow-y-auto space-y-4 scrollbar-thin"
-              :class="props.contentClass">
-              <slot name="left" />
-              <slot />
+            <div :class="[centerClasses, 'max-w-full', props.contentClass]" v-if="$slots?.center">
               <slot name="center" />
             </div>
 
             <div
-              class="p-2 border-t border-border shrink-0 bg-background mt-auto"
-              :class="props.rightClass"
-              v-if="$slots?.right">
+              class="flex items-center gap-2 shrink-0 max-w-[40%] z-10"
+              :class="[
+                {
+                  'ml-auto': centerPosition === 'left' || centerPosition === 'center',
+                },
+                props.rightClass,
+              ]">
               <slot name="right" />
             </div>
-          </div>
-        </template>
-      </nav>
+          </template>
+
+          <template v-else>
+            <div v-if="!$slots.header" :class="breakpointClasses.mobileHeader">
+              <slot name="logo" v-if="$slots?.logo">
+                <div class="font-bold text-xl truncate">Brand</div>
+              </slot>
+
+              <slot
+                name="mobile-trigger"
+                :is-open="isMobileMenuOpen"
+                :toggle="() => (isMobileMenuOpen = !isMobileMenuOpen)">
+                <button
+                  type="button"
+                  ref="mobileTriggerRef"
+                  class="p-2 -mr-2 text-muted-foreground hover:bg-accent rounded-md"
+                  :class="props.mobileTriggerClass"
+                  @click="isMobileMenuOpen = !isMobileMenuOpen">
+                  <Icon icon="lucide:menu" class="w-5 h-5" />
+                  <span class="sr-only">Open Menu</span>
+                </button>
+              </slot>
+            </div>
+
+            <div :class="breakpointClasses.desktopSidebar">
+              <div
+                class="py-4.5 flex items-center px-4.5 z-10"
+                :class="props.logoClass"
+                v-if="$slots?.logo">
+                <slot name="logo">
+                  <div class="font-bold text-xl truncate">Brand</div>
+                </slot>
+              </div>
+
+              <div
+                class="flex-1 px-2.5 pt-0 pb-4 overflow-y-auto space-y-4 scrollbar-thin"
+                :class="props.contentClass">
+                <slot name="left" />
+                <slot />
+                <slot name="center" />
+              </div>
+
+              <div
+                class="p-2 border-t border-border shrink-0 bg-background mt-auto"
+                :class="props.rightClass"
+                v-if="$slots?.right">
+                <slot name="right" />
+              </div>
+            </div>
+          </template>
+        </nav>
+      </Transition>
 
       <main v-if="$slots.main" class="flex-1 overflow-y-auto w-full relative h-full flex flex-col">
         <div v-if="props.renderNestedTabs && nestedTabsItems.length > 0" class="shrink-0 w-full">
