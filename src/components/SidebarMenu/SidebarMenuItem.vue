@@ -26,8 +26,12 @@ if (!context) {
   throw new Error('SidebarMenuItem must be used within a SidebarMenu')
 }
 
+const isHorizontal = computed(() => context.currentOrientation === 'horizontal' && props.depth === 0)
+const hasChildren = computed(() => !!props.item.children?.length)
+
 // Render Mode Logic
 const computedRenderMode = computed(() => {
+  if (isHorizontal.value && hasChildren.value) return 'popover'
   if (context.compact && hasChildren.value) return 'popover'
   return props.item.renderMode || context.renderMode || 'tree'
 })
@@ -43,11 +47,9 @@ const itemId = computed(() => {
   return props.item.label
 })
 
-const hasChildren = computed(() => !!props.item.children?.length)
-
 const isExpanded = computed(() => {
   if (usePopover.value) return false
-  if (context.renderNestedTabs && props.depth === 0) return false // Prevent showing children block if handling via Navbar Tabes at top level
+  if (context.renderNestedTabs && props.depth === 0) return false
   return context.expandedItems.includes(itemId.value)
 })
 
@@ -103,6 +105,7 @@ const handleChevronClick = (e: Event) => {
 // Styling
 const indentSize = computed(() => context.indentSize || 12)
 const itemStyle = computed(() => {
+  if (isHorizontal.value) return {}
   if (context.compact) {
     return { width: '100%' }
   }
@@ -113,7 +116,8 @@ const itemStyle = computed(() => {
 })
 
 const itemClass = computed(() => {
-  const base = `group flex items-center justify-between font-medium rounded-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 relative border border-transparent select-none cursor-pointer w-full ${props?.itemClass} ${context.labelClass}`
+  const widthClass = isHorizontal.value ? 'w-auto' : 'w-full'
+  const base = `group flex items-center justify-between font-medium rounded-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 relative border border-transparent select-none cursor-pointer ${widthClass} ${props?.itemClass || ''} ${context.labelClass}`
 
   const layout = context.compact
     ? `justify-center ${context.compactItemPadding}`
@@ -220,12 +224,12 @@ const componentProps = computed(() => {
 </script>
 
 <template>
-  <div class="w-full relative sidebar-manu-item">
+  <div :class="['relative sidebar-manu-item', isHorizontal ? 'w-auto' : 'w-full']">
     <Dropdown
       v-if="usePopover"
-      position="right-start"
+      :position="isHorizontal ? 'bottom-start' : 'right-start'"
       :offset="menuOffset"
-      class="w-full"
+      class="w-full block"
       :searchable="false"
       :width="context.nestedMenuWidth"
       :maxHeight="context.nestedMenuMaxHeight"
@@ -233,7 +237,7 @@ const componentProps = computed(() => {
       @onSelect="handleDropdownSelect">
       <template #header>
         <div
-          v-if="context.compact"
+          v-if="context.compact && !isHorizontal"
           class="px-3 py-1.5 text-sm flex items-center gap-2 font-medium border-b bg-muted-light rounded-t-md text-center truncate">
           <Icon
             v-if="item.icon"
@@ -246,9 +250,9 @@ const componentProps = computed(() => {
       <template #trigger="{ isOpen }">
         <Tooltip
           :content="displayLabel"
-          placement="right"
+          :placement="isHorizontal ? 'bottom' : 'right'"
           className="sidebar-menu-tooltip"
-          :disabled="!context.compact || isOpen"
+          :disabled="(!context.compact && !isHorizontal) || isOpen"
           class="w-full block">
           <div class="w-full">
             <component
@@ -262,9 +266,9 @@ const componentProps = computed(() => {
               <div
                 class="min-w-0 flex-1 flex"
                 :class="[
-                  showCompactLabel
+                  showCompactLabel && !isHorizontal
                     ? 'flex-col items-center justify-center gap-1'
-                    : context.compact
+                    : context.compact && !isHorizontal
                       ? 'justify-center'
                       : 'items-center gap-2.5',
                 ]">
@@ -274,26 +278,26 @@ const componentProps = computed(() => {
                   class="shrink-0 transition-colors opacity-80 group-hover:opacity-100"
                   :class="[isActive || isOpen ? 'opacity-100' : '']"
                   :style="{
-                    width: context.compact ? context.compactIconSize : context.iconSize,
-                    height: context.compact ? context.compactIconSize : context.iconSize,
+                    width: context.compact && !isHorizontal ? context.compactIconSize : context.iconSize,
+                    height: context.compact && !isHorizontal ? context.compactIconSize : context.iconSize,
                   }" />
 
                 <span
                   class="truncate leading-none pt-0.5"
                   :class="{
-                    [context.compactLabelClass]: showCompactLabel,
-                    hidden: context.compact && !showCompactLabel,
-                    'md:hidden': context.compact && !showCompactLabel,
+                    [context.compactLabelClass]: showCompactLabel && !isHorizontal,
+                    hidden: context.compact && !showCompactLabel && !isHorizontal,
+                    'md:hidden': context.compact && !showCompactLabel && !isHorizontal,
                   }">
                   {{ displayLabel }}
                 </span>
 
                 <span
-                  v-if="item.badge && (!context.compact || !showCompactLabel)"
+                  v-if="item.badge && (!context.compact || !showCompactLabel || isHorizontal)"
                   class="ml-auto inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium"
                   :class="[
                     item.badgeClass || 'bg-muted text-muted-foreground',
-                    { 'md:hidden': context.compact },
+                    { 'md:hidden': context.compact && !isHorizontal },
                   ]">
                   {{ item.badge }}
                 </span>
@@ -301,8 +305,8 @@ const componentProps = computed(() => {
 
               <div
                 class="ml-1.5 flex h-4 w-4 shrink-0 items-center justify-center text-muted-foreground"
-                :class="{ 'md:hidden': context.compact }">
-                <Icon icon="lucide:chevron-right" class="h-3 w-3" />
+                :class="{ 'md:hidden': context.compact && !isHorizontal }">
+                <Icon :icon="isHorizontal ? 'lucide:chevron-down' : 'lucide:chevron-right'" class="h-3 w-3" />
               </div>
             </component>
           </div>
@@ -330,8 +334,8 @@ const componentProps = computed(() => {
     <template v-else>
       <Tooltip
         :content="displayLabel"
-        placement="right"
-        :disabled="!context.compact"
+        :placement="isHorizontal ? 'bottom' : 'right'"
+        :disabled="(!context.compact && !isHorizontal)"
         class="w-full block">
         <component
           :is="componentIs"
@@ -344,9 +348,9 @@ const componentProps = computed(() => {
           <div
             class="min-w-0 flex-1 flex"
             :class="[
-              showCompactLabel
+              showCompactLabel && !isHorizontal
                 ? 'flex-col items-center justify-center gap-1'
-                : context.compact
+                : context.compact && !isHorizontal
                   ? 'justify-center'
                   : 'items-center gap-2.5',
             ]">
@@ -356,26 +360,26 @@ const componentProps = computed(() => {
               class="shrink-0 transition-colors opacity-80 group-hover:opacity-100"
               :class="[isActive ? 'opacity-100' : '']"
               :style="{
-                width: context.compact ? context.compactIconSize : context.iconSize,
-                height: context.compact ? context.compactIconSize : context.iconSize,
+                width: context.compact && !isHorizontal ? context.compactIconSize : context.iconSize,
+                height: context.compact && !isHorizontal ? context.compactIconSize : context.iconSize,
               }" />
 
             <span
               class="truncate leading-none pt-0.5 wrap-break-word flex-wrap text-wrap"
               :class="{
-                [context.compactLabelClass]: showCompactLabel,
-                hidden: context.compact && !showCompactLabel,
-                'md:hidden': context.compact && !showCompactLabel,
+                [context.compactLabelClass]: showCompactLabel && !isHorizontal,
+                hidden: context.compact && !showCompactLabel && !isHorizontal,
+                'md:hidden': context.compact && !showCompactLabel && !isHorizontal,
               }">
               {{ displayLabel }}
             </span>
 
             <span
-              v-if="item.badge && (!context.compact || !showCompactLabel)"
+              v-if="item.badge && (!context.compact || !showCompactLabel || isHorizontal)"
               class="ml-auto inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium"
               :class="[
                 item.badgeClass || 'bg-muted text-muted-foreground',
-                { 'md:hidden': context.compact },
+                { 'md:hidden': context.compact && !isHorizontal },
               ]">
               {{ item.badge }}
             </span>
@@ -386,13 +390,13 @@ const componentProps = computed(() => {
             role="button"
             tabindex="0"
             class="ml-1.5 flex shrink-0 items-center justify-center rounded-sm text-muted-foreground hover:bg-accent/50 hover:text-foreground transition-all"
-            :class="{ 'md:hidden': context.compact }"
+            :class="{ 'md:hidden': context.compact && !isHorizontal }"
             @click="handleChevronClick"
             @keydown.enter.space.prevent="handleChevronClick">
             <Icon
               icon="lucide:chevron-down"
               class="h-3 w-3 transition-transform duration-200"
-              :class="{ 'rotate-180': isExpanded }" />
+              :class="{ 'rotate-180': isExpanded && !isHorizontal }" />
           </div>
         </component>
       </Tooltip>
@@ -405,7 +409,7 @@ const componentProps = computed(() => {
         @before-leave="beforeLeave"
         @leave="leave">
         <div
-          v-if="hasChildren && isExpanded"
+          v-if="hasChildren && isExpanded && !isHorizontal"
           class="overflow-hidden transition-all duration-300 ease-in-out relative">
           <div
             v-if="context.variant === 'default'"
