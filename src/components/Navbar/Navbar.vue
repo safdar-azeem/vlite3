@@ -7,6 +7,8 @@ import SidePanel from '../SidePanel.vue'
 import Logo from '../Logo.vue'
 import type { NavbarProps, NavbarTabItem } from '@/types/navbar.type'
 import NavbarTabs from './NavbarTabs.vue'
+import { Breadcrumb } from '../Breadcrumb'
+import { useBreadcrumb } from '@/composables/useBreadcrumb'
 
 const props = withDefaults(defineProps<NavbarProps>(), {
   variant: 'header',
@@ -27,7 +29,21 @@ const props = withDefaults(defineProps<NavbarProps>(), {
   mobileMenuVariant: 'sidepanel',
   renderNestedTabs: false,
   sidebarToggle: false,
+  breadcrumb: false,
+  breadcrumbVariant: 'default',
+  breadcrumbSeparator: 'chevron',
+  breadcrumbSize: 'sm',
+  breadcrumbHomeIcon: 'lucide:home',
+  breadcrumbClass: '',
 })
+
+// Auto-breadcrumb: generates items from the current route path
+const breadcrumbData = props.breadcrumb
+  ? useBreadcrumb({
+      homeIcon: props.breadcrumbHomeIcon,
+      labelMap: props.breadcrumbLabels || {},
+    })
+  : { items: computed(() => []) }
 
 const nestedTabsItems = ref<NavbarTabItem[]>([])
 const activeNestedTab = ref<string | number>('')
@@ -381,6 +397,16 @@ const sidebarHidden = computed(() => {
             v-model="activeNestedTab"
             @change="handleNestedTabClick"
             :items="nestedTabsItems" />
+        </div>
+        <div
+          v-if="props.breadcrumb && breadcrumbData.items.value.length > 1"
+          class="shrink-0 w-full border-b border-border px-6 py-2"
+          :class="props.breadcrumbClass">
+          <Breadcrumb
+            :items="breadcrumbData.items.value"
+            :variant="props.breadcrumbVariant"
+            :separator="props.breadcrumbSeparator"
+            :size="props.breadcrumbSize" />
         </div>
         <div class="flex-1 overflow-y-auto w-full relative h-full">
           <slot name="main" />
