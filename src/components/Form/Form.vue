@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch, inject } from 'vue'
+import { computed, ref, watch, inject, onUnmounted } from 'vue'
 import type { IForm, IFormStep, IFormSubmitPayload } from './types'
 import type {
   InputVariant,
@@ -94,7 +94,10 @@ const emit = defineEmits<{
 }>()
 
 // Inject modal context if available
-const modalContext = inject<{ close: () => void } | null>('modal-context', null)
+const modalContext = inject<{ close: () => void; setSubmitting?: (val: boolean) => void } | null>(
+  'modal-context',
+  null
+)
 
 // Determine if Cancel button should be shown (Explicit prop OR inside modal)
 const shouldShowCancel = computed(() => props.showCancel || !!modalContext)
@@ -167,8 +170,25 @@ const {
   folderId: props.folderId,
   emitFields: props.emitFields,
   onSubmit: (payload) => {
-    emit('onSubmit', payload, modalContext?.close)
+    emit('onSubmit', payload, modalContext?.close || (() => {}))
   },
+})
+
+// Inform Modal of submitting state so it disables closing
+watch(
+  () => props.loading || isSubmitting.value,
+  (val) => {
+    if (modalContext?.setSubmitting) {
+      modalContext.setSubmitting(val)
+    }
+  },
+  { immediate: true }
+)
+
+onUnmounted(() => {
+  if (modalContext?.setSubmitting) {
+    modalContext.setSubmitting(false)
+  }
 })
 
 // Watch for external value changes
