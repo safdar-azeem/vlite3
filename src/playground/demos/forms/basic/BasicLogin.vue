@@ -41,7 +41,11 @@ const handleSubmit = (payload: IFormSubmitPayload) => {
   <DemoSection title="Login Form" :code="sourceCode">
     <div class="flex flex-col lg:flex-row gap-6">
       <div class="flex-1 max-w-md">
-        <Form :schema="loginSchema" submitText="Sign In" @onSubmit="handleSubmit" />
+        <Form
+          variant="floating"
+          :schema="loginSchema"
+          submitText="Sign In"
+          @onSubmit="handleSubmit" />
       </div>
       <!-- Inline Submitted Values -->
       <div v-if="submittedValues" class="flex-1 max-w-md">
