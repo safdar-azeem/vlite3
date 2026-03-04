@@ -33,6 +33,8 @@ export interface SidebarMenuProps {
   nestedMenuMaxHeight?: string
   itemClass?: string
   menuOffset?: [number, number]
+  orientation?: 'vertical' | 'horizontal'
+  mobileBreakpoint?: 'sm' | 'md' | 'lg' | 'xl' | 'none'
 }
 
 export interface SidebarMenuContext {
@@ -54,4 +56,5 @@ export interface SidebarMenuContext {
   compactItemPadding: string
   nestedMenuWidth: string
   nestedMenuMaxHeight: string
+  currentOrientation: 'vertical' | 'horizontal'
 }
