@@ -73,7 +73,7 @@ const columnLayout = computed<ColumnLayout>(() => {
 
 const hasFullItems = computed(() => columnLayout.value.full.length > 0)
 const hasColumnItems = computed(
-  () => columnLayout.value.left.length > 0 || columnLayout.value.right.length > 0,
+  () => columnLayout.value.left.length > 0 || columnLayout.value.right.length > 0
 )
 
 // ── Title ─────────────────────────────────────────────
@@ -112,7 +112,7 @@ const leftDividerClass = computed(() => {
 
 // Collect passthrough slot names (everything except structural ones)
 const fieldSlotNames = computed(() =>
-  Object.keys(slots).filter((k) => !['title', 'header', 'footer'].includes(k)),
+  Object.keys(slots).filter((k) => !['title', 'header', 'footer'].includes(k))
 )
 
 // ── Skeleton ──────────────────────────────────────────
