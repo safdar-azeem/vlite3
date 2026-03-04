@@ -81,6 +81,7 @@ const inputBaseClass = computed(() => {
     outline: 'border border-input focus-visible:border-primary',
     'outline-b': 'border-b border-input bg-transparent rounded-none focus-visible:border-primary',
     transparent: 'border-none bg-transparent shadow-none',
+    floating: 'border border-input focus-visible:border-primary',
   }
 
   const sizeStyles: Record<InputSize, string> = {
@@ -128,6 +129,7 @@ const inputBaseClass = computed(() => {
   }
 
   const isMinimal = props.variant === 'outline-b' || props.variant === 'transparent'
+  const isFloating = props.variant === 'floating'
 
   return [
     base,
@@ -136,6 +138,7 @@ const inputBaseClass = computed(() => {
     roundedClass,
     props.error ? 'border-destructive focus-visible:ring-destructive' : '',
     props.icon ? 'pl-9' : isMinimal && !hasAddonLeft.value ? 'pl-0' : '',
+    isFloating ? 'pt-3 pb-1' : '', // Add padding for floating label
     (props.showClearButton && hasValue.value) ||
     props.type === 'password' ||
     props.loading ||
@@ -259,7 +262,7 @@ onMounted(() => {
 <template>
   <div :class="wrapperClass">
     <Label
-      v-if="displayLabel"
+      v-if="displayLabel && variant !== 'floating'"
       :for="displayLabel"
       :class="['mb-1.5', labelPosition !== 'top' ? 'mb-0' : ''].join(' ')">
       {{ displayLabel }}
@@ -271,6 +274,18 @@ onMounted(() => {
       </div>
 
       <div class="relative w-full" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
+        <!-- Floating Label internally for standalone inputs -->
+        <label
+          v-if="displayLabel && variant === 'floating'"
+          :for="displayLabel"
+          :class="[
+            'absolute left-3 transition-all duration-200 ease-in-out pointer-events-none z-20',
+            isFocused || hasValue
+              ? '-top-2.5 text-xs bg-background px-1 text-primary shadow-[0_4px_4px_-4px_bg-background]'
+              : 'top-2.5 text-sm text-muted-foreground/70',
+          ]">
+          {{ displayLabel }}
+        </label>
         <Textarea
           v-if="type === 'textarea'"
           :model-value="String(modelValue)"
