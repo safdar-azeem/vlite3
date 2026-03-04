@@ -9,29 +9,29 @@
 
 ## Props
 
-| Prop | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `items` | `SidebarMenuItemSchema[]` | `[]` | The full menu data structure. Supports unlimited nesting via the `children` field. |
-| `allowMultiple` | `boolean` | `true` | When `true`, multiple submenu groups can be open simultaneously. When `false`, opening one group collapses all others. |
-| `defaultExpanded` | `string[]` | `[]` | Array of item IDs (or label strings if no `id` is set) that are expanded by default on mount. |
-| `indentSize` | `number` | `12` | Pixel amount of left indentation added per nesting level. E.g. depth 1 = 12px, depth 2 = 24px. |
-| `variant` | `'default' \| 'ghost'` | `'default'` | Visual theme. `default` shows a vertical line connector between parent and children. `ghost` renders without the connector. |
-| `compact` | `boolean` | `false` | Collapses the menu to icon-only mode. Labels are hidden; icons are centered. Popover mode is forced for all items with children. |
-| `showCompactLabels` | `boolean` | `false` | When `compact` is `true`, renders small labels beneath each icon. |
-| `renderMode` | `'tree' \| 'popover'` | `'tree'` | Global submenu rendering strategy. `tree` expands children inline. `popover` renders children in a floating `Dropdown`. Overridable per item via `SidebarMenuItemSchema.renderMode`. |
-| `orientation` | `'vertical' \| 'horizontal'` | `'vertical'` | Layout direction. `horizontal` places top-level items in a row (wrapping), and forces `popover` mode for all items with children. |
-| `mobileBreakpoint` | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'none'` | `'none'` | When set (not `'none'`), the menu switches from `orientation` to `'vertical'` on screens smaller than the specified breakpoint. |
-| `showTooltip` | `boolean` | `true` | Enables a tooltip showing the item label. In `compact` mode or `horizontal` orientation, the tooltip appears automatically. |
-| `iconSize` | `string` | `'16px'` | CSS size string applied to icon width and height in normal mode (e.g. `'18px'`, `'1.2rem'`). |
-| `compactIconSize` | `string` | `'20px'` | CSS size string for icons when `compact` is `true`. |
-| `labelClass` | `string` | `'text-sm'` | Tailwind class(es) applied to item labels in normal mode. |
-| `compactLabelClass` | `string` | `'text-[11.5px] mt-1'` | Tailwind class(es) applied to labels when `compact` and `showCompactLabels` are both `true`. |
-| `itemPadding` | `string` | `'py-2 px-2'` | Tailwind padding classes applied to each menu item in normal mode. |
-| `compactItemPadding` | `string` | `'py-2 px-1'` | Tailwind padding classes applied to each menu item in compact mode. |
-| `nestedMenuWidth` | `string` | `'220px'` | CSS width of the floating popover menu for children when `renderMode="popover"`. |
-| `nestedMenuMaxHeight` | `string` | `'300px'` | CSS max-height of the floating popover menu. Content scrolls beyond this height. |
-| `itemClass` | `string` | `''` | Additional CSS class(es) appended to every menu item element. |
-| `menuOffset` | `[number, number]` | `[0, 10]` | `[x, y]` pixel offset for the popover menu position relative to its trigger. |
+| Prop                  | Type                                     | Default                | Description                                                                                                                                                                          |
+| :-------------------- | :--------------------------------------- | :--------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `items`               | `SidebarMenuItemSchema[]`                | `[]`                   | The full menu data structure. Supports unlimited nesting via the `children` field.                                                                                                   |
+| `allowMultiple`       | `boolean`                                | `true`                 | When `true`, multiple submenu groups can be open simultaneously. When `false`, opening one group collapses all others.                                                               |
+| `defaultExpanded`     | `string[]`                               | `[]`                   | Array of item IDs (or label strings if no `id` is set) that are expanded by default on mount.                                                                                        |
+| `indentSize`          | `number`                                 | `12`                   | Pixel amount of left indentation added per nesting level. E.g. depth 1 = 12px, depth 2 = 24px.                                                                                       |
+| `variant`             | `'default' \| 'ghost'`                   | `'default'`            | Visual theme. `default` shows a vertical line connector between parent and children. `ghost` renders without the connector.                                                          |
+| `compact`             | `boolean`                                | `false`                | Collapses the menu to icon-only mode. Labels are hidden; icons are centered. Popover mode is forced for all items with children.                                                     |
+| `showCompactLabels`   | `boolean`                                | `false`                | When `compact` is `true`, renders small labels beneath each icon.                                                                                                                    |
+| `renderMode`          | `'tree' \| 'popover'`                    | `'tree'`               | Global submenu rendering strategy. `tree` expands children inline. `popover` renders children in a floating `Dropdown`. Overridable per item via `SidebarMenuItemSchema.renderMode`. |
+| `orientation`         | `'vertical' \| 'horizontal'`             | `'vertical'`           | Layout direction. `horizontal` places top-level items in a row (wrapping), and forces `popover` mode for all items with children.                                                    |
+| `mobileBreakpoint`    | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'none'` | `'none'`               | When set (not `'none'`), the menu switches from `orientation` to `'vertical'` on screens smaller than the specified breakpoint.                                                      |
+| `showTooltip`         | `boolean`                                | `true`                 | Enables a tooltip showing the item label. In `compact` mode or `horizontal` orientation, the tooltip appears automatically.                                                          |
+| `iconSize`            | `string`                                 | `'16px'`               | CSS size string applied to icon width and height in normal mode (e.g. `'18px'`, `'1.2rem'`).                                                                                         |
+| `compactIconSize`     | `string`                                 | `'20px'`               | CSS size string for icons when `compact` is `true`.                                                                                                                                  |
+| `labelClass`          | `string`                                 | `'text-sm'`            | Tailwind class(es) applied to item labels in normal mode.                                                                                                                            |
+| `compactLabelClass`   | `string`                                 | `'text-[11.5px] mt-1'` | Tailwind class(es) applied to labels when `compact` and `showCompactLabels` are both `true`.                                                                                         |
+| `itemPadding`         | `string`                                 | `'py-2 px-2'`          | Tailwind padding classes applied to each menu item in normal mode.                                                                                                                   |
+| `compactItemPadding`  | `string`                                 | `'py-2 px-1'`          | Tailwind padding classes applied to each menu item in compact mode.                                                                                                                  |
+| `nestedMenuWidth`     | `string`                                 | `'220px'`              | CSS width of the floating popover menu for children when `renderMode="popover"`.                                                                                                     |
+| `nestedMenuMaxHeight` | `string`                                 | `'300px'`              | CSS max-height of the floating popover menu. Content scrolls beyond this height.                                                                                                     |
+| `itemClass`           | `string`                                 | `''`                   | Additional CSS class(es) appended to every menu item element.                                                                                                                        |
+| `menuOffset`          | `[number, number]`                       | `[0, 10]`              | `[x, y]` pixel offset for the popover menu position relative to its trigger.                                                                                                         |
 
 ---
 
@@ -97,14 +97,14 @@ interface SidebarMenuItemSchema {
 
 ```ts
 interface SidebarMenuContext {
-  activeItem: string | null        // ID of the currently active item
-  expandedItems: string[]          // IDs of currently expanded groups
+  activeItem: string | null // ID of the currently active item
+  expandedItems: string[] // IDs of currently expanded groups
   toggleExpand: (id: string) => void
   setActive: (id: string | null) => void
   indentSize: number
   variant: 'default' | 'ghost'
   renderMode: 'tree' | 'popover'
-  renderNestedTabs: boolean        // From injected Navbar context
+  renderNestedTabs: boolean // From injected Navbar context
   compact: boolean
   showCompactLabels: boolean
   iconSize: string
@@ -123,17 +123,20 @@ interface SidebarMenuContext {
 ### Route Synchronization
 
 `SidebarMenu` watches `useRoute().path` and calls `syncWithRoute()` on every path change. This function:
+
 1. Recursively traverses the `items` tree.
 2. Sets `activeItem` to the matching item's ID.
 3. Pushes all ancestor IDs into `expandedItems` so parent groups auto-expand to reveal the active child.
 
 The matching logic:
+
 - Exact path match: `route.path === item.to`
 - Prefix match (non-root): `route.path.startsWith(item.to)` where `item.to.length > 1`
 
 ### `renderNestedTabs` Integration
 
 When the parent `Navbar` has `renderNestedTabs="true"`:
+
 - Clicking a top-level item sets it as active and calls `navbarCtx.setNestedTabs()`.
 - The children of that top-level item are mapped to `NavbarTabItem[]` objects and passed upward.
 - The `Navbar` renders these as a `NavbarTabs` bar at the top of the `#main` slot.
@@ -142,6 +145,7 @@ When the parent `Navbar` has `renderNestedTabs="true"`:
 ### Render Mode Decision (per item)
 
 `SidebarMenuItem` determines its render mode in this priority order:
+
 1. If `isHorizontal` (orientation = horizontal AND depth = 0) AND has children → **popover**
 2. If `compact` AND has children → **popover**
 3. If `renderNestedTabs` AND depth = 0 → **tree** (chevron suppressed)
@@ -220,8 +224,7 @@ const items: SidebarMenuItemSchema[] = [
       icon: 'lucide:life-buoy',
       action: (item) => openHelpDrawer(),
     },
-  ]"
-/>
+  ]" />
 ```
 
 ### Popover Mode for Nested Items
@@ -234,24 +237,19 @@ const items: SidebarMenuItemSchema[] = [
       icon: 'lucide:bar-chart-3',
       renderMode: 'popover',
       children: [
-        { label: 'Overview',     to: '/analytics/overview'     },
-        { label: 'Performance',  to: '/analytics/performance'  },
-        { label: 'Real-time',    to: '/analytics/realtime'     },
+        { label: 'Overview', to: '/analytics/overview' },
+        { label: 'Performance', to: '/analytics/performance' },
+        { label: 'Real-time', to: '/analytics/realtime' },
       ],
     },
-  ]"
-/>
+  ]" />
 ```
 
 ### Compact (Icon-Only) Mode
 
 ```vue
 <!-- Icons only — no labels shown -->
-<SidebarMenu
-  :items="items"
-  :compact="true"
-  compact-icon-size="22px"
-/>
+<SidebarMenu :items="items" :compact="true" compact-icon-size="22px" />
 
 <!-- Icons + small labels below -->
 <SidebarMenu
@@ -259,8 +257,7 @@ const items: SidebarMenuItemSchema[] = [
   :compact="true"
   :show-compact-labels="true"
   compact-icon-size="20px"
-  compact-label-class="text-[10px] mt-1"
-/>
+  compact-label-class="text-[10px] mt-1" />
 ```
 
 ### Horizontal Navigation (Responsive)
@@ -272,18 +269,14 @@ const items: SidebarMenuItemSchema[] = [
   orientation="horizontal"
   mobile-breakpoint="md"
   icon-size="16px"
-  :show-tooltip="false"
-/>
+  :show-tooltip="false" />
 ```
 
 ### Default Expanded Groups
 
 ```vue
 <!-- Open "Projects" and "Settings" groups on initial render -->
-<SidebarMenu
-  :items="items"
-  :default-expanded="['Projects', 'Settings']"
-/>
+<SidebarMenu :items="items" :default-expanded="['Projects', 'Settings']" />
 
 <!-- Using item IDs (preferred when IDs are set) -->
 <SidebarMenu
@@ -291,18 +284,14 @@ const items: SidebarMenuItemSchema[] = [
     { id: 'proj', label: 'Projects', children: [...] },
     { id: 'cfg',  label: 'Config',   children: [...] },
   ]"
-  :default-expanded="['proj']"
-/>
+  :default-expanded="['proj']" />
 ```
 
 ### Prevent Multiple Open Groups
 
 ```vue
 <!-- Only one group can be expanded at a time -->
-<SidebarMenu
-  :items="items"
-  :allow-multiple="false"
-/>
+<SidebarMenu :items="items" :allow-multiple="false" />
 ```
 
 ### Mixed Render Modes
@@ -315,10 +304,10 @@ You can combine global `renderMode="tree"` with per-item `renderMode="popover"` 
     {
       label: 'Products',
       icon: 'lucide:package',
-      renderMode: 'popover',   // This item uses popover
+      renderMode: 'popover', // This item uses popover
       children: [
         { label: 'All Products', to: '/products' },
-        { label: 'Categories',   to: '/products/categories' },
+        { label: 'Categories', to: '/products/categories' },
       ],
     },
     {
@@ -326,12 +315,11 @@ You can combine global `renderMode="tree"` with per-item `renderMode="popover"` 
       icon: 'lucide:settings', // This item expands inline (tree default)
       children: [
         { label: 'Account', to: '/settings/account' },
-        { label: 'Billing', to: '/settings/billing'  },
+        { label: 'Billing', to: '/settings/billing' },
       ],
     },
   ]"
-  render-mode="tree"
-/>
+  render-mode="tree" />
 ```
 
 ### Custom Sizing and Padding
@@ -345,8 +333,7 @@ You can combine global `renderMode="tree"` with per-item `renderMode="popover"` 
   compact-label-class="text-[11px] mt-1.5"
   item-padding="py-2.5 px-3"
   compact-item-padding="py-3 px-1.5"
-  :indent-size="16"
-/>
+  :indent-size="16" />
 ```
 
 ### Inside Navbar (Full App Shell)
@@ -393,8 +380,7 @@ You can combine global `renderMode="tree"` with per-item `renderMode="popover"` 
       icon: 'lucide:activity',
       href: 'https://status.example.com',
     },
-  ]"
-/>
+  ]" />
 ```
 
 ### i18n Labels
@@ -403,7 +389,7 @@ You can combine global `renderMode="tree"` with per-item `renderMode="popover"` 
 <SidebarMenu
   :items="[
     {
-      label: 'Dashboard',       // Fallback if i18n key not found
+      label: 'Dashboard', // Fallback if i18n key not found
       labelI18n: 'nav.dashboard',
       icon: 'lucide:layout-dashboard',
       to: '/dashboard',
@@ -414,8 +400,7 @@ You can combine global `renderMode="tree"` with per-item `renderMode="popover"` 
       icon: 'lucide:settings',
       to: '/settings',
     },
-  ]"
-/>
+  ]" />
 ```
 
 ---
@@ -430,12 +415,12 @@ It reads all configuration from the injected `sidebar-menu-ctx` context provided
 
 ### SidebarMenuItem Props
 
-| Prop | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `item` | `SidebarMenuItemSchema` | required | The menu item data object to render. |
-| `depth` | `number` | `0` | Current nesting depth, used for indent calculation. Incremented automatically for each recursive child. |
-| `menuOffset` | `[number, number]` | `[0, 10]` | Popover offset, forwarded from `SidebarMenu`. |
-| `itemClass` | `string` | `''` | Additional class(es) appended to the item element. |
+| Prop         | Type                    | Default   | Description                                                                                             |
+| :----------- | :---------------------- | :-------- | :------------------------------------------------------------------------------------------------------ |
+| `item`       | `SidebarMenuItemSchema` | required  | The menu item data object to render.                                                                    |
+| `depth`      | `number`                | `0`       | Current nesting depth, used for indent calculation. Incremented automatically for each recursive child. |
+| `menuOffset` | `[number, number]`      | `[0, 10]` | Popover offset, forwarded from `SidebarMenu`.                                                           |
+| `itemClass`  | `string`                | `''`      | Additional class(es) appended to the item element.                                                      |
 
 ---
 
@@ -459,4 +444,3 @@ It reads all configuration from the injected `sidebar-menu-ctx` context provided
 - In `horizontal` mode, items with children always use `popover` regardless of the `renderMode` prop, because inline tree expansion would break the horizontal layout.
 - The `action` callback fires on every click (before routing). Use it for side effects like logging, analytics, or opening drawers — not as a replacement for `to`/`href` navigation.
 - `mobileBreakpoint` is independent of the parent `Navbar`'s `mobileBreakpoint`. When used inside a `Navbar`, they should typically match to avoid layout inconsistencies.
-
