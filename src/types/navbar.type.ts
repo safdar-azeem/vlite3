@@ -29,9 +29,9 @@ export interface NavbarProps {
   centerPosition?: NavbarCenterPosition
   glass?: boolean
   border?: boolean
-  floating?: boolean // For floating navbar effect
+  floating?: boolean
   class?: string
-  height?: string // For header variant
+  height?: string
   compact?: boolean
   renderNestedTabs?: boolean
   logo?: string
@@ -43,4 +43,11 @@ export interface NavbarProps {
   rightClass?: string
   mobileTriggerClass?: string
   mobileMenuVariant?: 'sidepanel' | 'dropdown'
+  /**
+   * When true (Layout Mode only), renders a bars toggle button before the logo
+   * in the #header slot area on large screens. Allows users to show/hide the
+   * sidebar. Preference is persisted in localStorage.
+   * Mobile breakpoint behavior is completely unaffected.
+   */
+  sidebarToggle?: boolean
 }
