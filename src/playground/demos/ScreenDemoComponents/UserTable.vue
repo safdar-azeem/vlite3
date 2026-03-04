@@ -28,7 +28,7 @@ const headers = [
     selectable>
     <template #name="{ value, row }">
       <div class="flex items-center gap-3">
-        <Avatar :src="row.avatar" :alt="value" size="sm" />
+        <Avatar :src="row.avatar" :alt="value" />
         <span class="font-medium">{{ value }}</span>
       </div>
     </template>
