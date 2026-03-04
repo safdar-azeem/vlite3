@@ -106,6 +106,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       variant="sidebar"
       mobileBreakpoint="md"
       class="bg-body border-r border-border h-max shrink-0 z-20"
+      renderNestedTabs
       width="w-64">
       <template #logo>
         <div class="flex items-center gap-2 font-bold text-xl tracking-tight">
@@ -137,42 +138,44 @@ const menuItems: SidebarMenuItemSchema[] = [
           <p class="text-xs text-muted-foreground">v0.4.6</p>
         </div>
       </template>
-    </Navbar>
 
-    <main class="flex-1 min-w-0 flex flex-col h-full overflow-hidden bg-body relative z-0">
-      <div class="flex-1 overflow-y-auto scroll-smooth">
-        <div class="max-w-6xl mx-auto px-6 py-6 md:py-12">
-          <div
-            class="mb-10 pb-6 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <h1 class="text-fs-8 font-bold tracking-tight text-gray-900 mb-2">
-                Component Playground
-              </h1>
-              <p class="text-gray-500">
-                A comprehensive suite of UI components built for speed and consistency.
-              </p>
-            </div>
-            <div class="flex items-center gap-2">
-              <a href="https://github.com/safdar-azeem/vlite3" target="_blank">
-                <Button variant="outline" size="sm" icon="lucide:github">Docs</Button>
-              </a>
+      <template #main>
+        <div class="flex-1 w-full flex flex-col h-full bg-body relative z-0">
+          <div class="flex-1 overflow-y-auto scroll-smooth">
+            <div class="max-w-6xl mx-auto px-6 py-6 md:py-12">
+              <div
+                class="mb-10 pb-6 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h1 class="text-fs-8 font-bold tracking-tight text-gray-900 mb-2">
+                    Component Playground
+                  </h1>
+                  <p class="text-gray-500">
+                    A comprehensive suite of UI components built for speed and consistency.
+                  </p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <a href="https://github.com/safdar-azeem/vlite3" target="_blank">
+                    <Button variant="outline" size="sm" icon="lucide:github">Docs</Button>
+                  </a>
+                </div>
+              </div>
+
+              <router-view v-slot="{ Component }">
+                <Transition
+                  mode="out-in"
+                  enter-active-class="transition duration-200 ease-out"
+                  enter-from-class="opacity-0 translate-y-2"
+                  enter-to-class="opacity-100 translate-y-0"
+                  leave-active-class="transition duration-150 ease-in"
+                  leave-from-class="opacity-100 translate-y-0"
+                  leave-to-class="opacity-0 translate-y-2">
+                  <component :is="Component" />
+                </Transition>
+              </router-view>
             </div>
           </div>
-
-          <router-view v-slot="{ Component }">
-            <Transition
-              mode="out-in"
-              enter-active-class="transition duration-200 ease-out"
-              enter-from-class="opacity-0 translate-y-2"
-              enter-to-class="opacity-100 translate-y-0"
-              leave-active-class="transition duration-150 ease-in"
-              leave-from-class="opacity-100 translate-y-0"
-              leave-to-class="opacity-0 translate-y-2">
-              <component :is="Component" />
-            </Transition>
-          </router-view>
         </div>
-      </div>
-    </main>
+      </template>
+    </Navbar>
   </div>
 </template>
