@@ -12,6 +12,7 @@
 - **Navbar**
 - **SidebarMenu**
 - **SidePanel**
+- **Breadcrumb**
 - **Masonry Grid**
 - **ThemeToggle**
 
