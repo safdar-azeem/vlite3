@@ -15,9 +15,9 @@ interface Props {
   disabled?: boolean
   searchable?: boolean
 
-  variant?: 'default' | 'outline' | 'solid'
+  variant?: 'default' | 'outline' | 'solid' | 'floating' | string
   size?: 'sm' | 'md' | 'lg'
-  maxVisible?: number 
+  maxVisible?: number
   loading?: boolean
   hasMore?: boolean
   remote?: boolean
@@ -138,7 +138,7 @@ const hiddenCount = computed(() => {
 
 const handleSelect = (option: IDropdownOption) => {
   const val = option.value ?? option.label
-  
+
   // Save to buffer immediately so it persists across searches
   if (!selectedBuffer.value.has(val)) {
     selectedBuffer.value.set(val, option)
@@ -172,8 +172,14 @@ const clearAll = () => {
 const triggerClasses = computed(() => {
   return [
     'flex items-center justify-between w-full px-3 py-1.5 rounded-md border text-sm transition-colors cursor-pointer',
-    props.disabled ? 'opacity-50 cursor-not-allowed bg-muted' : 'bg-background hover:bg-gray-50/70',
-    props.variant === 'outline' ? 'border-input' : 'border-transparent bg-muted',
+    props.disabled
+      ? 'opacity-50 cursor-not-allowed bg-muted'
+      : props.variant === 'floating'
+        ? 'bg-transparent text-foreground'
+        : 'bg-background hover:bg-gray-50/70',
+    props.variant === 'outline' || props.variant === 'floating'
+      ? 'border-input'
+      : 'border-transparent bg-muted',
     isOpen.value ? 'border-primary/20' : '',
   ].join(' ')
 })
