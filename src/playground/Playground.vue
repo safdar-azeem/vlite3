@@ -7,8 +7,8 @@ import type { SidebarMenuItemSchema } from '@/components/SidebarMenu'
 import Icon from '@/components/Icon.vue'
 import ThemeToggle from '@/components/ThemeToggle.vue'
 import Button from '@/components/Button.vue'
-import Input from '@/components/Input.vue'
 import Avatar from '@/components/Avatar.vue'
+import NavbarCommandPalette from '@/components/NavbarCommandPalette.vue'
 
 const router = useRouter()
 
@@ -107,47 +107,50 @@ const menuItems: SidebarMenuItemSchema[] = [
     <Navbar
       variant="sidebar"
       mobileBreakpoint="md"
-      class="bg-body border-r border-border h-max shrink-0 z-20 w-[100px]!"
-      renderNestedTabs
-      content-class="p-0!"
-      compact>
+      class="bg-body border-r border-border h-max shrink-0 z-20">
       <template #header="{ toggle }">
         <div class="h-13 border-b bg-white flex items-center justify-between px-6 w-full shadow-sm">
-          <div class="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              icon="lucide:menu"
-              class="md:hidden -ml-2"
-              @click="toggle" />
-            <div class="font-bold text-lg flex items-center gap-2">
-              <div class="w-8 h-8 rounded bg-primary text-white flex items-center justify-center">
-                B
+          <div class="flex items-center w-full justify-between gap-4">
+            <div class="flex gap-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                icon="lucide:menu"
+                class="md:hidden -ml-2"
+                @click="toggle" />
+              <div class="font-bold text-lg flex items-center gap-2">
+                <div class="w-8 h-8 rounded bg-primary text-white flex items-center justify-center">
+                  B
+                </div>
+                Builto
               </div>
-              Builto
+
+              <!--
+              NavbarCommandPalette is placed directly in the header slot.
+              It self-registers Meta+K globally and renders its own modal.
+              The trigger button is hidden on mobile via its internal hidden md:inline-flex class.
+              Pass :menu-items="menuItems" to auto-populate all nav links with zero extra work.
+            -->
+              <NavbarCommandPalette
+                :enabled="true"
+                :menu-items="menuItems"
+                placeholder="Search components..."
+                shortcut-key="k" />
             </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <Input
-              placeholder="Search..."
-              icon="lucide:search"
-              size="sm"
-              rounded="full"
-              class="bg-gray-100 hidden sm:flex w-64" />
-            <Button variant="ghost" size="sm" icon="lucide:bell" rounded="full" />
-            <Avatar size="sm" fallback="JD" class="bg-primary/20 text-primary" />
+            <div class="flex gap-4">
+              <Button variant="ghost" size="sm" icon="lucide:bell" rounded="full" />
+              <Avatar size="sm" fallback="JD" class="bg-primary/20 text-primary" />
+            </div>
           </div>
         </div>
       </template>
 
       <template #default>
-        <div class="space-y-6">
+        <div class="space-y-6 md:py-3">
           <SidebarMenu
             :items="menuItems"
             :allow-multiple="true"
-            compact
             show-compact-labels
-            itemClass="rounded-none!"
             :default-expanded="[
               'Core',
               'Forms & Auth',
@@ -167,7 +170,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       <template #main>
         <div class="flex-1 w-full flex flex-col h-full bg-body relative z-0">
           <div class="flex-1 overflow-y-auto scroll-smooth">
-            <div class="max-w-[1350px] mx-auto px-6 py-6 md:py-12">
+            <div class="max-w-[1350px] mx-auto px-14 py-6 md:py-5">
               <div
                 class="mb-10 pb-6 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
