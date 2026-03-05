@@ -140,8 +140,8 @@ const menuItems: SidebarMenuItemSchema[] = [
 
               <div
                 v-if="breadcrumbItems?.length > 1"
-                class="hidden md:flex items-center pl-4 ml-2 border-l border-border">
-                <Breadcrumb :items="breadcrumbItems" separator="chevron" size="sm" />
+                class="hidden md:flex items-center pl-4 border-l border-border">
+                <Breadcrumb :items="breadcrumbItems" separator="slash" size="sm" />
               </div>
             </div>
             <div class="flex gap-4">
