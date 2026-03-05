@@ -11,6 +11,9 @@ export const VLITE_CONFIG_KEY: InjectionKey<VLiteConfig> = Symbol('vlite-config'
  */
 const defaultConfig: VLiteConfig = {
   services: {},
+  components: {
+    form: {},
+  },
 }
 
 /**
@@ -34,4 +37,3 @@ export function updateConfig(updates: Partial<VLiteConfig>) {
 export function useVLiteConfig() {
   return inject(VLITE_CONFIG_KEY, configState)
 }
-
