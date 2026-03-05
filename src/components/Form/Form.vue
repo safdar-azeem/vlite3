@@ -11,7 +11,7 @@ import type {
 import { useForm } from './composables/useForm'
 import FormFields from './FormFields.vue'
 import Button from '@/components/Button.vue'
-import Timeline from '@/components/Timeline.vue'
+import { Timeline } from '../Timeline'
 import type { TimelineStep } from '@/types'
 
 interface Props {
@@ -85,7 +85,7 @@ const props = withDefaults(defineProps<Props>(), {
   headerClass: '',
   footerClass: '',
   showRequiredAsterisk: true,
-  timelineTextPosition: 'bottom',
+  timelineTextPosition: 'right',
   emitFields: () => ['__typename'],
 })
 
@@ -321,7 +321,10 @@ const handleCancel = () => {
 
 <template>
   <form :class="['form-container', props.class]" @submit.prevent="handleSubmit">
-    <div v-if="isMultiStepMode && timelineSteps.length > 0" class="form-timeline mb-13">
+    <div
+      v-if="isMultiStepMode && timelineSteps.length > 0"
+      class="form-timeline"
+      :class="timelineTextPosition == 'right' ? 'mb-6.5' : 'mb-13'">
       <Timeline
         :steps="timelineSteps"
         :activeStep="currentStep"
