@@ -1,3 +1,5 @@
+import type { InputVariant, InputSize, InputRounded } from './form.type'
+
 /**
  * Interface for the file upload handler function.
  * This allows users to replace the default upload logic with their own API.
@@ -65,5 +67,17 @@ export interface VLiteConfig {
    */
   exportData?: {
     mode?: 'frontend' | 'backend'
+  }
+
+  /**
+   * Global UI Components configuration
+   */
+  components?: {
+    form?: {
+      variant?: InputVariant
+      size?: InputSize
+      rounded?: InputRounded
+      showRequiredAsterisk?: boolean
+    }
   }
 }
