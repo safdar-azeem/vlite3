@@ -24,7 +24,6 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [vue(), tailwindcss()],
 })
-
 ```
 
 `style.css`
@@ -35,7 +34,6 @@ export default defineConfig({
 
 @import 'vlite3/style.css';
 @source "../node_modules/vlite3";
-
 ```
 
 ## 3. Usage
@@ -53,7 +51,6 @@ import { Button, Input } from 'vlite3'
     <Input placeholder="Type here..." />
   </div>
 </template>
-
 ```
 
 ## Global Configuration (Registry System)
@@ -117,21 +114,20 @@ const vlite = createVLite({
       return data.url // MUST return the file URL string
     },
   },
-  
+
   // Global UI Components Configuration
   components: {
     form: {
       variant: 'outline', // Applies 'outline' globally to all Form inputs ('solid' | 'outline' | 'floating' | etc.)
-      size: 'md',         // Global size for form inputs ('sm' | 'md' | 'lg')
-      rounded: 'md',      // Global border radius for forms
+      size: 'md', // Global size for form inputs ('sm' | 'md' | 'lg')
+      rounded: 'md', // Global border radius for forms
       showRequiredAsterisk: true, // Globally toggle the visibility of the required asterisk
-    }
-  }
+    },
+  },
 })
 
 app.use(vlite)
 app.mount('#app')
-
 ```
 
 ### How it works
@@ -184,11 +180,10 @@ const handleSubmit = (payload) => {
 <template>
   <div class="">
     <Form :schema="schema" @onSubmit="handleSubmit" />
-    
+
     <Form :schema="schema" variant="solid" size="lg" @onSubmit="handleSubmit" />
   </div>
 </template>
-
 ```
 
 # 🎨 Theming & Customization
@@ -203,23 +198,23 @@ All colors are defined as CSS variables, allowing you to customize the appearanc
 
 Override these variables in `:root` or within a `.dark` class (when using class-based dark mode) to adjust your theme.
 
-| Variable | Utility Class | Description | Recommended Usage |
-| --- | --- | --- | --- |
-| `--color-background` | `bg-background` | Default page background (white) | Main application background |
-| `--color-foreground` | `text-foreground` | Default text color (gray-900) | Primary content text |
-| `--color-card` | `bg-card` | Card background (gray-100) | Cards, containers, surfaces, panels, dialogs |
-| `--color-primary` | `bg-primary` | Primary brand color (blue) | Main actions, buttons, active states |
-| `--color-primary-foreground` | `text-primary-foreground` | Text on primary background (white) | Text/icons displayed on primary elements |
-| `--color-secondary` | `bg-secondary` | Secondary background (gray-200) | Secondary actions, muted sections |
-| `--color-secondary-foreground` | `text-secondary-foreground` | Text on secondary background (gray-900) | Content displayed on secondary elements |
-| `--color-muted` | `bg-muted` | Muted background (gray-150) | Subtle surfaces, table headers, disabled states |
-| `--color-muted` | `text-muted` | Muted text (gray-600) | Secondary text, inactive links, descriptions |
-| `--color-accent` | `bg-accent` | Accent background (gray-150) | Hover states, selection highlights |
-| `--color-accent-foreground` | `text-accent-foreground` | Text on accent background (gray-900) | Content displayed on accent elements |
-| `--color-destructive` | `bg-destructive` | Destructive color (red) | Errors, warnings, destructive actions |
-| `--color-destructive-foreground` | `text-destructive-foreground` | Text on destructive background (white) | Content displayed on destructive elements |
-| `--color-border` | `border` | Default border color (gray-250) | Inputs, cards, dividers |
-| `--radius` | `rounded` | Global border radius | Shared radius across components |
+| Variable                         | Utility Class                 | Description                             | Recommended Usage                               |
+| -------------------------------- | ----------------------------- | --------------------------------------- | ----------------------------------------------- |
+| `--color-background`             | `bg-background`               | Default page background (white)         | Main application background                     |
+| `--color-foreground`             | `text-foreground`             | Default text color (gray-900)           | Primary content text                            |
+| `--color-card`                   | `bg-card`                     | Card background (gray-100)              | Cards, containers, surfaces, panels, dialogs    |
+| `--color-primary`                | `bg-primary`                  | Primary brand color (blue)              | Main actions, buttons, active states            |
+| `--color-primary-foreground`     | `text-primary-foreground`     | Text on primary background (white)      | Text/icons displayed on primary elements        |
+| `--color-secondary`              | `bg-secondary`                | Secondary background (gray-200)         | Secondary actions, muted sections               |
+| `--color-secondary-foreground`   | `text-secondary-foreground`   | Text on secondary background (gray-900) | Content displayed on secondary elements         |
+| `--color-muted`                  | `bg-muted`                    | Muted background (gray-150)             | Subtle surfaces, table headers, disabled states |
+| `--color-muted`                  | `text-muted`                  | Muted text (gray-600)                   | Secondary text, inactive links, descriptions    |
+| `--color-accent`                 | `bg-accent`                   | Accent background (gray-150)            | Hover states, selection highlights              |
+| `--color-accent-foreground`      | `text-accent-foreground`      | Text on accent background (gray-900)    | Content displayed on accent elements            |
+| `--color-destructive`            | `bg-destructive`              | Destructive color (red)                 | Errors, warnings, destructive actions           |
+| `--color-destructive-foreground` | `text-destructive-foreground` | Text on destructive background (white)  | Content displayed on destructive elements       |
+| `--color-border`                 | `border`                      | Default border color (gray-250)         | Inputs, cards, dividers                         |
+| `--radius`                       | `rounded`                     | Global border radius                    | Shared radius across components                 |
 
 ---
 
@@ -227,9 +222,9 @@ Override these variables in `:root` or within a `.dark` class (when using class-
 
 For more complex components, vlite3 provides extended variants for main semantic colors (`primary`, `danger`, `warning`, `info`, `success`). These are useful for building nuanced UIs with subtle backgrounds, hover states, and accessible text.
 
-| Base Color | Variant Variables | Usage Description |
-| --- | --- | --- |
-| **Primary** | `--color-primary-light`<br>
+| Base Color  | Variant Variables           | Usage Description |
+| ----------- | --------------------------- | ----------------- |
+| **Primary** | `--color-primary-light`<br> |
 
 <br>`--color-primary-dark`<br>
 
@@ -239,9 +234,9 @@ For more complex components, vlite3 provides extended variants for main semantic
 
 <br>**Dark**: Hover state for the main color.<br>
 
-<br>**Fg**: Text color on top of the *main* color.<br>
+<br>**Fg**: Text color on top of the _main_ color.<br>
 
-<br>**Fg-Light**: Text color on top of the *light* variant. |
+<br>**Fg-Light**: Text color on top of the _light_ variant. |
 | **Danger** | `--color-danger-light`<br>
 
 <br>`--color-danger-dark`<br>
@@ -303,19 +298,18 @@ For more complex components, vlite3 provides extended variants for main semantic
 </div>
 
 <button class="bg-danger text-danger-fg hover:bg-danger-dark">Delete</button>
-
 ```
 
 ### Additional Colors
 
 vlite3 also provides additional utility colors for specific feedback states:
 
-| Variable | Class Name | Description |
-| --- | --- | --- |
-| `--color-success` | `text-success`, `bg-success` | For success messages/badges. |
-| `--color-warning` | `text-warning`, `bg-warning` | For warning messages/badges. |
-| `--color-info` | `text-info`, `bg-info` | For informational messages/badges. |
-| `--color-danger` | `text-danger`, `bg-danger` | Alias for destructive in some contexts. |
+| Variable          | Class Name                   | Description                             |
+| ----------------- | ---------------------------- | --------------------------------------- |
+| `--color-success` | `text-success`, `bg-success` | For success messages/badges.            |
+| `--color-warning` | `text-warning`, `bg-warning` | For warning messages/badges.            |
+| `--color-info`    | `text-info`, `bg-info`       | For informational messages/badges.      |
+| `--color-danger`  | `text-danger`, `bg-danger`   | Alias for destructive in some contexts. |
 
 ---
 
@@ -323,8 +317,8 @@ vlite3 also provides additional utility colors for specific feedback states:
 
 The typography system is organized into two complementary scales:
 
-* Compact scale (prefixed with `--text--fs-*`)
-* Progressive scale (prefixed with `--text-fs-*`)
+- Compact scale (prefixed with `--text--fs-*`)
+- Progressive scale (prefixed with `--text-fs-*`)
 
 Use the progressive scale only when you need finer visual control beyond the standard Tailwind size tokens.
 For most layout and content needs, prefer the default Tailwind text sizes to maintain consistency.
@@ -340,7 +334,6 @@ For most layout and content needs, prefer the default Tailwind text sizes to mai
 --text--fs-6: 0.6em;
 --text--fs-7: 0.55em;
 --text--fs-8: 0.5em;
-
 ```
 
 ### Progressive Text Scale
@@ -366,23 +359,13 @@ For most layout and content needs, prefer the default Tailwind text sizes to mai
 --text-fs-9: 1.8em;
 --text-fs-9.5: 2em;
 --text-fs-10: 2.5em;
-
 ```
 
 ### Tailwind Size Tokens
 
 ```css
---text-xs: 0.75rem
---text-sm: 0.875rem
---text-base: 1rem
---text-lg: 1.125rem
---text-xl: 1.25rem
---text-2xl: 1.5rem
---text-3xl: 1.875rem
---text-4xl: 2.25rem
---text-5xl: 3rem
---text-6xl: 4rem;
-
+--text-xs: 0.75rem --text-sm: 0.875rem --text-base: 1rem --text-lg: 1.125rem --text-xl: 1.25rem
+  --text-2xl: 1.5rem --text-3xl: 1.875rem --text-4xl: 2.25rem --text-5xl: 3rem --text-6xl: 4rem;
 ```
 
 ---
@@ -395,87 +378,86 @@ For most layout and content needs, prefer the default Tailwind text sizes to mai
 <span class="-text-fs-4 text-muted"> Caption text </span>
 
 <h1 class="text-xl font-semibold">Page Title</h1>
-
 ```
 
 ## Hard Rules
 
 Follow these rules strictly to ensure visual consistency and predictable styling across the system:
 
-* Use `border` instead of `border-border` (the default border color (gray-250) is already applied).
-* Use `rounded` instead of `rounded-rounded`.
-* Use `bg-muted` instead of `bg-secondary/20`.
-* Use `gap-x-*` instead of applying `ml-*` or `mr-*` directly on sibling items.
-* Use `gap-y-*` instead of applying `mt-*` or `mb-*` directly on sibling items.
+- Use `border` instead of `border-border` (the default border color (gray-250) is already applied).
+- Use `rounded` instead of `rounded-rounded`.
+- Use `bg-muted` instead of `bg-secondary/20`.
+- Use `gap-x-*` instead of applying `ml-*` or `mr-*` directly on sibling items.
+- Use `gap-y-*` instead of applying `mt-*` or `mb-*` directly on sibling items.
 
 ---
 
 ## ✅ Components
 
-* **Button**
-* **ButtonGroup**
-* **Icon**
-* **Label**
-* **Badge**
-* **Chip**
-* **Logo**
-* **Navbar**
-* **SidebarMenu**
-* **SidePanel**
-* **Masonry Grid**
-* **ThemeToggle**
+- **Button**
+- **ButtonGroup**
+- **Icon**
+- **Label**
+- **Badge**
+- **Chip**
+- **Logo**
+- **Navbar**
+- **SidebarMenu**
+- **SidePanel**
+- **Masonry Grid**
+- **ThemeToggle**
 
 ### Inputs & Forms
 
-* **Input**
-* **Textarea**
-* **CheckBox**
-* **Switch**
-* **ChoiceBox**
-* **Slider**
-* **OTPInput**
-* **DatePicker**
-* **ColorPicker**
-* **FilePicker**
-* **AvatarUploader**
-* **IconPicker**
-* **MultiSelect**
-* **Form**
-* **CustomFields**
-* **NumberInput**
-* **Google Login**
+- **Input**
+- **Textarea**
+- **CheckBox**
+- **Switch**
+- **ChoiceBox**
+- **Slider**
+- **OTPInput**
+- **DatePicker**
+- **ColorPicker**
+- **FilePicker**
+- **AvatarUploader**
+- **IconPicker**
+- **MultiSelect**
+- **Form**
+- **CustomFields**
+- **NumberInput**
+- **Google Login**
 
 ### Data Display
 
-* **Avatar**
-* **Accordion**
-* **Carousel**
-* **DataTable**
-* **Pagination**
-* **Timeline**
-* **Heatmap**
-* **PricingPlan**
-* **FileTree**
-* **Workbook**
-* **Tabes**
+- **Avatar**
+- **Accordion**
+- **Carousel**
+- **DataTable**
+- **Pagination**
+- **Timeline**
+- **Heatmap**
+- **PricingPlan**
+- **FileTree**
+- **Workbook**
+- **Tabes**
 
 ### Feedback & Overlays
 
-* **Alert**
-* **Modal**
-* **ConfirmationModal**
-* **ToastNotification**
-* **Tooltip**
-* **Dropdown**
-* **ProgressBar**
-* **Spinner**
+- **Alert**
+- **Modal**
+- **ConfirmationModal**
+- **ToastNotification**
+- **Tooltip**
+- **Dropdown**
+- **ProgressBar**
+- **Spinner**
 
 ## Complete reference for AI agents and developers:
 
-* [1-setup.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/1-setup.md)
-* [2-theming.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/2-theming.md)
-* [3-all-components.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/3-all-components.md)
-* [4-forms.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/4-forms.md)
-* [5-utility.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/5-utility.md)
-* [6-advance-components.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/6-advance-components.md)
-
+- [0-setup.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/0-vlite3-setup.md)
+- [1-theming.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/1-theming.md)
+- [2-all-components.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/2-all-components.md)
+- [3-forms.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/components/Forms.md)
+- [3-utility.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/3-utility.md)
+- [4-i18n.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/4-i18n.md)
+- [5-search-util.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/5-search-util.md)
