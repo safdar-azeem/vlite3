@@ -34,6 +34,7 @@ const props = withDefaults(defineProps<NavbarProps>(), {
   breadcrumbSeparator: 'chevron',
   breadcrumbSize: 'sm',
   breadcrumbHomeIcon: 'lucide:home',
+  breadcrumbPosition: 'header',
   breadcrumbClass: '',
 })
 
@@ -264,7 +265,8 @@ const sidebarHidden = computed(() => {
         :is-open="isMobileMenuOpen"
         :toggle="() => (isMobileMenuOpen = !isMobileMenuOpen)"
         :sidebar-visible="isSidebarVisible"
-        :toggle-sidebar="toggleSidebar">
+        :toggle-sidebar="toggleSidebar"
+        :breadcrumb-items="breadcrumbData.items.value">
       </slot>
     </header>
 
@@ -399,7 +401,11 @@ const sidebarHidden = computed(() => {
             :items="nestedTabsItems" />
         </div>
         <div
-          v-if="props.breadcrumb && breadcrumbData.items.value.length > 1"
+          v-if="
+            props.breadcrumb &&
+            props.breadcrumbPosition === 'main' &&
+            breadcrumbData.items.value.length > 1
+          "
           class="shrink-0 w-full border-b border-border px-6 py-2"
           :class="props.breadcrumbClass">
           <Breadcrumb
