@@ -13,6 +13,7 @@
 - **SidebarMenu**
 - **SidePanel**
 - **Breadcrumb**
+- **PermissionMatrix**
 - **Masonry Grid**
 - **ThemeToggle**
 
