@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import CheckBox from '../CheckBox.vue'
 import Switch from '../Switch.vue'
 import Icon from '../Icon.vue'
 import Input from '../Input.vue'
+import Tooltip from '../Tooltip.vue'
+import { Dropdown } from '../Dropdown'
 import type {
   PermissionGroup,
   PermissionDef,
@@ -28,6 +30,9 @@ export interface PermissionEditorProps {
   size?: PermissionMatrixSize
   /** Extra CSS classes */
   class?: string
+  /** Group keys to show expanded by default. Others will start collapsed.
+   *  If not provided or empty, all groups start expanded. */
+  defaultExpanded?: string[]
 }
 
 const props = withDefaults(defineProps<PermissionEditorProps>(), {
@@ -37,6 +42,7 @@ const props = withDefaults(defineProps<PermissionEditorProps>(), {
   readonly: false,
   size: 'md',
   class: '',
+  defaultExpanded: () => [],
 })
 
 const emit = defineEmits<{
@@ -46,8 +52,41 @@ const emit = defineEmits<{
 // ── Search ──
 const searchQuery = ref('')
 
+// ── Group filter (dropdown) ──
+const selectedGroupKeys = ref<string[]>([])
+
+const groupDropdownOptions = computed(() =>
+  props.groups.map((g) => ({
+    label: g.label,
+    value: g.key,
+    icon: g.icon,
+  }))
+)
+
+function toggleGroupFilter(groupKey: string) {
+  const current = selectedGroupKeys.value
+  if (current.includes(groupKey)) {
+    selectedGroupKeys.value = current.filter((k) => k !== groupKey)
+  } else {
+    selectedGroupKeys.value = [...current, groupKey]
+  }
+}
+
+function clearGroupFilter() {
+  selectedGroupKeys.value = []
+}
+
 // ── Collapsed groups ──
 const collapsedGroups = ref<Set<string>>(new Set())
+
+// Initialize collapsed state from defaultExpanded prop
+onMounted(() => {
+  if (props.defaultExpanded && props.defaultExpanded.length > 0) {
+    const allGroupKeys = props.groups.map((g) => g.key)
+    const toCollapse = allGroupKeys.filter((k) => !props.defaultExpanded.includes(k))
+    collapsedGroups.value = new Set(toCollapse)
+  }
+})
 
 function toggleGroupCollapse(groupKey: string) {
   if (!props.collapsible) return
@@ -60,23 +99,33 @@ function toggleGroupCollapse(groupKey: string) {
   collapsedGroups.value = next
 }
 
-// ── Filtered groups ──
+// ── Filtered groups (search + group dropdown) ──
 const filteredGroups = computed<PermissionGroup[]>(() => {
-  if (!searchQuery.value.trim()) return props.groups
+  let result = props.groups
 
-  const q = searchQuery.value.toLowerCase()
-  return props.groups
-    .map((group) => {
-      const filteredPerms = group.permissions.filter(
-        (p) =>
-          p.label.toLowerCase().includes(q) ||
-          p.key.toLowerCase().includes(q) ||
-          group.label.toLowerCase().includes(q)
-      )
-      if (filteredPerms.length === 0) return null
-      return { ...group, permissions: filteredPerms }
-    })
-    .filter(Boolean) as PermissionGroup[]
+  // Filter by selected group dropdown
+  if (selectedGroupKeys.value.length > 0) {
+    result = result.filter((g) => selectedGroupKeys.value.includes(g.key))
+  }
+
+  // Filter by search query
+  if (searchQuery.value.trim()) {
+    const q = searchQuery.value.toLowerCase()
+    result = result
+      .map((group) => {
+        const filteredPerms = group.permissions.filter(
+          (p) =>
+            p.label.toLowerCase().includes(q) ||
+            p.key.toLowerCase().includes(q) ||
+            group.label.toLowerCase().includes(q)
+        )
+        if (filteredPerms.length === 0) return null
+        return { ...group, permissions: filteredPerms }
+      })
+      .filter(Boolean) as PermissionGroup[]
+  }
+
+  return result
 })
 
 // ── Permission helpers ──
@@ -139,16 +188,73 @@ const cellPadding = computed(() => (props.size === 'sm' ? 'px-3 py-1.5' : 'px-4 
 
 <template>
   <div :class="['permission-editor', props.class]">
-    <!-- Top bar: search + stats -->
+    <!-- Top bar: search + group filter + stats -->
     <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-4">
-      <div v-if="searchable" class="flex-1 w-full sm:max-w-sm">
-        <Input
-          v-model="searchQuery"
-          placeholder="Search permissions..."
-          icon="lucide:search"
-          :size="size"
-          show-clear-button />
+      <div class="flex items-center gap-2 flex-1 w-full sm:max-w-lg">
+        <div v-if="searchable" class="flex-1">
+          <Input
+            v-model="searchQuery"
+            placeholder="Search permissions..."
+            icon="lucide:search"
+            :size="size"
+            show-clear-button />
+        </div>
+
+        <!-- Group filter dropdown -->
+        <Dropdown
+          :options="groupDropdownOptions"
+          :close-on-select="false"
+          :selectable="false"
+          position="bottom-end">
+          <template #trigger>
+            <button
+              type="button"
+              :class="[
+                'inline-flex items-center gap-1.5 border rounded-md cursor-pointer transition-colors',
+                size === 'sm' ? 'px-2 py-1.5 text-xs' : 'px-3 py-2 text-sm',
+                selectedGroupKeys.length > 0
+                  ? 'border-primary bg-primary/5 text-primary'
+                  : 'border-border text-muted-foreground hover:text-foreground hover:bg-accent',
+              ]">
+              <Icon icon="lucide:filter" class="w-3.5 h-3.5" />
+              <span class="hidden sm:inline">Modules</span>
+              <span
+                v-if="selectedGroupKeys.length > 0"
+                class="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-bold min-w-[18px] h-[18px] px-1">
+                {{ selectedGroupKeys.length }}
+              </span>
+            </button>
+          </template>
+
+          <template #item="{ option }">
+            <div
+              class="flex items-center gap-2 px-2 py-1.5 cursor-pointer hover:bg-accent rounded-md"
+              @click.stop="toggleGroupFilter(option.value)">
+              <CheckBox
+                :model-value="selectedGroupKeys.includes(option.value)"
+                size="xs"
+                @update:model-value="toggleGroupFilter(option.value)" />
+              <Icon
+                v-if="option.icon"
+                :icon="option.icon"
+                class="w-3.5 h-3.5 text-muted-foreground" />
+              <span class="text-sm">{{ option.label }}</span>
+            </div>
+          </template>
+
+          <template #footer>
+            <div v-if="selectedGroupKeys.length > 0" class="border-t px-3 py-1.5">
+              <button
+                type="button"
+                class="text-xs text-muted-foreground hover:text-foreground cursor-pointer"
+                @click="clearGroupFilter">
+                Clear filters
+              </button>
+            </div>
+          </template>
+        </Dropdown>
       </div>
+
       <div class="flex items-center gap-3 ml-auto">
         <span :class="[textSize, 'text-muted-foreground whitespace-nowrap']">
           {{ modelValue.length }} / {{ totalPerms }} selected
@@ -176,7 +282,7 @@ const cellPadding = computed(() => (props.size === 'sm' ? 'px-3 py-1.5' : 'px-4 
     <!-- Empty state -->
     <div v-if="filteredGroups.length === 0" class="text-center py-12 text-muted-foreground">
       <Icon icon="lucide:search-x" class="w-8 h-8 mx-auto mb-3 opacity-50" />
-      <p :class="textSize">No permissions match your search.</p>
+      <p :class="textSize">No permissions match your filters.</p>
     </div>
 
     <!-- Permission groups -->
@@ -233,11 +339,11 @@ const cellPadding = computed(() => (props.size === 'sm' ? 'px-3 py-1.5' : 'px-4 
             ]">
             <div class="flex items-center gap-2 pl-6">
               <span :class="[textSize, 'text-foreground']">{{ perm.label }}</span>
-              <Icon
-                v-if="perm.description"
-                icon="lucide:info"
-                class="w-3 h-3 text-muted-foreground cursor-help shrink-0"
-                :title="perm.description" />
+              <Tooltip v-if="perm.description" :content="perm.description" placement="top">
+                <Icon
+                  icon="lucide:info"
+                  class="w-3 h-3 text-muted-foreground cursor-auto shrink-0" />
+              </Tooltip>
             </div>
 
             <div class="flex items-center">
