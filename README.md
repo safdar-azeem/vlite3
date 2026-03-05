@@ -394,69 +394,88 @@ Follow these rules strictly to ensure visual consistency and predictable styling
 
 ## ✅ Components
 
-- **Button**
-- **ButtonGroup**
-- **Icon**
-- **Label**
-- **Badge**
-- **Chip**
-- **Logo**
-- **Navbar**
-- **SidebarMenu**
-- **SidePanel**
-- **Masonry Grid**
-- **ThemeToggle**
+- [x] **Button**
+- [x] **ButtonGroup**
+- [x] **Icon**
+- [x] **Label**
+- [x] **Badge**
+- [x] **Chip**
+- [x] **Logo**
+- [x] **Navbar**
+- [x] **SidebarMenu**
+- [x] **SidePanel**
+- [x] **Breadcrumb**
+- [x] **List**
+- [x] **Masonry Grid**
+- [x] **Stats**
+- [x] **ThemeToggle**
+- [x] **Screen**
 
 ### Inputs & Forms
 
-- **Input**
-- **Textarea**
-- **CheckBox**
-- **Switch**
-- **ChoiceBox**
-- **Slider**
-- **OTPInput**
-- **DatePicker**
-- **ColorPicker**
-- **FilePicker**
-- **AvatarUploader**
-- **IconPicker**
-- **MultiSelect**
-- **Form**
-- **CustomFields**
-- **NumberInput**
-- **Google Login**
+- [x] **Input**
+- [x] **Textarea**
+- [x] **CheckBox**
+- [x] **Switch**
+- [x] **ChoiceBox**
+- [x] **Slider**
+- [x] **OTPInput**
+- [x] **NumberInput**
+- [x] **DatePicker**
+- [x] **DateRangePicker**
+- [x] **ColorPicker**
+- [x] **FilePicker**
+- [x] **AvatarUploader**
+- [x] **IconPicker**
+- [x] **MultiSelect**
+- [x] **Forms**
+- [x] **CustomFields**
+- [x] **GoogleLogin**
+- [x] **PermissionEditor**
 
 ### Data Display
 
-- **Avatar**
-- **Accordion**
-- **Carousel**
-- **DataTable**
-- **Pagination**
-- **Timeline**
-- **Heatmap**
-- **PricingPlan**
-- **FileTree**
-- **Workbook**
-- **Tabes**
+- [x] **Avatar**
+- [x] **Accordion**
+- [x] **Carousel**
+- [x] **DataTable**
+- [x] **DataList**
+- [x] **Pagination**
+- [x] **Timeline**
+- [x] **Heatmap**
+- [x] **PricingPlan**
+- [x] **FileTree**
+- [x] **Workbook**
+- [x] **Kanban**
+- [x] **Tabes**
+- [x] **Masonry**
+- [x] **Stats**
 
 ### Feedback & Overlays
 
-- **Alert**
-- **Modal**
-- **ConfirmationModal**
-- **ToastNotification**
-- **Tooltip**
-- **Dropdown**
-- **ProgressBar**
-- **Spinner**
+- [x] **Alert**
+- [x] **Modal**
+- [x] **ConfirmationModal**
+- [x] **ToastNotification**
+- [x] **Tooltip**
+- [x] **Dropdown**
+- [x] **ProgressBar**
+- [x] **Spinner**
+- [x] **CommandPalette**
+- [x] **SidePanel**
+
+### Utilities & Tools
+
+- [x] **Barcode**
+- [x] **QRCode**
+- [x] **ImportData**
+- [x] **ExportData**
 
 ## Complete reference for AI agents and developers:
 
 - [0-setup.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/0-vlite3-setup.md)
 - [1-theming.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/1-theming.md)
-- [2-all-components.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/2-all-components.md)
+- [2-components.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/2-all-components.md)
 - [3-forms.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/components/Forms.md)
 - [3-utility.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/3-utility.md)
 - [4-i18n.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/4-i18n.md)
