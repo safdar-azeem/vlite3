@@ -89,7 +89,7 @@ function flattenMenuItems(
         group,
         to: typeof item.to === 'string' ? item.to : (item.to as any)?.path,
         href: item.href,
-        action: item.action,
+        action: item.action ? () => item.action!(item) : undefined,
         disabled: item.disabled,
       })
     }
@@ -348,12 +348,6 @@ onMounted(() => {
                 class="block text-xs text-muted-foreground/70 truncate mt-0.5">
                 {{ getEffectiveDesc(item) }}
               </span>
-            </span>
-
-            <span
-              v-if="item.to"
-              class="shrink-0 text-[11px] font-mono text-muted-foreground/50 hidden sm:block truncate max-w-[120px]">
-              {{ item.to }}
             </span>
 
             <Icon
