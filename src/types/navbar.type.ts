@@ -56,6 +56,8 @@ export interface NavbarProps {
    * based on the current route path. Works in Layout Mode.
    */
   breadcrumb?: boolean
+  /** Where to render the breadcrumb: 'header' renders as a slim bar inside the header, 'main' renders above the main content (default: 'header') */
+  breadcrumbPosition?: 'header' | 'main'
   /** Breadcrumb visual variant (default: 'default') */
   breadcrumbVariant?: import('@/components/Breadcrumb/types').BreadcrumbVariant
   /** Breadcrumb separator style (default: 'chevron') */
