@@ -41,6 +41,16 @@ export function createVLite(options: VLiteConfig = {}) {
         if (options.exportData) {
           configState.exportData = { ...configState.exportData, ...options.exportData }
         }
+        if (options.components) {
+          configState.components = {
+            ...configState.components,
+            ...options.components,
+            form: {
+              ...(configState.components?.form || {}),
+              ...(options.components.form || {}),
+            },
+          }
+        }
       }
 
       // 2. Provide the config to the application tree
