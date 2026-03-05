@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import DemoSection from '../DemoSection.vue'
-import { PermissionMatrix } from '@/components/PermissionMatrix'
+import { PermissionMatrix, PermissionEditor } from '@/components/PermissionMatrix'
 import type { RoleDef, PermissionGroup, PermissionMap } from '@/components/PermissionMatrix'
 
 // ── Sample Roles ──
@@ -199,6 +199,28 @@ const smallCode = `<PermissionMatrix
   :roles="roles"
   :groups="groups"
   size="sm" />`
+
+// ── Single-Role Editor data ──
+const editorPerms = ref<string[]>([
+  'users_view_employees',
+  'users_view_customers',
+  'hrm_view_department',
+  'hrm_view_payroll',
+  'hrm_view_leaves',
+  'crm_view_tasks',
+  'crm_view_dashboard',
+])
+
+const editorSwitchPerms = ref<string[]>(['users_view_employees', 'hrm_view_department'])
+
+const editorCode = `<PermissionEditor
+  v-model="selectedPermissions"
+  :groups="groups" />`
+
+const editorSwitchCode = `<PermissionEditor
+  v-model="selectedPermissions"
+  :groups="groups"
+  toggle-mode="switch" />`
 </script>
 
 <template>
@@ -210,6 +232,35 @@ const smallCode = `<PermissionMatrix
     </p>
 
     <div class="space-y-12">
+      <!-- Single-Role Permission Editor (top) -->
+      <div>
+        <h3 class="text-fs-3 font-semibold mb-1">Single-Role Permission Editor</h3>
+        <p class="text-muted-foreground text-sm mb-6">
+          For when enterprises create their own roles and need to pick permissions. Just pass
+          modules and permissions — <code>v-model</code> is a <code>string[]</code> of selected
+          keys.
+        </p>
+
+        <DemoSection title="Permission Editor (Checkbox)" :code="editorCode">
+          <PermissionEditor v-model="editorPerms" :groups="groups" />
+        </DemoSection>
+      </div>
+
+      <DemoSection title="Permission Editor (Switch)" :code="editorSwitchCode">
+        <PermissionEditor
+          v-model="editorSwitchPerms"
+          :groups="groups.slice(0, 3)"
+          toggle-mode="switch" />
+      </DemoSection>
+
+      <!-- Multi-Role Permission Matrix (below) -->
+      <div>
+        <h3 class="text-fs-3 font-semibold mb-1">Multi-Role Permission Matrix</h3>
+        <p class="text-muted-foreground text-sm mb-6">
+          For managing permissions across multiple roles at once in a matrix grid.
+        </p>
+      </div>
+
       <DemoSection title="Default (Checkbox)" :code="defaultCode">
         <PermissionMatrix v-model="permissions" :roles="roles" :groups="groups" />
       </DemoSection>
