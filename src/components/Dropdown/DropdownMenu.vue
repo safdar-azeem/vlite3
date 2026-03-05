@@ -324,8 +324,9 @@ const getDisplayLabel = (option: IDropdownOption) =>
               @onSelect="(payload: any) => handleRecursiveSelect(option, payload)">
               <template #trigger>
                 <div
+                  :tabindex="0"
                   data-dropdown-item
-                  class="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm font-medium outline-none transition-colors justify-between w-full"
+                  class="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm font-medium outline-none transition-colors justify-between w-full focus-visible:bg-accent focus-visible:text-accent-foreground focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-1"
                   :class="[
                     isKeyboardMode && focusedIndex === index
                       ? 'bg-accent text-accent-foreground'
