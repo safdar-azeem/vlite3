@@ -45,7 +45,7 @@ const emit = defineEmits<{
   (e: 'change', value: Record<string, any>[]): void
 }>()
 
-const displayLabel = computed(() => props.labelI18n ? $t(props.labelI18n) : props.label)
+const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : props.label))
 
 // Global i18n Fallbacks for Custom Fields
 const displayEmptyTitle = computed(() => {
