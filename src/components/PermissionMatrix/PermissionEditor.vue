@@ -78,13 +78,43 @@ function clearGroupFilter() {
 
 // ── Collapsed groups ──
 const collapsedGroups = ref<Set<string>>(new Set())
+const baseCollapsedGroups = ref<Set<string>>(new Set())
 
 // Initialize collapsed state from defaultExpanded prop
-onMounted(() => {
+function computeBaseCollapsed(): Set<string> {
   if (props.defaultExpanded && props.defaultExpanded.length > 0) {
     const allGroupKeys = props.groups.map((g) => g.key)
-    const toCollapse = allGroupKeys.filter((k) => !props.defaultExpanded.includes(k))
-    collapsedGroups.value = new Set(toCollapse)
+    return new Set(allGroupKeys.filter((k) => !props.defaultExpanded.includes(k)))
+  }
+  return new Set()
+}
+
+onMounted(() => {
+  const base = computeBaseCollapsed()
+  baseCollapsedGroups.value = base
+  collapsedGroups.value = new Set(base)
+})
+
+// Auto-expand matched groups on search, restore on clear
+watch(searchQuery, (query) => {
+  if (query.trim()) {
+    // Expand all groups that have matching permissions
+    const q = query.toLowerCase()
+    const matchedKeys = new Set<string>()
+    for (const group of props.groups) {
+      const hasMatch =
+        group.label.toLowerCase().includes(q) ||
+        group.permissions.some(
+          (p) => p.label.toLowerCase().includes(q) || p.key.toLowerCase().includes(q)
+        )
+      if (hasMatch) matchedKeys.add(group.key)
+    }
+    // Only collapse groups that DON'T match
+    const allGroupKeys = props.groups.map((g) => g.key)
+    collapsedGroups.value = new Set(allGroupKeys.filter((k) => !matchedKeys.has(k)))
+  } else {
+    // Restore base collapsed state
+    collapsedGroups.value = new Set(baseCollapsedGroups.value)
   }
 })
 
@@ -97,6 +127,10 @@ function toggleGroupCollapse(groupKey: string) {
     next.add(groupKey)
   }
   collapsedGroups.value = next
+  // Update base state so manual toggles persist after search clears
+  if (!searchQuery.value.trim()) {
+    baseCollapsedGroups.value = new Set(next)
+  }
 }
 
 // ── Filtered groups (search + group dropdown) ──
