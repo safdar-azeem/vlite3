@@ -56,6 +56,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'DatePicker', to: '/datepicker', icon: 'lucide:calendar' },
       { label: 'DateRangePicker', to: '/daterangepicker', icon: 'lucide:calendar-range' },
       { label: 'Google Login', to: '/googlelogin', icon: 'lucide:chrome' },
+      { label: 'Permission Matrix', to: '/permissionmatrix', icon: 'lucide:shield-check' },
     ],
   },
   {
