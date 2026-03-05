@@ -119,7 +119,7 @@ const separatorChar = computed(() => {
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 0.25em;
+  gap: 0.45em;
 }
 
 /* ---- Sizes ---- */
