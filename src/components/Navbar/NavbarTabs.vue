@@ -2,16 +2,7 @@
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import Icon from '../Icon.vue'
-
-export interface NavbarTabItem {
-  label: string
-  labelI18n?: string
-  to: string
-  icon?: string
-  iconRight?: string
-  disabled?: boolean
-  exact?: boolean
-}
+import type { NavbarTabItem } from '@/types/navbar.type'
 
 export type NavbarTabsVariant = 'line' | 'pill' | 'solid' | 'ghost'
 export type NavbarTabsSize = 'sm' | 'md' | 'lg'
@@ -69,14 +60,14 @@ watch(
   () => nextTick(updateScrollState)
 )
 
-const itemRefs = ref<Map<string, HTMLElement>>(new Map())
+const itemRefs = ref<Map<number, HTMLElement>>(new Map())
 
-const setItemRef = (el: any, to: string) => {
+const setItemRef = (el: any, index: number) => {
   const element = el?.$el ?? el
   if (element instanceof HTMLElement) {
-    itemRefs.value.set(to, element)
+    itemRefs.value.set(index, element)
   } else {
-    itemRefs.value.delete(to)
+    itemRefs.value.delete(index)
   }
 }
 
@@ -84,9 +75,9 @@ watch(
   () => route.path,
   (path) => {
     nextTick(() => {
-      const active = props.items.find((item) => isActive(item))
-      if (!active) return
-      const el = itemRefs.value.get(active.to)
+      const activeIndex = props.items.findIndex((item) => isActive(item))
+      if (activeIndex === -1) return
+      const el = itemRefs.value.get(activeIndex)
       el?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' })
     })
   },
@@ -129,7 +120,10 @@ const variantItemInactive: Record<NavbarTabsVariant, string> = {
  */
 const isActive = (item: NavbarTabItem): boolean => {
   const current = route.path
-  const target = item.to
+  if (!item.to) return false
+  const target = typeof item.to === 'string' ? item.to : item.to.path
+
+  if (!target) return false
 
   if (item.exact || target === '/') {
     return current === target
@@ -188,16 +182,16 @@ const getItemClasses = (item: NavbarTabItem): string => {
       ]"
       aria-label="Page tabs">
       <RouterLink
-        v-for="item in items"
-        :key="item.to"
-        :ref="(el) => setItemRef(el, item.to)"
-        :to="item.to"
+        v-for="(item, index) in items"
+        :key="index"
+        :ref="(el) => setItemRef(el, index)"
+        :to="item.to || ''"
         role="tab"
         :aria-selected="isActive(item)"
         :aria-disabled="item.disabled || undefined"
         :tabindex="item.disabled ? -1 : 0"
         :class="getItemClasses(item)"
-        @click.prevent="!item.disabled && $router.push(item.to)">
+        @click.prevent="!item.disabled && item.to && $router.push(item.to)">
         <Icon
           v-if="item.icon"
           :icon="item.icon"
