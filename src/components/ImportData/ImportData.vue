@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import Modal from '../Modal.vue'
 import Button from '../Button.vue'
-import Timeline from '../Timeline.vue'
+import { Timeline } from '../Timeline'
 import ImportStep1 from './ImportStep1.vue'
 import ImportStep2 from './ImportStep2.vue'
 import ImportStep3 from './ImportStep3.vue'
