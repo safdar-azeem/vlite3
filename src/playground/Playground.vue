@@ -9,6 +9,7 @@ import ThemeToggle from '@/components/ThemeToggle.vue'
 import Button from '@/components/Button.vue'
 import Avatar from '@/components/Avatar.vue'
 import NavbarCommandPalette from '@/components/NavbarCommandPalette.vue'
+import { Breadcrumb } from '@/components/Breadcrumb'
 
 const router = useRouter()
 
@@ -113,7 +114,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       breadcrumb
       render-nested-tabs
       class="bg-body border-r border-border h-max shrink-0 z-20">
-      <template #header="{ toggleSidebar, toggle }">
+      <template #header="{ toggleSidebar, toggle, breadcrumbItems }">
         <div class="h-13 border-b bg-white flex items-center justify-between px-6 w-full shadow-sm">
           <div class="flex items-center w-full justify-between gap-8">
             <div class="flex gap-3 items-center">
@@ -135,6 +136,12 @@ const menuItems: SidebarMenuItemSchema[] = [
                 :menu-items="menuItems"
                 placeholder="Search components..."
                 shortcut-key="k" />
+
+              <div
+                v-if="breadcrumbItems?.length > 1"
+                class="hidden md:flex items-center pl-4 ml-2 border-l border-border">
+                <Breadcrumb :items="breadcrumbItems" separator="chevron" size="sm" />
+              </div>
             </div>
             <div class="flex gap-4">
               <Button variant="ghost" size="sm" icon="lucide:bell" rounded="full" />
