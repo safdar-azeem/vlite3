@@ -113,7 +113,6 @@ const menuItems: SidebarMenuItemSchema[] = [
       mobileBreakpoint="md"
       sidebarToggle
       breadcrumb
-      render-nested-tabs
       class="bg-body border-r border-border h-max shrink-0 z-20">
       <template #header="{ toggleSidebar, toggle, breadcrumbItems }">
         <div class="h-13 border-b bg-white flex items-center justify-between px-6 w-full shadow-sm">
@@ -129,7 +128,7 @@ const menuItems: SidebarMenuItemSchema[] = [
                 <div class="w-7 h-7 rounded bg-primary text-white flex items-center justify-center">
                   V
                 </div>
-                Vlite
+                Vlite3
               </div>
 
               <NavbarCommandPalette
@@ -170,7 +169,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       <template #right>
         <div class="flex items-center justify-between gap-2">
           <ThemeToggle />
-          <p class="text-xs text-muted-foreground">v0.4.6</p>
+          <p class="text-xs text-muted-foreground">v0.5.2</p>
         </div>
       </template>
 
@@ -178,23 +177,6 @@ const menuItems: SidebarMenuItemSchema[] = [
         <div class="flex-1 w-full flex flex-col h-full bg-body relative z-0">
           <div class="flex-1 overflow-y-auto scroll-smooth">
             <div class="max-w-[1950px] mx-auto px-14 py-6 md:py-5">
-              <div
-                class="mb-10 pb-6 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <h1 class="text-fs-8 font-bold tracking-tight text-gray-900 mb-2">
-                    Component Playground
-                  </h1>
-                  <p class="text-gray-500">
-                    A comprehensive suite of UI components built for speed and consistency.
-                  </p>
-                </div>
-                <div class="flex items-center gap-2">
-                  <a href="https://github.com/safdar-azeem/vlite3" target="_blank">
-                    <Button variant="outline" size="sm" icon="lucide:github">Docs</Button>
-                  </a>
-                </div>
-              </div>
-
               <router-view v-slot="{ Component }">
                 <Transition
                   mode="out-in"
