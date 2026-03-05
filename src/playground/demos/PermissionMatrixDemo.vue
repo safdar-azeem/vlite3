@@ -242,7 +242,10 @@ const editorSwitchCode = `<PermissionEditor
         </p>
 
         <DemoSection title="Permission Editor (Checkbox)" :code="editorCode">
-          <PermissionEditor v-model="editorPerms" :groups="groups" />
+          <PermissionEditor
+            v-model="editorPerms"
+            :groups="groups"
+            :default-expanded="['users', 'hrm']" />
         </DemoSection>
       </div>
 
