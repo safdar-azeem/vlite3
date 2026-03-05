@@ -68,7 +68,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   values: () => ({}),
   variant: 'outline',
-  size: 'lg',
+  size: 'md',
   rounded: 'md',
   loading: false,
   footer: true,
