@@ -1,6 +1,6 @@
 # Navbar
 
-**Import:** `import { Navbar, NavbarGroup, NavbarItem } from 'vlite3'`
+**Import:** `import { Navbar, NavbarGroup, NavbarItem, NavbarTabs } from 'vlite3'`
 
 The `Navbar` component is a versatile navigation primitive that supports two modes:
 
@@ -13,44 +13,63 @@ When the `#header` and `#main` slots are both provided, it automatically enters 
 
 ## Props
 
-| Prop                 | Type                                              | Default       | Description                                                                                                                                                                                                |
-| :------------------- | :------------------------------------------------ | :------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `variant`            | `'header' \| 'sidebar'`                           | `'header'`    | Layout mode of the navbar. `header` renders a horizontal top bar; `sidebar` renders a vertical side panel.                                                                                                 |
-| `position`           | `'fixed' \| 'sticky' \| 'relative' \| 'absolute'` | `'sticky'`    | CSS positioning strategy applied to the nav element. In Layout Mode, `fixed` and `absolute` are normalized to `relative` for proper flex child behavior.                                                   |
-| `centerPosition`     | `'center' \| 'left' \| 'right'`                   | `'center'`    | Controls the alignment of the `#center` slot content (Header variant only).                                                                                                                                |
-| `glass`              | `boolean`                                         | `false`       | Enables a frosted glass `backdrop-blur` effect on scroll.                                                                                                                                                  |
-| `border`             | `boolean`                                         | `true`        | Shows a `border-b` (header) or `border-r` (sidebar) separator. Disabled automatically when `floating` is true.                                                                                             |
-| `floating`           | `boolean`                                         | `false`       | Applies a floating card style with margin, rounded corners, shadow, and a subtle border.                                                                                                                   |
-| `class`              | `string`                                          | `''`          | Custom CSS class(es) appended to the root nav wrapper element.                                                                                                                                             |
-| `height`             | `string`                                          | `'h-16'`      | Tailwind height class applied to the header container (Header variant only).                                                                                                                               |
-| `width`              | `string`                                          | `'w-64'`      | Tailwind width class for the sidebar (Sidebar variant only, applied via layout).                                                                                                                           |
-| `compact`            | `boolean`                                         | `false`       | Enables compact/collapsed mode. In sidebar, this collapses the nav to icons only. Passed via provide/inject to child `NavbarItem` and `SidebarMenu` components.                                            |
-| `renderNestedTabs`   | `boolean`                                         | `false`       | When `true` (Layout Mode only), clicking a top-level sidebar item with children extracts those children and renders them as a `NavbarTabs` bar at the top of the `#main` slot instead of expanding inline. |
-| `logo`               | `string`                                          | `—`           | URL for a logo image. If provided, renders an `<img>` tag inside the `#logo` slot fallback.                                                                                                                |
-| `logoAlt`            | `string`                                          | `—`           | Alt text for the logo image (used with the `logo` prop).                                                                                                                                                   |
-| `mobileBreakpoint`   | `'sm' \| 'md' \| 'lg' \| 'xl'`                    | `'md'`        | The Tailwind breakpoint at which the navbar switches from mobile (hamburger) to desktop layout.                                                                                                            |
-| `logoClass`          | `string`                                          | `''`          | Additional CSS classes applied to the logo container wrapper div.                                                                                                                                          |
-| `contentClass`       | `string`                                          | `''`          | Additional CSS classes applied to the main content/scrollable area of the sidebar, or the center container in the header.                                                                                  |
-| `menuClass`          | `string`                                          | `''`          | Additional CSS classes applied to the mobile dropdown menu container (when `mobileMenuVariant="dropdown"`).                                                                                                |
-| `rightClass`         | `string`                                          | `''`          | Additional CSS classes applied to the right-actions area (header) or bottom-pinned footer area (sidebar).                                                                                                  |
-| `mobileTriggerClass` | `string`                                          | `''`          | Additional CSS classes applied to the default hamburger toggle button.                                                                                                                                     |
-| `mobileMenuVariant`  | `'sidepanel' \| 'dropdown'`                       | `'sidepanel'` | Controls how the mobile menu is displayed. `sidepanel` opens an animated drawer from the left; `dropdown` renders a full-width panel below the navbar.                                                     |
+| Prop                 | Type                                               | Default       | Description                                                                                                                                                                                                |
+| :------------------- | :------------------------------------------------- | :------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `variant`            | `'header' \| 'sidebar'`                            | `'header'`    | Layout mode of the navbar. `header` renders a horizontal top bar; `sidebar` renders a vertical side panel.                                                                                                 |
+| `position`           | `'fixed' \| 'sticky' \| 'relative' \| 'absolute'`  | `'sticky'`    | CSS positioning strategy applied to the nav element. In Layout Mode, `fixed` and `absolute` are normalized to `relative` for proper flex child behavior.                                                   |
+| `centerPosition`     | `'center' \| 'left' \| 'right'`                    | `'center'`    | Controls the alignment of the `#center` slot content (Header variant only).                                                                                                                                |
+| `glass`              | `boolean`                                          | `false`       | Enables a frosted glass `backdrop-blur` effect on scroll.                                                                                                                                                  |
+| `border`             | `boolean`                                          | `true`        | Shows a `border-b` (header) or `border-r` (sidebar) separator. Disabled automatically when `floating` is true.                                                                                             |
+| `floating`           | `boolean`                                          | `false`       | Applies a floating card style with margin, rounded corners, shadow, and a subtle border.                                                                                                                   |
+| `class`              | `string`                                           | `''`          | Custom CSS class(es) appended to the root nav wrapper element.                                                                                                                                             |
+| `height`             | `string`                                           | `'h-16'`      | Tailwind height class applied to the header container (Header variant only).                                                                                                                               |
+| `width`              | `string`                                           | `'w-64'`      | Tailwind width class for the sidebar (Sidebar variant only, applied via layout).                                                                                                                           |
+| `compact`            | `boolean`                                          | `false`       | Enables compact/collapsed mode. In sidebar, this collapses the nav to icons only. Passed via provide/inject to child `NavbarItem` and `SidebarMenu` components.                                            |
+| `renderNestedTabs`   | `boolean`                                          | `false`       | When `true` (Layout Mode only), clicking a top-level sidebar item with children extracts those children and renders them as a `NavbarTabs` bar at the top of the `#main` slot instead of expanding inline. |
+| `logo`               | `string`                                           | `—`           | URL for a logo image. If provided, renders an `<img>` tag inside the `#logo` slot fallback.                                                                                                                |
+| `logoAlt`            | `string`                                           | `—`           | Alt text for the logo image (used with the `logo` prop).                                                                                                                                                   |
+| `mobileBreakpoint`   | `'sm' \| 'md' \| 'lg' \| 'xl'`                     | `'md'`        | The Tailwind breakpoint at which the navbar switches from mobile (hamburger) to desktop layout.                                                                                                            |
+| `logoClass`          | `string`                                           | `''`          | Additional CSS classes applied to the logo container wrapper div.                                                                                                                                          |
+| `contentClass`       | `string`                                           | `''`          | Additional CSS classes applied to the main content/scrollable area of the sidebar, or the center container in the header.                                                                                  |
+| `menuClass`          | `string`                                           | `''`          | Additional CSS classes applied to the mobile dropdown menu container (when `mobileMenuVariant="dropdown"`).                                                                                                |
+| `rightClass`         | `string`                                           | `''`          | Additional CSS classes applied to the right-actions area (header) or bottom-pinned footer area (sidebar).                                                                                                  |
+| `mobileTriggerClass` | `string`                                           | `''`          | Additional CSS classes applied to the default hamburger toggle button.                                                                                                                                     |
+| `mobileMenuVariant`  | `'sidepanel' \| 'dropdown'`                        | `'sidepanel'` | Controls how the mobile menu is displayed. `sidepanel` opens an animated drawer from the left; `dropdown` renders a full-width panel below the navbar.                                                     |
+| `sidebarToggle`      | `boolean`                                          | `false`       | Enables the desktop sidebar toggle feature (Layout Mode only). Renders a panel-left toggle before the logo. Preference is persisted in `localStorage` under `vlite-navbar-sidebar-visible`.               |
+| `breadcrumb`         | `boolean`                                          | `false`       | When `true`, auto-generates a `Breadcrumb` from the current route path. Works in Layout Mode.                                                                                                              |
+| `breadcrumbPosition` | `'header' \| 'main'`                               | `'header'`    | Where to render the breadcrumb: inside the header area or above the main content.                                                                                                                          |
+| `breadcrumbVariant`  | `BreadcrumbVariant`                                | `'default'`   | Visual variant forwarded to the internal `<Breadcrumb>` component.                                                                                                                                         |
+| `breadcrumbSeparator`| `BreadcrumbSeparator`                              | `'chevron'`   | Separator style (`'chevron'`, `'slash'`, etc.) forwarded to `<Breadcrumb>`.                                                                                                                                |
+| `breadcrumbSize`     | `BreadcrumbSize`                                   | `'sm'`        | Size forwarded to `<Breadcrumb>`.                                                                                                                                                                          |
+| `breadcrumbLabels`   | `Record<string, string>`                           | `—`           | Override auto-generated route labels by path, e.g. `{ '/settings': 'Preferences' }`.                                                                                                                      |
+| `breadcrumbHomeIcon` | `string`                                           | `'lucide:home'`| Icon for the home breadcrumb segment.                                                                                                                                                                      |
+| `breadcrumbClass`    | `string`                                           | `''`          | Extra CSS classes applied to the breadcrumb wrapper element.                                                                                                                                               |
 
 ---
 
 ## Slots
 
-| Slot              | Description                                                                                                                            | Scoped Props                              |
-| :---------------- | :------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------- |
-| `#header`         | Renders a full-width top header bar **and** activates Layout Mode. Must be used alongside `#main`.                                     | `{ isOpen: boolean, toggle: () => void }` |
-| `#main`           | Renders the main content area to the right of the sidebar in Layout Mode.                                                              | —                                         |
-| `#logo`           | Branding/logo area. In header, shown on the left. In sidebar, shown at the top above content.                                          | —                                         |
-| `#left`           | Left nav links (Header) or top section content (Sidebar). In header, hidden on mobile.                                                 | —                                         |
-| `#center`         | Center content (Header) or middle scrollable section (Sidebar). Alignment controlled by `centerPosition`.                              | —                                         |
-| `#right`          | Right action items (Header) or bottom-pinned footer (Sidebar, bordered).                                                               | —                                         |
-| `#mobile-trigger` | Replaces the default hamburger `<button>`. Must handle open/close logic manually using scoped props.                                   | `{ isOpen: boolean, toggle: () => void }` |
-| `#mobile-menu`    | Replaces the default mobile menu content (both `sidepanel` and `dropdown` variants). Renders the full content area of the mobile menu. | —                                         |
-| `#default`        | Primary scrollable content area of the sidebar (typically a `<SidebarMenu>`). Rendered between `#left` and `#center`.                  | —                                         |
+| Slot              | Description                                                                                                                            | Scoped Props                                                                                     |
+| :---------------- | :------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------- |
+| `#header`         | Renders a full-width top header bar **and** activates Layout Mode. Must be used alongside `#main`.                                     | `{ isOpen, toggle, sidebarVisible, toggleSidebar, breadcrumbItems }`                             |
+| `#main`           | Renders the main content area to the right of the sidebar in Layout Mode.                                                              | —                                                                                                |
+| `#logo`           | Branding/logo area. In header, shown on the left. In sidebar, shown at the top above content.                                          | —                                                                                                |
+| `#left`           | Left nav links (Header) or top section content (Sidebar). In header, hidden on mobile.                                                 | —                                                                                                |
+| `#center`         | Center content (Header) or middle scrollable section (Sidebar). Alignment controlled by `centerPosition`.                              | —                                                                                                |
+| `#right`          | Right action items (Header) or bottom-pinned footer (Sidebar, bordered).                                                               | —                                                                                                |
+| `#mobile-trigger` | Replaces the default hamburger `<button>`. Must handle open/close logic manually using scoped props.                                   | `{ isOpen: boolean, toggle: () => void }`                                                        |
+| `#mobile-menu`    | Replaces the default mobile menu content (both `sidepanel` and `dropdown` variants). Renders the full content area of the mobile menu. | —                                                                                                |
+| `#default`        | Primary scrollable content area of the sidebar (typically a `<SidebarMenu>`). Rendered between `#left` and `#center`.                  | —                                                                                                |
+
+### `#header` Scoped Props (detailed)
+
+| Prop             | Type         | Description                                                         |
+| :--------------- | :----------- | :------------------------------------------------------------------ |
+| `isOpen`         | `boolean`    | Mobile menu open state.                                             |
+| `toggle`         | `() => void` | Toggles the mobile menu open/closed.                                |
+| `sidebarVisible` | `boolean`    | Whether the desktop sidebar is currently visible (`sidebarToggle`). |
+| `toggleSidebar`  | `() => void` | Show/hide the desktop sidebar. Persisted in localStorage.           |
+| `breadcrumbItems`| `BreadcrumbItem[]` | Auto-generated breadcrumb items from the current route.       |
 
 ---
 
@@ -58,35 +77,41 @@ When the `#header` and `#main` slots are both provided, it automatically enters 
 
 ### Layout Mode
 
-Layout Mode is automatically activated when both the `#header` and `#main` slots are provided. In this mode:
+Activated when both `#header` and `#main` slots are provided. In Layout Mode:
 
 - The component renders a full-page flex column wrapper (`.vlite-app-layout`).
-- The `#header` slot is rendered as a `<header>` spanning the full width.
+- `#header` spans the full width as a `<header>` element.
 - A flex row beneath contains the `<nav>` (sidebar) and `<main>` side by side.
-- The `<nav>` element is hidden on mobile (below `mobileBreakpoint`) using a responsive `max-{bp}:hidden` class, since the mobile drawer (SidePanel) handles mobile navigation separately.
-- The `<main>` area optionally renders a `NavbarTabs` bar at the top if `renderNestedTabs` is `true` and a sidebar item with children has been selected.
+- The `<nav>` is hidden on mobile (below `mobileBreakpoint`) since the SidePanel drawer handles mobile navigation.
+- When `renderNestedTabs` is `true` and a sidebar item with children is selected, the `Navbar` renders a `NavbarTabs` bar at the top of `#main`.
+
+### Sidebar Toggle (Desktop)
+
+When `sidebarToggle="true"` and in Layout Mode:
+
+- The sidebar visibility state is stored in `localStorage` under `vlite-navbar-sidebar-visible`.
+- A smooth width + opacity CSS transition hides/shows the sidebar without jarring layout jumps.
+- Mobile breakpoint behavior is completely unaffected — only visible/functional above `mobileBreakpoint`.
 
 ### Scroll Detection
 
-A passive `scroll` event listener updates `isScrolled` (true when `window.scrollY > 10`). This drives:
+A passive `scroll` listener updates `isScrolled` (true when `window.scrollY > 10`), which drives:
 
-- The `glass` blur effect activation.
-- A subtle `shadow-sm` applied when `position="sticky"` and not in floating mode.
+- The `glass` blur effect.
+- A subtle `shadow-sm` when `position="sticky"` and not floating.
 
 ### Mobile Menu
 
-The mobile trigger button is hidden above `mobileBreakpoint` using `{bp}:hidden`. Below the breakpoint:
+Below `mobileBreakpoint`, the hamburger trigger appears. Two variants:
 
-- **`sidepanel` (default):** Uses the internal `<SidePanel>` component to render a left-side drawer. The `#logo` content appears in the panel header.
-- **`dropdown`:** Renders an absolutely positioned full-width panel directly below the navbar using `v-if` with `onClickOutside` to close.
+- **`sidepanel` (default):** Left-side `<SidePanel>` drawer. Logo renders in the panel header.
+- **`dropdown`:** Absolutely positioned full-width panel below the navbar, closed by `onClickOutside`.
 
 ### Route Watching
 
-A `watch` on `useRoute().path` automatically closes the mobile menu whenever the route changes, ensuring navigation always collapses the menu.
+A `watch` on `useRoute().path` automatically closes the mobile menu on every route change.
 
 ### Provide/Inject Context
-
-The Navbar provides a `navbar-context` object to all descendants:
 
 ```ts
 provide('navbar-context', {
@@ -96,7 +121,7 @@ provide('navbar-context', {
 })
 ```
 
-This allows `SidebarMenu` and `NavbarItem` to read `compact` mode and push tab data upward when `renderNestedTabs` is active.
+All `SidebarMenu` and `NavbarItem` descendants receive this context automatically — no manual prop passing needed.
 
 ---
 
@@ -104,34 +129,27 @@ This allows `SidebarMenu` and `NavbarItem` to read `compact` mode and push tab d
 
 ### App Layout Mode (Full Structure)
 
-The most powerful use case. Provide `#header` and `#main` to create a full application shell.
-
 ```vue
 <Navbar variant="sidebar">
   <template #header="{ toggle }">
     <div class="h-16 border-b bg-white w-full flex items-center justify-between px-6">
       <div class="flex items-center gap-4">
-        <!-- Button only visible on mobile (below mobileBreakpoint) -->
         <button class="md:hidden" @click="toggle">
           <Icon icon="lucide:menu" />
         </button>
         <span class="font-bold text-lg">My App</span>
       </div>
-      <div class="flex items-center gap-3">
-        <Avatar fallback="JD" />
-      </div>
+      <Avatar fallback="JD" />
     </div>
   </template>
 
-  <!-- Sidebar content (default slot) -->
   <template #default>
     <SidebarMenu :items="menuItems" />
   </template>
 
-  <!-- Main content area -->
   <template #main>
     <div class="p-6">
-      <h1>Dashboard</h1>
+      <RouterView />
     </div>
   </template>
 </Navbar>
@@ -154,7 +172,6 @@ The most powerful use case. Provide `#header` and `#main` to create a full appli
   </template>
 
   <template #center>
-    <!-- Optional centered search bar -->
     <Input placeholder="Search..." icon="lucide:search" class="w-64" />
   </template>
 
@@ -169,14 +186,10 @@ The most powerful use case. Provide `#header` and `#main` to create a full appli
 
 ```vue
 <div class="flex h-screen">
-  <Navbar
-    variant="sidebar"
-    position="relative"
-    class="w-64 h-full border-r bg-white">
+  <Navbar variant="sidebar" position="relative" class="w-64 h-full border-r bg-white">
     <template #logo>
       <div class="flex items-center gap-2 font-bold">
-        <Icon icon="lucide:box" />
-        Dashboard
+        <Icon icon="lucide:box" /> Dashboard
       </div>
     </template>
 
@@ -213,16 +226,73 @@ Clicking a top-level item with children surfaces those children as tabs in the m
   </template>
 
   <template #default>
-    <!-- When a user clicks "Settings", its children (Account, Billing, etc.)
-         appear as NavbarTabs at the top of #main automatically. -->
     <SidebarMenu :items="menuItems" />
   </template>
 
   <template #main>
     <div class="p-6">
-      <!-- Router outlet — the selected nested tab controls the sub-route -->
       <RouterView />
     </div>
+  </template>
+</Navbar>
+```
+
+### Desktop Sidebar Toggle
+
+```vue
+<Navbar variant="sidebar" :sidebar-toggle="true">
+  <template #header="{ toggle, toggleSidebar, sidebarVisible }">
+    <div class="h-16 border-b bg-white flex items-center justify-between px-6 w-full">
+      <div class="flex items-center gap-4">
+        <!-- Mobile hamburger -->
+        <button class="md:hidden" @click="toggle">
+          <Icon icon="lucide:menu" />
+        </button>
+        <!-- Desktop sidebar toggle -->
+        <button
+          class="hidden md:flex p-2 rounded-md text-muted-foreground hover:bg-accent"
+          :aria-label="sidebarVisible ? 'Hide sidebar' : 'Show sidebar'"
+          @click="toggleSidebar">
+          <Icon icon="lucide:panel-left" class="w-5 h-5" />
+        </button>
+        <span class="font-bold text-lg">My App</span>
+      </div>
+    </div>
+  </template>
+
+  <template #default>
+    <SidebarMenu :items="menuItems" />
+  </template>
+
+  <template #main>
+    <div class="p-6">
+      <RouterView />
+    </div>
+  </template>
+</Navbar>
+```
+
+### Auto Breadcrumb
+
+```vue
+<Navbar variant="sidebar" breadcrumb breadcrumb-position="header" breadcrumb-separator="slash">
+  <template #header="{ toggle, breadcrumbItems }">
+    <div class="h-16 border-b bg-white flex items-center px-6 w-full gap-6">
+      <button class="md:hidden" @click="toggle">
+        <Icon icon="lucide:menu" />
+      </button>
+      <span class="font-bold">App</span>
+      <!-- breadcrumbItems is auto-generated from current route -->
+      <Breadcrumb v-if="breadcrumbItems.length > 1" :items="breadcrumbItems" separator="slash" size="sm" />
+    </div>
+  </template>
+
+  <template #default>
+    <SidebarMenu :items="menuItems" />
+  </template>
+
+  <template #main>
+    <RouterView />
   </template>
 </Navbar>
 ```
@@ -246,7 +316,6 @@ Clicking a top-level item with children surfaces those children as tabs in the m
     <Button size="sm">Sign In</Button>
   </template>
 
-  <!-- Custom mobile menu content -->
   <template #mobile-menu>
     <div class="flex flex-col p-2 space-y-1">
       <NavbarItem label="Products" to="/products" />
@@ -265,9 +334,7 @@ Clicking a top-level item with children surfaces those children as tabs in the m
   <template #logo>Brand</template>
 
   <template #mobile-trigger="{ isOpen, toggle }">
-    <button
-      class="p-2 rounded-md bg-primary text-white"
-      @click="toggle">
+    <button class="p-2 rounded-md bg-primary text-white" @click="toggle">
       <Icon :icon="isOpen ? 'lucide:x' : 'lucide:menu'" />
     </button>
   </template>
@@ -280,10 +347,7 @@ Clicking a top-level item with children surfaces those children as tabs in the m
 
 ### Slot Class Customization
 
-Use `logoClass`, `contentClass`, and `rightClass` to style specific internal areas.
-
 ```vue
-<!-- Sidebar with custom zone backgrounds -->
 <Navbar
   variant="sidebar"
   position="relative"
@@ -382,12 +446,12 @@ A single navigation link or button within the navbar. Automatically detects the 
 
 ### NavbarItem Compact Mode
 
-When the parent `Navbar` has `compact="true"`, the `navbar-context` is injected and `isCompact` becomes `true`. In compact mode:
+When the parent `Navbar` has `compact="true"`, `isCompact` becomes `true` (via `navbar-context` inject). In compact mode:
 
-- The label text is hidden (`md:hidden`).
+- Label text is hidden (`md:hidden`).
 - `iconRight` and badge content are hidden.
 - Layout switches to `justify-center`.
-- A `Tooltip` with the `label` appears on the right side to aid discoverability.
+- A `Tooltip` with the `label` appears on the right side for discoverability.
 
 ### NavbarItem Usage
 
@@ -396,11 +460,7 @@ When the parent `Navbar` has `compact="true"`, the `navbar-context` is injected 
 <NavbarItem label="Dashboard" to="/dashboard" />
 
 <!-- With leading and trailing icons -->
-<NavbarItem
-  label="Settings"
-  to="/settings"
-  icon="lucide:settings"
-  icon-right="lucide:chevron-right" />
+<NavbarItem label="Settings" to="/settings" icon="lucide:settings" icon-right="lucide:chevron-right" />
 
 <!-- External link -->
 <NavbarItem label="Documentation" href="https://docs.example.com" icon="lucide:external-link" />
@@ -454,13 +514,13 @@ A horizontal, router-linked tab bar with automatic overflow detection, scroll fa
 
 ```ts
 export interface NavbarTabItem {
-  label: string // Display text for the tab
-  labelI18n?: string // i18n key (overrides label if provided)
-  to: string // vue-router path (required)
-  icon?: string // Optional leading icon identifier
-  iconRight?: string // Optional trailing icon identifier
-  disabled?: boolean // Disables click and applies opacity
-  exact?: boolean // Use exact route matching (default: smart prefix match)
+  label: string
+  labelI18n?: string
+  to: string
+  icon?: string
+  iconRight?: string
+  disabled?: boolean
+  exact?: boolean
 }
 
 export type NavbarTabsVariant = 'line' | 'pill' | 'solid' | 'ghost'
@@ -486,17 +546,16 @@ export type NavbarTabsSize = 'sm' | 'md' | 'lg'
 
 ### NavbarTabs Features
 
-- Uses `<RouterLink>` for navigation with proper `aria-selected` and `role="tab"` attributes.
+- Uses `<RouterLink>` with proper `aria-selected` and `role="tab"` attributes.
 - Horizontal overflow with a hidden scrollbar (scroll still works via touch/trackpad).
-- Fade gradient overlay + chevron arrow buttons (`lucide:chevron-left` / `lucide:chevron-right`) appear automatically when tabs overflow the container width.
-- The active tab is automatically scrolled into view on every route change using `scrollIntoView`.
-- Keyboard accessible: `Tab` to focus, `Enter` to navigate.
-- **Smart active matching**: Uses a boundary-aware prefix check — `/button` does NOT match `/buttongroup`. Exact matching is forced when `item.exact = true` or `item.to = '/'`.
+- Fade gradient overlay + chevron buttons appear automatically when tabs overflow the container.
+- The active tab is scrolled into view on every route change via `scrollIntoView`.
+- **Smart active matching**: boundary-aware prefix check — `/button` does NOT match `/buttongroup`. Exact matching forced when `item.exact = true` or `item.to = '/'`.
 
 ### NavbarTabs Usage
 
 ```vue
-<!-- Basic line tabs -->
+<!-- Line tabs (default) -->
 <NavbarTabs
   :items="[
     { label: 'Overview', to: '/project/overview' },
@@ -554,8 +613,6 @@ export type NavbarTabsSize = 'sm' | 'md' | 'lg'
 ## Type Reference
 
 ```ts
-// From '@/types/navbar.type.ts'
-
 export type NavbarVariant = 'header' | 'sidebar'
 export type NavbarPosition = 'fixed' | 'sticky' | 'relative' | 'absolute'
 export type NavbarCenterPosition = 'center' | 'left' | 'right'
@@ -580,6 +637,15 @@ export interface NavbarProps {
   rightClass?: string
   mobileTriggerClass?: string
   mobileMenuVariant?: 'sidepanel' | 'dropdown'
+  sidebarToggle?: boolean
+  breadcrumb?: boolean
+  breadcrumbPosition?: 'header' | 'main'
+  breadcrumbVariant?: BreadcrumbVariant
+  breadcrumbSeparator?: BreadcrumbSeparator
+  breadcrumbSize?: BreadcrumbSize
+  breadcrumbLabels?: Record<string, string>
+  breadcrumbHomeIcon?: string
+  breadcrumbClass?: string
 }
 ```
 
@@ -588,69 +654,9 @@ export interface NavbarProps {
 ## Notes & Best Practices
 
 - **Layout Mode requires both `#header` and `#main` slots.** Providing only one will not activate Layout Mode.
-- **`renderNestedTabs` only works in Layout Mode.** It requires `#main` to be present to render the tab bar.
-- In Layout Mode, set `height` on your `#header` content directly rather than via the `height` prop, since the prop only affects the standalone `variant="header"` flex container.
-- The `compact` prop is propagated via `provide/inject`. Any `NavbarItem` or `SidebarMenu` inside the Navbar automatically receives this value — you do not need to pass it manually.
-- When using `mobileMenuVariant="dropdown"`, the dropdown positions itself with `absolute` below the `<nav>`, so the parent must have `position: relative` (or be a positioned container) for correct stacking.
-- The mobile `SidePanel` and `dropdown` menus render the `#left`, `#center`, and `#right` slot content. If you use `#mobile-menu` to override the mobile content, those default slot mirrors are replaced entirely.
-
----
-
-## Sidebar Toggle (Desktop)
-
-When using Layout Mode, you can enable a sidebar toggle button on large screens by passing the `sidebarToggle` prop. This renders a `lucide:panel-left` bars button **before the logo** inside the `#header` slot scope, accessible via the `toggleSidebar` and `sidebarVisible` scoped props.
-
-The user's preference is automatically saved in `localStorage` under the key `vlite-navbar-sidebar-visible` and restored on the next session.
-
-**Mobile breakpoints are completely unaffected.** The toggle button is only visible above the `mobileBreakpoint` threshold. The mobile SidePanel drawer behavior is preserved as-is.
-
-### Prop
-
-| Prop            | Type      | Default | Description                                                                                                   |
-| :-------------- | :-------- | :------ | :------------------------------------------------------------------------------------------------------------ |
-| `sidebarToggle` | `boolean` | `false` | Enables the desktop sidebar toggle feature. Only functional in Layout Mode (when `#header` + `#main` are used). |
-
-### Updated `#header` Slot Scoped Props
-
-| Prop             | Type         | Description                                                         |
-| :--------------- | :----------- | :------------------------------------------------------------------ |
-| `isOpen`         | `boolean`    | Mobile menu open state (unchanged).                                 |
-| `toggle`         | `() => void` | Mobile menu toggle (unchanged).                                     |
-| `sidebarVisible` | `boolean`    | Whether the sidebar is currently visible on desktop.                |
-| `toggleSidebar`  | `() => void` | Call this to show/hide the desktop sidebar.                         |
-
-### Usage
-```vue
-<Navbar variant="sidebar" :sidebar-toggle="true">
-  <template #header="{ toggle, toggleSidebar, sidebarVisible }">
-    <div class="h-16 border-b bg-white flex items-center justify-between px-6 w-full">
-      <div class="flex items-center gap-4">
-        <!-- Mobile hamburger — only visible below mobileBreakpoint -->
-        <button class="md:hidden" @click="toggle">
-          <Icon icon="lucide:menu" />
-        </button>
-
-        <!-- Desktop sidebar toggle — only visible above mobileBreakpoint -->
-        <button
-          class="hidden md:flex p-2 rounded-md text-muted-foreground hover:bg-accent transition-colors"
-          :aria-label="sidebarVisible ? 'Hide sidebar' : 'Show sidebar'"
-          @click="toggleSidebar">
-          <Icon icon="lucide:panel-left" class="w-5 h-5" />
-        </button>
-
-        <span class="font-bold text-lg">My App</span>
-      </div>
-    </div>
-  </template>
-
-  <template #default>
-    <SidebarMenu :items="menuItems" />
-  </template>
-
-  <template #main>
-    <div class="p-6">
-      <RouterView />
-    </div>
-  </template>
-</Navbar>
-```
+- **`renderNestedTabs` only works in Layout Mode.** It requires `#main` to render the tab bar.
+- In Layout Mode, set `height` on your `#header` content directly; the `height` prop only affects standalone `variant="header"` containers.
+- The `compact` prop propagates via `provide/inject`. `NavbarItem` and `SidebarMenu` inside the Navbar receive it automatically.
+- When using `mobileMenuVariant="dropdown"`, the parent must be a positioned container for correct stacking.
+- The mobile `SidePanel` and `dropdown` menus mirror `#left`, `#center`, and `#right` content. Using `#mobile-menu` overrides them entirely.
+- `sidebarToggle` is only functional in Layout Mode. It has no effect in standalone `variant="header"` or `variant="sidebar"` usage.
