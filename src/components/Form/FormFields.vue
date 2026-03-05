@@ -16,6 +16,7 @@ interface Props {
   rounded?: InputRounded
   className?: string
   isUpdate?: boolean
+  showRequiredAsterisk?: boolean
   /** Function to check if field is visible */
   isFieldVisible?: (field: IForm) => boolean
   /** Function to check if field is disabled */
@@ -30,6 +31,7 @@ const props = withDefaults(defineProps<Props>(), {
   rounded: 'md',
   columns: 1,
   isUpdate: false,
+  showRequiredAsterisk: true,
 })
 
 const emit = defineEmits<{
@@ -177,7 +179,9 @@ const getSafeLabel = (field: IForm) => {
             :is="renderLabel(getFieldLabel(field))" />
           <template v-else>
             {{ getFieldLabel(field) }}
-            <span v-if="field.required" class="text-destructive ml-0.5">*</span>
+            <span v-if="field.required && showRequiredAsterisk" class="text-destructive ml-0.5"
+              >*</span
+            >
           </template>
         </Label>
 
