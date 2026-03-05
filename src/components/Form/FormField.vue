@@ -127,7 +127,10 @@ const fieldProps = computed(() => {
   const type = props.field.type
   const baseProps: Record<string, any> = {
     disabled: props.disabled || props.field.disabled === true,
+    ...(props?.field || {}),
     ...(props.field.props || {}),
+    label: props?.field?.label,
+    labelI18n: props?.field?.labelI18n,
   }
 
   const resolvedPlaceholder = props.field.placeholderI18n
@@ -289,6 +292,7 @@ const fieldProps = computed(() => {
   if (type === 'customFields') {
     return {
       ...baseProps,
+
       modelValue: Array.isArray(props.value) ? props.value : [],
       schema: props.field.props?.schema || [],
       headers: props.field.props?.headers || [],
