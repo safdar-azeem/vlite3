@@ -7,6 +7,7 @@ import FormValidation from './forms/FormValidation.vue'
 import FormAdvanced from './forms/FormAdvanced.vue'
 import FormGrouped from './forms/FormGrouped.vue'
 import FormMultiStep from './forms/FormMultiStep.vue'
+import FormMultiStepUpdate from './forms/FormMultiStepUpdate.vue'
 import FormCustom from './forms/FormCustom.vue'
 import FormUploads from './forms/FormUploads.vue'
 import FormNumber from './forms/FormNumber.vue'
@@ -25,6 +26,12 @@ const tabs = [
     label: 'Multi-Step',
     icon: 'tdesign:component-steps',
     component: FormMultiStep,
+  },
+  {
+    id: 'multistep-update',
+    label: 'Multi-Step (Update)',
+    icon: 'lucide:refresh-cw',
+    component: FormMultiStepUpdate,
   },
   { id: 'custom', label: 'Custom Fields', icon: 'lucide:layers', component: FormCustom },
   { id: 'uploads', label: 'Uploads', icon: 'lucide:upload-cloud', component: FormUploads },
@@ -49,7 +56,6 @@ const tabs = [
       </p>
     </div>
 
-    <!-- Tab Navigation -->
     <div class="border-b border-border">
       <div class="flex flex-wrap gap-1">
         <button
@@ -68,7 +74,6 @@ const tabs = [
       </div>
     </div>
 
-    <!-- Tab Content -->
     <div class="bg-white rounded-lg border border-border p-6 min-h-[400px]">
       <Transition
         mode="out-in"
