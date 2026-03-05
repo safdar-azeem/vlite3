@@ -279,10 +279,27 @@ const goToStep = (step: TimelineStep, index: number) => {
 
 // Handle form submit
 const handleSubmit = async () => {
-  // For multi-step mode, validate current step first
-  if (isMultiStepMode.value && !isLastStep.value) {
-    goNext()
-    return
+  if (isMultiStepMode.value) {
+    // If NOT update mode and NOT last step, treat as "Next"
+    if (!isLastStep.value && !props.isUpdate) {
+      goNext()
+      return
+    }
+
+    // Full validation across all steps
+    const isValid = validateAll()
+    if (!isValid) {
+      // Find the first step that contains an error and navigate to it
+      const firstErrorStepIndex = groupedSchemas.value.findIndex((group) =>
+        group.some((field) => !!errors.value[field.name])
+      )
+
+      if (firstErrorStepIndex !== -1 && firstErrorStepIndex !== currentStep.value) {
+        currentStep.value = firstErrorStepIndex
+        emit('onStepChange', currentStep.value)
+      }
+      return // Stop execution if invalid
+    }
   }
 
   try {
@@ -304,7 +321,7 @@ const handleCancel = () => {
 
 <template>
   <form :class="['form-container', props.class]" @submit.prevent="handleSubmit">
-    <div v-if="isMultiStepMode && timelineSteps.length > 0" class="form-timeline mb-18">
+    <div v-if="isMultiStepMode && timelineSteps.length > 0" class="form-timeline mb-13">
       <Timeline
         :steps="timelineSteps"
         :activeStep="currentStep"
@@ -404,43 +421,56 @@ const handleCancel = () => {
     <div
       v-if="footer"
       :class="[
-        'form-footer flex items-center justify-end gap-3',
+        'form-footer flex items-center justify-between gap-3',
         footerClass,
         isInsideModal
-          ? 'sticky bottom-0 z-20 bg-body pt-4 border-t border-border/75 -mx-4 px-4  mt-8'
+          ? 'sticky bottom-0 z-20 bg-body pt-4 border-t border-border/75 -mx-4 px-4 mt-8'
           : 'mt-6',
       ]">
-      <Button
-        v-if="shouldShowCancel"
-        type="button"
-        variant="outline"
-        :text="cancelText"
-        :disabled="loading || isSubmitting"
-        @click="handleCancel" />
+      <div class="flex items-center gap-3">
+        <Button
+          v-if="shouldShowCancel"
+          type="button"
+          variant="outline"
+          :text="cancelText"
+          :disabled="loading || isSubmitting"
+          @click="handleCancel" />
 
-      <Button
-        v-if="isMultiStepMode && canGoPrevious"
-        type="button"
-        variant="outline"
-        icon="lucide:arrow-left"
-        text="Previous"
-        @click="goPrevious" />
+        <Button
+          v-if="isMultiStepMode && isUpdate && !isLastStep"
+          type="button"
+          variant="primary"
+          :text="submitText"
+          v-bind="submitProps"
+          :loading="loading || isSubmitting"
+          @click="handleSubmit" />
+      </div>
 
-      <Button
-        v-if="isMultiStepMode && !isLastStep"
-        type="button"
-        variant="primary"
-        text="Next"
-        iconRight="lucide:arrow-right"
-        @click="goNext" />
+      <div class="flex items-center gap-3 ml-auto">
+        <Button
+          v-if="isMultiStepMode && canGoPrevious"
+          type="button"
+          variant="outline"
+          icon="lucide:arrow-left"
+          text="Previous"
+          @click="goPrevious" />
 
-      <Button
-        v-else
-        type="submit"
-        variant="primary"
-        :text="submitText"
-        v-bind="submitProps"
-        :loading="loading || isSubmitting" />
+        <Button
+          v-if="isMultiStepMode && !isLastStep"
+          type="button"
+          :variant="isUpdate ? 'outline' : 'primary'"
+          text="Next"
+          iconRight="lucide:arrow-right"
+          @click="goNext" />
+
+        <Button
+          v-if="!isMultiStepMode || isLastStep"
+          type="submit"
+          variant="primary"
+          :text="submitText"
+          v-bind="submitProps"
+          :loading="loading || isSubmitting" />
+      </div>
     </div>
   </form>
 </template>
