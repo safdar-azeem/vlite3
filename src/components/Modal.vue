@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onUnmounted, provide, type Component, computed } from 'vue'
+import { ref, watch, onUnmounted, provide, type Component, computed, nextTick } from 'vue'
 import Button from './Button.vue'
 import { useKeyStroke } from '../composables/useKeyStroke'
 import { $t } from '@/utils/i18n'
@@ -41,6 +41,7 @@ const emit = defineEmits<{
 const visible = ref(props.show)
 const isChildSubmitting = ref(false)
 const showBlink = ref(false)
+const modalRef = ref<HTMLElement | null>(null)
 let blinkTimeout: ReturnType<typeof setTimeout> | null = null
 
 watch(
@@ -85,9 +86,11 @@ const handleBackdropClick = () => {
 const { onKeyStroke } = useKeyStroke()
 onKeyStroke('Escape', close)
 
-watch(visible, (val) => {
+watch(visible, async (val) => {
   if (val) {
     document.body.style.overflow = 'hidden'
+    await nextTick()
+    modalRef.value?.focus()
   } else {
     document.body.style.overflow = ''
   }
@@ -126,7 +129,9 @@ const displayDescription = computed(() =>
         :class="backdrop && 'backdrop-blur-[2px]'"
         @click="handleBackdropClick">
         <div
-          class="modal-body relative w-full rounded border border-border/60 bg-body shadow-lg text-foreground flex flex-col max-h-[85vh] sm:max-h-[90vh]"
+          ref="modalRef"
+          tabindex="-1"
+          class="modal-body relative w-full rounded border border-border/60 bg-body shadow-lg text-foreground flex flex-col max-h-[85vh] sm:max-h-[90vh] focus:outline-none"
           :class="[maxWidth]"
           @click.stop>
           <div
