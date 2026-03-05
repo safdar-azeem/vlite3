@@ -61,6 +61,8 @@ interface Props {
   timelineTextPosition?: TimelineTextPosition
   /** Fields to explicitly include in the submit payload */
   emitFields?: string[]
+  /** Show asterisk for required fields */
+  showRequiredAsterisk?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -82,6 +84,7 @@ const props = withDefaults(defineProps<Props>(), {
   groupClass: '',
   headerClass: '',
   footerClass: '',
+  showRequiredAsterisk: true,
   timelineTextPosition: 'bottom',
   emitFields: () => ['__typename'],
 })
@@ -321,6 +324,7 @@ const handleCancel = () => {
         :rounded="rounded"
         :className="className"
         :isUpdate="isUpdate"
+        :showRequiredAsterisk="showRequiredAsterisk"
         :isFieldVisible="isFieldVisible"
         :isFieldDisabled="isFieldDisabled"
         :isFieldReadonly="isFieldReadonly"
