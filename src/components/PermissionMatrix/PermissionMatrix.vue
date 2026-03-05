@@ -4,6 +4,7 @@ import CheckBox from '../CheckBox.vue'
 import Switch from '../Switch.vue'
 import Icon from '../Icon.vue'
 import Input from '../Input.vue'
+import Tooltip from '../Tooltip.vue'
 import type {
   PermissionMatrixProps,
   PermissionMap,
@@ -256,11 +257,11 @@ function getTotalPerms(): number {
                 <td :class="[cellPadding, 'border-b']">
                   <div class="flex items-center gap-2 pl-6">
                     <span :class="[textSize, 'text-foreground']">{{ perm.label }}</span>
-                    <Icon
-                      v-if="perm.description"
-                      icon="lucide:info"
-                      class="w-3 h-3 text-muted-foreground cursor-help shrink-0"
-                      :title="perm.description" />
+                    <Tooltip v-if="perm.description" :content="perm.description" placement="top">
+                      <Icon
+                        icon="lucide:info"
+                        class="w-3 h-3 text-muted-foreground cursor-auto shrink-0" />
+                    </Tooltip>
                   </div>
                 </td>
 
