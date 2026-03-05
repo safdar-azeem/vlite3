@@ -13,6 +13,7 @@ import FormFields from './FormFields.vue'
 import Button from '@/components/Button.vue'
 import { Timeline } from '../Timeline'
 import type { TimelineStep } from '@/types'
+import { useVLiteConfig } from '@/core'
 
 interface Props {
   /** Schema - single array or grouped arrays */
@@ -67,9 +68,6 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   values: () => ({}),
-  variant: 'outline',
-  size: 'md',
-  rounded: 'md',
   loading: false,
   footer: true,
   groupsHeadings: () => [],
@@ -84,7 +82,6 @@ const props = withDefaults(defineProps<Props>(), {
   groupClass: '',
   headerClass: '',
   footerClass: '',
-  showRequiredAsterisk: true,
   timelineTextPosition: 'right',
   emitFields: () => ['__typename'],
 })
@@ -100,6 +97,17 @@ const emit = defineEmits<{
 const modalContext = inject<{ close: () => void; setSubmitting?: (val: boolean) => void } | null>(
   'modal-context',
   null
+)
+
+// Global VLite Configuration
+const vliteConfig = useVLiteConfig()
+const globalFormConfig = computed(() => vliteConfig?.components?.form || {})
+
+const resolvedVariant = computed(() => props.variant ?? globalFormConfig.value.variant ?? 'outline')
+const resolvedSize = computed(() => props.size ?? globalFormConfig.value.size ?? 'md')
+const resolvedRounded = computed(() => props.rounded ?? globalFormConfig.value.rounded ?? 'md')
+const resolvedShowRequiredAsterisk = computed(
+  () => props.showRequiredAsterisk ?? globalFormConfig.value.showRequiredAsterisk ?? true
 )
 
 // Determine if Cancel button should be shown (Explicit prop OR inside modal)
@@ -339,12 +347,12 @@ const handleCancel = () => {
         :schema="schema as IForm[]"
         :values="formValues"
         :errors="errors"
-        :variant="variant"
-        :size="size"
-        :rounded="rounded"
+        :variant="resolvedVariant"
+        :size="resolvedSize"
+        :rounded="resolvedRounded"
         :className="className"
         :isUpdate="isUpdate"
-        :showRequiredAsterisk="showRequiredAsterisk"
+        :showRequiredAsterisk="resolvedShowRequiredAsterisk"
         :isFieldVisible="isFieldVisible"
         :isFieldDisabled="isFieldDisabled"
         :isFieldReadonly="isFieldReadonly"
@@ -375,11 +383,12 @@ const handleCancel = () => {
             :schema="groupSchema"
             :values="formValues"
             :errors="errors"
-            :variant="variant"
-            :size="size"
-            :rounded="rounded"
+            :variant="resolvedVariant"
+            :size="resolvedSize"
+            :rounded="resolvedRounded"
             :className="className"
             :isUpdate="isUpdate"
+            :showRequiredAsterisk="resolvedShowRequiredAsterisk"
             :isFieldVisible="isFieldVisible"
             :isFieldDisabled="isFieldDisabled"
             :isFieldReadonly="isFieldReadonly"
@@ -403,11 +412,12 @@ const handleCancel = () => {
         :schema="currentStepSchema"
         :values="formValues"
         :errors="errors"
-        :variant="variant"
-        :size="size"
-        :rounded="rounded"
+        :variant="resolvedVariant"
+        :size="resolvedSize"
+        :rounded="resolvedRounded"
         :className="className"
         :isUpdate="isUpdate"
+        :showRequiredAsterisk="resolvedShowRequiredAsterisk"
         :isFieldVisible="isFieldVisible"
         :isFieldDisabled="isFieldDisabled"
         :isFieldReadonly="isFieldReadonly"
