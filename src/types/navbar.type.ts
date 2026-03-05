@@ -16,11 +16,13 @@ export interface NavbarItemProps {
 export interface NavbarTabItem {
   label: string
   labelI18n?: string
-  value: string | number
+  value?: string | number
   icon?: string
+  iconRight?: string
   disabled?: boolean
-  to?: string | any
+  to?: any // Changed from `to?: string | any` for wider array element matching
   href?: string
+  exact?: boolean
 }
 
 export interface NavbarProps {
