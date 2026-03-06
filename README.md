@@ -14,6 +14,10 @@ yarn add vlite3
 
 ```
 
+## Demo
+
+[Live Demo](https://vlite3.vercel.app/)
+
 ## 2. Tailwind CSS Setup (Tailwind v4)
 
 `vite.config.ts`
