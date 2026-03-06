@@ -36,6 +36,7 @@ export default defineConfig({
                     'v-notion-editor',
                     'vue-carousel-lite',
                     '@vueuse/core',
+                    '@vueuse/integrations',
                     '@iconify/vue',
                     'vue-router',
                     'vue-draggable-plus',
@@ -43,6 +44,11 @@ export default defineConfig({
                     'iconify-icon-picker',
                     'vue3-google-signin',
                     'scrollreveal',
+                    'xlsx',
+                    'file-saver',
+                    'papaparse',
+                    'jsbarcode',
+                    'qrcode'
                 ];
                 // Check exact match or start with for scoped packages if needed
                 // For simple behavior, we can check if the id starts with the external name
