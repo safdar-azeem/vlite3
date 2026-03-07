@@ -68,6 +68,7 @@ export { default as ColorPicker } from './components/ColorPicker/ColorPicker.vue
 export { default as ConfirmationModal } from './components/ConfirmationModal.vue'
 export { default as ToastNotification } from './components/ToastNotification.vue'
 export { default as CommandPaletteContent } from './components/CommandPaletteContent.vue'
+export { default as NavbarCommandPalette } from './components/NavbarCommandPalette.vue'
 export { default as DateRangePicker } from './components/DateRangePicker.vue'
 
 export { $t } from './utils/i18n'
