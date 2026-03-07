@@ -43,6 +43,13 @@ const slots = useSlots()
 const inputRef = ref<HTMLInputElement | null>(null)
 const isPasswordVisible = ref(false)
 
+/**
+ * Tracks whether the browser has autofilled this input.
+ * Browser autofill does not trigger Vue input/change events, so we detect it
+ * via the CSS animationstart event fired by the :autofill pseudo-class animation.
+ */
+const isAutofilled = ref(false)
+
 const computedType = computed(() => {
   if (props.type === 'password' && isPasswordVisible.value) {
     return 'text'
@@ -52,6 +59,14 @@ const computedType = computed(() => {
 
 const hasValue = computed(() => {
   return props.modelValue !== '' && props.modelValue !== null && props.modelValue !== undefined
+})
+
+/**
+ * Whether the floating label should appear in the "active" (raised) position.
+ * True when the field is focused, has a bound value, OR has been autofilled by the browser.
+ */
+const isFloatingLabelActive = computed(() => {
+  return isFocused.value || hasValue.value || isAutofilled.value
 })
 
 const hasAddonLeft = computed(() => !!props.addonLeft || !!slots['addon-left'])
@@ -74,7 +89,7 @@ const inputWrapperClass = computed(() => {
 
 const inputBaseClass = computed(() => {
   const base =
-    'block w-full bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/50 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none relative focus:z-10'
+    'block w-full bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/70 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none relative focus:z-10'
 
   const variantStyles: Record<InputVariant, string> = {
     solid: 'bg-muted border-transparent focus-visible:border-primary',
@@ -138,8 +153,8 @@ const inputBaseClass = computed(() => {
     roundedClass,
     props.error ? 'border-destructive focus-visible:ring-destructive' : '',
     props.icon ? 'pl-9' : isMinimal && !hasAddonLeft.value ? 'pl-0' : '',
-    isFloating && props.type !== 'textarea' ? 'pt-3 pb-3' : '', // Add padding for floating label but ignore for textarea
-    isFloating && props.type === 'textarea' ? 'pt-3.5' : '', // Textareas need top padding but normal bottom
+    isFloating && props.type !== 'textarea' ? 'pt-3 pb-3' : '',
+    isFloating && props.type === 'textarea' ? 'pt-3.5' : '',
     (props.showClearButton && hasValue.value) ||
     props.type === 'password' ||
     props.loading ||
@@ -148,6 +163,8 @@ const inputBaseClass = computed(() => {
       : isMinimal && !hasAddonRight.value
         ? 'pr-0'
         : '',
+    // Keyframe name used to detect browser autofill via animationstart event
+    props.variant === 'floating' ? 'autofill-detect' : '',
     props.inputClass,
   ].join(' ')
 })
@@ -251,12 +268,39 @@ const handleBlur = (event: FocusEvent) => {
   emit('blur', event)
 }
 
+/**
+ * Handles the CSS animationstart event fired when the browser applies
+ * the :autofill pseudo-class. This is the only reliable cross-browser
+ * way to detect autofill without polling or MutationObserver hacks.
+ *
+ * The keyframe "onAutoFillStart" must be defined in global CSS and
+ * applied to input:-webkit-autofill (see style block below).
+ */
+const handleAnimationStart = (event: AnimationEvent) => {
+  if (event.animationName === 'onAutoFillStart') {
+    isAutofilled.value = true
+  } else if (event.animationName === 'onAutoFillCancel') {
+    isAutofilled.value = false
+  }
+}
+
 onMounted(() => {
   if (props.autofocus) {
     nextTick(() => {
       inputRef.value?.focus()
     })
   }
+
+  /**
+   * Fallback DOM check on mount: some browsers (e.g. Firefox) populate
+   * autofill synchronously before any events fire. Reading .value directly
+   * from the DOM catches these cases that the animationstart approach misses.
+   */
+  nextTick(() => {
+    if (inputRef.value && inputRef.value.value && !props.modelValue) {
+      isAutofilled.value = true
+    }
+  })
 })
 </script>
 
@@ -281,12 +325,13 @@ onMounted(() => {
           :for="displayLabel"
           :class="[
             'absolute transition-all duration-200 ease-in-out pointer-events-none z-20',
-            isFocused || hasValue
+            isFloatingLabelActive
               ? '-top-2.5 left-3 text-xs bg-background px-1 text-primary shadow-[0_4px_4px_-4px_bg-background]'
               : `top-2.5 text-sm text-muted-foreground/70 ${icon ? 'left-9' : 'left-3'}`,
           ]">
           {{ displayLabel }}
         </label>
+
         <Textarea
           v-if="type === 'textarea'"
           :model-value="String(modelValue)"
@@ -311,7 +356,8 @@ onMounted(() => {
           @input="handleInput"
           @change="handleChange"
           @blur="handleBlur"
-          @focus="handleFocus" />
+          @focus="handleFocus"
+          @animationstart="handleAnimationStart" />
 
         <div
           v-if="icon"
@@ -375,3 +421,45 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
+<style>
+/**
+ * These keyframes are required for autofill detection via the animationstart event.
+ * When the browser autofills an input, it applies the :-webkit-autofill pseudo-class,
+ * which triggers the "onAutoFillStart" animation. We listen for this in handleAnimationStart()
+ * to raise the floating label without needing polling or MutationObserver.
+ *
+ * "onAutoFillCancel" fires when autofill is cleared (e.g., user manually clears the field).
+ *
+ * Note: These are intentionally non-scoped so they apply globally to all Input instances.
+ */
+@keyframes onAutoFillStart {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes onAutoFillCancel {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+input.autofill-detect:-webkit-autofill {
+  animation-name: onAutoFillStart;
+  animation-duration: 1ms;
+  animation-fill-mode: both;
+}
+
+input.autofill-detect:not(:-webkit-autofill) {
+  animation-name: onAutoFillCancel;
+  animation-duration: 1ms;
+  animation-fill-mode: both;
+}
+</style>
