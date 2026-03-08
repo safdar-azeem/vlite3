@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted, shallowRef } from 'vue'
 import Icon from './Icon.vue'
 import Modal from './Modal.vue'
 import CommandPaletteContent from './CommandPaletteContent.vue'
@@ -10,8 +10,8 @@ import { $t } from '@/utils/i18n'
 // Types
 // ---------------------------------------------------------------------------
 
-export interface CommandPaletteItem {
-  id: string
+export interface CommandPlateSchema {
+  id?: string
   label: string
   labelI18n?: string
   description?: string
@@ -23,7 +23,14 @@ export interface CommandPaletteItem {
   action?: () => void
   keywords?: string[]
   disabled?: boolean
+  modalBody?: any
+  modalProps?: Record<string, any>
+  show?: boolean | (() => boolean)
+  children?: CommandPlateSchema[]
 }
+
+// Alias to maintain backwards compatibility
+export type CommandPaletteItem = CommandPlateSchema
 
 export interface CommandPaletteGroup {
   key: string
@@ -68,12 +75,24 @@ const props = withDefaults(defineProps<Props>(), {
 
 const isOpen = ref(false)
 
+// Dynamic Modal State
+const isDynamicModalOpen = ref(false)
+const activeModalBody = shallowRef<any>(null)
+const activeModalProps = ref<Record<string, any>>({})
+
 const open = () => {
   isOpen.value = true
 }
 
 const close = () => {
   isOpen.value = false
+}
+
+const handleOpenDynamicModal = (body: any, modalProps: any) => {
+  close()
+  activeModalBody.value = body
+  activeModalProps.value = modalProps || {}
+  isDynamicModalOpen.value = true
 }
 
 // ---------------------------------------------------------------------------
@@ -132,16 +151,14 @@ const isMac = computed(() =>
   <template v-if="enabled">
     <button
       type="button"
-      class="command-palette-trigger hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-muted-foreground bg-muted/60 hover:bg-muted border border-border/60 focus-visible:outline-none justify-between focus-visible:ring-2 focus-visible:ring-primary/50 select-none cursor-pointer shrink-0"
+      class="command-palette-trigger inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-muted-foreground bg-muted/60 hover:bg-muted border border-border/60 focus-visible:outline-none justify-between focus-visible:ring-2 focus-visible:ring-primary/50 select-none cursor-pointer shrink-0"
       :aria-label="`Open command palette`"
       :class="triggerClass"
       @click="open">
       <Icon icon="lucide:search" class="w-3.5 h-3.5 shrink-0" />
-      <span class="hidden sm:block truncate max-w-[180px] -text-fs-1.5"
-        >{{ displayPlaceholder.split(',')[0] }}...</span
-      >
+      <span class="block truncate -text-fs-1.5">{{ displayPlaceholder.split(',')[0] }}...</span>
       <kbd
-        class="hidden ml-auto lg:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-mono font-medium border border-border/80 bg-background text-muted-foreground ml-1">
+        class="ml-auto inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-mono font-medium border border-border/80 bg-background text-muted-foreground ml-1">
         <span>{{ isMac ? '&#8984;' : 'Ctrl' }}</span>
         <span>{{ shortcutKey.toUpperCase() }}</span>
       </kbd>
@@ -158,6 +175,13 @@ const isMac = computed(() =>
         placeholder,
         placeholderI18n,
         maxResultsPerGroup,
+        onOpenDynamicModal: handleOpenDynamicModal,
       }" />
+
+    <Modal
+      v-bind="activeModalProps"
+      v-model:show="isDynamicModalOpen"
+      :body="activeModalBody"
+      :bodyProps="activeModalProps" />
   </template>
 </template>
