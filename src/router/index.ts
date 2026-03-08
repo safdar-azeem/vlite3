@@ -62,6 +62,7 @@ import ScreenDemo from '../playground/demos/ScreenDemo.vue'
 import BarcodeDemo from '../playground/demos/BarcodeDemo.vue'
 import QRCodeDemo from '../playground/demos/QRCodeDemo.vue'
 import StatsDemo from '../playground/demos/StatsDemo.vue'
+import StatusChipDemo from '../playground/demos/StatusChipDemo.vue'
 import ExportDataDemo from '../playground/demos/ExportDataDemo.vue'
 import ImportDataDemo from '../playground/demos/ImportDataDemo.vue'
 
@@ -135,6 +136,7 @@ const routes = [
       { path: 'barcode', component: BarcodeDemo },
       { path: 'qrcode', component: QRCodeDemo },
       { path: 'stats', component: StatsDemo },
+      { path: 'statuschip', component: StatusChipDemo },
       { path: 'list', component: ListDemo },
       { path: 'export-data', component: ExportDataDemo },
       { path: 'import-data', component: ImportDataDemo },
