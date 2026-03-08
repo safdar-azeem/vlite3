@@ -170,7 +170,7 @@ const separatorChar = computed(() => {
 .breadcrumb-ellipsis-btn:hover {
   background: var(--color-accent);
   color: var(--color-foreground);
-  border-color: var(--color-gray-300);
+  border-color: var(--color-gray-350);
 }
 
 /* ===== Variant: contained ===== */
@@ -191,7 +191,7 @@ const separatorChar = computed(() => {
 
 .breadcrumb--pills :deep(.breadcrumb-link:not(.current):not(.disabled):hover) {
   background: var(--color-accent);
-  border-color: var(--color-gray-300);
+  border-color: var(--color-gray-350);
 }
 
 .breadcrumb--pills :deep(.breadcrumb-link.current) {
