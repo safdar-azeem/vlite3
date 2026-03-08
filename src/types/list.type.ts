@@ -1,4 +1,11 @@
-export type ListVariant = 'default' | 'striped' | 'card' | 'minimal' | 'compact' | 'bordered-rows'
+export type ListVariant =
+  | 'default'
+  | 'striped'
+  | 'card'
+  | 'minimal'
+  | 'compact'
+  | 'bordered-rows'
+  | 'stacked'
 export type ListColumns = 1 | 2 | 3
 
 export type ListFieldType =
