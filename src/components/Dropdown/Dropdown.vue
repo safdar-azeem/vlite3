@@ -46,6 +46,7 @@ const props = withDefaults(
     fetchSelected?: (ids: any[]) => Promise<IDropdownOption[]>
     triggerProps?: ButtonProps
     direction?: 'ltr' | 'rtl'
+    isNested?: boolean // Used internally to identify child vs root dropdowns
   }>(),
   {
     options: () => [],
@@ -69,11 +70,12 @@ const props = withDefaults(
     remote: false,
     debounceTime: 300,
     direction: 'ltr',
+    isNested: false,
   }
 )
 
 const emit = defineEmits<{
-  (e: 'onSelect', payload: { value: any; data?: any }): void
+  (e: 'onSelect', payload: { value: any; data?: any; option?: IDropdownOption }): void
   (e: 'update:modelValue', value: any): void
   (e: 'onOpen'): void
   (e: 'onClose'): void
@@ -291,7 +293,22 @@ const performSelection = (option: import('@/types').IDropdownOption) => {
   if (!selectedBuffer.value.has(val)) {
     selectedBuffer.value.set(val, option)
   }
-  selectOption(option)
+  const finalValues = selectOption(option)
+
+  // Only trigger the individual option's onSelect callback at the ROOT Dropdown.
+  // This guarantees that the callback receives the full global v-model configuration 
+  // rather than a locally resolved partial structure.
+  if (!props.isNested) {
+    const leafOption = option._originalOption || option
+    if (typeof leafOption.onSelect === 'function') {
+      leafOption.onSelect({
+        value: leafOption.value ?? leafOption.label,
+        option: leafOption,
+        data: combinedOptions.value || [],
+        values: finalValues,
+      })
+    }
+  }
 }
 
 const confirmSelection = () => {
@@ -405,3 +422,4 @@ const handleClose = () => {
       @cancel="cancelSelection" />
   </div>
 </template>
+
