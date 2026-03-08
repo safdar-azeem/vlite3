@@ -26,6 +26,9 @@ export type IDropdownOption = {
   length?: number
   values?: any
   data?: any
+  // Per-item class customization
+  class?: string         // Applied to the option row (DropdownItem / nested trigger div)
+  triggerClass?: string  // Applied to the nested trigger wrapper div (only for items with children)
   // Schema support for nested menus
   children?: IDropdownOption[]
   key?: string // Property name for nested value objects
