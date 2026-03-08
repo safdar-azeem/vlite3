@@ -40,6 +40,7 @@ import ScrollRevealDemo from '../playground/demos/ScrollRevealDemo.vue'
 // Navigation / Data
 import AccordionDemo from '../playground/demos/AccordionDemo.vue'
 import NavbarDemo from '../playground/demos/NavbarDemo.vue'
+import CommandPaletteDemo from '../playground/demos/CommandPaletteDemo.vue'
 import TimelineDemo from '../playground/demos/TimelineDemo.vue'
 import PaginationDemo from '../playground/demos/PaginationDemo.vue'
 import LabelDemo from '../playground/demos/LabelDemo.vue'
@@ -113,6 +114,7 @@ const routes = [
       // Navigation / Data
       { path: 'accordion', component: AccordionDemo },
       { path: 'navbar', component: NavbarDemo },
+      { path: 'commandpalette', component: CommandPaletteDemo },
       { path: 'timeline', component: TimelineDemo },
       { path: 'pagination', component: PaginationDemo },
       { path: 'label', component: LabelDemo },
