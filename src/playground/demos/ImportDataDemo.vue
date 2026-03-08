@@ -74,7 +74,7 @@ const handleProcessBatch = async (payload: ImportBatchPayload): Promise<ImportBa
     </div>
 
     <DemoSection title="Standard Importer" :code="sourceCode">
-      <div class="bg-gray-50/50 p-6 rounded-xl border border-dashed border-gray-300">
+      <div class="bg-gray-50/50 p-6 rounded-xl border border-dashed">
         <ImportData
           title="Import Users"
           buttonText="Import CSV Data"
