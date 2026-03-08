@@ -307,7 +307,7 @@ function getTotalPerms(): number {
 }
 
 .permission-matrix-wrapper::-webkit-scrollbar-thumb {
-  background: var(--color-gray-300);
+  background: var(--color-gray-350);
   border-radius: 3px;
 }
 
