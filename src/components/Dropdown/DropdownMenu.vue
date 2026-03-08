@@ -18,7 +18,7 @@ import { useDropdownNavigation } from './composables/useDropdownNavigation'
 import { useDropdownIds } from './composables/useDropdownIds'
 import { $t } from '@/utils/i18n'
 
-const Dropdown = defineAsyncComponent(() => import('./Dropdown.vue'))
+import Dropdown from './Dropdown.vue'
 
 interface Props {
   options?: (IDropdownOption | string | number)[]
