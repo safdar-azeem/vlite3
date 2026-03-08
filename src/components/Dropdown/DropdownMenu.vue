@@ -330,6 +330,7 @@ const shouldShowChevron = (option: IDropdownOption): boolean => {
               :direction="direction"
               @onSelect="(payload: any) => handleRecursiveSelect(option, payload)">
               <template #trigger>
+                <!-- triggerClass applies to the entire trigger row; option.class also applies as a fallback -->
                 <div
                   :tabindex="0"
                   data-dropdown-item
@@ -339,6 +340,7 @@ const shouldShowChevron = (option: IDropdownOption): boolean => {
                       ? 'bg-accent text-accent-foreground'
                       : 'hover:bg-accent hover:text-accent-foreground',
                     option.disabled ? 'opacity-50 cursor-not-allowed' : '',
+                    option.triggerClass || option.class || '',
                   ]"
                   @mouseenter="onMouseEnterItem(index)">
                   <div class="flex items-center gap-2 flex-1 min-w-0">
