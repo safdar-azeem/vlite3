@@ -44,6 +44,9 @@ export type IDropdownOption = {
         cancelText?: string
         variant?: 'danger' | 'primary' | 'warning' | 'success' | 'info'
       }
+  onSelect?: (payload: { value: any; option: IDropdownOption; data: IDropdownOption[]; values?: any }) => void
+  _originalOption?: IDropdownOption // Internal reference to the deepest leaf option selected
 }
 
 export type IDropdownOptions = IDropdownOption[]
+
