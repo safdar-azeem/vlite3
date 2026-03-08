@@ -66,7 +66,7 @@ const exportFields = [
     </div>
 
     <DemoSection title="Basic Export" :code="sourceCode">
-      <div class="bg-gray-50/50 p-6 rounded-xl border border-dashed border-gray-300 flex gap-4">
+      <div class="bg-gray-50/50 p-6 rounded-xl border border-dashed flex gap-4">
         <ExportData
           :data="users"
           title="Users Report"
