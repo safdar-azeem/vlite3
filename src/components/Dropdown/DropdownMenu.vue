@@ -5,7 +5,6 @@ import {
   watch,
   onMounted,
   onBeforeUnmount,
-  defineAsyncComponent,
   nextTick,
 } from 'vue'
 import Icon from '../Icon.vue'
@@ -248,6 +247,14 @@ onBeforeUnmount(() => {
 
 const getDisplayLabel = (option: IDropdownOption) =>
   option.labelI18n ? $t(option.labelI18n) : option.label
+
+/**
+ * Determines whether to show the chevron for a given option with children.
+ * Defaults to true unless explicitly set to false via option.showChevron.
+ */
+const shouldShowChevron = (option: IDropdownOption): boolean => {
+  return option.showChevron !== false
+}
 </script>
 
 <template>
@@ -342,7 +349,9 @@ const getDisplayLabel = (option: IDropdownOption) =>
                       class="mr-2 h-4 w-4 shrink-0 mt-0.5" />
                     <span class="truncate">{{ getDisplayLabel(option) }}</span>
                   </div>
+                  <!-- Chevron: hidden when option.showChevron === false -->
                   <Icon
+                    v-if="shouldShowChevron(option)"
                     :icon="direction === 'rtl' ? 'lucide:chevron-left' : 'lucide:chevron-right'"
                     class="h-4 w-4 text-muted-foreground shrink-0 ml-2" />
                 </div>
