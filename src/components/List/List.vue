@@ -144,16 +144,31 @@ const skeletonItems = computed(() => Array.from({ length: props.skeletonRows }))
 
     <!-- Loading Skeleton -->
     <template v-if="loading">
-      <!-- Stacked skeleton -->
-      <div v-if="isStacked" :class="stackedGridClass" class="bg-border/30">
-        <div
-          v-for="(_, i) in skeletonItems"
-          :key="'sk-s-' + i"
-          class="flex flex-col gap-1.5 px-3.5 py-3 bg-card">
-          <div class="h-3 w-1/3 rounded bg-muted/60 animate-pulse" />
-          <div class="h-4 w-2/3 rounded bg-muted animate-pulse" />
+      <!-- Stacked skeleton (responsive) -->
+      <template v-if="isStacked">
+        <!-- Mobile: row skeleton -->
+        <div class="sm:hidden">
+          <div
+            v-for="(_, i) in skeletonItems"
+            :key="'sk-sm-' + i"
+            class="flex justify-between gap-3 px-3 py-2.5 border-b border-border/70 last:border-b-0">
+            <div class="h-4 w-1/3 rounded bg-muted animate-pulse" />
+            <div class="h-4 w-2/5 rounded bg-muted/60 animate-pulse" />
+          </div>
         </div>
-      </div>
+        <!-- Desktop: stacked grid skeleton -->
+        <div class="hidden sm:block">
+          <div :class="stackedGridClass">
+            <div
+              v-for="(_, i) in skeletonItems"
+              :key="'sk-s-' + i"
+              class="flex flex-col gap-1.5 px-3.5 py-2">
+              <div class="h-3 w-1/3 rounded bg-muted/60 animate-pulse" />
+              <div class="h-4 w-2/3 rounded bg-muted animate-pulse" />
+            </div>
+          </div>
+        </div>
+      </template>
       <!-- Default skeleton -->
       <div v-else :class="gridClass">
         <div>
@@ -178,19 +193,20 @@ const skeletonItems = computed(() => Array.from({ length: props.skeletonRows }))
     </template>
 
     <template v-else>
-      <!-- ═══ Stacked grid layout ═══ -->
+      <!-- ═══ Stacked variant ═══ -->
       <template v-if="isStacked">
-        <div :class="stackedGridClass">
+        <!-- ── Mobile fallback: default row layout (visible below sm) ── -->
+        <div class="sm:hidden">
           <ListFieldRow
             v-for="(field, idx) in visibleFields"
-            :key="field.key + idx"
+            :key="'mob-' + field.key + idx"
             :field="field"
             :data="props.data"
             :index="idx"
-            :variant="variant"
-            :show-colon="false"
+            variant="default"
+            :show-colon="showColon"
             :is-last="idx === visibleFields.length - 1"
-            :show-border-bottom="false">
+            :show-border-bottom="idx < visibleFields.length - 1">
             <template
               v-for="slotName in fieldSlotNames"
               :key="slotName"
@@ -198,6 +214,29 @@ const skeletonItems = computed(() => Array.from({ length: props.skeletonRows }))
               <slot :name="slotName" v-bind="slotProps" />
             </template>
           </ListFieldRow>
+        </div>
+
+        <!-- ── Desktop: stacked grid layout (visible sm and above) ── -->
+        <div class="hidden sm:block">
+          <div :class="stackedGridClass">
+            <ListFieldRow
+              v-for="(field, idx) in visibleFields"
+              :key="field.key + idx"
+              :field="field"
+              :data="props.data"
+              :index="idx"
+              :variant="variant"
+              :show-colon="false"
+              :is-last="idx === visibleFields.length - 1"
+              :show-border-bottom="false">
+              <template
+                v-for="slotName in fieldSlotNames"
+                :key="slotName"
+                v-slot:[slotName]="slotProps">
+                <slot :name="slotName" v-bind="slotProps" />
+              </template>
+            </ListFieldRow>
+          </div>
         </div>
 
         <!-- Empty state -->
