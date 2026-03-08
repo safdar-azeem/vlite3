@@ -5,14 +5,12 @@ type Theme = 'light' | 'dark'
 const theme = ref<Theme>(loadTheme())
 
 function loadTheme(): Theme {
-  const savedTheme = localStorage.getItem('builto-theme')
-  if (savedTheme === 'light' || savedTheme === 'dark') {
-    return savedTheme
-  }
+  if (typeof window === 'undefined') return 'light'
 
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    return 'dark'
-  }
+  const savedTheme = localStorage.getItem('builto-theme')
+  if (savedTheme === 'light' || savedTheme === 'dark') return savedTheme
+
+  if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) return 'dark'
 
   return 'light'
 }
@@ -20,6 +18,23 @@ function loadTheme(): Theme {
 function applyTheme(newTheme: Theme) {
   document.documentElement.classList.remove('light', 'dark')
   document.documentElement.classList.add(newTheme)
+}
+
+function bindSystemListener() {
+  if (typeof window === 'undefined' || !window.matchMedia) return
+
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (!localStorage.getItem('builto-theme')) {
+      theme.value = e.matches ? 'dark' : 'light'
+      applyTheme(theme.value)
+    }
+  })
+}
+
+export function initializeTheme() {
+  theme.value = loadTheme()
+  applyTheme(theme.value)
+  bindSystemListener()
 }
 
 export function useTheme() {
@@ -32,21 +47,13 @@ export function useTheme() {
     { immediate: true }
   )
 
-  if (window.matchMedia) {
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      if (!localStorage.getItem('builto-theme')) {
-        theme.value = e.matches ? 'dark' : 'light'
-      }
-    })
-  }
+  onMounted(() => {
+    document.documentElement.classList.add('bg-body')
+  })
 
   function toggleTheme() {
     theme.value = theme.value === 'light' ? 'dark' : 'light'
   }
-
-  onMounted(() => {
-    document.documentElement.classList.add('bg-body')
-  })
 
   return {
     theme,
