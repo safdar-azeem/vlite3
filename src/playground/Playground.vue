@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { h, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Navbar, NavbarGroup, NavbarItem } from '@/components/Navbar'
 import SidebarMenu from '@/components/SidebarMenu/SidebarMenu.vue'
@@ -8,10 +8,10 @@ import Icon from '@/components/Icon.vue'
 import ThemeToggle from '@/components/ThemeToggle.vue'
 import Button from '@/components/Button.vue'
 import Avatar from '@/components/Avatar.vue'
-import NavbarCommandPalette from '@/components/NavbarCommandPalette.vue'
+import NavbarCommandPalette, {
+  type CommandPlateSchema,
+} from '@/components/NavbarCommandPalette.vue'
 import { Breadcrumb } from '@/components/Breadcrumb'
-
-const router = useRouter()
 
 const menuItems: SidebarMenuItemSchema[] = [
   {
@@ -84,6 +84,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'DataList', to: '/datalist', icon: 'lucide:layout-grid' },
       { label: 'Sidebar Menu', to: '/sidebarmenu', icon: 'lucide:sidebar' },
       { label: 'Navbar', to: '/navbar', icon: 'lucide:layout-template' },
+      { label: 'Command Palette', to: '/commandpalette', icon: 'lucide:command' },
       { label: 'Link/Label', to: '/label', icon: 'lucide:type' },
       { label: 'Pagination', to: '/pagination', icon: 'lucide:arrow-left-right' },
       { label: 'Tabs', to: '/tabes', icon: 'lucide:toggle-left' },
