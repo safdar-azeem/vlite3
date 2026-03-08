@@ -83,14 +83,17 @@ const displayTitle = computed(() => {
 })
 
 // ── Container class ───────────────────────────────────
+const isStacked = computed(() => props.variant === 'stacked')
+
 const containerClass = computed(() => {
   const variantMap: Record<string, string> = {
     default: 'border border-border rounded',
-    card: 'border border-border rounded-xl bg-card shadow-sm',
+    card: 'border border-border rounded bg-card shadow-sm',
     minimal: 'rounded',
     striped: 'border border-border rounded',
     compact: 'border border-border rounded',
     'bordered-rows': 'rounded border border-border',
+    stacked: 'border border-border rounded',
   }
   return [
     'list-component w-full overflow-hidden',
@@ -108,6 +111,14 @@ const gridClass = computed(() => {
 const leftDividerClass = computed(() => {
   if (props.columns === 1) return ''
   return props.columns === 3 ? 'border-r border-border/70' : 'border-r border-border/70'
+})
+
+// ── Stacked grid class ───────────────────────────────
+const stackedGridClass = computed(() => {
+  if (props.columns === 1) return 'grid grid-cols-1 gap-px pb-2.5 pt-1 px-1'
+  if (props.columns === 3)
+    return 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-px pb-2.5 pt-1 px-1'
+  return 'grid grid-cols-1 sm:grid-cols-2 gap-px pb-2.5 pt-1 px-1'
 })
 
 // Collect passthrough slot names (everything except structural ones)
@@ -133,7 +144,18 @@ const skeletonItems = computed(() => Array.from({ length: props.skeletonRows }))
 
     <!-- Loading Skeleton -->
     <template v-if="loading">
-      <div :class="gridClass">
+      <!-- Stacked skeleton -->
+      <div v-if="isStacked" :class="stackedGridClass" class="bg-border/30">
+        <div
+          v-for="(_, i) in skeletonItems"
+          :key="'sk-s-' + i"
+          class="flex flex-col gap-1.5 px-3.5 py-3 bg-card">
+          <div class="h-3 w-1/3 rounded bg-muted/60 animate-pulse" />
+          <div class="h-4 w-2/3 rounded bg-muted animate-pulse" />
+        </div>
+      </div>
+      <!-- Default skeleton -->
+      <div v-else :class="gridClass">
         <div>
           <div
             v-for="(_, i) in skeletonItems"
@@ -156,33 +178,19 @@ const skeletonItems = computed(() => Array.from({ length: props.skeletonRows }))
     </template>
 
     <template v-else>
-      <!--
-        FIX: Double-border between columned rows and full-width (lineByLine) rows.
-
-        Root cause: the last row in each column had `border-b border-border` and
-        the full-width wrapper had `border-t border-border`, producing two
-        overlapping 1px borders that appeared as a thicker/doubled line.
-
-        Solution: the last row in each column omits its `border-b` when
-        `hasFullItems` is true. The `border-t` on the full-width wrapper becomes
-        the sole visual separator — one clean line every time.
-      -->
-      <div :class="gridClass">
-        <!-- Left column -->
-        <div v-if="columnLayout.left.length > 0" :class="leftDividerClass">
+      <!-- ═══ Stacked grid layout ═══ -->
+      <template v-if="isStacked">
+        <div :class="stackedGridClass">
           <ListFieldRow
-            v-for="(field, idx) in columnLayout.left"
+            v-for="(field, idx) in visibleFields"
             :key="field.key + idx"
             :field="field"
             :data="props.data"
             :index="idx"
             :variant="variant"
-            :show-colon="showColon"
-            :is-last="idx === columnLayout.left.length - 1"
-            :show-border-bottom="
-              idx < columnLayout.left.length - 1 ||
-              (idx === columnLayout.left.length - 1 && !hasFullItems)
-            ">
+            :show-colon="false"
+            :is-last="idx === visibleFields.length - 1"
+            :show-border-bottom="false">
             <template
               v-for="slotName in fieldSlotNames"
               :key="slotName"
@@ -192,21 +200,98 @@ const skeletonItems = computed(() => Array.from({ length: props.skeletonRows }))
           </ListFieldRow>
         </div>
 
-        <!-- Right column -->
-        <div v-if="columns !== 1 && columnLayout.right.length > 0">
+        <!-- Empty state -->
+        <div
+          v-if="visibleFields.length === 0"
+          class="px-3 py-8 text-center text-sm text-muted-foreground">
+          No information to display.
+        </div>
+      </template>
+
+      <!-- ═══ Default row-based layout ═══ -->
+      <template v-else>
+        <!--
+          FIX: Double-border between columned rows and full-width (lineByLine) rows.
+
+          Root cause: the last row in each column had `border-b border-border` and
+          the full-width wrapper had `border-t border-border`, producing two
+          overlapping 1px borders that appeared as a thicker/doubled line.
+
+          Solution: the last row in each column omits its `border-b` when
+          `hasFullItems` is true. The `border-t` on the full-width wrapper becomes
+          the sole visual separator — one clean line every time.
+        -->
+        <div :class="gridClass">
+          <!-- Left column -->
+          <div v-if="columnLayout.left.length > 0" :class="leftDividerClass">
+            <ListFieldRow
+              v-for="(field, idx) in columnLayout.left"
+              :key="field.key + idx"
+              :field="field"
+              :data="props.data"
+              :index="idx"
+              :variant="variant"
+              :show-colon="showColon"
+              :is-last="idx === columnLayout.left.length - 1"
+              :show-border-bottom="
+                idx < columnLayout.left.length - 1 ||
+                (idx === columnLayout.left.length - 1 && !hasFullItems)
+              ">
+              <template
+                v-for="slotName in fieldSlotNames"
+                :key="slotName"
+                v-slot:[slotName]="slotProps">
+                <slot :name="slotName" v-bind="slotProps" />
+              </template>
+            </ListFieldRow>
+          </div>
+
+          <!-- Right column -->
+          <div v-if="columns !== 1 && columnLayout.right.length > 0">
+            <ListFieldRow
+              v-for="(field, idx) in columnLayout.right"
+              :key="field.key + idx"
+              :field="field"
+              :data="props.data"
+              :index="idx"
+              :variant="variant"
+              :show-colon="showColon"
+              :is-last="idx === columnLayout.right.length - 1"
+              :show-border-bottom="
+                idx < columnLayout.right.length - 1 ||
+                (idx === columnLayout.right.length - 1 && !hasFullItems)
+              ">
+              <template
+                v-for="slotName in fieldSlotNames"
+                :key="slotName"
+                v-slot:[slotName]="slotProps">
+                <slot :name="slotName" v-bind="slotProps" />
+              </template>
+            </ListFieldRow>
+          </div>
+
+          <!-- Third column (3-col mode) -->
+          <div v-if="columns === 3">
+            <!-- intentionally empty; fields distributed by balance algo above -->
+          </div>
+        </div>
+
+        <!--
+          Full-width / lineByLine items.
+          border-t is the SOLE separator — column rows have already suppressed
+          their last border-b when this section is present.
+        -->
+        <div v-if="hasFullItems" :class="hasColumnItems ? 'border-t border-border' : ''">
           <ListFieldRow
-            v-for="(field, idx) in columnLayout.right"
+            v-for="(field, idx) in columnLayout.full"
             :key="field.key + idx"
             :field="field"
             :data="props.data"
             :index="idx"
             :variant="variant"
             :show-colon="showColon"
-            :is-last="idx === columnLayout.right.length - 1"
-            :show-border-bottom="
-              idx < columnLayout.right.length - 1 ||
-              (idx === columnLayout.right.length - 1 && !hasFullItems)
-            ">
+            :is-last="idx === columnLayout.full.length - 1"
+            :show-border-bottom="idx < columnLayout.full.length - 1">
             <template
               v-for="slotName in fieldSlotNames"
               :key="slotName"
@@ -216,43 +301,13 @@ const skeletonItems = computed(() => Array.from({ length: props.skeletonRows }))
           </ListFieldRow>
         </div>
 
-        <!-- Third column (3-col mode) -->
-        <div v-if="columns === 3">
-          <!-- intentionally empty; fields distributed by balance algo above -->
+        <!-- Empty state -->
+        <div
+          v-if="visibleFields.length === 0"
+          class="px-3 py-8 text-center text-sm text-muted-foreground">
+          No information to display.
         </div>
-      </div>
-
-      <!--
-        Full-width / lineByLine items.
-        border-t is the SOLE separator — column rows have already suppressed
-        their last border-b when this section is present.
-      -->
-      <div v-if="hasFullItems" :class="hasColumnItems ? 'border-t border-border' : ''">
-        <ListFieldRow
-          v-for="(field, idx) in columnLayout.full"
-          :key="field.key + idx"
-          :field="field"
-          :data="props.data"
-          :index="idx"
-          :variant="variant"
-          :show-colon="showColon"
-          :is-last="idx === columnLayout.full.length - 1"
-          :show-border-bottom="idx < columnLayout.full.length - 1">
-          <template
-            v-for="slotName in fieldSlotNames"
-            :key="slotName"
-            v-slot:[slotName]="slotProps">
-            <slot :name="slotName" v-bind="slotProps" />
-          </template>
-        </ListFieldRow>
-      </div>
-
-      <!-- Empty state -->
-      <div
-        v-if="visibleFields.length === 0"
-        class="px-3 py-8 text-center text-sm text-muted-foreground">
-        No information to display.
-      </div>
+      </template>
     </template>
 
     <!-- Footer slot -->
