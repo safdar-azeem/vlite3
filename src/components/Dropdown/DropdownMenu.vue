@@ -188,13 +188,14 @@ const handleBooleanChange = (value: boolean, option: IDropdownOption) => {
     value: value,
     key: option.key,
     data: option.data,
+    _originalOption: option,
   }
   emit('select', virtualOption)
 }
 
 const handleRecursiveSelect = (
   parentOption: IDropdownOption,
-  payload: { value: any; data?: any }
+  payload: { value: any; data?: any; option?: IDropdownOption }
 ) => {
   let valueToEmit = payload.value
 
@@ -207,6 +208,7 @@ const handleRecursiveSelect = (
     value: valueToEmit,
     data: payload.data,
     key: parentOption.key,
+    _originalOption: payload.option?._originalOption || payload.option,
   }
 
   emit('select', virtualOption)
@@ -317,6 +319,7 @@ const shouldShowChevron = (option: IDropdownOption): boolean => {
 
           <template v-else-if="option.children && option.children.length > 0">
             <Dropdown
+              :is-nested="true"
               :position="option.position || props.nestedPosition"
               :offset="option.offset || props.nestedOffset"
               class="w-full"
@@ -330,7 +333,6 @@ const shouldShowChevron = (option: IDropdownOption): boolean => {
               :direction="direction"
               @onSelect="(payload: any) => handleRecursiveSelect(option, payload)">
               <template #trigger>
-                <!-- triggerClass applies to the entire trigger row; option.class also applies as a fallback -->
                 <div
                   :tabindex="0"
                   data-dropdown-item
@@ -351,7 +353,6 @@ const shouldShowChevron = (option: IDropdownOption): boolean => {
                       class="mr-2 h-4 w-4 shrink-0 mt-0.5" />
                     <span class="truncate">{{ getDisplayLabel(option) }}</span>
                   </div>
-                  <!-- Chevron: hidden when option.showChevron === false -->
                   <Icon
                     v-if="shouldShowChevron(option)"
                     :icon="direction === 'rtl' ? 'lucide:chevron-left' : 'lucide:chevron-right'"
@@ -389,3 +390,4 @@ const shouldShowChevron = (option: IDropdownOption): boolean => {
     </div>
   </div>
 </template>
+
