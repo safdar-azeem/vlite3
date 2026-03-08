@@ -126,6 +126,87 @@
     --text-fs-19: 2.95;
     --text-fs-19.5: 3;
     --text-fs-20: 3.05;
+
+    /* =========================================================
+       Enterprise Status Palette (Light Mode - High Contrast)
+       ========================================================= */
+    --color-success-subtle: #d1fae5;
+    /* emerald-100 */
+    --color-success-subtle-fg: #065f46;
+    /* emerald-800 */
+    --color-success-subtle-border: #6ee7b7;
+    /* emerald-300 */
+
+    --color-info-subtle: #dbeafe;
+    /* blue-100 */
+    --color-info-subtle-fg: #1e40af;
+    /* blue-800 */
+    --color-info-subtle-border: #93c5fd;
+    /* blue-300 */
+
+    --color-warning-subtle: #fef3c7;
+    /* amber-100 */
+    --color-warning-subtle-fg: #92400e;
+    /* amber-800 */
+    --color-warning-subtle-border: #fcd34d;
+    /* amber-300 */
+
+    --color-danger-subtle: #fee2e2;
+    /* red-100 */
+    --color-danger-subtle-fg: #991b1b;
+    /* red-800 */
+    --color-danger-subtle-border: #fca5a5;
+    /* red-300 */
+
+    --color-secondary-subtle: #e4e4e7;
+    /* zinc-200 */
+    --color-secondary-subtle-fg: #27272a;
+    /* zinc-800 */
+    --color-secondary-subtle-border: #d4d4d8;
+    /* zinc-300 */
+
+    /* Extended Color Palette for Varied Statuses */
+    --color-purple-subtle: #f3e8ff;
+    /* purple-100 */
+    --color-purple-subtle-fg: #5b21b6;
+    /* purple-800 */
+    --color-purple-subtle-border: #d8b4fe;
+    /* purple-300 */
+
+    --color-teal-subtle: #ccfbf1;
+    /* teal-100 */
+    --color-teal-subtle-fg: #115e59;
+    /* teal-800 */
+    --color-teal-subtle-border: #5eead4;
+    /* teal-300 */
+
+    --color-indigo-subtle: #e0e7ff;
+    /* indigo-100 */
+    --color-indigo-subtle-fg: #3730a3;
+    /* indigo-800 */
+    --color-indigo-subtle-border: #a5b4fc;
+    /* indigo-300 */
+
+    --color-orange-subtle: #ffedd5;
+    /* orange-100 */
+    --color-orange-subtle-fg: #9a3412;
+    /* orange-800 */
+    --color-orange-subtle-border: #fdba74;
+    /* orange-300 */
+
+    --color-pink-subtle: #fce7f3;
+    /* pink-100 */
+    --color-pink-subtle-fg: #9d174d;
+    /* pink-800 */
+    --color-pink-subtle-border: #f9a8d4;
+    /* pink-300 */
+
+    --color-cyan-subtle: #cffafe;
+    /* cyan-100 */
+    --color-cyan-subtle-fg: #155e75;
+    /* cyan-800 */
+    --color-cyan-subtle-border: #67e8f9;
+    /* cyan-300 */
   }
 }
 
@@ -247,6 +328,51 @@
   --timer-picker-bg: var(--color-background) !important;
   --date-picker-border: var(--color-border) !important;
   --date-picker-radius: var(--radius) !important;
+
+  --color-success-subtle: #E5F6E5;
+  --color-success-subtle-fg: #005e1e;
+  --color-success-subtle-border: #b7e1c1;
+
+  --color-info-subtle: #e8f0fe;
+  --color-info-subtle-fg: #1a56db;
+  --color-info-subtle-border: #c3dafe;
+
+  --color-warning-subtle: #fef7e6;
+  --color-warning-subtle-fg: #8a4b08;
+  --color-warning-subtle-border: #f6d8a8;
+
+  --color-danger-subtle: #fdecea;
+  --color-danger-subtle-fg: #b42318;
+  --color-danger-subtle-border: #f5c2c0;
+
+  --color-secondary-subtle: #f1f1ef;
+  --color-secondary-subtle-fg: #37352f;
+  --color-secondary-subtle-border: #e3e2df;
+
+  /* Extended Color Palette */
+  --color-purple-subtle: #f3ecff;
+  --color-purple-subtle-fg: #6941c6;
+  --color-purple-subtle-border: #e4d7ff;
+
+  --color-teal-subtle: #e6f6f5;
+  --color-teal-subtle-fg: #0f766e;
+  --color-teal-subtle-border: #bfe8e5;
+
+  --color-indigo-subtle: #e7e6fd;
+  --color-indigo-subtle-fg: #4338ca;
+  --color-indigo-subtle-border: #d6dcff;
+
+  --color-orange-subtle: #fff1e6;
+  --color-orange-subtle-fg: #c2410c;
+  --color-orange-subtle-border: #ffd6bf;
+
+  --color-pink-subtle: #fdebf3;
+  --color-pink-subtle-fg: #be185d;
+  --color-pink-subtle-border: #f8c6db;
+
+  --color-cyan-subtle: #E1F8F8;
+  --color-cyan-subtle-fg: #0e7490;
+  --color-cyan-subtle-border: #c2ecf5;
 }
 
 .light {
@@ -348,6 +474,52 @@
   --color-success: #007E51;
   --color-success-fg: #ffffff;
   --color-success-dark: #00613f;
+
+  --color-success-subtle: #0f2419;
+  --color-success-subtle-fg: #4ade80;
+  --color-success-subtle-border: #1f7a4d;
+
+  --color-info-subtle: #0f1e33;
+  --color-info-subtle-fg: #60a5fa;
+  --color-info-subtle-border: #1e40af;
+
+  --color-warning-subtle: #2a1c07;
+  --color-warning-subtle-fg: #fbbf24;
+  --color-warning-subtle-border: #92400e;
+
+  --color-danger-subtle: #2a1111;
+  --color-danger-subtle-fg: #f87171;
+  --color-danger-subtle-border: #991b1b;
+
+  --color-secondary-subtle: #1f1f1f;
+  --color-secondary-subtle-fg: #e4e4e7;
+  --color-secondary-subtle-border: #3f3f46;
+
+  /* Extended Color Palette */
+
+  --color-purple-subtle: #1d1333;
+  --color-purple-subtle-fg: #c084fc;
+  --color-purple-subtle-border: #6b21a8;
+
+  --color-teal-subtle: #0f2a28;
+  --color-teal-subtle-fg: #2dd4bf;
+  --color-teal-subtle-border: #0f766e;
+
+  --color-indigo-subtle: #1c0a49;
+  --color-indigo-subtle-fg: #aa93f9;
+  --color-indigo-subtle-border: #3730a3;
+
+  --color-orange-subtle: #2a1709;
+  --color-orange-subtle-fg: #fb923c;
+  --color-orange-subtle-border: #9a3412;
+
+  --color-pink-subtle: #2a0f1c;
+  --color-pink-subtle-fg: #f472b6;
+  --color-pink-subtle-border: #9d174d;
+
+  --color-cyan-subtle: #0e242a;
+  --color-cyan-subtle-fg: #22d3ee;
+  --color-cyan-subtle-border: #0e7490;
 }
 
 @utility -text-fs-* {
