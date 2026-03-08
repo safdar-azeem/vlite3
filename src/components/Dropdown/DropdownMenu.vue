@@ -189,6 +189,7 @@ const handleBooleanChange = (value: boolean, option: IDropdownOption) => {
     key: option.key,
     data: option.data,
     _originalOption: option,
+    _path: [option],
   }
   emit('select', virtualOption)
 }
@@ -203,12 +204,17 @@ const handleRecursiveSelect = (
     valueToEmit = { [parentOption.key]: valueToEmit }
   }
 
+  // Aggregate the path of traversal
+  const childOption = payload.option
+  const childPath = childOption?._path || [childOption?._originalOption || childOption].filter(Boolean)
+
   const virtualOption: IDropdownOption = {
     label: parentOption.label,
     value: valueToEmit,
     data: payload.data,
     key: parentOption.key,
-    _originalOption: payload.option?._originalOption || payload.option,
+    _originalOption: childOption?._originalOption || childOption,
+    _path: [parentOption, ...childPath] as IDropdownOption[]
   }
 
   emit('select', virtualOption)
