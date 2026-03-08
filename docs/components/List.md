@@ -16,8 +16,8 @@ import type { ListField } from '@/components/List'
 const user = { name: 'Alice', email: 'alice@example.com', status: 'active' }
 
 const fields: ListField[] = [
-  { key: 'name',   title: 'Full Name' },
-  { key: 'email',  title: 'Email' },
+  { key: 'name', title: 'Full Name' },
+  { key: 'email', title: 'Email' },
   { key: 'status', title: 'Status', addStatusColor: true },
 ]
 </script>
@@ -31,19 +31,19 @@ const fields: ListField[] = [
 
 ## Props
 
-| Prop           | Type           | Default     | Description                                               |
-| :------------- | :------------- | :---------- | :-------------------------------------------------------- |
-| `fields`       | `ListField[]`  | **required**| Array of field definitions (schema).                     |
-| `data`         | `Record<string, any>` | **required** | The data record to display.                    |
-| `title`        | `string`       | —           | Optional section title shown in a header bar.            |
-| `titleI18n`    | `string`       | —           | i18n translation key for the title.                      |
-| `titleIcon`    | `string`       | —           | Iconify icon ID displayed beside the title.              |
-| `columns`      | `1 \| 2 \| 3`  | `2`         | Number of columns for field layout.                      |
-| `variant`      | `ListVariant`  | `'default'` | Visual style of the container.                           |
-| `class`        | `string`       | `''`        | Extra Tailwind classes on the root element.              |
-| `showColon`    | `boolean`      | `true`      | Append `:` after each field label.                       |
-| `loading`      | `boolean`      | `false`     | Show animated skeleton rows instead of data.             |
-| `skeletonRows` | `number`       | `6`         | Number of skeleton rows rendered per column while loading.|
+| Prop           | Type                  | Default      | Description                                                |
+| :------------- | :-------------------- | :----------- | :--------------------------------------------------------- |
+| `fields`       | `ListField[]`         | **required** | Array of field definitions (schema).                       |
+| `data`         | `Record<string, any>` | **required** | The data record to display.                                |
+| `title`        | `string`              | —            | Optional section title shown in a header bar.              |
+| `titleI18n`    | `string`              | —            | i18n translation key for the title.                        |
+| `titleIcon`    | `string`              | —            | Iconify icon ID displayed beside the title.                |
+| `columns`      | `1 \| 2 \| 3`         | `2`          | Number of columns for field layout.                        |
+| `variant`      | `ListVariant`         | `'default'`  | Visual style of the container.                             |
+| `class`        | `string`              | `''`         | Extra Tailwind classes on the root element.                |
+| `showColon`    | `boolean`             | `true`       | Append `:` after each field label.                         |
+| `loading`      | `boolean`             | `false`      | Show animated skeleton rows instead of data.               |
+| `skeletonRows` | `number`              | `6`          | Number of skeleton rows rendered per column while loading. |
 
 ---
 
@@ -51,55 +51,57 @@ const fields: ListField[] = [
 
 Each object in the `fields` array describes one row.
 
-| Property        | Type                                         | Description                                                                                |
-| :-------------- | :------------------------------------------- | :----------------------------------------------------------------------------------------- |
-| `key`           | `string`                                     | **Required.** Path to the value in `data`. Supports dot-notation: `'location.city'`.      |
-| `title`         | `string`                                     | Display label. Falls back to `key` if omitted.                                            |
-| `titleI18n`     | `string`                                     | i18n key for the label — takes priority over `title`.                                     |
-| `icon`          | `string`                                     | Iconify icon ID displayed beside the label.                                               |
-| `lineByLine`    | `boolean`                                    | When `true`, the field spans the full component width (below the column grid).            |
-| `whenTrue`      | `boolean`                                    | Only render this row when the resolved value is truthy.                                   |
-| `when`          | `(value: any, data: any) => boolean`         | Custom visibility predicate — receives the resolved value and the full data object.       |
-| `format`        | `(value: any, data: any) => string`          | Custom formatter. Return a plain string or an HTML string.                                |
-| `isSensitive`   | `boolean`                                    | Mask the value with dots and show an eye-toggle button.                                   |
-| `addStatusColor`| `boolean`                                    | Apply a semantic color class based on the string value (e.g. `active` → green).          |
-| `type`          | `ListFieldType`                              | Built-in rendering type applied automatically when no `format` is provided.               |
-| `class`         | `string \| ((value, data) => string)`        | Static or dynamic Tailwind class(es) applied to the value cell.                          |
-| `component`     | `Component`                                  | A Vue component rendered in the value cell. Receives `{ data, value }` props.            |
-| `emptyText`     | `string`                                     | Fallback text when the value is `null`, `undefined`, or `''`. Defaults to `'--'`.        |
+| Property         | Type                                  | Description                                                                          |
+| :--------------- | :------------------------------------ | :----------------------------------------------------------------------------------- |
+| `key`            | `string`                              | **Required.** Path to the value in `data`. Supports dot-notation: `'location.city'`. |
+| `title`          | `string`                              | Display label. Falls back to `key` if omitted.                                       |
+| `titleI18n`      | `string`                              | i18n key for the label — takes priority over `title`.                                |
+| `icon`           | `string`                              | Iconify icon ID displayed beside the label.                                          |
+| `lineByLine`     | `boolean`                             | When `true`, the field spans the full component width (below the column grid).       |
+| `whenTrue`       | `boolean`                             | Only render this row when the resolved value is truthy.                              |
+| `when`           | `(value: any, data: any) => boolean`  | Custom visibility predicate — receives the resolved value and the full data object.  |
+| `format`         | `(value: any, data: any) => string`   | Custom formatter. Return a plain string or an HTML string.                           |
+| `isSensitive`    | `boolean`                             | Mask the value with dots and show an eye-toggle button.                              |
+| `addStatusColor` | `boolean`                             | Apply a semantic color class based on the string value (e.g. `active` → green).      |
+| `type`           | `ListFieldType`                       | Built-in rendering type applied automatically when no `format` is provided.          |
+| `class`          | `string \| ((value, data) => string)` | Static or dynamic Tailwind class(es) applied to the value cell.                      |
+| `component`      | `Component`                           | A Vue component rendered in the value cell. Receives `{ data, value }` props.        |
+| `emptyText`      | `string`                              | Fallback text when the value is `null`, `undefined`, or `''`. Defaults to `'--'`.    |
 
 ### `ListFieldType` values
 
-| Value      | Output                                       |
-| :--------- | :------------------------------------------- |
-| `text`     | Plain string (default).                      |
-| `date`     | Formatted date: `Apr 15, 2023`.              |
+| Value      | Output                                           |
+| :--------- | :----------------------------------------------- |
+| `text`     | Plain string (default).                          |
+| `date`     | Formatted date: `Apr 15, 2023`.                  |
 | `dateTime` | Formatted date + time: `Apr 15, 2023, 09:30 AM`. |
-| `time`     | Alias for `dateTime`.                        |
-| `price`    | USD currency: `$1,234.50`.                   |
-| `number`   | Locale number: `1,234`.                      |
-| `boolean`  | `'Yes'` / `'No'`.                            |
-| `image`    | Renders a `32×32` rounded avatar image.      |
-| `html`     | Renders raw HTML via `v-html`.               |
+| `time`     | Alias for `dateTime`.                            |
+| `price`    | USD currency: `$1,234.50`.                       |
+| `number`   | Locale number: `1,234`.                          |
+| `boolean`  | `'Yes'` / `'No'`.                                |
+| `image`    | Renders a `32×32` rounded avatar image.          |
+| `html`     | Renders raw HTML via `v-html`.                   |
 
 ---
 
 ## Variants
 
-| Value           | Description                                                        |
-| :-------------- | :----------------------------------------------------------------- |
-| `default`       | Simple border + rounded container. Standard choice.               |
-| `card`          | Larger border-radius, card background, subtle shadow.             |
-| `minimal`       | No border, no background. Zero-chrome display.                    |
-| `striped`       | Alternating row background on odd rows.                           |
-| `compact`       | Reduced vertical padding (`py-1.5`) for dense data grids.        |
-| `bordered-rows` | Full border wrapping with per-row dividers.                       |
+| Value           | Description                                                               |
+| :-------------- | :------------------------------------------------------------------------ |
+| `default`       | Simple border + rounded container. Standard choice.                       |
+| `card`          | Larger border-radius, card background, subtle shadow.                     |
+| `minimal`       | No border, no background. Zero-chrome display.                            |
+| `striped`       | Alternating row background on odd rows.                                   |
+| `compact`       | Reduced vertical padding (`py-1.5`) for dense data grids.                 |
+| `bordered-rows` | Full border wrapping with per-row dividers.                               |
+| `stacked`       | Label on top, value below — grid of vertical cells. Ideal for info cards. |
 
 ---
 
 ## Slots
 
 ### `title`
+
 Override the entire title bar content.
 
 ```vue
@@ -111,6 +113,7 @@ Override the entire title bar content.
 ```
 
 ### `footer`
+
 Rendered in a bordered footer at the bottom of the component.
 
 ```vue
@@ -122,6 +125,7 @@ Rendered in a bordered footer at the bottom of the component.
 ```
 
 ### Per-field named slots
+
 Override the value area of any specific field using its `key` as the slot name.
 The slot receives `{ value, resolved, data }`.
 
@@ -153,8 +157,8 @@ sections — **no double borders**.
 
 ```ts
 const fields: ListField[] = [
-  { key: 'name',  title: 'Name' },           // goes into column grid
-  { key: 'email', title: 'Email' },          // goes into column grid
+  { key: 'name', title: 'Name' }, // goes into column grid
+  { key: 'email', title: 'Email' }, // goes into column grid
   { key: 'notes', title: 'Notes', lineByLine: true }, // full-width below
 ]
 ```
@@ -165,9 +169,54 @@ const fields: ListField[] = [
 
 ---
 
+## Stacked Variant
+
+The `stacked` variant renders each field as a vertical cell — small muted label on top, bold value below — in a responsive CSS grid. Perfect for personal information cards, account details, and any UI where label-value pairs should be visually grouped in a compact grid.
+
+```vue
+<script setup lang="ts">
+import { List } from '@/components/List'
+import type { ListField } from '@/components/List'
+
+const person = {
+  gender: 'Female',
+  dateOfBirth: '1996-03-05T00:00:00Z',
+  nationality: 'Vietnam',
+  language: 'Vietnamese, English',
+  maritalStatus: 'Single',
+}
+
+const fields: ListField[] = [
+  { key: 'gender', title: 'Gender' },
+  { key: 'dateOfBirth', title: 'Date of birth', type: 'date' },
+  { key: 'nationality', title: 'Nationality' },
+  { key: 'language', title: 'Language' },
+  { key: 'maritalStatus', title: 'Marital status' },
+]
+</script>
+
+<template>
+  <List
+    :fields="fields"
+    :data="person"
+    title="Personal information"
+    title-icon="lucide:user"
+    variant="stacked"
+    :show-colon="false"
+    :columns="2" />
+</template>
+```
+
+> **Layout:** Cells are arranged in a responsive CSS grid. The `columns` prop
+> controls how many columns appear at wider breakpoints. Subtle 1 px grid lines
+> separate cells — no extra border props needed.
+
+---
+
 ## Conditional Fields
 
 ### `whenTrue`
+
 Field is only rendered when its resolved value is truthy.
 
 ```ts
@@ -175,6 +224,7 @@ Field is only rendered when its resolved value is truthy.
 ```
 
 ### `when`
+
 Custom predicate. The field is rendered when the function returns `true`.
 
 ```ts
@@ -212,12 +262,12 @@ Fields with `addStatusColor: true` apply a semantic Tailwind color class
 based on the string value. Matching is case-insensitive and ignores `-`, `_`,
 and spaces.
 
-| Value keyword             | Color class applied              |
-| :------------------------ | :------------------------------- |
-| `active`, `success`, `completed`, `yes`, `true`, `enabled` | `text-success-dark font-medium` |
-| `pending`, `warning`, `medium` | `text-warning-dark font-medium` |
-| `cancelled`, `failed`, `error`, `danger`, `high`, `no`, `false` | `text-danger-dark font-medium` |
-| `inactive`, `disabled`, `low` | `text-muted-foreground` |
+| Value keyword                                                   | Color class applied             |
+| :-------------------------------------------------------------- | :------------------------------ |
+| `active`, `success`, `completed`, `yes`, `true`, `enabled`      | `text-success-dark font-medium` |
+| `pending`, `warning`, `medium`                                  | `text-warning-dark font-medium` |
+| `cancelled`, `failed`, `error`, `danger`, `high`, `no`, `false` | `text-danger-dark font-medium`  |
+| `inactive`, `disabled`, `low`                                   | `text-muted-foreground`         |
 
 ```ts
 { key: 'status', title: 'Status', addStatusColor: true }
@@ -254,9 +304,7 @@ The component receives `{ data, value }` as props.
 ```ts
 import StatusBadge from '@/components/StatusBadge.vue'
 
-const fields: ListField[] = [
-  { key: 'status', title: 'Status', component: StatusBadge },
-]
+const fields: ListField[] = [{ key: 'status', title: 'Status', component: StatusBadge }]
 ```
 
 ```vue
@@ -284,7 +332,7 @@ const data = {
 }
 
 const fields: ListField[] = [
-  { key: 'location.city',    title: 'City' },
+  { key: 'location.city', title: 'City' },
   { key: 'location.country', title: 'Country' },
 ]
 ```
@@ -341,19 +389,18 @@ const customer = {
 }
 
 const fields: ListField[] = [
-  { key: 'name',         title: 'Full Name',    icon: 'lucide:user' },
-  { key: 'email',        title: 'Email',        icon: 'lucide:mail' },
-  { key: 'phone',        title: 'Phone',        isSensitive: true },
-  { key: 'status',       title: 'Status',       addStatusColor: true },
-  { key: 'createdAt',    title: 'Member Since', type: 'date' },
-  { key: 'totalAmount',  title: 'Total',        type: 'price' },
-  { key: 'ssn',          title: 'SSN',          isSensitive: true, whenTrue: true },
-  { key: 'avatar',       title: 'Avatar',       type: 'image' },
-  { key: 'location.city',    title: 'City' },
+  { key: 'name', title: 'Full Name', icon: 'lucide:user' },
+  { key: 'email', title: 'Email', icon: 'lucide:mail' },
+  { key: 'phone', title: 'Phone', isSensitive: true },
+  { key: 'status', title: 'Status', addStatusColor: true },
+  { key: 'createdAt', title: 'Member Since', type: 'date' },
+  { key: 'totalAmount', title: 'Total', type: 'price' },
+  { key: 'ssn', title: 'SSN', isSensitive: true, whenTrue: true },
+  { key: 'avatar', title: 'Avatar', type: 'image' },
+  { key: 'location.city', title: 'City' },
   { key: 'location.country', title: 'Country' },
   // Full-width rows rendered below the grid
-  { key: 'notes',        title: 'Notes',        lineByLine: true,
-    when: (v) => !!v },
+  { key: 'notes', title: 'Notes', lineByLine: true, when: (v) => !!v },
 ]
 </script>
 
@@ -370,10 +417,13 @@ const fields: ListField[] = [
     <template #status="{ value }">
       <span
         class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold"
-        :class="value === 'active'
-          ? 'bg-success-light text-success-dark'
-          : 'bg-danger-light text-danger-dark'">
-        <span class="w-1.5 h-1.5 rounded-full"
+        :class="
+          value === 'active'
+            ? 'bg-success-light text-success-dark'
+            : 'bg-danger-light text-danger-dark'
+        ">
+        <span
+          class="w-1.5 h-1.5 rounded-full"
           :class="value === 'active' ? 'bg-success' : 'bg-danger'" />
         {{ value }}
       </span>
@@ -395,11 +445,26 @@ const fields: ListField[] = [
 ```ts
 // Full type definitions live in: src/types/list.type.ts
 
-export type ListVariant = 'default' | 'striped' | 'card' | 'minimal' | 'compact' | 'bordered-rows'
+export type ListVariant =
+  | 'default'
+  | 'striped'
+  | 'card'
+  | 'minimal'
+  | 'compact'
+  | 'bordered-rows'
+  | 'stacked'
 export type ListColumns = 1 | 2 | 3
 export type ListFieldType =
-  | 'text' | 'date' | 'dateTime' | 'time'
-  | 'price' | 'image' | 'badge' | 'boolean' | 'number' | 'html'
+  | 'text'
+  | 'date'
+  | 'dateTime'
+  | 'time'
+  | 'price'
+  | 'image'
+  | 'badge'
+  | 'boolean'
+  | 'number'
+  | 'html'
 
 export interface ListField {
   key: string
@@ -437,13 +502,13 @@ export interface ListProps {
 
 ## Files
 
-| File                                  | Purpose                                      |
-| :------------------------------------ | :------------------------------------------- |
-| `src/components/List/List.vue`        | Root component — layout, columns, full rows  |
-| `src/components/List/ListFieldRow.vue`| Single row — label + value rendering         |
-| `src/components/List/index.ts`        | Public exports                               |
-| `src/components/List/types.ts`        | Re-exports from `src/types/list.type.ts`     |
-| `src/components/List/utils.ts`        | `getObjectValue`, formatters, status colors  |
-| `src/types/list.type.ts`             | Canonical type definitions                   |
-| `src/playground/demos/ListDemo.vue`   | Interactive playground demo                  |
-| `docs/components/List.md`            | This documentation file                      |
+| File                                   | Purpose                                     |
+| :------------------------------------- | :------------------------------------------ |
+| `src/components/List/List.vue`         | Root component — layout, columns, full rows |
+| `src/components/List/ListFieldRow.vue` | Single row — label + value rendering        |
+| `src/components/List/index.ts`         | Public exports                              |
+| `src/components/List/types.ts`         | Re-exports from `src/types/list.type.ts`    |
+| `src/components/List/utils.ts`         | `getObjectValue`, formatters, status colors |
+| `src/types/list.type.ts`               | Canonical type definitions                  |
+| `src/playground/demos/ListDemo.vue`    | Interactive playground demo                 |
+| `docs/components/List.md`              | This documentation file                     |
