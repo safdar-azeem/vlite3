@@ -39,6 +39,7 @@ const displayDescription = computed(() =>
       selectable && selected && !option.children ? 'bg-accent' : '',
       focused ? 'bg-accent text-accent-foreground' : 'hover:bg-accent hover:text-accent-foreground',
       option.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
+      option.class || '',
     ]"
     :data-disabled="option.disabled ? true : undefined"
     @click="emit('click', option)"
