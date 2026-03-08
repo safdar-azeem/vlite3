@@ -13,6 +13,7 @@ const props = defineProps<{
   placeholder: string
   placeholderI18n?: string
   maxResultsPerGroup: number
+  onOpenDynamicModal: (body: any, props: any) => void
 }>()
 
 // ---------------------------------------------------------------------------
@@ -69,32 +70,74 @@ const listRef = ref<HTMLElement | null>(null)
 const router = useRouter()
 
 // ---------------------------------------------------------------------------
-// Flatten SidebarMenuItemSchema tree into CommandPaletteItems
+// Flatten Trees into CommandPaletteItems
 // ---------------------------------------------------------------------------
 
-function flattenMenuItems(
+function checkShow(show?: boolean | (() => boolean)): boolean {
+  if (typeof show === 'function') {
+    return show()
+  }
+  if (show !== undefined) {
+    return show
+  }
+  return true
+}
+
+function flattenCommandItems(
+  items: CommandPaletteItem[],
+  parentLabel?: string,
+  depth = 0
+): CommandPaletteItem[] {
+  const results: CommandPaletteItem[] = []
+  for (const item of items) {
+    if (!checkShow(item.show)) continue
+
+    const group = depth === 0 ? item.label : (parentLabel ?? 'Navigation')
+    if (item.to || item.href || item.action || item.modalBody) {
+      results.push({
+        ...item,
+        id: item.id ?? item.to ?? item.label ?? Math.random().toString(),
+        group: item.group ?? group,
+      })
+    }
+    if (item.children?.length) {
+      results.push(...flattenCommandItems(item.children, group, depth + 1))
+    }
+  }
+  return results
+}
+
+function flattenSidebarItems(
   items: SidebarMenuItemSchema[],
   parentLabel?: string,
   depth = 0
 ): CommandPaletteItem[] {
   const results: CommandPaletteItem[] = []
   for (const item of items) {
+    if (!checkShow((item as any).show)) continue
+
     const group = depth === 0 ? item.label : (parentLabel ?? 'Navigation')
-    if (item.to || item.href || item.action) {
+    if (item.to || item.href || item.action || (item as any).modalBody) {
       results.push({
-        id: item.id ?? (typeof item.to === 'string' ? item.to : '') ?? item.label,
+        id:
+          item.id ??
+          (typeof item.to === 'string' ? item.to : '') ??
+          item.label ??
+          Math.random().toString(),
         label: item.label,
         labelI18n: item.labelI18n,
         icon: item.icon,
-        group,
+        group: (item as any).group ?? group,
         to: typeof item.to === 'string' ? item.to : (item.to as any)?.path,
         href: item.href,
         action: item.action ? () => item.action!(item) : undefined,
         disabled: item.disabled,
+        modalBody: (item as any).modalBody,
+        modalProps: (item as any).modalProps,
       })
     }
     if (item.children?.length) {
-      results.push(...flattenMenuItems(item.children, group, depth + 1))
+      results.push(...flattenSidebarItems(item.children, group, depth + 1))
     }
   }
   return results
@@ -105,11 +148,12 @@ function flattenMenuItems(
 // ---------------------------------------------------------------------------
 
 const allItems = computed<CommandPaletteItem[]>(() => {
-  const fromMenu = flattenMenuItems(props.menuItems)
+  const fromMenu = flattenSidebarItems(props.menuItems || [])
+  const fromStatic = flattenCommandItems(props.items || [])
   const seen = new Set<string>()
   const merged: CommandPaletteItem[] = []
-  for (const item of [...props.items, ...fromMenu]) {
-    if (!seen.has(item.id)) {
+  for (const item of [...fromStatic, ...fromMenu]) {
+    if (item.id && !seen.has(item.id)) {
       seen.add(item.id)
       merged.push(item)
     }
@@ -221,6 +265,10 @@ watch(query, () => {
 const executeItem = (item: CommandPaletteItem) => {
   if (item.disabled) return
   props.close()
+  if (item.modalBody) {
+    props.onOpenDynamicModal(item.modalBody, item.modalProps)
+    return
+  }
   if (item.action) {
     item.action()
     return
@@ -322,7 +370,7 @@ onMounted(() => {
             class="command-palette-item w-full flex items-center gap-3 px-3! py-2.5 mx-1 rounded-lg text-sm transition-colors duration-100 text-left cursor-pointer select-none focus-visible:outline-none"
             :class="[
               getItemIndex(gi, ii) === activeIndex
-                ? 'bg-primary/10 text-foreground'
+                ? 'bg-gray-200 text-foreground'
                 : 'text-muted-foreground hover:bg-muted/70 hover:text-foreground',
               item.disabled ? 'opacity-40 cursor-not-allowed' : '',
             ]"
@@ -333,7 +381,7 @@ onMounted(() => {
               class="shrink-0 flex items-center justify-center w-7 h-7 rounded-md"
               :class="
                 getItemIndex(gi, ii) === activeIndex
-                  ? 'bg-primary/20 text-primary'
+                  ? 'bg-gray-300 text-primary'
                   : 'bg-muted/80 text-muted-foreground'
               ">
               <Icon :icon="item.icon ?? 'lucide:arrow-right'" class="w-3.5 h-3.5" />
