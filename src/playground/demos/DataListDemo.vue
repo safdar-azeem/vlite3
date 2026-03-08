@@ -54,7 +54,7 @@ const handleChange = (payload: { page: number; limit: number }) => {
         creating separate components.
       </p>
 
-      <div class="bg-gray-50/50 p-6 rounded-xl border border-dashed border-gray-300">
+      <div class="bg-gray-50/50 p-6 rounded-xl border border-dashed">
         <DataList
           :data="result?.users"
           :loading="loading"
@@ -95,7 +95,7 @@ const handleChange = (payload: { page: number; limit: number }) => {
         reusable code architecture.
       </p>
 
-      <div class="bg-gray-50/50 p-6 rounded-xl border border-dashed border-gray-300">
+      <div class="bg-gray-50/50 p-6 rounded-xl border border-dashed">
         <DataList
           :data="result?.users"
           :loading="loading"
