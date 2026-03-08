@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Button from '@/components/Button.vue'
+import BackButton from '@/components/BackButton.vue'
 import DemoSection from '../DemoSection.vue'
 import sourceCode from './ButtonDemo.vue?raw'
 </script>
@@ -81,6 +82,22 @@ import sourceCode from './ButtonDemo.vue?raw'
           icon="https://cdn.prod.website-files.com/666ad77562dfabab1eb27f63/6747850440da96e6bc2d78b3_friso_ai3.webp"
           text="Secondary" />
         <Button variant="secondary" icon="lucide:settings" text="Secondary" />
+      </div>
+    </DemoSection>
+
+    <!-- Back Button -->
+    <DemoSection title="Back Button" :code="sourceCode">
+      <p class="text-sm text-muted-foreground mb-4">
+        A ghost, rounded icon button that navigates to the previous page. Falls back to
+        <code class="text-xs bg-muted px-1 py-0.5 rounded">/</code> if there is no history.
+      </p>
+      <div class="flex flex-wrap items-center gap-4">
+        <BackButton size="xs" />
+        <BackButton size="sm" />
+        <BackButton size="md" />
+        <BackButton size="lg" />
+        <BackButton icon="lucide:chevron-left" size="md" />
+        <BackButton icon="lucide:undo-2" size="md" />
       </div>
     </DemoSection>
   </div>
