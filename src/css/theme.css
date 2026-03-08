@@ -180,7 +180,11 @@
       var(--color-mixture-2, #000000));
 
   --color-gray-300: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 74%,
+      var(--color-mixture-1, #ffffff) 86%,
+      var(--color-mixture-2, #000000));
+
+  --color-gray-350: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 75%,
       var(--color-mixture-2, #000000));
 
   --color-gray-400: color-mix(in oklab,
@@ -277,11 +281,15 @@
       var(--color-mixture-2, #000000));
 
   --color-gray-250: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 82%,
+      var(--color-mixture-1, #ffffff) 84%,
       var(--color-mixture-2, #000000));
 
   --color-gray-300: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 74%,
+      var(--color-mixture-1, #ffffff) 80%,
+      var(--color-mixture-2, #000000));
+
+  --color-gray-350: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 72%,
       var(--color-mixture-2, #000000));
 
   --color-secondary: color-mix(in oklab, var(--color-mixture-1) 89%, var(--color-mixture-2));
