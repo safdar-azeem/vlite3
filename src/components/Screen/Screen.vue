@@ -306,7 +306,11 @@ const handleBackendExport = async (format: string) => {
         <slot name="title">
           <div v-if="displayTitle" class="flex items-center! gap-2">
             <h1 class="text-fs-7.5 font-bold text-foreground">{{ displayTitle }}</h1>
-            <Tooltip v-if="info || infoI18n" :content="info" :content-i18n="infoI18n">
+            <Tooltip
+              v-if="info || infoI18n"
+              :content="info"
+              :content-i18n="infoI18n"
+              placement="right">
               <Icon
                 icon="lucide:info"
                 class="w-[18px] h-[18px] mt-3! text-muted-foreground hover:text-foreground cursor-pointer transition-colors outline-none" />
