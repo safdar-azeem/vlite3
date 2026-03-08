@@ -9,8 +9,8 @@ import sourceCode from './StatusChipDemo.vue?raw'
     <div class="space-y-2">
       <h2 class="text-2xl font-bold">StatusChip</h2>
       <p class="text-gray-500">
-        Auto-resolves ERP status values to the correct color, icon, and label.
-        Handles normalization of formats like <code class="bg-muted px-1 rounded text-xs">in_progress</code>,
+        Auto-resolves status values to the correct color, icon, and label. Handles normalization of
+        formats like <code class="bg-muted px-1 rounded text-xs">in_progress</code>,
         <code class="bg-muted px-1 rounded text-xs">InProgress</code>,
         <code class="bg-muted px-1 rounded text-xs">IN-PROGRESS</code> — all map to the same chip.
       </p>
