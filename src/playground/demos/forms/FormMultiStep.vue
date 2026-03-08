@@ -166,7 +166,7 @@ const resetForm = () => {
                   :class="
                     currentStep >= step.id
                       ? 'bg-primary border-primary text-white'
-                      : 'bg-white border-gray-300 text-gray-400'
+                      : 'bg-white  text-gray-400'
                   ">
                   <Icon :icon="step.icon" class="w-5 h-5" />
                 </div>
