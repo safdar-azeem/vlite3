@@ -2,7 +2,12 @@
 import { ref } from 'vue'
 import DemoSection from '../DemoSection.vue'
 import { PermissionMatrix, PermissionEditor } from '@/components/PermissionMatrix'
-import type { RoleDef, PermissionGroup, PermissionMap } from '@/components/PermissionMatrix'
+import type {
+  RoleDef,
+  PermissionGroup,
+  PermissionMap,
+  PermissionMatrixGroup,
+} from '@/components/PermissionMatrix'
 
 // ── Sample Roles ──
 const roles: RoleDef[] = [
@@ -221,6 +226,65 @@ const editorSwitchCode = `<PermissionEditor
   v-model="selectedPermissions"
   :groups="groups"
   toggle-mode="switch" />`
+
+// ── Matrix layout demo data ───────────────────────────────────────────────────
+const matrixGroups: PermissionMatrixGroup[] = [
+  {
+    key: 'hrm',
+    label: 'HRM',
+    icon: 'lucide:briefcase',
+    actions: [
+      { key: 'create', label: 'Create' },
+      { key: 'delete', label: 'Delete' },
+      { key: 'view', label: 'View' },
+      { key: 'update', label: 'Update' },
+      { key: 'manage', label: 'Manage' },
+    ],
+    rows: [
+      { key: 'employee', label: 'Employee', actions: ['create', 'delete', 'view', 'update'] },
+      { key: 'branch', label: 'Branch', actions: ['create', 'delete', 'view', 'update'] },
+      { key: 'department', label: 'Department', actions: ['create', 'delete', 'view', 'update'] },
+      { key: 'can-share', label: 'Can Share', actions: ['manage'], singleKey: true },
+      { key: 'can-download', label: 'Can Download', actions: ['manage'], singleKey: true },
+    ],
+  },
+  {
+    key: 'crm',
+    label: 'CRM',
+    icon: 'lucide:contact',
+    actions: [
+      { key: 'create', label: 'Create' },
+      { key: 'delete', label: 'Delete' },
+      { key: 'view', label: 'View' },
+      { key: 'update', label: 'Update' },
+      { key: 'manage', label: 'Manage' },
+    ],
+    rows: [
+      { key: 'lead', label: 'Lead', actions: ['create', 'delete', 'view', 'update'] },
+      { key: 'deal', label: 'Deal', actions: ['create', 'delete', 'view', 'update'] },
+      { key: 'contact', label: 'Contact', actions: ['create', 'delete', 'view', 'update'] },
+      { key: 'can-export', label: 'Can Export', actions: ['manage'], singleKey: true },
+    ],
+  },
+]
+
+const matrixPerms = ref<string[]>([
+  'hrm-employee-create',
+  'hrm-employee-view',
+  'hrm-employee-update',
+  'hrm-branch-create',
+  'hrm-branch-view',
+  'hrm-can-share',
+  'hrm-can-download',
+  'crm-lead-create',
+  'crm-lead-view',
+  'crm-lead-update',
+])
+
+const matrixCode = `<PermissionEditor
+  v-model="matrixPerms"
+  layout="matrix"
+  :matrix-groups="matrixGroups" />`
 </script>
 
 <template>
@@ -232,6 +296,25 @@ const editorSwitchCode = `<PermissionEditor
     </p>
 
     <div class="space-y-12">
+      <!-- Matrix layout demo -->
+      <div>
+        <h3 class="text-fs-3 font-semibold mb-1">Matrix Layout</h3>
+        <p class="text-muted-foreground text-sm mb-6">
+          For when you need a table with entity rows and action columns. Each cell maps to a
+          permission key. Disabled cells indicate unsupported action/entity combos.
+        </p>
+      </div>
+
+      <DemoSection title="Permission Editor (Matrix)" :code="matrixCode">
+        <PermissionEditor v-model="matrixPerms" layout="matrix" :matrix-groups="matrixGroups" />
+        <div class="mt-4 p-3 bg-muted rounded-lg">
+          <p class="text-xs font-semibold text-muted-foreground mb-1">v-model output:</p>
+          <pre class="text-xs text-foreground overflow-auto">{{
+            JSON.stringify(matrixPerms, null, 2)
+          }}</pre>
+        </div>
+      </DemoSection>
+
       <!-- Single-Role Permission Editor (top) -->
       <div>
         <h3 class="text-fs-3 font-semibold mb-1">Single-Role Permission Editor</h3>
