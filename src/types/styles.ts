@@ -29,8 +29,9 @@ export type IDropdownOption = {
   // Schema support for nested menus
   children?: IDropdownOption[]
   key?: string // Property name for nested value objects
-  position?: any // TooltTipPlacement
-  offset?: [number, number]
+  position?: any // TooltTipPlacement — overrides nestedPosition for this specific item
+  offset?: [number, number] // overrides nestedOffset for this specific item
+  showChevron?: boolean // Control chevron visibility per child item (default: true when children exist)
   confirmation?:
     | boolean
     | {
