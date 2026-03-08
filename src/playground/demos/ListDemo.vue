@@ -150,6 +150,49 @@ const conditionalFields: ListField[] = [
   },
 ]
 
+// ── Stacked variant demo data ────────────────────────────────────────────────
+const personalInfo = {
+  gender: 'Female',
+  dateOfBirth: '1996-03-05T00:00:00Z',
+  identifyCode: '3234611342',
+  hometown: 'Hai Duong city',
+  nationality: 'Vietnam',
+  religion: 'None',
+  language: 'Vietnamese, English',
+  maritalStatus: 'Single',
+  permanentAddress: '5. Nguyen Chi Thanh Street, Tan Binh Ward, Hai Duong',
+  currentAddress: '29. Nguyen Ngoc Doan Street, Dong Da District, Ha Noi',
+}
+
+const personalInfoFields: ListField[] = [
+  { key: 'gender', title: 'Gender' },
+  { key: 'dateOfBirth', title: 'Date of birth', type: 'date' },
+  { key: 'identifyCode', title: 'Identify code' },
+  { key: 'hometown', title: 'Hometown' },
+  { key: 'nationality', title: 'Nationality' },
+  { key: 'religion', title: 'Religion' },
+  { key: 'language', title: 'Language' },
+  { key: 'maritalStatus', title: 'Marital status' },
+  { key: 'permanentAddress', title: 'Permanent address' },
+  { key: 'currentAddress', title: 'Current address' },
+]
+
+const accountInfo = {
+  bankAccount: '02520613401',
+  accountName: 'Nguyen Thi Minh Hang',
+  bank: 'TPBank Duy Tan',
+  taxCode: '8456120546',
+  insuranceCode: '8456120546',
+}
+
+const accountInfoFields: ListField[] = [
+  { key: 'bankAccount', title: 'Bank account' },
+  { key: 'accountName', title: 'Account name' },
+  { key: 'bank', title: 'Bank' },
+  { key: 'taxCode', title: 'Tax code' },
+  { key: 'insuranceCode', title: 'Insurance code' },
+]
+
 // ── Loading demo ─────────────────────────────────────────────────────────────
 const isLoading = ref(true)
 setTimeout(() => {
@@ -195,6 +238,28 @@ setTimeout(() => {
         title-icon="lucide:briefcase"
         variant="card"
         :columns="2" />
+    </DemoSection>
+
+    <!-- ── Stacked Variant — Personal & Account Info ───────── -->
+    <DemoSection title="Stacked Variant (label on top, value below)" :code="sourceCode">
+      <div class="space-y-4">
+        <List
+          :fields="personalInfoFields"
+          :data="personalInfo"
+          title="Personal information"
+          title-icon="lucide:user"
+          variant="stacked"
+          :show-colon="false"
+          :columns="2" />
+        <List
+          :fields="accountInfoFields"
+          :data="accountInfo"
+          title="Account information"
+          title-icon="lucide:landmark"
+          variant="stacked"
+          :show-colon="false"
+          :columns="3" />
+      </div>
     </DemoSection>
 
     <!-- ── Product (striped, 1-col) ─────────────────────────── -->
@@ -268,6 +333,17 @@ setTimeout(() => {
             :data="product"
             variant="bordered-rows"
             :columns="1" />
+        </div>
+        <div class="space-y-1">
+          <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+            stacked
+          </p>
+          <List
+            :fields="productFields.slice(0, 4)"
+            :data="product"
+            variant="stacked"
+            :show-colon="false"
+            :columns="2" />
         </div>
       </div>
     </DemoSection>
