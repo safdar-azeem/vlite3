@@ -49,6 +49,8 @@ interface Props {
   maxResultsPerGroup?: number
   /** Whether the palette is enabled at all — when false, nothing mounts or listens */
   enabled?: boolean
+
+  triggerClass?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -130,15 +132,16 @@ const isMac = computed(() =>
   <template v-if="enabled">
     <button
       type="button"
-      class="command-palette-trigger hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-muted-foreground bg-muted/60 hover:bg-muted border border-border/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 select-none cursor-pointer shrink-0"
+      class="command-palette-trigger hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-muted-foreground bg-muted/60 hover:bg-muted border border-border/60 focus-visible:outline-none justify-between focus-visible:ring-2 focus-visible:ring-primary/50 select-none cursor-pointer shrink-0"
       :aria-label="`Open command palette`"
+      :class="triggerClass"
       @click="open">
       <Icon icon="lucide:search" class="w-3.5 h-3.5 shrink-0" />
       <span class="hidden sm:block truncate max-w-[180px] -text-fs-1.5"
         >{{ displayPlaceholder.split(',')[0] }}...</span
       >
       <kbd
-        class="hidden lg:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-mono font-medium border border-border/80 bg-background text-muted-foreground ml-1">
+        class="hidden ml-auto lg:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-mono font-medium border border-border/80 bg-background text-muted-foreground ml-1">
         <span>{{ isMac ? '&#8984;' : 'Ctrl' }}</span>
         <span>{{ shortcutKey.toUpperCase() }}</span>
       </kbd>
