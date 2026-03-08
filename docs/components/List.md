@@ -208,8 +208,10 @@ const fields: ListField[] = [
 ```
 
 > **Layout:** Cells are arranged in a responsive CSS grid. The `columns` prop
-> controls how many columns appear at wider breakpoints. Subtle 1 px grid lines
-> separate cells — no extra border props needed.
+> controls how many columns appear at wider breakpoints. On small screens
+> (`< sm`), the layout automatically falls back to the default horizontal
+> row style (label left, value right, with border dividers) for optimal
+> readability on narrow viewports.
 
 ---
 
