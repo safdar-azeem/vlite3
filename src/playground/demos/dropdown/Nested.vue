@@ -4,16 +4,19 @@ import { Dropdown } from '@/components/Dropdown'
 import Button from '@/components/Button.vue'
 import DemoSection from '../../DemoSection.vue'
 import sourceCode from './Nested.vue?raw'
+import { IDropdownOption } from '@/types'
 
 const nestedVal = ref({})
 
-const nestedOptions = [
+const nestedOptions: IDropdownOption[] = [
   { label: 'Diff', value: 'diff', key: 'diff' },
   { label: 'Repo', value: 'repo', key: 'repo' },
   { label: '---', value: 'divider' },
   {
     label: 'Stash',
     key: 'stash',
+    showChevron: false,
+    position: 'left-start',
     children: [
       { label: 'Apply Stash', value: 'apply' },
       { label: 'Drop Stash', value: 'drop' },
