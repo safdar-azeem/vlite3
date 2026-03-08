@@ -5,7 +5,12 @@ import Button from '../Button.vue'
 import type { ChipProps, ChipVariant } from './types'
 import { $t } from '@/utils/i18n'
 
-const props = withDefaults(defineProps<ChipProps>(), {
+// Accept standard types or string to support dynamic extended themes
+interface ExtendedProps extends Omit<ChipProps, 'variant'> {
+  variant?: ChipVariant | string
+}
+
+const props = withDefaults(defineProps<ExtendedProps>(), {
   variant: 'subtle',
   size: 'medium',
   disabled: false,
@@ -20,7 +25,7 @@ const emit = defineEmits<{
   (e: 'delete', event: MouseEvent): void
 }>()
 
-const displayText = computed(() => props.textI18n ? $t(props.textI18n) : props.text)
+const displayText = computed(() => (props.textI18n ? $t(props.textI18n) : props.text))
 
 const isInteractive = computed(() => props.clickable && !props.disabled)
 
@@ -62,7 +67,7 @@ const baseClasses =
 const sizeClasses = computed(() => {
   switch (props.size) {
     case 'small':
-      return 'h-5 text-[10px] px-1.5 gap-1'
+      return 'h-5.5 text-[11px] px-2.5 gap-1'
     case 'large':
       return 'h-8 text-sm px-3 gap-2'
     case 'medium':
@@ -80,20 +85,29 @@ const variantClasses = computed(() => {
     ? 'cursor-pointer hover:shadow-sm active:scale-[0.98]'
     : 'cursor-default'
 
-  const variants: Record<ChipVariant, string> = {
+  const variants: Record<string, string> = {
     solid: `bg-primary text-primary-fg border-transparent ${isInteractive.value ? 'hover:bg-primary/90' : ''}`,
     outline: `bg-transparent border-input text-foreground ${isInteractive.value ? 'hover:bg-accent hover:text-accent-foreground' : ''}`,
     ghost: `bg-transparent border-transparent text-muted-foreground ${isInteractive.value ? 'hover:bg-accent hover:text-accent-foreground' : ''}`,
     subtle: `bg-accent/50 text-foreground border-transparent ${isInteractive.value ? 'hover:bg-accent' : ''}`,
 
-    secondary: `bg-secondary text-secondary-foreground border-transparent ${isInteractive.value ? 'hover:bg-secondary/80' : ''}`,
-    success: `bg-success text-success-fg border-transparent ${isInteractive.value ? 'hover:bg-success/80' : ''}`,
-    warning: `bg-warning text-warning-fg border-transparent ${isInteractive.value ? 'hover:bg-warning/80' : ''}`,
-    danger: `bg-destructive text-destructive-foreground border-transparent ${isInteractive.value ? 'hover:bg-destructive/90' : ''}`,
-    info: `bg-info text-info-fg border-transparent ${isInteractive.value ? 'hover:bg-info/80' : ''}`,
+    /* Base Semantics */
+    secondary: `bg-secondary-subtle text-secondary-subtle-fg border-secondary-subtle-border ${isInteractive.value ? 'hover:opacity-80' : ''}`,
+    success: `bg-success-subtle text-success-subtle-fg border-success-subtle-border ${isInteractive.value ? 'hover:opacity-80' : ''}`,
+    warning: `bg-warning-subtle text-warning-subtle-fg border-warning-subtle-border ${isInteractive.value ? 'hover:opacity-80' : ''}`,
+    danger: `bg-danger-subtle text-danger-subtle-fg border-danger-subtle-border ${isInteractive.value ? 'hover:opacity-80' : ''}`,
+    info: `bg-info-subtle text-info-subtle-fg border-info-subtle-border ${isInteractive.value ? 'hover:opacity-80' : ''}`,
+
+    /* Extended Semantics */
+    purple: `bg-purple-subtle text-purple-subtle-fg border-purple-subtle-border ${isInteractive.value ? 'hover:opacity-80' : ''}`,
+    teal: `bg-teal-subtle text-teal-subtle-fg border-teal-subtle-border ${isInteractive.value ? 'hover:opacity-80' : ''}`,
+    indigo: `bg-indigo-subtle text-indigo-subtle-fg border-indigo-subtle-border ${isInteractive.value ? 'hover:opacity-80' : ''}`,
+    orange: `bg-orange-subtle text-orange-subtle-fg border-orange-subtle-border ${isInteractive.value ? 'hover:opacity-80' : ''}`,
+    pink: `bg-pink-subtle text-pink-subtle-fg border-pink-subtle-border ${isInteractive.value ? 'hover:opacity-80' : ''}`,
+    cyan: `bg-cyan-subtle text-cyan-subtle-fg border-cyan-subtle-border ${isInteractive.value ? 'hover:opacity-80' : ''}`,
   }
 
-  return `${variants[props.variant]} ${interactiveHover}`
+  return `${variants[props.variant] || variants['subtle']} ${interactiveHover}`
 })
 
 const rootClasses = computed(() => {
@@ -133,7 +147,10 @@ const closeIconSizeClass = computed(() => {
     @click="handleClick"
     @keydown="handleKeyDown">
     <slot name="icon">
-      <Icon v-if="icon" :icon="icon" :class="[iconSizeClass, 'shrink-0', displayText ? '-ml-0.5' : '']" />
+      <Icon
+        v-if="icon"
+        :icon="icon"
+        :class="[iconSizeClass, 'shrink-0', displayText ? '-ml-0.5' : '']" />
     </slot>
 
     <span v-if="displayText || $slots.default" class="truncate">
@@ -153,4 +170,3 @@ const closeIconSizeClass = computed(() => {
     </Button>
   </div>
 </template>
-
