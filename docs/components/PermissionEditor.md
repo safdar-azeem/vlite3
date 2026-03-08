@@ -10,32 +10,34 @@ Use this when you need to assign permissions to a single role or user. For manag
 
 ## Props
 
-| Prop               | Type                    | Default      | Description                                                                                       |
-| :----------------- | :---------------------- | :----------- | :------------------------------------------------------------------------------------------------ |
-| `modelValue`       | `string[]`              | —            | **Required.** Array of granted permission keys (v-model)                                          |
-| `groups`           | `PermissionGroup[]`     | —            | **Required.** Permission groups with nested permissions                                           |
-| `toggleMode`       | `PermissionToggleMode`  | `'checkbox'` | Toggle display mode for each permission row                                                       |
-| `searchable`       | `boolean`               | `true`       | Show search input above the permission list                                                       |
-| `collapsible`      | `boolean`               | `true`       | Allow groups to be collapsed/expanded by clicking their header                                    |
-| `readonly`         | `boolean`               | `false`      | Disable all toggles — display-only mode                                                           |
-| `size`             | `PermissionMatrixSize`  | `'md'`       | Size variant affecting padding and text size                                                      |
-| `class`            | `string`                | `''`         | Extra CSS classes applied to the root element                                                     |
-| `defaultExpanded`  | `string[]`              | `[]`         | Group keys to start expanded. All other groups start collapsed. If empty, all groups are expanded |
+| Prop              | Type                      | Default      | Description                                                                                       |
+| :---------------- | :------------------------ | :----------- | :------------------------------------------------------------------------------------------------ |
+| `modelValue`      | `string[]`                | —            | **Required.** Array of granted permission keys (v-model)                                          |
+| `groups`          | `PermissionGroup[]`       | —            | **Required.** Permission groups with nested permissions                                           |
+| `toggleMode`      | `PermissionToggleMode`    | `'checkbox'` | Toggle display mode for each permission row                                                       |
+| `searchable`      | `boolean`                 | `true`       | Show search input above the permission list                                                       |
+| `collapsible`     | `boolean`                 | `true`       | Allow groups to be collapsed/expanded by clicking their header                                    |
+| `readonly`        | `boolean`                 | `false`      | Disable all toggles — display-only mode                                                           |
+| `size`            | `PermissionMatrixSize`    | `'md'`       | Size variant affecting padding and text size                                                      |
+| `class`           | `string`                  | `''`         | Extra CSS classes applied to the root element                                                     |
+| `defaultExpanded` | `string[]`                | `[]`         | Group keys to start expanded. All other groups start collapsed. If empty, all groups are expanded |
+| `layout`          | `PermissionEditorLayout`  | `'list'`     | Layout mode: `'list'` (default grouped list) or `'matrix'` (table with action columns)            |
+| `matrixGroups`    | `PermissionMatrixGroup[]` | `[]`         | Matrix groups — used when `layout` is `'matrix'`                                                  |
 
 ---
 
 ## Events
 
-| Event                | Payload    | Description                                        |
-| :------------------- | :--------- | :------------------------------------------------- |
-| `update:modelValue`  | `string[]` | Emitted when the selected permission keys change   |
+| Event               | Payload    | Description                                      |
+| :------------------ | :--------- | :----------------------------------------------- |
+| `update:modelValue` | `string[]` | Emitted when the selected permission keys change |
 
 ---
 
 ## Slots
 
-| Slot | Description |
-| :--- | :---------- |
+| Slot | Description                                    |
+| :--- | :--------------------------------------------- |
 | —    | No named slots. All UI is rendered internally. |
 
 ---
@@ -67,6 +69,33 @@ export interface PermissionGroup {
 
 export type PermissionToggleMode = 'checkbox' | 'switch'
 export type PermissionMatrixSize = 'sm' | 'md'
+export type PermissionEditorLayout = 'list' | 'matrix'
+
+/** A column (action) in the matrix layout */
+export interface PermissionMatrixAction {
+  key: string // e.g. 'create'
+  label: string // e.g. 'Create'
+}
+
+/** A row (entity) in the matrix layout */
+export interface PermissionMatrixRow {
+  key: string // e.g. 'employee'
+  label: string // e.g. 'Employee'
+  /** Which action keys this row supports. Others render as disabled. */
+  actions: string[]
+  /** If true, key is `{prefix}-{row.key}` instead of `{prefix}-{row.key}-{action.key}` */
+  singleKey?: boolean
+  description?: string
+}
+
+/** A group of matrix rows sharing the same actions */
+export interface PermissionMatrixGroup {
+  key: string // permission prefix, e.g. 'hrm'
+  label: string
+  icon?: string
+  actions: PermissionMatrixAction[]
+  rows: PermissionMatrixRow[]
+}
 ```
 
 ---
@@ -86,6 +115,53 @@ export type PermissionMatrixSize = 'sm' | 'md'
 
 ---
 
+## Matrix Layout
+
+Set `layout="matrix"` and pass `matrixGroups` to render permissions as a table with action columns (Create, Delete, View, Update, Manage, etc.) and entity rows. Cells map to permission keys using the pattern `{group.key}-{row.key}-{action.key}` (e.g. `hrm-employee-create`). Rows with `singleKey: true` produce `{group.key}-{row.key}` regardless of action.
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { PermissionEditor } from 'vlite3'
+import type { PermissionMatrixGroup } from 'vlite3'
+
+const matrixGroups: PermissionMatrixGroup[] = [
+  {
+    key: 'hrm',
+    label: 'HRM',
+    icon: 'lucide:briefcase',
+    actions: [
+      { key: 'create', label: 'Create' },
+      { key: 'delete', label: 'Delete' },
+      { key: 'view', label: 'View' },
+      { key: 'update', label: 'Update' },
+      { key: 'manage', label: 'Manage' },
+    ],
+    rows: [
+      { key: 'employee', label: 'Employee', actions: ['create', 'delete', 'view', 'update'] },
+      { key: 'branch', label: 'Branch', actions: ['create', 'delete', 'view', 'update'] },
+      { key: 'can-share', label: 'Can Share', actions: ['manage'], singleKey: true },
+      { key: 'can-download', label: 'Can Download', actions: ['manage'], singleKey: true },
+    ],
+  },
+]
+
+const perms = ref<string[]>(['hrm-employee-create', 'hrm-employee-view', 'hrm-can-share'])
+</script>
+
+<template>
+  <PermissionEditor v-model="perms" layout="matrix" :matrix-groups="matrixGroups" />
+</template>
+```
+
+**Output:**
+
+```json
+["hrm-employee-create", "hrm-employee-view", "hrm-can-share"]
+```
+
+---
+
 ## Usage
 
 ### Basic (Checkbox mode)
@@ -102,7 +178,11 @@ const groups: PermissionGroup[] = [
     label: 'Users',
     icon: 'lucide:users',
     permissions: [
-      { key: 'users_manage_employees', label: 'Manage Employees', description: 'Create, edit, delete employee records' },
+      {
+        key: 'users_manage_employees',
+        label: 'Manage Employees',
+        description: 'Create, edit, delete employee records',
+      },
       { key: 'users_view_employees', label: 'View Employees' },
       { key: 'users_manage_customers', label: 'Manage Customers' },
       { key: 'users_view_customers', label: 'View Customers' },
@@ -113,7 +193,11 @@ const groups: PermissionGroup[] = [
     label: 'HRM',
     icon: 'lucide:briefcase',
     permissions: [
-      { key: 'hrm_manage_payroll', label: 'Manage Payroll', description: 'Create and edit payroll runs' },
+      {
+        key: 'hrm_manage_payroll',
+        label: 'Manage Payroll',
+        description: 'Create and edit payroll runs',
+      },
       { key: 'hrm_view_payroll', label: 'View Payroll' },
       { key: 'hrm_manage_leaves', label: 'Manage Leaves' },
       { key: 'hrm_view_leaves', label: 'View Leaves' },
@@ -129,9 +213,7 @@ const selectedPermissions = ref<string[]>([
 </script>
 
 <template>
-  <PermissionEditor
-    v-model="selectedPermissions"
-    :groups="groups" />
+  <PermissionEditor v-model="selectedPermissions" :groups="groups" />
 </template>
 ```
 
@@ -140,10 +222,7 @@ const selectedPermissions = ref<string[]>([
 ### Switch mode
 
 ```vue
-<PermissionEditor
-  v-model="selectedPermissions"
-  :groups="groups"
-  toggle-mode="switch" />
+<PermissionEditor v-model="selectedPermissions" :groups="groups" toggle-mode="switch" />
 ```
 
 ---
@@ -164,10 +243,7 @@ Use `defaultExpanded` to open only specific groups on mount. All other groups wi
 ### Readonly mode
 
 ```vue
-<PermissionEditor
-  v-model="selectedPermissions"
-  :groups="groups"
-  readonly />
+<PermissionEditor v-model="selectedPermissions" :groups="groups" readonly />
 ```
 
 ---
@@ -175,10 +251,7 @@ Use `defaultExpanded` to open only specific groups on mount. All other groups wi
 ### Compact size
 
 ```vue
-<PermissionEditor
-  v-model="selectedPermissions"
-  :groups="groups"
-  size="sm" />
+<PermissionEditor v-model="selectedPermissions" :groups="groups" size="sm" />
 ```
 
 ---
@@ -186,10 +259,7 @@ Use `defaultExpanded` to open only specific groups on mount. All other groups wi
 ### Without search
 
 ```vue
-<PermissionEditor
-  v-model="selectedPermissions"
-  :groups="groups"
-  :searchable="false" />
+<PermissionEditor v-model="selectedPermissions" :groups="groups" :searchable="false" />
 ```
 
 ---
@@ -197,10 +267,7 @@ Use `defaultExpanded` to open only specific groups on mount. All other groups wi
 ### Non-collapsible groups
 
 ```vue
-<PermissionEditor
-  v-model="selectedPermissions"
-  :groups="groups"
-  :collapsible="false" />
+<PermissionEditor v-model="selectedPermissions" :groups="groups" :collapsible="false" />
 ```
 
 ---
