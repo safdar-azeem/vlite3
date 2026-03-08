@@ -133,6 +133,7 @@ const menuItems: SidebarMenuItemSchema[] = [
 
               <NavbarCommandPalette
                 :enabled="true"
+                triggerClass="w-[300px]"
                 :menu-items="menuItems"
                 placeholder="Search components..."
                 shortcut-key="k" />
