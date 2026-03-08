@@ -47,6 +47,7 @@ A flexible, feature-rich dropdown component supporting single selection, nested 
 ---
 
 ## Types
+
 ```ts
 export type IDropdownOption = {
   label: string
@@ -63,13 +64,13 @@ export type IDropdownOption = {
   children?: IDropdownOption[]
 
   // --- Per-item styling ---
-  class?: string         // Applied to the option row element
-  triggerClass?: string  // Applied to the nested trigger wrapper (only for items with children)
+  class?: string // Applied to the option row element
+  triggerClass?: string // Applied to the nested trigger wrapper (only for items with children)
 
   // --- Per-item nested dropdown control ---
-  position?: TooltTipPlacement   // Overrides nestedPosition for this specific item
-  offset?: [number, number]      // Overrides nestedOffset for this specific item
-  showChevron?: boolean          // Show/hide the chevron icon for this item (default: true)
+  position?: TooltTipPlacement // Overrides nestedPosition for this specific item
+  offset?: [number, number] // Overrides nestedOffset for this specific item
+  showChevron?: boolean // Show/hide the chevron icon for this item (default: true)
 
   confirmation?:
     | boolean
@@ -81,6 +82,14 @@ export type IDropdownOption = {
         variant?: string
       }
   data?: any
+
+  // --- Individual Select Hook ---
+  onSelect?: (payload: {
+    value: any
+    option: IDropdownOption
+    data: IDropdownOption[]
+    values?: any
+  }) => void
 }
 
 export type IDropdownOptions = IDropdownOption[]
@@ -88,13 +97,14 @@ export type IDropdownOptions = IDropdownOption[]
 
 ### Per-item Option Fields
 
-| Field          | Type                | Default | Description                                                                                 |
-| -------------- | ------------------- | ------- | ------------------------------------------------------------------------------------------- |
-| `class`        | `string`            | —       | CSS class applied to the option row (both leaf items and nested trigger rows)               |
-| `triggerClass` | `string`            | —       | CSS class applied only to the nested trigger wrapper div (takes priority over `class` for nested items) |
-| `position`     | `TooltTipPlacement` | —       | Overrides the global `nestedPosition` prop for this specific child dropdown                 |
-| `offset`       | `[number, number]`  | —       | Overrides the global `nestedOffset` prop for this specific child dropdown                   |
-| `showChevron`  | `boolean`           | `true`  | Set to `false` to hide the chevron arrow on a specific nested item                          |
+| Field          | Type                | Default | Description                                                                                              |
+| -------------- | ------------------- | ------- | -------------------------------------------------------------------------------------------------------- |
+| `class`        | `string`            | —       | CSS class applied to the option row (both leaf items and nested trigger rows)                            |
+| `triggerClass` | `string`            | —       | CSS class applied only to the nested trigger wrapper div (takes priority over `class` for nested items)  |
+| `position`     | `TooltTipPlacement` | —       | Overrides the global `nestedPosition` prop for this specific child dropdown                              |
+| `offset`       | `[number, number]`  | —       | Overrides the global `nestedOffset` prop for this specific child dropdown                                |
+| `showChevron`  | `boolean`           | `true`  | Set to `false` to hide the chevron arrow on a specific nested item                                       |
+| `onSelect`     | `Function`          | —       | Callback triggered when this specific option is selected. Receives the fully merged root `values` state. |
 
 ### Special `data` fields
 
@@ -106,8 +116,11 @@ export type IDropdownOptions = IDropdownOption[]
 ### Separator
 
 Use `label: '---'` to render a horizontal divider line between options:
+
 ```ts
-{ label: '---' }
+{
+  label: '---'
+}
 ```
 
 ---
@@ -139,6 +152,7 @@ Use `label: '---'` to render a horizontal divider line between options:
 ---
 
 ## Exports
+
 ```ts
 import {
   Dropdown,
@@ -155,6 +169,7 @@ import {
 ## Usage
 
 ### Basic Usage
+
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
@@ -184,26 +199,61 @@ const val = ref('1')
 
 ---
 
+### Per-item onSelect Callback
+
+You can attach an `onSelect` callback directly to individual options. This is especially useful for nested configurations where you need the complete, fully-merged state (`values`) of the root dropdown after a deeply nested item is selected.
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Dropdown } from 'vlite3'
+
+const config = ref({})
+</script>
+
+<template>
+  <Dropdown
+    v-model="config"
+    :options="[
+      {
+        label: 'Advanced Settings',
+        key: 'advanced',
+        // The callback triggers even if a child nested deep inside is clicked
+        onSelect: (payload) => {
+          console.log('Advanced Settings interacted with!', payload.values)
+        },
+        children: [
+          {
+            label: 'Delete Branch',
+            value: 'delete-branch',
+            class: 'text-danger',
+            // Specifically listen to this leaf node
+            onSelect: ({ value, option, values }) => {
+              console.log('Selected value:', value) // 'delete-branch'
+              console.log('Full config state:', values) // e.g. { advanced: 'delete-branch' }
+            },
+          },
+          { label: 'Force Push', value: 'force-push' },
+        ],
+      },
+    ]">
+    <template #trigger>
+      <Button variant="outline">Advanced</Button>
+    </template>
+  </Dropdown>
+</template>
+```
+
+---
+
 ### Per-item Class Styling
 
 Use `class` to style any option row. For nested items (with `children`), use `triggerClass` to target the trigger wrapper specifically — it takes priority over `class` on nested rows.
+
 ```vue
-:options="[
-  {
-    label: 'Delete',
-    value: 'delete',
-    class: 'text-destructive hover:bg-destructive/10',
-  },
-  {
-    label: 'More Options',
-    class: 'font-semibold',
-    triggerClass: 'bg-muted',
-    children: [
-      { label: 'Export', value: 'export' },
-      { label: 'Archive', value: 'archive' },
-    ],
-  },
-]"
+:options="[ { label: 'Delete', value: 'delete', class: 'text-destructive hover:bg-destructive/10',
+}, { label: 'More Options', class: 'font-semibold', triggerClass: 'bg-muted', children: [ { label:
+'Export', value: 'export' }, { label: 'Archive', value: 'archive' }, ], }, ]"
 ```
 
 ---
@@ -211,33 +261,20 @@ Use `class` to style any option row. For nested items (with `children`), use `tr
 ### Per-item Nested Dropdown Control
 
 Each option with `children` can independently override the global `nestedPosition`, `nestedOffset`, and `showChevron` settings.
+
 ```vue
-:options="[
-  {
-    label: 'Appearance',
-    icon: 'lucide:palette',
-    position: 'bottom-start',   // override: open below instead of to the right
-    offset: [0, 4],             // override: custom offset for this item
-    showChevron: false,         // hide the chevron arrow for this item
-    children: [
-      { label: 'Light', value: 'light' },
-      { label: 'Dark', value: 'dark' },
-    ],
-  },
-  {
-    label: 'Language',
-    // uses global nestedPosition / nestedOffset / showChevron defaults
-    children: [
-      { label: 'English', value: 'en' },
-      { label: 'French', value: 'fr' },
-    ],
-  },
-]"
+:options="[ { label: 'Appearance', icon: 'lucide:palette', position: 'bottom-start', // override:
+open below instead of to the right offset: [0, 4], // override: custom offset for this item
+showChevron: false, // hide the chevron arrow for this item children: [ { label: 'Light', value:
+'light' }, { label: 'Dark', value: 'dark' }, ], }, { label: 'Language', // uses global
+nestedPosition / nestedOffset / showChevron defaults children: [ { label: 'English', value: 'en' },
+{ label: 'French', value: 'fr' }, ], }, ]"
 ```
 
 ---
 
 ### v-model Binding
+
 ```vue
 <Dropdown v-model="selectedUser" :options="users" searchable>
   <template #trigger="{ selectedLabel }">
@@ -253,6 +290,7 @@ Each option with `children` can independently override the global `nestedPositio
 ### Custom Item Slot
 
 Render each option with a custom template using the `#item` slot.
+
 ```vue
 <Dropdown v-model="selectedUser" :options="users">
   <template #trigger="{ selectedLabel }">
@@ -276,6 +314,7 @@ Render each option with a custom template using the `#item` slot.
 ---
 
 ### Rich Options (Icon, Emoji, Subtitle, Description)
+
 ```vue
 <Dropdown
   v-model="selected"
@@ -306,6 +345,7 @@ Render each option with a custom template using the `#item` slot.
 ### Scrollable (Many Options)
 
 The search input automatically appears when there are more than 9 options.
+
 ```vue
 <Dropdown
   :options="Array.from({ length: 20 }, (_, i) => ({ value: `${i}`, label: `Option ${i + 1}` }))"
@@ -321,22 +361,20 @@ The search input automatically appears when there are more than 9 options.
 ### Button Variants
 
 The `#trigger` slot accepts any Button variant.
+
 ```vue
-<!-- Outline -->
 <Dropdown :options="options" v-model="val">
   <template #trigger>
     <Button variant="outline" size="sm" icon-right="lucide:chevron-down">Outline</Button>
   </template>
 </Dropdown>
 
-<!-- Primary -->
 <Dropdown :options="options" v-model="val">
   <template #trigger>
     <Button variant="primary" icon-right="lucide:chevron-down">Primary</Button>
   </template>
 </Dropdown>
 
-<!-- Ghost -->
 <Dropdown :options="options" v-model="val">
   <template #trigger>
     <Button variant="ghost" icon-right="lucide:chevron-down">Ghost</Button>
@@ -349,6 +387,7 @@ The `#trigger` slot accepts any Button variant.
 ### Nested (Children)
 
 Options with a `children` array render as a sub-dropdown triggered on hover/click.
+
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
@@ -384,6 +423,7 @@ const selected = ref(null)
 ### Recursive / Keyed Object Selection
 
 Use `key` on options to map selections into a structured object. Nested dropdowns merge into the parent `v-model` object using deep merge logic.
+
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
@@ -427,6 +467,7 @@ const config = ref({})
 
 Set `data.isBoolean = true` on an option to render a `Switch` toggle instead of a selectable item.
 Requires a `key` field. The `v-model` object will have that key set to `true`/`false`.
+
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
@@ -454,13 +495,10 @@ const settings = ref({ notifications: true, darkMode: false })
 ### Separators
 
 Insert a horizontal divider by using `label: '---'`.
+
 ```vue
-:options="[
-  { value: 'profile', label: 'Profile' },
-  { value: 'settings', label: 'Settings' },
-  { label: '---' },
-  { value: 'logout', label: 'Logout' },
-]"
+:options="[ { value: 'profile', label: 'Profile' }, { value: 'settings', label: 'Settings' }, {
+label: '---' }, { value: 'logout', label: 'Logout' }, ]"
 ```
 
 ---
@@ -468,29 +506,17 @@ Insert a horizontal divider by using `label: '---'`.
 ### Double Confirmation
 
 Wrap any selection in a confirmation modal using `doubleConfirmation` (global) or per-option `confirmation`.
+
 ```vue
-<!-- Global: every selection triggers confirmation -->
 <Dropdown v-model="val" :options="options" :double-confirmation="true">
   <template #trigger>
     <Button variant="outline">Select with confirm</Button>
   </template>
 </Dropdown>
 
-<!-- Per-option confirmation with custom text -->
-:options="[
-  {
-    value: 'delete',
-    label: 'Delete Account',
-    confirmation: {
-      title: 'Delete Account?',
-      description: 'This action cannot be undone.',
-      confirmText: 'Delete',
-      cancelText: 'Cancel',
-      variant: 'danger',
-    },
-  },
-  { value: 'edit', label: 'Edit Profile' },
-]"
+:options="[ { value: 'delete', label: 'Delete Account', confirmation: { title: 'Delete Account?',
+description: 'This action cannot be undone.', confirmText: 'Delete', cancelText: 'Cancel', variant:
+'danger', }, }, { value: 'edit', label: 'Edit Profile' }, ]"
 ```
 
 ---
@@ -498,6 +524,7 @@ Wrap any selection in a confirmation modal using `doubleConfirmation` (global) o
 ### RTL Direction
 
 Set `direction="rtl"` to flip layout, chevrons, and dropdown position for right-to-left languages.
+
 ```vue
 <Dropdown v-model="val" :options="options" direction="rtl">
   <template #trigger="{ selectedLabel }">
@@ -512,6 +539,7 @@ Set `direction="rtl"` to flip layout, chevrons, and dropdown position for right-
 
 Use `layout="grouped"` with options containing `children` to render a multi-column grid menu.
 Control columns with the `columns` prop (number or CSS grid string).
+
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
@@ -565,6 +593,7 @@ const selected = ref(null)
 ### Pagination (Load More)
 
 Use `hasMore` and listen to `@load-more` to implement infinite scroll pagination.
+
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
@@ -612,6 +641,7 @@ const loadMore = async () => {
 Set `remote` to disable client-side filtering. The `@search` event is debounced (default 300ms) and fires when the user types. Push new results into `:options` on each search.
 
 Use `fetchSelected` to hydrate labels for already-selected values that may not be in the current result set (e.g. after page reload).
+
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
@@ -659,6 +689,7 @@ const fetchSelected = async (ids: any[]): Promise<IDropdownOption[]> => {
 ### Sticky Header / Footer Slots
 
 Use `#header` and `#footer` slots to render persistent content above and below the scrollable list.
+
 ```vue
 <Dropdown v-model="selected" :options="options">
   <template #trigger>
@@ -684,6 +715,7 @@ Use `#header` and `#footer` slots to render persistent content above and below t
 ### Plain String / Number Options
 
 The `options` prop also accepts plain string or number arrays — they are normalized automatically.
+
 ```vue
 <Dropdown v-model="lang" :options="['English', 'French', 'Arabic']">
   <template #trigger="{ selectedLabel }">
@@ -706,35 +738,3 @@ The `options` prop also accepts plain string or number arrays — they are norma
 Mouse movement exits keyboard mode and restores hover highlight.
 
 ---
-
-## Composables
-
-### `useDropdownSelection`
-
-Provides value resolution, label computation, and selection logic.
-```ts
-import { useDropdownSelection } from 'vlite3'
-
-const { currentValue, selectedLabel, selectOption } = useDropdownSelection(props, emit)
-```
-
-### `useDropdownIds`
-
-Generates stable, unique menu IDs for nested dropdowns to manage click-outside exclusions.
-```ts
-import { useDropdownIds } from 'vlite3'
-
-const { getMenuId, getAllRecursiveIds } = useDropdownIds()
-```
-
----
-
-## Sub-Components
-
-| Component               | Description                                                               |
-| ----------------------- | ------------------------------------------------------------------------- |
-| `DropdownMenu`          | The scrollable list container (used internally)                           |
-| `DropdownTrigger`       | Default button trigger (used internally, replaceable via `#trigger` slot) |
-| `DropdownItem`          | Single option row with icon, label, subtitle, description, and check      |
-| `DropdownBooleanItem`   | Toggle Switch option row (activated via `data.isBoolean`)                 |
-| `DropdownGroupedLayout` | Multi-column grid layout for `layout="grouped"` mode                      |
