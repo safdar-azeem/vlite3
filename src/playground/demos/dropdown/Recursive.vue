@@ -43,10 +43,10 @@ const recursiveOptions: IDropdownOption[] = [
       { label: 'Apply', value: 'apply' },
       {
         label: 'Advanced',
-        key: 'advanced',
         onSelect: (payload) => {
           console.log('Delete Branch', payload)
         },
+        key: 'advanced',
         children: [
           {
             label: 'Delete Branch',
