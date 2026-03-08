@@ -52,11 +52,13 @@ export function useDropdownSelection(props: UseDropdownSelectionProps, emit: Emi
 
   // Selection Logic
   const selectOption = (option: IDropdownOption) => {
-    if (typeof option !== 'string' && option?.disabled) return
+    if (typeof option !== 'string' && option?.disabled) return undefined
 
     const currentVal = currentValue.value
     let value = option?.value ?? option?.label
     const data = option.data
+
+    let finalValue: any
 
     // Recursive / Partial Update Logic
     if (option.key) {
@@ -79,26 +81,31 @@ export function useDropdownSelection(props: UseDropdownSelectionProps, emit: Emi
       if (props.toggleSelection && isSelected) {
         const clone = { ...currentVal }
         delete clone[key]
-        emit('update:modelValue', clone)
-        emit('onSelect', { value: clone, data })
-        return
+        finalValue = clone
+        emit('update:modelValue', finalValue)
+        emit('onSelect', { value: finalValue, data, option })
+        return finalValue
       }
 
       // Otherwise Merge
-      const merged = deepMerge(currentVal, value)
-      emit('update:modelValue', merged)
-      emit('onSelect', { value: merged, data })
+      finalValue = deepMerge(currentVal, value)
+      emit('update:modelValue', finalValue)
+      emit('onSelect', { value: finalValue, data, option })
     } else {
       // Standard replace (Primitive or Single Object)
       // Toggle logic for simple mode
       if (props.toggleSelection && currentVal === (option.value ?? option.label)) {
+        finalValue = undefined
         emit('update:modelValue', undefined)
-        emit('onSelect', { value: undefined, data })
+        emit('onSelect', { value: undefined, data, option })
       } else {
-        emit('update:modelValue', value)
-        emit('onSelect', { value, data })
+        finalValue = value
+        emit('update:modelValue', finalValue)
+        emit('onSelect', { value: finalValue, data, option })
       }
     }
+
+    return finalValue
   }
 
   return {
@@ -107,3 +114,4 @@ export function useDropdownSelection(props: UseDropdownSelectionProps, emit: Emi
     selectOption,
   }
 }
+
