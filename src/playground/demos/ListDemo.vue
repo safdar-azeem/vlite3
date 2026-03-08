@@ -20,7 +20,7 @@ const customer = {
   isWalkIn: false,
   allowLogin: true,
   twoFactorEnabled: true,
-  objective: 'Looking to streamline internal ERP workflows and improve procurement visibility.',
+  objective: 'Looking to streamline internal  workflows and improve procurement visibility.',
   ssn: '123-45-6789',
   avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=olivia',
   location: {
@@ -76,7 +76,12 @@ const customerFields: ListField[] = [
   { key: 'createdAt', title: 'Member Since', type: 'date' },
   { key: 'isWalkIn', title: 'Walk-In', format: (v) => (v ? 'Yes' : 'No') },
   { key: 'allowLogin', title: 'Allow Login', format: (v) => (v ? 'Yes' : 'No') },
-  { key: 'twoFactorEnabled', title: '2FA Enabled', format: (v) => (v ? 'Enabled' : 'Disabled'), addStatusColor: true },
+  {
+    key: 'twoFactorEnabled',
+    title: '2FA Enabled',
+    format: (v) => (v ? 'Enabled' : 'Disabled'),
+    addStatusColor: true,
+  },
   { key: 'objective', title: 'Objective', lineByLine: true },
 ]
 
@@ -147,7 +152,9 @@ const conditionalFields: ListField[] = [
 
 // ── Loading demo ─────────────────────────────────────────────────────────────
 const isLoading = ref(true)
-setTimeout(() => { isLoading.value = false }, 2500)
+setTimeout(() => {
+  isLoading.value = false
+}, 2500)
 </script>
 
 <template>
@@ -155,9 +162,9 @@ setTimeout(() => { isLoading.value = false }, 2500)
     <div>
       <h2 class="text-2xl font-bold mb-1">List</h2>
       <p class="text-gray-500 text-sm">
-        Schema-driven key-value information display component. Supports dot-notation paths,
-        multiple columns, variants, sensitive masking, conditional fields, custom formatters,
-        slot overrides, and loading skeletons.
+        Schema-driven key-value information display component. Supports dot-notation paths, multiple
+        columns, variants, sensitive masking, conditional fields, custom formatters, slot overrides,
+        and loading skeletons.
       </p>
     </div>
 
@@ -207,28 +214,60 @@ setTimeout(() => { isLoading.value = false }, 2500)
     <DemoSection title="Variants" :code="sourceCode">
       <div class="grid md:grid-cols-2 gap-6">
         <div class="space-y-1">
-          <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">default</p>
-          <List :fields="productFields.slice(0, 4)" :data="product" variant="default" :columns="1" />
+          <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+            default
+          </p>
+          <List
+            :fields="productFields.slice(0, 4)"
+            :data="product"
+            variant="default"
+            :columns="1" />
         </div>
         <div class="space-y-1">
-          <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">card</p>
+          <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+            card
+          </p>
           <List :fields="productFields.slice(0, 4)" :data="product" variant="card" :columns="1" />
         </div>
         <div class="space-y-1">
-          <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">striped</p>
-          <List :fields="productFields.slice(0, 4)" :data="product" variant="striped" :columns="1" />
+          <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+            striped
+          </p>
+          <List
+            :fields="productFields.slice(0, 4)"
+            :data="product"
+            variant="striped"
+            :columns="1" />
         </div>
         <div class="space-y-1">
-          <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">compact</p>
-          <List :fields="productFields.slice(0, 4)" :data="product" variant="compact" :columns="1" />
+          <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+            compact
+          </p>
+          <List
+            :fields="productFields.slice(0, 4)"
+            :data="product"
+            variant="compact"
+            :columns="1" />
         </div>
         <div class="space-y-1">
-          <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">minimal</p>
-          <List :fields="productFields.slice(0, 4)" :data="product" variant="minimal" :columns="1" />
+          <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+            minimal
+          </p>
+          <List
+            :fields="productFields.slice(0, 4)"
+            :data="product"
+            variant="minimal"
+            :columns="1" />
         </div>
         <div class="space-y-1">
-          <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">bordered-rows</p>
-          <List :fields="productFields.slice(0, 4)" :data="product" variant="bordered-rows" :columns="1" />
+          <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+            bordered-rows
+          </p>
+          <List
+            :fields="productFields.slice(0, 4)"
+            :data="product"
+            variant="bordered-rows"
+            :columns="1" />
         </div>
       </div>
     </DemoSection>
@@ -238,7 +277,8 @@ setTimeout(() => { isLoading.value = false }, 2500)
       <div class="max-w-lg space-y-3">
         <p class="text-xs text-muted-foreground">
           <code>adminCode</code> uses <code>whenTrue</code> (only shows if value is truthy).
-          <code>notes</code> uses <code>when</code> (custom function). Notes is empty so it's hidden.
+          <code>notes</code> uses <code>when</code> (custom function). Notes is empty so it's
+          hidden.
         </p>
         <List
           :fields="conditionalFields"
@@ -251,17 +291,19 @@ setTimeout(() => { isLoading.value = false }, 2500)
     <!-- ── Custom slot override ───────────────────────────────── -->
     <DemoSection title="Custom Slot Override" :code="sourceCode">
       <div class="max-w-lg">
-        <List
-          :fields="customerFields.slice(0, 5)"
-          :data="customer"
-          title="Slot Demo"
-          :columns="1">
+        <List :fields="customerFields.slice(0, 5)" :data="customer" title="Slot Demo" :columns="1">
           <!-- Override the 'status' field rendering -->
           <template #status="{ value }">
             <span
               class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold"
-              :class="value === 'active' ? 'bg-success-light text-success-dark' : 'bg-danger-light text-danger-dark'">
-              <span class="w-1.5 h-1.5 rounded-full" :class="value === 'active' ? 'bg-success' : 'bg-danger'" />
+              :class="
+                value === 'active'
+                  ? 'bg-success-light text-success-dark'
+                  : 'bg-danger-light text-danger-dark'
+              ">
+              <span
+                class="w-1.5 h-1.5 rounded-full"
+                :class="value === 'active' ? 'bg-success' : 'bg-danger'" />
               {{ value }}
             </span>
           </template>
