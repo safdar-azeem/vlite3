@@ -46,6 +46,7 @@ export type IDropdownOption = {
       }
   onSelect?: (payload: { value: any; option: IDropdownOption; data: IDropdownOption[]; values?: any }) => void
   _originalOption?: IDropdownOption // Internal reference to the deepest leaf option selected
+  _path?: IDropdownOption[]         // Internal array keeping track of the parent-child traversal path
 }
 
 export type IDropdownOptions = IDropdownOption[]
