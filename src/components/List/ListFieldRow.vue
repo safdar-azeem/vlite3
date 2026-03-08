@@ -83,10 +83,81 @@ const valueClass = computed(() => {
 const isImageType = computed(() => props.field.type === 'image')
 
 const isStripedOdd = computed(() => props.variant === 'striped' && props.index % 2 !== 0)
+
+const isStacked = computed(() => props.variant === 'stacked')
 </script>
 
 <template>
+  <!-- ═══ Stacked layout (label on top, value below) ═══ -->
   <div
+    v-if="isStacked"
+    class="list-field-row list-field-row--stacked flex flex-col gap-0.5 px-3.5 py-2 min-w-0"
+    role="row">
+    <!-- Label -->
+    <div class="flex items-center gap-1.5 min-w-0">
+      <Icon v-if="field.icon" :icon="field.icon" class="w-3 h-3 text-muted-foreground shrink-0" />
+      <span class="text-xs font-normal text-muted-foreground leading-snug truncate">
+        {{ labelText }}
+      </span>
+    </div>
+
+    <!-- Value area -->
+    <div class="min-w-0">
+      <!-- Named slot override -->
+      <template v-if="$slots[field.key]">
+        <slot :name="field.key" :value="rawValue" :resolved="resolvedValue" :data="data" />
+      </template>
+
+      <!-- Custom Vue component -->
+      <template v-else-if="field.component">
+        <component :is="field.component" :data="data" :value="rawValue" />
+      </template>
+
+      <!-- Sensitive / masked value -->
+      <template v-else-if="field.isSensitive">
+        <div class="flex items-center gap-1.5">
+          <span
+            v-if="showSensitive"
+            class="text-sm font-semibold text-foreground break-words leading-snug"
+            :class="valueClass"
+            v-html="resolvedValue" />
+          <span
+            v-else
+            class="text-sm font-semibold text-foreground tracking-widest select-none"
+            aria-hidden="true">
+            &#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;
+          </span>
+          <button
+            type="button"
+            class="shrink-0 p-0.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+            :aria-label="showSensitive ? 'Hide value' : 'Show value'"
+            @click="showSensitive = !showSensitive">
+            <Icon :icon="showSensitive ? 'lucide:eye-off' : 'lucide:eye'" class="w-3 h-3" />
+          </button>
+        </div>
+      </template>
+
+      <!-- Image / avatar -->
+      <template v-else-if="isImageType">
+        <img
+          :src="resolvedValue"
+          :alt="labelText"
+          class="w-8 h-8 rounded-full object-cover border border-border mt-0.5" />
+      </template>
+
+      <!-- Default rendered value -->
+      <template v-else>
+        <span
+          class="text-sm font-semibold text-foreground break-words leading-snug"
+          :class="valueClass"
+          v-html="resolvedValue" />
+      </template>
+    </div>
+  </div>
+
+  <!-- ═══ Default horizontal layout (label left, value right) ═══ -->
+  <div
+    v-else
     class="list-field-row flex justify-between gap-3 px-3 py-2.5 transition-colors"
     :class="[
       showBorderBottom && !isLast ? 'border-b border-border' : '',
