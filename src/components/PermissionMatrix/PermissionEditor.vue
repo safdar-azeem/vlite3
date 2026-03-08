@@ -11,11 +11,14 @@ import type {
   PermissionDef,
   PermissionToggleMode,
   PermissionMatrixSize,
+  PermissionEditorLayout,
+  PermissionMatrixGroup,
+  PermissionMatrixRow,
 } from './types'
 
 export interface PermissionEditorProps {
-  /** Permission groups with nested permissions */
-  groups: PermissionGroup[]
+  /** Permission groups with nested permissions (used in list layout) */
+  groups?: PermissionGroup[]
   /** v-model: array of selected permission keys */
   modelValue: string[]
   /** Toggle display mode (default: 'checkbox') */
@@ -33,6 +36,10 @@ export interface PermissionEditorProps {
   /** Group keys to show expanded by default. Others will start collapsed.
    *  If not provided or empty, all groups start expanded. */
   defaultExpanded?: string[]
+  /** Layout mode (default: 'list') */
+  layout?: PermissionEditorLayout
+  /** Matrix groups — used when layout is 'matrix' */
+  matrixGroups?: PermissionMatrixGroup[]
 }
 
 const props = withDefaults(defineProps<PermissionEditorProps>(), {
@@ -43,6 +50,9 @@ const props = withDefaults(defineProps<PermissionEditorProps>(), {
   size: 'md',
   class: '',
   defaultExpanded: () => [],
+  layout: 'list',
+  groups: () => [],
+  matrixGroups: () => [],
 })
 
 const emit = defineEmits<{
@@ -214,10 +224,204 @@ function deselectAll() {
 }
 
 // ── Stats ──
-const totalPerms = computed(() => props.groups.reduce((sum, g) => sum + g.permissions.length, 0))
+const totalPerms = computed(() => {
+  if (props.layout === 'matrix') return totalMatrixPerms.value
+  return props.groups.reduce((sum, g) => sum + g.permissions.length, 0)
+})
 
 const textSize = computed(() => (props.size === 'sm' ? 'text-xs' : 'text-sm'))
 const cellPadding = computed(() => (props.size === 'sm' ? 'px-3 py-1.5' : 'px-4 py-2.5'))
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MATRIX LAYOUT LOGIC
+// ═══════════════════════════════════════════════════════════════════════════
+
+const isMatrix = computed(() => props.layout === 'matrix')
+
+/** Resolve permission key for a matrix cell */
+function getMatrixPermKey(groupKey: string, row: PermissionMatrixRow, actionKey: string): string {
+  if (row.singleKey) return `${groupKey}-${row.key}`
+  return `${groupKey}-${row.key}-${actionKey}`
+}
+
+/** Check if a row supports a given action */
+function isActionEnabled(row: PermissionMatrixRow, actionKey: string): boolean {
+  return row.actions.includes(actionKey)
+}
+
+/** Check if a matrix cell is granted */
+function hasMatrixPerm(groupKey: string, row: PermissionMatrixRow, actionKey: string): boolean {
+  if (!isActionEnabled(row, actionKey)) return false
+  return props.modelValue.includes(getMatrixPermKey(groupKey, row, actionKey))
+}
+
+/** Toggle a single matrix cell */
+function toggleMatrixPerm(groupKey: string, row: PermissionMatrixRow, actionKey: string) {
+  if (props.readonly) return
+  if (!isActionEnabled(row, actionKey)) return
+  const key = getMatrixPermKey(groupKey, row, actionKey)
+  const next = props.modelValue.includes(key)
+    ? props.modelValue.filter((k) => k !== key)
+    : [...props.modelValue, key]
+  emit('update:modelValue', next)
+}
+
+/** Get all enabled permission keys for a matrix row */
+function getMatrixRowPermKeys(
+  groupKey: string,
+  row: PermissionMatrixRow,
+  actions: { key: string }[]
+): string[] {
+  return actions
+    .filter((a) => isActionEnabled(row, a.key))
+    .map((a) => getMatrixPermKey(groupKey, row, a.key))
+}
+
+/** Row-level state */
+function getMatrixRowState(
+  groupKey: string,
+  row: PermissionMatrixRow,
+  actions: { key: string }[]
+): GroupState {
+  const keys = getMatrixRowPermKeys(groupKey, row, actions)
+  if (keys.length === 0) return 'none'
+  const granted = keys.filter((k) => props.modelValue.includes(k))
+  if (granted.length === 0) return 'none'
+  if (granted.length === keys.length) return 'all'
+  return 'indeterminate'
+}
+
+/** Toggle all enabled actions in a row */
+function toggleMatrixRow(groupKey: string, row: PermissionMatrixRow, actions: { key: string }[]) {
+  if (props.readonly) return
+  const keys = getMatrixRowPermKeys(groupKey, row, actions)
+  const state = getMatrixRowState(groupKey, row, actions)
+  let next: string[]
+  if (state === 'all') {
+    next = props.modelValue.filter((k) => !keys.includes(k))
+  } else {
+    const toAdd = keys.filter((k) => !props.modelValue.includes(k))
+    next = [...props.modelValue, ...toAdd]
+  }
+  emit('update:modelValue', next)
+}
+
+/** Group-level state for matrix groups */
+function getMatrixGroupState(group: PermissionMatrixGroup): GroupState {
+  const allKeys = group.rows.flatMap((r) => getMatrixRowPermKeys(group.key, r, group.actions))
+  if (allKeys.length === 0) return 'none'
+  const granted = allKeys.filter((k) => props.modelValue.includes(k))
+  if (granted.length === 0) return 'none'
+  if (granted.length === allKeys.length) return 'all'
+  return 'indeterminate'
+}
+
+/** Toggle all in a matrix group */
+function toggleMatrixGroup(group: PermissionMatrixGroup) {
+  if (props.readonly) return
+  const allKeys = group.rows.flatMap((r) => getMatrixRowPermKeys(group.key, r, group.actions))
+  const state = getMatrixGroupState(group)
+  let next: string[]
+  if (state === 'all') {
+    next = props.modelValue.filter((k) => !allKeys.includes(k))
+  } else {
+    const toAdd = allKeys.filter((k) => !props.modelValue.includes(k))
+    next = [...props.modelValue, ...toAdd]
+  }
+  emit('update:modelValue', next)
+}
+
+/** Total enabled permissions across all matrix groups */
+const totalMatrixPerms = computed(() =>
+  props.matrixGroups.reduce(
+    (sum, g) =>
+      sum + g.rows.reduce((rs, r) => rs + r.actions.filter((a) => isActionEnabled(r, a)).length, 0),
+    0
+  )
+)
+
+/** Select all matrix permissions */
+function selectAllMatrix() {
+  if (props.readonly) return
+  const allKeys = props.matrixGroups.flatMap((g) =>
+    g.rows.flatMap((r) => getMatrixRowPermKeys(g.key, r, g.actions))
+  )
+  // Merge with any existing non-matrix permissions
+  const existing = props.modelValue.filter((k) => !allKeys.includes(k))
+  emit('update:modelValue', [...existing, ...allKeys])
+}
+
+/** Deselect all matrix permissions */
+function deselectAllMatrix() {
+  if (props.readonly) return
+  const allKeys = new Set(
+    props.matrixGroups.flatMap((g) =>
+      g.rows.flatMap((r) => getMatrixRowPermKeys(g.key, r, g.actions))
+    )
+  )
+  emit(
+    'update:modelValue',
+    props.modelValue.filter((k) => !allKeys.has(k))
+  )
+}
+
+/** Filtered matrix groups based on search and group dropdown */
+const filteredMatrixGroups = computed<PermissionMatrixGroup[]>(() => {
+  let result = props.matrixGroups
+
+  // Filter by group dropdown
+  if (selectedGroupKeys.value.length > 0) {
+    result = result.filter((g) => selectedGroupKeys.value.includes(g.key))
+  }
+
+  // Filter by search
+  if (searchQuery.value.trim()) {
+    const q = searchQuery.value.toLowerCase()
+    result = result
+      .map((group) => {
+        const filteredRows = group.rows.filter(
+          (r) =>
+            r.label.toLowerCase().includes(q) ||
+            r.key.toLowerCase().includes(q) ||
+            group.label.toLowerCase().includes(q)
+        )
+        if (filteredRows.length === 0) return null
+        return { ...group, rows: filteredRows }
+      })
+      .filter(Boolean) as PermissionMatrixGroup[]
+  }
+
+  return result
+})
+
+/** Matrix group dropdown options */
+const matrixGroupDropdownOptions = computed(() =>
+  props.matrixGroups.map((g) => ({
+    label: g.label,
+    value: g.key,
+    icon: g.icon,
+  }))
+)
+
+/** Unified action columns across all matrix groups (preserves order, deduplicates by key) */
+const unifiedMatrixActions = computed(() => {
+  const seen = new Set<string>()
+  const actions: { key: string; label: string }[] = []
+  for (const group of props.matrixGroups) {
+    for (const action of group.actions) {
+      if (!seen.has(action.key)) {
+        seen.add(action.key)
+        actions.push(action)
+      }
+    }
+  }
+  return actions
+})
+
+/** Check if a group defines a particular action column */
+function groupHasAction(group: PermissionMatrixGroup, actionKey: string): boolean {
+  return group.actions.some((a) => a.key === actionKey)
+}
 </script>
 
 <template>
@@ -236,7 +440,7 @@ const cellPadding = computed(() => (props.size === 'sm' ? 'px-3 py-1.5' : 'px-4 
 
         <!-- Group filter dropdown -->
         <Dropdown
-          :options="groupDropdownOptions"
+          :options="isMatrix ? matrixGroupDropdownOptions : groupDropdownOptions"
           :close-on-select="false"
           :selectable="false"
           position="bottom-end">
@@ -297,7 +501,7 @@ const cellPadding = computed(() => (props.size === 'sm' ? 'px-3 py-1.5' : 'px-4 
           v-if="!readonly"
           type="button"
           :class="[textSize, 'text-primary hover:underline whitespace-nowrap cursor-pointer']"
-          @click="selectAll">
+          @click="isMatrix ? selectAllMatrix() : selectAll()">
           Select All
         </button>
         <button
@@ -307,95 +511,238 @@ const cellPadding = computed(() => (props.size === 'sm' ? 'px-3 py-1.5' : 'px-4 
             textSize,
             'text-muted-foreground hover:text-foreground hover:underline whitespace-nowrap cursor-pointer',
           ]"
-          @click="deselectAll">
+          @click="isMatrix ? deselectAllMatrix() : deselectAll()">
           Clear
         </button>
       </div>
     </div>
 
-    <!-- Empty state -->
-    <div v-if="filteredGroups.length === 0" class="text-center py-12 text-muted-foreground">
-      <Icon icon="lucide:search-x" class="w-8 h-8 mx-auto mb-3 opacity-50" />
-      <p :class="textSize">No permissions match your filters.</p>
-    </div>
+    <!-- ═══ MATRIX LAYOUT ═══ -->
+    <template v-if="isMatrix">
+      <!-- Empty state -->
+      <div v-if="filteredMatrixGroups.length === 0" class="text-center py-12 text-muted-foreground">
+        <Icon icon="lucide:search-x" class="w-8 h-8 mx-auto mb-3 opacity-50" />
+        <p :class="textSize">No permissions match your filters.</p>
+      </div>
 
-    <!-- Permission groups -->
-    <div v-else class="space-y-0 border rounded-lg overflow-hidden">
-      <template v-for="(group, gi) in filteredGroups" :key="group.key">
-        <!-- Group header -->
-        <div
-          :class="[
-            cellPadding,
-            'flex items-center justify-between bg-muted cursor-pointer select-none',
-            gi > 0 ? 'border-t' : '',
-          ]"
-          @click="toggleGroupCollapse(group.key)">
-          <div class="flex items-center gap-2">
-            <Icon
-              v-if="collapsible"
-              icon="lucide:chevron-right"
-              class="w-3.5 h-3.5 transition-transform duration-200 text-muted-foreground"
-              :class="{ 'rotate-90': !collapsedGroups.has(group.key) }" />
-            <Icon v-if="group.icon" :icon="group.icon" class="w-4 h-4 text-muted-foreground" />
-            <span :class="[textSize, 'font-semibold text-foreground']">{{ group.label }}</span>
-            <span :class="[size === 'sm' ? 'text-[10px]' : 'text-xs', 'text-muted-foreground']">
-              ({{ group.permissions.filter((p) => hasPerm(p.key)).length }}/{{
-                group.permissions.length
-              }})
-            </span>
-          </div>
+      <!-- Single matrix table -->
+      <div v-else class="permission-matrix-wrapper border rounded-lg overflow-auto">
+        <table class="w-full border-collapse">
+          <!-- ── Sticky header (one shared row) ── -->
+          <thead class="sticky top-0 z-10">
+            <tr class="bg-muted">
+              <!-- Entity label column -->
+              <th
+                :class="[
+                  size === 'sm' ? 'px-3 py-2' : 'px-4 py-2.5',
+                  textSize,
+                  'text-left font-semibold text-foreground min-w-[200px] bg-muted border-b',
+                ]">
+                Permission
+              </th>
+              <!-- Action columns -->
+              <th
+                v-for="action in unifiedMatrixActions"
+                :key="action.key"
+                :class="[
+                  size === 'sm' ? 'px-2 py-2' : 'px-3 py-2.5',
+                  textSize,
+                  'text-center font-semibold text-foreground border-l border-b bg-muted min-w-[100px]',
+                ]">
+                {{ action.label }}
+              </th>
+            </tr>
+          </thead>
 
-          <!-- Group bulk toggle -->
-          <div class="flex items-center" @click.stop>
-            <CheckBox
-              v-if="toggleMode === 'checkbox'"
-              :model-value="getGroupState(group) === 'all'"
-              :indeterminate="getGroupState(group) === 'indeterminate'"
-              :disabled="readonly"
-              :size="size === 'sm' ? 'xs' : 'sm'"
-              @update:model-value="toggleGroup(group)" />
-            <Switch
-              v-else
-              :model-value="getGroupState(group) === 'all'"
-              :disabled="readonly"
-              @update:model-value="toggleGroup(group)" />
-          </div>
-        </div>
+          <tbody>
+            <template v-for="(group, gi) in filteredMatrixGroups" :key="group.key">
+              <!-- ── Group header row (spans all columns) ── -->
+              <tr
+                class="bg-secondary/50 cursor-pointer select-none"
+                @click="toggleGroupCollapse(group.key)">
+                <td
+                  :colspan="unifiedMatrixActions.length + 1"
+                  :class="[size === 'sm' ? 'px-3 py-1.5' : 'px-4 py-2', 'border-t']">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <Icon
+                        v-if="collapsible"
+                        icon="lucide:chevron-right"
+                        class="w-3.5 h-3.5 transition-transform duration-200 text-muted-foreground"
+                        :class="{ 'rotate-90': !collapsedGroups.has(group.key) }" />
+                      <Icon
+                        v-if="group.icon"
+                        :icon="group.icon"
+                        class="w-4 h-4 text-muted-foreground" />
+                      <span :class="[textSize, 'font-semibold text-foreground']">
+                        {{ group.label }}
+                      </span>
+                    </div>
+                    <!-- Group bulk toggle -->
+                    <div class="flex items-center" @click.stop>
+                      <CheckBox
+                        v-if="toggleMode === 'checkbox'"
+                        :model-value="getMatrixGroupState(group) === 'all'"
+                        :indeterminate="getMatrixGroupState(group) === 'indeterminate'"
+                        :disabled="readonly"
+                        :size="size === 'sm' ? 'xs' : 'sm'"
+                        @update:model-value="toggleMatrixGroup(group)" />
+                      <Switch
+                        v-else
+                        :model-value="getMatrixGroupState(group) === 'all'"
+                        :disabled="readonly"
+                        @update:model-value="toggleMatrixGroup(group)" />
+                    </div>
+                  </div>
+                </td>
+              </tr>
 
-        <!-- Permissions list (expanded) -->
-        <div v-if="!collapsedGroups.has(group.key)">
+              <!-- ── Entity rows (shown when not collapsed) ── -->
+              <template v-if="!collapsedGroups.has(group.key)">
+                <tr
+                  v-for="row in group.rows"
+                  :key="group.key + '-' + row.key"
+                  class="hover:bg-accent/40 transition-colors duration-100">
+                  <!-- Entity label -->
+                  <td :class="[size === 'sm' ? 'px-3 py-1.5' : 'px-4 py-2', 'border-t']">
+                    <div class="flex items-center gap-2 pl-6">
+                      <span :class="[textSize, 'text-foreground']">
+                        {{ row.label }}
+                      </span>
+                      <Tooltip v-if="row.description" :content="row.description" placement="top">
+                        <Icon
+                          icon="lucide:info"
+                          class="w-3 h-3 text-muted-foreground cursor-auto shrink-0" />
+                      </Tooltip>
+                    </div>
+                  </td>
+
+                  <!-- Action cells -->
+                  <td
+                    v-for="action in unifiedMatrixActions"
+                    :key="action.key"
+                    :class="[
+                      size === 'sm' ? 'px-2 py-1.5' : 'px-3 py-2',
+                      'text-center border-t border-l',
+                      !groupHasAction(group, action.key) || !isActionEnabled(row, action.key)
+                        ? 'bg-muted/30'
+                        : '',
+                    ]">
+                    <!-- Disabled / not applicable cell -->
+                    <div
+                      v-if="!groupHasAction(group, action.key) || !isActionEnabled(row, action.key)"
+                      class="flex items-center justify-center">
+                      <span class="text-xs text-muted-foreground/40 select-none">—</span>
+                    </div>
+                    <!-- Enabled cell -->
+                    <div v-else class="flex items-center justify-center">
+                      <CheckBox
+                        v-if="toggleMode === 'checkbox'"
+                        :model-value="hasMatrixPerm(group.key, row, action.key)"
+                        :disabled="readonly"
+                        :size="size === 'sm' ? 'xs' : 'sm'"
+                        @update:model-value="toggleMatrixPerm(group.key, row, action.key)" />
+                      <Switch
+                        v-else
+                        :model-value="hasMatrixPerm(group.key, row, action.key)"
+                        :disabled="readonly"
+                        @update:model-value="toggleMatrixPerm(group.key, row, action.key)" />
+                    </div>
+                  </td>
+                </tr>
+              </template>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </template>
+
+    <!-- ═══ LIST LAYOUT (existing) ═══ -->
+    <template v-else>
+      <!-- Empty state -->
+      <div v-if="filteredGroups.length === 0" class="text-center py-12 text-muted-foreground">
+        <Icon icon="lucide:search-x" class="w-8 h-8 mx-auto mb-3 opacity-50" />
+        <p :class="textSize">No permissions match your filters.</p>
+      </div>
+
+      <!-- Permission groups -->
+      <div v-else class="space-y-0 border rounded-lg overflow-hidden">
+        <template v-for="(group, gi) in filteredGroups" :key="group.key">
+          <!-- Group header -->
           <div
-            v-for="(perm, pi) in group.permissions"
-            :key="perm.key"
             :class="[
               cellPadding,
-              'flex items-center justify-between border-t hover:bg-accent/40 transition-colors duration-100',
-            ]">
-            <div class="flex items-center gap-2 pl-6">
-              <span :class="[textSize, 'text-foreground']">{{ perm.label }}</span>
-              <Tooltip v-if="perm.description" :content="perm.description" placement="top">
-                <Icon
-                  icon="lucide:info"
-                  class="w-3 h-3 text-muted-foreground cursor-auto shrink-0" />
-              </Tooltip>
+              'flex items-center justify-between bg-muted cursor-pointer select-none',
+              gi > 0 ? 'border-t' : '',
+            ]"
+            @click="toggleGroupCollapse(group.key)">
+            <div class="flex items-center gap-2">
+              <Icon
+                v-if="collapsible"
+                icon="lucide:chevron-right"
+                class="w-3.5 h-3.5 transition-transform duration-200 text-muted-foreground"
+                :class="{ 'rotate-90': !collapsedGroups.has(group.key) }" />
+              <Icon v-if="group.icon" :icon="group.icon" class="w-4 h-4 text-muted-foreground" />
+              <span :class="[textSize, 'font-semibold text-foreground']">{{ group.label }}</span>
+              <span :class="[size === 'sm' ? 'text-[10px]' : 'text-xs', 'text-muted-foreground']">
+                ({{ group.permissions.filter((p) => hasPerm(p.key)).length }}/{{
+                  group.permissions.length
+                }})
+              </span>
             </div>
 
-            <div class="flex items-center">
+            <!-- Group bulk toggle -->
+            <div class="flex items-center" @click.stop>
               <CheckBox
                 v-if="toggleMode === 'checkbox'"
-                :model-value="hasPerm(perm.key)"
+                :model-value="getGroupState(group) === 'all'"
+                :indeterminate="getGroupState(group) === 'indeterminate'"
                 :disabled="readonly"
                 :size="size === 'sm' ? 'xs' : 'sm'"
-                @update:model-value="togglePerm(perm.key)" />
+                @update:model-value="toggleGroup(group)" />
               <Switch
                 v-else
-                :model-value="hasPerm(perm.key)"
+                :model-value="getGroupState(group) === 'all'"
                 :disabled="readonly"
-                @update:model-value="togglePerm(perm.key)" />
+                @update:model-value="toggleGroup(group)" />
             </div>
           </div>
-        </div>
-      </template>
-    </div>
+
+          <!-- Permissions list (expanded) -->
+          <div v-if="!collapsedGroups.has(group.key)">
+            <div
+              v-for="(perm, pi) in group.permissions"
+              :key="perm.key"
+              :class="[
+                cellPadding,
+                'flex items-center justify-between border-t hover:bg-accent/40 transition-colors duration-100',
+              ]">
+              <div class="flex items-center gap-2 pl-6">
+                <span :class="[textSize, 'text-foreground']">{{ perm.label }}</span>
+                <Tooltip v-if="perm.description" :content="perm.description" placement="top">
+                  <Icon
+                    icon="lucide:info"
+                    class="w-3 h-3 text-muted-foreground cursor-auto shrink-0" />
+                </Tooltip>
+              </div>
+
+              <div class="flex items-center">
+                <CheckBox
+                  v-if="toggleMode === 'checkbox'"
+                  :model-value="hasPerm(perm.key)"
+                  :disabled="readonly"
+                  :size="size === 'sm' ? 'xs' : 'sm'"
+                  @update:model-value="togglePerm(perm.key)" />
+                <Switch
+                  v-else
+                  :model-value="hasPerm(perm.key)"
+                  :disabled="readonly"
+                  @update:model-value="togglePerm(perm.key)" />
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </template>
   </div>
 </template>
