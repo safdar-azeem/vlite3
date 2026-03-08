@@ -293,21 +293,26 @@ const performSelection = (option: import('@/types').IDropdownOption) => {
   if (!selectedBuffer.value.has(val)) {
     selectedBuffer.value.set(val, option)
   }
+  
   const finalValues = selectOption(option)
 
-  // Only trigger the individual option's onSelect callback at the ROOT Dropdown.
-  // This guarantees that the callback receives the full global v-model configuration 
-  // rather than a locally resolved partial structure.
+  // Trigger callbacks at root to pass completely merged state
   if (!props.isNested) {
     const leafOption = option._originalOption || option
-    if (typeof leafOption.onSelect === 'function') {
-      leafOption.onSelect({
-        value: leafOption.value ?? leafOption.label,
-        option: leafOption,
-        data: combinedOptions.value || [],
-        values: finalValues,
-      })
-    }
+    const leafValue = leafOption.value ?? leafOption.label
+    
+    const path = option._path || [leafOption]
+
+    path.forEach((opt) => {
+      if (typeof opt.onSelect === 'function') {
+        opt.onSelect({
+          value: leafValue,
+          option: opt,
+          data: combinedOptions.value || [],
+          values: finalValues,
+        })
+      }
+    })
   }
 }
 
