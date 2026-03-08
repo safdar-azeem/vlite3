@@ -136,7 +136,12 @@ const iconClasses = computed(() => {
 </script>
 
 <template>
-  <button v-ripple :type="type" :class="classes" :disabled="disabled || loading">
+  <button
+    v-ripple
+    :type="type"
+    :class="classes"
+    :disabled="disabled || loading"
+    class="cursor-pointer">
     <Icon
       v-if="loading"
       icon="lucide:loader-2"
