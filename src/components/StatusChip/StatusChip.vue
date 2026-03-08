@@ -22,7 +22,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   hideIcon: false,
-  size: 'medium',
+  size: 'small',
   class: '',
 })
 
@@ -32,9 +32,7 @@ const displayLabel = computed(() => {
   if (props.labelI18n) return $t(props.labelI18n)
   if (props.label) return props.label
   // Format status as readable label: 'in_progress' → 'In Progress'
-  return props.status
-    .replace(/[_\-]+/g, ' ')
-    .replace(/\b\w/g, (c) => c.toUpperCase())
+  return props.status.replace(/[_\-]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
 })
 </script>
 
@@ -44,6 +42,5 @@ const displayLabel = computed(() => {
     :variant="config.variant"
     :icon="hideIcon ? undefined : config.icon"
     :size="size"
-    :class="props.class"
-  />
+    :class="props.class" />
 </template>
