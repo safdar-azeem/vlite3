@@ -160,11 +160,11 @@ const handleDelete = (rows: User[]) => {
             </select>
           </label>
           <label class="flex items-center gap-2 text-sm font-medium">
-            <input type="checkbox" v-model="isTableSortable" class="rounded border-gray-300" />
+            <input type="checkbox" v-model="isTableSortable" class="rounded" />
             Global Sortable
           </label>
           <label class="flex items-center gap-2 text-sm font-medium">
-            <input type="checkbox" v-model="isRaised" class="rounded border-gray-300" />
+            <input type="checkbox" v-model="isRaised" class="rounded" />
             Raised Variant
           </label>
         </div>
