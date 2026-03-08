@@ -4,13 +4,14 @@ import { Dropdown } from '@/components/Dropdown'
 import Button from '@/components/Button.vue'
 import DemoSection from '../../DemoSection.vue'
 import sourceCode from './Recursive.vue?raw'
+import { IDropdownOption } from '@/types'
 
 const config = ref<Record<string, any>>({
   size: '2',
   style: 'border',
 })
 
-const recursiveOptions = [
+const recursiveOptions: IDropdownOption[] = [
   {
     label: 'Display',
     key: 'display',
@@ -48,6 +49,9 @@ const recursiveOptions = [
             label: 'Delete Branch',
             value: 'delete-branch',
             class: 'text-danger',
+            onSelect: (payload) => {
+              console.log('Delete Branch', payload)
+            },
           },
           { label: 'Force Push', value: 'force-push' },
         ],
