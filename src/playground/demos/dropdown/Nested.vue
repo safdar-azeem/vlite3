@@ -15,8 +15,6 @@ const nestedOptions: IDropdownOption[] = [
   {
     label: 'Stash',
     key: 'stash',
-    showChevron: false,
-    position: 'left-start',
     children: [
       { label: 'Apply Stash', value: 'apply' },
       { label: 'Drop Stash', value: 'drop' },
