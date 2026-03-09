@@ -153,8 +153,6 @@ const inputBaseClass = computed(() => {
     roundedClass,
     props.error ? 'border-destructive focus-visible:ring-destructive' : '',
     props.icon ? 'pl-9' : isMinimal && !hasAddonLeft.value ? 'pl-0' : '',
-    isFloating && props.type !== 'textarea' ? 'pt-3 pb-3' : '',
-    isFloating && props.type === 'textarea' ? 'pt-3.5' : '',
     (props.showClearButton && hasValue.value) ||
     props.type === 'password' ||
     props.loading ||
@@ -326,8 +324,10 @@ onMounted(() => {
           :class="[
             'absolute transition-all duration-200 ease-in-out pointer-events-none z-20',
             isFloatingLabelActive
-              ? '-top-2.5 left-3 text-xs bg-background px-1 text-primary shadow-[0_4px_4px_-4px_bg-background]'
-              : `top-2.5 text-sm text-muted-foreground/70 ${icon ? 'left-9' : 'left-3'}`,
+              ? '-top-2.5 left-3 text-xs bg-background px-1 text-primary shadow-[0_4px_4px_-4px_bg-background] translate-y-0'
+              : type === 'textarea'
+                ? `top-2 text-sm text-muted-foreground/70 ${icon ? 'left-9' : 'left-3'} translate-y-0`
+                : `top-1/2 -translate-y-1/2 text-sm text-muted-foreground/70 ${icon ? 'left-9' : 'left-3'}`,
           ]">
           {{ displayLabel }}
         </label>
@@ -335,7 +335,11 @@ onMounted(() => {
         <Textarea
           v-if="type === 'textarea'"
           :model-value="String(modelValue)"
-          :placeholder="displayPlaceholder"
+          :placeholder="
+            variant === 'floating' && displayLabel && !isFloatingLabelActive
+              ? ''
+              : displayPlaceholder
+          "
           :disabled="disabled"
           :rows="rows"
           :class="inputBaseClass"
@@ -348,7 +352,11 @@ onMounted(() => {
           ref="inputRef"
           :type="computedType"
           :value="modelValue"
-          :placeholder="displayPlaceholder"
+          :placeholder="
+            variant === 'floating' && displayLabel && !isFloatingLabelActive
+              ? ''
+              : displayPlaceholder
+          "
           :disabled="disabled"
           :min="min"
           :max="max"
