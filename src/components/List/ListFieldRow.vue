@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import Icon from '../Icon.vue'
 import { $t } from '@/utils/i18n'
-import type { ListField } from './types'
+import type { ListField, StackedBorderStyle } from './types'
 import { getObjectValue, getStatusColorClass, formatDate, formatPrice, formatNumber } from './utils'
 
 interface Props {
@@ -13,6 +13,19 @@ interface Props {
   variant?: string
   showColon?: boolean
   index?: number
+  /**
+   * For the stacked variant only.
+   * The column position of this item within its row (0-based).
+   * Passed down from List.vue as `idx % stackedColCount`.
+   */
+  stackedColIndex?: number
+  /**
+   * For the stacked variant only.
+   * Controls whether left border dividers appear between cells.
+   * - `'none'`    — No borders (default, stock look).
+   * - `'divider'` — Left border on non-first cells per row + extra left padding.
+   */
+  stackedBorderStyle?: StackedBorderStyle
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -21,6 +34,8 @@ const props = withDefaults(defineProps<Props>(), {
   variant: 'default',
   showColon: true,
   index: 0,
+  stackedColIndex: 0,
+  stackedBorderStyle: 'none',
 })
 
 const showSensitive = ref(false)
@@ -85,13 +100,31 @@ const isImageType = computed(() => props.field.type === 'image')
 const isStripedOdd = computed(() => props.variant === 'striped' && props.index % 2 !== 0)
 
 const isStacked = computed(() => props.variant === 'stacked')
+
+/**
+ * Stacked cell padding/border class.
+ *
+ * `stackedBorderStyle === 'none'`    → uniform padding for all cells, no extra borders (stock default).
+ * `stackedBorderStyle === 'divider'` → non-first cells in a row get a left border + extra left padding.
+ */
+const stackedCellClass = computed(() => {
+  if (props.stackedBorderStyle === 'divider' && props.stackedColIndex !== 0) {
+    // Non-first cell: left divider border + increased left padding
+    return 'border-l border-border pl-4 pr-3.5 py-2'
+  }
+  // Default / stock: uniform padding, no extra borders
+  return 'px-3.5 py-2'
+})
 </script>
 
 <template>
   <!-- ═══ Stacked layout (label on top, value below) ═══ -->
   <div
     v-if="isStacked"
-    class="list-field-row list-field-row--stacked flex flex-col gap-0.5 px-3.5 py-2 min-w-0"
+    :class="[
+      'list-field-row list-field-row--stacked flex flex-col gap-0.5 min-w-0',
+      stackedCellClass,
+    ]"
     role="row">
     <!-- Label -->
     <div class="flex items-center gap-1.5 min-w-0">
