@@ -4,4 +4,5 @@ export type {
   ListVariant,
   ListColumns,
   ListFieldType,
+  StackedBorderStyle,
 } from '@/types/list.type'
