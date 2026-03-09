@@ -115,12 +115,11 @@ const menuItems: SidebarMenuItemSchema[] = [
       mobileBreakpoint="md"
       sidebarToggle
       breadcrumb
-      render-nested-tabs
-      class="bg-body border-r border-border h-max shrink-0 z-20 w-24!">
+      class="bg-body border-r border-border h-max shrink-0 z-20">
       <template #header="{ toggleSidebar, toggle, breadcrumbItems }">
         <div class="h-13 border-b bg-white flex items-center justify-between px-6 w-full shadow-sm">
           <div class="flex items-center w-full justify-between gap-8">
-            <div class="flex gap-3 items-center">
+            <div class="flex gap-2 items-center">
               <Button variant="ghost" icon="lucide:menu" @click="toggle" class="md:hidden" />
               <Button
                 variant="ghost"
@@ -133,7 +132,13 @@ const menuItems: SidebarMenuItemSchema[] = [
                 </div>
                 Vlite3
               </div>
-
+              <NavbarCommandPalette
+                :enabled="true"
+                class="ml-auto"
+                triggerClass="w-[230px]"
+                :menu-items="menuItems"
+                placeholder="Search components..."
+                shortcut-key="k" />
               <div
                 v-if="breadcrumbItems?.length > 1"
                 class="hidden md:flex items-center pl-4 border-l border-border">
@@ -141,13 +146,6 @@ const menuItems: SidebarMenuItemSchema[] = [
               </div>
             </div>
             <div class="flex gap-4">
-              <NavbarCommandPalette
-                :enabled="true"
-                class="ml-auto"
-                triggerClass="w-[300px]"
-                :menu-items="menuItems"
-                placeholder="Search components..."
-                shortcut-key="k" />
               <Button variant="ghost" size="sm" icon="lucide:bell" rounded="full" />
               <Avatar size="sm" fallback="JD" class="bg-primary/20 text-primary" />
             </div>
@@ -158,7 +156,6 @@ const menuItems: SidebarMenuItemSchema[] = [
       <template #default>
         <div class="space-y-6 md:py-3">
           <SidebarMenu
-            compact
             :items="menuItems"
             :allow-multiple="true"
             show-compact-labels
