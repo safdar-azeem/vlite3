@@ -25,6 +25,7 @@ const props = withDefaults(
     size?: ButtonSize
     variant?: ButtonVariant
     showQuickRanges?: boolean
+    triggerClass?: string
   }>(),
   {
     showQuickRanges: true,
@@ -233,15 +234,15 @@ const handleQuickRangeSelect = (option: IDropdownOption) => {
         :variant="variant || 'outline'"
         :size="size || 'md'"
         :disabled="disabled"
-        class="w-full sm:min-w-[280px] justify-start text-left font-normal"
-        :class="{ 'ring-2 ring-ring ring-offset-2': isOpen }">
-        <div class="flex items-center gap-2">
+        class="w-max justify-between text-left font-normal"
+        :class="[triggerClass, { 'ring-1 ring-ring ring-offset-[1]': isOpen }]">
+        <div class="flex items-center justify-between gap-2 w-full">
           <span :class="{ 'text-muted-foreground': !range.start }">
             {{ range.start ? formatDate(range.start) : placeholderStart }}
           </span>
           <Icon
             icon="lucide:arrow-right"
-            class="w-4 h-4 text-muted-foreground opacity-50 shrink-0" />
+            class="w-4 h-4 text-muted-foreground opacity-60 shrink-0" />
           <span :class="{ 'text-muted-foreground': !range.end }">
             {{ range.end ? formatDate(range.end) : placeholderEnd }}
           </span>
