@@ -1,6 +1,6 @@
 # List
 
-**Import:** `import { List } from '@/components/List'`
+**Import:** `import { List } from 'vlite3'`
 
 A schema-driven key-value information display component. Renders structured data records in a clean, accessible grid layout with support for multiple columns, variants, conditional fields, sensitive masking, custom formatters, Vue component injection, named slot overrides, and loading skeletons.
 
@@ -10,8 +10,8 @@ A schema-driven key-value information display component. Renders structured data
 
 ```vue
 <script setup lang="ts">
-import { List } from '@/components/List'
-import type { ListField } from '@/components/List'
+import { List } from 'vlite3'
+import type { ListField } from 'vlite3'
 
 const user = { name: 'Alice', email: 'alice@example.com', status: 'active' }
 
@@ -31,19 +31,20 @@ const fields: ListField[] = [
 
 ## Props
 
-| Prop           | Type                  | Default      | Description                                                |
-| :------------- | :-------------------- | :----------- | :--------------------------------------------------------- |
-| `fields`       | `ListField[]`         | **required** | Array of field definitions (schema).                       |
-| `data`         | `Record<string, any>` | **required** | The data record to display.                                |
-| `title`        | `string`              | —            | Optional section title shown in a header bar.              |
-| `titleI18n`    | `string`              | —            | i18n translation key for the title.                        |
-| `titleIcon`    | `string`              | —            | Iconify icon ID displayed beside the title.                |
-| `columns`      | `1 \| 2 \| 3`         | `2`          | Number of columns for field layout.                        |
-| `variant`      | `ListVariant`         | `'default'`  | Visual style of the container.                             |
-| `class`        | `string`              | `''`         | Extra Tailwind classes on the root element.                |
-| `showColon`    | `boolean`             | `true`       | Append `:` after each field label.                         |
-| `loading`      | `boolean`             | `false`      | Show animated skeleton rows instead of data.               |
-| `skeletonRows` | `number`              | `6`          | Number of skeleton rows rendered per column while loading. |
+| Prop                 | Type                  | Default      | Description                                                                                                                                                                     |
+| :------------------- | :-------------------- | :----------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `fields`             | `ListField[]`         | **required** | Array of field definitions (schema).                                                                                                                                            |
+| `data`               | `Record<string, any>` | **required** | The data record to display.                                                                                                                                                     |
+| `title`              | `string`              | —            | Optional section title shown in a header bar.                                                                                                                                   |
+| `titleI18n`          | `string`              | —            | i18n translation key for the title.                                                                                                                                             |
+| `titleIcon`          | `string`              | —            | Iconify icon ID displayed beside the title.                                                                                                                                     |
+| `columns`            | `1 \| 2 \| 3`         | `2`          | Number of columns for field layout.                                                                                                                                             |
+| `variant`            | `ListVariant`         | `'default'`  | Visual style of the container.                                                                                                                                                  |
+| `class`              | `string`              | `''`         | Extra Tailwind classes on the root element.                                                                                                                                     |
+| `showColon`          | `boolean`             | `true`       | Append `:` after each field label.                                                                                                                                              |
+| `loading`            | `boolean`             | `false`      | Show animated skeleton rows instead of data.                                                                                                                                    |
+| `skeletonRows`       | `number`              | `6`          | Number of skeleton rows rendered per column while loading.                                                                                                                      |
+| `stackedBorderStyle` | `StackedBorderStyle`  | `'none'`     | Controls border dividers between cells in the `stacked` variant. `'none'` — no borders (default). `'divider'` — left border on non-first cells per row with extra left padding. |
 
 ---
 
@@ -175,8 +176,8 @@ The `stacked` variant renders each field as a vertical cell — small muted labe
 
 ```vue
 <script setup lang="ts">
-import { List } from '@/components/List'
-import type { ListField } from '@/components/List'
+import { List } from 'vlite3'
+import type { ListField } from 'vlite3'
 
 const person = {
   gender: 'Female',
@@ -212,6 +213,23 @@ const fields: ListField[] = [
 > (`< sm`), the layout automatically falls back to the default horizontal
 > row style (label left, value right, with border dividers) for optimal
 > readability on narrow viewports.
+
+### `stackedBorderStyle`
+
+Controls whether left-border dividers appear between cells in the stacked grid.
+
+| Value       | Description                                                               |
+| :---------- | :------------------------------------------------------------------------ |
+| `'none'`    | No borders between cells. Default stock look.                             |
+| `'divider'` | Left border on every non-first cell per row, plus increased left padding. |
+
+```vue
+<!-- Default: no cell dividers -->
+<List variant="stacked" stacked-border-style="none" ... />
+
+<!-- With dividers between columns -->
+<List variant="stacked" stacked-border-style="divider" ... />
+```
 
 ---
 
@@ -298,29 +316,6 @@ Use `format` to return any string (including HTML).
 
 ---
 
-## Custom Vue Component in Value Cell
-
-Use `component` to render a full Vue component in the value cell.
-The component receives `{ data, value }` as props.
-
-```ts
-import StatusBadge from '@/components/StatusBadge.vue'
-
-const fields: ListField[] = [{ key: 'status', title: 'Status', component: StatusBadge }]
-```
-
-```vue
-<!-- StatusBadge.vue -->
-<script setup lang="ts">
-defineProps<{ value: string; data: Record<string, any> }>()
-</script>
-<template>
-  <span class="badge">{{ value }}</span>
-</template>
-```
-
----
-
 ## Dot-Notation Keys
 
 Resolve values from nested objects using dot-notation paths.
@@ -341,41 +336,12 @@ const fields: ListField[] = [
 
 ---
 
-## Loading Skeleton
-
-Set `:loading="true"` to show animated placeholder rows while data is being fetched.
-Use `:skeleton-rows` to control how many rows appear.
-
-```vue
-<List
-  :fields="fields"
-  :data="{}"
-  title="Loading..."
-  :loading="isLoading"
-  :skeleton-rows="6"
-  :columns="2" />
-```
-
----
-
-## Column Layout Algorithm
-
-When `columns` is `2` or `3`:
-
-1. Fields with `lineByLine: true` are collected into a `full` array and rendered below the grid.
-2. Remaining fields are distributed left-to-right, keeping columns balanced.
-3. If one column is 2+ rows longer than the other, overflow rows are moved to `full` (full-width) to reduce visual imbalance.
-
-When `columns` is `1`, all fields go into the single `full` column regardless of `lineByLine`.
-
----
-
 ## Full Example
 
 ```vue
 <script setup lang="ts">
-import { List } from '@/components/List'
-import type { ListField } from '@/components/List'
+import { List } from 'vlite3'
+import type { ListField } from 'vlite3'
 
 const customer = {
   name: 'Olivia Bennett',
@@ -414,7 +380,8 @@ const fields: ListField[] = [
     title-icon="lucide:user-circle"
     variant="card"
     :columns="2"
-    :show-colon="true">
+    :show-colon="true"
+    stacked-border-style="none">
     <!-- Custom slot override for status field -->
     <template #status="{ value }">
       <span
@@ -439,78 +406,3 @@ const fields: ListField[] = [
   </List>
 </template>
 ```
-
----
-
-## Type Reference
-
-```ts
-// Full type definitions live in: src/types/list.type.ts
-
-export type ListVariant =
-  | 'default'
-  | 'striped'
-  | 'card'
-  | 'minimal'
-  | 'compact'
-  | 'bordered-rows'
-  | 'stacked'
-export type ListColumns = 1 | 2 | 3
-export type ListFieldType =
-  | 'text'
-  | 'date'
-  | 'dateTime'
-  | 'time'
-  | 'price'
-  | 'image'
-  | 'badge'
-  | 'boolean'
-  | 'number'
-  | 'html'
-
-export interface ListField {
-  key: string
-  title?: string
-  titleI18n?: string
-  icon?: string
-  lineByLine?: boolean
-  whenTrue?: boolean
-  when?: (value: any, data: any) => boolean
-  format?: (value: any, data: any) => string
-  isSensitive?: boolean
-  addStatusColor?: boolean
-  type?: ListFieldType
-  class?: string | ((value: any, data: any) => string)
-  component?: any
-  emptyText?: string
-}
-
-export interface ListProps {
-  fields: ListField[]
-  data: Record<string, any>
-  title?: string
-  titleI18n?: string
-  titleIcon?: string
-  columns?: ListColumns
-  variant?: ListVariant
-  class?: string
-  showColon?: boolean
-  loading?: boolean
-  skeletonRows?: number
-}
-```
-
----
-
-## Files
-
-| File                                   | Purpose                                     |
-| :------------------------------------- | :------------------------------------------ |
-| `src/components/List/List.vue`         | Root component — layout, columns, full rows |
-| `src/components/List/ListFieldRow.vue` | Single row — label + value rendering        |
-| `src/components/List/index.ts`         | Public exports                              |
-| `src/components/List/types.ts`         | Re-exports from `src/types/list.type.ts`    |
-| `src/components/List/utils.ts`         | `getObjectValue`, formatters, status colors |
-| `src/types/list.type.ts`               | Canonical type definitions                  |
-| `src/playground/demos/ListDemo.vue`    | Interactive playground demo                 |
-| `docs/components/List.md`              | This documentation file                     |
