@@ -146,7 +146,15 @@ const matrixGroups: PermissionMatrixGroup[] = [
   },
 ]
 
-const perms = ref<string[]>(['hrm-employee-create', 'hrm-employee-view', 'hrm-can-share'])
+const perms = ref<string[]>([
+  'hrm-employee-view',
+  'hrm-employee-delete',
+  'hrm-employee-create',
+  'hrm-branch-create',
+  'hrm-branch-view',
+  'hrm-can-share',
+  'hrm-can-download',
+])
 </script>
 
 <template>
@@ -157,7 +165,15 @@ const perms = ref<string[]>(['hrm-employee-create', 'hrm-employee-view', 'hrm-ca
 **Output:**
 
 ```json
-["hrm-employee-create", "hrm-employee-view", "hrm-can-share"]
+[
+  "hrm-employee-view",
+  "hrm-employee-delete",
+  "hrm-employee-create",
+  "hrm-branch-create",
+  "hrm-branch-view",
+  "hrm-can-share",
+  "hrm-can-download"
+]
 ```
 
 ---
