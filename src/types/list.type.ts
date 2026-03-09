@@ -20,6 +20,14 @@ export type ListFieldType =
   | 'number'
   | 'html'
 
+/**
+ * Controls how the stacked variant renders borders between grid cells.
+ *
+ * - `'none'`    — No borders between cells (default, stock look).
+ * - `'divider'` — Left border on every non-first cell of each row + extra left padding.
+ */
+export type StackedBorderStyle = 'none' | 'divider'
+
 export interface ListField {
   /** Unique key to resolve value from data (dot-notation supported, e.g. 'location.city') */
   key: string
@@ -74,4 +82,10 @@ export interface ListProps {
   loading?: boolean
   /** Number of skeleton rows while loading */
   skeletonRows?: number
+  /**
+   * Controls border style between cells in the stacked variant.
+   * - `'none'`    — No dividers between cells. Default (stock look).
+   * - `'divider'` — Left border on non-first cells per row + increased left padding.
+   */
+  stackedBorderStyle?: StackedBorderStyle
 }
