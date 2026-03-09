@@ -329,8 +329,8 @@
   --date-picker-border: var(--color-border) !important;
   --date-picker-radius: var(--radius) !important;
 
-  --color-success-subtle: #cceacea6;
-  --color-success-subtle-fg: #076402;
+  --color-success-subtle: #e3f4e4fb;
+  --color-success-subtle-fg: #005e1e;
   --color-success-subtle-border: #b7e1c1;
 
   --color-info-subtle: #e8f0fe;
