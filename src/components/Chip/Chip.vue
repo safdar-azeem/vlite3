@@ -69,7 +69,7 @@ const sizeClasses = computed(() => {
     case 'small':
       return 'h-5.5 text-[11px] px-2.5 gap-1'
     case 'large':
-      return 'h-8 text-sm px-3 gap-2'
+      return 'h-7 text-sm px-3 gap-2'
     case 'medium':
     default:
       return 'h-6 text-xs px-2.5 gap-1.5'
