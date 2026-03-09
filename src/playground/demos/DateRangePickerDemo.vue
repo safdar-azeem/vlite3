@@ -7,7 +7,7 @@ import sourceCode from './DateRangePickerDemo.vue?raw'
 const basicRange = ref<DateRange>({ start: null, end: null })
 const prefilledRange = ref<DateRange>({
   start: new Date(new Date().setDate(new Date().getDate() - 7)),
-  end: new Date()
+  end: new Date(),
 })
 const withoutQuickRanges = ref<DateRange>({ start: null, end: null })
 </script>
@@ -17,7 +17,8 @@ const withoutQuickRanges = ref<DateRange>({ start: null, end: null })
     <div class="space-y-2">
       <h2 class="text-2xl font-bold">DateRangePicker</h2>
       <p class="text-gray-500">
-        A unified component for selecting a start and end date, housed inside a clean dropdown with quick range presets.
+        A unified component for selecting a start and end date, housed inside a clean dropdown with
+        quick range presets.
       </p>
     </div>
 
