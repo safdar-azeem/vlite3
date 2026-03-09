@@ -13,6 +13,7 @@ const props = withDefaults(defineProps<ListProps>(), {
   showColon: true,
   loading: false,
   skeletonRows: 6,
+  stackedBorderStyle: 'none',
 })
 
 const slots = useSlots()
@@ -110,15 +111,20 @@ const gridClass = computed(() => {
 
 const leftDividerClass = computed(() => {
   if (props.columns === 1) return ''
-  return props.columns === 3 ? 'border-r border-border/70' : 'border-r border-border/70'
+  return 'border-r border-border/70'
 })
 
-// ── Stacked grid class ───────────────────────────────
+// ── Stacked grid ─────────────────────────────────────
+const stackedColCount = computed(() => {
+  if (props.columns === 1) return 1
+  if (props.columns === 3) return 3
+  return 2
+})
+
 const stackedGridClass = computed(() => {
-  if (props.columns === 1) return 'grid grid-cols-1 gap-px pb-2.5 pt-1 px-1'
-  if (props.columns === 3)
-    return 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-px pb-2.5 pt-1 px-1'
-  return 'grid grid-cols-1 sm:grid-cols-2 gap-px pb-2.5 pt-1 px-1'
+  if (props.columns === 1) return 'grid grid-cols-1 pb-2.5 pt-1 px-1'
+  if (props.columns === 3) return 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 pb-2.5 pt-1 px-1'
+  return 'grid grid-cols-1 sm:grid-cols-2 pb-2.5 pt-1 px-1'
 })
 
 // Collect passthrough slot names (everything except structural ones)
@@ -128,6 +134,14 @@ const fieldSlotNames = computed(() =>
 
 // ── Skeleton ──────────────────────────────────────────
 const skeletonItems = computed(() => Array.from({ length: props.skeletonRows }))
+
+// ── Stacked skeleton cell class ───────────────────────
+function stackedSkeletonCellClass(i: number): string {
+  if (props.stackedBorderStyle === 'divider' && i % stackedColCount.value !== 0) {
+    return 'flex flex-col gap-1.5 py-2 border-l border-border pl-4 pr-3.5'
+  }
+  return 'flex flex-col gap-1.5 px-3.5 py-2'
+}
 </script>
 
 <template>
@@ -162,7 +176,7 @@ const skeletonItems = computed(() => Array.from({ length: props.skeletonRows }))
             <div
               v-for="(_, i) in skeletonItems"
               :key="'sk-s-' + i"
-              class="flex flex-col gap-1.5 px-3.5 py-2">
+              :class="stackedSkeletonCellClass(i)">
               <div class="h-3 w-1/3 rounded bg-muted/60 animate-pulse" />
               <div class="h-4 w-2/3 rounded bg-muted animate-pulse" />
             </div>
@@ -228,7 +242,9 @@ const skeletonItems = computed(() => Array.from({ length: props.skeletonRows }))
               :variant="variant"
               :show-colon="false"
               :is-last="idx === visibleFields.length - 1"
-              :show-border-bottom="false">
+              :show-border-bottom="false"
+              :stacked-col-index="idx % stackedColCount"
+              :stacked-border-style="stackedBorderStyle">
               <template
                 v-for="slotName in fieldSlotNames"
                 :key="slotName"
