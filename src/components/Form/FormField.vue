@@ -179,7 +179,7 @@ const fieldProps = computed(() => {
       max: props.field.max,
       step: props.field.props?.step ?? 1,
       variant: props.field.props?.variant ?? 'split',
-      mode: props.field.props?.mode ?? 'outline',
+      mode: props.field.props?.mode ?? (props.variant === 'transparent' ? 'ghost' : 'outline'),
       size: props.size,
       rounded: props.rounded,
       placeholder: resolvedPlaceholder,
