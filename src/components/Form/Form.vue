@@ -57,7 +57,6 @@ const props = withDefaults(defineProps<Props>(), {
   className: '',
   groupClass: '',
   headerClass: '',
-  size: 'lg',
   footerClass: '',
   timelineTextPosition: 'right',
   emitFields: () => ['__typename'],
@@ -339,10 +338,10 @@ const handleCancel = () => {
       <div
         v-for="(groupSchema, groupIndex) in groupedSchemas"
         :key="groupIndex"
-        :class="['form-group border rounded-lg overflow-hidden', groupClass]">
+        :class="['form-group border rounded overflow-hidden', groupClass]">
         <div
           v-if="groupsHeadings?.[groupIndex]"
-          :class="['form-group-header bg-muted/50 px-5.5 py-3 border-b', headerClass]">
+          :class="['form-group-header bg-muted/50 px-4 py-2.5 border-b', headerClass]">
           <h3 class="text-base font-semibold text-foreground">
             {{ groupsHeadings[groupIndex] }}
           </h3>
@@ -353,7 +352,7 @@ const handleCancel = () => {
           </p>
         </div>
 
-        <div class="form-group-body p-5">
+        <div class="form-group-body p-4.5">
           <FormFields
             :schema="groupSchema"
             :values="formValues"
