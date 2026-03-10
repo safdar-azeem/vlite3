@@ -81,6 +81,7 @@ const props = withDefaults(defineProps<Props>(), {
   className: '',
   groupClass: '',
   headerClass: '',
+  size: 'lg',
   footerClass: '',
   timelineTextPosition: 'right',
   emitFields: () => ['__typename'],
