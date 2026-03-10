@@ -26,8 +26,8 @@
 
     /* Legacy Primary Variants */
 
-    --color-primary-dark: #000;
-    --color-primary: #18181b;
+    --color-primary-dark: #3869FF;
+    --color-primary: #3869FF;
     --color-primary-foreground: #fafafa;
     --color-primary-fg: #fafafa;
     --color-primary-fg-light: var(--color-primary-dark);
@@ -476,11 +476,11 @@
   --color-success-dark: #00613f;
 
   --color-success-subtle: #0f2419;
-  --color-success-subtle-fg: #4ade80;
-  --color-success-subtle-border: #1f7a4d;
+  --color-success-subtle-fg: #e2f5e9ff;
+  --color-success-subtle-border: #1f7a4c8c;
 
   --color-info-subtle: #0f1e33;
-  --color-info-subtle-fg: #60a5fa;
+  --color-info-subtle-fg: #d2e6ff;
   --color-info-subtle-border: #1e40af;
 
   --color-warning-subtle: #2a1c07;
@@ -488,7 +488,7 @@
   --color-warning-subtle-border: #92400e;
 
   --color-danger-subtle: #2a1111;
-  --color-danger-subtle-fg: #f87171;
+  --color-danger-subtle-fg: #ffadad;
   --color-danger-subtle-border: #991b1b;
 
   --color-secondary-subtle: #1f1f1f;
@@ -506,7 +506,7 @@
   --color-teal-subtle-border: #0f766e;
 
   --color-indigo-subtle: #1c0a49;
-  --color-indigo-subtle-fg: #aa93f9;
+  --color-indigo-subtle-fg: #dcd1ff;
   --color-indigo-subtle-border: #3730a3;
 
   --color-orange-subtle: #2a1709;
