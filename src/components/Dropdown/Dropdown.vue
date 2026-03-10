@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ToolTip from 'v-tooltip-lite'
 import 'v-tooltip-lite/style.css'
-import { computed, ref, watch, reactive, toRefs } from 'vue'
+import { computed, ref, watch, reactive, toRefs, provide } from 'vue'
 import type { IDropdownOptions, IDropdownOption, ButtonProps } from '@/types'
 import type { TooltTipPlacement } from 'v-tooltip-lite/types'
 import DropdownMenu from './DropdownMenu.vue'
@@ -111,6 +111,7 @@ const finalNestedPosition = computed(() => {
 })
 
 const internalIsOpen = ref(props.isOpen || false)
+const activeChildrenCount = ref(0)
 
 watch(
   () => props.isOpen,
@@ -128,7 +129,24 @@ const handleVisibilityChange = (val: boolean) => {
   else emit('onClose')
 }
 
-// Normalize options to cleanly handle both generic strings/numbers and IDropdownOption objects
+const handleClose = () => {
+  handleVisibilityChange(false)
+}
+
+const handleChildToggle = (childIsOpen: boolean) => {
+  if (childIsOpen) {
+    activeChildrenCount.value++
+  } else {
+    activeChildrenCount.value = Math.max(0, activeChildrenCount.value - 1)
+  }
+}
+
+// Provide a context for child components (like Modal/SidePanel) to safely communicate state
+provide('dropdown-context', {
+  close: handleClose,
+  onChildToggle: handleChildToggle
+})
+
 const normalizedPropsOptions = computed<IDropdownOption[]>(() => {
   if (!props.options) return []
   return props.options.map((opt) => {
@@ -171,7 +189,6 @@ watch(
   { immediate: true, deep: true }
 )
 
-// --- HYDRATION & SELECTED BUFFER LOGIC ---
 const selectedBuffer = ref<Map<any, IDropdownOption>>(new Map())
 const isHydrating = ref(false)
 
@@ -187,7 +204,6 @@ const hydrateSelected = async (val: any) => {
     idsToFetch = [val]
   }
 
-  // Filter out IDs that are already in the buffer or currently visible options
   const missingIds = idsToFetch.filter((id) => {
     const inBuffer = selectedBuffer.value.has(id)
     const inOptions = internalOptions.value.some((opt) => (opt.value ?? opt.label) === id)
@@ -209,12 +225,10 @@ const hydrateSelected = async (val: any) => {
   }
 }
 
-// Combine internal options with buffered selections
 const combinedOptions = computed(() => {
   const result = [...internalOptions.value]
   const existingValues = new Set(result.map((o) => o.value ?? o.label))
 
-  // Ensure buffered selections always appear so labels resolve correctly
   selectedBuffer.value.forEach((opt, val) => {
     if (!existingValues.has(val)) {
       result.unshift(opt)
@@ -223,11 +237,9 @@ const combinedOptions = computed(() => {
   })
   return result
 })
-// -----------------------------------------
 
 const { getAllRecursiveIds } = useDropdownIds()
 
-// Use combinedOptions instead of just internalOptions to resolve labels properly
 const selectionProps = reactive({
   ...toRefs(props),
   options: combinedOptions,
@@ -238,6 +250,21 @@ const { currentValue, selectedLabel, selectOption } = useDropdownSelection(
   emit
 )
 
+const finalIgnoreClickOutside = computed(() => {
+  const propsList = props.ignoreClickOutside || []
+  const recursiveIds = getAllRecursiveIds(combinedOptions.value)
+  return [
+    ...new Set([
+      ...propsList,
+      ...recursiveIds,
+      '.modal-body',
+      '.v-modal-overlay',
+      '.sidepanel-body',
+      '.v-sidepanel-overlay'
+    ])
+  ]
+})
+
 watch(
   () => currentValue.value,
   (newVal) => {
@@ -245,12 +272,6 @@ watch(
   },
   { immediate: true, deep: true }
 )
-
-const finalIgnoreClickOutside = computed(() => {
-  const propsList = props.ignoreClickOutside || []
-  const recursiveIds = getAllRecursiveIds(combinedOptions.value)
-  return [...new Set([...propsList, ...recursiveIds])]
-})
 
 const handleOptionSelect = (option: import('@/types').IDropdownOption) => {
   const needsConfirmation = props.doubleConfirmation || !!option.confirmation
@@ -288,7 +309,6 @@ const handleOptionSelect = (option: import('@/types').IDropdownOption) => {
 }
 
 const performSelection = (option: import('@/types').IDropdownOption) => {
-  // Store in buffer so it survives pagination/searches
   const val = option.value ?? option.label
   if (!selectedBuffer.value.has(val)) {
     selectedBuffer.value.set(val, option)
@@ -296,7 +316,6 @@ const performSelection = (option: import('@/types').IDropdownOption) => {
   
   const finalValues = selectOption(option)
 
-  // Trigger callbacks at root to pass completely merged state
   if (!props.isNested) {
     const leafOption = option._originalOption || option
     const leafValue = leafOption.value ?? leafOption.label
@@ -328,10 +347,6 @@ const cancelSelection = () => {
   pendingOption.value = null
   showConfirmation.value = false
 }
-
-const handleClose = () => {
-  handleVisibilityChange(false)
-}
 </script>
 
 <template>
@@ -344,6 +359,7 @@ const handleClose = () => {
       :offset="offset"
       :placement="finalPosition"
       :isOpen="internalIsOpen"
+      :keepAlive="activeChildrenCount > 0"
       :menuId="menuId"
       :ignoreClickOutside="finalIgnoreClickOutside"
       class="w-full"
@@ -427,4 +443,3 @@ const handleClose = () => {
       @cancel="cancelSelection" />
   </div>
 </template>
-
