@@ -370,7 +370,7 @@ onMounted(() => {
             class="command-palette-item w-full flex items-center gap-3 px-3! py-2.5 mx-1 rounded-lg text-sm transition-colors duration-100 text-left cursor-pointer select-none focus-visible:outline-none"
             :class="[
               getItemIndex(gi, ii) === activeIndex
-                ? 'bg-gray-200 text-foreground'
+                ? 'bg-gray-200/80 text-foreground'
                 : 'text-muted-foreground hover:bg-muted/70 hover:text-foreground',
               item.disabled ? 'opacity-40 cursor-not-allowed' : '',
             ]"
@@ -381,7 +381,7 @@ onMounted(() => {
               class="shrink-0 flex items-center justify-center w-7 h-7 rounded-md"
               :class="
                 getItemIndex(gi, ii) === activeIndex
-                  ? 'bg-gray-300 text-primary'
+                  ? 'bg-gray-300/80 text-gray-900'
                   : 'bg-muted/80 text-muted-foreground'
               ">
               <Icon :icon="item.icon ?? 'lucide:arrow-right'" class="w-3.5 h-3.5" />
