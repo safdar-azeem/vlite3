@@ -102,12 +102,30 @@ const alignmentClass = computed(() => {
   return props.showPageInfo || props.showItemsPerPage ? 'justify-between' : 'justify-center'
 })
 
-const txtShow = computed(() => { const r = $t('vlite.pagination.show'); return r !== 'vlite.pagination.show' ? r : 'Show' })
-const txtPerPage = computed(() => { const r = $t('vlite.pagination.perPage'); return r !== 'vlite.pagination.perPage' ? r : 'per page' })
-const txtPage = computed(() => { const r = $t('vlite.pagination.page'); return r !== 'vlite.pagination.page' ? r : 'Page' })
-const txtOf = computed(() => { const r = $t('vlite.pagination.of'); return r !== 'vlite.pagination.of' ? r : 'of' })
-const txtPrev = computed(() => { const r = $t('vlite.pagination.previous'); return r !== 'vlite.pagination.previous' ? r : 'Previous' })
-const txtNext = computed(() => { const r = $t('vlite.pagination.next'); return r !== 'vlite.pagination.next' ? r : 'Next' })
+const txtShow = computed(() => {
+  const r = $t('vlite.pagination.show')
+  return r !== 'vlite.pagination.show' ? r : 'Show'
+})
+const txtPerPage = computed(() => {
+  const r = $t('vlite.pagination.perPage')
+  return r !== 'vlite.pagination.perPage' ? r : 'per page'
+})
+const txtPage = computed(() => {
+  const r = $t('vlite.pagination.page')
+  return r !== 'vlite.pagination.page' ? r : 'Page'
+})
+const txtOf = computed(() => {
+  const r = $t('vlite.pagination.of')
+  return r !== 'vlite.pagination.of' ? r : 'of'
+})
+const txtPrev = computed(() => {
+  const r = $t('vlite.pagination.previous')
+  return r !== 'vlite.pagination.previous' ? r : 'Previous'
+})
+const txtNext = computed(() => {
+  const r = $t('vlite.pagination.next')
+  return r !== 'vlite.pagination.next' ? r : 'Next'
+})
 </script>
 
 <template>
@@ -230,4 +248,3 @@ const txtNext = computed(() => { const r = $t('vlite.pagination.next'); return r
     </nav>
   </div>
 </template>
-
