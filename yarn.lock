@@ -1716,10 +1716,10 @@ v-tooltip-lite@^0.1.0:
     "@popperjs/core" "^2.11.8"
     clickout-lite "^0.0.1"
 
-v-tooltip-lite@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/v-tooltip-lite/-/v-tooltip-lite-0.2.3.tgz#9c915f51b59744468773ffd736bddb114a91e94e"
-  integrity sha512-IYv+AHwbebOKwiq6c29bfkFSxli94RakmvO07rc1CR8zWtNUXJ3+7WGQkuqLfrNuFF0HMlI730ZQ9Mtf/tTj5g==
+v-tooltip-lite@^0.2.5:
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/v-tooltip-lite/-/v-tooltip-lite-0.2.5.tgz#88d4950635850bab5f87cd3c397a1ad4c4315f87"
+  integrity sha512-ca/KJXmWE5iOsDfEjc8c1LYcApuwRn62ihMIXqZydWrbX9KQbBvpjfjQZp1+HaW/3Rzfsqa6Ou9PU8Y4mk/9Og==
   dependencies:
     "@popperjs/core" "^2.11.8"
     clickout-lite "^0.0.1"
