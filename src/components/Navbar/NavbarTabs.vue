@@ -106,9 +106,9 @@ const variantItemActive: Record<NavbarTabsVariant, string> = {
 
 const variantItemInactive: Record<NavbarTabsVariant, string> = {
   line: 'text-muted-foreground border-b-2 border-transparent hover:text-foreground hover:border-border',
-  pill: 'text-muted-foreground hover:text-foreground hover:bg-accent/60',
-  solid: 'text-muted-foreground hover:text-foreground hover:bg-accent',
-  ghost: 'text-muted-foreground hover:text-foreground hover:bg-accent/60',
+  pill: 'text-muted-foreground hover:text-foreground hover:bg-accent/50',
+  solid: 'text-muted-foreground hover:text-foreground hover:bg-accent/50',
+  ghost: 'text-muted-foreground hover:text-foreground hover:bg-accent/50',
 }
 
 /**
