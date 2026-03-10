@@ -192,6 +192,7 @@ const fieldProps = computed(() => {
     return {
       ...baseProps,
       modelValue: !!props.value,
+      size: 'sm',
       label: '', // Label handled externally
     }
   }
