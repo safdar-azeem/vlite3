@@ -200,7 +200,7 @@ const getSafeLabel = (field: IForm) => {
             :class="[
               'absolute transition-all duration-200 ease-in-out pointer-events-none z-20',
               isFloatingActive(field)
-                ? `-top-2.5 left-3 text-xs bg-background px-1 text-primary shadow-[0_4px_4px_-4px_bg-background]`
+                ? `-top-2.5 left-3 text-xs bg-background px-1 text-black shadow-[0_4px_4px_-4px_bg-background]`
                 : `top-2.5 text-sm text-muted-foreground/70 ${getFloatingLeftClass(field)}`,
             ]">
             <component
