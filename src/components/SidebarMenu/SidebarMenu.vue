@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<SidebarMenuProps>(), {
   showCompactLabels: false,
   renderMode: 'tree',
   iconSize: '16px',
-  compactIconSize: '20px',
+  compactIconSize: '21px',
   labelClass: 'text-sm',
   compactLabelClass: 'text-[11.5px] mt-1',
   itemPadding: 'py-2 px-2',
@@ -53,14 +53,25 @@ const currentOrientation = computed(() => {
   return props.orientation || 'vertical'
 })
 
+// Centralized helper to resolve item ID reliably in proper fallback order
+const getItemId = (item: SidebarMenuItemSchema): string => {
+  return item.id || (typeof item.to === 'string' ? item.to : null) || item.label
+}
+
 // Helper: Check if item is active
 const isItemActive = (item: SidebarMenuItemSchema, path: string): boolean => {
-  if (activeItem.value === item.id) return true
+  if (activeItem.value === getItemId(item)) return true
   if (item.to) {
     const itemPath = typeof item.to === 'string' ? item.to : (item.to as any).path
     if (itemPath) {
       if (path === itemPath) return true
-      if (path.startsWith(itemPath) && itemPath !== '/' && itemPath.length > 1) return true
+      // Boundary aware prefix matching
+      if (path.startsWith(itemPath) && itemPath !== '/' && itemPath.length > 1) {
+        const nextChar = path[itemPath.length]
+        if (!nextChar || nextChar === '/' || nextChar === '?') {
+          return true
+        }
+      }
     }
   }
   return false
@@ -74,7 +85,7 @@ const syncWithRoute = (
 ): boolean => {
   let found = false
   for (const item of items) {
-    const id = item.id || (typeof item.to === 'string' ? item.to : null) || item.label
+    const id = getItemId(item)
     let childFound = false
     if (item.children) {
       childFound = syncWithRoute(item.children, path, [...parents, id])
@@ -101,15 +112,12 @@ const updateNestedTabs = (path: string) => {
   if (!navbarCtx?.renderNestedTabs?.value) return
 
   const topLevelActive = props.items.find((item) => {
-    if (activeItem.value === (item.id || item.label || item.to)) return true
+    if (activeItem.value === getItemId(item)) return true
     const childFound = item.children?.some((child) => {
       return (
-        activeItem.value === (child.id || child.label || child.to) ||
+        activeItem.value === getItemId(child) ||
         (child.children &&
-          child.children.some(
-            (grandChild) =>
-              activeItem.value === (grandChild.id || grandChild.label || grandChild.to)
-          ))
+          child.children.some((grandChild) => activeItem.value === getItemId(grandChild)))
       )
     })
     return childFound || isItemActive(item, path)
@@ -119,7 +127,7 @@ const updateNestedTabs = (path: string) => {
     const tabsForNav = topLevelActive.children.map((child) => ({
       label: child.label,
       labelI18n: child.labelI18n,
-      value: child.id || (typeof child.to === 'string' ? child.to : null) || child.label,
+      value: getItemId(child),
       icon: child.icon,
       disabled: child.disabled,
       to: child.to,
@@ -133,23 +141,17 @@ const updateNestedTabs = (path: string) => {
         activeChildTab = directMatch.value
       } else {
         const owningChild = topLevelActive.children.find((child) => {
-          return child.children?.some(
-            (grandChild) =>
-              (grandChild.id || grandChild.label || grandChild.to) === activeItem.value
-          )
+          return child.children?.some((grandChild) => getItemId(grandChild) === activeItem.value)
         })
         if (owningChild) {
-          activeChildTab =
-            owningChild.id ||
-            (typeof owningChild.to === 'string' ? owningChild.to : null) ||
-            owningChild.label
+          activeChildTab = getItemId(owningChild)
         }
       }
     }
     navbarCtx.setNestedTabs(tabsForNav, activeChildTab)
   } else {
     const isChild = props.items.some((i) =>
-      i.children?.some((c) => (c.id || c.label || c.to) === activeItem.value)
+      i.children?.some((c) => getItemId(c) === activeItem.value)
     )
     if (!isChild) {
       navbarCtx.setNestedTabs([], '')
@@ -236,7 +238,7 @@ provide('sidebar-menu-ctx', context)
     class="flex w-full transition-all duration-300"
     :class="[
       currentOrientation === 'horizontal' ? 'flex-row flex-wrap gap-2 items-center' : 'flex-col',
-      currentOrientation === 'vertical' && !props.compact ? 'space-y-1' : ''
+      currentOrientation === 'vertical' && !props.compact ? 'space-y-1' : '',
     ]"
     role="tree"
     aria-label="Sidebar Menu">
