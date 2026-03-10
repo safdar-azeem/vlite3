@@ -26,7 +26,9 @@ if (!context) {
   throw new Error('SidebarMenuItem must be used within a SidebarMenu')
 }
 
-const isHorizontal = computed(() => context.currentOrientation === 'horizontal' && props.depth === 0)
+const isHorizontal = computed(
+  () => context.currentOrientation === 'horizontal' && props.depth === 0
+)
 const hasChildren = computed(() => !!props.item.children?.length)
 
 // Render Mode Logic
@@ -68,6 +70,22 @@ const handleClick = (e: MouseEvent) => {
 
   if (context.renderNestedTabs && props.depth === 0) {
     if (props.item.action) props.item.action(props.item)
+
+    if (props.item.to) {
+      router.push(props.item.to).catch(() => {})
+    } else if (props.item.href) {
+      window.open(props.item.href, '_blank')
+    } else if (hasChildren.value) {
+      const firstChild = props.item.children?.[0]
+      if (firstChild) {
+        if (firstChild.to) {
+          router.push(firstChild.to).catch(() => {})
+        } else if (firstChild.href) {
+          window.open(firstChild.href, '_blank')
+        }
+      }
+    }
+
     context.setActive(itemId.value)
     return
   }
@@ -93,6 +111,22 @@ const handleChevronClick = (e: Event) => {
   e.stopPropagation()
   if (context.renderNestedTabs && props.depth === 0) {
     if (props.item.action) props.item.action(props.item)
+
+    if (props.item.to) {
+      router.push(props.item.to).catch(() => {})
+    } else if (props.item.href) {
+      window.open(props.item.href, '_blank')
+    } else if (hasChildren.value) {
+      const firstChild = props.item.children?.[0]
+      if (firstChild) {
+        if (firstChild.to) {
+          router.push(firstChild.to).catch(() => {})
+        } else if (firstChild.href) {
+          window.open(firstChild.href, '_blank')
+        }
+      }
+    }
+
     context.setActive(itemId.value)
     return
   }
@@ -278,8 +312,10 @@ const componentProps = computed(() => {
                   class="shrink-0 transition-colors opacity-80 group-hover:opacity-100"
                   :class="[isActive || isOpen ? 'opacity-100' : '']"
                   :style="{
-                    width: context.compact && !isHorizontal ? context.compactIconSize : context.iconSize,
-                    height: context.compact && !isHorizontal ? context.compactIconSize : context.iconSize,
+                    width:
+                      context.compact && !isHorizontal ? context.compactIconSize : context.iconSize,
+                    height:
+                      context.compact && !isHorizontal ? context.compactIconSize : context.iconSize,
                   }" />
 
                 <span
@@ -306,7 +342,9 @@ const componentProps = computed(() => {
               <div
                 class="ml-1.5 flex h-4 w-4 shrink-0 items-center justify-center text-muted-foreground"
                 :class="{ 'md:hidden': context.compact && !isHorizontal }">
-                <Icon :icon="isHorizontal ? 'lucide:chevron-down' : 'lucide:chevron-right'" class="h-3 w-3" />
+                <Icon
+                  :icon="isHorizontal ? 'lucide:chevron-down' : 'lucide:chevron-right'"
+                  class="h-3 w-3" />
               </div>
             </component>
           </div>
@@ -341,12 +379,13 @@ const componentProps = computed(() => {
           :is="componentIs"
           v-bind="componentProps"
           :class="itemClass"
+          class="mb-0.5"
           :style="itemStyle"
           :aria-expanded="showChevron ? isExpanded : undefined"
           :aria-current="isActive ? 'page' : undefined"
           @click="handleClick">
           <div
-            class="min-w-0 flex-1 flex"
+            class="min-w-0 flex-1 flex py-0.5"
             :class="[
               showCompactLabel && !isHorizontal
                 ? 'flex-col items-center justify-center gap-1'
@@ -360,8 +399,10 @@ const componentProps = computed(() => {
               class="shrink-0 transition-colors opacity-80 group-hover:opacity-100"
               :class="[isActive ? 'opacity-100' : '']"
               :style="{
-                width: context.compact && !isHorizontal ? context.compactIconSize : context.iconSize,
-                height: context.compact && !isHorizontal ? context.compactIconSize : context.iconSize,
+                width:
+                  context.compact && !isHorizontal ? context.compactIconSize : context.iconSize,
+                height:
+                  context.compact && !isHorizontal ? context.compactIconSize : context.iconSize,
               }" />
 
             <span
