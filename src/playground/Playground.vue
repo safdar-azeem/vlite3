@@ -115,7 +115,8 @@ const menuItems: SidebarMenuItemSchema[] = [
       mobileBreakpoint="md"
       sidebarToggle
       breadcrumb
-      class="bg-body border-r border-border h-max shrink-0 z-20">
+      render-nested-tabs
+      class="bg-body border-r border-border h-max shrink-0 z-20 w-30">
       <template #header="{ toggleSidebar, toggle, breadcrumbItems }">
         <div class="h-13 border-b bg-white flex items-center justify-between px-6 w-full shadow-sm">
           <div class="flex items-center w-full justify-between gap-8">
@@ -156,6 +157,8 @@ const menuItems: SidebarMenuItemSchema[] = [
       <template #default>
         <div class="space-y-6 md:py-3">
           <SidebarMenu
+            compact
+            :show-tooltip="false"
             :items="menuItems"
             :allow-multiple="true"
             show-compact-labels
