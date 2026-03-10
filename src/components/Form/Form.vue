@@ -342,7 +342,7 @@ const handleCancel = () => {
         :class="['form-group border rounded-lg overflow-hidden', groupClass]">
         <div
           v-if="groupsHeadings?.[groupIndex]"
-          :class="['form-group-header bg-muted/50 px-6 py-4 border-b', headerClass]">
+          :class="['form-group-header bg-muted/50 px-5.5 py-3 border-b', headerClass]">
           <h3 class="text-base font-semibold text-foreground">
             {{ groupsHeadings[groupIndex] }}
           </h3>
@@ -353,7 +353,7 @@ const handleCancel = () => {
           </p>
         </div>
 
-        <div class="form-group-body p-6">
+        <div class="form-group-body p-5">
           <FormFields
             :schema="groupSchema"
             :values="formValues"
