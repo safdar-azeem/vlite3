@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onUnmounted, ref, watch, type Component } from 'vue'
+import { computed, onUnmounted, ref, watch, type Component, inject, onMounted } from 'vue'
 import Button from './Button.vue'
 import { useKeyStroke } from '../composables/useKeyStroke'
 import type { SidePanelPosition, SidePanelSize } from '@/types'
@@ -55,16 +55,22 @@ const emit = defineEmits<{
 
 const visible = ref(props.show)
 
+const dropdownContext = inject('dropdown-context', null) as { close: () => void, onChildToggle?: (isOpen: boolean) => void } | null
+
 watch(
   () => props.show,
   (val) => {
     visible.value = val
-    if (val) emit('onOpen')
+    if (val) {
+      emit('onOpen')
+      dropdownContext?.close()
+    }
   }
 )
 
 const handleOpen = () => {
   visible.value = true
+  dropdownContext?.close()
 }
 
 const close = () => {
@@ -83,6 +89,7 @@ const { onKeyStroke } = useKeyStroke()
 onKeyStroke('Escape', close)
 
 watch(visible, (val) => {
+  dropdownContext?.onChildToggle?.(val)
   if (val) {
     document.body.style.overflow = 'hidden'
   } else {
@@ -90,7 +97,12 @@ watch(visible, (val) => {
   }
 })
 
+onMounted(() => {
+  if (visible.value) dropdownContext?.onChildToggle?.(true)
+})
+
 onUnmounted(() => {
+  if (visible.value) dropdownContext?.onChildToggle?.(false)
   document.body.style.overflow = ''
 })
 
@@ -134,7 +146,7 @@ const displayDescription = computed(() =>
       leave-to-class="opacity-0">
       <div
         v-if="visible"
-        class="fixed inset-0 z-50 bg-[#00000033]"
+        class="fixed inset-0 z-50 bg-[#00000033] v-sidepanel-overlay"
         :class="[overlayClass, { 'backdrop-blur-[2px]': backdrop }]"
         @click="handleBackdropClick"></div>
     </Transition>
