@@ -92,11 +92,11 @@ const inputBaseClass = computed(() => {
     'block w-full bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/70 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none relative focus:z-10'
 
   const variantStyles: Record<InputVariant, string> = {
-    solid: 'bg-muted border-transparent focus-visible:border-primary',
-    outline: 'border border-input focus-visible:border-primary',
-    'outline-b': 'border-b border-input bg-transparent rounded-none focus-visible:border-primary',
+    solid: 'bg-muted border-transparent focus-visible:border-black',
+    outline: 'border border-input focus-visible:border-black',
+    'outline-b': 'border-b border-input bg-transparent rounded-none focus-visible:border-black',
     transparent: 'border-none bg-transparent shadow-none',
-    floating: 'border border-input focus-visible:border-primary',
+    floating: 'border border-input focus-visible:border-black',
   }
 
   const sizeStyles: Record<InputSize, string> = {
@@ -324,7 +324,7 @@ onMounted(() => {
           :class="[
             'absolute transition-all duration-200 ease-in-out pointer-events-none z-20',
             isFloatingLabelActive
-              ? '-top-2.5 left-3 text-xs bg-background px-1 text-primary shadow-[0_4px_4px_-4px_bg-background] translate-y-0'
+              ? '-top-2.5 left-3 text-xs bg-background px-1 text-black shadow-[0_4px_4px_-4px_bg-background] translate-y-0'
               : type === 'textarea'
                 ? `top-2 text-sm text-muted-foreground/70 ${icon ? 'left-9' : 'left-3'} translate-y-0`
                 : `top-1/2 -translate-y-1/2 text-sm text-muted-foreground/70 ${icon ? 'left-9' : 'left-3'}`,
