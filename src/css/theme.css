@@ -26,8 +26,8 @@
 
     /* Legacy Primary Variants */
 
-    --color-primary-dark: #3869FF;
-    --color-primary: #3869FF;
+    --color-primary-dark: #171717;
+    --color-primary: #171717;
     --color-primary-foreground: #fafafa;
     --color-primary-fg: #fafafa;
     --color-primary-fg-light: var(--color-primary-dark);
