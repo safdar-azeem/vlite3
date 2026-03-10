@@ -32,7 +32,7 @@ const emit = defineEmits<{
   (e: 'update:checked', value: boolean): void
 }>()
 
-const displayLabel = computed(() => props.labelI18n ? $t(props.labelI18n) : props.label)
+const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : props.label))
 
 const toggle = () => {
   if (props.disabled) return
@@ -68,23 +68,24 @@ const roundedClasses: Record<CheckboxRounded, string> = {
   full: 'rounded-full',
 }
 
+const state = computed(() => {
+  if (props.indeterminate) return 'indeterminate'
+  return props.modelValue || props.checked ? 'checked' : 'unchecked'
+})
+
 const buttonClass = computed(() => {
   return [
-    'peer shrink-0 border border-primary transition-all duration-200 ease-in-out',
+    'peer shrink-0 border  transition-all duration-200 ease-in-out',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
     'disabled:cursor-not-allowed disabled:opacity-50',
     'data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground',
     'data-[state=indeterminate]:bg-primary data-[state=indeterminate]:text-primary-foreground',
-    'cursor-pointer bg-transparent', 
+    'cursor-pointer bg-transparent',
     sizeClasses[props.size],
     roundedClasses[props.rounded || props.size],
+    state.value === 'checked' ? 'border-primary!' : 'border-gray-400!',
     props.class,
   ].join(' ')
-})
-
-const state = computed(() => {
-  if (props.indeterminate) return 'indeterminate'
-  return props.modelValue || props.checked ? 'checked' : 'unchecked'
 })
 
 const iconClass = computed(() => {
@@ -134,4 +135,3 @@ const iconClass = computed(() => {
     </Label>
   </div>
 </template>
-
