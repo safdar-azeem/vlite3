@@ -16,53 +16,29 @@ import type { TimelineStep } from '@/types'
 import { useVLiteConfig } from '@/core'
 
 interface Props {
-  /** Schema - single array or grouped arrays */
   schema: IForm[] | IForm[][]
-  /** Initial/bound values */
   values?: Record<string, any>
-  /** Input variant applied to all fields */
   variant?: InputVariant
-  /** Input size applied to all fields */
   size?: InputSize
-  /** Input rounded applied to all fields */
   rounded?: InputRounded
-  /** Loading state during submit */
   loading?: boolean
-  /** Show/hide default footer with submit button */
   footer?: boolean
-  /** Headings for grouped schemas */
   groupsHeadings?: string[]
-  /** Descriptions for grouped schemas */
   groupHeadingsDescription?: string[]
-  /** Timeline steps for multi-step form mode */
   tabs?: IFormStep[]
-  /** Submit button text */
   submitText?: string
-  /* submit button props */
   submitProps?: ButtonProps
-  /** Cancel button text */
   cancelText?: string
-  /** Show cancel button */
   showCancel?: boolean
-  /** Whether this is an update operation */
   isUpdate?: boolean
-  /** Folder ID for file uploads */
   folderId?: string
-  /** Custom class for form element */
   class?: string
-  /** Custom class for the grid layout (overrides columns) */
   className?: string
-  /** Custom class for group containers */
   groupClass?: string
-  /** Custom class for group/step headers */
   headerClass?: string
-  /** Custom class for the footer area */
   footerClass?: string
-  /** Timeline text position */
   timelineTextPosition?: TimelineTextPosition
-  /** Fields to explicitly include in the submit payload */
   emitFields?: string[]
-  /** Show asterisk for required fields */
   showRequiredAsterisk?: boolean
 }
 
@@ -94,13 +70,11 @@ const emit = defineEmits<{
   (e: 'onAddonAction', action: string): void
 }>()
 
-// Inject modal context if available
 const modalContext = inject<{ close: () => void; setSubmitting?: (val: boolean) => void } | null>(
   'modal-context',
   null
 )
 
-// Global VLite Configuration
 const vliteConfig = useVLiteConfig()
 const globalFormConfig = computed(() => vliteConfig?.components?.form || {})
 
@@ -111,13 +85,9 @@ const resolvedShowRequiredAsterisk = computed(
   () => props.showRequiredAsterisk ?? globalFormConfig.value.showRequiredAsterisk ?? true
 )
 
-// Determine if Cancel button should be shown (Explicit prop OR inside modal)
 const shouldShowCancel = computed(() => props.showCancel || !!modalContext)
-
-// Check if form is inside a modal to apply sticky footer styles
 const isInsideModal = computed(() => !!modalContext)
 
-// Determine form mode
 const isGroupedMode = computed(() => {
   if (!props.schema || props.schema.length === 0) return false
   return Array.isArray(props.schema[0])
@@ -127,10 +97,8 @@ const isMultiStepMode = computed(() => {
   return props.tabs && props.tabs.length > 0 && isGroupedMode.value
 })
 
-// Current step for multi-step mode
 const currentStep = ref(0)
 
-// Convert props.tabs to TimelineStep format
 const timelineSteps = computed((): TimelineStep[] => {
   if (!props.tabs) return []
   return props.tabs.map((tab, index) => ({
@@ -147,7 +115,6 @@ const timelineSteps = computed((): TimelineStep[] => {
   }))
 })
 
-// Get grouped schemas
 const groupedSchemas = computed((): IForm[][] => {
   if (!isGroupedMode.value) {
     return [props.schema as IForm[]]
@@ -155,13 +122,11 @@ const groupedSchemas = computed((): IForm[][] => {
   return props.schema as IForm[][]
 })
 
-// Get current step schema for multi-step mode
 const currentStepSchema = computed((): IForm[] => {
   if (!isMultiStepMode.value) return []
   return groupedSchemas.value[currentStep.value] || []
 })
 
-// Initialize form hook
 const {
   formValues,
   errors,
@@ -186,7 +151,6 @@ const {
   },
 })
 
-// Inform Modal of submitting state so it disables closing
 watch(
   () => props.loading || isSubmitting.value,
   (val) => {
@@ -203,7 +167,6 @@ onUnmounted(() => {
   }
 })
 
-// Watch for external value changes
 watch(
   () => props.values,
   (newValues) => {
@@ -214,12 +177,10 @@ watch(
   { deep: true }
 )
 
-// Handle field change from FormFields
 const onFieldChange = (name: string, payload: { value: any; data?: any }) => {
   handleFieldChange(name, payload.value, payload.data)
 }
 
-// Validate current step (for multi-step mode)
 const validateCurrentStep = (): boolean => {
   if (!isMultiStepMode.value) return true
 
@@ -239,89 +200,99 @@ const validateCurrentStep = (): boolean => {
   return isValid
 }
 
-// Can go to next step?
 const canGoNext = computed(() => {
   if (!isMultiStepMode.value) return false
   return currentStep.value < groupedSchemas.value.length - 1
 })
 
-// Can go to previous step?
 const canGoPrevious = computed(() => {
   if (!isMultiStepMode.value) return false
   return currentStep.value > 0
 })
 
-// Is on last step?
 const isLastStep = computed(() => {
   if (!isMultiStepMode.value) return true
   return currentStep.value === groupedSchemas.value.length - 1
 })
 
-// Go to next step
 const goNext = () => {
   if (!canGoNext.value) return
-
-  // Validate current step first
-  if (!validateCurrentStep()) {
-    return
-  }
-
+  if (!validateCurrentStep()) return
   currentStep.value++
   emit('onStepChange', currentStep.value)
 }
 
-// Go to previous step
 const goPrevious = () => {
   if (!canGoPrevious.value) return
   currentStep.value--
   emit('onStepChange', currentStep.value)
 }
 
-// Go to specific step (via timeline click)
 const goToStep = (step: TimelineStep, index: number) => {
-  // Only allow going back or to already completed steps
   if (index <= currentStep.value) {
     currentStep.value = index
     emit('onStepChange', currentStep.value)
   }
 }
 
-// Handle form submit
+/**
+ * Handles both Enter-key form submission and explicit button clicks.
+ * In multi-step mode on intermediate steps, always advances to next step.
+ * On the last step (or non-multi-step), performs full validation and submits.
+ */
 const handleSubmit = async () => {
   if (isMultiStepMode.value) {
-    // If NOT update mode and NOT last step, treat as "Next"
+    // Intermediate step in create mode → go next
     if (!isLastStep.value && !props.isUpdate) {
       goNext()
       return
     }
 
-    // Full validation across all steps
+    // Update mode or last step → validate all steps and submit
     const isValid = validateAll()
     if (!isValid) {
-      // Find the first step that contains an error and navigate to it
       const firstErrorStepIndex = groupedSchemas.value.findIndex((group) =>
         group.some((field) => !!errors.value[field.name])
       )
-
       if (firstErrorStepIndex !== -1 && firstErrorStepIndex !== currentStep.value) {
         currentStep.value = firstErrorStepIndex
         emit('onStepChange', currentStep.value)
       }
-      return // Stop execution if invalid
+      return
     }
   }
 
   try {
     await formSubmit()
   } catch (error) {
-    // Error handling is done in useForm, we catch here to prevent modal closing
+    // Errors handled inside useForm; catch here to prevent unhandled rejection
   }
 }
 
-// Handle cancel
+/**
+ * Intercepts the native Enter keydown on the form to ensure it always
+ * triggers handleSubmit (next step or submit) rather than relying on the
+ * browser's implicit submit which can be swallowed by embedded components
+ * like Dropdown or DatePicker.
+ */
+const handleKeydown = (event: KeyboardEvent) => {
+  if (event.key !== 'Enter') return
+
+  const target = event.target as HTMLElement
+  const tag = target.tagName.toLowerCase()
+
+  // Allow Enter to create newlines in textareas
+  if (tag === 'textarea') return
+
+  // Allow Enter inside buttons so they fire their own click handlers
+  if (tag === 'button') return
+
+  event.preventDefault()
+  handleSubmit()
+}
+
 const handleCancel = () => {
   emit('onCancel')
-  // If inside a modal, close it
   if (modalContext) {
     modalContext?.close?.()
   }
@@ -329,7 +300,10 @@ const handleCancel = () => {
 </script>
 
 <template>
-  <form :class="['form-container', props.class]" @submit.prevent="handleSubmit">
+  <form
+    :class="['form-container', props.class]"
+    @submit.prevent="handleSubmit"
+    @keydown="handleKeydown">
     <div
       v-if="isMultiStepMode && timelineSteps.length > 0"
       class="form-timeline"
