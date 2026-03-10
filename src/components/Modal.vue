@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onUnmounted, provide, type Component, computed, nextTick } from 'vue'
+import { ref, watch, onUnmounted, provide, inject, type Component, computed, nextTick, onMounted } from 'vue'
 import Button from './Button.vue'
 import { useKeyStroke } from '../composables/useKeyStroke'
 import { $t } from '@/utils/i18n'
@@ -44,16 +44,22 @@ const showBlink = ref(false)
 const modalRef = ref<HTMLElement | null>(null)
 let blinkTimeout: ReturnType<typeof setTimeout> | null = null
 
+const dropdownContext = inject('dropdown-context', null) as { close: () => void, onChildToggle?: (isOpen: boolean) => void } | null
+
 watch(
   () => props.show,
   (val) => {
     visible.value = val
-    if (val) emit('onOpen')
+    if (val) {
+      emit('onOpen')
+      dropdownContext?.close()
+    }
   }
 )
 
 const handleOpen = () => {
   visible.value = true
+  dropdownContext?.close()
 }
 
 const setSubmitting = (val: boolean) => {
@@ -87,6 +93,7 @@ const { onKeyStroke } = useKeyStroke()
 onKeyStroke('Escape', close)
 
 watch(visible, async (val) => {
+  dropdownContext?.onChildToggle?.(val)
   if (val) {
     document.body.style.overflow = 'hidden'
     await nextTick()
@@ -96,7 +103,12 @@ watch(visible, async (val) => {
   }
 })
 
+onMounted(() => {
+  if (visible.value) dropdownContext?.onChildToggle?.(true)
+})
+
 onUnmounted(() => {
+  if (visible.value) dropdownContext?.onChildToggle?.(false)
   document.body.style.overflow = ''
   if (blinkTimeout) clearTimeout(blinkTimeout)
 })
@@ -125,7 +137,7 @@ const displayDescription = computed(() =>
       leave-to-class="opacity-0">
       <div
         v-if="visible"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-[#00000051] p-4"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-[#00000051] p-4 v-modal-overlay"
         :class="backdrop && 'backdrop-blur-[2px]'"
         @click="handleBackdropClick">
         <div
