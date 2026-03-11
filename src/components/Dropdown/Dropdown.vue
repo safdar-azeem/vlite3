@@ -186,7 +186,7 @@ watch(
       internalOptions.value = newVal
     }
   },
-  { immediate: true, deep: true }
+  { immediate: true } // Performance fix: Removed deep: true to prevent heavy recursion mapping
 )
 
 const selectedBuffer = ref<Map<any, IDropdownOption>>(new Map())
@@ -254,8 +254,6 @@ const finalIgnoreClickOutside = computed(() => {
   const propsList = props.ignoreClickOutside || []
   const recursiveIds = getAllRecursiveIds(combinedOptions.value)
   
-  // Removed hardcoded modal/sidepanel classes so independent 
-  // dropdowns inside those components can close correctly.
   return [...new Set([...propsList, ...recursiveIds])]
 })
 
