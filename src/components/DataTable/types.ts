@@ -48,14 +48,23 @@ export interface DataTableProps {
   rows: any[]
   selectedRows?: any[]
   search?: string
+  // showSearch defaults to true; Screen context overrides it to false automatically
   showSearch?: boolean
   searchPlaceholder?: string
   searchPlaceholderI18n?: string
   toolbarClass?: string
   toolbarSearchClass?: string
   headers: TableHeader[]
+  /**
+   * Unique row identifier field.
+   * When set to the sentinel value 'auto' (the internal default), DataTable will
+   * automatically pick the first matching key from ['id', '_id'] found on the
+   * first row. Explicitly passing 'id' or '_id' (or any other string) pins the
+   * field to that exact value.
+   */
   keyField?: string
   loading?: boolean
+  // selectable defaults to false; Screen context overrides it to true automatically
   selectable?: boolean
   emptyTitle?: string
   emptyTitleI18n?: string
@@ -86,3 +95,12 @@ export interface RowClickPayload {
   index: number
 }
 
+/** Shape provided by Screen to deeply nested components */
+export interface ScreenContext {
+  /** When true, DataTable should hide its own search toolbar */
+  disableSearch: boolean
+  /** When true, DataTable should enable row selection */
+  forceSelectable: boolean
+}
+
+export const SCREEN_CONTEXT_KEY = Symbol('screen-context')
