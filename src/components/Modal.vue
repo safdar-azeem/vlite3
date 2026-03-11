@@ -43,6 +43,7 @@ const isChildSubmitting = ref(false)
 const showBlink = ref(false)
 const modalRef = ref<HTMLElement | null>(null)
 let blinkTimeout: ReturnType<typeof setTimeout> | null = null
+let toggleTimeout: ReturnType<typeof setTimeout> | null = null
 
 const dropdownContext = inject('dropdown-context', null) as { close: () => void, onChildToggle?: (isOpen: boolean) => void } | null
 
@@ -93,13 +94,21 @@ const { onKeyStroke } = useKeyStroke()
 onKeyStroke('Escape', close)
 
 watch(visible, async (val) => {
-  dropdownContext?.onChildToggle?.(val)
+  if (toggleTimeout) clearTimeout(toggleTimeout)
+  
   if (val) {
+    dropdownContext?.onChildToggle?.(true)
     document.body.style.overflow = 'hidden'
     await nextTick()
     modalRef.value?.focus()
   } else {
     document.body.style.overflow = ''
+    // Performance fix: Defer telling the parent dropdown to unmount its DOM
+    // until after the modal's CSS exit transition (150ms) finishes. 
+    // This prevents layout thrashing & stuttering while the modal animates.
+    toggleTimeout = setTimeout(() => {
+        dropdownContext?.onChildToggle?.(false)
+    }, 200)
   }
 })
 
@@ -108,6 +117,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  if (toggleTimeout) clearTimeout(toggleTimeout)
   if (visible.value) dropdownContext?.onChildToggle?.(false)
   document.body.style.overflow = ''
   if (blinkTimeout) clearTimeout(blinkTimeout)
