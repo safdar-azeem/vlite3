@@ -487,7 +487,7 @@ const handleBackendExport = async (format: string) => {
     <slot name="sub-header" />
 
     <!-- ── Main content area ── -->
-    <div class="flex-1 w-full relative min-h-[300px]" :class="containerClass">
+    <div class="flex-1 w-full relative min-h-[250px]" :class="containerClass">
       <template v-if="!hasData && !loading">
         <slot name="empty">
           <Empty
