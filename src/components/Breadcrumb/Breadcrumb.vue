@@ -16,6 +16,15 @@ const props = withDefaults(defineProps<BreadcrumbProps>(), {
   class: '',
 })
 
+const emit = defineEmits<{
+  /**
+   * Fired on every clickable item click (non-disabled, non-current).
+   * Routing still happens normally via router-link/a — this is additive.
+   * @param payload { item: BreadcrumbItemSchema, index: number } — index is position in original items array
+   */
+  (e: 'item-click', payload: { item: BreadcrumbItemSchema; index: number }): void
+}>()
+
 const collapsed = ref(true)
 
 const shouldCollapse = computed(() => {
@@ -28,7 +37,6 @@ const visibleItems = computed<BreadcrumbItemSchema[]>(() => {
   if (!shouldCollapse.value) return props.items
 
   const max = props.maxItems!
-  // Show first item, then ellipsis, then last (max - 1) items
   const tailCount = Math.max(max - 1, 1)
   return [props.items[0], ...props.items.slice(-tailCount)]
 })
@@ -37,6 +45,21 @@ const ellipsisIndex = computed(() => (shouldCollapse.value ? 1 : -1))
 
 function expand() {
   collapsed.value = false
+}
+
+/**
+ * Maps a visible-list index back to the original items array index.
+ */
+function resolveOriginalIndex(visibleIdx: number): number {
+  if (!props.items || !shouldCollapse.value) return visibleIdx
+  const max = props.maxItems!
+  const tailCount = Math.max(max - 1, 1)
+  const tailOffset = props.items.length - tailCount
+  return visibleIdx === 0 ? 0 : tailOffset + (visibleIdx - 1)
+}
+
+function onItemClick(payload: { item: BreadcrumbItemSchema; index: number }) {
+  emit('item-click', { item: payload.item, index: resolveOriginalIndex(payload.index) })
 }
 
 const wrapperClasses = computed(() => {
@@ -73,11 +96,15 @@ const separatorChar = computed(() => {
       <template v-if="items && items.length">
         <template v-for="(item, idx) in visibleItems" :key="item.label + idx">
           <!-- Separator before each item (except first) -->
-          <li v-if="idx > 0" class="breadcrumb-separator" aria-hidden="true">
+          <li
+            v-if="idx > 0"
+            class="breadcrumb-separator"
+            aria-hidden="true"
+            :class="(props.separator == 'chevron' || props?.separator === 'dot') && 'text-fs-3!'">
             <span>{{ separatorChar }}</span>
           </li>
 
-          <!-- Ellipsis collapse button -->
+          <!-- Ellipsis collapse button — inserted between first and tail -->
           <template v-if="idx === ellipsisIndex">
             <li class="breadcrumb-separator" aria-hidden="true">
               <span>{{ separatorChar }}</span>
@@ -93,12 +120,13 @@ const separatorChar = computed(() => {
             </li>
           </template>
 
-          <!-- Breadcrumb item -->
           <BreadcrumbItem
             v-bind="item"
             :size="size"
             :variant="variant"
-            :is-current="idx === visibleItems.length - 1" />
+            :is-current="idx === visibleItems.length - 1"
+            :item-index="idx"
+            @item-click="onItemClick" />
         </template>
       </template>
 
@@ -137,7 +165,7 @@ const separatorChar = computed(() => {
 .breadcrumb-separator {
   display: inline-flex;
   align-items: center;
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
   user-select: none;
   font-size: 0.9em;
   line-height: 1;
