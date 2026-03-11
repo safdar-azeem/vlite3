@@ -7,13 +7,19 @@ interface Props extends BreadcrumbItemSchema {
   size?: BreadcrumbSize
   isCurrent?: boolean
   variant?: string
+  itemIndex?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
   size: 'md',
   isCurrent: false,
   variant: 'default',
+  itemIndex: 0,
 })
+
+const emit = defineEmits<{
+  (e: 'item-click', payload: { item: BreadcrumbItemSchema; index: number }): void
+}>()
 
 const tag = computed(() => {
   if (props.disabled || props.isCurrent) return 'span'
@@ -23,12 +29,9 @@ const tag = computed(() => {
 })
 
 const linkProps = computed(() => {
-  if (props.to && !props.disabled && !props.isCurrent) {
-    return { to: props.to }
-  }
-  if (props.href && !props.disabled && !props.isCurrent) {
-    return { href: props.href }
-  }
+  if (props.disabled || props.isCurrent) return {}
+  if (props.to) return { to: props.to }
+  if (props.href) return { href: props.href }
   return {}
 })
 
@@ -40,6 +43,19 @@ const iconSizeClasses = computed(() => {
   }
   return sizes[props.size] || sizes.md
 })
+
+function handleClick() {
+  if (props.disabled || props.isCurrent) return
+  const item: BreadcrumbItemSchema = {
+    label: props.label!,
+    to: props.to,
+    href: props.href,
+    icon: props.icon,
+    disabled: props.disabled,
+    active: props.active,
+  }
+  emit('item-click', { item, index: props.itemIndex })
+}
 </script>
 
 <template>
@@ -50,7 +66,8 @@ const iconSizeClasses = computed(() => {
       class="breadcrumb-link"
       :class="{ current: isCurrent, disabled: disabled }"
       :aria-current="isCurrent ? 'page' : undefined"
-      :aria-disabled="disabled || undefined">
+      :aria-disabled="disabled || undefined"
+      @click="handleClick">
       <Icon v-if="icon" :icon="icon" class="breadcrumb-icon" :class="iconSizeClasses" />
       <slot>{{ label }}</slot>
     </component>
