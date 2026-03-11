@@ -29,12 +29,10 @@ const emit = defineEmits<{
 
 const textSize = computed(() => (props.size === 'sm' ? 'text-xs' : 'text-sm'))
 
-const customStyles = computed(() => {
-  return {
-    '--cell-py': props.size === 'sm' ? '0.5rem' : '0.625rem',
-    '--cell-px': props.size === 'sm' ? '0.75rem' : '1rem',
-  }
-})
+const customStyles = computed(() => ({
+  '--cell-py': props.size === 'sm' ? '0.5rem' : '0.625rem',
+  '--cell-px': props.size === 'sm' ? '0.75rem' : '1rem',
+}))
 
 /** Unified action columns across all matrix groups (preserves order, deduplicates by key) */
 const unifiedMatrixActions = computed(() => {
@@ -117,6 +115,7 @@ function toggleMatrixGroup(group: PermissionMatrixGroup) {
 
       <tbody>
         <template v-for="group in matrixGroups" :key="group.key">
+          <!-- Group header row -->
           <tr
             class="custom-group-row cursor-pointer select-none"
             @click="$emit('toggleCollapse', group.key)">
@@ -138,24 +137,26 @@ function toggleMatrixGroup(group: PermissionMatrixGroup) {
                     {{ group.label }}
                   </span>
                 </div>
-                <div class="flex items-center" @click.stop>
+                <!-- Group bulk toggle — stop propagation so it doesn't collapse the group -->
+                <div class="flex items-center" @click.stop="toggleMatrixGroup(group)">
                   <CheckBox
                     v-if="toggleMode === 'checkbox'"
                     :model-value="getMatrixGroupState(group) === 'all'"
                     :indeterminate="getMatrixGroupState(group) === 'indeterminate'"
                     :disabled="readonly"
                     :size="size === 'sm' ? 'xs' : 'sm'"
-                    @update:model-value="toggleMatrixGroup(group)" />
+                    class="pointer-events-none" />
                   <Switch
                     v-else
                     :model-value="getMatrixGroupState(group) === 'all'"
                     :disabled="readonly"
-                    @update:model-value="toggleMatrixGroup(group)" />
+                    class="pointer-events-none" />
                 </div>
               </div>
             </td>
           </tr>
 
+          <!-- Entity rows -->
           <template v-if="!collapsedGroups.has(group.key)">
             <tr
               v-for="row in group.rows"
@@ -163,9 +164,9 @@ function toggleMatrixGroup(group: PermissionMatrixGroup) {
               class="custom-entity-row">
               <td class="custom-td">
                 <div class="flex items-center gap-2 pl-6">
-                  <span :class="[textSize]" style="color: var(--color-foreground)">{{
-                    row.label
-                  }}</span>
+                  <span :class="[textSize]" style="color: var(--color-foreground)">
+                    {{ row.label }}
+                  </span>
                   <Tooltip v-if="row.description" :content="row.description" placement="top">
                     <Icon
                       icon="lucide:info"
@@ -182,29 +183,30 @@ function toggleMatrixGroup(group: PermissionMatrixGroup) {
                   'custom-td text-center',
                   !groupHasAction(group, action.key) || !isActionEnabled(row, action.key)
                     ? 'custom-disabled-cell'
-                    : '',
-                ]">
+                    : !readonly ? 'custom-active-cell' : '',
+                ]"
+                @click="toggleMatrixPerm(group.key, row, action.key)">
+                <!-- Disabled cell -->
                 <div
                   v-if="!groupHasAction(group, action.key) || !isActionEnabled(row, action.key)"
                   class="flex items-center justify-center">
                   <span
                     class="text-xs select-none"
-                    style="color: var(--color-muted-foreground); opacity: 0.4"
-                    >—</span
-                  >
+                    style="color: var(--color-muted-foreground); opacity: 0.4">
+                    —
+                  </span>
                 </div>
-                <div v-else class="flex items-center justify-center">
+                <!-- Active cell — toggle is display-only; pointer-events-none prevents double-fire -->
+                <div v-else class="flex items-center justify-center pointer-events-none">
                   <CheckBox
                     v-if="toggleMode === 'checkbox'"
                     :model-value="hasMatrixPerm(group.key, row, action.key)"
                     :disabled="readonly"
-                    :size="size === 'sm' ? 'xs' : 'sm'"
-                    @update:model-value="toggleMatrixPerm(group.key, row, action.key)" />
+                    :size="size === 'sm' ? 'xs' : 'sm'" />
                   <Switch
                     v-else
                     :model-value="hasMatrixPerm(group.key, row, action.key)"
-                    :disabled="readonly"
-                    @update:model-value="toggleMatrixPerm(group.key, row, action.key)" />
+                    :disabled="readonly" />
                 </div>
               </td>
             </tr>
@@ -279,5 +281,13 @@ function toggleMatrixGroup(group: PermissionMatrixGroup) {
 
 .custom-entity-row:last-child td {
   border-bottom: none;
+}
+
+.custom-active-cell {
+  cursor: pointer;
+}
+
+.custom-active-cell:hover {
+  background-color: var(--color-accent);
 }
 </style>
