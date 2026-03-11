@@ -19,6 +19,12 @@ The `Breadcrumb` component displays a navigational hierarchy for the current pag
 | `maxItems`  | `number`             | —           | Max visible items before collapsing. Shows first item, ellipsis, and tail items. Click `…` to expand. |
 | `class`     | `string`             | —           | Additional CSS classes applied to the `<nav>` wrapper.                                       |
 
+### Emits
+
+| Event        | Payload                                         | Description                                                                                                                 |
+| :----------- | :---------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------- |
+| `item-click` | `{ item: BreadcrumbItemSchema, index: number }` | Fires on every clickable item click (non-disabled, non-current). Routing via `to`/`href` still happens normally in parallel. `index` is the position in the original `items` array. |
+
 ### Types
 ```ts
 type BreadcrumbVariant = 'default' | 'contained' | 'pills' | 'arrow'
@@ -96,12 +102,12 @@ The `BreadcrumbItem` is the individual item component used either internally by 
 
 The rendered HTML element is automatically resolved:
 
-| Condition                       | Rendered Tag      |
-| :------------------------------ | :---------------- |
-| `disabled` or `isCurrent`       | `<span>`          |
-| `to` is set                     | `<router-link>`   |
-| `href` is set                   | `<a>`             |
-| None of the above               | `<span>`          |
+| Condition                 | Rendered Tag      |
+| :------------------------ | :---------------- |
+| `disabled` or `isCurrent` | `<span>`          |
+| `to` is set               | `<router-link>`   |
+| `href` is set             | `<a>`             |
+| None of the above         | `<span>`          |
 
 ---
 
@@ -141,6 +147,31 @@ const items = [
 
 <template>
   <Breadcrumb :items="items" />
+</template>
+```
+
+### Event-based click (state navigation)
+
+Just add `@item-click` — no flags, no extra config. Fires for every clickable item.
+Items with `to`/`href` still route normally; the event fires in parallel.
+```vue
+<script setup>
+import { Breadcrumb } from 'vlite3'
+import type { BreadcrumbItemSchema } from 'vlite3'
+
+const steps: BreadcrumbItemSchema[] = [
+  { label: 'Account', icon: 'lucide:user' },
+  { label: 'Profile', icon: 'lucide:pencil' },
+  { label: 'Review',  icon: 'lucide:check-circle' },
+]
+
+function onStep({ item, index }: { item: BreadcrumbItemSchema; index: number }) {
+  // use index to drive any state — wizard step, tab, panel, etc.
+}
+</script>
+
+<template>
+  <Breadcrumb :items="steps" variant="pills" @item-click="onStep" />
 </template>
 ```
 
@@ -241,8 +272,7 @@ Use `<BreadcrumbItem>` directly when you need custom rendering inside items.
 ### Auto-generated from Route (useBreadcrumb)
 ```vue
 <script setup>
-import { Breadcrumb } from 'vlite3'
-import { useBreadcrumb } from 'vlite3'
+import { Breadcrumb, useBreadcrumb } from 'vlite3'
 
 const { items } = useBreadcrumb({
   homeIcon: 'lucide:home',
