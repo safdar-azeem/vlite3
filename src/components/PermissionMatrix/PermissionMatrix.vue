@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import CheckBox from '../CheckBox.vue'
 import Switch from '../Switch.vue'
 import Icon from '../Icon.vue'
@@ -9,8 +9,6 @@ import type {
   PermissionMatrixProps,
   PermissionMap,
   PermissionGroup,
-  PermissionDef,
-  RoleDef,
   PermissionMatrixSize,
 } from './types'
 
@@ -79,20 +77,16 @@ function togglePerm(roleKey: string, permKey: string) {
     ? current.filter((k) => k !== permKey)
     : [...current, permKey]
 
-  emit('update:modelValue', {
-    ...props.modelValue,
-    [roleKey]: next,
-  })
+  emit('update:modelValue', { ...props.modelValue, [roleKey]: next })
 }
 
 // ── Group-level bulk toggle ──
 type GroupState = 'all' | 'none' | 'indeterminate'
 
 function getGroupState(roleKey: string, group: PermissionGroup): GroupState {
-  const perms = group.permissions
-  const granted = perms.filter((p) => hasPerm(roleKey, p.key))
+  const granted = group.permissions.filter((p) => hasPerm(roleKey, p.key))
   if (granted.length === 0) return 'none'
-  if (granted.length === perms.length) return 'all'
+  if (granted.length === group.permissions.length) return 'all'
   return 'indeterminate'
 }
 
@@ -107,28 +101,18 @@ function toggleGroup(roleKey: string, group: PermissionGroup) {
 
   let next: string[]
   if (state === 'all') {
-    // Uncheck all in this group
     next = current.filter((k) => !permKeys.includes(k))
   } else {
-    // Check all in this group
     const toAdd = permKeys.filter((k) => !current.includes(k))
     next = [...current, ...toAdd]
   }
 
-  emit('update:modelValue', {
-    ...props.modelValue,
-    [roleKey]: next,
-  })
+  emit('update:modelValue', { ...props.modelValue, [roleKey]: next })
 }
 
 // ── Size classes ──
-const cellPadding = computed(() => {
-  return props.size === 'sm' ? 'px-2 py-1' : 'px-3 py-2'
-})
-
-const textSize = computed(() => {
-  return props.size === 'sm' ? 'text-xs' : 'text-sm'
-})
+const cellPadding = computed(() => (props.size === 'sm' ? 'px-2 py-1' : 'px-3 py-2'))
+const textSize = computed(() => (props.size === 'sm' ? 'text-xs' : 'text-sm'))
 
 // ── Stats ──
 function getRolePermCount(roleKey: string): number {
@@ -164,7 +148,6 @@ function getTotalPerms(): number {
         <!-- Sticky header (roles) -->
         <thead :class="stickyHeader ? 'sticky top-0 z-10' : ''">
           <tr class="bg-muted">
-            <!-- Permission label column -->
             <th
               :class="[
                 cellPadding,
@@ -174,7 +157,6 @@ function getTotalPerms(): number {
               Permission
             </th>
 
-            <!-- Role columns -->
             <th
               v-for="role in roles"
               :key="role.key"
@@ -184,10 +166,7 @@ function getTotalPerms(): number {
                   {{ role.label }}
                 </span>
                 <span
-                  :class="[
-                    props.size === 'sm' ? 'text-[10px]' : 'text-xs',
-                    'text-muted-foreground',
-                  ]">
+                  :class="[props.size === 'sm' ? 'text-[10px]' : 'text-xs', 'text-muted-foreground']">
                   {{ getRolePermCount(role.key) }}/{{ getTotalPerms() }}
                 </span>
               </div>
@@ -216,39 +195,34 @@ function getTotalPerms(): number {
                     {{ group.label }}
                   </span>
                   <span
-                    :class="[
-                      props.size === 'sm' ? 'text-[10px]' : 'text-xs',
-                      'text-muted-foreground ml-1',
-                    ]">
+                    :class="[props.size === 'sm' ? 'text-[10px]' : 'text-xs', 'text-muted-foreground ml-1']">
                     ({{ group.permissions.length }})
                   </span>
                 </div>
               </td>
 
-              <!-- Group bulk toggle per role -->
+              <!-- Group bulk toggle per role — td handles click, toggle is display-only -->
               <td
                 v-for="role in roles"
                 :key="role.key"
-                :class="[cellPadding, 'text-center border-b border-l']"
+                :class="[cellPadding, 'text-center border-b border-l cursor-pointer']"
                 @click="toggleGroup(role.key, group)">
-                <div class="flex items-center justify-center">
+                <div class="flex items-center justify-center pointer-events-none">
                   <CheckBox
                     v-if="toggleMode === 'checkbox'"
                     :model-value="getGroupState(role.key, group) === 'all'"
                     :indeterminate="getGroupState(role.key, group) === 'indeterminate'"
                     :disabled="readonly || role.locked"
-                    :size="size === 'sm' ? 'xs' : 'sm'"
-                    @update:model-value="toggleGroup(role.key, group)" />
+                    :size="size === 'sm' ? 'xs' : 'sm'" />
                   <Switch
                     v-else
                     :model-value="getGroupState(role.key, group) === 'all'"
-                    :disabled="readonly || role.locked"
-                    @update:model-value="toggleGroup(role.key, group)" />
+                    :disabled="readonly || role.locked" />
                 </div>
               </td>
             </tr>
 
-            <!-- Permission rows (shown when not collapsed) -->
+            <!-- Permission rows -->
             <template v-if="!collapsedGroups.has(group.key)">
               <tr
                 v-for="perm in group.permissions"
@@ -265,22 +239,26 @@ function getTotalPerms(): number {
                   </div>
                 </td>
 
+                <!-- Permission cell per role — td handles click, toggle is display-only -->
                 <td
                   v-for="role in roles"
                   :key="role.key"
-                  :class="[cellPadding, 'text-center border-b border-l']">
-                  <div class="flex items-center justify-center">
+                  :class="[
+                    cellPadding,
+                    'text-center border-b border-l',
+                    !readonly && !role.locked ? 'cursor-pointer' : '',
+                  ]"
+                  @click="togglePerm(role.key, perm.key)">
+                  <div class="flex items-center justify-center pointer-events-none">
                     <CheckBox
                       v-if="toggleMode === 'checkbox'"
                       :model-value="hasPerm(role.key, perm.key)"
                       :disabled="readonly || role.locked"
-                      :size="size === 'sm' ? 'xs' : 'sm'"
-                      @update:model-value="togglePerm(role.key, perm.key)" />
+                      :size="size === 'sm' ? 'xs' : 'sm'" />
                     <Switch
                       v-else
                       :model-value="hasPerm(role.key, perm.key)"
-                      :disabled="readonly || role.locked"
-                      @update:model-value="togglePerm(role.key, perm.key)" />
+                      :disabled="readonly || role.locked" />
                   </div>
                 </td>
               </tr>
