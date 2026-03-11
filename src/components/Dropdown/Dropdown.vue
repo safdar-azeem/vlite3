@@ -253,16 +253,10 @@ const { currentValue, selectedLabel, selectOption } = useDropdownSelection(
 const finalIgnoreClickOutside = computed(() => {
   const propsList = props.ignoreClickOutside || []
   const recursiveIds = getAllRecursiveIds(combinedOptions.value)
-  return [
-    ...new Set([
-      ...propsList,
-      ...recursiveIds,
-      '.modal-body',
-      '.v-modal-overlay',
-      '.sidepanel-body',
-      '.v-sidepanel-overlay'
-    ])
-  ]
+  
+  // Removed hardcoded modal/sidepanel classes so independent 
+  // dropdowns inside those components can close correctly.
+  return [...new Set([...propsList, ...recursiveIds])]
 })
 
 watch(
