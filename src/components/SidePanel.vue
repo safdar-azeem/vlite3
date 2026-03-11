@@ -54,6 +54,7 @@ const emit = defineEmits<{
 }>()
 
 const visible = ref(props.show)
+let toggleTimeout: ReturnType<typeof setTimeout> | null = null
 
 const dropdownContext = inject('dropdown-context', null) as { close: () => void, onChildToggle?: (isOpen: boolean) => void } | null
 
@@ -89,11 +90,18 @@ const { onKeyStroke } = useKeyStroke()
 onKeyStroke('Escape', close)
 
 watch(visible, (val) => {
-  dropdownContext?.onChildToggle?.(val)
+  if (toggleTimeout) clearTimeout(toggleTimeout)
+
   if (val) {
+    dropdownContext?.onChildToggle?.(true)
     document.body.style.overflow = 'hidden'
   } else {
     document.body.style.overflow = ''
+    // Performance fix: Wait for the 300ms side panel transition to 
+    // finish before allowing parent dropdowns to unmount from DOM.
+    toggleTimeout = setTimeout(() => {
+        dropdownContext?.onChildToggle?.(false)
+    }, 300)
   }
 })
 
@@ -102,6 +110,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  if (toggleTimeout) clearTimeout(toggleTimeout)
   if (visible.value) dropdownContext?.onChildToggle?.(false)
   document.body.style.overflow = ''
 })
