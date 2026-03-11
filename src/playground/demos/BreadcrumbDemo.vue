@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { Breadcrumb, BreadcrumbItem } from '@/components/Breadcrumb'
 import type { BreadcrumbItemSchema } from '@/components/Breadcrumb'
 import DemoSection from '../DemoSection.vue'
@@ -31,6 +32,27 @@ const disabledItems: BreadcrumbItemSchema[] = [
   { label: 'Archived', disabled: true },
   { label: 'Current Page' },
 ]
+
+// ---- Event demo: wizard stepper (no routing needed) ----
+const activeStep = ref(0)
+
+const wizardSteps: BreadcrumbItemSchema[] = [
+  { label: 'Account', icon: 'lucide:user' },
+  { label: 'Profile', icon: 'lucide:pencil' },
+  { label: 'Review', icon: 'lucide:check-circle' },
+]
+
+function onWizardClick({ index }: { item: BreadcrumbItemSchema; index: number }) {
+  activeStep.value = index
+}
+
+// ---- Event demo: log all clicks (mixed routing + event) ----
+const clickLog = ref<string[]>([])
+
+function onItemClick({ item, index }: { item: BreadcrumbItemSchema; index: number }) {
+  clickLog.value.unshift(`[${index}] ${item.label}${item.to ? ` → ${item.to}` : ''}`)
+  if (clickLog.value.length > 5) clickLog.value.pop()
+}
 </script>
 
 <template>
@@ -45,6 +67,36 @@ const disabledItems: BreadcrumbItemSchema[] = [
     <!-- Default -->
     <DemoSection title="Default" :code="sourceCode">
       <Breadcrumb :items="basicItems" />
+    </DemoSection>
+
+    <!-- item-click event: wizard stepper -->
+    <DemoSection title="Event Click — Wizard Stepper" :code="sourceCode">
+      <div class="space-y-4">
+        <p class="text-sm text-muted-foreground">
+          Listen to <code class="text-xs bg-secondary px-1.5 py-0.5 rounded">@item-click</code> on
+          any breadcrumb. Fires for every clickable item regardless of whether it has
+          <code class="text-xs bg-secondary px-1.5 py-0.5 rounded">to</code> or
+          <code class="text-xs bg-secondary px-1.5 py-0.5 rounded">href</code>. No extra flags
+          needed.
+        </p>
+
+        <Breadcrumb :items="wizardSteps" variant="pills" @item-click="onWizardClick" />
+        activeStep:{{ activeStep }}
+      </div>
+    </DemoSection>
+
+    <!-- item-click event: log all clicks including routed -->
+    <DemoSection title="Event Click — Log All (with routing)" :code="sourceCode">
+      <div class="space-y-3">
+        <p class="text-sm text-muted-foreground">
+          Items with <code class="text-xs bg-secondary px-1.5 py-0.5 rounded">to</code> still route
+          normally. The event fires in addition — useful for analytics, breadcrumb state sync, etc.
+        </p>
+        <Breadcrumb :items="basicItems" @item-click="onItemClick" />
+        <ul v-if="clickLog.length" class="text-xs text-muted-foreground space-y-0.5">
+          <li v-for="(entry, i) in clickLog" :key="i">{{ entry }}</li>
+        </ul>
+      </div>
     </DemoSection>
 
     <!-- Variants -->
