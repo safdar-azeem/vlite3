@@ -298,6 +298,7 @@ const handleBackendExport = async (format: string) => {
 
 <template>
   <div class="flex flex-col w-full space-y-8">
+    <!-- ── Built-in header ── -->
     <div
       v-if="!customHeader"
       :class="headerClass"
@@ -453,14 +454,6 @@ const handleBackendExport = async (format: string) => {
                   {{ getAddBtnLabel }}
                 </Button>
               </template>
-              <Button
-                v-else
-                class="w-full sm:w-auto"
-                icon="fluent:add-16-filled"
-                variant="primary"
-                @click="$emit('add')">
-                {{ getAddBtnLabel }}
-              </Button>
             </template>
           </slot>
 
@@ -490,6 +483,10 @@ const handleBackendExport = async (format: string) => {
 
     <slot name="custom-header" v-else />
 
+    <!-- ── sub-header slot: renders between the header and the table/grid/list ── -->
+    <slot name="sub-header" />
+
+    <!-- ── Main content area ── -->
     <div class="flex-1 w-full relative min-h-[300px]" :class="containerClass">
       <template v-if="!hasData && !loading">
         <slot name="empty">
