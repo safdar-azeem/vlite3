@@ -16,6 +16,8 @@ import type { ScreenProps } from './types'
 import { usePersistentState } from '../../utils/usePersistentState'
 import { useVLiteConfig } from '../../core/config'
 import { $t } from '@/utils/i18n'
+import { SCREEN_CONTEXT_KEY } from '../DataTable/types'
+import type { ScreenContext } from '../DataTable/types'
 
 const props = withDefaults(defineProps<ScreenProps>(), {
   name: '',
@@ -49,6 +51,17 @@ const emit = defineEmits<{
   (e: 'delete', items: any[]): void
 }>()
 
+// ── Screen context provided to all descendants (e.g. DataTable) ───────────────
+// DataTable picks this up via inject(SCREEN_CONTEXT_KEY) and:
+//   - hides its own search toolbar (Screen owns search)
+//   - auto-enables selectable for bulk-delete support
+const screenContext: ScreenContext = {
+  disableSearch: true,
+  forceSelectable: true,
+}
+provide(SCREEN_CONTEXT_KEY, screenContext)
+
+// ── existing Screen provides ──────────────────────────────────────────────────
 const activeViewKey = computed(() => props.name || props.title || 'default-screen')
 const activeView = usePersistentState<'table' | 'list'>(
   `view-mode-${activeViewKey.value}`,
@@ -98,7 +111,7 @@ watch(
 )
 
 let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null
-watch(searchQuery, (newVal) => {
+watch(searchQuery, () => {
   if (searchDebounceTimer) clearTimeout(searchDebounceTimer)
   searchDebounceTimer = setTimeout(() => {
     internalPage.value = 1
@@ -381,6 +394,7 @@ const handleBackendExport = async (format: string) => {
             v-model="activeFilters"
             @change="triggerChange" />
 
+          <!-- Search lives in Screen header; DataTable's own search is disabled via context -->
           <div v-if="canSearch" class="w-full md:w-60! max-sm:order-last">
             <Input
               lazy
