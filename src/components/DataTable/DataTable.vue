@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, inject } from 'vue'
 import Icon from '../Icon.vue'
 import CheckBox from '../CheckBox.vue'
 import Button from '../Button.vue'
@@ -16,7 +16,11 @@ import type {
   SelectionState,
   RowClickPayload,
   TableState,
+  ScreenContext,
 } from './types'
+import { SCREEN_CONTEXT_KEY } from './types'
+
+// ── helpers ──────────────────────────────────────────────────────────────────
 
 const getNestedValue = (obj: any, path: string): any => {
   if (!obj || !path) return undefined
@@ -28,13 +32,33 @@ const getRowId = (row: any, keyField: string): any => {
   return getNestedValue(row, keyField)
 }
 
+/**
+ * Resolve the effective keyField for a row set.
+ * Priority: explicit prop value (unless it is the sentinel 'auto')
+ *           → first of ['id', '_id'] found on the first row
+ *           → fallback '_id'
+ */
+const resolveKeyField = (rows: any[], propKeyField: string | undefined): string => {
+  const DEFAULT_KEYS = ['id', '_id'] as const
+  if (propKeyField && propKeyField !== 'auto') return propKeyField
+  if (rows && rows.length > 0) {
+    for (const key of DEFAULT_KEYS) {
+      if (key in rows[0]) return key
+    }
+  }
+  return '_id'
+}
+
+// ── props / emits ─────────────────────────────────────────────────────────────
+
 const props = withDefaults(defineProps<DataTableProps>(), {
   rows: () => [],
   selectedRows: () => [],
   search: '',
   showSearch: true,
   headers: () => [],
-  keyField: '_id',
+  // 'auto' is the internal sentinel; actual field is resolved at runtime
+  keyField: 'auto',
   loading: false,
   selectable: false,
   emptyIcon: 'lucide:inbox',
@@ -63,6 +87,34 @@ const emit = defineEmits<{
   (e: 'delete', rows: any[]): void
 }>()
 
+// ── Screen context injection ──────────────────────────────────────────────────
+
+/**
+ * Screen provides a context object so that DataTable auto-configures itself
+ * when rendered as a child of Screen:
+ *   - disableSearch  → hides the built-in search toolbar (Screen has its own)
+ *   - forceSelectable → enables row selection for bulk-delete support
+ */
+const screenContext = inject<ScreenContext | null>(SCREEN_CONTEXT_KEY, null)
+
+// Effective showSearch: prop wins if explicitly set to false; otherwise context can disable it
+const effectiveShowSearch = computed(() => {
+  if (screenContext?.disableSearch) return false
+  return props.showSearch
+})
+
+// Effective selectable: explicit true prop or Screen context forcing it
+const effectiveSelectable = computed(() => {
+  if (props.selectable) return true
+  if (screenContext?.forceSelectable) return true
+  return false
+})
+
+// Resolved keyField supporting dual 'id'/'_id' auto-detection
+const effectiveKeyField = computed(() => resolveKeyField(props.rows, props.keyField))
+
+// ── state ─────────────────────────────────────────────────────────────────────
+
 const sortConfig = ref<SortConfig>({ field: '', order: '' })
 const internalItemsPerPage = ref(
   props.pageInfo?.itemsPerPage || props.paginationProps?.itemsPerPage || 10
@@ -73,16 +125,12 @@ const showDeleteConfirmation = ref(false)
 
 const loadingCause = ref<'initial' | 'page' | 'search' | 'sort' | 'limit' | 'idle'>('initial')
 
-const shouldShowSkeleton = computed(() => {
-  return props.loading
-})
+const shouldShowSkeleton = computed(() => props.loading)
 
 watch(
   () => props.loading,
   (newVal, oldVal) => {
-    if (!newVal && oldVal) {
-      loadingCause.value = 'idle'
-    }
+    if (!newVal && oldVal) loadingCause.value = 'idle'
   }
 )
 
@@ -96,7 +144,7 @@ watch(
 )
 
 let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null
-watch(internalSearch, (newVal) => {
+watch(internalSearch, () => {
   if (searchDebounceTimer) clearTimeout(searchDebounceTimer)
   searchDebounceTimer = setTimeout(() => {
     currentPage.value = 1
@@ -126,14 +174,16 @@ watch(
   }
 )
 
-const getRowIdForTemplate = (row: any) => getRowId(row, props.keyField)
+// ── selection ─────────────────────────────────────────────────────────────────
 
 const selectedIds = ref<Set<any>>(new Set())
 
 watch(
   () => props.selectedRows,
   (newVal) => {
-    const newIds = new Set((newVal || []).map((row) => getRowId(row, props.keyField)))
+    const newIds = new Set(
+      (newVal || []).map((row) => getRowId(row, effectiveKeyField.value))
+    )
     if (
       newIds.size !== selectedIds.value.size ||
       [...newIds].some((id) => !selectedIds.value.has(id))
@@ -146,18 +196,19 @@ watch(
 
 const isAllSelected = computed(() => {
   if (props.rows.length === 0) return false
-  return props.rows.every((row) => selectedIds.value.has(getRowId(row, props.keyField)))
+  return props.rows.every((row) =>
+    selectedIds.value.has(getRowId(row, effectiveKeyField.value))
+  )
 })
 
-const isIndeterminate = computed(() => {
-  return selectedIds.value.size > 0 && !isAllSelected.value
-})
+const isIndeterminate = computed(
+  () => selectedIds.value.size > 0 && !isAllSelected.value
+)
 
 const selectedRowsComputed = computed(() => {
   const allAvailable = [...(props.selectedRows || []), ...props.rows]
   const map = new Map()
-  allAvailable.forEach((r) => map.set(getRowId(r, props.keyField), r))
-
+  allAvailable.forEach((r) => map.set(getRowId(r, effectiveKeyField.value), r))
   return Array.from(selectedIds.value)
     .map((id) => map.get(id))
     .filter(Boolean)
@@ -165,10 +216,14 @@ const selectedRowsComputed = computed(() => {
 
 const toggleSelectAll = (checked: boolean) => {
   if (checked) {
-    props.rows.forEach((row) => selectedIds.value.add(getRowId(row, props.keyField)))
+    props.rows.forEach((row) =>
+      selectedIds.value.add(getRowId(row, effectiveKeyField.value))
+    )
   } else {
     if (selectedIds.value.size > 0) {
-      props.rows.forEach((row) => selectedIds.value.delete(getRowId(row, props.keyField)))
+      props.rows.forEach((row) =>
+        selectedIds.value.delete(getRowId(row, effectiveKeyField.value))
+      )
     }
   }
   emitSelection()
@@ -189,7 +244,7 @@ const emitSelection = () => {
   const newSelected: any[] = []
 
   props.rows.forEach((row) => {
-    const id = getRowId(row, props.keyField)
+    const id = getRowId(row, effectiveKeyField.value)
     if (selectedIds.value.has(id)) {
       newSelected.push(row)
       seenIds.add(id)
@@ -197,7 +252,7 @@ const emitSelection = () => {
   })
 
   currentSelected.forEach((row) => {
-    const id = getRowId(row, props.keyField)
+    const id = getRowId(row, effectiveKeyField.value)
     if (!seenIds.has(id) && selectedIds.value.has(id)) {
       newSelected.push(row)
       seenIds.add(id)
@@ -213,6 +268,8 @@ const emitSelection = () => {
   emit('select', emitState)
   emit('update:selectedRows', newSelected)
 }
+
+// ── sorting / pagination ──────────────────────────────────────────────────────
 
 const handleSort = (field: string) => {
   if (sortConfig.value.field === field) {
@@ -272,6 +329,20 @@ const emitChange = () => {
   }, 10)
 }
 
+// ── cleanup stale selections when rows change ─────────────────────────────────
+
+watch(
+  () => props.rows,
+  () => {
+    const validIds = new Set(
+      props.rows.map((row) => getRowId(row, effectiveKeyField.value))
+    )
+    selectedIds.value = new Set([...selectedIds.value].filter((id) => validIds.has(id)))
+  }
+)
+
+// ── styling ───────────────────────────────────────────────────────────────────
+
 const containerClass = computed(() => {
   const isRaised = props.variant === 'raised'
   return [
@@ -283,39 +354,47 @@ const containerClass = computed(() => {
   ].join(' ')
 })
 
-const tableClass = computed(() => {
-  return ['w-full caption-bottom -text-fs-1', props.tableClass].join(' ')
-})
-
-const getColumnWidth = (header: any) => {
-  if (header.width) {
-    return header.width
-  }
-  return 'auto'
-}
-
-watch(
-  () => props.rows,
-  () => {
-    const validIds = new Set(props.rows.map((row) => getRowId(row, props.keyField)))
-    selectedIds.value = new Set([...selectedIds.value].filter((id) => validIds.has(id)))
-  }
+const tableClass = computed(() =>
+  ['w-full caption-bottom -text-fs-1', props.tableClass].join(' ')
 )
 
-const txtEmptyTitle = computed(() => props.emptyTitleI18n ? $t(props.emptyTitleI18n) : props.emptyTitle)
-const txtEmptyDesc = computed(() => props.emptyDescriptionI18n ? $t(props.emptyDescriptionI18n) : props.emptyDescription)
-const txtDeleteConfirmTitle = computed(() => { const r = $t('vlite.dataTable.confirmDeleteTitle'); return r !== 'vlite.dataTable.confirmDeleteTitle' ? r : 'Confirm Deletion' })
-const txtDeleteConfirmDesc = computed(() => { const r = $t('vlite.dataTable.confirmDeleteDesc'); return r !== 'vlite.dataTable.confirmDeleteDesc' ? r : 'Are you sure you want to delete the selected items?' })
-const txtDeleteBtn = computed(() => { const r = $t('vlite.dataTable.deleteBtn'); return r !== 'vlite.dataTable.deleteBtn' ? r : 'Delete' })
-const txtCancelBtn = computed(() => { const r = $t('vlite.dataTable.cancelBtn'); return r !== 'vlite.dataTable.cancelBtn' ? r : 'Cancel' })
+const getColumnWidth = (header: any) => header.width || 'auto'
+
+// ── i18n helpers ──────────────────────────────────────────────────────────────
+
+const txtEmptyTitle = computed(() =>
+  props.emptyTitleI18n ? $t(props.emptyTitleI18n) : props.emptyTitle
+)
+const txtEmptyDesc = computed(() =>
+  props.emptyDescriptionI18n ? $t(props.emptyDescriptionI18n) : props.emptyDescription
+)
+const txtDeleteConfirmTitle = computed(() => {
+  const r = $t('vlite.dataTable.confirmDeleteTitle')
+  return r !== 'vlite.dataTable.confirmDeleteTitle' ? r : 'Confirm Deletion'
+})
+const txtDeleteConfirmDesc = computed(() => {
+  const r = $t('vlite.dataTable.confirmDeleteDesc')
+  return r !== 'vlite.dataTable.confirmDeleteDesc'
+    ? r
+    : 'Are you sure you want to delete the selected items?'
+})
+const txtDeleteBtn = computed(() => {
+  const r = $t('vlite.dataTable.deleteBtn')
+  return r !== 'vlite.dataTable.deleteBtn' ? r : 'Delete'
+})
+const txtCancelBtn = computed(() => {
+  const r = $t('vlite.dataTable.cancelBtn')
+  return r !== 'vlite.dataTable.cancelBtn' ? r : 'Cancel'
+})
 </script>
 
 <template>
   <div class="space-y-6.5">
+    <!-- Toolbar is hidden when Screen context disables search AND no custom toolbar slots are used -->
     <DataTableToolbar
-      v-if="showSearch || $slots?.['toolbar-left'] || $slots?.['toolbar-right']"
+      v-if="effectiveShowSearch || $slots?.['toolbar-left'] || $slots?.['toolbar-right']"
       v-model="internalSearch"
-      :show-search="showSearch"
+      :show-search="effectiveShowSearch"
       :placeholder="searchPlaceholder"
       :placeholderI18n="searchPlaceholderI18n"
       :class="toolbarClass"
@@ -330,8 +409,7 @@ const txtCancelBtn = computed(() => { const r = $t('vlite.dataTable.cancelBtn');
           variant="outline"
           size="lg"
           icon="lucide:trash-2"
-          @click="showDeleteConfirmation = true">
-        </Button>
+          @click="showDeleteConfirmation = true" />
       </template>
       <template #right v-if="$slots?.['toolbar-right']">
         <slot name="toolbar-right" />
@@ -350,7 +428,7 @@ const txtCancelBtn = computed(() => { const r = $t('vlite.dataTable.cancelBtn');
             ]">
             <tr class="hover:bg-transparent">
               <th
-                v-if="selectable"
+                v-if="effectiveSelectable"
                 scope="col"
                 class="w-[48px] px-0 text-center font-medium text-muted-foreground"
                 style="width: 48px">
@@ -372,9 +450,7 @@ const txtCancelBtn = computed(() => { const r = $t('vlite.dataTable.cancelBtn');
                 :table-sortable="sortable"
                 @sort="handleSort"
                 class="last:pr-5!"
-                :style="{
-                  width: getColumnWidth(header),
-                }" />
+                :style="{ width: getColumnWidth(header) }" />
             </tr>
           </thead>
 
@@ -385,7 +461,7 @@ const txtCancelBtn = computed(() => { const r = $t('vlite.dataTable.cancelBtn');
                 :key="'skeleton-' + i"
                 class="border-b border-border/70 bg-background transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                 <td
-                  v-if="selectable"
+                  v-if="effectiveSelectable"
                   class="w-[48px] px-0 py-4 align-middle text-center"
                   style="width: 48px">
                   <div class="flex items-center justify-center">
@@ -399,9 +475,7 @@ const txtCancelBtn = computed(() => { const r = $t('vlite.dataTable.cancelBtn');
                   :class="[header.hideOnMobile ? 'hidden md:table-cell' : '']">
                   <div
                     class="rounded-md bg-muted/50 animate-pulse h-4 w-full"
-                    :style="{
-                      width: `${50 + Math.random() * 40}%`,
-                    }" />
+                    :style="{ width: `${50 + Math.random() * 40}%` }" />
                 </td>
               </tr>
             </template>
@@ -409,13 +483,13 @@ const txtCancelBtn = computed(() => { const r = $t('vlite.dataTable.cancelBtn');
             <template v-else-if="rows.length > 0">
               <DataTableRow
                 v-for="(row, index) in rows"
-                :key="getRowIdForTemplate(row)"
+                :key="getRowId(row, effectiveKeyField)"
                 :row="row"
                 :headers="headers"
                 :index="index"
-                :key-field="keyField"
-                :selectable="selectable"
-                :is-selected="selectedIds.has(getRowIdForTemplate(row))"
+                :key-field="effectiveKeyField"
+                :selectable="effectiveSelectable"
+                :is-selected="selectedIds.has(getRowId(row, effectiveKeyField))"
                 :hoverable="hoverable"
                 :striped="striped"
                 :compact="compact"
@@ -433,7 +507,7 @@ const txtCancelBtn = computed(() => { const r = $t('vlite.dataTable.cancelBtn');
 
             <tr v-else>
               <td
-                :colspan="selectable ? headers.length + 1 : headers.length"
+                :colspan="effectiveSelectable ? headers.length + 1 : headers.length"
                 class="align-middle hover:bg-transparent">
                 <slot name="empty">
                   <Empty
@@ -474,4 +548,3 @@ const txtCancelBtn = computed(() => { const r = $t('vlite.dataTable.cancelBtn');
       @cancel="showDeleteConfirmation = false" />
   </div>
 </template>
-
