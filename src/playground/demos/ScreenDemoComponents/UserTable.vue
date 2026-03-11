@@ -17,15 +17,7 @@ const headers = [
 </script>
 
 <template>
-  <DataTable
-    :rows="data"
-    :headers="headers"
-    :loading="loading"
-    :show-search="false"
-    :show-pagination="false"
-    hoverable
-    bordered
-    selectable>
+  <DataTable :rows="data" :headers="headers" :loading="loading" :show-pagination="false">
     <template #name="{ value, row }">
       <div class="flex items-center gap-3">
         <Avatar :src="row.avatar" :alt="value" />
