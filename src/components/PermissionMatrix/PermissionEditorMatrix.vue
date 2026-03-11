@@ -5,7 +5,12 @@ import Switch from '../Switch.vue'
 import Icon from '../Icon.vue'
 import Tooltip from '../Tooltip.vue'
 import { getMatrixPermKey, isActionEnabled, getMatrixRowPermKeys } from './utils'
-import type { PermissionMatrixGroup, PermissionMatrixRow, PermissionToggleMode, PermissionMatrixSize } from './types'
+import type {
+  PermissionMatrixGroup,
+  PermissionMatrixRow,
+  PermissionToggleMode,
+  PermissionMatrixSize,
+} from './types'
 
 const props = defineProps<{
   matrixGroups: PermissionMatrixGroup[]
@@ -23,6 +28,13 @@ const emit = defineEmits<{
 }>()
 
 const textSize = computed(() => (props.size === 'sm' ? 'text-xs' : 'text-sm'))
+
+const customStyles = computed(() => {
+  return {
+    '--cell-py': props.size === 'sm' ? '0.5rem' : '0.625rem',
+    '--cell-px': props.size === 'sm' ? '0.75rem' : '1rem',
+  }
+})
 
 /** Unified action columns across all matrix groups (preserves order, deduplicates by key) */
 const unifiedMatrixActions = computed(() => {
@@ -89,26 +101,15 @@ function toggleMatrixGroup(group: PermissionMatrixGroup) {
     <p :class="textSize">No permissions match your filters.</p>
   </div>
 
-  <div v-else class="permission-matrix-wrapper border rounded-lg overflow-auto">
-    <table class="w-full border-collapse">
+  <div v-else class="permission-matrix-wrapper" :style="customStyles">
+    <table class="custom-table">
       <thead class="sticky top-0 z-10">
-        <tr class="bg-muted">
-          <th
-            :class="[
-              size === 'sm' ? 'px-3 py-2' : 'px-4 py-2.5',
-              textSize,
-              'text-left font-semibold text-foreground min-w-[200px] bg-muted border-b',
-            ]">
-            Permission
-          </th>
+        <tr>
+          <th :class="[textSize, 'custom-th']">Permission</th>
           <th
             v-for="action in unifiedMatrixActions"
             :key="action.key"
-            :class="[
-              size === 'sm' ? 'px-2 py-2' : 'px-3 py-2.5',
-              textSize,
-              'text-center font-semibold text-foreground border-l border-b bg-muted min-w-[100px]',
-            ]">
+            :class="[textSize, 'custom-th text-center']">
             {{ action.label }}
           </th>
         </tr>
@@ -117,23 +118,23 @@ function toggleMatrixGroup(group: PermissionMatrixGroup) {
       <tbody>
         <template v-for="group in matrixGroups" :key="group.key">
           <tr
-            class="bg-secondary/50 cursor-pointer select-none"
+            class="custom-group-row cursor-pointer select-none"
             @click="$emit('toggleCollapse', group.key)">
-            <td
-              :colspan="unifiedMatrixActions.length + 1"
-              :class="[size === 'sm' ? 'px-3 py-1.5' : 'px-4 py-2', 'border-t']">
+            <td :colspan="unifiedMatrixActions.length + 1" class="custom-td">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
                   <Icon
                     v-if="collapsible"
                     icon="lucide:chevron-right"
-                    class="w-3.5 h-3.5 transition-transform duration-200 text-muted-foreground"
+                    class="w-3.5 h-3.5 transition-transform duration-200"
+                    style="color: var(--color-muted-foreground)"
                     :class="{ 'rotate-90': !collapsedGroups.has(group.key) }" />
                   <Icon
                     v-if="group.icon"
                     :icon="group.icon"
-                    class="w-4 h-4 text-muted-foreground" />
-                  <span :class="[textSize, 'font-semibold text-foreground']">
+                    class="w-4 h-4"
+                    style="color: var(--color-muted-foreground)" />
+                  <span :class="[textSize, 'font-semibold']" style="color: var(--color-foreground)">
                     {{ group.label }}
                   </span>
                 </div>
@@ -159,14 +160,17 @@ function toggleMatrixGroup(group: PermissionMatrixGroup) {
             <tr
               v-for="row in group.rows"
               :key="group.key + '-' + row.key"
-              class="hover:bg-accent/40 transition-colors duration-100">
-              <td :class="[size === 'sm' ? 'px-3 py-1.5' : 'px-4 py-2', 'border-t']">
+              class="custom-entity-row">
+              <td class="custom-td">
                 <div class="flex items-center gap-2 pl-6">
-                  <span :class="[textSize, 'text-foreground']">{{ row.label }}</span>
+                  <span :class="[textSize]" style="color: var(--color-foreground)">{{
+                    row.label
+                  }}</span>
                   <Tooltip v-if="row.description" :content="row.description" placement="top">
                     <Icon
                       icon="lucide:info"
-                      class="w-3 h-3 text-muted-foreground cursor-auto shrink-0" />
+                      class="w-3 h-3 cursor-auto shrink-0"
+                      style="color: var(--color-muted-foreground)" />
                   </Tooltip>
                 </div>
               </td>
@@ -175,16 +179,19 @@ function toggleMatrixGroup(group: PermissionMatrixGroup) {
                 v-for="action in unifiedMatrixActions"
                 :key="action.key"
                 :class="[
-                  size === 'sm' ? 'px-2 py-1.5' : 'px-3 py-2',
-                  'text-center border-t border-l',
+                  'custom-td text-center',
                   !groupHasAction(group, action.key) || !isActionEnabled(row, action.key)
-                    ? 'bg-muted/30'
+                    ? 'custom-disabled-cell'
                     : '',
                 ]">
                 <div
                   v-if="!groupHasAction(group, action.key) || !isActionEnabled(row, action.key)"
                   class="flex items-center justify-center">
-                  <span class="text-xs text-muted-foreground/40 select-none">—</span>
+                  <span
+                    class="text-xs select-none"
+                    style="color: var(--color-muted-foreground); opacity: 0.4"
+                    >—</span
+                  >
                 </div>
                 <div v-else class="flex items-center justify-center">
                   <CheckBox
@@ -207,3 +214,70 @@ function toggleMatrixGroup(group: PermissionMatrixGroup) {
     </table>
   </div>
 </template>
+
+<style scoped>
+.permission-matrix-wrapper {
+  border: 1px solid var(--color-border);
+  background-color: var(--color-gray-100);
+  border-radius: 0.5rem;
+  overflow: auto;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.custom-th {
+  background-color: var(--color-gray-150);
+  color: var(--color-foreground);
+  border-bottom: 1px solid var(--color-border);
+  border-left: 1px solid var(--color-border);
+  padding: var(--cell-py) var(--cell-px);
+  text-align: left;
+  font-weight: 600;
+  min-width: 200px;
+}
+
+.custom-th.text-center {
+  text-align: center;
+  min-width: 100px;
+}
+
+.custom-th:first-child {
+  border-left: none;
+}
+
+.custom-td {
+  border-bottom: 1px solid var(--color-border);
+  border-left: 1px solid var(--color-border);
+  padding: var(--cell-py) var(--cell-px);
+}
+
+.custom-td.text-center {
+  text-align: center;
+}
+
+.custom-td:first-child {
+  border-left: none;
+}
+
+.custom-group-row td {
+  background-color: var(--color-gray-100);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.custom-entity-row {
+  background-color: var(--color-background);
+  transition: background-color 0.1s ease;
+}
+
+.custom-entity-row:hover {
+  background-color: var(--color-gray-50);
+}
+
+.custom-entity-row:last-child td {
+  border-bottom: none;
+}
+</style>
