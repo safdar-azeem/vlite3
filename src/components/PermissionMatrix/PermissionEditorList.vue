@@ -23,12 +23,10 @@ const emit = defineEmits<{
 
 const textSize = computed(() => (props.size === 'sm' ? 'text-xs' : 'text-sm'))
 
-const customStyles = computed(() => {
-  return {
-    '--cell-py': props.size === 'sm' ? '0.5rem' : '0.625rem',
-    '--cell-px': props.size === 'sm' ? '0.75rem' : '1rem',
-  }
-})
+const customStyles = computed(() => ({
+  '--cell-py': props.size === 'sm' ? '0.5rem' : '0.625rem',
+  '--cell-px': props.size === 'sm' ? '0.75rem' : '1rem',
+}))
 
 function hasPerm(permKey: string): boolean {
   return props.modelValue.includes(permKey)
@@ -45,10 +43,9 @@ function togglePerm(permKey: string) {
 type GroupState = 'all' | 'none' | 'indeterminate'
 
 function getGroupState(group: PermissionGroup): GroupState {
-  const perms = group.permissions
-  const granted = perms.filter((p) => hasPerm(p.key))
+  const granted = group.permissions.filter((p) => hasPerm(p.key))
   if (granted.length === 0) return 'none'
-  if (granted.length === perms.length) return 'all'
+  if (granted.length === group.permissions.length) return 'all'
   return 'indeterminate'
 }
 
@@ -56,7 +53,6 @@ function toggleGroup(group: PermissionGroup) {
   if (props.readonly) return
   const state = getGroupState(group)
   const permKeys = group.permissions.map((p) => p.key)
-
   let next: string[]
   if (state === 'all') {
     next = props.modelValue.filter((k) => !permKeys.includes(k))
@@ -75,7 +71,8 @@ function toggleGroup(group: PermissionGroup) {
   </div>
 
   <div v-else class="permission-list-wrapper" :style="customStyles">
-    <template v-for="(group, gi) in groups" :key="group.key">
+    <template v-for="group in groups" :key="group.key">
+      <!-- Group header -->
       <div
         class="custom-list-header flex items-center justify-between cursor-pointer select-none"
         @click="$emit('toggleCollapse', group.key)">
@@ -91,55 +88,63 @@ function toggleGroup(group: PermissionGroup) {
             :icon="group.icon"
             class="w-4 h-4"
             style="color: var(--color-muted-foreground)" />
-          <span :class="[textSize, 'font-semibold']" style="color: var(--color-foreground)">{{ group.label }}</span>
-          <span :class="[size === 'sm' ? 'text-[10px]' : 'text-xs']" style="color: var(--color-muted-foreground)">
+          <span :class="[textSize, 'font-semibold']" style="color: var(--color-foreground)">
+            {{ group.label }}
+          </span>
+          <span
+            :class="[size === 'sm' ? 'text-[10px]' : 'text-xs']"
+            style="color: var(--color-muted-foreground)">
             ({{ group.permissions.filter((p) => hasPerm(p.key)).length }}/{{ group.permissions.length }})
           </span>
         </div>
 
-        <div class="flex items-center" @click.stop>
+        <!-- Group bulk toggle — stop propagation so it doesn't trigger collapse -->
+        <div class="flex items-center" @click.stop="toggleGroup(group)">
           <CheckBox
             v-if="toggleMode === 'checkbox'"
             :model-value="getGroupState(group) === 'all'"
             :indeterminate="getGroupState(group) === 'indeterminate'"
             :disabled="readonly"
             :size="size === 'sm' ? 'xs' : 'sm'"
-            @update:model-value="toggleGroup(group)" />
+            class="pointer-events-none" />
           <Switch
             v-else
             :model-value="getGroupState(group) === 'all'"
             :disabled="readonly"
-            @update:model-value="toggleGroup(group)" />
+            class="pointer-events-none" />
         </div>
       </div>
 
+      <!-- Permission rows -->
       <div v-if="!collapsedGroups.has(group.key)" class="custom-list-group-content">
         <div
           v-for="perm in group.permissions"
           :key="perm.key"
-          class="custom-list-item flex items-center justify-between transition-colors duration-100">
+          class="custom-list-item flex items-center justify-between transition-colors duration-100"
+          :class="{ 'cursor-pointer': !readonly }"
+          @click="togglePerm(perm.key)">
           <div class="flex items-center gap-2 pl-6">
             <span :class="[textSize]" style="color: var(--color-foreground)">{{ perm.label }}</span>
             <Tooltip v-if="perm.description" :content="perm.description" placement="top">
               <Icon
                 icon="lucide:info"
                 class="w-3 h-3 cursor-auto shrink-0"
-                style="color: var(--color-muted-foreground)" />
+                style="color: var(--color-muted-foreground)"
+                @click.stop />
             </Tooltip>
           </div>
 
-          <div class="flex items-center">
+          <!-- Toggle is display-only; pointer-events-none prevents double-fire -->
+          <div class="flex items-center pointer-events-none">
             <CheckBox
               v-if="toggleMode === 'checkbox'"
               :model-value="hasPerm(perm.key)"
               :disabled="readonly"
-              :size="size === 'sm' ? 'xs' : 'sm'"
-              @update:model-value="togglePerm(perm.key)" />
+              :size="size === 'sm' ? 'xs' : 'sm'" />
             <Switch
               v-else
               :model-value="hasPerm(perm.key)"
-              :disabled="readonly"
-              @update:model-value="togglePerm(perm.key)" />
+              :disabled="readonly" />
           </div>
         </div>
       </div>
@@ -175,7 +180,6 @@ function toggleGroup(group: PermissionGroup) {
   border-bottom: none;
 }
 
-/* Ensure subsequent group headers have a top border to separate from previous items */
 .custom-list-group-content + .custom-list-header,
 .custom-list-header + .custom-list-header {
   border-top: 1px solid var(--color-border);
