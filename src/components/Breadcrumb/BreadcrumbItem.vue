@@ -78,6 +78,7 @@ function handleClick() {
 .breadcrumb-item {
   display: inline-flex;
   align-items: center;
+  cursor: pointer;
 }
 
 .breadcrumb-link {
