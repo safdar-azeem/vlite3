@@ -60,7 +60,7 @@ const displayCancelText = computed(() => {
     max-width="max-w-[400px]"
     @close="cancel"
     @update:show="(val) => !val && cancel()">
-    <template #trigger>
+    <template #trigger v-if="$slots?.trigger">
       <slot name="trigger">
         <slot />
       </slot>
