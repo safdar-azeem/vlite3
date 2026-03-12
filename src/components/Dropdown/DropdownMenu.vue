@@ -1,12 +1,5 @@
 <script setup lang="ts">
-import {
-  computed,
-  ref,
-  watch,
-  onMounted,
-  onBeforeUnmount,
-  nextTick,
-} from 'vue'
+import { computed, ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import Icon from '../Icon.vue'
 import type { IDropdownOptions, IDropdownOption } from '@/types'
 import Input from '../Input.vue'
@@ -206,7 +199,8 @@ const handleRecursiveSelect = (
 
   // Aggregate the path of traversal
   const childOption = payload.option
-  const childPath = childOption?._path || [childOption?._originalOption || childOption].filter(Boolean)
+  const childPath =
+    childOption?._path || [childOption?._originalOption || childOption].filter(Boolean)
 
   const virtualOption: IDropdownOption = {
     label: parentOption.label,
@@ -214,7 +208,7 @@ const handleRecursiveSelect = (
     data: payload.data,
     key: parentOption.key,
     _originalOption: childOption?._originalOption || childOption,
-    _path: [parentOption, ...childPath] as IDropdownOption[]
+    _path: [parentOption, ...childPath] as IDropdownOption[],
   }
 
   emit('select', virtualOption)
@@ -351,7 +345,7 @@ const shouldShowChevron = (option: IDropdownOption): boolean => {
                     option.triggerClass || option.class || '',
                   ]"
                   @mouseenter="onMouseEnterItem(index)">
-                  <div class="flex items-center gap-2 flex-1 min-w-0">
+                  <div class="flex items-center flex-1 min-w-0">
                     <Icon
                       v-if="option.icon || option.emoji"
                       :icon="option.icon"
@@ -396,4 +390,3 @@ const shouldShowChevron = (option: IDropdownOption): boolean => {
     </div>
   </div>
 </template>
-
