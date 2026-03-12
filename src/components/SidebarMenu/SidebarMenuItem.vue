@@ -151,7 +151,7 @@ const itemStyle = computed(() => {
 
 const itemClass = computed(() => {
   const widthClass = isHorizontal.value ? 'w-auto' : 'w-full'
-  const base = `group flex items-center justify-between font-medium rounded-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 relative border border-transparent select-none cursor-pointer ${widthClass} ${props?.itemClass || ''} ${context.labelClass}`
+  const base = `group flex items-center justify-between font-medium rounded-md  focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 relative border border-transparent select-none cursor-pointer ${widthClass} ${props?.itemClass || ''} ${context.labelClass}`
 
   const layout = context.compact
     ? `justify-center ${context.compactItemPadding}`
