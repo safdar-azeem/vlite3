@@ -36,6 +36,10 @@ const props = withDefaults(defineProps<NavbarProps>(), {
   breadcrumbHomeIcon: 'lucide:home',
   breadcrumbPosition: 'header',
   breadcrumbClass: '',
+  // New: controls layout mode style
+  // 'classic' = old behavior (header full width top, sidebar+main below)
+  // 'sidebar-first' = sidebar full height left, header+main on right
+  layoutMode: 'sidebar-first',
 })
 
 // Auto-breadcrumb: generates items from the current route path
@@ -69,7 +73,6 @@ const mobileMenuRef = ref<HTMLElement | null>(null)
 const mobileTriggerRef = ref<HTMLElement | null>(null)
 
 // Sidebar visibility state — persisted in localStorage
-// Only used when sidebarToggle prop is enabled and in layout mode on large screens
 const isSidebarVisible = useLocalStorage<boolean>('vlite-navbar-sidebar-visible', true)
 
 const handleNestedTabClick = (val: string | number) => {
@@ -115,6 +118,7 @@ onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
 })
 
+// Nav container classes — used for standalone (non-layout) mode only
 const containerClasses = computed(() => {
   const isSidebar = props.variant === 'sidebar'
 
@@ -202,8 +206,6 @@ const breakpointClasses = computed(() => {
     xl: 'hidden xl:flex flex-col h-full w-full overflow-hidden',
   }
 
-  // Desktop-only show classes for the sidebar toggle button
-  // (inverse of mobile trigger — visible only above the breakpoint)
   const desktopOnlyClasses: Record<string, string> = {
     sm: 'hidden sm:flex',
     md: 'hidden md:flex',
@@ -223,7 +225,6 @@ const breakpointClasses = computed(() => {
 
 const centerClasses = computed(() => {
   if (props.variant === 'sidebar') return 'flex-1 py-4 overflow-y-auto'
-
   switch (props.centerPosition) {
     case 'left':
       return 'flex items-center justify-start'
@@ -248,17 +249,149 @@ watch(isDesktop, (val) => {
 })
 
 // Computed sidebar visibility: only hides on desktop when toggle is enabled
-// On mobile the sidebar is already handled by the mobile menu (SidePanel),
-// so we never touch that logic here.
 const sidebarHidden = computed(() => {
   return isSidebarToggleEnabled.value && !isSidebarVisible.value
+})
+
+// Whether to use the new sidebar-first layout
+const isSidebarFirst = computed(() => {
+  return isLayoutMode.value && props.variant === 'sidebar' && props.layoutMode === 'sidebar-first'
 })
 </script>
 
 <template>
+  <!--
+    ============================================================
+    LAYOUT MODE — SIDEBAR FIRST
+    Sidebar spans full height on the left.
+    Header + Main are stacked on the right.
+    ============================================================
+  -->
   <div
-    v-if="isLayoutMode"
+    v-if="isSidebarFirst"
+    class="vlite-app-layout flex flex-row w-full h-full bg-body overflow-hidden">
+
+    <!--
+      SIDEBAR — full height, left edge
+      Hidden on mobile (SidePanel handles mobile nav)
+      Collapses via sidebarToggle
+    -->
+    <Transition
+      enter-active-class="transition-all duration-300 ease-in-out"
+      leave-active-class="transition-all duration-300 ease-in-out"
+      enter-from-class="opacity-0 -translate-x-2"
+      enter-to-class="opacity-100 translate-x-0"
+      leave-from-class="opacity-100 translate-x-0"
+      leave-to-class="opacity-0 -translate-x-2">
+      <nav
+        v-show="!sidebarHidden"
+        :class="[
+          'shrink-0 h-full flex flex-col bg-background border-r border-border overflow-hidden z-30',
+          breakpointClasses.mobileTrigger === 'md:hidden' ? 'max-md:hidden' : '',
+          props.class,
+        ]"
+        role="navigation"
+        aria-label="Sidebar">
+
+        <!-- Sidebar scrollable content (default slot) -->
+        <div
+          class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin"
+          :class="props.contentClass">
+          <slot />
+        </div>
+
+        <!-- Sidebar bottom pinned footer (right slot) -->
+        <div
+          v-if="$slots.right"
+          class="shrink-0 border-t border-border bg-background"
+          :class="props.rightClass">
+          <slot name="right" />
+        </div>
+      </nav>
+    </Transition>
+
+    <!--
+      RIGHT COLUMN — header on top, main content below
+    -->
+    <div class="flex flex-col flex-1 min-w-0 h-full overflow-hidden">
+
+      <!-- HEADER — spans only the right column -->
+      <header
+        v-if="$slots.header"
+        class="w-full shrink-0 z-20 bg-background">
+        <slot
+          name="header"
+          :is-open="isMobileMenuOpen"
+          :toggle="() => (isMobileMenuOpen = !isMobileMenuOpen)"
+          :sidebar-visible="isSidebarVisible"
+          :toggle-sidebar="toggleSidebar"
+          :breadcrumb-items="breadcrumbData.items.value" />
+      </header>
+
+      <!-- MAIN CONTENT -->
+      <main
+        v-if="$slots.main"
+        class="flex-1 overflow-y-auto w-full relative h-full flex flex-col min-h-0">
+        <div v-if="props.renderNestedTabs && nestedTabsItems.length > 0" class="shrink-0 w-full">
+          <NavbarTabs
+            v-model="activeNestedTab"
+            @change="handleNestedTabClick"
+            :items="nestedTabsItems" />
+        </div>
+        <div
+          v-if="
+            props.breadcrumb &&
+            props.breadcrumbPosition === 'main' &&
+            breadcrumbData.items.value.length > 1
+          "
+          class="shrink-0 w-full border-b border-border px-6 py-2"
+          :class="props.breadcrumbClass">
+          <Breadcrumb
+            :items="breadcrumbData.items.value"
+            :variant="props.breadcrumbVariant"
+            :separator="props.breadcrumbSeparator"
+            :size="props.breadcrumbSize" />
+        </div>
+        <div class="flex-1 overflow-y-auto w-full relative h-full">
+          <slot name="main" />
+        </div>
+      </main>
+    </div>
+
+    <!-- Mobile SidePanel drawer (below breakpoint) -->
+    <SidePanel
+      v-model:show="isMobileMenuOpen"
+      position="left"
+      size="sm"
+      :triggerClass="breakpointClasses.mobileTrigger"
+      class="z-60"
+      headerClass="pl-3! pr-4.5! py-3!"
+      bodyClass="p-0!"
+      :class="breakpointClasses.mobileTrigger">
+      <template #header>
+        <slot name="logo">Brand</slot>
+      </template>
+      <div class="flex flex-col h-full">
+        <div class="flex-1 overflow-y-auto px-3.5 pt-4">
+          <slot />
+        </div>
+        <div class="mt-auto pt-2 border-t border-border px-3 py-2" v-if="$slots.right">
+          <slot name="right" />
+        </div>
+      </div>
+    </SidePanel>
+  </div>
+
+  <!--
+    ============================================================
+    LAYOUT MODE — CLASSIC (original behavior)
+    Header full width on top, sidebar + main below.
+    ============================================================
+  -->
+  <div
+    v-else-if="isLayoutMode"
     class="vlite-app-layout flex flex-col w-full h-full bg-body overflow-hidden">
+
     <header v-if="$slots.header" class="w-full shrink-0 z-50 flex flex-col relative">
       <slot
         name="header"
@@ -271,11 +404,6 @@ const sidebarHidden = computed(() => {
     </header>
 
     <div class="flex flex-1 w-full overflow-hidden relative">
-      <!--
-        Sidebar nav: hidden on mobile (handled by SidePanel), and additionally
-        hidden on desktop when the sidebar toggle is enabled and user turned it off.
-        Smooth width transition ensures no jarring layout jump.
-      -->
       <Transition
         enter-active-class="transition-all duration-300 ease-in-out overflow-hidden"
         leave-active-class="transition-all duration-300 ease-in-out overflow-hidden"
@@ -304,7 +432,6 @@ const sidebarHidden = computed(() => {
                   <span class="sr-only">Open Menu</span>
                 </button>
               </slot>
-
               <div class="shrink-0" :class="props.logoClass" v-if="$slots?.logo">
                 <slot name="logo">
                   <component
@@ -317,7 +444,6 @@ const sidebarHidden = computed(() => {
                   </component>
                 </slot>
               </div>
-
               <div
                 v-if="$slots?.left"
                 class="items-center gap-1 overflow-x-auto no-scrollbar mask-gradient"
@@ -325,17 +451,13 @@ const sidebarHidden = computed(() => {
                 <slot name="left" />
               </div>
             </div>
-
             <div :class="[centerClasses, 'max-w-full', props.contentClass]" v-if="$slots?.center">
               <slot name="center" />
             </div>
-
             <div
               class="flex items-center gap-2 shrink-0 max-w-[40%] z-10"
               :class="[
-                {
-                  'ml-auto': centerPosition === 'left' || centerPosition === 'center',
-                },
+                { 'ml-auto': centerPosition === 'left' || centerPosition === 'center' },
                 props.rightClass,
               ]">
               <slot name="right" />
@@ -347,7 +469,6 @@ const sidebarHidden = computed(() => {
               <slot name="logo" v-if="$slots?.logo">
                 <div class="font-bold text-xl truncate">Brand</div>
               </slot>
-
               <slot
                 name="mobile-trigger"
                 :is-open="isMobileMenuOpen"
@@ -363,7 +484,6 @@ const sidebarHidden = computed(() => {
                 </button>
               </slot>
             </div>
-
             <div :class="breakpointClasses.desktopSidebar">
               <div
                 class="py-4.5 flex items-center px-4.5 z-10"
@@ -373,7 +493,6 @@ const sidebarHidden = computed(() => {
                   <div class="font-bold text-xl truncate">Brand</div>
                 </slot>
               </div>
-
               <div
                 class="flex-1 px-2.5 pt-0 pb-4 overflow-y-auto space-y-4 scrollbar-thin"
                 :class="props.contentClass">
@@ -381,7 +500,6 @@ const sidebarHidden = computed(() => {
                 <slot />
                 <slot name="center" />
               </div>
-
               <div
                 class="p-2 border-t border-border shrink-0 bg-background mt-auto"
                 :class="props.rightClass"
@@ -452,7 +570,6 @@ const sidebarHidden = computed(() => {
         <template #header>
           <slot name="logo">Brand</slot>
         </template>
-
         <div class="flex flex-col space-y-6 pt-4 h-full">
           <template v-if="variant === 'header'">
             <div class="flex flex-col space-y-1">
@@ -470,7 +587,6 @@ const sidebarHidden = computed(() => {
               <slot name="center" />
             </div>
           </template>
-
           <div class="mt-auto pt-2 border-t border-border px-3! py-2!" v-if="$slots?.right">
             <slot name="right" />
           </div>
@@ -479,6 +595,11 @@ const sidebarHidden = computed(() => {
     </div>
   </div>
 
+  <!--
+    ============================================================
+    STANDALONE NAV (no layout mode)
+    ============================================================
+  -->
   <nav v-else :class="containerClasses" role="navigation">
     <template v-if="variant === 'header'">
       <div class="flex items-center gap-4 shrink-0 z-10">
@@ -496,7 +617,6 @@ const sidebarHidden = computed(() => {
             <span class="sr-only">Open Menu</span>
           </button>
         </slot>
-
         <div class="shrink-0" :class="props.logoClass" v-if="$slots?.logo">
           <slot name="logo">
             <component
@@ -509,7 +629,6 @@ const sidebarHidden = computed(() => {
             </component>
           </slot>
         </div>
-
         <div
           v-if="$slots?.left"
           class="items-center gap-1 overflow-x-auto no-scrollbar mask-gradient"
@@ -517,17 +636,13 @@ const sidebarHidden = computed(() => {
           <slot name="left" />
         </div>
       </div>
-
       <div :class="[centerClasses, 'max-w-full', props.contentClass]" v-if="$slots?.center">
         <slot name="center" />
       </div>
-
       <div
         class="flex items-center gap-2 shrink-0 max-w-[40%] z-10"
         :class="[
-          {
-            'ml-auto': centerPosition === 'left' || centerPosition === 'center',
-          },
+          { 'ml-auto': centerPosition === 'left' || centerPosition === 'center' },
           props.rightClass,
         ]">
         <slot name="right" />
@@ -539,7 +654,6 @@ const sidebarHidden = computed(() => {
         <slot name="logo" v-if="$slots?.logo">
           <div class="font-bold text-xl truncate">Brand</div>
         </slot>
-
         <slot
           name="mobile-trigger"
           :is-open="isMobileMenuOpen"
@@ -555,7 +669,6 @@ const sidebarHidden = computed(() => {
           </button>
         </slot>
       </div>
-
       <div :class="breakpointClasses.desktopSidebar">
         <div
           class="py-4.5 flex items-center px-4.5 z-10"
@@ -565,7 +678,6 @@ const sidebarHidden = computed(() => {
             <div class="font-bold text-xl truncate">Brand</div>
           </slot>
         </div>
-
         <div
           class="flex-1 px-2.5 pt-0 pb-4 overflow-y-auto space-y-4 scrollbar-thin"
           :class="props.contentClass">
@@ -573,7 +685,6 @@ const sidebarHidden = computed(() => {
           <slot />
           <slot name="center" />
         </div>
-
         <div
           class="p-2 border-t border-border shrink-0 bg-background mt-auto"
           :class="props.rightClass"
@@ -616,7 +727,6 @@ const sidebarHidden = computed(() => {
       <template #header>
         <slot name="logo">Brand</slot>
       </template>
-
       <div class="flex flex-col space-y-6 pt-4 h-full">
         <template v-if="variant === 'header'">
           <div class="flex flex-col space-y-1">
@@ -634,7 +744,6 @@ const sidebarHidden = computed(() => {
             <slot name="center" />
           </div>
         </template>
-
         <div class="mt-auto pt-2 border-t border-border px-3! py-2!" v-if="$slots?.right">
           <slot name="right" />
         </div>
