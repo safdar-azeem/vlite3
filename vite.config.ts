@@ -49,7 +49,8 @@ export default defineConfig({
           'file-saver',
           'papaparse',
           'jsbarcode',
-          'qrcode'
+          'dayjs',
+          'qrcode',
         ]
         // Check exact match or start with for scoped packages if needed
         // For simple behavior, we can check if the id starts with the external name
