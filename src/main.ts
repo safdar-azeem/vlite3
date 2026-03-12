@@ -143,6 +143,11 @@ const vlite = createVLite({
       })
     },
   },
+  components: {
+    price: {
+      currency: 'PKR',
+    },
+  },
 })
 
 const app = createApp(App)
