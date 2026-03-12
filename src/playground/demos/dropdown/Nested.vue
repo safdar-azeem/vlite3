@@ -9,12 +9,14 @@ import { IDropdownOption } from '@/types'
 const nestedVal = ref({})
 
 const nestedOptions: IDropdownOption[] = [
-  { label: 'Diff', value: 'diff', key: 'diff' },
-  { label: 'Repo', value: 'repo', key: 'repo' },
+  { label: 'Diff', value: 'diff', key: 'diff', icon: 'lucide:settings' },
+  { label: 'Repo', value: 'repo', key: 'repo', icon: 'lucide:settings' },
   { label: '---', value: 'divider' },
   {
     label: 'Stash',
     key: 'stash',
+    showChevron: false,
+    icon: 'lucide:settings',
     children: [
       { label: 'Apply Stash', value: 'apply' },
       { label: 'Drop Stash', value: 'drop' },
