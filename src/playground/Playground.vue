@@ -126,7 +126,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       mobileBreakpoint="md"
       breadcrumb
       :render-nested-tabs="isSidebarCompact"
-      class="border-r border-border bg-background transition-all duration-300"
+      class="border-r border-border"
       :class="isSidebarCompact ? 'w-28' : 'w-64'">
       <!-- Sidebar scrollable content -->
       <template #default>
