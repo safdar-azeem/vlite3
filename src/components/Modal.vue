@@ -190,7 +190,7 @@ const displayDescription = computed(() =>
           </div>
 
           <div class="flex-1 overflow-y-auto px-4 pt-4 pb-3.5 min-h-0" :class="bodyClass">
-            <p v-if="displayDescription" class="text-sm text-muted-foreground mb-6.5">
+            <p v-if="displayDescription" class="text-sm text-muted-foreground mb-3.5">
               {{ displayDescription }}
             </p>
             <template v-if="body">
