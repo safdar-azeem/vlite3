@@ -4,9 +4,11 @@
 
 ### Description
 
-`Screen` is a high-level smart wrapper component designed to standardize page layouts. It automatically manages titles, search, pagination, custom filters, primary actions (Add buttons/modals), empty states, delete operations, and seamlessly toggles between `list` and `table` child components. View mode (table/list) is automatically persisted using `usePersistentState`.
+`Screen` is a high-level smart wrapper component designed to standardize page layouts. It automatically manages titles, search, pagination, custom filters, primary actions (Add buttons/modals), empty states, delete operations, and seamlessly toggles between `list` and `table` child components (or slots). View mode (table/list) is automatically persisted using `usePersistentState`.
 
 It also supports built-in **Export** and **Import** capabilities (via `ExportData` and `ImportData` sub-components) accessible through a contextual dropdown menu when configured.
+
+Alternatively, you can provide layouts via the `#table`, `#list`, and `#grid` slots instead of component props, which also support the view toggling and receive all necessary props exactly like the child components do.
 
 ---
 
@@ -150,6 +152,9 @@ export interface ScreenPaginationProps extends Omit
 | `custom-header` | —               | Replaces the **entire** built-in header block. Requires `customHeader: true` prop to activate.                     |
 | `sub-header`    | —               | Injects content **between** the header and the table/grid/list. Ideal for tabs, stats bars, alerts, or banners.    |
 | `empty`         | —               | Replaces the default empty state UI when `data` is empty and not loading.                                          |
+| `table`         | `{ data, loading, selectedRows, delete, updateSelectedRows }` | Renders the Table view when active. Used in place of the `table` component prop. |
+| `list`          | `{ data, loading, selectedRows, delete, updateSelectedRows }` | Renders the List view when active. Used in place of the `list` component prop. |
+| `grid`          | `{ data, loading, selectedRows, delete, updateSelectedRows }` | Renders the Grid view when active. Triggers the 'list' view mode internally. |
 
 ---
 
@@ -495,6 +500,41 @@ Your global vlite config must define:
         class="flex items-center justify-between p-6 bg-gradient-to-r from-primary to-primary/70 text-white rounded-xl">
         <h1 class="text-2xl font-bold">My Custom Dashboard</h1>
         <Button variant="secondary" icon="lucide:plus">Add Widget</Button>
+      </div>
+    </template>
+  </Screen>
+</template>
+```
+
+---
+
+#### 10. Using Slots Instead of Props for Structure
+Instead of passing discrete Vue components to the `table` or `list` props, you can define them inline using structural slots. This is useful for simpler pages or overriding layouts. The view toggle (Table/List) continues to work.
+
+```vue
+<template>
+  <Screen title="Clients" :data="clients">
+    <!-- Render this slot when the user selects Table View -->
+    <template #table="{ data, loading, selectedRows, delete: requestDelete, updateSelectedRows }">
+      <DataTable
+        :rows="data"
+        :loading="loading"
+        :selected-rows="selectedRows"
+        selectable
+        @update:selected-rows="updateSelectedRows"
+      >
+        <template #actions="{ row }">
+          <Button variant="ghost" icon="lucide:trash-2" @click="requestDelete([row])" />
+        </template>
+      </DataTable>
+    </template>
+
+    <!-- Render this slot when the user selects List View -->
+    <template #grid="{ data }">
+      <div class="grid grid-cols-2 gap-4">
+        <Card v-for="client in data" :key="client.id">
+          {{ client.name }}
+        </Card>
       </div>
     </template>
   </Screen>
