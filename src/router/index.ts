@@ -66,6 +66,7 @@ import StatusChipDemo from '../playground/demos/StatusChipDemo.vue'
 import ExportDataDemo from '../playground/demos/ExportDataDemo.vue'
 import ImportDataDemo from '../playground/demos/ImportDataDemo.vue'
 import PriceDemo from '../playground/demos/PriceDemo.vue'
+import DateDemo from '../playground/demos/DateDemo.vue'
 
 import GoogleLoginDemo from '../playground/GoogleLoginDemo.vue'
 import I18nDemo from '../playground/demos/I18nDemo.vue'
@@ -142,6 +143,7 @@ const routes = [
       { path: 'export-data', component: ExportDataDemo },
       { path: 'import-data', component: ImportDataDemo },
       { path: 'price', component: PriceDemo },
+      { path: 'date', component: DateDemo },
 
       // Utilities
       { path: 'i18n', component: I18nDemo },
