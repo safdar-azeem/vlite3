@@ -1,5 +1,15 @@
 <script setup lang="ts">
-import { ref, watch, onUnmounted, provide, inject, type Component, computed, nextTick, onMounted } from 'vue'
+import {
+  ref,
+  watch,
+  onUnmounted,
+  provide,
+  inject,
+  type Component,
+  computed,
+  nextTick,
+  onMounted,
+} from 'vue'
 import Button from './Button.vue'
 import { useKeyStroke } from '../composables/useKeyStroke'
 import { $t } from '@/utils/i18n'
@@ -45,7 +55,10 @@ const modalRef = ref<HTMLElement | null>(null)
 let blinkTimeout: ReturnType<typeof setTimeout> | null = null
 let toggleTimeout: ReturnType<typeof setTimeout> | null = null
 
-const dropdownContext = inject('dropdown-context', null) as { close: () => void, onChildToggle?: (isOpen: boolean) => void } | null
+const dropdownContext = inject('dropdown-context', null) as {
+  close: () => void
+  onChildToggle?: (isOpen: boolean) => void
+} | null
 
 watch(
   () => props.show,
@@ -95,7 +108,7 @@ onKeyStroke('Escape', close)
 
 watch(visible, async (val) => {
   if (toggleTimeout) clearTimeout(toggleTimeout)
-  
+
   if (val) {
     dropdownContext?.onChildToggle?.(true)
     document.body.style.overflow = 'hidden'
@@ -104,10 +117,10 @@ watch(visible, async (val) => {
   } else {
     document.body.style.overflow = ''
     // Performance fix: Defer telling the parent dropdown to unmount its DOM
-    // until after the modal's CSS exit transition (150ms) finishes. 
+    // until after the modal's CSS exit transition (150ms) finishes.
     // This prevents layout thrashing & stuttering while the modal animates.
     toggleTimeout = setTimeout(() => {
-        dropdownContext?.onChildToggle?.(false)
+      dropdownContext?.onChildToggle?.(false)
     }, 200)
   }
 })
@@ -130,7 +143,7 @@ const displayDescription = computed(() =>
 </script>
 
 <template>
-  <span @click.stop="handleOpen" :class="`${triggerClass}`" v-bind="$attrs">
+  <span @click.stop="handleOpen" :class="`${triggerClass}`" v-bind="$attrs" v-if="$slots?.trigger">
     <slot name="trigger">
       <template v-if="body">
         <slot />
