@@ -131,7 +131,7 @@ const handleSelect = () => {
     @click="handleRowClick">
     <td
       v-if="selectable"
-      class="w-[48px] px-0 py-6! align-middle text-center"
+      class="w-[48px] px-0 py-5.5! align-middle text-center"
       style="width: 48px"
       @click.stop>
       <div class="flex items-center justify-center">
@@ -144,7 +144,7 @@ const handleSelect = () => {
       :key="header.field"
       class="align-middle overflow-hidden"
       :class="[
-        compact ? 'p-2' : 'py-3! px-3 -text-fs-1.5!',
+        compact ? 'p-2' : 'py-2! px-3 -text-fs-1.5!',
         alignClass(header),
         header.hideOnMobile ? 'hidden md:table-cell' : '',
         getCellClass(header, getNestedValue(row, header.field), row),
@@ -155,21 +155,18 @@ const handleSelect = () => {
         :row="row"
         :index="index"
         :field="header.field">
-        
         <Price
           v-if="header.type === 'price'"
           :value="getNestedValue(row, header.field)"
           class="truncate block"
-          :title="String(getNestedValue(row, header.field))"
-        />
-        
+          :title="String(getNestedValue(row, header.field))" />
+
         <Date
           v-else-if="header.type === 'date'"
           :value="getNestedValue(row, header.field)"
           class="truncate block"
-          :title="String(getNestedValue(row, header.field))"
-        />
-        
+          :title="String(getNestedValue(row, header.field))" />
+
         <span
           v-else
           class="truncate block"
