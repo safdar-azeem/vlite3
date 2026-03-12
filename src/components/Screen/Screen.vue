@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed, provide } from 'vue'
+import { ref, watch, computed, provide, useSlots } from 'vue'
 import Input from '../Input.vue'
 import Button from '../Button.vue'
 import Icon from '../Icon.vue'
@@ -62,10 +62,11 @@ const screenContext: ScreenContext = {
 provide(SCREEN_CONTEXT_KEY, screenContext)
 
 // ── existing Screen provides ──────────────────────────────────────────────────
+const slots = useSlots()
 const activeViewKey = computed(() => props.name || props.title || 'default-screen')
 const activeView = usePersistentState<'table' | 'list'>(
   `view-mode-${activeViewKey.value}`,
-  props.table ? 'table' : 'list'
+  props.table || slots.table ? 'table' : 'list'
 )
 
 const searchQuery = ref('')
@@ -199,7 +200,7 @@ const txtCancelBtn = computed(() => {
 })
 const txtMissingView = computed(() => {
   const r = $t('vlite.screen.missingView')
-  return r !== 'vlite.screen.missingView' ? r : 'Please provide a `:list` or `:table` component.'
+  return r !== 'vlite.screen.missingView' ? r : 'Please provide a `:list` or `:table` component or slot.'
 })
 
 const getAddBtnLabel = computed(() => {
@@ -349,7 +350,7 @@ const handleBackendExport = async (format: string) => {
             :title="txtDeleteSelected"
             @click="requestDelete(selectedRows)" />
           <div
-            v-if="table && list"
+            v-if="(table || $slots.table) && (list || $slots.list || $slots.grid)"
             class="flex items-center p-1 rounded-md border border-border shrink-0">
             <button
               @click="activeView = 'list'"
@@ -568,9 +569,36 @@ const handleBackendExport = async (format: string) => {
       </template>
 
       <template v-else>
+        <slot
+          v-if="activeView === 'table' && $slots.table"
+          name="table"
+          :data="data"
+          :loading="loading"
+          :selected-rows="selectedRows"
+          :delete="requestDelete"
+          :update-selected-rows="(val: any[]) => selectedRows = val"
+        />
+        <slot
+          v-else-if="activeView === 'list' && $slots.list"
+          name="list"
+          :data="data"
+          :loading="loading"
+          :selected-rows="selectedRows"
+          :delete="requestDelete"
+          :update-selected-rows="(val: any[]) => selectedRows = val"
+        />
+        <slot
+          v-else-if="activeView === 'list' && $slots.grid"
+          name="grid"
+          :data="data"
+          :loading="loading"
+          :selected-rows="selectedRows"
+          :delete="requestDelete"
+          :update-selected-rows="(val: any[]) => selectedRows = val"
+        />
         <component
           :is="activeComponent"
-          v-if="activeComponent"
+          v-else-if="activeComponent"
           :data="data"
           :loading="loading"
           :refetch="refetch"
