@@ -408,10 +408,11 @@ const handleCancel = () => {
     <div
       v-if="footer"
       :class="[
-        'form-footer flex items-center justify-between gap-3',
+        'form-footer flex items-center  gap-3',
         footerClass,
+        isMultiStepMode ? 'justify-between' : 'justify-end',
         isInsideModal
-          ? 'sticky bottom-0 z-20 bg-body pt-4 border-t border-border/75 -mx-4 px-4 mt-8'
+          ? 'sticky bottom-0 z-20 bg-body pt-3.5 border-t border-border/75 -mx-4 px-4 mt-8'
           : 'mt-6',
       ]">
       <div class="flex items-center gap-3">
@@ -433,7 +434,7 @@ const handleCancel = () => {
           @click="handleSubmit" />
       </div>
 
-      <div class="flex items-center gap-3 ml-auto">
+      <div class="flex items-center gap-3" :class="isMultiStepMode && 'ml-auto'">
         <Button
           v-if="isMultiStepMode && canGoPrevious"
           type="button"
