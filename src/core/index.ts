@@ -4,28 +4,6 @@ import type { VLiteConfig } from '../types/config.type'
 
 /**
  * Creates the VLite plugin instance.
- *
- * @example
- * // main.ts
- * import { createApp } from 'vue'
- * import { createVLite } from 'vlite3'
- *
- * const app = createApp(App)
- *
- * const vlite = createVLite({
- * services: {
- * upload: async (file) => {
- * // Custom API call here
- * const formData = new FormData()
- * formData.append('file', file)
- * const res = await axios.post('/api/upload', formData)
- * return res.data.url
- * }
- * }
- * })
- *
- * app.use(vlite)
- * app.mount('#app')
  */
 export function createVLite(options: VLiteConfig = {}) {
   return {
@@ -52,6 +30,10 @@ export function createVLite(options: VLiteConfig = {}) {
             price: {
               ...(configState.components?.price || {}),
               ...(options.components.price || {}),
+            },
+            date: {
+              ...(configState.components?.date || {}),
+              ...(options.components.date || {}),
             },
           }
         }
