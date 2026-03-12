@@ -118,7 +118,7 @@ const menuItems: SidebarMenuItemSchema[] = [
           </template>
 
           <template #default>
-            <SidebarMenu :items="menuItems" class="pt-3" />
+            <SidebarMenu :items="menuItems" />
           </template>
 
           <template #main>
@@ -174,7 +174,7 @@ const menuItems: SidebarMenuItemSchema[] = [
           </template>
 
           <template #default>
-            <SidebarMenu :items="menuItems" :default-expanded="['Analytics']" class="pt-2" />
+            <SidebarMenu :items="menuItems" :default-expanded="['Analytics']" />
           </template>
 
           <template #main>
