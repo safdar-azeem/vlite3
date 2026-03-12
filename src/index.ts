@@ -76,3 +76,4 @@ export { $t } from './utils/i18n'
 export { createVLite, useVLiteConfig } from './core'
 export { GoogleSignInPlugin }
 export * from './components/StatusChip'
+export * from './components/Price'
