@@ -58,73 +58,76 @@ const getItemId = (item: SidebarMenuItemSchema): string => {
   return item.id || (typeof item.to === 'string' ? item.to : null) || item.label
 }
 
-// Helper: Check if item is active
-const isItemActive = (item: SidebarMenuItemSchema, path: string): boolean => {
-  if (activeItem.value === getItemId(item)) return true
-  if (item.to) {
-    const itemPath = typeof item.to === 'string' ? item.to : (item.to as any).path
-    if (itemPath) {
-      if (path === itemPath) return true
-      // Boundary aware prefix matching
-      if (path.startsWith(itemPath) && itemPath !== '/' && itemPath.length > 1) {
-        const nextChar = path[itemPath.length]
-        if (!nextChar || nextChar === '/' || nextChar === '?') {
-          return true
-        }
-      }
-    }
+// Path-based active check only — does NOT read activeItem ref (avoids reactive coupling)
+const isPathMatch = (item: SidebarMenuItemSchema, path: string): boolean => {
+  if (!item.to) return false
+  const itemPath = typeof item.to === 'string' ? item.to : (item.to as any).path
+  if (!itemPath) return false
+  if (path === itemPath) return true
+  if (itemPath !== '/' && itemPath.length > 1 && path.startsWith(itemPath)) {
+    const next = path[itemPath.length]
+    return !next || next === '/' || next === '?'
   }
   return false
 }
 
-// Logic to find active item and expand parents
-const syncWithRoute = (
+/**
+ * Single-pass DFS over the item tree.
+ * Returns the resolved active item ID (or null) and mutates expandedItems as needed.
+ * Does NOT touch activeItem ref — caller applies the result.
+ */
+const resolveActiveFromPath = (
   items: SidebarMenuItemSchema[],
   path: string,
   parents: string[] = []
-): boolean => {
-  let found = false
+): string | null => {
   for (const item of items) {
     const id = getItemId(item)
-    let childFound = false
-    if (item.children) {
-      childFound = syncWithRoute(item.children, path, [...parents, id])
-      if (childFound) found = true
+
+    if (item.children?.length) {
+      const childResult = resolveActiveFromPath(item.children, path, [...parents, id])
+      if (childResult !== null) {
+        // Expand this parent if not already expanded
+        if (!expandedItems.value.includes(id)) expandedItems.value.push(id)
+        return childResult
+      }
     }
 
-    const isDirectlyActive = isItemActive(item, path)
-    const isParentActiveViaTabs =
-      childFound && navbarCtx?.renderNestedTabs?.value && parents.length === 0
-
-    if (isDirectlyActive || isParentActiveViaTabs) {
-      activeItem.value = id
+    if (isPathMatch(item, path)) {
+      // Expand ancestor chain
       parents.forEach((pId) => {
         if (!expandedItems.value.includes(pId)) expandedItems.value.push(pId)
       })
-      found = true
+      return id
     }
   }
-  return found
+  return null
 }
 
-// Check nested tabs payload creation
-const updateNestedTabs = (path: string) => {
-  if (!navbarCtx?.renderNestedTabs?.value) return
+/**
+ * Derives nested-tab payload from the current path without touching activeItem ref.
+ * Returns null when the current route does not belong to any top-level group with children
+ * (signals caller to clear tabs).
+ */
+const deriveNestedTabs = (
+  path: string,
+  resolvedActiveId: string | null
+): { tabs: any[]; activeTab: string | number } | null => {
+  for (const item of props.items) {
+    if (!item.children?.length) continue
 
-  const topLevelActive = props.items.find((item) => {
-    if (activeItem.value === getItemId(item)) return true
-    const childFound = item.children?.some((child) => {
-      return (
-        activeItem.value === getItemId(child) ||
-        (child.children &&
-          child.children.some((grandChild) => activeItem.value === getItemId(grandChild)))
+    // Does this top-level item own the current path?
+    const owns =
+      isPathMatch(item, path) ||
+      item.children.some(
+        (child) =>
+          isPathMatch(child, path) ||
+          child.children?.some((grand) => isPathMatch(grand, path))
       )
-    })
-    return childFound || isItemActive(item, path)
-  })
 
-  if (topLevelActive && topLevelActive.children) {
-    const tabsForNav = topLevelActive.children.map((child) => ({
+    if (!owns) continue
+
+    const tabs = item.children.map((child) => ({
       label: child.label,
       labelI18n: child.labelI18n,
       value: getItemId(child),
@@ -134,61 +137,61 @@ const updateNestedTabs = (path: string) => {
       href: child.href,
     }))
 
-    let activeChildTab = tabsForNav[0].value
-    if (activeItem.value) {
-      const directMatch = tabsForNav.find((t) => t.value === activeItem.value)
-      if (directMatch) {
-        activeChildTab = directMatch.value
+    // Resolve which child tab is active
+    let activeTab: string | number = tabs[0]?.value ?? ''
+    if (resolvedActiveId) {
+      const direct = tabs.find((t) => t.value === resolvedActiveId)
+      if (direct) {
+        activeTab = direct.value
       } else {
-        const owningChild = topLevelActive.children.find((child) => {
-          return child.children?.some((grandChild) => getItemId(grandChild) === activeItem.value)
-        })
-        if (owningChild) {
-          activeChildTab = getItemId(owningChild)
-        }
+        // Check if active id belongs to a grandchild — highlight its parent tab
+        const owningChild = item.children.find((child) =>
+          child.children?.some((grand) => getItemId(grand) === resolvedActiveId)
+        )
+        if (owningChild) activeTab = getItemId(owningChild)
       }
     }
-    navbarCtx.setNestedTabs(tabsForNav, activeChildTab)
+
+    return { tabs, activeTab }
+  }
+
+  return null
+}
+
+/**
+ * Master sync — called on route change and items change.
+ * Runs resolve + nestedTabs update in one pass, then writes refs once.
+ */
+const syncAll = (path: string) => {
+  const resolvedId = resolveActiveFromPath(props.items, path)
+  activeItem.value = resolvedId
+
+  if (!navbarCtx?.renderNestedTabs?.value) return
+
+  const result = deriveNestedTabs(path, resolvedId)
+  if (result) {
+    navbarCtx.setNestedTabs(result.tabs, result.activeTab)
   } else {
-    const isChild = props.items.some((i) =>
-      i.children?.some((c) => getItemId(c) === activeItem.value)
-    )
-    if (!isChild) {
-      navbarCtx.setNestedTabs([], '')
-    }
+    navbarCtx.setNestedTabs([], '')
   }
 }
 
+// Route change — single watcher, single pass
 watch(
   () => route?.path,
-  (path) => {
-    if (path) {
-      syncWithRoute(props.items, path)
-      updateNestedTabs(path)
-    }
-  },
+  (path) => { if (path) syncAll(path) },
   { immediate: true }
 )
 
+// Items change (e.g. async menu load)
 watch(
   () => props.items,
-  () => {
-    if (route?.path) {
-      syncWithRoute(props.items, route.path)
-      updateNestedTabs(route.path)
-    }
-  },
+  () => { if (route?.path) syncAll(route.path) },
   { deep: true }
 )
 
-watch(
-  () => activeItem.value,
-  () => {
-    if (navbarCtx?.renderNestedTabs?.value) {
-      updateNestedTabs(route?.path || '')
-    }
-  }
-)
+// NOTE: No activeItem watcher — activeItem is set inside syncAll, not separately.
+// This eliminates the double updateNestedTabs call that existed before.
 
 const toggleExpand = (id: string) => {
   const isExpanded = expandedItems.value.includes(id)
@@ -205,6 +208,15 @@ const toggleExpand = (id: string) => {
 
 const setActive = (id: string | null) => {
   activeItem.value = id
+  // When an item is clicked directly (not via route), re-derive tabs if needed
+  if (navbarCtx?.renderNestedTabs?.value && route?.path) {
+    const result = deriveNestedTabs(route.path, id)
+    if (result) {
+      navbarCtx.setNestedTabs(result.tabs, result.activeTab)
+    } else {
+      navbarCtx.setNestedTabs([], '')
+    }
+  }
 }
 
 const context = reactive({
