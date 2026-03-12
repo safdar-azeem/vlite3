@@ -37,10 +37,10 @@ const props = withDefaults(defineProps<ScreenProps>(), {
   importProps: false,
   importType: '',
   paginationProps: () => ({
-    alignment: 'end',
+    alignment: 'between',
     navType: 'icon',
-    showItemsPerPage: false,
-    itemsPerPageOptions: [10, 25, 50, 100],
+    showItemsPerPage: true,
+    itemsPerPageOptions: [10, 20, 30, 50],
   }),
 })
 
@@ -501,7 +501,7 @@ const handleBackendExport = async (format: string) => {
     <slot name="sub-header" />
 
     <!-- ── Main content area ── -->
-    <div class="flex-1 w-full relative min-h-[250px]" :class="containerClass">
+    <div class="flex-1 w-full relative" :class="containerClass">
       <template v-if="!hasData && !loading">
         <slot name="empty">
           <Empty
