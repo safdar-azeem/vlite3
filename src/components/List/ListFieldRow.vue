@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import Icon from '../Icon.vue'
+import Price from '../Price/Price.vue'
 import { $t } from '@/utils/i18n'
 import type { ListField, StackedBorderStyle } from './types'
 import { getObjectValue, getStatusColorClass, formatDate, formatPrice, formatNumber } from './utils'
@@ -118,7 +119,6 @@ const stackedCellClass = computed(() => {
 </script>
 
 <template>
-  <!-- ═══ Stacked layout (label on top, value below) ═══ -->
   <div
     v-if="isStacked"
     :class="[
@@ -126,7 +126,6 @@ const stackedCellClass = computed(() => {
       stackedCellClass,
     ]"
     role="row">
-    <!-- Label -->
     <div class="flex items-center gap-1.5 min-w-0">
       <Icon v-if="field.icon" :icon="field.icon" class="w-3 h-3 text-muted-foreground shrink-0" />
       <span class="text-xs font-normal text-muted-foreground leading-snug truncate">
@@ -134,26 +133,29 @@ const stackedCellClass = computed(() => {
       </span>
     </div>
 
-    <!-- Value area -->
     <div class="min-w-0">
-      <!-- Named slot override -->
       <template v-if="$slots[field.key]">
         <slot :name="field.key" :value="rawValue" :resolved="resolvedValue" :data="data" />
       </template>
 
-      <!-- Custom Vue component -->
       <template v-else-if="field.component">
         <component :is="field.component" :data="data" :value="rawValue" />
       </template>
 
-      <!-- Sensitive / masked value -->
       <template v-else-if="field.isSensitive">
         <div class="flex items-center gap-1.5">
-          <span
-            v-if="showSensitive"
-            class="text-sm font-semibold text-foreground break-words leading-snug"
-            :class="valueClass"
-            v-html="resolvedValue" />
+          <template v-if="showSensitive">
+            <Price
+              v-if="field.type === 'price'"
+              :value="rawValue"
+              class="text-sm font-semibold text-foreground break-words leading-snug"
+              :class="valueClass" />
+            <span
+              v-else
+              class="text-sm font-semibold text-foreground break-words leading-snug"
+              :class="valueClass"
+              v-html="resolvedValue" />
+          </template>
           <span
             v-else
             class="text-sm font-semibold text-foreground tracking-widest select-none"
@@ -170,7 +172,6 @@ const stackedCellClass = computed(() => {
         </div>
       </template>
 
-      <!-- Image / avatar -->
       <template v-else-if="isImageType">
         <img
           :src="resolvedValue"
@@ -178,9 +179,14 @@ const stackedCellClass = computed(() => {
           class="w-8 h-8 rounded-full object-cover border border-border mt-0.5" />
       </template>
 
-      <!-- Default rendered value -->
       <template v-else>
+        <Price
+          v-if="field.type === 'price'"
+          :value="rawValue"
+          class="text-sm font-semibold text-foreground break-words leading-snug"
+          :class="valueClass" />
         <span
+          v-else
           class="text-sm font-semibold text-foreground break-words leading-snug"
           :class="valueClass"
           v-html="resolvedValue" />
@@ -188,7 +194,6 @@ const stackedCellClass = computed(() => {
     </div>
   </div>
 
-  <!-- ═══ Default horizontal layout (label left, value right) ═══ -->
   <div
     v-else
     class="list-field-row flex justify-between gap-3 px-3 py-2.5 transition-colors"
@@ -199,7 +204,6 @@ const stackedCellClass = computed(() => {
       variant === 'minimal' ? 'px-0!' : '',
     ]"
     role="row">
-    <!-- Label -->
     <div class="flex items-center gap-1.5 shrink-0 min-w-0 max-w-[48%]">
       <Icon v-if="field.icon" :icon="field.icon" class="w-3.5 h-3.5 text-gray-800 shrink-0" />
       <span class="text-sm font-medium text-gray-800 truncate leading-snug">
@@ -207,25 +211,28 @@ const stackedCellClass = computed(() => {
       </span>
     </div>
 
-    <!-- Value area -->
     <div class="flex items-center justify-end gap-2 min-w-0 flex-1">
-      <!-- Named slot override -->
       <template v-if="$slots[field.key]">
         <slot :name="field.key" :value="rawValue" :resolved="resolvedValue" :data="data" />
       </template>
 
-      <!-- Custom Vue component -->
       <template v-else-if="field.component">
         <component :is="field.component" :data="data" :value="rawValue" />
       </template>
 
-      <!-- Sensitive / masked value -->
       <template v-else-if="field.isSensitive">
-        <span
-          v-if="showSensitive"
-          class="text-sm text-gray-600 text-right break-words"
-          :class="valueClass"
-          v-html="resolvedValue" />
+        <template v-if="showSensitive">
+          <Price
+            v-if="field.type === 'price'"
+            :value="rawValue"
+            class="text-sm text-gray-600 text-right break-words"
+            :class="valueClass" />
+          <span
+            v-else
+            class="text-sm text-gray-600 text-right break-words"
+            :class="valueClass"
+            v-html="resolvedValue" />
+        </template>
         <span v-else class="text-sm text-gray-600 tracking-widest select-none" aria-hidden="true">
           &#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;
         </span>
@@ -238,7 +245,6 @@ const stackedCellClass = computed(() => {
         </button>
       </template>
 
-      <!-- Image / avatar -->
       <template v-else-if="isImageType">
         <img
           :src="resolvedValue"
@@ -246,9 +252,14 @@ const stackedCellClass = computed(() => {
           class="w-8 h-8 rounded-full object-cover border border-border" />
       </template>
 
-      <!-- Default rendered value -->
       <template v-else>
+        <Price
+          v-if="field.type === 'price'"
+          :value="rawValue"
+          class="text-sm text-gray-900 text-right break-words leading-snug"
+          :class="valueClass" />
         <span
+          v-else
           class="text-sm text-gray-900 text-right break-words leading-snug"
           :class="valueClass"
           v-html="resolvedValue" />
