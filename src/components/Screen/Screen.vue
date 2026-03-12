@@ -150,7 +150,10 @@ const triggerChange = () => {
 }
 
 const activeComponent = computed(() => {
-  return activeView.value === 'table' && props.table ? props.table : props.list
+  if (activeView.value === 'table') {
+    return props.table || !!slots.table
+  }
+  return props.list || !!slots.list || !!slots.grid
 })
 
 const hasData = computed(() => props.data && props.data.length > 0)
