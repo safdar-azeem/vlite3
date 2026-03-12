@@ -1,17 +1,20 @@
 <script setup lang="ts">
-import { h, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { Navbar, NavbarGroup, NavbarItem } from '@/components/Navbar'
+import { useLocalStorage } from '@vueuse/core'
+import { Navbar } from '@/components/Navbar'
 import SidebarMenu from '@/components/SidebarMenu/SidebarMenu.vue'
 import type { SidebarMenuItemSchema } from '@/components/SidebarMenu'
-import Icon from '@/components/Icon.vue'
 import ThemeToggle from '@/components/ThemeToggle.vue'
 import Button from '@/components/Button.vue'
 import Avatar from '@/components/Avatar.vue'
-import NavbarCommandPalette, {
-  type CommandPlateSchema,
-} from '@/components/NavbarCommandPalette.vue'
+import NavbarCommandPalette from '@/components/NavbarCommandPalette.vue'
 import { Breadcrumb } from '@/components/Breadcrumb'
+
+// Compact sidebar state persisted in localStorage
+const isSidebarCompact = useLocalStorage<boolean>('vlite-navbar-sidebar-compact', false)
+
+const toggleCompact = () => {
+  isSidebarCompact.value = !isSidebarCompact.value
+}
 
 const menuItems: SidebarMenuItemSchema[] = [
   {
@@ -111,56 +114,29 @@ const menuItems: SidebarMenuItemSchema[] = [
 </script>
 
 <template>
-  <div class="h-screen w-full bg-body text-gray-900 flex max-md:flex-col overflow-hidden">
+  <div class="h-screen w-full overflow-hidden">
+    <!--
+      sidebar-first layout:
+        - Sidebar: full height, left edge, top-to-bottom
+        - Right column: header on top, main content below
+    -->
     <Navbar
       variant="sidebar"
+      layout-mode="classic"
       mobileBreakpoint="md"
-      sidebarToggle
       breadcrumb
-      class="bg-body border-r border-border h-max shrink-0 z-20">
-      <template #header="{ toggleSidebar, toggle, breadcrumbItems }">
-        <div class="h-13 border-b bg-white flex items-center justify-between px-5 w-full shadow-sm">
-          <div class="flex items-center w-full justify-between gap-8">
-            <div class="flex gap-2 items-center">
-              <Button variant="ghost" icon="lucide:menu" @click="toggle" class="md:hidden" />
-              <Button
-                variant="ghost"
-                icon="lucide:menu"
-                @click="toggleSidebar"
-                class="max-md:hidden" />
-              <div class="font-bold text-lg flex items-center gap-2 mr-6">
-                <div class="w-7 h-7 rounded bg-primary text-white flex items-center justify-center">
-                  V
-                </div>
-                Vlite3
-              </div>
-              <NavbarCommandPalette
-                :enabled="true"
-                class="ml-auto"
-                triggerClass="w-[230px]"
-                :menu-items="menuItems"
-                placeholder="Search components..."
-                shortcut-key="k" />
-              <div
-                v-if="breadcrumbItems?.length > 1"
-                class="hidden md:flex items-center pl-4 border-l border-border">
-                <Breadcrumb :items="breadcrumbItems" separator="slash" size="sm" />
-              </div>
-            </div>
-            <div class="flex gap-4">
-              <Button variant="ghost" size="sm" icon="lucide:bell" rounded="full" />
-              <Avatar size="sm" fallback="JD" class="bg-primary/20 text-primary" />
-            </div>
-          </div>
-        </div>
-      </template>
-
+      :render-nested-tabs="isSidebarCompact"
+      class="border-r border-border bg-background transition-all duration-300"
+      :class="isSidebarCompact ? 'w-28' : 'w-64'">
+      <!-- Sidebar scrollable content -->
       <template #default>
-        <div class="space-y-6 md:py-3">
+        <div class="py-3" :class="isSidebarCompact ? 'px-1' : 'px-2'">
           <SidebarMenu
-            :show-tooltip="false"
+            :show-tooltip="isSidebarCompact"
             :items="menuItems"
             :allow-multiple="true"
+            :compact="isSidebarCompact"
+            :render-mode="isSidebarCompact ? 'popover' : 'tree'"
             show-compact-labels
             :default-expanded="[
               'Core',
@@ -171,13 +147,63 @@ const menuItems: SidebarMenuItemSchema[] = [
         </div>
       </template>
 
+      <!-- Sidebar bottom footer -->
       <template #right>
-        <div class="flex items-center justify-between gap-2">
+        <div
+          class="flex items-center gap-2 px-2 py-2"
+          :class="isSidebarCompact ? 'flex-col justify-center' : 'flex-row justify-between'">
           <ThemeToggle />
-          <p class="text-xs text-muted-foreground">v0.6.2</p>
+          <p v-if="!isSidebarCompact" class="text-xs text-muted-foreground">v0.6.2</p>
         </div>
       </template>
 
+      <!-- Header — spans only the right column (next to sidebar) -->
+      <template #header="{ toggleSidebar, toggle, breadcrumbItems }">
+        <div
+          class="h-13 border-b bg-background flex items-center justify-between px-4 w-full shadow-sm">
+          <div class="flex items-center gap-2 min-w-0 flex-1">
+            <!-- Mobile hamburger -->
+            <Button variant="ghost" icon="lucide:menu" @click="toggle" class="md:hidden shrink-0" />
+
+            <!-- Desktop: compact toggle -->
+            <Button
+              variant="ghost"
+              :icon="isSidebarCompact ? 'lucide:panel-left-open' : 'lucide:panel-left-close'"
+              @click="toggleCompact"
+              class="max-md:hidden shrink-0" />
+
+            <div class="font-bold text-lg flex items-center gap-2 mr-6">
+              <div class="w-7 h-7 rounded bg-primary text-white flex items-center justify-center">
+                V
+              </div>
+              Vlite3
+            </div>
+
+            <!-- Command palette -->
+            <NavbarCommandPalette
+              :enabled="true"
+              triggerClass="w-[200px] hidden sm:inline-flex"
+              :menu-items="menuItems"
+              placeholder="Search components..."
+              shortcut-key="k" />
+
+            <!-- Breadcrumb -->
+            <div
+              v-if="breadcrumbItems?.length > 1"
+              class="hidden md:flex items-center pl-3 border-l border-border ml-1">
+              <Breadcrumb :items="breadcrumbItems" separator="slash" size="sm" />
+            </div>
+          </div>
+
+          <!-- Right actions -->
+          <div class="flex gap-2 items-center shrink-0">
+            <Button variant="ghost" size="sm" icon="lucide:bell" rounded="full" />
+            <Avatar size="sm" fallback="JD" class="bg-primary/20 text-primary" />
+          </div>
+        </div>
+      </template>
+
+      <!-- Main content area -->
       <template #main>
         <div class="flex-1 w-full flex flex-col h-full bg-body relative z-0">
           <div class="flex-1 overflow-y-auto scroll-smooth">
