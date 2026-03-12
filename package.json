@@ -39,6 +39,7 @@
     "@types/scrollreveal": "^0.0.11",
     "@vueuse/core": "^14.1.0",
     "@vueuse/integrations": "^14.2.1",
+    "dayjs": "^1.11.19",
     "file-saver": "^2.0.5",
     "iconify-icon-picker": "^1.0.3",
     "jsbarcode": "^3.12.3",
