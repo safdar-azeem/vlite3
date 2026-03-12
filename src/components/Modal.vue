@@ -95,6 +95,12 @@ const close = () => {
   emit('close')
 }
 
+const handleClose = () => {
+  visible.value = false
+  emit('update:show', false)
+  emit('close')
+}
+
 provide('modal-context', { close, setSubmitting })
 
 const handleBackdropClick = () => {
@@ -143,7 +149,11 @@ const displayDescription = computed(() =>
 </script>
 
 <template>
-  <span @click.stop="handleOpen" :class="`${triggerClass}`" v-bind="$attrs" v-if="$slots?.trigger">
+  <span
+    @click.stop="handleOpen"
+    :class="`${triggerClass}`"
+    v-bind="$attrs"
+    v-if="$slots?.trigger || $slots?.default">
     <slot name="trigger">
       <template v-if="body">
         <slot />
@@ -194,10 +204,10 @@ const displayDescription = computed(() =>
               {{ displayDescription }}
             </p>
             <template v-if="body">
-              <component :is="body" v-bind="{ ...bodyProps, ...$attrs }" :close="close" />
+              <component :is="body" v-bind="{ ...bodyProps, ...$attrs }" :close="handleClose" />
             </template>
             <template v-else>
-              <slot :close="close" />
+              <slot :close="handleClose" />
             </template>
           </div>
 
@@ -205,7 +215,7 @@ const displayDescription = computed(() =>
             v-if="$slots.footer"
             :class="footerClass"
             class="flex-none flex items-center px-4 py-3 border-t border-border/75 rounded-b-xl bg-body">
-            <slot name="footer" :close="close" />
+            <slot name="footer" :close="handleClose" />
           </div>
         </div>
       </div>
