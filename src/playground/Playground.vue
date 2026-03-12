@@ -131,7 +131,9 @@ const menuItems: SidebarMenuItemSchema[] = [
       <!-- Sidebar scrollable content -->
       <template #default>
         <div class="py-3" :class="isSidebarCompact ? 'px-1' : 'px-2'">
+          <!-- Desktop: respects renderNestedTabs / compact mode -->
           <SidebarMenu
+            class="hidden md:flex"
             :show-tooltip="isSidebarCompact"
             :items="menuItems"
             :allow-multiple="true"
@@ -144,6 +146,18 @@ const menuItems: SidebarMenuItemSchema[] = [
               'Feedback & Overlays',
               'Navigation & Data',
             ]" />
+
+          <!--
+            Mobile: always show full tree view regardless of renderNestedTabs.
+            forceTreeView suppresses the nested-tab extraction so the full
+            tree is always visible on small screens.
+          -->
+          <SidebarMenu
+            class="md:hidden"
+            :show-tooltip="false"
+            :allow-multiple="true"
+            :items="menuItems"
+            :force-tree-view="true" />
         </div>
       </template>
 
@@ -154,6 +168,15 @@ const menuItems: SidebarMenuItemSchema[] = [
           :class="isSidebarCompact ? 'flex-col justify-center' : 'flex-row justify-between'">
           <ThemeToggle />
           <p v-if="!isSidebarCompact" class="text-xs text-muted-foreground">v0.6.2</p>
+        </div>
+      </template>
+
+      <template #logo>
+        <div class="font-bold text-lg flex items-center gap-2 mr-6">
+          <div class="w-7 h-7 rounded bg-primary text-white flex items-center justify-center">
+            V
+          </div>
+          Vlite3
         </div>
       </template>
 
