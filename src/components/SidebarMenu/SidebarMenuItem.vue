@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, inject } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import Icon from '../Icon.vue'
 import Tooltip from '@/components/Tooltip.vue'
 import type { SidebarMenuItemSchema, SidebarMenuContext } from './types'
@@ -21,6 +21,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const context = inject<SidebarMenuContext>('sidebar-menu-ctx')
 const router = useRouter()
+const route = useRoute()
 
 if (!context) {
   throw new Error('SidebarMenuItem must be used within a SidebarMenu')
@@ -61,8 +62,57 @@ const showChevron = computed(() => {
   return true
 })
 
+/**
+ * Recursively checks whether a given item or any of its descendants
+ * matches the provided active id or current route path.
+ */
+const itemOrDescendantIsActive = (
+  item: SidebarMenuItemSchema,
+  activeId: string | null,
+  currentPath: string
+): boolean => {
+  const id = item.id || (typeof item.to === 'string' ? item.to : null) || item.label
+
+  // Direct active id match
+  if (activeId && id === activeId) return true
+
+  // Direct path match (for cases where activeItem hasn't been resolved yet)
+  if (item.to) {
+    const itemPath = typeof item.to === 'string' ? item.to : (item.to as any).path
+    if (itemPath) {
+      if (currentPath === itemPath) return true
+      if (
+        itemPath !== '/' &&
+        itemPath.length > 1 &&
+        currentPath.startsWith(itemPath)
+      ) {
+        const next = currentPath[itemPath.length]
+        if (!next || next === '/' || next === '?') return true
+      }
+    }
+  }
+
+  // Recurse into children
+  if (item.children?.length) {
+    return item.children.some((child) =>
+      itemOrDescendantIsActive(child, activeId, currentPath)
+    )
+  }
+
+  return false
+}
+
 const isActive = computed(() => {
-  return context.activeItem === itemId.value
+  const currentPath = route?.path || ''
+  const activeId = context.activeItem
+
+  // For items with children (parent groups), check if any descendant is active
+  if (hasChildren.value) {
+    return itemOrDescendantIsActive(props.item, activeId, currentPath)
+  }
+
+  // Leaf item: match by activeItem id
+  return activeId === itemId.value
 })
 
 const handleClick = (e: MouseEvent) => {
@@ -151,7 +201,7 @@ const itemStyle = computed(() => {
 
 const itemClass = computed(() => {
   const widthClass = isHorizontal.value ? 'w-auto' : 'w-full'
-  const base = `group flex items-center justify-between font-medium rounded-md  focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 relative border border-transparent select-none cursor-pointer ${widthClass} ${props?.itemClass || ''} ${context.labelClass}`
+  const base = `group flex items-center justify-between font-medium rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 relative border border-transparent select-none cursor-pointer ${widthClass} ${props?.itemClass || ''} ${context.labelClass}`
 
   const layout = context.compact
     ? `justify-center ${context.compactItemPadding}`
