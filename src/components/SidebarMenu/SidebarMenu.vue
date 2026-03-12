@@ -29,6 +29,7 @@ const props = withDefaults(defineProps<SidebarMenuProps>(), {
   orientation: 'vertical',
   mobileBreakpoint: 'none',
   showTooltip: true,
+  forceTreeView: false,
 })
 
 const route = useRoute()
@@ -51,6 +52,12 @@ const currentOrientation = computed(() => {
     return 'vertical'
   }
   return props.orientation || 'vertical'
+})
+
+// When forceTreeView is true, renderNestedTabs behavior is suppressed regardless of navbar context
+const effectiveRenderNestedTabs = computed(() => {
+  if (props.forceTreeView) return false
+  return !!navbarCtx?.renderNestedTabs?.value
 })
 
 // Centralized helper to resolve item ID reliably in proper fallback order
@@ -166,7 +173,8 @@ const syncAll = (path: string) => {
   const resolvedId = resolveActiveFromPath(props.items, path)
   activeItem.value = resolvedId
 
-  if (!navbarCtx?.renderNestedTabs?.value) return
+  // Only update nested tabs if renderNestedTabs is active AND forceTreeView is not set
+  if (!effectiveRenderNestedTabs.value) return
 
   const result = deriveNestedTabs(path, resolvedId)
   if (result) {
@@ -209,7 +217,7 @@ const toggleExpand = (id: string) => {
 const setActive = (id: string | null) => {
   activeItem.value = id
   // When an item is clicked directly (not via route), re-derive tabs if needed
-  if (navbarCtx?.renderNestedTabs?.value && route?.path) {
+  if (effectiveRenderNestedTabs.value && route?.path) {
     const result = deriveNestedTabs(route.path, id)
     if (result) {
       navbarCtx.setNestedTabs(result.tabs, result.activeTab)
@@ -227,7 +235,8 @@ const context = reactive({
   indentSize: computed(() => props.indentSize),
   variant: computed(() => props.variant),
   renderMode: computed(() => props.renderMode || 'tree'),
-  renderNestedTabs: computed(() => !!navbarCtx?.renderNestedTabs?.value),
+  // Expose the effective value so SidebarMenuItem respects forceTreeView
+  renderNestedTabs: effectiveRenderNestedTabs,
   compact: computed(() => props.compact),
   showCompactLabels: computed(() => props.showCompactLabels),
   iconSize: computed(() => props.iconSize),
