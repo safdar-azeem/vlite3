@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import CheckBox from '../CheckBox.vue'
 import Price from '../Price/Price.vue'
+import Date from '../Date/Date.vue'
 import type { TableHeader } from './types'
 
 interface Props {
@@ -43,14 +44,6 @@ const formatValue = (header: TableHeader, value: any, row: any): string => {
 
   if (value === null || value === undefined) {
     return '-'
-  }
-
-  if (header.type === 'date') {
-    return new Date(value).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    })
   }
 
   if (header.type === 'number') {
@@ -162,12 +155,21 @@ const handleSelect = () => {
         :row="row"
         :index="index"
         :field="header.field">
+        
         <Price
           v-if="header.type === 'price'"
           :value="getNestedValue(row, header.field)"
           class="truncate block"
           :title="String(getNestedValue(row, header.field))"
         />
+        
+        <Date
+          v-else-if="header.type === 'date'"
+          :value="getNestedValue(row, header.field)"
+          class="truncate block"
+          :title="String(getNestedValue(row, header.field))"
+        />
+        
         <span
           v-else
           class="truncate block"
