@@ -12,12 +12,18 @@ interface Props {
   variant?: TabesVariant
   block?: boolean
   textClass?: string
+  /**
+   * When true, tabs wrap to multiple rows on small screens instead of scrolling.
+   * Default: false (horizontal scroll behavior)
+   */
+  wrap?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   size: 'md',
   variant: 'surface',
   block: false,
+  wrap: false,
 })
 
 const emit = defineEmits<{
@@ -75,6 +81,7 @@ watch(() => props.modelValue, updateMarker)
 watch(() => props.options, updateMarker, { deep: true })
 watch(() => props.size, updateMarker)
 watch(() => props.block, updateMarker)
+watch(() => props.wrap, updateMarker)
 
 onMounted(updateMarker)
 
@@ -85,7 +92,7 @@ const handleSelect = (option: TabesOption) => {
 }
 
 const containerClasses = computed(() => {
-  const base = 'inline-flex rounded-lg relative isolate'
+  const isLine = props.variant === 'line'
 
   const variantStyles: Record<TabesVariant, string> = {
     surface: 'bg-secondary/80 p-1',
@@ -94,10 +101,15 @@ const containerClasses = computed(() => {
     danger: 'bg-danger/10 p-1',
     success: 'bg-success/10 p-1',
     outline: 'bg-transparent border border-border p-1',
-    line: 'bg-transparent gap-6 rounded-none p-0 border-b border-border w-full',
+    line: 'bg-transparent gap-6 rounded-none p-0 border-b border-border',
   }
 
-  return [base, variantStyles[props.variant], props.block ? 'flex w-full' : '']
+  const wrapClass = props.wrap && !isLine ? 'flex-wrap' : ''
+  const blockClass = props.block || isLine ? 'flex w-full' : 'inline-flex'
+  // When wrapping, hide the animated marker since it can't track across rows properly
+  const base = `${blockClass} rounded-lg relative isolate ${wrapClass}`
+
+  return [base, variantStyles[props.variant]]
 })
 
 const sizeClasses = {
@@ -110,9 +122,12 @@ const itemBaseClasses = computed(() => {
   const isLine = props.variant === 'line'
   const base = isLine
     ? 'relative z-10 flex items-center justify-center gap-2 font-medium transition-colors duration-50 ease-out cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-primary/50 pb-2 border-b-2 border-transparent hover:text-foreground'
-    : 'relative z-10 flex-1 flex items-center justify-center gap-2 font-medium transition-colors duration-50 ease-out cursor-pointer select-none rounded-md outline-none focus-visible:ring-2 focus-visible:ring-primary/50'
+    : 'relative z-10 flex items-center justify-center gap-2 font-medium transition-colors duration-50 ease-out cursor-pointer select-none rounded-md outline-none focus-visible:ring-2 focus-visible:ring-primary/50'
 
-  return [base]
+  // When block or wrap mode: flex-1 to fill row; otherwise auto
+  const growClass = (props.block || props.wrap) && !isLine ? 'flex-1' : ''
+
+  return [base, growClass]
 })
 
 const getItemClasses = (option: TabesOption) => {
@@ -200,7 +215,7 @@ const getComponentProps = (opt: TabesOption) => {
 <template>
   <div ref="containerRef" :class="containerClasses" role="tablist">
     <div
-      v-if="modelValue !== undefined"
+      v-if="modelValue !== undefined && !wrap"
       :class="[markerClasses, getMarkerColorClass()]"
       :style="markerStyle"></div>
 
