@@ -39,7 +39,7 @@ const handleDelete = (items: any[]) => {
 </script>
 
 <template>
-  <div class="space-y-12 pb-20">
+  <div class="space-y-12">
     <div>
       <h2 class="text-2xl font-bold text-gray-900 mb-2">Screen Component</h2>
       <p class="text-gray-500">
