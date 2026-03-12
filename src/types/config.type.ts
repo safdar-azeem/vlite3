@@ -79,5 +79,8 @@ export interface VLiteConfig {
       rounded?: InputRounded
       showRequiredAsterisk?: boolean
     }
+    price?: {
+      currency?: string
+    }
   }
 }
