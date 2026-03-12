@@ -147,6 +147,9 @@ const vlite = createVLite({
     price: {
       currency: 'PKR',
     },
+    date: {
+      format: 'MM-DD-YY',
+    },
   },
 })
 
