@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import CheckBox from '../CheckBox.vue'
+import Price from '../Price/Price.vue'
 import type { TableHeader } from './types'
 
 interface Props {
@@ -42,13 +43,6 @@ const formatValue = (header: TableHeader, value: any, row: any): string => {
 
   if (value === null || value === undefined) {
     return '-'
-  }
-
-  if (header.type === 'price') {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(Number(value))
   }
 
   if (header.type === 'date') {
@@ -168,7 +162,14 @@ const handleSelect = () => {
         :row="row"
         :index="index"
         :field="header.field">
+        <Price
+          v-if="header.type === 'price'"
+          :value="getNestedValue(row, header.field)"
+          class="truncate block"
+          :title="String(getNestedValue(row, header.field))"
+        />
         <span
+          v-else
           class="truncate block"
           :title="String(getNestedValue(row, header.field))"
           v-html="formatValue(header, getNestedValue(row, header.field), row)" />
