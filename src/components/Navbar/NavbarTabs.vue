@@ -142,7 +142,7 @@ const isActive = (item: NavbarTabItem): boolean => {
 
 const getItemClasses = (item: NavbarTabItem): string => {
   const base =
-    'group relative inline-flex items-center justify-center gap-2 font-medium whitespace-nowrap shrink-0 select-none cursor-pointer outline-none transition-all duration-150  focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-1'
+    'group relative inline-flex items-center justify-center gap-2 font-medium whitespace-nowrap shrink-0 select-none cursor-pointer outline-none   focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-1'
 
   const disabled = item.disabled ? 'opacity-50 pointer-events-none cursor-not-allowed' : ''
 
