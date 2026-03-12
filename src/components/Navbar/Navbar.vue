@@ -270,7 +270,6 @@ const isSidebarFirst = computed(() => {
   <div
     v-if="isSidebarFirst"
     class="vlite-app-layout flex flex-row w-full h-full bg-body overflow-hidden">
-
     <!--
       SIDEBAR — full height, left edge
       Hidden on mobile (SidePanel handles mobile nav)
@@ -292,7 +291,6 @@ const isSidebarFirst = computed(() => {
         ]"
         role="navigation"
         aria-label="Sidebar">
-
         <!-- Sidebar scrollable content (default slot) -->
         <div
           class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin"
@@ -314,11 +312,8 @@ const isSidebarFirst = computed(() => {
       RIGHT COLUMN — header on top, main content below
     -->
     <div class="flex flex-col flex-1 min-w-0 h-full overflow-hidden">
-
       <!-- HEADER — spans only the right column -->
-      <header
-        v-if="$slots.header"
-        class="w-full shrink-0 z-20 bg-background">
+      <header v-if="$slots.header" class="w-full shrink-0 z-20 bg-background">
         <slot
           name="header"
           :is-open="isMobileMenuOpen"
@@ -391,7 +386,6 @@ const isSidebarFirst = computed(() => {
   <div
     v-else-if="isLayoutMode"
     class="vlite-app-layout flex flex-col w-full h-full bg-body overflow-hidden">
-
     <header v-if="$slots.header" class="w-full shrink-0 z-50 flex flex-col relative">
       <slot
         name="header"
@@ -432,18 +426,7 @@ const isSidebarFirst = computed(() => {
                   <span class="sr-only">Open Menu</span>
                 </button>
               </slot>
-              <div class="shrink-0" :class="props.logoClass" v-if="$slots?.logo">
-                <slot name="logo">
-                  <component
-                    :is="props.logo ? 'img' : 'div'"
-                    :src="props.logo"
-                    class="h-8 w-auto font-bold text-xl flex items-center gap-2">
-                    <Logo v-if="!props.logo" class="h-6 w-6" />
-                    <span v-if="!props.logo && props.logoAlt">{{ props.logoAlt }}</span>
-                    <span v-else-if="!props.logo">Brand</span>
-                  </component>
-                </slot>
-              </div>
+
               <div
                 v-if="$slots?.left"
                 class="items-center gap-1 overflow-x-auto no-scrollbar mask-gradient"
@@ -466,9 +449,6 @@ const isSidebarFirst = computed(() => {
 
           <template v-else>
             <div v-if="!$slots.header" :class="breakpointClasses.mobileHeader">
-              <slot name="logo" v-if="$slots?.logo">
-                <div class="font-bold text-xl truncate">Brand</div>
-              </slot>
               <slot
                 name="mobile-trigger"
                 :is-open="isMobileMenuOpen"
@@ -485,14 +465,6 @@ const isSidebarFirst = computed(() => {
               </slot>
             </div>
             <div :class="breakpointClasses.desktopSidebar">
-              <div
-                class="py-4.5 flex items-center px-4.5 z-10"
-                :class="props.logoClass"
-                v-if="$slots?.logo">
-                <slot name="logo">
-                  <div class="font-bold text-xl truncate">Brand</div>
-                </slot>
-              </div>
               <div
                 class="flex-1 px-2.5 pt-0 pb-4 overflow-y-auto space-y-4 scrollbar-thin"
                 :class="props.contentClass">
@@ -617,18 +589,6 @@ const isSidebarFirst = computed(() => {
             <span class="sr-only">Open Menu</span>
           </button>
         </slot>
-        <div class="shrink-0" :class="props.logoClass" v-if="$slots?.logo">
-          <slot name="logo">
-            <component
-              :is="props.logo ? 'img' : 'div'"
-              :src="props.logo"
-              class="h-8 w-auto font-bold text-xl flex items-center gap-2">
-              <Logo v-if="!props.logo" class="h-6 w-6" />
-              <span v-if="!props.logo && props.logoAlt">{{ props.logoAlt }}</span>
-              <span v-else-if="!props.logo">Brand</span>
-            </component>
-          </slot>
-        </div>
         <div
           v-if="$slots?.left"
           class="items-center gap-1 overflow-x-auto no-scrollbar mask-gradient"
@@ -651,9 +611,6 @@ const isSidebarFirst = computed(() => {
 
     <template v-else>
       <div :class="breakpointClasses.mobileHeader">
-        <slot name="logo" v-if="$slots?.logo">
-          <div class="font-bold text-xl truncate">Brand</div>
-        </slot>
         <slot
           name="mobile-trigger"
           :is-open="isMobileMenuOpen"
@@ -670,14 +627,6 @@ const isSidebarFirst = computed(() => {
         </slot>
       </div>
       <div :class="breakpointClasses.desktopSidebar">
-        <div
-          class="py-4.5 flex items-center px-4.5 z-10"
-          :class="props.logoClass"
-          v-if="$slots?.logo">
-          <slot name="logo">
-            <div class="font-bold text-xl truncate">Brand</div>
-          </slot>
-        </div>
         <div
           class="flex-1 px-2.5 pt-0 pb-4 overflow-y-auto space-y-4 scrollbar-thin"
           :class="props.contentClass">
