@@ -80,6 +80,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Screen', to: '/screen', icon: 'lucide:monitor' },
       { label: 'Stats', to: '/stats', icon: 'lucide:bar-chart-2' },
       { label: 'StatusChip', to: '/statuschip', icon: 'lucide:badge-check' },
+      { label: 'Price', to: '/price', icon: 'lucide:circle-dollar-sign' },
       { label: 'List', to: '/list', icon: 'lucide:layout-list' },
       { label: 'DataTable', to: '/datatable', icon: 'lucide:table-2' },
       { label: 'DataList', to: '/datalist', icon: 'lucide:layout-grid' },
