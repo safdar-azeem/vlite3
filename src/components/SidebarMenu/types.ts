@@ -36,6 +36,11 @@ export interface SidebarMenuProps {
   orientation?: 'vertical' | 'horizontal'
   mobileBreakpoint?: 'sm' | 'md' | 'lg' | 'xl' | 'none'
   showTooltip?: boolean
+  /**
+   * When true, forces tree view rendering regardless of the navbar's renderNestedTabs context.
+   * Useful for showing the full tree on small screens even when renderNestedTabs is active.
+   */
+  forceTreeView?: boolean
 }
 
 export interface SidebarMenuContext {
