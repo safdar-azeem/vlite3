@@ -319,7 +319,7 @@ const componentProps = computed(() => {
                   }" />
 
                 <span
-                  class="truncate leading-none pt-0.5"
+                  class="truncate leading-none pt-0.5 text-wrap"
                   :class="{
                     [context.compactLabelClass]: showCompactLabel && !isHorizontal,
                     hidden: context.compact && !showCompactLabel && !isHorizontal,
