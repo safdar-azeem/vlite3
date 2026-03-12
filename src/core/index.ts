@@ -49,6 +49,10 @@ export function createVLite(options: VLiteConfig = {}) {
               ...(configState.components?.form || {}),
               ...(options.components.form || {}),
             },
+            price: {
+              ...(configState.components?.price || {}),
+              ...(options.components.price || {}),
+            },
           }
         }
       }
