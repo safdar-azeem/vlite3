@@ -10,8 +10,8 @@ import type { IDropdownOption } from '@/types'
 // -----------------------------------------------------------------------------
 // 1. MOCK SERVER / DATABASE
 // -----------------------------------------------------------------------------
-const TOTAL_RECORDS = 1000
-const ITEMS_PER_PAGE = 10
+const TOTAL_RECORDS = 40
+const ITEMS_PER_PAGE = 40
 
 // Generate 1000 dummy users
 const MOCK_DB: IDropdownOption[] = Array.from({ length: TOTAL_RECORDS }, (_, i) => ({
@@ -45,8 +45,8 @@ const apiFetchSelected = async (ids: any[]): Promise<IDropdownOption[]> => {
 // 2. DEMO STATE
 // -----------------------------------------------------------------------------
 // Pre-select items that are WAY off the first page to demonstrate hydration
-const selectedSingle = ref('user_456') 
-const selectedMultiple = ref(['user_789', 'user_999'])
+const selectedSingle = ref('user_4')
+const selectedMultiple = ref(['user_7', 'user_999'])
 
 const options = ref<IDropdownOption[]>([])
 const loading = ref(false)
@@ -59,7 +59,7 @@ const currentQuery = ref('')
 // -----------------------------------------------------------------------------
 const loadOptions = async (reset = false) => {
   if (loading.value) return
-  
+
   loading.value = true
   try {
     const res = await apiFetchOptions(currentQuery.value, currentPage.value)
@@ -101,9 +101,18 @@ onMounted(() => {
       <div class="bg-blue-50 border border-blue-200 text-blue-800 text-sm p-4 rounded-lg">
         <p class="font-semibold mb-1">How this works:</p>
         <ul class="list-disc pl-5 space-y-1">
-          <li>The database contains <strong>1,000 records</strong>. Only 10 are loaded per page.</li>
-          <li>Default selections (e.g., <code>user_456</code>, <code>user_999</code>) don't exist on Page 1.</li>
-          <li>The components use the <code>fetchSelected</code> prop to automatically detect missing IDs, fetch their details in parallel, and cache them in an internal buffer so their labels render correctly instantly.</li>
+          <li>
+            The database contains <strong>1,000 records</strong>. Only 10 are loaded per page.
+          </li>
+          <li>
+            Default selections (e.g., <code>user_456</code>, <code>user_999</code>) don't exist on
+            Page 1.
+          </li>
+          <li>
+            The components use the <code>fetchSelected</code> prop to automatically detect missing
+            IDs, fetch their details in parallel, and cache them in an internal buffer so their
+            labels render correctly instantly.
+          </li>
         </ul>
       </div>
 
@@ -120,14 +129,12 @@ onMounted(() => {
             :debounce-time="400"
             :fetch-selected="apiFetchSelected"
             @search="handleSearch"
-            @load-more="handleLoadMore"
-          >
+            @load-more="handleLoadMore">
             <template #trigger="{ selectedLabel, isOpen }">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 class="w-full justify-between"
-                :icon-right="isOpen ? 'lucide:chevron-up' : 'lucide:chevron-down'"
-              >
+                :icon-right="isOpen ? 'lucide:chevron-up' : 'lucide:chevron-down'">
                 {{ selectedLabel || 'Search users...' }}
               </Button>
             </template>
@@ -157,8 +164,7 @@ onMounted(() => {
             :fetch-selected="apiFetchSelected"
             placeholder="Search and select users..."
             @search="handleSearch"
-            @load-more="handleLoadMore"
-          />
+            @load-more="handleLoadMore" />
           <div class="text-xs text-gray-500 bg-gray-50 p-2 rounded border">
             <strong>v-model:</strong> {{ selectedMultiple }}
           </div>
