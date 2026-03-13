@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, computed, watch, inject } from 'vue'
-import Icon from '../Icon.vue'
 import CheckBox from '../CheckBox.vue'
 import Button from '../Button.vue'
 import ConfirmationModal from '../ConfirmationModal.vue'
@@ -20,7 +19,7 @@ import type {
 } from './types'
 import { SCREEN_CONTEXT_KEY } from './types'
 
-// ── helpers ──────────────────────────────────────────────────────────────────
+// ── helpers ───────────────────────────────────────────────────────────────────
 
 const getNestedValue = (obj: any, path: string): any => {
   if (!obj || !path) return undefined
@@ -28,16 +27,8 @@ const getNestedValue = (obj: any, path: string): any => {
   return path.split('.').reduce((acc, part) => acc?.[part], obj)
 }
 
-const getRowId = (row: any, keyField: string): any => {
-  return getNestedValue(row, keyField)
-}
+const getRowId = (row: any, keyField: string): any => getNestedValue(row, keyField)
 
-/**
- * Resolve the effective keyField for a row set.
- * Priority: explicit prop value (unless it is the sentinel 'auto')
- *           → first of ['id', '_id'] found on the first row
- *           → fallback '_id'
- */
 const resolveKeyField = (rows: any[], propKeyField: string | undefined): string => {
   const DEFAULT_KEYS = ['id', '_id'] as const
   if (propKeyField && propKeyField !== 'auto') return propKeyField
@@ -57,7 +48,6 @@ const props = withDefaults(defineProps<DataTableProps>(), {
   search: '',
   showSearch: true,
   headers: () => [],
-  // 'auto' is the internal sentinel; actual field is resolved at runtime
   keyField: 'auto',
   loading: false,
   selectable: false,
@@ -90,30 +80,26 @@ const emit = defineEmits<{
 // ── Screen context injection ──────────────────────────────────────────────────
 
 /**
- * Screen provides a context object so that DataTable auto-configures itself
- * when rendered as a child of Screen:
- *   - disableSearch  → hides the built-in search toolbar (Screen has its own)
- *   - forceSelectable → enables row selection for bulk-delete support
+ * When DataTable is a child of Screen (via :table prop or #table slot):
+ *   - disableSearch  → hide our own search bar (Screen owns it)
+ *   - forceSelectable → enable row selection for bulk-delete
+ *   - onTableChange  → forward every sort/pagination/search state change
+ *                      to Screen so it can call its own refetch
  */
 const screenContext = inject<ScreenContext | null>(SCREEN_CONTEXT_KEY, null)
 
-// Effective showSearch: prop wins if explicitly set to false; otherwise context can disable it
 const effectiveShowSearch = computed(() => {
   if (screenContext?.disableSearch) return false
   return props.showSearch
 })
 
-// Effective selectable: explicit true prop or Screen context forcing it
 const effectiveSelectable = computed(() => {
-  if (props.selectable) return true
-  if (screenContext?.forceSelectable) return true
-  return false
+  return props.selectable || !!screenContext?.forceSelectable
 })
 
-// Resolved keyField supporting dual 'id'/'_id' auto-detection
 const effectiveKeyField = computed(() => resolveKeyField(props.rows, props.keyField))
 
-// ── state ─────────────────────────────────────────────────────────────────────
+// ── internal state ────────────────────────────────────────────────────────────
 
 const sortConfig = ref<SortConfig>({ field: '', order: '' })
 const internalItemsPerPage = ref(
@@ -123,15 +109,11 @@ const currentPage = ref(props.pageInfo?.currentPage || 1)
 const internalSearch = ref(props.search || '')
 const showDeleteConfirmation = ref(false)
 
-const loadingCause = ref<'initial' | 'page' | 'search' | 'sort' | 'limit' | 'idle'>('initial')
-
 const shouldShowSkeleton = computed(() => props.loading)
 
 watch(
   () => props.loading,
-  (newVal, oldVal) => {
-    if (!newVal && oldVal) loadingCause.value = 'idle'
-  }
+  (newVal, oldVal) => { if (!newVal && oldVal) { /* loading cleared */ } }
 )
 
 watch(
@@ -148,31 +130,13 @@ watch(internalSearch, () => {
   if (searchDebounceTimer) clearTimeout(searchDebounceTimer)
   searchDebounceTimer = setTimeout(() => {
     currentPage.value = 1
-    loadingCause.value = 'search'
     emitChange()
   }, 300)
 })
 
-watch(
-  () => props.pageInfo?.itemsPerPage,
-  (newVal) => {
-    if (newVal !== undefined) internalItemsPerPage.value = newVal
-  }
-)
-
-watch(
-  () => props.paginationProps?.itemsPerPage,
-  (newVal) => {
-    if (newVal !== undefined) internalItemsPerPage.value = newVal
-  }
-)
-
-watch(
-  () => props.pageInfo?.currentPage,
-  (newVal) => {
-    if (newVal) currentPage.value = newVal
-  }
-)
+watch(() => props.pageInfo?.itemsPerPage, (v) => { if (v !== undefined) internalItemsPerPage.value = v })
+watch(() => props.paginationProps?.itemsPerPage, (v) => { if (v !== undefined) internalItemsPerPage.value = v })
+watch(() => props.pageInfo?.currentPage, (v) => { if (v) currentPage.value = v })
 
 // ── selection ─────────────────────────────────────────────────────────────────
 
@@ -181,9 +145,7 @@ const selectedIds = ref<Set<any>>(new Set())
 watch(
   () => props.selectedRows,
   (newVal) => {
-    const newIds = new Set(
-      (newVal || []).map((row) => getRowId(row, effectiveKeyField.value))
-    )
+    const newIds = new Set((newVal || []).map((row) => getRowId(row, effectiveKeyField.value)))
     if (
       newIds.size !== selectedIds.value.size ||
       [...newIds].some((id) => !selectedIds.value.has(id))
@@ -194,78 +156,49 @@ watch(
   { immediate: true, deep: true }
 )
 
-const isAllSelected = computed(() => {
-  if (props.rows.length === 0) return false
-  return props.rows.every((row) =>
-    selectedIds.value.has(getRowId(row, effectiveKeyField.value))
-  )
-})
-
-const isIndeterminate = computed(
-  () => selectedIds.value.size > 0 && !isAllSelected.value
+const isAllSelected = computed(() =>
+  props.rows.length > 0 &&
+  props.rows.every((row) => selectedIds.value.has(getRowId(row, effectiveKeyField.value)))
 )
+
+const isIndeterminate = computed(() => selectedIds.value.size > 0 && !isAllSelected.value)
 
 const selectedRowsComputed = computed(() => {
   const allAvailable = [...(props.selectedRows || []), ...props.rows]
   const map = new Map()
   allAvailable.forEach((r) => map.set(getRowId(r, effectiveKeyField.value), r))
-  return Array.from(selectedIds.value)
-    .map((id) => map.get(id))
-    .filter(Boolean)
+  return Array.from(selectedIds.value).map((id) => map.get(id)).filter(Boolean)
 })
 
 const toggleSelectAll = (checked: boolean) => {
   if (checked) {
-    props.rows.forEach((row) =>
-      selectedIds.value.add(getRowId(row, effectiveKeyField.value))
-    )
+    props.rows.forEach((row) => selectedIds.value.add(getRowId(row, effectiveKeyField.value)))
   } else {
-    if (selectedIds.value.size > 0) {
-      props.rows.forEach((row) =>
-        selectedIds.value.delete(getRowId(row, effectiveKeyField.value))
-      )
-    }
+    props.rows.forEach((row) => selectedIds.value.delete(getRowId(row, effectiveKeyField.value)))
   }
   emitSelection()
 }
 
 const toggleRowSelection = (id: any) => {
-  if (selectedIds.value.has(id)) {
-    selectedIds.value.delete(id)
-  } else {
-    selectedIds.value.add(id)
-  }
+  if (selectedIds.value.has(id)) selectedIds.value.delete(id)
+  else selectedIds.value.add(id)
   emitSelection()
 }
 
 const emitSelection = () => {
-  const currentSelected = props.selectedRows || []
-  const seenIds = new Set<any>()
+  const seen = new Set<any>()
   const newSelected: any[] = []
 
   props.rows.forEach((row) => {
     const id = getRowId(row, effectiveKeyField.value)
-    if (selectedIds.value.has(id)) {
-      newSelected.push(row)
-      seenIds.add(id)
-    }
+    if (selectedIds.value.has(id)) { newSelected.push(row); seen.add(id) }
   })
-
-  currentSelected.forEach((row) => {
+  ;(props.selectedRows || []).forEach((row) => {
     const id = getRowId(row, effectiveKeyField.value)
-    if (!seenIds.has(id) && selectedIds.value.has(id)) {
-      newSelected.push(row)
-      seenIds.add(id)
-    }
+    if (!seen.has(id) && selectedIds.value.has(id)) { newSelected.push(row); seen.add(id) }
   })
 
-  const emitState: SelectionState = {
-    selected: newSelected,
-    all: isAllSelected.value,
-    indeterminate: isIndeterminate.value,
-  }
-
-  emit('select', emitState)
+  emit('select', { selected: newSelected, all: isAllSelected.value, indeterminate: isIndeterminate.value })
   emit('update:selectedRows', newSelected)
 }
 
@@ -273,71 +206,61 @@ const emitSelection = () => {
 
 const handleSort = (field: string) => {
   if (sortConfig.value.field === field) {
-    if (sortConfig.value.order === 'asc') {
-      sortConfig.value.order = 'desc'
-    } else if (sortConfig.value.order === 'desc') {
-      sortConfig.value.order = ''
-      sortConfig.value.field = ''
-    } else {
-      sortConfig.value.order = 'asc'
-    }
+    if (sortConfig.value.order === 'asc') sortConfig.value.order = 'desc'
+    else if (sortConfig.value.order === 'desc') { sortConfig.value.order = ''; sortConfig.value.field = '' }
+    else sortConfig.value.order = 'asc'
   } else {
     sortConfig.value.field = field
     sortConfig.value.order = 'asc'
   }
   currentPage.value = 1
-  loadingCause.value = 'sort'
   emitChange()
 }
 
 const handlePageChange = (page: number) => {
   currentPage.value = page
-  loadingCause.value = 'page'
   emitChange()
 }
 
 const handleItemsPerPageChange = (value: number) => {
   internalItemsPerPage.value = value
   currentPage.value = 1
-  loadingCause.value = 'limit'
   emit('update:itemsPerPage', value)
   emitChange()
 }
 
-const handleRowClick = (payload: RowClickPayload) => {
-  emit('rowClick', payload)
-}
+const handleRowClick = (payload: RowClickPayload) => emit('rowClick', payload)
 
 const onDeleteConfirm = () => {
-  const rows = selectedRowsComputed.value
-  emit('delete', rows)
+  emit('delete', selectedRowsComputed.value)
   showDeleteConfirmation.value = false
 }
+
+// ── emitChange: forward to both @change and Screen context ────────────────────
 
 let emitDebounceTimer: ReturnType<typeof setTimeout> | null = null
 const emitChange = () => {
   if (emitDebounceTimer) clearTimeout(emitDebounceTimer)
   emitDebounceTimer = setTimeout(() => {
-    emit('change', {
-      pagination: {
-        page: currentPage.value,
-        limit: internalItemsPerPage.value,
-      },
+    const state: TableState = {
+      pagination: { page: currentPage.value, limit: internalItemsPerPage.value },
       sort: { ...sortConfig.value },
       search: internalSearch.value,
       filter: {},
-    })
+    }
+    // Always emit @change for standalone DataTable usage
+    emit('change', state)
+    // Forward to Screen when used as a child component via :table prop
+    screenContext?.onTableChange?.(state)
   }, 10)
 }
 
-// ── cleanup stale selections when rows change ─────────────────────────────────
+// ── cleanup stale selections on row set change ────────────────────────────────
 
 watch(
   () => props.rows,
   () => {
-    const validIds = new Set(
-      props.rows.map((row) => getRowId(row, effectiveKeyField.value))
-    )
+    const validIds = new Set(props.rows.map((row) => getRowId(row, effectiveKeyField.value)))
     selectedIds.value = new Set([...selectedIds.value].filter((id) => validIds.has(id)))
   }
 )
@@ -355,29 +278,20 @@ const containerClass = computed(() => {
   ].join(' ')
 })
 
-const tableClass = computed(() =>
-  ['w-full caption-bottom -text-fs-1', props.tableClass].join(' ')
-)
-
+const tableClass = computed(() => ['w-full caption-bottom -text-fs-1', props.tableClass].join(' '))
 const getColumnWidth = (header: any) => header.width || 'auto'
 
-// ── i18n helpers ──────────────────────────────────────────────────────────────
+// ── i18n ──────────────────────────────────────────────────────────────────────
 
-const txtEmptyTitle = computed(() =>
-  props.emptyTitleI18n ? $t(props.emptyTitleI18n) : props.emptyTitle
-)
-const txtEmptyDesc = computed(() =>
-  props.emptyDescriptionI18n ? $t(props.emptyDescriptionI18n) : props.emptyDescription
-)
+const txtEmptyTitle = computed(() => props.emptyTitleI18n ? $t(props.emptyTitleI18n) : props.emptyTitle)
+const txtEmptyDesc = computed(() => props.emptyDescriptionI18n ? $t(props.emptyDescriptionI18n) : props.emptyDescription)
 const txtDeleteConfirmTitle = computed(() => {
   const r = $t('vlite.dataTable.confirmDeleteTitle')
   return r !== 'vlite.dataTable.confirmDeleteTitle' ? r : 'Confirm Deletion'
 })
 const txtDeleteConfirmDesc = computed(() => {
   const r = $t('vlite.dataTable.confirmDeleteDesc')
-  return r !== 'vlite.dataTable.confirmDeleteDesc'
-    ? r
-    : 'Are you sure you want to delete the selected items?'
+  return r !== 'vlite.dataTable.confirmDeleteDesc' ? r : 'Are you sure you want to delete the selected items?'
 })
 const txtDeleteBtn = computed(() => {
   const r = $t('vlite.dataTable.deleteBtn')
@@ -391,7 +305,7 @@ const txtCancelBtn = computed(() => {
 
 <template>
   <div class="space-y-6.5">
-    <!-- Toolbar is hidden when Screen context disables search AND no custom toolbar slots are used -->
+    <!-- Toolbar hidden when Screen context disables search and no custom toolbar slots -->
     <DataTableToolbar
       v-if="effectiveShowSearch || $slots?.['toolbar-left'] || $slots?.['toolbar-right']"
       v-model="internalSearch"
@@ -405,7 +319,6 @@ const txtCancelBtn = computed(() => {
       </template>
       <template #delete v-if="selectedIds.size > 0">
         <Button
-          v-if="selectedIds.size > 0"
           rounded="full"
           variant="outline"
           size="lg"
@@ -423,9 +336,7 @@ const txtCancelBtn = computed(() => {
           <thead
             :class="[
               '[&_tr]:border-b [&_tr]:border-border bg-muted',
-              variant === 'raised'
-                ? '[&_th:first-child]:rounded-tl-lg [&_th:last-child]:rounded-tr-lg'
-                : '',
+              variant === 'raised' ? '[&_th:first-child]:rounded-tl-lg [&_th:last-child]:rounded-tr-lg' : '',
             ]">
             <tr class="hover:bg-transparent">
               <th
@@ -441,7 +352,6 @@ const txtCancelBtn = computed(() => {
                     @update:model-value="toggleSelectAll" />
                 </div>
               </th>
-
               <DataTableHeader
                 v-for="header in headers"
                 :key="header.field"
@@ -475,7 +385,7 @@ const txtCancelBtn = computed(() => {
                   class="p-5! align-middle last:pr-6!"
                   :class="[header.hideOnMobile ? 'hidden md:table-cell' : '']">
                   <div
-                    class="rounded-md bg-muted/50 animate-pulse h-4 w-full"
+                    class="rounded-md bg-muted/50 animate-pulse h-4"
                     :style="{ width: `${50 + Math.random() * 40}%` }" />
                 </td>
               </tr>
