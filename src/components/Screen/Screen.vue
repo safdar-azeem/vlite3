@@ -18,7 +18,6 @@ import { useVLiteConfig } from '../../core/config'
 import { $t } from '@/utils/i18n'
 import { SCREEN_CONTEXT_KEY } from '../DataTable/types'
 import type { ScreenContext, TableState } from '../DataTable/types'
-
 const props = withDefaults(defineProps<ScreenProps>(), {
   name: '',
   data: () => [],
@@ -42,44 +41,39 @@ const props = withDefaults(defineProps<ScreenProps>(), {
     showItemsPerPage: true,
     itemsPerPageOptions: [10, 20, 30, 50],
   }),
+  viewProps: () => ({}),
+  canSelectRows: true,
 })
-
 const vliteConfig = useVLiteConfig()
-
 const emit = defineEmits<{
   (e: 'add'): void
   (e: 'delete', items: any[]): void
 }>()
-
 // ── internal state ────────────────────────────────────────────────────────────
-
 const slots = useSlots()
 const activeViewKey = computed(() => props.name || props.title || 'default-screen')
 const activeView = usePersistentState<'table' | 'list'>(
   `view-mode-${activeViewKey.value}`,
   props.table || slots.table ? 'table' : 'list'
 )
-
 const searchQuery = ref('')
 const activeFilters = ref<Record<string, any>>({})
 const activeSort = ref<{ field: string; order: string }>({ field: '', order: '' })
 const internalPage = ref(props.pageInfo?.currentPage || 1)
 const internalLimit = ref(props.pageInfo?.itemsPerPage || props.paginationProps?.itemsPerPage || 10)
-
 const selectedRows = ref<any[]>([])
 const itemsToDelete = ref<any[]>([])
 const showDeleteConfirmation = ref(false)
-
 // ── Screen context provided to all descendants ────────────────────────────────
 //
 // DataTable picks this up via inject(SCREEN_CONTEXT_KEY) and:
-//   - hides its own search toolbar  (Screen owns search)
-//   - auto-enables selectable       (bulk-delete support)
-//   - calls onTableChange()         (sort / pagination / search forwarded here)
+// - hides its own search toolbar (Screen owns search)
+// - auto-enables selectable (bulk-delete support)
+// - calls onTableChange() (sort / pagination / search forwarded here)
 //
 const screenContext: ScreenContext = {
   disableSearch: true,
-  forceSelectable: true,
+  forceSelectable: props.canSelectRows,
   onTableChange: (state: TableState) => {
     // Merge sort from DataTable into Screen's state, then trigger refetch
     activeSort.value = { field: state.sort.field, order: state.sort.order }
@@ -89,30 +83,23 @@ const screenContext: ScreenContext = {
   },
 }
 provide(SCREEN_CONTEXT_KEY, screenContext)
-
 provide('screen-selected-rows', selectedRows)
 provide('screen-request-delete', (items: any[]) => requestDelete(items))
-
 // ── delete helpers ────────────────────────────────────────────────────────────
-
 const requestDelete = (items: any[]) => {
   itemsToDelete.value = items
   showDeleteConfirmation.value = true
 }
-
 const confirmDelete = () => {
   emit('delete', itemsToDelete.value)
   showDeleteConfirmation.value = false
   selectedRows.value = []
 }
-
 const handleComponentDelete = (items: any[]) => {
   emit('delete', items)
   selectedRows.value = []
 }
-
 // ── sync pageInfo changes back into internal state ────────────────────────────
-
 watch(
   () => props.pageInfo?.currentPage,
   (v) => {
@@ -125,9 +112,7 @@ watch(
     if (v) internalLimit.value = v
   }
 )
-
 // ── search debounce ───────────────────────────────────────────────────────────
-
 let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null
 watch(searchQuery, () => {
   if (searchDebounceTimer) clearTimeout(searchDebounceTimer)
@@ -136,20 +121,16 @@ watch(searchQuery, () => {
     triggerChange()
   }, 300)
 })
-
 // ── pagination handlers ───────────────────────────────────────────────────────
-
 const handlePageChange = (page: number) => {
   internalPage.value = page
   triggerChange()
 }
-
 const handleItemsPerPageChange = (limit: number) => {
   internalLimit.value = limit
   internalPage.value = 1
   triggerChange()
 }
-
 // ── unified refetch trigger ───────────────────────────────────────────────────
 //
 // Single source of truth for the refetch payload.
@@ -164,23 +145,17 @@ const triggerChange = () => {
     filter: { ...activeFilters.value },
   })
 }
-
 // ── active component ──────────────────────────────────────────────────────────
-
 const activeComponent = computed(() => {
   if (activeView.value === 'table') return props.table || !!slots.table
   return props.list || !!slots.list || !!slots.grid
 })
-
 const hasData = computed(() => props.data && props.data.length > 0)
-
 // ── display helpers ───────────────────────────────────────────────────────────
-
 const displayTitle = computed(() => (props.titleI18n ? $t(props.titleI18n) : props.title))
 const displayDescription = computed(() =>
   props.descriptionI18n ? $t(props.descriptionI18n) : props.description
 )
-
 const txtDeleteSelected = computed(() => {
   const r = $t('vlite.screen.deleteSelected')
   return r !== 'vlite.screen.deleteSelected' ? r : 'Delete Selected'
@@ -225,20 +200,17 @@ const txtMissingView = computed(() => {
     ? r
     : 'Please provide a `:list` or `:table` component or slot.'
 })
-
 const getAddBtnLabel = computed(() => {
   if (props.addBtn?.labelI18n) return $t(props.addBtn.labelI18n)
   if (props.addBtn?.label) return props.addBtn.label
   const res = $t('vlite.screen.addNew')
   return res !== 'vlite.screen.addNew' ? res : 'Add New'
 })
-
 const hasExportOrImport = computed(
   () =>
     (props.exportSchema && props.exportSchema.length > 0 && props.exportProps !== false) ||
     (props.importSchema && props.importSchema.length > 0 && props.importProps !== false)
 )
-
 const txtExportData = computed(() => {
   const r = $t('vlite.screen.exportData')
   return r !== 'vlite.screen.exportData' ? r : 'Export Data'
@@ -247,7 +219,6 @@ const txtImportData = computed(() => {
   const r = $t('vlite.screen.importData')
   return r !== 'vlite.screen.importData' ? r : 'Import Data'
 })
-
 const dropdownOptions = computed(() => {
   const opts = []
   if (props.exportProps !== false)
@@ -256,24 +227,20 @@ const dropdownOptions = computed(() => {
     opts.push({ value: 'import', label: txtImportData.value, icon: 'lucide:upload' })
   return opts
 })
-
 const exportDataRef = ref<any>(null)
 const importDataRef = ref<any>(null)
 const showExportDataModal = ref(false)
 const showImportDataModal = ref(false)
-
 const handleDropdownSelect = (opt: any) => {
   if (opt.value === 'export') showExportDataModal.value = true
   else if (opt.value === 'import') showImportDataModal.value = true
 }
-
 const resolveExportFields = computed(() =>
   (props.exportSchema || []).map((s) => ({
     field: s.name || s.field,
     title: s.label || s.title || s.name || s.field,
   }))
 )
-
 const resolveImportFields = computed(() =>
   (props.importSchema || []).map((s) => ({
     field: s.name || s.field,
@@ -281,7 +248,6 @@ const resolveImportFields = computed(() =>
     required: s.required || false,
   }))
 )
-
 const handleImportBatch = async (payload: any) => {
   if (vliteConfig?.services?.importApi && props.importType) {
     return await vliteConfig.services.importApi(props.importType, payload)
@@ -298,13 +264,10 @@ const handleImportBatch = async (payload: any) => {
     errors: [],
   }
 }
-
 const handleImportComplete = () => triggerChange()
-
 const effectiveExportMode = computed(
   () => props.exportMode || vliteConfig?.exportData?.mode || 'frontend'
 )
-
 const handleBackendExport = async (format: string) => {
   if (vliteConfig?.services?.exportApi && props.exportType) {
     await vliteConfig.services.exportApi(props.exportType, {
@@ -319,7 +282,6 @@ const handleBackendExport = async (format: string) => {
   }
 }
 </script>
-
 <template>
   <div class="flex flex-col w-full space-y-8">
     <!-- ── Built-in header ── -->
@@ -348,18 +310,16 @@ const handleBackendExport = async (format: string) => {
           </p>
         </slot>
       </div>
-
       <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2.5 w-full justify-end">
         <div
           class="flex items-center gap-2 w-full sm:w-auto flex-1 md:flex-none justify-start sm:justify-end">
           <Button
-            v-if="selectedRows.length > 0"
+            v-if="selectedRows.length > 0 && canSelectRows"
             variant="outline"
             class="hover:bg-destructive/10 shrink-0 h-9! w-9!"
             icon="lucide:trash-2"
             :title="txtDeleteSelected"
             @click="requestDelete(selectedRows)" />
-
           <div
             v-if="(table || $slots.table) && (list || $slots.list || $slots.grid)"
             class="flex items-center p-1 rounded-md border border-border shrink-0">
@@ -386,9 +346,7 @@ const handleBackendExport = async (format: string) => {
               <Icon icon="lucide:list" class="w-4 h-4" />
             </button>
           </div>
-
           <slot name="before-search" />
-
           <Button
             v-if="showRefresh"
             variant="outline"
@@ -398,14 +356,12 @@ const handleBackendExport = async (format: string) => {
             :title="txtRefresh"
             :disabled="loading"
             @click="triggerChange" />
-
           <ScreenFilter
             v-if="filterSchema && filterSchema.length > 0"
             :schema="filterSchema"
             :type="filterType"
             v-model="activeFilters"
             @change="triggerChange" />
-
           <!-- Search lives in Screen header; DataTable's own search is disabled via context -->
           <div v-if="canSearch" class="w-full md:w-60! max-sm:order-last">
             <Input
@@ -418,7 +374,6 @@ const handleBackendExport = async (format: string) => {
               :show-clear-button="true" />
           </div>
         </div>
-
         <div class="flex items-center gap-3 max-sm:w-full sm:w-auto max-sm:order-last">
           <slot name="actions">
             <component v-if="addComponent" :is="addComponent" />
@@ -442,7 +397,6 @@ const handleBackendExport = async (format: string) => {
                     </Button>
                   </template>
                 </Modal>
-
                 <router-link
                   v-else-if="addBtn.to"
                   :to="addBtn.to"
@@ -455,7 +409,6 @@ const handleBackendExport = async (format: string) => {
                     {{ getAddBtnLabel }}
                   </Button>
                 </router-link>
-
                 <a
                   v-else-if="addBtn.href"
                   :href="addBtn.href"
@@ -469,7 +422,6 @@ const handleBackendExport = async (format: string) => {
                     {{ getAddBtnLabel }}
                   </Button>
                 </a>
-
                 <Button
                   v-else
                   class="w-full sm:w-auto"
@@ -482,7 +434,6 @@ const handleBackendExport = async (format: string) => {
               </template>
             </template>
           </slot>
-
           <Dropdown
             v-if="hasExportOrImport"
             closeOnSelect
@@ -501,17 +452,13 @@ const handleBackendExport = async (format: string) => {
                 " />
             </template>
           </Dropdown>
-
           <slot name="after-add" />
         </div>
       </div>
     </div>
-
     <slot name="custom-header" v-else />
-
     <!-- ── sub-header slot ── -->
     <slot name="sub-header" />
-
     <!-- ── Main content area ── -->
     <div class="flex-1 w-full relative" :class="containerClass">
       <template v-if="!hasData && !loading">
@@ -538,7 +485,6 @@ const handleBackendExport = async (format: string) => {
                       </Button>
                     </template>
                   </Modal>
-
                   <router-link v-else-if="addBtn.to" :to="addBtn.to" class="inline-flex">
                     <Button
                       :icon="addBtn.icon || 'fluent:add-16-filled'"
@@ -547,7 +493,6 @@ const handleBackendExport = async (format: string) => {
                       >{{ getAddBtnLabel }}</Button
                     >
                   </router-link>
-
                   <a
                     v-else-if="addBtn.href"
                     :href="addBtn.href"
@@ -560,7 +505,6 @@ const handleBackendExport = async (format: string) => {
                       >{{ getAddBtnLabel }}</Button
                     >
                   </a>
-
                   <Button
                     v-else
                     :icon="addBtn.icon || 'lucide:plus'"
@@ -578,7 +522,6 @@ const handleBackendExport = async (format: string) => {
           </Empty>
         </slot>
       </template>
-
       <template v-else>
         <slot
           v-if="activeView === 'table' && $slots.table"
@@ -612,7 +555,8 @@ const handleBackendExport = async (format: string) => {
           :refetch="refetch"
           v-model:selectedRows="selectedRows"
           :delete="requestDelete"
-          @delete="handleComponentDelete" />
+          @delete="handleComponentDelete"
+          v-bind="viewProps" />
         <div
           v-else
           class="p-8 text-center text-muted-foreground border border-dashed border-border rounded-lg">
@@ -620,7 +564,6 @@ const handleBackendExport = async (format: string) => {
         </div>
       </template>
     </div>
-
     <div v-if="pagination && pageInfo && pageInfo.totalPages > 1" class="-mt-2">
       <Pagination
         :current-page="pageInfo.currentPage"
@@ -630,7 +573,6 @@ const handleBackendExport = async (format: string) => {
         @change="handlePageChange"
         @update:items-per-page="handleItemsPerPageChange" />
     </div>
-
     <ConfirmationModal
       v-model:show="showDeleteConfirmation"
       :title="txtConfirmDeleteTitle"
@@ -640,7 +582,6 @@ const handleBackendExport = async (format: string) => {
       variant="danger"
       @confirm="confirmDelete"
       @cancel="showDeleteConfirmation = false" />
-
     <Modal
       v-if="showExportDataModal"
       v-model:show="showExportDataModal"
@@ -682,7 +623,6 @@ const handleBackendExport = async (format: string) => {
         </div>
       </template>
     </Modal>
-
     <div v-if="hasExportOrImport">
       <ImportData
         v-model:show="showImportDataModal"
