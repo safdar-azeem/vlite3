@@ -71,17 +71,18 @@ const columns = ref<TableHeader[]>([
   },
 ])
 
-// Initial state
+// Initial state — matches the standardized payload shape
 const currentTableState = ref<TableState>({
   pagination: {
     page: 1,
     limit: 10,
   },
-  sorting: {
+  sort: {
     field: '',
     order: '',
   },
   search: '',
+  filter: {},
 })
 
 const paginationProps = computed(() => ({
@@ -99,10 +100,9 @@ const handleTableChange = async (state: TableState) => {
 const refreshData = async () => {
   const filter: TableFilter = {
     pagination: currentTableState.value.pagination,
-    filter: {
-      search: currentTableState.value.search,
-      sorting: currentTableState.value.sorting,
-    },
+    search: currentTableState.value.search,
+    sort: currentTableState.value.sort,
+    filter: currentTableState.value.filter,
   }
   console.log('Fetching data with:', filter)
   await refetch(filter)
