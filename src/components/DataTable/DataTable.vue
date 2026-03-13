@@ -16,6 +16,7 @@ import type {
   RowClickPayload,
   TableState,
   ScreenContext,
+  TableHeader,
 } from './types'
 import { SCREEN_CONTEXT_KEY } from './types'
 
@@ -39,6 +40,12 @@ const resolveKeyField = (rows: any[], propKeyField: string | undefined): string 
   }
   return '_id'
 }
+
+/**
+ * Resolve the sort key for a column.
+ * Uses header.sortKey when provided, otherwise falls back to header.field.
+ */
+const resolveSortKey = (header: TableHeader): string => header.sortKey || header.field
 
 // ── props / emits ─────────────────────────────────────────────────────────────
 
@@ -79,13 +86,6 @@ const emit = defineEmits<{
 
 // ── Screen context injection ──────────────────────────────────────────────────
 
-/**
- * When DataTable is a child of Screen (via :table prop or #table slot):
- *   - disableSearch  → hide our own search bar (Screen owns it)
- *   - forceSelectable → enable row selection for bulk-delete
- *   - onTableChange  → forward every sort/pagination/search state change
- *                      to Screen so it can call its own refetch
- */
 const screenContext = inject<ScreenContext | null>(SCREEN_CONTEXT_KEY, null)
 
 const effectiveShowSearch = computed(() => {
@@ -93,10 +93,7 @@ const effectiveShowSearch = computed(() => {
   return props.showSearch
 })
 
-const effectiveSelectable = computed(() => {
-  return props.selectable || !!screenContext?.forceSelectable
-})
-
+const effectiveSelectable = computed(() => props.selectable || !!screenContext?.forceSelectable)
 const effectiveKeyField = computed(() => resolveKeyField(props.rows, props.keyField))
 
 // ── internal state ────────────────────────────────────────────────────────────
@@ -110,11 +107,6 @@ const internalSearch = ref(props.search || '')
 const showDeleteConfirmation = ref(false)
 
 const shouldShowSkeleton = computed(() => props.loading)
-
-watch(
-  () => props.loading,
-  (newVal, oldVal) => { if (!newVal && oldVal) { /* loading cleared */ } }
-)
 
 watch(
   () => props.search,
@@ -202,20 +194,30 @@ const emitSelection = () => {
   emit('update:selectedRows', newSelected)
 }
 
-// ── sorting / pagination ──────────────────────────────────────────────────────
+// ── sorting ───────────────────────────────────────────────────────────────────
 
+/**
+ * handleSort receives the column's display `field`.
+ * We look up the header to get its effective sort key (sortKey ?? field),
+ * which is what gets sent in the sort payload to the backend.
+ */
 const handleSort = (field: string) => {
-  if (sortConfig.value.field === field) {
+  const header = props.headers.find((h) => h.field === field)
+  const key = header ? resolveSortKey(header) : field
+
+  if (sortConfig.value.field === key) {
     if (sortConfig.value.order === 'asc') sortConfig.value.order = 'desc'
     else if (sortConfig.value.order === 'desc') { sortConfig.value.order = ''; sortConfig.value.field = '' }
     else sortConfig.value.order = 'asc'
   } else {
-    sortConfig.value.field = field
+    sortConfig.value.field = key
     sortConfig.value.order = 'asc'
   }
   currentPage.value = 1
   emitChange()
 }
+
+// ── pagination ────────────────────────────────────────────────────────────────
 
 const handlePageChange = (page: number) => {
   currentPage.value = page
