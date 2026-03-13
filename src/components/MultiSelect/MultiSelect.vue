@@ -5,6 +5,7 @@ import { Dropdown, DropdownMenu } from '@/components/Dropdown'
 import Badge from '@/components/Badge.vue'
 import type { IDropdownOption } from '@/types'
 import { $t } from '@/utils/i18n'
+import { useMultiSelectHydration } from './composables/useMultiSelectHydration'
 
 // Props
 interface Props {
@@ -68,49 +69,32 @@ const normalizedOptions = computed<IDropdownOption[]>(() => {
   })
 })
 
-// --- HYDRATION & SELECTED BUFFER LOGIC ---
-const selectedBuffer = ref<Map<any, IDropdownOption>>(new Map())
-const isHydrating = ref(false)
-
-const hydrateSelected = async (values: any[]) => {
-  if (!props.fetchSelected || !values?.length) return
-
-  // Find IDs that are neither in the buffer nor in the currently fetched options
-  const missingIds = values.filter((v) => {
-    const inBuffer = selectedBuffer.value.has(v)
-    const inOptions = normalizedOptions.value.some((opt) => (opt.value ?? opt.label) === v)
-    return !inBuffer && !inOptions
-  })
-
-  if (!missingIds.length) return
-
-  isHydrating.value = true
-  try {
-    const fetched = await props.fetchSelected(missingIds)
-    fetched.forEach((opt) => {
-      selectedBuffer.value.set(opt.value ?? opt.label, opt)
-    })
-  } catch (e) {
-    console.error('[MultiSelect] Hydration failed:', e)
-  } finally {
-    isHydrating.value = false
-  }
-}
+// Track whether the initial options batch has settled (loaded + 1s delay)
+const initialOptionsLoaded = ref(false)
+const hydrationReady = ref(false)
 
 watch(
-  () => props.modelValue,
+  normalizedOptions,
   (newVal) => {
-    hydrateSelected(newVal || [])
+    if (!initialOptionsLoaded.value && newVal.length > 0) {
+      initialOptionsLoaded.value = true
+      // Wait 1 second after initial options arrive before allowing hydration
+      setTimeout(() => {
+        hydrationReady.value = true
+        // Re-run hydration now that we are ready
+        hydration.hydrateSelected(props.modelValue || [])
+      }, 10)
+    }
   },
-  { immediate: true, deep: true }
+  { immediate: true }
 )
 
-// The combined list of options (API items + Buffered selections)
+// The combined list of options for the current view
 const combinedOptions = computed(() => {
   const result = [...normalizedOptions.value]
   const existingValues = new Set(result.map((o) => o.value ?? o.label))
 
-  selectedBuffer.value.forEach((opt, val) => {
+  hydration.selectedBuffer.value.forEach((opt, val) => {
     if (!existingValues.has(val)) {
       result.unshift(opt)
       existingValues.add(val)
@@ -118,6 +102,25 @@ const combinedOptions = computed(() => {
   })
   return result
 })
+
+// --- HYDRATION ---
+const hydration = useMultiSelectHydration({
+  fetchSelected: props.fetchSelected,
+  getValues: () => props.modelValue || [],
+  getOptions: () => combinedOptions.value,
+  isInitialLoadDone: () => hydrationReady.value,
+})
+
+// Watch for modelValue changes and hydrate only after ready
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    if (hydrationReady.value) {
+      hydration.hydrateSelected(newVal || [])
+    }
+  },
+  { deep: true }
+)
 // -----------------------------------------
 
 // Compute selections based on combined Options so labels resolve properly even if off-page
@@ -140,8 +143,8 @@ const handleSelect = (option: IDropdownOption) => {
   const val = option.value ?? option.label
 
   // Save to buffer immediately so it persists across searches
-  if (!selectedBuffer.value.has(val)) {
-    selectedBuffer.value.set(val, option)
+  if (!hydration.selectedBuffer.value.has(val)) {
+    hydration.selectedBuffer.value.set(val, option)
   }
 
   const newValue = [...props.modelValue]
@@ -246,7 +249,7 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
         :cachedOptions="combinedOptions"
         :selected="modelValue"
         class="min-w-[300px]"
-        :loading="loading || isHydrating"
+        :loading="loading || hydration.isHydrating.value"
         :hasMore="hasMore"
         :searchable="searchable"
         :remote="remote"
