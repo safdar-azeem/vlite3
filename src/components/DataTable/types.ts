@@ -49,7 +49,6 @@ export interface DataTableProps {
   rows: any[]
   selectedRows?: any[]
   search?: string
-  // showSearch defaults to true; Screen context overrides it to false automatically
   showSearch?: boolean
   searchPlaceholder?: string
   searchPlaceholderI18n?: string
@@ -58,14 +57,10 @@ export interface DataTableProps {
   headers: TableHeader[]
   /**
    * Unique row identifier field.
-   * When set to the sentinel value 'auto' (the internal default), DataTable will
-   * automatically pick the first matching key from ['id', '_id'] found on the
-   * first row. Explicitly passing 'id' or '_id' (or any other string) pins the
-   * field to that exact value.
+   * 'auto' → picks first of ['id','_id'] found on first row, fallback '_id'.
    */
   keyField?: string
   loading?: boolean
-  // selectable defaults to false; Screen context overrides it to true automatically
   selectable?: boolean
   emptyTitle?: string
   emptyTitleI18n?: string
@@ -96,12 +91,19 @@ export interface RowClickPayload {
   index: number
 }
 
-/** Shape provided by Screen to deeply nested components */
+/**
+ * Shape provided by Screen to all deeply nested components via provide/inject.
+ *
+ * - disableSearch    → DataTable hides its own search toolbar (Screen owns search)
+ * - forceSelectable  → DataTable enables row selection for bulk-delete
+ * - onTableChange    → DataTable calls this whenever sort/pagination/search changes
+ *                      so Screen can merge the state and call its own refetch.
+ *                      Undefined when DataTable is used standalone (outside Screen).
+ */
 export interface ScreenContext {
-  /** When true, DataTable should hide its own search toolbar */
   disableSearch: boolean
-  /** When true, DataTable should enable row selection */
   forceSelectable: boolean
+  onTableChange?: (state: TableState) => void
 }
 
 export const SCREEN_CONTEXT_KEY = Symbol('screen-context')
