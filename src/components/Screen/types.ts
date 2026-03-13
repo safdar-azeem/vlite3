@@ -5,10 +5,7 @@ import { IForm } from '../Form'
 import type { ExportField } from '../ExportData/types'
 import type { ImportField } from '../ImportData/types'
 
-export interface ScreenPaginationProps extends Omit<
-  PaginationProps,
-  'currentPage' | 'totalPages'
-> {}
+export interface ScreenPaginationProps extends Omit<PaginationProps, 'currentPage' | 'totalPages'> {}
 
 export interface AddBtnConfig {
   label?: string
@@ -35,6 +32,10 @@ export interface ScreenProps {
   pageInfo?: PageInfo
   data?: any[]
   loading?: boolean
+  /**
+   * Called on every search, filter, pagination, or sort change.
+   * Standard payload shape: { pagination, search, sort, filter }
+   */
   refetch?: (payload: {
     pagination: { page: number; limit: number }
     search: string
