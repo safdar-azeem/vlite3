@@ -33,6 +33,13 @@ export interface TableHeader {
   field: string
   title: string
   titleI18n?: string
+  /**
+   * The key sent to the backend when sorting this column.
+   * Defaults to `field` when not provided.
+   * Use this when the display field differs from the database column name,
+   * e.g. field: 'employee' (a custom slot) but sortKey: 'employeeName'.
+   */
+  sortKey?: string
   width?: string
   minWidth?: string
   sortable?: boolean
