@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DataTable } from '@/components/DataTable'
+import { DataTable, TableHeader } from '@/components/DataTable'
 import Badge from '@/components/Badge.vue'
 import Avatar from '@/components/Avatar.vue'
 
@@ -8,8 +8,8 @@ defineProps<{
   loading: boolean
 }>()
 
-const headers = [
-  { field: 'name', title: 'User' },
+const headers: TableHeader[] = [
+  { field: 'name', title: 'User', sortable: true },
   { field: 'email', title: 'Email' },
   { field: 'role', title: 'Role', capitalize: true },
   { field: 'status', title: 'Status', capitalize: true },
@@ -17,7 +17,7 @@ const headers = [
 </script>
 
 <template>
-  <DataTable :rows="data" :headers="headers" :loading="loading" :show-pagination="false">
+  <DataTable :rows="data" :headers="headers" :loading="loading" :show-pagination="false" sortable>
     <template #name="{ value, row }">
       <div class="flex items-center gap-3">
         <Avatar :src="row.avatar" :alt="value" />
