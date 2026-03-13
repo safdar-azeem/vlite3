@@ -20,25 +20,28 @@ const emit = defineEmits<{
   (e: 'sort', field: string): void
 }>()
 
-const isSorted = computed(() => {
-  return props.sortConfig?.field === props.header.field && props.sortConfig?.order
-})
+/**
+ * The active sort field in sortConfig is the resolved sort key (sortKey ?? field).
+ * We match against it using the same resolution logic so the header highlights correctly.
+ */
+const effectiveSortKey = computed(() => props.header.sortKey || props.header.field)
+
+const isSorted = computed(() =>
+  props.sortConfig?.field === effectiveSortKey.value && props.sortConfig?.order
+)
 
 const sortIcon = computed(() => {
-  if (!props.sortConfig || props.sortConfig.field !== props.header.field) {
+  if (!props.sortConfig || props.sortConfig.field !== effectiveSortKey.value) {
     return 'lucide:chevrons-up-down'
   }
-  if (props.sortConfig.order === 'asc') {
-    return 'lucide:arrow-up'
-  }
-  if (props.sortConfig.order === 'desc') {
-    return 'lucide:arrow-down'
-  }
+  if (props.sortConfig.order === 'asc') return 'lucide:arrow-up'
+  if (props.sortConfig.order === 'desc') return 'lucide:arrow-down'
   return 'lucide:chevrons-up-down'
 })
 
 const handleSort = () => {
   if (props.tableSortable && props.header.sortable !== false) {
+    // Always emit the display field — DataTable.handleSort resolves the sort key internally
     emit('sort', props.header.field)
   }
 }
@@ -52,7 +55,9 @@ const alignClass = computed(() => {
   return alignMap[props.header.align || 'left']
 })
 
-const displayTitle = computed(() => props.header.titleI18n ? $t(props.header.titleI18n) : props.header.title)
+const displayTitle = computed(() =>
+  props.header.titleI18n ? $t(props.header.titleI18n) : props.header.title
+)
 </script>
 
 <template>
@@ -61,24 +66,20 @@ const displayTitle = computed(() => props.header.titleI18n ? $t(props.header.tit
     class="h-10 px-3 text-left align-middle font-medium text-muted-foreground transition-colors [&:has([role=checkbox])]:pr-0 overflow-hidden"
     :class="[
       compact ? 'py-2' : 'py-3!',
-      header.sortable !== false ? 'cursor-pointer hover:bg-muted/50' : '',
+      header.sortable !== false && tableSortable ? 'cursor-pointer hover:bg-muted/50' : '',
       header.hideOnMobile ? 'hidden md:table-cell' : '',
     ]"
     @click="handleSort">
     <div class="flex items-center gap-2 space-x-2" :class="alignClass">
-      <span class="text-xs font-bold! uppercase tracking-wider text-gray-900 truncate">{{
-        displayTitle
-      }}</span>
-
+      <span class="text-xs font-bold! uppercase tracking-wider text-gray-900 truncate">
+        {{ displayTitle }}
+      </span>
       <span v-if="tableSortable && header.sortable !== false" class="w-4 h-4 shrink-0">
         <Icon
           :icon="sortIcon"
           class="w-3.5 h-3.5 transition-all text-muted-foreground mt-0.5"
-          :class="[
-            isSorted ? 'opacity-100 text-foreground' : 'opacity-0 group-hover:opacity-100',
-          ]" />
+          :class="[isSorted ? 'opacity-100 text-foreground' : 'opacity-0 group-hover:opacity-100']" />
       </span>
     </div>
   </th>
 </template>
-
