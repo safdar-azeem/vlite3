@@ -4,9 +4,7 @@ import { ButtonVariant } from '@/types'
 import { IForm } from '../Form'
 import type { ExportField } from '../ExportData/types'
 import type { ImportField } from '../ImportData/types'
-
 export interface ScreenPaginationProps extends Omit<PaginationProps, 'currentPage' | 'totalPages'> {}
-
 export interface AddBtnConfig {
   label?: string
   labelI18n?: string
@@ -20,7 +18,6 @@ export interface AddBtnConfig {
   modalProps?: Record<string, any>
   buttonProps?: Record<string, any>
 }
-
 export interface ScreenProps {
   name?: string
   title?: string
@@ -50,7 +47,6 @@ export interface ScreenProps {
   emptyIcon?: string
   addComponent?: Component | any
   addBtn?: AddBtnConfig
-
   /** Generic properties for Export and Import capabilities */
   exportSchema?: ExportField[] | any[]
   importSchema?: ImportField[] | any[]
@@ -59,7 +55,6 @@ export interface ScreenProps {
   exportMode?: 'frontend' | 'backend'
   importType?: string
   exportType?: string
-
   list?: Component | any
   table?: Component | any
   customHeader?: boolean
@@ -71,4 +66,6 @@ export interface ScreenProps {
   showRefresh?: boolean
   containerClass?: string
   headerClass?: string
+  viewProps?: Record<string, any>
+  canSelectRows?: boolean
 }
