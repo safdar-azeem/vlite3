@@ -4,6 +4,7 @@ import { Dropdown } from '@/components/Dropdown'
 import Button from '@/components/Button.vue'
 import DemoSection from '../../DemoSection.vue'
 import sourceCode from './DropdownBasic.vue?raw'
+import Modal from '@/components/Modal.vue'
 
 const val1 = ref('1')
 </script>
@@ -41,6 +42,17 @@ const val1 = ref('1')
         @on-select="(opt) => (val1 = opt.value)">
         <template #trigger>
           <Button variant="outline" icon-right="lucide:chevron-down">Menu</Button>
+        </template>
+        <template #footer>
+          <Modal>
+            <template #trigger>
+              <Button variant="outline" icon-right="lucide:chevron-down"></Button>
+            </template>
+            <template #default="{ close }">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+              incididunt ut labore et dolore magna aliqua.
+            </template>
+          </Modal>
         </template>
       </Dropdown>
       <span class="text-sm text-gray-500">Selected: {{ val1 }}</span>
