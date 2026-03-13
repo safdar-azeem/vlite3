@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import ToolTipLite from 'v-tooltip-lite'
-import 'v-tooltip-lite/style.css'
-import type { TooltTipProps } from 'v-tooltip-lite/types'
+import ToolTipLite from '../lib/v-tooltip-lite'
+import type { TooltTipProps } from '../lib/v-tooltip-lite/types'
 import { computed } from 'vue'
 import { $t } from '@/utils/i18n'
 
@@ -33,7 +32,7 @@ const displayContent = computed(() => {
   </div>
   <ToolTipLite
     v-else
-    v-bind="{...props, content: displayContent}"
+    v-bind="{ ...props, content: displayContent }"
     class="inline-block"
     :class-name="`basic-tooltip ${className}`">
     <template #trigger>
@@ -44,4 +43,3 @@ const displayContent = computed(() => {
     </template>
   </ToolTipLite>
 </template>
-
