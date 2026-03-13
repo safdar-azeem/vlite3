@@ -34,14 +34,14 @@
 
 ### Events
 
-| Event                    | Payload              | Description |
-| :----------------------- | :------------------- | :---------- |
-| `@change`                | `TableState`         | Emitted on sort, pagination, or search change. See `TableState` below. |
-| `@select`                | `SelectionState`     | Emitted when row selection changes. |
-| `@rowClick`              | `RowClickPayload`    | Emitted when a row is clicked. |
-| `@delete`                | `any[]`              | Emitted after delete confirmation with selected rows. |
-| `@update:selectedRows`   | `any[]`              | v-model binding for selected rows. |
-| `@update:itemsPerPage`   | `number`             | Emitted when items-per-page changes. |
+| Event                  | Payload           | Description |
+| :--------------------- | :---------------- | :---------- |
+| `@change`              | `TableState`      | Emitted on sort, pagination, or search change. See `TableState` below. |
+| `@select`              | `SelectionState`  | Emitted when row selection changes. |
+| `@rowClick`            | `RowClickPayload` | Emitted when a row is clicked. |
+| `@delete`              | `any[]`           | Emitted after delete confirmation with selected rows. |
+| `@update:selectedRows` | `any[]`           | v-model binding for selected rows. |
+| `@update:itemsPerPage` | `number`          | Emitted when items-per-page changes. |
 
 ---
 
@@ -55,7 +55,7 @@
 }
 ```
 
-> **Note:** When `DataTable` is used inside `Screen` (via `:table` prop or `#table` slot), `@change` is still emitted normally **and** the state is automatically forwarded to `Screen`'s `refetch` via the injected context — no wiring needed in your child component.
+> `sort.field` will be the resolved `sortKey` value when one is set on the header, otherwise it is the column `field`. This is the value sent to the backend.
 
 ---
 
@@ -64,19 +64,26 @@
 export type DataTablePaginationProps = Omit<PaginationProps, 'currentPage' | 'totalPages'>
 
 export interface TableHeader {
-  field: string
-  title: string
-  titleI18n?: string
-  width?: string
-  minWidth?: string
-  sortable?: boolean
-  hideOnMobile?: boolean
-  align?: 'left' | 'center' | 'right'
-  format?: (value: any, row?: any) => string
-  class?: string | ((value: any, row?: any) => string)
-  capitalize?: boolean
+  field:          string
+  title:          string
+  titleI18n?:     string
+  /**
+   * The key sent to the backend when sorting this column.
+   * Falls back to `field` when not provided.
+   * Use when the display field differs from the database column name.
+   * Example: field: 'employee' (custom slot), sortKey: 'employeeName'
+   */
+  sortKey?:       string
+  width?:         string
+  minWidth?:      string
+  sortable?:      boolean
+  hideOnMobile?:  boolean
+  align?:         'left' | 'center' | 'right'
+  format?:        (value: any, row?: any) => string
+  class?:         string | ((value: any, row?: any) => string)
+  capitalize?:    boolean
   addStatusColor?: boolean
-  type?: 'text' | 'price' | 'date' | 'number'
+  type?:          'text' | 'price' | 'date' | 'number'
 }
 
 export interface TableState {
@@ -98,13 +105,43 @@ export interface TableFilter {
 
 ### Slots
 
-| Slot              | Props                          | Description |
-| :---------------- | :----------------------------- | :---------- |
-| `[header.field]`  | `{ value, row, index, field }` | Custom cell content. E.g. `#name="{ value, row }"` |
-| `toolbar-left`    | —                              | Left side of the toolbar |
-| `toolbar-right`   | —                              | Right side of the toolbar |
-| `empty`           | —                              | Replaces the entire empty state |
-| `empty-action`    | —                              | Action button inside the default empty state |
+| Slot             | Props                          | Description |
+| :--------------- | :----------------------------- | :---------- |
+| `[header.field]` | `{ value, row, index, field }` | Custom cell content. E.g. `#name="{ value, row }"` |
+| `toolbar-left`   | —                              | Left side of the toolbar |
+| `toolbar-right`  | —                              | Right side of the toolbar |
+| `empty`          | —                              | Replaces the entire empty state |
+| `empty-action`   | —                              | Action button inside the default empty state |
+
+---
+
+### `sortKey` — sorting a custom slot column
+
+When a column uses a custom slot (e.g. `#employee`) to render a composite field, the display `field` value does not correspond to a real database column. Use `sortKey` to specify the actual backend field that should be used in the sort payload.
+```ts
+const headers = computed<TableHeader[]>(() => [
+  {
+    field: 'employee',       // used for the slot name (#employee) and display
+    sortKey: 'employeeName', // sent to the backend in sort.field when this column is sorted
+    title: 'Employee',
+    sortable: true,
+  },
+  {
+    field: 'department',
+    sortKey: 'department.departmentName', // supports dot-notation for nested fields
+    title: 'Department',
+    sortable: true,
+  },
+  {
+    field: 'status',
+    title: 'Status',
+    sortable: true,
+    // no sortKey — 'status' is used directly
+  },
+])
+```
+
+When the user clicks the **Employee** column header, the emitted `sort` will be `{ field: 'employeeName', order: 'asc' }` — not `{ field: 'employee' }`. The column header highlight also tracks the resolved key correctly.
 
 ---
 
@@ -114,9 +151,7 @@ When `DataTable` is rendered as a child of `Screen` (via `:table` prop or `#tabl
 
 - **Hides its own search toolbar** — Screen owns the search input.
 - **Enables row selection** — required for Screen's bulk-delete feature.
-- **Forwards sort, pagination, and search state** to Screen's `refetch` — no extra wiring needed in your child component. Every sort click triggers `Screen`'s `refetch` with the full standardised payload.
-
-This means a `BranchTable.vue` only needs to declare `sortable` on `DataTable` and the sort state is automatically propagated up to the page query with zero extra code.
+- **Forwards sort, pagination, and search state** to Screen's `refetch` — no extra wiring needed. Sort payloads respect `sortKey` when set.
 
 ---
 
@@ -128,20 +163,20 @@ import { DataTable } from 'vlite3'
 import type { TableHeader, TableState } from 'vlite3'
 
 const headers: TableHeader[] = [
-  { field: 'name',   title: 'Name',   sortable: true },
-  { field: 'email',  title: 'Email',  sortable: true },
-  { field: 'status', title: 'Status', sortable: true },
+  { field: 'employee', sortKey: 'employeeName', title: 'Employee', sortable: true },
+  { field: 'email',    title: 'Email',  sortable: true },
+  { field: 'status',   title: 'Status', sortable: true },
 ]
 
-const rows = ref([])
+const rows    = ref([])
 const loading = ref(false)
 const pageInfo = ref()
 
 const fetchData = async (state?: TableState) => {
   loading.value = true
-  // state shape: { pagination, sort, search, filter }
-  const res = await myApi.getUsers(state)
-  rows.value = res.items
+  // state.sort.field will be 'employeeName' when the Employee column is sorted
+  const res = await myApi.getEmployees(state)
+  rows.value    = res.items
   pageInfo.value = res.pageInfo
   loading.value = false
 }
@@ -156,14 +191,15 @@ onMounted(() => fetchData())
     :loading="loading"
     :page-info="pageInfo"
     sortable
-    selectable
     @change="fetchData">
-    <template #status="{ value }">
-      <Badge :variant="value === 'active' ? 'success' : 'secondary'">{{ value }}</Badge>
-    </template>
-
-    <template #toolbar-right>
-      <Button icon="lucide:plus">Add User</Button>
+    <template #employee="{ row }">
+      <div class="flex items-center gap-3">
+        <img v-if="row.avatar" :src="row.avatar" class="w-9 h-9 rounded-full object-cover" />
+        <div class="flex flex-col">
+          <span class="font-medium text-sm">{{ row.employeeName }}</span>
+          <span class="text-xs text-muted-foreground">{{ row.employeeId }}</span>
+        </div>
+      </div>
     </template>
   </DataTable>
 </template>
@@ -172,65 +208,72 @@ onMounted(() => fetchData())
 ---
 
 ### Usage inside Screen (recommended)
-
-When `DataTable` is used as a child of `Screen`, **you do not need to handle `@change` or wire up sorting yourself**. Screen intercepts the sort state automatically.
 ```vue
-<!-- BranchTable.vue — child component passed to Screen -->
+<!-- EmployeeTable.vue -->
 <script setup lang="ts">
 import { computed } from 'vue'
 import { DataTable, type TableHeader } from 'vlite3'
 
-defineProps<{
-  data:    any[]
-  loading: boolean
-  delete?: Function
-}>()
+defineProps<{ data: any[]; loading: boolean; delete?: Function }>()
 
 const headers = computed<TableHeader[]>(() => [
-  { field: 'branchName', title: 'Branch Name', sortable: true },
-  { field: 'email',      title: 'Email' },
-  { field: 'phone',      title: 'Phone' },
-  { field: 'actions',   title: '', align: 'right' },
+  {
+    field: 'employee',
+    sortKey: 'employeeName', // backend receives 'employeeName', not 'employee'
+    title: 'Employee',
+    sortable: true,
+  },
+  { field: 'email',      title: 'Email',      sortable: true },
+  {
+    field: 'department',
+    sortKey: 'department.departmentName',
+    title: 'Department',
+    sortable: true,
+  },
+  { field: 'status',  title: 'Status',  sortable: true },
+  { field: 'actions', title: '', align: 'right' },
 ])
 </script>
 
 <template>
-  <!-- sortable declared here — sort state auto-flows to Screen's refetch -->
   <DataTable :headers="headers" :rows="data" sortable :loading="loading">
+    <template #employee="{ row }">
+      <div class="flex items-center gap-3">
+        <img v-if="row.avatar" :src="row.avatar" class="w-9 h-9 rounded-full object-cover border shrink-0" />
+        <div v-else class="w-9 h-9 rounded-full bg-muted flex items-center justify-center text-sm font-semibold shrink-0">
+          {{ row.employeeName?.charAt(0) }}
+        </div>
+        <div class="flex flex-col min-w-0">
+          <span class="font-medium text-sm truncate">{{ row.employeeName }}</span>
+          <span class="text-xs text-muted-foreground">{{ row.employeeId }}</span>
+        </div>
+      </div>
+    </template>
+    <template #department="{ row }">{{ row.department?.departmentName || '-' }}</template>
+    <template #status="{ value }">
+      <Badge :variant="value === 'active' ? 'success' : 'secondary'">{{ value }}</Badge>
+    </template>
     <template #actions="{ row }">
-      <Button variant="ghost" size="sm" icon="lucide:trash-2" @click="props.delete?.([row])" />
+      <div class="flex justify-end gap-1">
+        <Button variant="ghost" size="sm" icon="lucide:trash-2" class="text-red-500" @click="props.delete?.([row])" />
+      </div>
     </template>
   </DataTable>
 </template>
 ```
 ```vue
-<!-- BranchesPage.vue — the Screen that owns the query -->
-<script setup lang="ts">
-import { computed } from 'vue'
-import { Screen } from 'vlite3'
-import { useGetBranchesQuery, useDeleteBranchesMutation } from '@/graphql'
-import BranchTable from './BranchTable.vue'
-
-const { result, loading, refetch } = useGetBranchesQuery({ pagination: { page: 1, limit: 10 } })
-
-const items    = computed(() => result.value?.getBranches?.items   || [])
-const pageInfo = computed(() => result.value?.getBranches?.pageInfo)
-
-// payload shape: { pagination, search, sort, filter }
-const handleRefetch = (p: any) => refetch(p)
-</script>
-
+<!-- EmployeesPage.vue -->
 <template>
   <Screen
-    name="branches"
-    title="Branches"
+    name="employees"
+    title="Employees"
     :data="items"
     :loading="loading"
     :page-info="pageInfo"
-    :table="BranchTable"
+    :table="EmployeeTable"
     :refetch="handleRefetch"
     @delete="handleDelete" />
 </template>
 ```
 
-> Clicking a sortable column header in `BranchTable` automatically calls `handleRefetch` with `{ pagination, search, sort: { field: 'branchName', order: 'asc' }, filter }` — no extra code needed.
+> Clicking the **Employee** column header sends `{ sort: { field: 'employeeName', order: 'asc' } }` to `handleRefetch` — the backend-friendly key, not the slot name.
