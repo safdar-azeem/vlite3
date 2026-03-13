@@ -9,6 +9,7 @@ import DropdownTrigger from './DropdownTrigger.vue'
 import ConfirmationModal from '@/components/ConfirmationModal.vue'
 import { useDropdownIds } from './composables/useDropdownIds'
 import { useDropdownSelection } from './composables/useDropdownSelection'
+import { useDropdownHydration } from './composables/useDropdownHydration'
 
 const props = withDefaults(
   defineProps<{
@@ -144,7 +145,7 @@ const handleChildToggle = (childIsOpen: boolean) => {
 // Provide a context for child components (like Modal/SidePanel) to safely communicate state
 provide('dropdown-context', {
   close: handleClose,
-  onChildToggle: handleChildToggle
+  onChildToggle: handleChildToggle,
 })
 
 const normalizedPropsOptions = computed<IDropdownOption[]>(() => {
@@ -158,6 +159,11 @@ const normalizedPropsOptions = computed<IDropdownOption[]>(() => {
 })
 
 const internalOptions = ref<IDropdownOptions>([])
+
+// Track whether the initial options batch has been received
+const initialOptionsLoaded = ref(false)
+// Track whether the 1-second settle delay has passed after initial load
+const hydrationReady = ref(false)
 
 watch(
   normalizedPropsOptions,
@@ -185,45 +191,21 @@ watch(
     } else {
       internalOptions.value = newVal
     }
+
+    // Mark initial load done on the first non-empty options batch
+    if (!initialOptionsLoaded.value && newVal.length > 0) {
+      initialOptionsLoaded.value = true
+      // Wait 1 second after options arrive before allowing hydration,
+      // so transient loading states fully settle first
+      setTimeout(() => {
+        hydrationReady.value = true
+        // Re-run hydration now that we are ready
+        hydrateSelected(currentValue.value)
+      }, 10)
+    }
   },
   { immediate: true } // Performance fix: Removed deep: true to prevent heavy recursion mapping
 )
-
-const selectedBuffer = ref<Map<any, IDropdownOption>>(new Map())
-const isHydrating = ref(false)
-
-const hydrateSelected = async (val: any) => {
-  if (!props.fetchSelected || val === undefined || val === null) return
-  let idsToFetch: any[] = []
-
-  if (Array.isArray(val)) {
-    idsToFetch = val
-  } else if (typeof val === 'object') {
-    idsToFetch = Object.values(val)
-  } else {
-    idsToFetch = [val]
-  }
-
-  const missingIds = idsToFetch.filter((id) => {
-    const inBuffer = selectedBuffer.value.has(id)
-    const inOptions = internalOptions.value.some((opt) => (opt.value ?? opt.label) === id)
-    return !inBuffer && !inOptions
-  })
-
-  if (!missingIds.length) return
-
-  isHydrating.value = true
-  try {
-    const fetched = await props.fetchSelected(missingIds)
-    fetched.forEach((opt) => {
-      selectedBuffer.value.set(opt.value ?? opt.label, opt)
-    })
-  } catch (e) {
-    console.error('[Dropdown] Hydration failed:', e)
-  } finally {
-    isHydrating.value = false
-  }
-}
 
 const combinedOptions = computed(() => {
   const result = [...internalOptions.value]
@@ -236,6 +218,12 @@ const combinedOptions = computed(() => {
     }
   })
   return result
+})
+
+const { selectedBuffer, isHydrating, hydrateSelected } = useDropdownHydration({
+  fetchSelected: props.fetchSelected,
+  getAvailableOptions: () => combinedOptions.value,
+  isReady: () => hydrationReady.value,
 })
 
 const { getAllRecursiveIds } = useDropdownIds()
@@ -253,16 +241,19 @@ const { currentValue, selectedLabel, selectOption } = useDropdownSelection(
 const finalIgnoreClickOutside = computed(() => {
   const propsList = props.ignoreClickOutside || []
   const recursiveIds = getAllRecursiveIds(combinedOptions.value)
-  
+
   return [...new Set([...propsList, ...recursiveIds])]
 })
 
+// Watch for modelValue changes and hydrate only after ready
 watch(
   () => currentValue.value,
   (newVal) => {
-    hydrateSelected(newVal)
+    if (hydrationReady.value) {
+      hydrateSelected(newVal)
+    }
   },
-  { immediate: true, deep: true }
+  { deep: true }
 )
 
 const handleOptionSelect = (option: import('@/types').IDropdownOption) => {
@@ -305,13 +296,13 @@ const performSelection = (option: import('@/types').IDropdownOption) => {
   if (!selectedBuffer.value.has(val)) {
     selectedBuffer.value.set(val, option)
   }
-  
+
   const finalValues = selectOption(option)
 
   if (!props.isNested) {
     const leafOption = option._originalOption || option
     const leafValue = leafOption.value ?? leafOption.label
-    
+
     const path = option._path || [leafOption]
 
     path.forEach((opt) => {
