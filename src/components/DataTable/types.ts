@@ -13,18 +13,19 @@ export interface SortConfig {
 
 export interface TableState {
   pagination: PaginationConfig
-  sorting: SortConfig
+  sort: SortConfig
   search: string
+  filter: Record<string, any>
 }
 
 export interface FilterConfig {
-  search: string
-  sorting: SortConfig
   [key: string]: any
 }
 
 export interface TableFilter {
   pagination: PaginationConfig
+  search: string
+  sort: SortConfig
   filter: FilterConfig
 }
 
