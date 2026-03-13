@@ -10,8 +10,8 @@ import type { IDropdownOption } from '@/types'
 // -----------------------------------------------------------------------------
 // 1. MOCK SERVER / DATABASE
 // -----------------------------------------------------------------------------
-const TOTAL_RECORDS = 40
-const ITEMS_PER_PAGE = 40
+const TOTAL_RECORDS = 1000
+const ITEMS_PER_PAGE = 10
 
 // Generate 1000 dummy users
 const MOCK_DB: IDropdownOption[] = Array.from({ length: TOTAL_RECORDS }, (_, i) => ({
@@ -45,8 +45,8 @@ const apiFetchSelected = async (ids: any[]): Promise<IDropdownOption[]> => {
 // 2. DEMO STATE
 // -----------------------------------------------------------------------------
 // Pre-select items that are WAY off the first page to demonstrate hydration
-const selectedSingle = ref('user_4')
-const selectedMultiple = ref(['user_7', 'user_999'])
+const selectedSingle = ref('user_456')
+const selectedMultiple = ref(['user_789', 'user_999'])
 
 const options = ref<IDropdownOption[]>([])
 const loading = ref(false)
