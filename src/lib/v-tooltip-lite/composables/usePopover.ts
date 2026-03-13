@@ -35,54 +35,67 @@ export function usePopover(
       }
    }
 
-   const initializePopper = async () => {
-      if (triggerRef.value && containerRef.value) {
-         if (popperInstance.value) {
-            popperInstance.value.update()
-            return
-         }
-         await nextTick()
-         popperInstance.value = createPopper(triggerRef.value, containerRef.value, {
-            placement: placement,
-            strategy: 'absolute',
-            modifiers: [
-               {
-                  name: 'offset',
-                  options: {
-                     offset: offset,
-                  },
-               },
-               {
-                  name: 'preventOverflow',
-                  options: {
-                     boundary: 'viewport',
-                     padding: 8,
-                  },
-               },
-               {
-                  name: 'flip',
-                  options: {
-                     fallbackPlacements: ['top', 'bottom', 'left', 'right'],
-                  },
-               },
-               {
-                  name: 'arrow',
-                  options: {
-                     element: '.tooltip-arrow',
-                     padding: 8,
-                  },
-               },
-               {
-                  name: 'updateActualPlacement',
-                  enabled: true,
-                  phase: 'afterWrite',
-                  fn({ state }) {
-                     actualPlacement.value = state.placement
-                  },
-               },
-            ],
-         })
+   const createPopperInstance = async () => {
+      if (!triggerRef.value || !containerRef.value) return
+
+      // Always destroy stale instance before creating a new one
+      if (popperInstance.value) {
+         popperInstance.value.destroy()
+         popperInstance.value = null
       }
+
+      popperInstance.value = createPopper(triggerRef.value, containerRef.value, {
+         placement: placement,
+         strategy: 'absolute',
+         modifiers: [
+            {
+               name: 'offset',
+               options: { offset: offset },
+            },
+            {
+               name: 'preventOverflow',
+               options: {
+                  boundary: 'viewport',
+                  padding: 8,
+               },
+            },
+            {
+               name: 'flip',
+               options: {
+                  fallbackPlacements: ['top', 'bottom', 'left', 'right'],
+               },
+            },
+            {
+               name: 'arrow',
+               options: {
+                  element: '.tooltip-arrow',
+                  padding: 8,
+               },
+            },
+            {
+               name: 'updateActualPlacement',
+               enabled: true,
+               phase: 'afterWrite',
+               fn({ state }) {
+                  actualPlacement.value = state.placement
+               },
+            },
+         ],
+      })
+   }
+
+   const initializePopper = async () => {
+      if (!triggerRef.value || !containerRef.value) return
+
+      if (popperInstance.value) {
+         // Instance already exists — just recalculate position from fresh DOM state
+         await nextTick()
+         popperInstance.value.forceUpdate()
+         return
+      }
+
+      await nextTick()
+      await createPopperInstance()
    }
 
    const focusFirstItemInContainer = () => {
@@ -97,23 +110,30 @@ export function usePopover(
 
    const showTooltip = async () => {
       clearTimeouts()
-      if (!isOpen.value) {
-         showTimeout = window.setTimeout(
-            async () => {
-               isOpen.value = true
-               await nextTick()
-               if (containerRef.value) {
-                  await initializePopper()
-                  options.onShow?.()
-                  setTimeout(() => {
-                     popperInstance.value?.update()
-                     focusFirstItemInContainer()
-                  }, 0)
-               }
-            },
-            triggerMode === 'hover' ? 150 : 0
-         )
+      if (isOpen.value) {
+         // Already open — just force a position recalculation to fix any stale coords
+         await nextTick()
+         popperInstance.value?.forceUpdate()
+         return
       }
+
+      showTimeout = window.setTimeout(
+         async () => {
+            isOpen.value = true
+            await nextTick()
+
+            if (containerRef.value) {
+               // Always recreate the popper on each open so positioning is fresh
+               await createPopperInstance()
+               options.onShow?.()
+               setTimeout(() => {
+                  popperInstance.value?.forceUpdate()
+                  focusFirstItemInContainer()
+               }, 0)
+            }
+         },
+         triggerMode === 'hover' ? 150 : 0
+      )
    }
 
    const hideTooltip = () => {
@@ -122,9 +142,13 @@ export function usePopover(
          hideTimeout = window.setTimeout(
             () => {
                isOpen.value = false
-               // Performance: We intentionally DO NOT destroy the popper instance here.
-               // Re-initializing Popper is expensive. We keep it ready for the next open.
                options.onHide?.()
+               // Destroy popper on close so next open always gets a clean fresh instance
+               // with accurate DOM measurements — prevents stale position bugs on reopen
+               if (popperInstance.value) {
+                  popperInstance.value.destroy()
+                  popperInstance.value = null
+               }
             },
             triggerMode === 'hover' ? 30 : 0
          )
@@ -152,27 +176,19 @@ export function usePopover(
    }
 
    const handleMouseEnter = () => {
-      if (triggerMode === 'hover') {
-         showTooltip()
-      }
+      if (triggerMode === 'hover') showTooltip()
    }
 
    const handleMouseLeave = () => {
-      if (triggerMode === 'hover') {
-         hideTooltip()
-      }
+      if (triggerMode === 'hover') hideTooltip()
    }
 
    const handleTriggerClick = () => {
-      if (triggerMode === 'hover') {
-         hideTooltip()
-      }
+      if (triggerMode === 'hover') hideTooltip()
    }
 
    const shouldIgnoreClick = (target: HTMLElement): boolean => {
-      if (!options.ignoreClickOutside || options.ignoreClickOutside.length === 0) {
-         return false
-      }
+      if (!options.ignoreClickOutside || options.ignoreClickOutside.length === 0) return false
       return options.ignoreClickOutside.some((selector) => {
          if (selector.startsWith('#')) {
             const id = selector.substring(1)
@@ -226,15 +242,12 @@ export function usePopover(
    watch(
       () => placement,
       () => {
-         if (isOpen.value) {
-            initializePopper()
-         }
+         if (isOpen.value) initializePopper()
       }
    )
 
    watch(isOpen, (isNowOpen) => {
       if (triggerMode !== 'hover') return
-
       nextTick(() => {
          if (isNowOpen && containerRef.value) {
             containerRef.value.addEventListener('mouseenter', handleMouseEnter)
