@@ -69,6 +69,18 @@ const handleDelete = (items: any[]) => {
               type: 'text',
               label: 'User',
             },
+            {
+              name: 'userType',
+              label: 'User Type',
+              type: 'select',
+              options: [
+                { label: 'Employee', value: 'EMPLOYEE' },
+                { label: 'Customer', value: 'CUSTOMER' },
+                { label: 'Supplier', value: 'SUPPLIER' },
+                { label: 'Contractor', value: 'CONTRACTOR' },
+                { label: 'Client', value: 'CLIENT' },
+              ],
+            },
           ]"
           :export-schema="[
             { field: 'id', title: 'ID', required: true },
@@ -84,6 +96,7 @@ const handleDelete = (items: any[]) => {
             { field: 'role', title: 'Role' },
             { field: 'status', title: 'Account Status' },
           ]"
+          filter-type="dropdown"
           export-props
           import-props
           export-mode="backend"
