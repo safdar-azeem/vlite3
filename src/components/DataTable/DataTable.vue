@@ -323,8 +323,9 @@ const emitChange = () => {
         page: currentPage.value,
         limit: internalItemsPerPage.value,
       },
-      sorting: { ...sortConfig.value },
+      sort: { ...sortConfig.value },
       search: internalSearch.value,
+      filter: {},
     })
   }, 10)
 }
