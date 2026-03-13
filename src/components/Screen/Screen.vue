@@ -17,7 +17,7 @@ import { usePersistentState } from '../../utils/usePersistentState'
 import { useVLiteConfig } from '../../core/config'
 import { $t } from '@/utils/i18n'
 import { SCREEN_CONTEXT_KEY } from '../DataTable/types'
-import type { ScreenContext } from '../DataTable/types'
+import type { ScreenContext, TableState } from '../DataTable/types'
 
 const props = withDefaults(defineProps<ScreenProps>(), {
   name: '',
@@ -51,17 +51,8 @@ const emit = defineEmits<{
   (e: 'delete', items: any[]): void
 }>()
 
-// ── Screen context provided to all descendants (e.g. DataTable) ───────────────
-// DataTable picks this up via inject(SCREEN_CONTEXT_KEY) and:
-//   - hides its own search toolbar (Screen owns search)
-//   - auto-enables selectable for bulk-delete support
-const screenContext: ScreenContext = {
-  disableSearch: true,
-  forceSelectable: true,
-}
-provide(SCREEN_CONTEXT_KEY, screenContext)
+// ── internal state ────────────────────────────────────────────────────────────
 
-// ── existing Screen provides ──────────────────────────────────────────────────
 const slots = useSlots()
 const activeViewKey = computed(() => props.name || props.title || 'default-screen')
 const activeView = usePersistentState<'table' | 'list'>(
@@ -71,6 +62,7 @@ const activeView = usePersistentState<'table' | 'list'>(
 
 const searchQuery = ref('')
 const activeFilters = ref<Record<string, any>>({})
+const activeSort = ref<{ field: string; order: string }>({ field: '', order: '' })
 const internalPage = ref(props.pageInfo?.currentPage || 1)
 const internalLimit = ref(props.pageInfo?.itemsPerPage || props.paginationProps?.itemsPerPage || 10)
 
@@ -78,8 +70,30 @@ const selectedRows = ref<any[]>([])
 const itemsToDelete = ref<any[]>([])
 const showDeleteConfirmation = ref(false)
 
+// ── Screen context provided to all descendants ────────────────────────────────
+//
+// DataTable picks this up via inject(SCREEN_CONTEXT_KEY) and:
+//   - hides its own search toolbar  (Screen owns search)
+//   - auto-enables selectable       (bulk-delete support)
+//   - calls onTableChange()         (sort / pagination / search forwarded here)
+//
+const screenContext: ScreenContext = {
+  disableSearch: true,
+  forceSelectable: true,
+  onTableChange: (state: TableState) => {
+    // Merge sort from DataTable into Screen's state, then trigger refetch
+    activeSort.value = { field: state.sort.field, order: state.sort.order }
+    // DataTable also owns pagination when used standalone; inside Screen,
+    // Screen owns pagination — so we only adopt the sort here.
+    triggerChange()
+  },
+}
+provide(SCREEN_CONTEXT_KEY, screenContext)
+
 provide('screen-selected-rows', selectedRows)
 provide('screen-request-delete', (items: any[]) => requestDelete(items))
+
+// ── delete helpers ────────────────────────────────────────────────────────────
 
 const requestDelete = (items: any[]) => {
   itemsToDelete.value = items
@@ -97,19 +111,22 @@ const handleComponentDelete = (items: any[]) => {
   selectedRows.value = []
 }
 
+// ── sync pageInfo changes back into internal state ────────────────────────────
+
 watch(
   () => props.pageInfo?.currentPage,
-  (newVal) => {
-    if (newVal) internalPage.value = newVal
+  (v) => {
+    if (v) internalPage.value = v
+  }
+)
+watch(
+  () => props.pageInfo?.itemsPerPage,
+  (v) => {
+    if (v) internalLimit.value = v
   }
 )
 
-watch(
-  () => props.pageInfo?.itemsPerPage,
-  (newVal) => {
-    if (newVal) internalLimit.value = newVal
-  }
-)
+// ── search debounce ───────────────────────────────────────────────────────────
 
 let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null
 watch(searchQuery, () => {
@@ -119,6 +136,8 @@ watch(searchQuery, () => {
     triggerChange()
   }, 300)
 })
+
+// ── pagination handlers ───────────────────────────────────────────────────────
 
 const handlePageChange = (page: number) => {
   internalPage.value = page
@@ -131,29 +150,31 @@ const handleItemsPerPageChange = (limit: number) => {
   triggerChange()
 }
 
+// ── unified refetch trigger ───────────────────────────────────────────────────
+//
+// Single source of truth for the refetch payload.
+// Standard shape: { pagination, search, sort, filter }
+//
 const triggerChange = () => {
-  const payload = {
-    pagination: {
-      page: internalPage.value,
-      limit: internalLimit.value,
-    },
+  if (!props.refetch) return
+  props.refetch({
+    pagination: { page: internalPage.value, limit: internalLimit.value },
     search: searchQuery.value,
-    sort: {},
-    filter: activeFilters.value,
-  }
-  if (props.refetch) {
-    props.refetch(payload)
-  }
+    sort: { ...activeSort.value },
+    filter: { ...activeFilters.value },
+  })
 }
 
+// ── active component ──────────────────────────────────────────────────────────
+
 const activeComponent = computed(() => {
-  if (activeView.value === 'table') {
-    return props.table || !!slots.table
-  }
+  if (activeView.value === 'table') return props.table || !!slots.table
   return props.list || !!slots.list || !!slots.grid
 })
 
 const hasData = computed(() => props.data && props.data.length > 0)
+
+// ── display helpers ───────────────────────────────────────────────────────────
 
 const displayTitle = computed(() => (props.titleI18n ? $t(props.titleI18n) : props.title))
 const displayDescription = computed(() =>
@@ -212,19 +233,16 @@ const getAddBtnLabel = computed(() => {
   return res !== 'vlite.screen.addNew' ? res : 'Add New'
 })
 
-const hasExportOrImport = computed(() => {
-  const hasExport =
-    props.exportSchema && props.exportSchema.length > 0 && props.exportProps !== false
-  const hasImport =
-    props.importSchema && props.importSchema.length > 0 && props.importProps !== false
-  return hasExport || hasImport
-})
+const hasExportOrImport = computed(
+  () =>
+    (props.exportSchema && props.exportSchema.length > 0 && props.exportProps !== false) ||
+    (props.importSchema && props.importSchema.length > 0 && props.importProps !== false)
+)
 
 const txtExportData = computed(() => {
   const r = $t('vlite.screen.exportData')
   return r !== 'vlite.screen.exportData' ? r : 'Export Data'
 })
-
 const txtImportData = computed(() => {
   const r = $t('vlite.screen.importData')
   return r !== 'vlite.screen.importData' ? r : 'Import Data'
@@ -232,12 +250,10 @@ const txtImportData = computed(() => {
 
 const dropdownOptions = computed(() => {
   const opts = []
-  if (props.exportProps !== false) {
+  if (props.exportProps !== false)
     opts.push({ value: 'export', label: txtExportData.value, icon: 'lucide:download' })
-  }
-  if (props.importProps !== false) {
+  if (props.importProps !== false)
     opts.push({ value: 'import', label: txtImportData.value, icon: 'lucide:upload' })
-  }
   return opts
 })
 
@@ -247,29 +263,24 @@ const showExportDataModal = ref(false)
 const showImportDataModal = ref(false)
 
 const handleDropdownSelect = (opt: any) => {
-  if (opt.value === 'export') {
-    showExportDataModal.value = true
-  } else if (opt.value === 'import') {
-    showImportDataModal.value = true
-  }
+  if (opt.value === 'export') showExportDataModal.value = true
+  else if (opt.value === 'import') showImportDataModal.value = true
 }
 
-const resolveExportFields = computed(() => {
-  if (!props.exportSchema) return []
-  return props.exportSchema.map((s) => ({
+const resolveExportFields = computed(() =>
+  (props.exportSchema || []).map((s) => ({
     field: s.name || s.field,
     title: s.label || s.title || s.name || s.field,
   }))
-})
+)
 
-const resolveImportFields = computed(() => {
-  if (!props.importSchema) return []
-  return props.importSchema.map((s) => ({
+const resolveImportFields = computed(() =>
+  (props.importSchema || []).map((s) => ({
     field: s.name || s.field,
     title: s.label || s.title || s.name || s.field,
     required: s.required || false,
   }))
-})
+)
 
 const handleImportBatch = async (payload: any) => {
   if (vliteConfig?.services?.importApi && props.importType) {
@@ -288,22 +299,19 @@ const handleImportBatch = async (payload: any) => {
   }
 }
 
-const handleImportComplete = () => {
-  triggerChange()
-}
+const handleImportComplete = () => triggerChange()
 
-const effectiveExportMode = computed(() => {
-  return props.exportMode || vliteConfig?.exportData?.mode || 'frontend'
-})
+const effectiveExportMode = computed(
+  () => props.exportMode || vliteConfig?.exportData?.mode || 'frontend'
+)
 
 const handleBackendExport = async (format: string) => {
   if (vliteConfig?.services?.exportApi && props.exportType) {
-    const payload = {
+    await vliteConfig.services.exportApi(props.exportType, {
       format,
       search: searchQuery.value,
       filter: activeFilters.value,
-    }
-    await vliteConfig.services.exportApi(props.exportType, payload)
+    })
   } else {
     console.warn(
       'VLite Screen: No exportApi configured or no exportType provided for generic backend export.'
@@ -351,6 +359,7 @@ const handleBackendExport = async (format: string) => {
             icon="lucide:trash-2"
             :title="txtDeleteSelected"
             @click="requestDelete(selectedRows)" />
+
           <div
             v-if="(table || $slots.table) && (list || $slots.list || $slots.grid)"
             class="flex items-center p-1 rounded-md border border-border shrink-0">
@@ -446,6 +455,7 @@ const handleBackendExport = async (format: string) => {
                     {{ getAddBtnLabel }}
                   </Button>
                 </router-link>
+
                 <a
                   v-else-if="addBtn.href"
                   :href="addBtn.href"
@@ -499,7 +509,7 @@ const handleBackendExport = async (format: string) => {
 
     <slot name="custom-header" v-else />
 
-    <!-- ── sub-header slot: renders between the header and the table/grid/list ── -->
+    <!-- ── sub-header slot ── -->
     <slot name="sub-header" />
 
     <!-- ── Main content area ── -->
@@ -533,9 +543,9 @@ const handleBackendExport = async (format: string) => {
                     <Button
                       :icon="addBtn.icon || 'fluent:add-16-filled'"
                       :variant="addBtn.variant || 'outline'"
-                      v-bind="addBtn.buttonProps">
-                      {{ getAddBtnLabel }}
-                    </Button>
+                      v-bind="addBtn.buttonProps"
+                      >{{ getAddBtnLabel }}</Button
+                    >
                   </router-link>
 
                   <a
@@ -546,9 +556,9 @@ const handleBackendExport = async (format: string) => {
                     <Button
                       :icon="addBtn.icon || 'lucide:plus'"
                       :variant="addBtn.variant || 'outline'"
-                      v-bind="addBtn.buttonProps">
-                      {{ getAddBtnLabel }}
-                    </Button>
+                      v-bind="addBtn.buttonProps"
+                      >{{ getAddBtnLabel }}</Button
+                    >
                   </a>
 
                   <Button
@@ -560,9 +570,9 @@ const handleBackendExport = async (format: string) => {
                     {{ getAddBtnLabel }}
                   </Button>
                 </template>
-                <Button v-else icon="lucide:plus" variant="outline" @click="$emit('add')">
-                  {{ getAddBtnLabel }}
-                </Button>
+                <Button v-else icon="lucide:plus" variant="outline" @click="$emit('add')">{{
+                  getAddBtnLabel
+                }}</Button>
               </template>
             </template>
           </Empty>
