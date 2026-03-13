@@ -133,15 +133,12 @@ const handleItemsPerPageChange = (limit: number) => {
 
 const triggerChange = () => {
   const payload = {
-    pageinfo: {
-      page: internalPage.value,
-      limit: internalLimit.value,
-    },
     pagination: {
       page: internalPage.value,
       limit: internalLimit.value,
     },
     search: searchQuery.value,
+    sort: {},
     filter: activeFilters.value,
   }
   if (props.refetch) {
@@ -203,7 +200,9 @@ const txtCancelBtn = computed(() => {
 })
 const txtMissingView = computed(() => {
   const r = $t('vlite.screen.missingView')
-  return r !== 'vlite.screen.missingView' ? r : 'Please provide a `:list` or `:table` component or slot.'
+  return r !== 'vlite.screen.missingView'
+    ? r
+    : 'Please provide a `:list` or `:table` component or slot.'
 })
 
 const getAddBtnLabel = computed(() => {
@@ -447,7 +446,6 @@ const handleBackendExport = async (format: string) => {
                     {{ getAddBtnLabel }}
                   </Button>
                 </router-link>
-
                 <a
                   v-else-if="addBtn.href"
                   :href="addBtn.href"
@@ -579,8 +577,7 @@ const handleBackendExport = async (format: string) => {
           :loading="loading"
           :selected-rows="selectedRows"
           :delete="requestDelete"
-          :update-selected-rows="(val: any[]) => selectedRows = val"
-        />
+          :update-selected-rows="(val: any[]) => (selectedRows = val)" />
         <slot
           v-else-if="activeView === 'list' && $slots.list"
           name="list"
@@ -588,8 +585,7 @@ const handleBackendExport = async (format: string) => {
           :loading="loading"
           :selected-rows="selectedRows"
           :delete="requestDelete"
-          :update-selected-rows="(val: any[]) => selectedRows = val"
-        />
+          :update-selected-rows="(val: any[]) => (selectedRows = val)" />
         <slot
           v-else-if="activeView === 'list' && $slots.grid"
           name="grid"
@@ -597,8 +593,7 @@ const handleBackendExport = async (format: string) => {
           :loading="loading"
           :selected-rows="selectedRows"
           :delete="requestDelete"
-          :update-selected-rows="(val: any[]) => selectedRows = val"
-        />
+          :update-selected-rows="(val: any[]) => (selectedRows = val)" />
         <component
           :is="activeComponent"
           v-else-if="activeComponent"
