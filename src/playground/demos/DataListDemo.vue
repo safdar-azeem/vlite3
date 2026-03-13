@@ -14,18 +14,7 @@ const { result, loading, refetch } = useGetUsers()
 const itemsPerPage = ref(8)
 const currentPage = ref(1)
 
-const fetchData = () => {
-  refetch({
-    pagination: {
-      page: currentPage.value,
-      limit: itemsPerPage.value,
-    },
-    filter: {
-      search: '',
-      sorting: { field: '', order: '' },
-    },
-  })
-}
+const fetchData = () => {}
 
 onMounted(() => {
   fetchData()
