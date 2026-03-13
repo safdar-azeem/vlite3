@@ -36,9 +36,9 @@ export interface ScreenProps {
   data?: any[]
   loading?: boolean
   refetch?: (payload: {
-    pageinfo: { page: number; limit: number }
     pagination: { page: number; limit: number }
     search: string
+    sort: Record<string, any>
     filter: Record<string, any>
   }) => void
   paginationProps?: ScreenPaginationProps
