@@ -3,6 +3,7 @@ import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import Icon from '../Icon.vue'
 import type { NavbarTabItem } from '@/types/navbar.type'
+import { $t } from '@/utils/i18n'
 
 export type NavbarTabsVariant = 'line' | 'pill' | 'solid' | 'ghost'
 export type NavbarTabsSize = 'sm' | 'md' | 'lg'
@@ -197,7 +198,7 @@ const getItemClasses = (item: NavbarTabItem): string => {
           :icon="item.icon"
           class="shrink-0"
           :class="size === 'sm' ? 'w-3.5 h-3.5' : 'w-4 h-4'" />
-        <span class="truncate">{{ item.label }}</span>
+        <span class="truncate">{{ item.labelI18n ? $t(item.labelI18n) : item.label }}</span>
         <Icon
           v-if="item.iconRight"
           :icon="item.iconRight"
