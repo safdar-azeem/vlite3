@@ -52,7 +52,7 @@ const emit = defineEmits<{
   (e: 'error', error: string): void
 }>()
 
-const displayPlaceholder = computed(() => props.placeholderI18n ? $t(props.placeholderI18n) : (props.placeholder || 'Select file...'))
+const displayPlaceholder = computed(() => props.placeholderI18n ? $t(props.placeholderI18n) : (props.placeholder !== undefined ? props.placeholder : 'Select file...'))
 
 const displayText = computed(() => {
   if (props.textI18n) return $t(props.textI18n)
