@@ -34,6 +34,8 @@ interface Props {
   error?: string
   isUpdate?: boolean
   label?: string
+  /** Whether the floating label is currently in the 'active' (raised) position */
+  floatingActive?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -44,6 +46,7 @@ const props = withDefaults(defineProps<Props>(), {
   readonly: false,
   error: '',
   isUpdate: false,
+  floatingActive: true,
 })
 
 const emit = defineEmits<{
@@ -137,6 +140,12 @@ const fieldProps = computed(() => {
     ? $t(props.field.placeholderI18n)
     : props.field.placeholder
 
+  // When floating variant is active and the label hasn't lifted yet,
+  // suppress placeholder to prevent text overlap with the label
+  const shouldSuppressPlaceholder =
+    props.variant === 'floating' && props.label && !props.floatingActive
+  const safePlaceholder = shouldSuppressPlaceholder ? '' : resolvedPlaceholder
+
   // Input-based components
   if (
     type === 'text' ||
@@ -152,7 +161,7 @@ const fieldProps = computed(() => {
       ...baseProps,
       modelValue: props.value ?? '',
       type: type || 'text',
-      placeholder: resolvedPlaceholder,
+      placeholder: safePlaceholder,
       label: props.label,
       icon: props.field.icon,
       iconRight: props.field.iconRight,
@@ -178,11 +187,11 @@ const fieldProps = computed(() => {
       min: props.field.min,
       max: props.field.max,
       step: props.field.props?.step ?? 1,
-      variant: props.field.props?.variant ?? 'split',
+      variant: props.field.props?.variant ?? 'stacked',
       mode: props.field.props?.mode ?? (props.variant === 'transparent' ? 'ghost' : 'outline'),
       size: props.size,
       rounded: props.rounded,
-      placeholder: resolvedPlaceholder,
+      placeholder: safePlaceholder,
       class: props.field.className,
     }
   }
@@ -212,11 +221,12 @@ const fieldProps = computed(() => {
       ...baseProps,
       modelValue: props.value,
       options: props.field.options || [],
-      placeholder: resolvedPlaceholder,
+      placeholder: safePlaceholder,
       selectable: true,
       closeOnSelect: true,
       triggerProps: {
         variant: props.variant === 'floating' ? 'outline-floating' : props.variant || 'outline',
+        ...(shouldSuppressPlaceholder ? { text: '\u200B' } : {}),
       },
     }
   }
@@ -238,9 +248,11 @@ const fieldProps = computed(() => {
       ...baseProps,
       modelValue: props.value,
       mode: type === 'time' ? 'time' : 'date',
-      placeholder: resolvedPlaceholder,
+      placeholder: safePlaceholder,
       btnProps: {
         variant: props.variant === 'floating' ? 'outline-floating' : props.variant || 'outline',
+        class: 'px-3!',
+        ...(shouldSuppressPlaceholder ? { text: '\u200B' } : {}),
       },
     }
   }
@@ -255,7 +267,7 @@ const fieldProps = computed(() => {
       fileTypes: props.field.props?.accept ? props.field.props.accept.split(',') : [],
       returnFormat: 'base64',
       variant: type === 'file' ? 'input' : 'dropzone',
-      placeholder: resolvedPlaceholder,
+      placeholder: safePlaceholder,
       size: props.size,
       rounded: props.rounded,
       maxSize: props.field.maxFileSize ? props.field.maxFileSize * 1024 * 1024 : undefined,
