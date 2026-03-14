@@ -55,7 +55,7 @@ const sizeStyles = computed(() => {
     xs: { h: 'h-7', text: 'text-xs', px: 'px-2', icon: 'w-3 h-3' },
     sm: { h: 'h-8', text: 'text-xs', px: 'px-2', icon: 'w-3.5 h-3.5' },
     md: { h: 'h-9', text: 'text-sm', px: 'px-3', icon: 'w-4 h-4' },
-    lg: { h: 'h-10', text: 'text-base', px: 'px-4', icon: 'w-5 h-5' },
+    lg: { h: 'h-10', text: 'text-sm', px: 'px-4', icon: 'w-5 h-5' },
     xl: { h: 'h-12', text: 'text-lg', px: 'px-5', icon: 'w-6 h-6' },
   }
   return sizes[props.size] || sizes.md
