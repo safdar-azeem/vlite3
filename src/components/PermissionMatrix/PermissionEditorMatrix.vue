@@ -5,6 +5,7 @@ import Switch from '../Switch.vue'
 import Icon from '../Icon.vue'
 import Tooltip from '../Tooltip.vue'
 import { getMatrixPermKey, isActionEnabled, getMatrixRowPermKeys } from './utils'
+import { usePermissionState } from './usePermissionState'
 import type {
   PermissionMatrixGroup,
   PermissionMatrixRow,
@@ -26,6 +27,11 @@ const emit = defineEmits<{
   (e: 'update:modelValue', val: string[]): void
   (e: 'toggleCollapse', groupKey: string): void
 }>()
+
+// ── Set-based state — O(1) lookups ────────────────────────────────────────
+const { hasPerm, getMatrixGroupState, toggleMatrixGroup } = usePermissionState(
+  () => props.modelValue
+)
 
 const textSize = computed(() => (props.size === 'sm' ? 'text-xs' : 'text-sm'))
 
@@ -55,41 +61,21 @@ function groupHasAction(group: PermissionMatrixGroup, actionKey: string): boolea
 
 function hasMatrixPerm(groupKey: string, row: PermissionMatrixRow, actionKey: string): boolean {
   if (!isActionEnabled(row, actionKey)) return false
-  return props.modelValue.includes(getMatrixPermKey(groupKey, row, actionKey))
+  return hasPerm(getMatrixPermKey(groupKey, row, actionKey))
 }
 
 function toggleMatrixPerm(groupKey: string, row: PermissionMatrixRow, actionKey: string) {
   if (props.readonly || !isActionEnabled(row, actionKey)) return
   const key = getMatrixPermKey(groupKey, row, actionKey)
-  const next = props.modelValue.includes(key)
+  const next = hasPerm(key)
     ? props.modelValue.filter((k) => k !== key)
     : [...props.modelValue, key]
   emit('update:modelValue', next)
 }
 
-type GroupState = 'all' | 'none' | 'indeterminate'
-
-function getMatrixGroupState(group: PermissionMatrixGroup): GroupState {
-  const allKeys = group.rows.flatMap((r) => getMatrixRowPermKeys(group.key, r, group.actions))
-  if (allKeys.length === 0) return 'none'
-  const granted = allKeys.filter((k) => props.modelValue.includes(k))
-  if (granted.length === 0) return 'none'
-  if (granted.length === allKeys.length) return 'all'
-  return 'indeterminate'
-}
-
-function toggleMatrixGroup(group: PermissionMatrixGroup) {
+function handleToggleMatrixGroup(group: PermissionMatrixGroup) {
   if (props.readonly) return
-  const allKeys = group.rows.flatMap((r) => getMatrixRowPermKeys(group.key, r, group.actions))
-  const state = getMatrixGroupState(group)
-  let next: string[]
-  if (state === 'all') {
-    next = props.modelValue.filter((k) => !allKeys.includes(k))
-  } else {
-    const toAdd = allKeys.filter((k) => !props.modelValue.includes(k))
-    next = [...props.modelValue, ...toAdd]
-  }
-  emit('update:modelValue', next)
+  emit('update:modelValue', toggleMatrixGroup(group))
 }
 </script>
 
@@ -138,7 +124,7 @@ function toggleMatrixGroup(group: PermissionMatrixGroup) {
                   </span>
                 </div>
                 <!-- Group bulk toggle — stop propagation so it doesn't collapse the group -->
-                <div class="flex items-center" @click.stop="toggleMatrixGroup(group)">
+                <div class="flex items-center" @click.stop="handleToggleMatrixGroup(group)">
                   <CheckBox
                     v-if="toggleMode === 'checkbox'"
                     :model-value="getMatrixGroupState(group) === 'all'"
@@ -156,11 +142,15 @@ function toggleMatrixGroup(group: PermissionMatrixGroup) {
             </td>
           </tr>
 
-          <!-- Entity rows -->
+          <!-- Entity rows — v-memo prevents re-render unless this row's state changes -->
           <template v-if="!collapsedGroups.has(group.key)">
             <tr
               v-for="row in group.rows"
               :key="group.key + '-' + row.key"
+              v-memo="[
+                ...unifiedMatrixActions.map((a) => hasMatrixPerm(group.key, row, a.key)),
+                readonly,
+              ]"
               class="custom-entity-row">
               <td class="custom-td">
                 <div class="flex items-center gap-2 pl-6">
