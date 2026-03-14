@@ -162,7 +162,7 @@ const app = createApp(App)
 app.directive('scroll-reveal', vScrollReveal)
 
 // Setup plugins
-app.use(vlite)
+// app.use(vlite)
 app.use(router)
 
 app.mount('#app')
