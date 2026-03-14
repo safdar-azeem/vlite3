@@ -339,7 +339,7 @@ const handleCancel = () => {
       <div
         v-for="(groupSchema, groupIndex) in groupedSchemas"
         :key="groupIndex"
-        :class="['form-group border rounded overflow-hidden', groupClass]">
+        :class="['form-group border rounded overflow-hidden bg-body', groupClass]">
         <div
           v-if="groupsHeadings?.[groupIndex]"
           :class="['form-group-header bg-muted/50 px-4 py-2.5 border-b', headerClass]">
