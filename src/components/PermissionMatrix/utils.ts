@@ -1,7 +1,11 @@
 import type { PermissionMatrixRow, PermissionMatrixGroup } from './types'
 
 /** Resolve permission key for a matrix cell */
-export function getMatrixPermKey(groupKey: string, row: PermissionMatrixRow, actionKey: string): string {
+export function getMatrixPermKey(
+  groupKey: string,
+  row: PermissionMatrixRow,
+  actionKey: string
+): string {
   if (row.singleKey) return `${groupKey}-${row.key}`
   return `${groupKey}-${row.key}-${actionKey}`
 }
