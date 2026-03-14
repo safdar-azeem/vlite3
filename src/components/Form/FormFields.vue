@@ -126,7 +126,16 @@ const isFloatingActive = (field: IForm) => {
   const val = getFieldValue(field)
   const hasValue =
     val !== undefined && val !== null && val !== '' && !(Array.isArray(val) && val.length === 0)
-  return focusedFields.value[field.name] || hasValue
+  const hasNumericValue = typeof val === 'number' && !isNaN(val)
+
+  // For native inputs (text, number, etc), float the label when focused
+  if (delegatesFloatingLabel(field) || field.type === 'number') {
+    return focusedFields.value[field.name] || hasValue || hasNumericValue
+  }
+
+  // For custom trigger-based components (DatePicker, Dropdown, FilePicker),
+  // labels should ONLY float when there is an actual value, not on focus.
+  return hasValue || hasNumericValue
 }
 
 const delegatesFloatingLabel = (field: IForm) => {
@@ -135,13 +144,15 @@ const delegatesFloatingLabel = (field: IForm) => {
 }
 
 const getFloatingLeftClass = (field: IForm) => {
-  // If it's a split number input, we need space for the left minus button
-  if (field.type === 'number' && field.props?.variant !== 'stacked') {
-    return 'left-10'
+  // Split number input: space for the left minus button
+  if (field.type === 'number') {
+    const numVariant = field.props?.variant ?? 'split'
+    // Only split has a left-side button; stacked/ghost do not
+    return numVariant === 'split' ? 'left-4' : 'left-3'
   }
   // DatePicker and ColorPicker have icons/previews hardcoded at left-3
   if (field.type === 'date' || field.type === 'time' || field.type === 'color') {
-    return 'left-9'
+    return 'left-10'
   }
   return 'left-3'
 }
@@ -149,7 +160,7 @@ const getFloatingLeftClass = (field: IForm) => {
 const shouldHideExternalLabel = (field: IForm) => {
   if (props.variant !== 'floating') return false
   const type = field.type || 'text'
-  const unfloatingTypes = ['switch', 'check', 'customFields', 'avatarUpload', 'number']
+  const unfloatingTypes = ['switch', 'check', 'customFields', 'avatarUpload']
   return !unfloatingTypes.includes(type as string)
 }
 
@@ -201,7 +212,7 @@ const getSafeLabel = (field: IForm) => {
               'absolute transition-all duration-200 ease-in-out pointer-events-none z-20',
               isFloatingActive(field)
                 ? `-top-2.5 left-3 text-xs bg-background px-1 text-black shadow-[0_4px_4px_-4px_bg-background]`
-                : `top-2.5 text-sm text-muted-foreground/70 ${getFloatingLeftClass(field)}`,
+                : `top-1/2 -translate-y-1/2 text-sm text-muted-foreground/70 ${getFloatingLeftClass(field)}`,
             ]">
             <component
               v-if="isComponent(getFieldLabel(field))"
@@ -224,6 +235,7 @@ const getSafeLabel = (field: IForm) => {
                 : { ...field, props: { ...(field.props || {}), id: field.name } }
             "
             :value="getFieldValue(field)"
+            :floatingActive="isFloatingActive(field)"
             :label="
               field.type === 'customFields'
                 ? undefined
