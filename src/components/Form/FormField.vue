@@ -226,6 +226,7 @@ const fieldProps = computed(() => {
       closeOnSelect: true,
       triggerProps: {
         variant: props.variant === 'floating' ? 'outline-floating' : props.variant || 'outline',
+        size: props.size,
         ...(shouldSuppressPlaceholder ? { text: '\u200B' } : {}),
       },
     }
@@ -251,6 +252,7 @@ const fieldProps = computed(() => {
       placeholder: safePlaceholder,
       btnProps: {
         variant: props.variant === 'floating' ? 'outline-floating' : props.variant || 'outline',
+        size: props.size,
         class: 'px-3!',
         ...(shouldSuppressPlaceholder ? { text: '\u200B' } : {}),
       },
