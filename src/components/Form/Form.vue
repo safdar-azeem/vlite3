@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch, inject, onUnmounted } from 'vue'
+import { computed, ref, watch, inject, onMounted, onUnmounted } from 'vue'
 import type { IForm, IFormStep, IFormSubmitPayload } from './types'
 import type {
   InputVariant,
@@ -40,6 +40,8 @@ interface Props {
   timelineTextPosition?: TimelineTextPosition
   emitFields?: string[]
   showRequiredAsterisk?: boolean
+  /** Pin footer to bottom of viewport/container */
+  stickyFooter?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -61,6 +63,7 @@ const props = withDefaults(defineProps<Props>(), {
   footerClass: '',
   timelineTextPosition: 'right',
   emitFields: () => ['__typename'],
+  stickyFooter: true,
 })
 
 const emit = defineEmits<{
@@ -87,6 +90,33 @@ const resolvedShowRequiredAsterisk = computed(
 
 const shouldShowCancel = computed(() => props.showCancel || !!modalContext)
 const isInsideModal = computed(() => !!modalContext)
+
+// Whether to render footer as sticky
+const isFooterSticky = computed(() => props.stickyFooter)
+
+// Intersection Observer: toggle shadow when footer is actually "stuck"
+const footerRef = ref<HTMLElement | null>(null)
+const sentinelRef = ref<HTMLElement | null>(null)
+const isFooterStuck = ref(false)
+
+let observer: IntersectionObserver | null = null
+
+onMounted(() => {
+  if (!sentinelRef.value) return
+  observer = new IntersectionObserver(
+    ([entry]) => {
+      // When the sentinel (spacer at bottom of form content) is NOT visible,
+      // the footer is stuck to the viewport/container boundary.
+      isFooterStuck.value = !entry.isIntersecting
+    },
+    { threshold: 0 }
+  )
+  observer.observe(sentinelRef.value)
+})
+
+onUnmounted(() => {
+  observer?.disconnect()
+})
 
 const isGroupedMode = computed(() => {
   if (!props.schema || props.schema.length === 0) return false
@@ -137,9 +167,7 @@ const {
   isFieldVisible,
   isFieldDisabled,
   isFieldReadonly,
-  getFieldValue,
   handleSubmit: formSubmit,
-  flatSchema,
 } = useForm({
   schema: props.schema,
   values: props.values,
@@ -291,6 +319,17 @@ const handleKeydown = (event: KeyboardEvent) => {
   handleSubmit()
 }
 
+/**
+ * Cmd+S / Ctrl+S keyboard shortcut triggers submit with immediate
+ * loading-state feedback regardless of scroll position.
+ */
+const handleSaveShortcut = (event: KeyboardEvent) => {
+  if ((event.metaKey || event.ctrlKey) && event.key === 's') {
+    event.preventDefault()
+    handleSubmit()
+  }
+}
+
 const handleCancel = () => {
   emit('onCancel')
   if (modalContext) {
@@ -301,9 +340,11 @@ const handleCancel = () => {
 
 <template>
   <form
-    :class="['form-container', props.class]"
+    :class="['form-container ', props.class]"
     @submit.prevent="handleSubmit"
-    @keydown="handleKeydown">
+    @keydown="handleKeydown"
+    @keydown.meta.s.prevent="handleSaveShortcut"
+    @keydown.ctrl.s.prevent="handleSaveShortcut">
     <div
       v-if="isMultiStepMode && timelineSteps.length > 0"
       class="form-timeline"
@@ -317,104 +358,125 @@ const handleCancel = () => {
         @step-click="goToStep" />
     </div>
 
-    <div v-if="!isGroupedMode" class="form-fields-single">
-      <FormFields
-        :schema="schema as IForm[]"
-        :values="formValues"
-        :errors="errors"
-        :variant="resolvedVariant"
-        :size="resolvedSize"
-        :rounded="resolvedRounded"
-        :className="className"
-        :isUpdate="isUpdate"
-        :showRequiredAsterisk="resolvedShowRequiredAsterisk"
-        :isFieldVisible="isFieldVisible"
-        :isFieldDisabled="isFieldDisabled"
-        :isFieldReadonly="isFieldReadonly"
-        @change="onFieldChange"
-        @addonAction="(action: string) => emit('onAddonAction', action)" />
-    </div>
+    <!-- Form content wrapper: adds bottom padding so sticky footer never overlaps last field -->
+    <div :class="footer && isFooterSticky ? 'pb-2' : ''">
+      <div v-if="!isGroupedMode" class="form-fields-single">
+        <FormFields
+          :schema="schema as IForm[]"
+          :values="formValues"
+          :errors="errors"
+          :variant="resolvedVariant"
+          :size="resolvedSize"
+          :rounded="resolvedRounded"
+          :className="className"
+          :isUpdate="isUpdate"
+          :showRequiredAsterisk="resolvedShowRequiredAsterisk"
+          :isFieldVisible="isFieldVisible"
+          :isFieldDisabled="isFieldDisabled"
+          :isFieldReadonly="isFieldReadonly"
+          @change="onFieldChange"
+          @addonAction="(action: string) => emit('onAddonAction', action)" />
+      </div>
 
-    <div v-else-if="isGroupedMode && !isMultiStepMode" class="form-groups space-y-6">
-      <div
-        v-for="(groupSchema, groupIndex) in groupedSchemas"
-        :key="groupIndex"
-        :class="['form-group border rounded overflow-hidden bg-body', groupClass]">
+      <div v-else-if="isGroupedMode && !isMultiStepMode" class="form-groups space-y-6">
         <div
-          v-if="groupsHeadings?.[groupIndex]"
-          :class="['form-group-header bg-muted/50 px-4 py-2.5 border-b', headerClass]">
-          <h3 class="text-base font-semibold text-foreground">
-            {{ groupsHeadings[groupIndex] }}
-          </h3>
-          <p
-            v-if="groupHeadingsDescription?.[groupIndex]"
-            class="text-sm text-muted-foreground mt-1">
-            {{ groupHeadingsDescription[groupIndex] }}
+          v-for="(groupSchema, groupIndex) in groupedSchemas"
+          :key="groupIndex"
+          :class="['form-group border rounded overflow-hidden bg-body', groupClass]">
+          <div
+            v-if="groupsHeadings?.[groupIndex]"
+            :class="['form-group-header bg-muted/50 px-4 py-2.5 border-b', headerClass]">
+            <h3 class="text-base font-semibold text-foreground">
+              {{ groupsHeadings[groupIndex] }}
+            </h3>
+            <p
+              v-if="groupHeadingsDescription?.[groupIndex]"
+              class="text-sm text-muted-foreground mt-1">
+              {{ groupHeadingsDescription[groupIndex] }}
+            </p>
+          </div>
+
+          <div class="form-group-body p-4.5">
+            <FormFields
+              :schema="groupSchema"
+              :values="formValues"
+              :errors="errors"
+              :variant="resolvedVariant"
+              :size="resolvedSize"
+              :rounded="resolvedRounded"
+              :className="className"
+              :isUpdate="isUpdate"
+              :showRequiredAsterisk="resolvedShowRequiredAsterisk"
+              :isFieldVisible="isFieldVisible"
+              :isFieldDisabled="isFieldDisabled"
+              :isFieldReadonly="isFieldReadonly"
+              @change="onFieldChange"
+              @addonAction="(action: string) => emit('onAddonAction', action)" />
+          </div>
+        </div>
+      </div>
+
+      <div v-else-if="isMultiStepMode" class="form-step">
+        <div v-if="tabs?.[currentStep]" :class="['form-step-header mb-6', headerClass]">
+          <h2 class="text-lg font-semibold text-foreground">
+            {{ tabs[currentStep].title }}
+          </h2>
+          <p v-if="tabs[currentStep].description" class="text-sm text-muted-foreground mt-1">
+            {{ tabs[currentStep].description }}
           </p>
         </div>
 
-        <div class="form-group-body p-4.5">
-          <FormFields
-            :schema="groupSchema"
-            :values="formValues"
-            :errors="errors"
-            :variant="resolvedVariant"
-            :size="resolvedSize"
-            :rounded="resolvedRounded"
-            :className="className"
-            :isUpdate="isUpdate"
-            :showRequiredAsterisk="resolvedShowRequiredAsterisk"
-            :isFieldVisible="isFieldVisible"
-            :isFieldDisabled="isFieldDisabled"
-            :isFieldReadonly="isFieldReadonly"
-            @change="onFieldChange"
-            @addonAction="(action: string) => emit('onAddonAction', action)" />
-        </div>
-      </div>
-    </div>
-
-    <div v-else-if="isMultiStepMode" class="form-step">
-      <div v-if="tabs?.[currentStep]" :class="['form-step-header mb-6', headerClass]">
-        <h2 class="text-lg font-semibold text-foreground">
-          {{ tabs[currentStep].title }}
-        </h2>
-        <p v-if="tabs[currentStep].description" class="text-sm text-muted-foreground mt-1">
-          {{ tabs[currentStep].description }}
-        </p>
+        <FormFields
+          :schema="currentStepSchema"
+          :values="formValues"
+          :errors="errors"
+          :variant="resolvedVariant"
+          :size="resolvedSize"
+          :rounded="resolvedRounded"
+          :className="className"
+          :isUpdate="isUpdate"
+          :showRequiredAsterisk="resolvedShowRequiredAsterisk"
+          :isFieldVisible="isFieldVisible"
+          :isFieldDisabled="isFieldDisabled"
+          :isFieldReadonly="isFieldReadonly"
+          @change="onFieldChange"
+          @addonAction="(action: string) => emit('onAddonAction', action)" />
       </div>
 
-      <FormFields
-        :schema="currentStepSchema"
+      <slot
         :values="formValues"
         :errors="errors"
-        :variant="resolvedVariant"
-        :size="resolvedSize"
-        :rounded="resolvedRounded"
-        :className="className"
-        :isUpdate="isUpdate"
-        :showRequiredAsterisk="resolvedShowRequiredAsterisk"
-        :isFieldVisible="isFieldVisible"
-        :isFieldDisabled="isFieldDisabled"
-        :isFieldReadonly="isFieldReadonly"
-        @change="onFieldChange"
-        @addonAction="(action: string) => emit('onAddonAction', action)" />
-    </div>
+        :isSubmitting="isSubmitting"
+        :handleSubmit="handleSubmit" />
 
-    <slot
-      :values="formValues"
-      :errors="errors"
-      :isSubmitting="isSubmitting"
-      :handleSubmit="handleSubmit" />
+      <!--
+        Sentinel element: sits at the very end of the scrollable content.
+        The IntersectionObserver watches this element. When it leaves the
+        visible area the footer is truly "stuck", so we apply the shadow.
+        When it becomes visible again (user scrolled to the bottom), the
+        shadow disappears and the footer looks like a natural page element.
+      -->
+      <div ref="sentinelRef" class="form-scroll-sentinel h-px w-full" aria-hidden="true" />
+    </div>
 
     <div
       v-if="footer"
+      ref="footerRef"
       :class="[
-        'form-footer flex items-center  gap-3',
+        'form-footer flex items-center gap-3 z-20',
         footerClass,
         isMultiStepMode ? 'justify-between' : 'justify-end',
-        isInsideModal
-          ? 'sticky bottom-0 z-20 bg-body pt-3.5 border-t border-border/75 -mx-4 px-4 mt-8'
+        // Sticky positioning
+        isFooterSticky
+          ? 'sticky bottom-0 bg-background/95 backdrop-blur-sm pt-3 pb-2 -mx-0.5 px-0.5'
           : 'mt-6',
+        // Inside modal: extend to modal edges and add top border always
+        isInsideModal ? '-mx-4 px-4' : '',
+        // Shadow only while actually stuck (sentinel has scrolled out of view)
+        isFooterSticky && isFooterStuck ? '' : isFooterSticky ? 'border-t border-transparent' : '',
+        // Non-sticky inside modal keeps the original border styling
+        !isFooterSticky && isInsideModal ? 'border-t border-border/75 mt-8' : '',
+        !isFooterSticky && !isInsideModal ? 'mt-6' : '',
       ]">
       <div class="flex items-center gap-3">
         <Button
