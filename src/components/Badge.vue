@@ -18,17 +18,28 @@ export type BadgeVariant =
 
 interface Props {
   variant?: BadgeVariant | string
-  class?: string
+  size?: 'xs' | 'sm' | 'md' | 'lg'
+  rounded?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full' | string
+  class?: any
 }
 
 const props = withDefaults(defineProps<Props>(), {
   variant: 'default',
+  size: 'md',
+  rounded: 'full',
   class: '',
 })
 
 const classes = computed(() => {
+  const sizeClasses: Record<string, string> = {
+    xs: 'px-1.5 h-5 text-[10.5px] leading-none',
+    sm: 'px-2 h-6 text-xs font-medium',
+    md: 'px-2.5 h-7 text-xs font-semibold',
+    lg: 'px-3 h-8 text-sm font-semibold'
+  }
+  const roundedClass = props.rounded === 'none' ? 'rounded-none' : `rounded-${props.rounded}`
   const baseClasses =
-    'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2'
+    `inline-flex items-center ${roundedClass} border ${sizeClasses[props.size] || sizeClasses.md} focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2`
 
   const variants: Record<string, string> = {
     default: 'border-transparent bg-primary text-primary-foreground hover:bg-primary/80',
