@@ -228,7 +228,7 @@ const menuItems: SidebarMenuItemSchema[] = [
 
       <!-- Main content area -->
       <template #main>
-        <div class="flex-1 w-full flex flex-col h-full bg-gray-100 relative z-0">
+        <div class="flex-1 w-full flex flex-col h-full bg-body relative z-0">
           <div class="flex-1 overflow-y-auto scroll-smooth">
             <div class="max-w-[1950px] mx-auto px-14 py-6 md:py-5">
               <router-view v-slot="{ Component }">
