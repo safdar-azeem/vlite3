@@ -201,7 +201,14 @@ const columnHeaders = computed(() => {
             class="flex-1 min-w-0 relative"
             :class="{ 'border-l border-border': fIdx > 0 }">
             <FormField
-              :field="{ ...field, label: undefined }"
+              :field="{
+                ...field,
+                props: {
+                  ...(field.type === 'multiSelect' ? { showControls: false, wrap: false } : {}),
+                  ...(field.props || {})
+                },
+                label: undefined
+              }"
               :value="getFieldValue(rowIndex, field.name)"
               :values="values || {}"
               :variant="'transparent'"
