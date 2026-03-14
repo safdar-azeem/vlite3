@@ -150,6 +150,9 @@ const vlite = createVLite({
     date: {
       format: 'MM-DD-YY',
     },
+    form: {
+      variant: 'floating',
+    },
   },
 })
 
@@ -159,7 +162,7 @@ const app = createApp(App)
 app.directive('scroll-reveal', vScrollReveal)
 
 // Setup plugins
-// app.use(vlite)
+app.use(vlite)
 app.use(router)
 
 app.mount('#app')
