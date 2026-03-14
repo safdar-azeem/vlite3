@@ -74,7 +74,7 @@ const tabs = [
       </div>
     </div>
 
-    <div class="bg-white rounded-lg border border-border p-6 min-h-[400px]">
+    <div class="rounded-lg border border-border p-6 min-h-[400px]">
       <Transition
         mode="out-in"
         enter-active-class="transition duration-200 ease-out"
