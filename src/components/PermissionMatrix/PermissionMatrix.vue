@@ -5,6 +5,7 @@ import Switch from '../Switch.vue'
 import Icon from '../Icon.vue'
 import Input from '../Input.vue'
 import Tooltip from '../Tooltip.vue'
+import { usePermissionState } from './usePermissionState'
 import type {
   PermissionMatrixProps,
   PermissionMap,
@@ -62,9 +63,17 @@ const filteredGroups = computed<PermissionGroup[]>(() => {
     .filter(Boolean) as PermissionGroup[]
 })
 
-// ── Permission helpers ──
+// ── Per-role Set cache — each role gets its own computed Set for O(1) lookups ──
+const rolePermSets = computed<Map<string, Set<string>>>(() => {
+  const map = new Map<string, Set<string>>()
+  for (const role of props.roles) {
+    map.set(role.key, new Set(props.modelValue[role.key] || []))
+  }
+  return map
+})
+
 function hasPerm(roleKey: string, permKey: string): boolean {
-  return props.modelValue[roleKey]?.includes(permKey) ?? false
+  return rolePermSets.value.get(roleKey)?.has(permKey) ?? false
 }
 
 function togglePerm(roleKey: string, permKey: string) {
@@ -73,7 +82,7 @@ function togglePerm(roleKey: string, permKey: string) {
   if (role?.locked) return
 
   const current = props.modelValue[roleKey] || []
-  const next = current.includes(permKey)
+  const next = rolePermSets.value.get(roleKey)?.has(permKey)
     ? current.filter((k) => k !== permKey)
     : [...current, permKey]
 
@@ -84,9 +93,14 @@ function togglePerm(roleKey: string, permKey: string) {
 type GroupState = 'all' | 'none' | 'indeterminate'
 
 function getGroupState(roleKey: string, group: PermissionGroup): GroupState {
-  const granted = group.permissions.filter((p) => hasPerm(roleKey, p.key))
-  if (granted.length === 0) return 'none'
-  if (granted.length === group.permissions.length) return 'all'
+  const set = rolePermSets.value.get(roleKey)
+  if (!set) return 'none'
+  let count = 0
+  for (const p of group.permissions) {
+    if (set.has(p.key)) count++
+  }
+  if (count === 0) return 'none'
+  if (count === group.permissions.length) return 'all'
   return 'indeterminate'
 }
 
@@ -96,14 +110,15 @@ function toggleGroup(roleKey: string, group: PermissionGroup) {
   if (role?.locked) return
 
   const state = getGroupState(roleKey, group)
-  const permKeys = group.permissions.map((p) => p.key)
+  const set = rolePermSets.value.get(roleKey) ?? new Set<string>()
   const current = props.modelValue[roleKey] || []
 
   let next: string[]
   if (state === 'all') {
-    next = current.filter((k) => !permKeys.includes(k))
+    const keySet = new Set(group.permissions.map((p) => p.key))
+    next = current.filter((k) => !keySet.has(k))
   } else {
-    const toAdd = permKeys.filter((k) => !current.includes(k))
+    const toAdd = group.permissions.filter((p) => !set.has(p.key)).map((p) => p.key)
     next = [...current, ...toAdd]
   }
 
@@ -222,11 +237,12 @@ function getTotalPerms(): number {
               </td>
             </tr>
 
-            <!-- Permission rows -->
+            <!-- Permission rows — v-memo skips re-render unless this row's state changes -->
             <template v-if="!collapsedGroups.has(group.key)">
               <tr
                 v-for="perm in group.permissions"
                 :key="perm.key"
+                v-memo="[...roles.map((r) => hasPerm(r.key, perm.key)), readonly]"
                 class="hover:bg-accent/40 transition-colors duration-100">
                 <td :class="[cellPadding, 'border-b']">
                   <div class="flex items-center gap-2 pl-6">
