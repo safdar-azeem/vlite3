@@ -52,7 +52,13 @@ const emit = defineEmits<{
   (e: 'error', error: string): void
 }>()
 
-const displayPlaceholder = computed(() => props.placeholderI18n ? $t(props.placeholderI18n) : (props.placeholder !== undefined ? props.placeholder : 'Select file...'))
+const displayPlaceholder = computed(() =>
+  props.placeholderI18n
+    ? $t(props.placeholderI18n)
+    : props.placeholder !== undefined
+      ? props.placeholder
+      : 'Select file...'
+)
 
 const displayText = computed(() => {
   if (props.textI18n) return $t(props.textI18n)
@@ -114,15 +120,19 @@ const displayFiles = computed(() => {
 
 const triggerInput = () => {
   if (props.disabled || props.loading || isProcessing.value) return
-  
+
   if (props.multiSelect && props.maxFiles) {
-    const existingCount = Array.isArray(props.modelValue) ? props.modelValue.length : (props.modelValue ? 1 : 0)
+    const existingCount = Array.isArray(props.modelValue)
+      ? props.modelValue.length
+      : props.modelValue
+        ? 1
+        : 0
     if (existingCount >= props.maxFiles) {
       emit('error', `Maximum ${props.maxFiles} files allowed`)
       return
     }
   }
-  
+
   fileInput.value?.click()
 }
 
@@ -191,18 +201,22 @@ const processFiles = async (fileList: FileList) => {
 
   // Single select validation
   let filesToProcess = props.multiSelect ? files : [files[0]]
-  
+
   // Enforce Limit
   if (props.multiSelect && props.maxFiles) {
-    const existingCount = Array.isArray(props.modelValue) ? props.modelValue.length : (props.modelValue ? 1 : 0)
+    const existingCount = Array.isArray(props.modelValue)
+      ? props.modelValue.length
+      : props.modelValue
+        ? 1
+        : 0
     const availableSlots = props.maxFiles - existingCount
-    
+
     if (availableSlots <= 0) {
       emit('error', `Maximum ${props.maxFiles} files allowed`)
       isProcessing.value = false
       return
     }
-    
+
     if (filesToProcess.length > availableSlots) {
       errors.push(`Only ${availableSlots} more file(s) allowed. Maximum ${props.maxFiles} files.`)
       filesToProcess = filesToProcess.slice(0, availableSlots)
@@ -265,7 +279,11 @@ const processFiles = async (fileList: FileList) => {
     if (processed.length > 0) {
       let result: FilePickerValue | FilePickerValue[]
       if (props.multiSelect) {
-        const existing = Array.isArray(props.modelValue) ? props.modelValue : (props.modelValue ? [props.modelValue] : [])
+        const existing = Array.isArray(props.modelValue)
+          ? props.modelValue
+          : props.modelValue
+            ? [props.modelValue]
+            : []
         result = [...existing, ...processed]
       } else {
         result = processed[0]
@@ -394,11 +412,9 @@ const inputBaseClass = computed(() => {
         @drop="handleDrop">
         <div
           v-if="!hasValue"
-          class="border-2 border-dashed border-border rounded-lg p-6 transition-all duration-200 ease-in-out cursor-pointer flex flex-col items-center justify-center text-center gap-2"
+          class="border-2 bg-body border-dashed border-border rounded-lg p-6 transition-all duration-200 ease-in-out cursor-pointer flex flex-col items-center justify-center text-center gap-2"
           :class="[
-            isDragging
-              ? 'border-primary bg-primary/5'
-              : 'hover:border-primary/50 hover:bg-muted/50',
+            isDragging ? 'border-primary bg-primary/5' : 'hover:border-primary/50 ',
             disabled || loading || isProcessing ? 'opacity-50 cursor-not-allowed' : '',
           ]"
           @click="triggerInput">
@@ -425,7 +441,7 @@ const inputBaseClass = computed(() => {
           <div
             v-for="(file, index) in displayFiles"
             :key="index"
-            class="relative flex items-center p-3 border border-border rounded-lg bg-card shadow-sm transition-colors group"
+            class="relative flex items-center p-3 border border-border rounded-lg bg-body shadow-sm transition-colors group"
             :class="[!multiSelect && !disabled ? 'cursor-pointer hover:border-primary/50' : '']"
             @click="!multiSelect && !disabled ? triggerInput() : null">
             <div class="shrink-0 mr-3">
@@ -455,7 +471,9 @@ const inputBaseClass = computed(() => {
             </div>
           </div>
 
-          <div class="flex gap-2" v-if="multiSelect && (!maxFiles || displayFiles.length < maxFiles)">
+          <div
+            class="flex gap-2"
+            v-if="multiSelect && (!maxFiles || displayFiles.length < maxFiles)">
             <Button
               size="sm"
               variant="outline"
