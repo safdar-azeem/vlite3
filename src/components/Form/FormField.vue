@@ -240,6 +240,8 @@ const fieldProps = computed(() => {
       options: props.field.options || [],
       placeholder: resolvedPlaceholder,
       variant: props.variant,
+      size: props.size,
+      rounded: props.rounded,
     }
   }
 
