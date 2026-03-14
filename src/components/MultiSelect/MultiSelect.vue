@@ -25,6 +25,9 @@ interface Props {
   debounceTime?: number
   fetchSelected?: (ids: any[]) => Promise<IDropdownOption[]>
   layout?: 'default' | 'grouped'
+  showControls?: boolean
+  wrap?: boolean
+  rounded?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full' | string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -40,6 +43,9 @@ const props = withDefaults(defineProps<Props>(), {
   remote: false,
   debounceTime: 300,
   layout: 'default',
+  showControls: true,
+  wrap: true,
+  rounded: 'md',
 })
 
 const emit = defineEmits<{
@@ -173,17 +179,23 @@ const clearAll = () => {
 
 // Styling
 const triggerClasses = computed(() => {
+  const roundedClass = props.rounded === 'none' ? 'rounded-none' : `rounded-${props.rounded}`
+  const spacingClass = props.variant === 'transparent' ? 'px-2 py-0' : 'px-3 py-1.5'
+  const heightClass = props.variant === 'transparent' ? 'h-full min-h-[40px]' : 'min-h-[40px]'
+
   return [
-    'flex items-center justify-between w-full px-3 py-1.5 rounded-md border text-sm transition-colors cursor-pointer',
+    `flex items-center justify-between w-full ${spacingClass} ${heightClass} ${roundedClass} border text-sm transition-colors cursor-pointer`,
     props.disabled
       ? 'opacity-50 cursor-not-allowed bg-muted'
       : props.variant === 'floating'
         ? 'bg-transparent text-foreground'
-        : 'bg-background hover:bg-gray-50/70',
+        : props.variant === 'transparent'
+          ? 'bg-transparent text-foreground'
+          : 'bg-background hover:bg-gray-50/70',
     props.variant === 'outline' || props.variant === 'floating'
       ? 'border-input'
-      : 'border-transparent bg-muted',
-    isOpen.value ? 'border-primary/20' : '',
+      : props.variant === 'transparent' ? 'border-transparent' : 'border-transparent bg-muted',
+    isOpen.value && props.variant !== 'transparent' ? 'border-primary/20' : '',
   ].join(' ')
 })
 
@@ -198,8 +210,8 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
     :disabled="disabled">
     <template #trigger="{ isOpen }">
       <div :class="triggerClasses">
-        <div class="flex flex-wrap gap-1.5 items-center flex-1 min-w-0 py-0.5">
-          <span v-if="selectedOptions.length === 0" class="text-muted-foreground pl-1">
+        <div class="flex gap-1.5 items-center flex-1 min-w-0" :class="[wrap ? 'flex-wrap py-0.5' : 'flex-nowrap overflow-hidden py-1']">
+          <span v-if="selectedOptions.length === 0" class="text-muted-foreground pl-1 truncate">
             {{ displayPlaceholder }}
           </span>
 
@@ -207,28 +219,38 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
             <Badge
               v-for="opt in visibleSelections"
               :key="opt.value"
-              variant="secondary"
-              class="gap-1 pr-1 truncate max-w-[150px]">
-              <span class="truncate">{{ opt.labelI18n ? $t(opt.labelI18n) : opt.label }}</span>
+              :variant="variant === 'transparent' ? 'outline' : 'secondary'"
+              :size="badgeSize"
+              :rounded="rounded === 'none' ? 'sm' : 'full'"
+              class="gap-1 pr-1 truncate min-w-0 shrink"
+              :class="[
+                wrap ? 'max-w-[150px]' : '',
+                variant === 'transparent' ? 'border-transparent bg-muted/50 text-foreground font-medium shadow-none' : ''
+              ]">
+              <span class="truncate min-w-0">{{ opt.labelI18n ? $t(opt.labelI18n) : opt.label }}</span>
               <button
                 v-if="!disabled"
                 type="button"
                 @click.stop="removeOption(opt.value)"
-                class="hover:bg-destructive/10 hover:text-destructive rounded-full p-0.5 transition-colors">
+                class="rounded transition-colors shrink-0 flex items-center justify-center p-px"
+                :class="variant === 'transparent' ? 'text-muted-foreground hover:bg-black/10 hover:text-foreground' : 'hover:bg-destructive/10 hover:text-destructive p-0.5 rounded-full'">
                 <Icon icon="lucide:x" class="w-3 h-3" />
               </button>
             </Badge>
 
             <Badge
               v-if="hiddenCount > 0"
-              variant="secondary"
-              class="font-normal text-muted-foreground">
+              :variant="variant === 'transparent' ? 'outline' : 'secondary'"
+              :size="badgeSize"
+              :rounded="rounded === 'none' ? 'sm' : 'full'"
+              class="shrink-0"
+              :class="variant === 'transparent' ? 'border-transparent bg-muted/50 text-muted-foreground font-medium shadow-none' : ''">
               +{{ hiddenCount }}
             </Badge>
           </template>
         </div>
 
-        <div class="flex items-center gap-2 pl-2 shrink-0 text-muted-foreground">
+        <div v-if="showControls" class="flex items-center gap-2 pl-2 shrink-0 text-muted-foreground">
           <Icon
             v-if="selectedOptions.length > 0 && !disabled"
             icon="lucide:x"
