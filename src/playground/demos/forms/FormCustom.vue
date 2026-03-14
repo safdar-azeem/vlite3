@@ -67,7 +67,7 @@ const customFieldsSchema: IForm[] = [
         {
           name: 'role',
           label: 'Role',
-          type: 'select',
+          type: 'multiSelect',
           options: [
             { label: 'Developer', value: 'developer' },
             { label: 'Designer', value: 'designer' },
