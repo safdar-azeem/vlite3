@@ -160,7 +160,14 @@ const getFloatingLeftClass = (field: IForm) => {
 const shouldHideExternalLabel = (field: IForm) => {
   if (props.variant !== 'floating') return false
   const type = field.type || 'text'
-  const unfloatingTypes = ['switch', 'check', 'customFields', 'avatarUpload']
+  const unfloatingTypes = [
+    'switch',
+    'check',
+    'customFields',
+    'avatarUpload',
+    'fileUploader',
+    'file',
+  ]
   return !unfloatingTypes.includes(type as string)
 }
 
@@ -172,7 +179,7 @@ const getSafeLabel = (field: IForm) => {
 </script>
 
 <template>
-  <div :class="['grid', variant === 'floating' ? 'gap-6' : 'gap-4', className]">
+  <div :class="['grid', variant === 'floating' ? 'gap-5 mt-1' : 'gap-4', className]">
     <template v-for="field in schema" :key="field.name">
       <div v-if="checkFieldVisible(field)" :class="['form-field-item', getItemClass(field)]">
         <Label
