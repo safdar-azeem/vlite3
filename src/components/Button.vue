@@ -46,7 +46,7 @@ const classes = computed(() => {
     outline:
       'border border-input bg-background hover:bg-accent hover:text-accent-foreground text-foreground',
     'outline-floating':
-      'border border-input bg-transparent hover:bg-transparent text-foreground border-input',
+      'border border-input bg-transparent hover:bg-transparent text-foreground border-input active:scale-100!',
     'outline-primary': 'border border-primary text-primary hover:bg-primary/10',
     'outline-danger': 'border border-destructive text-destructive hover:bg-destructive/10',
     'outline-warning': 'border border-warning text-warning hover:bg-warning/10',
