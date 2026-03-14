@@ -23,6 +23,12 @@ const loginSchema: IForm[] = [
     required: true,
   },
   {
+    name: 'probationEndDate',
+    type: 'date',
+    labelI18n: 'hrm.probationEndDate',
+    label: 'Probation End Date',
+  },
+  {
     name: 'rememberMe',
     label: 'Remember me',
     type: 'switch',
