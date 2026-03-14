@@ -2,61 +2,36 @@
 import { ref, computed, watch, onMounted, onUnmounted, shallowRef } from 'vue'
 import Icon from './Icon.vue'
 import Modal from './Modal.vue'
-import CommandPaletteContent from './CommandPaletteContent.vue'
+import { CommandPaletteContent } from './CommandPalette'
 import type { SidebarMenuItemSchema } from '@/components/SidebarMenu/types'
 import { $t } from '@/utils/i18n'
 
 // ---------------------------------------------------------------------------
-// Types
+// Re-export types so consumers can import from NavbarCommandPalette directly
 // ---------------------------------------------------------------------------
 
-export interface CommandPlateSchema {
-  id?: string
-  label: string
-  labelI18n?: string
-  description?: string
-  descriptionI18n?: string
-  icon?: string
-  group?: string
-  to?: string
-  href?: string
-  action?: () => void
-  keywords?: string[]
-  disabled?: boolean
-  modalBody?: any
-  modalProps?: Record<string, any>
-  show?: boolean | (() => boolean)
-  children?: CommandPlateSchema[]
-}
+export type { CommandPaletteItem, CommandPaletteGroup } from './CommandPalette'
 
-// Alias to maintain backwards compatibility
-export type CommandPaletteItem = CommandPlateSchema
-
-export interface CommandPaletteGroup {
-  key: string
-  label: string
-  items: CommandPaletteItem[]
-}
+// Backwards-compat alias
+export type CommandPlateSchema = import('./CommandPalette').CommandPaletteItem
 
 interface Props {
   /** Items directly supplied to the palette (static list or pre-mapped) */
-  items?: CommandPaletteItem[]
+  items?: import('./CommandPalette').CommandPaletteItem[]
   /**
    * Raw SidebarMenuItemSchema tree — the palette auto-flattens and groups these.
-   * Supports top-level links, nested children, and grouped items.
    */
   menuItems?: SidebarMenuItemSchema[]
   /** Keyboard shortcut that opens the palette (default: Meta+K / Ctrl+K) */
   shortcutKey?: string
   /** Placeholder text for the search input */
   placeholder?: string
-  /** I18n translation key for placeholder */
+  /** i18n translation key for placeholder */
   placeholderI18n?: string
   /** Maximum number of results shown per group */
   maxResultsPerGroup?: number
-  /** Whether the palette is enabled at all — when false, nothing mounts or listens */
+  /** When false, nothing renders and no shortcut listener is registered */
   enabled?: boolean
-
   triggerClass?: string
 }
 
@@ -74,19 +49,12 @@ const props = withDefaults(defineProps<Props>(), {
 // ---------------------------------------------------------------------------
 
 const isOpen = ref(false)
-
-// Dynamic Modal State
 const isDynamicModalOpen = ref(false)
 const activeModalBody = shallowRef<any>(null)
 const activeModalProps = ref<Record<string, any>>({})
 
-const open = () => {
-  isOpen.value = true
-}
-
-const close = () => {
-  isOpen.value = false
-}
+const open = () => { isOpen.value = true }
+const close = () => { isOpen.value = false }
 
 const handleOpenDynamicModal = (body: any, modalProps: any) => {
   close()
@@ -96,22 +64,19 @@ const handleOpenDynamicModal = (body: any, modalProps: any) => {
 }
 
 // ---------------------------------------------------------------------------
-// Keyboard shortcut listener — only when enabled
+// Global keyboard shortcut
 // ---------------------------------------------------------------------------
 
 const handleGlobalKeydown = (e: KeyboardEvent) => {
   if (!props.enabled) return
-  const isMeta = e.metaKey || e.ctrlKey
-  if (isMeta && e.key === props.shortcutKey) {
+  if ((e.metaKey || e.ctrlKey) && e.key === props.shortcutKey) {
     e.preventDefault()
     isOpen.value ? close() : open()
   }
 }
 
 onMounted(() => {
-  if (props.enabled) {
-    window.addEventListener('keydown', handleGlobalKeydown)
-  }
+  if (props.enabled) window.addEventListener('keydown', handleGlobalKeydown)
 })
 
 onUnmounted(() => {
@@ -131,7 +96,7 @@ watch(
 )
 
 // ---------------------------------------------------------------------------
-// UI Helpers
+// UI helpers
 // ---------------------------------------------------------------------------
 
 const displayPlaceholder = computed(() => {
