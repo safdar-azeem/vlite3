@@ -46,9 +46,18 @@ const clearFilters = () => {
   emit('change', {})
 }
 
-const txtFilters = computed(() => { const r = $t('vlite.screen.filters'); return r !== 'vlite.screen.filters' ? r : 'Filters' })
-const txtApplyFilters = computed(() => { const r = $t('vlite.screen.applyFilters'); return r !== 'vlite.screen.applyFilters' ? r : 'Apply Filters' })
-const txtFilter = computed(() => { const r = $t('vlite.screen.filter'); return r !== 'vlite.screen.filter' ? r : 'Filter' })
+const txtFilters = computed(() => {
+  const r = $t('vlite.screen.filters')
+  return r !== 'vlite.screen.filters' ? r : 'Filters'
+})
+const txtApplyFilters = computed(() => {
+  const r = $t('vlite.screen.applyFilters')
+  return r !== 'vlite.screen.applyFilters' ? r : 'Apply Filters'
+})
+const txtFilter = computed(() => {
+  const r = $t('vlite.screen.filter')
+  return r !== 'vlite.screen.filter' ? r : 'Filter'
+})
 </script>
 
 <template>
@@ -130,8 +139,7 @@ const txtFilter = computed(() => { const r = $t('vlite.screen.filter'); return r
         class="shrink-0 h-9! w-9!" />
     </template>
 
-    <div
-      class="py-3 px-3.5 w-[300px] sm:w-[320px] max-h-[85vh] overflow-y-auto bg-card rounded-md border border-border shadow-lg text-left">
+    <div class="py-4 px-3.5 min-w-[290px]">
       <Form
         :schema="schema"
         :values="modelValue"
@@ -145,4 +153,3 @@ const txtFilter = computed(() => { const r = $t('vlite.screen.filter'); return r
     </div>
   </Dropdown>
 </template>
-
