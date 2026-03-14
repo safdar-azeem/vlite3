@@ -95,7 +95,7 @@ const isStripedOdd = computed(() => props.variant === 'striped' && props.index %
 
 const isStacked = computed(() => props.variant === 'stacked')
 
-const isDateType = computed(() => 
+const isDateType = computed(() =>
   ['date', 'dateTime', 'time'].includes(props.field.type || '')
 )
 
@@ -104,6 +104,13 @@ const dateFormatType = computed(() => {
   if (props.field.type === 'time') return 'hh:mm A'
   return undefined // Fallback to global config for standard 'date'
 })
+
+/**
+ * Whether this row is in lineByLine (block) mode.
+ * In this mode the label acts as a header and the value renders
+ * on a new line below it, occupying full container width.
+ */
+const isLineByLine = computed(() => !!props.field.lineByLine)
 
 /**
  * Stacked cell padding/border class.
@@ -122,6 +129,7 @@ const stackedCellClass = computed(() => {
 </script>
 
 <template>
+  <!-- ═══ Stacked variant cell ═══ -->
   <div
     v-if="isStacked"
     :class="[
@@ -209,6 +217,100 @@ const stackedCellClass = computed(() => {
     </div>
   </div>
 
+  <!-- ═══ lineByLine (block) row ═══
+       Label renders as a header; value starts on a new line below it,
+       spanning the full container width. Text alignment is start (left).
+  -->
+  <div
+    v-else-if="isLineByLine"
+    class="list-field-row list-field-row--block flex flex-col gap-y-1 px-3 py-2.5 transition-colors w-full"
+    :class="[
+      showBorderBottom && !isLast ? 'border-b border-border' : '',
+      isStripedOdd ? 'bg-muted/40' : '',
+      variant === 'compact' ? 'py-1.5!' : '',
+      variant === 'minimal' ? 'px-0!' : '',
+    ]"
+    role="row">
+    <!-- Label (acts as a block header) -->
+    <div class="flex items-center gap-1.5 min-w-0">
+      <Icon v-if="field.icon" :icon="field.icon" class="w-3.5 h-3.5 text-gray-800 shrink-0" />
+      <span class="text-sm font-medium text-gray-800 leading-snug">
+        {{ labelText }}{{ showColon ? ':' : '' }}
+      </span>
+    </div>
+
+    <!-- Value — full width, left-aligned -->
+    <div class="w-full min-w-0 text-left">
+      <template v-if="$slots[field.key]">
+        <slot :name="field.key" :value="rawValue" :resolved="resolvedValue" :data="data" />
+      </template>
+
+      <template v-else-if="field.component">
+        <component :is="field.component" :data="data" :value="rawValue" />
+      </template>
+
+      <template v-else-if="field.isSensitive">
+        <div class="flex items-center gap-1.5">
+          <template v-if="showSensitive">
+            <Price
+              v-if="field.type === 'price'"
+              :value="rawValue"
+              class="text-sm text-gray-600 break-words leading-snug"
+              :class="valueClass" />
+            <Date
+              v-else-if="isDateType"
+              :value="rawValue"
+              :format="dateFormatType"
+              class="text-sm text-gray-600 break-words leading-snug"
+              :class="valueClass" />
+            <span
+              v-else
+              class="text-sm text-gray-600 break-words leading-snug"
+              :class="valueClass"
+              v-html="resolvedValue" />
+          </template>
+          <span v-else class="text-sm text-gray-600 tracking-widest select-none" aria-hidden="true">
+            &#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;
+          </span>
+          <button
+            type="button"
+            class="shrink-0 p-1 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+            :aria-label="showSensitive ? 'Hide value' : 'Show value'"
+            @click="showSensitive = !showSensitive">
+            <Icon :icon="showSensitive ? 'lucide:eye-off' : 'lucide:eye'" class="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </template>
+
+      <template v-else-if="isImageType">
+        <img
+          :src="resolvedValue"
+          :alt="labelText"
+          class="w-8 h-8 rounded-full object-cover border border-border" />
+      </template>
+
+      <template v-else>
+        <Price
+          v-if="field.type === 'price'"
+          :value="rawValue"
+          class="text-sm text-gray-900 break-words leading-snug"
+          :class="valueClass" />
+        <Date
+          v-else-if="isDateType"
+          :value="rawValue"
+          :format="dateFormatType"
+          class="text-sm text-gray-900 break-words leading-snug"
+          :class="valueClass" />
+        <span
+          v-else
+          class="text-sm text-gray-900 break-words leading-snug"
+          :class="valueClass"
+          v-html="resolvedValue" />
+      </template>
+    </div>
+  </div>
+
+  <!-- ═══ Standard horizontal row ═══ -->
   <div
     v-else
     class="list-field-row flex justify-between gap-3 px-3 py-2.5 transition-colors"
