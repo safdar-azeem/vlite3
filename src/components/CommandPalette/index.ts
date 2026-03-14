@@ -1,0 +1,5 @@
+export { default as CommandPaletteContent } from './CommandPaletteContent.vue'
+export { default as CommandPaletteItemComponent } from './CommandPaletteItem.vue'
+export * from './types'
+export * from './useCommandPaletteItems'
+export * from './useCommandPaletteNav'
