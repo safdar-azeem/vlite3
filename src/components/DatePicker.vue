@@ -83,7 +83,7 @@ const displayValue = computed(() => {
 
 const displayPlaceholder = computed(() => {
   if (props.placeholderI18n) return $t(props.placeholderI18n)
-  if (props.placeholder) return props.placeholder
+  if (props.placeholder !== undefined) return props.placeholder
   const res = $t('vlite.datePicker.placeholder')
   return res !== 'vlite.datePicker.placeholder' ? res : 'Select date'
 })
