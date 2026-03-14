@@ -54,6 +54,7 @@ const props = withDefaults(defineProps<Props>(), {
   isUpdate: false,
   folderId: undefined,
   class: '',
+  size: 'lg',
   className: '',
   groupClass: '',
   headerClass: '',
