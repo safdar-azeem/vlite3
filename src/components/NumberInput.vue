@@ -120,7 +120,8 @@ const wrapperClasses = computed(() => {
 // Input classes
 const inputClasses = computed(() => {
   return [
-    'flex-1 w-full bg-transparent text-center focus:outline-none appearance-none',
+    'flex-1 w-full bg-transparent focus:outline-none appearance-none',
+    props.variant === 'split' ? 'text-center' : 'text-left pl-3',
     'placeholder:text-muted-foreground/50',
     sizeStyles.value.text,
     props.disabled ? 'cursor-not-allowed' : '',
