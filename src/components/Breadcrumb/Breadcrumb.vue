@@ -95,16 +95,15 @@ const separatorChar = computed(() => {
     <ol class="breadcrumb-list">
       <template v-if="items && items.length">
         <template v-for="(item, idx) in visibleItems" :key="item.label + idx">
-          <!-- Separator before each item (except first) -->
           <li
             v-if="idx > 0"
+            v-memo="[separatorChar, props.separator]"
             class="breadcrumb-separator"
             aria-hidden="true"
             :class="(props.separator == 'chevron' || props?.separator === 'dot') && 'text-fs-3!'">
             <span>{{ separatorChar }}</span>
           </li>
 
-          <!-- Ellipsis collapse button — inserted between first and tail -->
           <template v-if="idx === ellipsisIndex">
             <li class="breadcrumb-separator" aria-hidden="true">
               <span>{{ separatorChar }}</span>
@@ -122,6 +121,7 @@ const separatorChar = computed(() => {
 
           <BreadcrumbItem
             v-bind="item"
+            v-memo="[item, size, variant, idx === visibleItems.length - 1]"
             :size="size"
             :variant="variant"
             :is-current="idx === visibleItems.length - 1"
@@ -130,7 +130,6 @@ const separatorChar = computed(() => {
         </template>
       </template>
 
-      <!-- Slot-driven usage -->
       <template v-else>
         <slot />
       </template>
