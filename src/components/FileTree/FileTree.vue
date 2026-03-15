@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, shallowRef } from 'vue'
 import type { FileNode, FileTreeProps, FileTreeEvents } from './types'
 import FileTreeNode from './FileTreeNode.vue'
 import { $t } from '@/utils/i18n'
@@ -18,25 +18,35 @@ const emit = defineEmits<FileTreeEvents>()
 // State
 const expandedKeys = ref(new Set<string>(props.defaultExpandedKeys))
 const loadingKeys = ref(new Set<string>())
-const nodeMap = ref(new Map<string, FileNode>())
-const parentMap = ref(new Map<string, string>())
+
+// Use shallowRef for massive datasets that are entirely replaced to prevent deep proxy
+const nodeMap = shallowRef(new Map<string, FileNode>())
+const parentMap = shallowRef(new Map<string, string>())
 
 // --- Map Builder ---
 const buildMaps = (nodes: FileNode[], parentId?: string) => {
-  for (const node of nodes) {
-    nodeMap.value.set(node.id, node)
-    if (parentId) parentMap.value.set(node.id, parentId)
-    if (node.children) {
-      buildMaps(node.children, node.id)
+  const newMap = new Map<string, FileNode>()
+  const newParentMap = new Map<string, string>()
+
+  const traverse = (nList: FileNode[], pId?: string) => {
+    for (const node of nList) {
+      newMap.set(node.id, node)
+      if (pId) newParentMap.set(node.id, pId)
+      if (node.children) {
+        traverse(node.children, node.id)
+      }
     }
   }
+
+  traverse(nodes, parentId)
+  
+  nodeMap.value = newMap
+  parentMap.value = newParentMap
 }
 
 watch(
   () => props.data,
   (newData) => {
-    nodeMap.value.clear()
-    parentMap.value.clear()
     buildMaps(newData)
   },
   { immediate: true, deep: true }
@@ -98,23 +108,31 @@ const handleToggleExpand = async (node: FileNode) => {
   const isExpanded = expandedKeys.value.has(node.id)
 
   if (isExpanded) {
-    // Collapse
-    expandedKeys.value.delete(node.id)
+    // Collapse using immutable set update so v-memo detects the reference change
+    const newExpanded = new Set(expandedKeys.value)
+    newExpanded.delete(node.id)
     const originalNode = nodeMap.value.get(node.id) || node
     const descendants = getDescendants(originalNode)
-    descendants.forEach((id) => expandedKeys.value.delete(id))
+    descendants.forEach((id) => newExpanded.delete(id))
+    expandedKeys.value = newExpanded
     emit('expand', node, false)
   } else {
-    // Expand
-    expandedKeys.value.add(node.id)
+    // Expand using immutable set update so v-memo detects the reference change
+    const newExpanded = new Set(expandedKeys.value)
+    newExpanded.add(node.id)
+    expandedKeys.value = newExpanded
     emit('expand', node, true)
 
     if (props.loadData && !node.isLoaded && (!node.children || node.children.length === 0)) {
-      loadingKeys.value.add(node.id)
+      const newLoading = new Set(loadingKeys.value)
+      newLoading.add(node.id)
+      loadingKeys.value = newLoading
       try {
         await props.loadData(node)
       } finally {
-        loadingKeys.value.delete(node.id)
+        const afterLoading = new Set(loadingKeys.value)
+        afterLoading.delete(node.id)
+        loadingKeys.value = afterLoading
       }
     }
   }
@@ -231,7 +249,11 @@ watch(
       }
 
       props.data.forEach(visit)
-      toExpand.forEach((id) => expandedKeys.value.add(id))
+      if (toExpand.size > 0) {
+        const newExpanded = new Set(expandedKeys.value)
+        toExpand.forEach((id) => newExpanded.add(id))
+        expandedKeys.value = newExpanded
+      }
     }
   },
   { deep: true }
@@ -246,11 +268,12 @@ const displayEmptyText = computed(() => {
 </script>
 
 <template>
-  <div :class="['w-full h-full overflow-y-auto', props.class]">
+  <div :class="['w-full h-full overflow-y-auto file-tree-container', props.class]">
     <template v-if="filteredData.length > 0">
       <FileTreeNode
         v-for="node in filteredData"
         :key="node.id"
+        v-memo="[node, selectedKeys, expandedKeys, indeterminateKeys, loadingKeys, highlightSearch, searchQuery]"
         :node="node"
         :selection-mode="selectionMode"
         :selected-keys="selectedKeys"
@@ -268,3 +291,9 @@ const displayEmptyText = computed(() => {
   </div>
 </template>
 
+<style scoped>
+.file-tree-container {
+  will-change: transform;
+  contain: layout style;
+}
+</style>
