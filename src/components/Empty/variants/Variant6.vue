@@ -4,14 +4,18 @@ defineProps<{ title: string; description: string; icon: string }>()
 </script>
 
 <template>
-  <div class="flex flex-col items-center text-center w-full py-4">
-    <div class="mb-6 p-6 rounded-4xl bg-card border shadow-xs transition-shadow hover:shadow-sm">
-      <Icon :icon="icon" class="w-8 h-8 text-foreground" stroke-width="1.2" />
+  <div
+    class="flex flex-col md:flex-row items-center gap-6 md:gap-8 p-8 md:p-10 rounded-3xl border bg-background w-full shadow-xs">
+    <div
+      class="w-16 h-16 shrink-0 rounded-2xl bg-foreground flex items-center justify-center shadow-sm">
+      <Icon :icon="icon" class="w-7 h-7 text-background" />
     </div>
-    <h3 class="text-2xl font-semibold tracking-tight text-foreground mb-2.5">{{ title }}</h3>
-    <p
-      class="text-sm text-muted max-w-[280px] mb-5.5 leading-relaxed font-normal"
-      v-html="description"></p>
-    <slot name="action" />
+    <div class="flex-1 text-center md:text-left">
+      <h3 class="text-xl font-bold text-foreground tracking-tight">{{ title }}</h3>
+      <p class="text-sm text-muted mt-1.5 font-medium max-w-lg" v-html="description"></p>
+    </div>
+    <div class="shrink-0 mt-4 md:mt-0">
+      <slot name="action" />
+    </div>
   </div>
 </template>
