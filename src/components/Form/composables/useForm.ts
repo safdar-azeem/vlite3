@@ -1,4 +1,4 @@
-import { ref, computed, watch, type Ref, type ComputedRef } from 'vue'
+import { ref, shallowRef, computed, watch, type Ref, type ComputedRef } from 'vue'
 import type { IForm, IFormContext, IFormSubmitPayload } from '../types'
 import {
   getNestedValue,
@@ -74,7 +74,10 @@ export function useForm(options: UseFormOptions): UseFormReturn {
   const isSubmitting = ref(false)
   const isDirty = ref(false)
   const fieldLoading = ref<Record<string, boolean>>({})
-  const initialSnapshot = ref<Record<string, any>>(deepClone(formValues.value))
+  
+  // PERFORMANCE: Use shallowRef for initialSnapshot to prevent deep proxy traversal 
+  // since it's only read from or completely replaced.
+  const initialSnapshot = shallowRef<Record<string, any>>(deepClone(formValues.value))
 
   // Flatten schema for easy iteration
   const flatSchema = computed<IForm[]>(() => {
