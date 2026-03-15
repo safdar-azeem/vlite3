@@ -86,10 +86,11 @@ const emit = defineEmits<{
   (e: 'onBack'): void
 }>()
 
-const modalContext = inject<{ close: () => void; setSubmitting?: (val: boolean) => void } | null>(
-  'modal-context',
-  null
-)
+const modalContext = inject<{
+  close: () => void
+  setSubmitting?: (val: boolean) => void
+  registerFormFooter?: (active: boolean) => void
+} | null>('modal-context', null)
 
 const router = useRouter()
 const instance = getCurrentInstance()
@@ -108,8 +109,24 @@ const resolvedShowRequiredAsterisk = computed(
 const shouldShowCancel = computed(() => props.showCancel || !!modalContext)
 const isInsideModal = computed(() => !!modalContext)
 
-// Whether to render footer as sticky
-const isFooterSticky = computed(() => props.stickyFooter)
+// Footer is sticky when:
+// 1. The explicit stickyFooter prop is passed, OR
+// 2. The form is rendered inside a Modal (always sticky in that context)
+const isFooterSticky = computed(() => props.stickyFooter || isInsideModal.value)
+
+// Notify the parent Modal that this Form has a visible sticky footer so the
+// modal can zero its own bottom padding — no manual fix needed per usage site.
+onMounted(() => {
+  if (props.footer && isInsideModal.value) {
+    modalContext?.registerFormFooter?.(true)
+  }
+})
+
+onUnmounted(() => {
+  if (isInsideModal.value) {
+    modalContext?.registerFormFooter?.(false)
+  }
+})
 
 // Intersection Observer: toggle shadow when footer is actually "stuck"
 const footerRef = ref<HTMLElement | null>(null)
@@ -524,12 +541,17 @@ const handleBack = () => {
         isPage ? 'flex sm:hidden' : 'flex',
         footerClass,
         isMultiStepMode ? 'justify-between' : 'justify-end',
-        // Sticky positioning
-        isFooterSticky ? 'sticky bottom-0 bg-background/95 pt-3 pb-2 -mx-0.5 px-0.5' : 'mt-6',
-        // Inside modal: extend to modal edges and add top border always
-        isInsideModal ? '-mx-4 px-4 pb-0! pt-3!' : '',
-        // Shadow only while actually stuck (sentinel has scrolled out of view)
-        isFooterSticky && isFooterStuck ? '' : isFooterSticky ? 'border-t border-transparent' : '',
+        // Sticky footer: always applied when inside a modal or when stickyFooter prop is set.
+        // `sticky bottom-0` anchors the footer to the bottom of the nearest scrollable ancestor
+        // (the modal's overflow-y-auto body), keeping it visible at all times without leaving
+        // the normal document flow (unlike `fixed` which would escape the modal bounds).
+        isFooterSticky
+          ? 'sticky bottom-0 bg-body pt-3 pb-3 -mx-0.5 px-0.5 border-t border-border/75'
+          : 'mt-6',
+        // Show a subtle top shadow while content is scrolling beneath the sticky footer
+        isFooterSticky && isFooterStuck ? '' : '',
+        // Inside modal: extend footer flush to modal edge padding
+        isInsideModal ? '-mx-4 px-4 pb-3!' : '',
         // Non-sticky inside modal keeps the original border styling
         !isFooterSticky && isInsideModal ? 'border-t border-border/75 mt-5' : '',
         !isFooterSticky && !isInsideModal ? 'mt-6' : '',
