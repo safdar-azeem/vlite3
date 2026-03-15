@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref, watch, computed } from 'vue'
+import { onMounted, ref, watch, computed, defineAsyncComponent } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
-import Spinner from '../Spinner/Spinner.vue'
 import { useKanbanBoard } from './useKanbanBoard'
 import type { KanbanColumn, KanbanLoadDataResult, KanbanChangeEvent } from './types'
-import { $t } from '@/utils/i18n'
+import { $t } from '@/utils'
+
+const Spinner = defineAsyncComponent(() => import('../Spinner/Spinner.vue'))
 
 const props = defineProps<{
   column: KanbanColumn
@@ -72,7 +73,9 @@ const onUpdateEvent = (e: any) => {
   emit('change', { type: 'update', event: e, columnId: props.column.id })
 }
 
-const displayTitle = computed(() => props.column.titleI18n ? $t(props.column.titleI18n) : props.column.title)
+const displayTitle = computed(() =>
+  props.column.titleI18n ? $t(props.column.titleI18n) : props.column.title
+)
 </script>
 
 <template>
@@ -91,7 +94,10 @@ const displayTitle = computed(() => props.column.titleI18n ? $t(props.column.tit
 
     <div
       ref="scrollContainer"
-      :class="['flex-1 flex flex-col overflow-y-auto p-3  custom-scrollbar', bodyClass]"
+      :class="[
+        'flex-1 flex flex-col overflow-y-auto p-3 custom-scrollbar scrollable-container',
+        bodyClass,
+      ]"
       @scroll="handleScroll">
       <div
         v-if="isInitialLoading && items.length === 0"
@@ -99,6 +105,7 @@ const displayTitle = computed(() => props.column.titleI18n ? $t(props.column.tit
         <div
           v-for="i in 3"
           :key="'skeleton-' + i"
+          v-once
           class="bg-body p-3 rounded-md shadow-sm border border-border animate-pulse flex flex-col gap-3">
           <div class="h-4 bg-muted/60 rounded w-2/3"></div>
           <div class="h-3 bg-muted/60 rounded w-1/3"></div>
@@ -114,13 +121,14 @@ const displayTitle = computed(() => props.column.titleI18n ? $t(props.column.tit
           :group="group"
           :animation="150"
           :ghostClass="ghostClass || 'kanban-ghost'"
-          :class="['flex-1 flex flex-col  gap-2 min-h-[50px] py-1', draggableClass]"
+          :class="['flex-1 flex flex-col gap-2 min-h-[50px] py-1', draggableClass]"
           @add="onAdd"
           @remove="onRemove"
           @update="onUpdateEvent">
           <div
             v-for="item in items"
             :key="item[itemKey || 'id']"
+            v-memo="[item]"
             class="cursor-grab active:cursor-grabbing">
             <slot name="item" :item="item" :column="column">
               <div class="bg-body p-3 rounded-md shadow-sm border border-border text-sm">
@@ -151,5 +159,8 @@ const displayTitle = computed(() => props.column.titleI18n ? $t(props.column.tit
   background-color: var(--color-border);
   border-radius: 10px;
 }
+.scrollable-container {
+  will-change: transform;
+  contain: layout style;
+}
 </style>
-
