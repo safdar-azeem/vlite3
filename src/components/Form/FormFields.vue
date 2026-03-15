@@ -181,7 +181,9 @@ const getSafeLabel = (field: IForm) => {
 <template>
   <div :class="['grid', variant === 'floating' ? 'gap-5 mt-1' : 'gap-4', className]">
     <template v-for="field in schema" :key="field.name">
-      <div v-if="checkFieldVisible(field)" :class="['form-field-item', getItemClass(field)]">
+      <div
+        v-if="checkFieldVisible(field)"
+        :class="['max-md:col-span-full! form-field-item', getItemClass(field)]">
         <Label
           v-if="
             getFieldLabel(field) &&
