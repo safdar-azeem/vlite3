@@ -11,6 +11,7 @@ interface Props {
   schema: IForm[]
   values: Record<string, any>
   errors: Record<string, string>
+  fieldLoading?: Record<string, boolean>
   variant?: InputVariant
   size?: InputSize
   rounded?: InputRounded
@@ -32,6 +33,7 @@ const props = withDefaults(defineProps<Props>(), {
   columns: 1,
   isUpdate: false,
   showRequiredAsterisk: true,
+  fieldLoading: () => ({}),
 })
 
 const emit = defineEmits<{
@@ -194,7 +196,8 @@ const getSafeLabel = (field: IForm) => {
           size,
           rounded,
           isUpdate,
-          showRequiredAsterisk
+          showRequiredAsterisk,
+          fieldLoading[field.name]
         ]"
         :class="['max-md:col-span-full! form-field-item', getItemClass(field)]">
         <Label
@@ -273,6 +276,7 @@ const getSafeLabel = (field: IForm) => {
             :readonly="checkFieldReadonly(field)"
             :error="getFieldError(field)"
             :isUpdate="isUpdate"
+            :loading="fieldLoading[field.name]"
             @change="(payload) => handleFieldChange(field, payload)"
             @addonChange="handleAddonChange"
             @addonAction="handleAddonAction" />
