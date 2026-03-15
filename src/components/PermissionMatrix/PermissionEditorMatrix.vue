@@ -67,9 +67,7 @@ function hasMatrixPerm(groupKey: string, row: PermissionMatrixRow, actionKey: st
 function toggleMatrixPerm(groupKey: string, row: PermissionMatrixRow, actionKey: string) {
   if (props.readonly || !isActionEnabled(row, actionKey)) return
   const key = getMatrixPermKey(groupKey, row, actionKey)
-  const next = hasPerm(key)
-    ? props.modelValue.filter((k) => k !== key)
-    : [...props.modelValue, key]
+  const next = hasPerm(key) ? props.modelValue.filter((k) => k !== key) : [...props.modelValue, key]
   emit('update:modelValue', next)
 }
 
@@ -101,9 +99,19 @@ function handleToggleMatrixGroup(group: PermissionMatrixGroup) {
 
       <tbody>
         <template v-for="group in matrixGroups" :key="group.key">
-          <!-- Group header row -->
           <tr
             class="custom-group-row cursor-pointer select-none"
+            v-memo="[
+              collapsedGroups.has(group.key),
+              getMatrixGroupState(group),
+              readonly,
+              size,
+              toggleMode,
+              collapsible,
+              group.label,
+              group.icon,
+              unifiedMatrixActions.length,
+            ]"
             @click="$emit('toggleCollapse', group.key)">
             <td :colspan="unifiedMatrixActions.length + 1" class="custom-td">
               <div class="flex items-center justify-between">
@@ -123,7 +131,6 @@ function handleToggleMatrixGroup(group: PermissionMatrixGroup) {
                     {{ group.label }}
                   </span>
                 </div>
-                <!-- Group bulk toggle — stop propagation so it doesn't collapse the group -->
                 <div class="flex items-center" @click.stop="handleToggleMatrixGroup(group)">
                   <CheckBox
                     v-if="toggleMode === 'checkbox'"
@@ -142,7 +149,6 @@ function handleToggleMatrixGroup(group: PermissionMatrixGroup) {
             </td>
           </tr>
 
-          <!-- Entity rows — v-memo prevents re-render unless this row's state changes -->
           <template v-if="!collapsedGroups.has(group.key)">
             <tr
               v-for="row in group.rows"
@@ -150,6 +156,11 @@ function handleToggleMatrixGroup(group: PermissionMatrixGroup) {
               v-memo="[
                 ...unifiedMatrixActions.map((a) => hasMatrixPerm(group.key, row, a.key)),
                 readonly,
+                size,
+                toggleMode,
+                row.label,
+                row.description,
+                unifiedMatrixActions.length,
               ]"
               class="custom-entity-row">
               <td class="custom-td">
@@ -173,10 +184,11 @@ function handleToggleMatrixGroup(group: PermissionMatrixGroup) {
                   'custom-td text-center',
                   !groupHasAction(group, action.key) || !isActionEnabled(row, action.key)
                     ? 'custom-disabled-cell'
-                    : !readonly ? 'custom-active-cell' : '',
+                    : !readonly
+                      ? 'custom-active-cell'
+                      : '',
                 ]"
                 @click="toggleMatrixPerm(group.key, row, action.key)">
-                <!-- Disabled cell -->
                 <div
                   v-if="!groupHasAction(group, action.key) || !isActionEnabled(row, action.key)"
                   class="flex items-center justify-center">
@@ -186,7 +198,6 @@ function handleToggleMatrixGroup(group: PermissionMatrixGroup) {
                     —
                   </span>
                 </div>
-                <!-- Active cell — toggle is display-only; pointer-events-none prevents double-fire -->
                 <div v-else class="flex items-center justify-center pointer-events-none">
                   <CheckBox
                     v-if="toggleMode === 'checkbox'"
@@ -213,6 +224,9 @@ function handleToggleMatrixGroup(group: PermissionMatrixGroup) {
   background-color: var(--color-gray-100);
   border-radius: 0.5rem;
   overflow: auto;
+  /* Promote to GPU layer for performance in Modals/Drawers */
+  will-change: transform;
+  contain: layout style;
 }
 
 .custom-table {
