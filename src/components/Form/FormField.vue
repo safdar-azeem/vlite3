@@ -68,6 +68,15 @@ const handleInput = (value: any) => {
   emit('change', { value })
 }
 
+/**
+ * True when the field is type='number' AND isSensitiveField=true.
+ * In this case we render Input.vue (which already has the eye-toggle)
+ * with type='password', but coerce the emitted value to Number.
+ */
+const isSensitiveNumber = computed(
+  () => props.field.type === 'number' && props.field.isSensitiveField === true
+)
+
 // Get the component to render based on field type
 const fieldComponent = computed(() => {
   const type = props.field.type
@@ -89,7 +98,8 @@ const fieldComponent = computed(() => {
       return Input
 
     case 'number':
-      return NumberInput
+      // Sensitive number fields reuse Input.vue (has eye-toggle built in)
+      return isSensitiveNumber.value ? Input : NumberInput
 
     case 'switch':
       return Switch
@@ -175,14 +185,35 @@ const fieldProps = computed(() => {
       size: props.size,
       rounded: props.rounded,
       error: props.error,
-      min: props.field.min, // kept for validation attributes if needed
+      min: props.field.min,
       max: props.field.max,
       rows: type === 'textarea' ? props.field.props?.rows || 3 : undefined,
       class: `${props.field.className}`,
     }
   }
 
-  // NumberInput
+  // Sensitive number: render via Input.vue as type='password' so the eye-toggle
+  // is present. The value is kept as a string in the input; we coerce to Number on emit.
+  if (type === 'number' && isSensitiveNumber.value) {
+    return {
+      ...baseProps,
+      // Convert numeric value to string so Input.vue (string-based) displays it correctly
+      modelValue: props.value !== undefined && props.value !== null ? String(props.value) : '',
+      // 'password' activates the eye-toggle inside Input.vue
+      type: 'password',
+      placeholder: safePlaceholder,
+      label: props.label,
+      variant: props.variant,
+      size: props.size,
+      rounded: props.rounded,
+      error: props.error,
+      // Disable the browser's built-in clear button so only the eye icon shows
+      showClearButton: false,
+      class: props.field.className ?? '',
+    }
+  }
+
+  // Standard NumberInput
   if (type === 'number') {
     return {
       ...baseProps,
@@ -354,9 +385,26 @@ const fieldEvents = computed(() => {
     type === 'textarea' ||
     type === 'switch' ||
     type === 'check' ||
-    type === 'number' ||
     !type
   ) {
+    return {
+      'update:modelValue': handleInput,
+    }
+  }
+
+  // Sensitive number: Input.vue emits a string; coerce to Number before passing up
+  if (type === 'number' && isSensitiveNumber.value) {
+    return {
+      'update:modelValue': (val: string) => {
+        // Coerce to Number; emit undefined when empty so form state stays clean
+        const parsed = val === '' ? undefined : Number(val)
+        emit('change', { value: isNaN(parsed as number) ? undefined : parsed })
+      },
+    }
+  }
+
+  // Standard NumberInput — v-model
+  if (type === 'number') {
     return {
       'update:modelValue': handleInput,
     }
@@ -446,6 +494,7 @@ const fieldEvents = computed(() => {
 
   return {}
 })
+
 // Whether this field has object-type addons that need slot rendering
 const hasObjectAddons = computed(() => {
   return isAddonObject(props.field.addonLeft) || isAddonObject(props.field.addonRight)
