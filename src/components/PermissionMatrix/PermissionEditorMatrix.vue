@@ -13,7 +13,7 @@ import type {
   PermissionMatrixSize,
 } from './types'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   matrixGroups: PermissionMatrixGroup[]
   modelValue: string[]
   collapsedGroups: Set<string>
@@ -21,7 +21,10 @@ const props = defineProps<{
   readonly: boolean
   size: PermissionMatrixSize
   collapsible: boolean
-}>()
+  stickyHeader?: boolean
+}>(), {
+  stickyHeader: true
+})
 
 const emit = defineEmits<{
   (e: 'update:modelValue', val: string[]): void
@@ -85,7 +88,7 @@ function handleToggleMatrixGroup(group: PermissionMatrixGroup) {
 
   <div v-else class="permission-matrix-wrapper" :style="customStyles">
     <table class="custom-table">
-      <thead class="sticky top-0 z-10">
+      <thead :class="stickyHeader ? 'custom-sticky-header' : ''">
         <tr>
           <th :class="[textSize, 'custom-th']">Permission</th>
           <th
@@ -223,10 +226,31 @@ function handleToggleMatrixGroup(group: PermissionMatrixGroup) {
   border: 1px solid var(--color-border);
   background-color: var(--color-gray-100);
   border-radius: 0.5rem;
+  /* Setting explicit height and overflow is required for sticky th to trigger inside table */
   overflow: auto;
+  max-height: 65vh;
+  position: relative;
   /* Promote to GPU layer for performance in Modals/Drawers */
   will-change: transform;
   contain: layout style;
+}
+
+.permission-matrix-wrapper::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.permission-matrix-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.permission-matrix-wrapper::-webkit-scrollbar-thumb {
+  background: var(--color-gray-350);
+  border-radius: 3px;
+}
+
+.permission-matrix-wrapper::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gray-400);
 }
 
 .custom-table {
@@ -234,15 +258,32 @@ function handleToggleMatrixGroup(group: PermissionMatrixGroup) {
   border-collapse: collapse;
 }
 
+/* Apply sticky to TH directly to bypass parent rendering issues */
+.custom-sticky-header th {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  /* Use shadow instead of border to prevent double border scrolling glitches */
+  box-shadow: 0 1px 0 var(--color-border);
+}
+
 .custom-th {
   background-color: var(--color-gray-150);
   color: var(--color-foreground);
-  border-bottom: 1px solid var(--color-border);
+  /* Use background-clip so content scrolling underneath doesn't bleed through transparent borders */
+  background-clip: padding-box;
+  /* Remove physical bottom border when sticky is active since shadow handles it */
+  border-bottom: none;
   border-left: 1px solid var(--color-border);
   padding: var(--cell-py) var(--cell-px);
   text-align: left;
   font-weight: 600;
   min-width: 200px;
+}
+
+/* Fallback border when not sticky */
+thead:not(.custom-sticky-header) .custom-th {
+  border-bottom: 1px solid var(--color-border);
 }
 
 .custom-th.text-center {
