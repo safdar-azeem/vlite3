@@ -66,16 +66,32 @@ const itemsToDelete = ref<any[]>([])
 const showDeleteConfirmation = ref(false)
 
 // ── markRaw wrappers to prevent proxying static components ───────────────────
-const rawAddComponent = computed(() => props.addComponent ? markRaw(props.addComponent as any) : undefined)
-const rawAddModal = computed(() => props.addBtn?.modal ? markRaw(props.addBtn.modal as any) : undefined)
+const rawAddComponent = computed(() =>
+  props.addComponent ? markRaw(props.addComponent as any) : undefined
+)
+const rawAddModal = computed(() =>
+  props.addBtn?.modal ? markRaw(props.addBtn.modal as any) : undefined
+)
 
 const activeComponent = computed(() => {
   let comp: any
   if (activeView.value === 'table') comp = props.table || !!slots.table
   else comp = props.list || !!slots.list || !!slots.grid
-  
+
   // Return the raw component if it's an object/component definition to avoid deep proxying
   return typeof comp === 'object' && comp !== null ? markRaw(comp) : comp
+})
+
+// ── Computed: true when the user has an active search or any filter applied ──
+const isFiltered = computed(() => {
+  if (searchQuery.value && searchQuery.value.trim() !== '') return true
+  if (!activeFilters.value) return false
+  return Object.keys(activeFilters.value).some(
+    (k) =>
+      activeFilters.value[k] !== '' &&
+      activeFilters.value[k] !== null &&
+      activeFilters.value[k] !== undefined
+  )
 })
 
 // ── Screen context provided to all descendants ────────────────────────────────
@@ -462,53 +478,57 @@ const handleBackendExport = async (format: string) => {
             :descriptionI18n="emptyDescriptionI18n"
             :icon="emptyIcon">
             <template #action>
-              <component v-if="rawAddComponent" :is="rawAddComponent" />
-              <template v-else-if="canAdd">
-                <template v-if="addBtn">
-                  <Modal v-if="addBtn.modal" :body="rawAddModal" v-bind="addBtn.modalProps">
-                    <template #trigger>
+              <!-- Action slot is only rendered when the user is NOT in a filtered state -->
+              <template v-if="!isFiltered">
+                <component v-if="rawAddComponent" :is="rawAddComponent" />
+                <template v-else-if="canAdd">
+                  <template v-if="addBtn">
+                    <Modal v-if="addBtn.modal" :body="rawAddModal" v-bind="addBtn.modalProps">
+                      <template #trigger>
+                        <Button
+                          :icon="addBtn.icon || 'fluent:add-16-filled'"
+                          variant="secondary"
+                          rounded="full"
+                          class="px-6!"
+                          v-bind="addBtn.buttonProps">
+                          {{ getAddBtnLabel }}
+                        </Button>
+                      </template>
+                    </Modal>
+                    <router-link v-else-if="addBtn.to" :to="addBtn.to" class="inline-flex">
                       <Button
                         :icon="addBtn.icon || 'fluent:add-16-filled'"
-                        :variant="addBtn.variant || 'primary'"
-                        rounded="full"
-                        class="px-6!"
+                        variant="secondary"
                         v-bind="addBtn.buttonProps">
                         {{ getAddBtnLabel }}
                       </Button>
-                    </template>
-                  </Modal>
-                  <router-link v-else-if="addBtn.to" :to="addBtn.to" class="inline-flex">
+                    </router-link>
+
+                    <a
+                      v-else-if="addBtn.href"
+                      :href="addBtn.href"
+                      :target="addBtn.target"
+                      class="inline-flex">
+                      <Button
+                        :icon="addBtn.icon || 'lucide:plus'"
+                        variant="secondary"
+                        v-bind="addBtn.buttonProps">
+                        {{ getAddBtnLabel }}
+                      </Button>
+                    </a>
                     <Button
-                      :icon="addBtn.icon || 'fluent:add-16-filled'"
-                      :variant="addBtn.variant || 'outline'"
-                      v-bind="addBtn.buttonProps"
-                      >{{ getAddBtnLabel }}</Button
-                    >
-                  </router-link>
-                  <a
-                    v-else-if="addBtn.href"
-                    :href="addBtn.href"
-                    :target="addBtn.target"
-                    class="inline-flex">
-                    <Button
+                      v-else
                       :icon="addBtn.icon || 'lucide:plus'"
-                      :variant="addBtn.variant || 'outline'"
+                      variant="secondary"
                       v-bind="addBtn.buttonProps"
-                      >{{ getAddBtnLabel }}</Button
-                    >
-                  </a>
-                  <Button
-                    v-else
-                    :icon="addBtn.icon || 'lucide:plus'"
-                    :variant="addBtn.variant || 'outline'"
-                    v-bind="addBtn.buttonProps"
-                    @click="addBtn.onClick ? addBtn.onClick() : $emit('add')">
-                    {{ getAddBtnLabel }}
-                  </Button>
+                      @click="addBtn.onClick ? addBtn.onClick() : $emit('add')">
+                      {{ getAddBtnLabel }}
+                    </Button>
+                  </template>
+                  <Button v-else icon="lucide:plus" variant="secondary" @click="$emit('add')">{{
+                    getAddBtnLabel
+                  }}</Button>
                 </template>
-                <Button v-else icon="lucide:plus" variant="outline" @click="$emit('add')">{{
-                  getAddBtnLabel
-                }}</Button>
               </template>
             </template>
           </Empty>
