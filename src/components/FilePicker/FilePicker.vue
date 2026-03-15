@@ -486,7 +486,7 @@ const inputBaseClass = computed(() => {
 
         <div
           v-if="loading || isProcessing"
-          class="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center rounded-lg z-10">
+          class="absolute inset-0 bg-white/80 flex items-center justify-center rounded-lg z-10">
           <div class="bg-white p-2 rounded-full shadow-lg">
             <Icon icon="lucide:loader-2" class="w-6 h-6 animate-spin text-primary" />
           </div>
