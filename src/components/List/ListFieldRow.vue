@@ -95,9 +95,7 @@ const isStripedOdd = computed(() => props.variant === 'striped' && props.index %
 
 const isStacked = computed(() => props.variant === 'stacked')
 
-const isDateType = computed(() =>
-  ['date', 'dateTime', 'time'].includes(props.field.type || '')
-)
+const isDateType = computed(() => ['date', 'dateTime', 'time'].includes(props.field.type || ''))
 
 const dateFormatType = computed(() => {
   if (props.field.type === 'dateTime') return 'MM/DD/YYYY hh:mm A'
@@ -137,7 +135,7 @@ const stackedCellClass = computed(() => {
       stackedCellClass,
     ]"
     role="row">
-    <div class="flex items-center gap-1.5 min-w-0">
+    <div class="flex items-center gap-2 min-w-0">
       <Icon v-if="field.icon" :icon="field.icon" class="w-3 h-3 text-muted-foreground shrink-0" />
       <span class="text-xs font-normal text-muted-foreground leading-snug truncate">
         {{ labelText }}
@@ -232,7 +230,7 @@ const stackedCellClass = computed(() => {
     ]"
     role="row">
     <!-- Label (acts as a block header) -->
-    <div class="flex items-center gap-1.5 min-w-0">
+    <div class="flex items-center gap-2 min-w-0">
       <Icon v-if="field.icon" :icon="field.icon" class="w-3.5 h-3.5 text-gray-800 shrink-0" />
       <span class="text-sm font-medium text-gray-800 leading-snug">
         {{ labelText }}{{ showColon ? ':' : '' }}
@@ -321,7 +319,7 @@ const stackedCellClass = computed(() => {
       variant === 'minimal' ? 'px-0!' : '',
     ]"
     role="row">
-    <div class="flex items-center gap-1.5 shrink-0 min-w-0 max-w-[48%]">
+    <div class="flex items-center gap-2 shrink-0 min-w-0 max-w-[48%]">
       <Icon v-if="field.icon" :icon="field.icon" class="w-3.5 h-3.5 text-gray-800 shrink-0" />
       <span class="text-sm font-medium text-gray-800 truncate leading-snug">
         {{ labelText }}{{ showColon ? ':' : '' }}
