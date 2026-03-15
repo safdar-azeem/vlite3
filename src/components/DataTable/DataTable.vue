@@ -41,10 +41,6 @@ const resolveKeyField = (rows: any[], propKeyField: string | undefined): string 
   return '_id'
 }
 
-/**
- * Resolve the sort key for a column.
- * Uses header.sortKey when provided, otherwise falls back to header.field.
- */
 const resolveSortKey = (header: TableHeader): string => header.sortKey || header.field
 
 // ── props / emits ─────────────────────────────────────────────────────────────
@@ -163,17 +159,21 @@ const selectedRowsComputed = computed(() => {
 })
 
 const toggleSelectAll = (checked: boolean) => {
+  const newSet = new Set(selectedIds.value)
   if (checked) {
-    props.rows.forEach((row) => selectedIds.value.add(getRowId(row, effectiveKeyField.value)))
+    props.rows.forEach((row) => newSet.add(getRowId(row, effectiveKeyField.value)))
   } else {
-    props.rows.forEach((row) => selectedIds.value.delete(getRowId(row, effectiveKeyField.value)))
+    props.rows.forEach((row) => newSet.delete(getRowId(row, effectiveKeyField.value)))
   }
+  selectedIds.value = newSet
   emitSelection()
 }
 
 const toggleRowSelection = (id: any) => {
-  if (selectedIds.value.has(id)) selectedIds.value.delete(id)
-  else selectedIds.value.add(id)
+  const newSet = new Set(selectedIds.value)
+  if (newSet.has(id)) newSet.delete(id)
+  else newSet.add(id)
+  selectedIds.value = newSet
   emitSelection()
 }
 
@@ -196,11 +196,6 @@ const emitSelection = () => {
 
 // ── sorting ───────────────────────────────────────────────────────────────────
 
-/**
- * handleSort receives the column's display `field`.
- * We look up the header to get its effective sort key (sortKey ?? field),
- * which is what gets sent in the sort payload to the backend.
- */
 const handleSort = (field: string) => {
   const header = props.headers.find((h) => h.field === field)
   const key = header ? resolveSortKey(header) : field
@@ -250,9 +245,7 @@ const emitChange = () => {
       search: internalSearch.value,
       filter: {},
     }
-    // Always emit @change for standalone DataTable usage
     emit('change', state)
-    // Forward to Screen when used as a child component via :table prop
     screenContext?.onTableChange?.(state)
   }, 10)
 }
@@ -307,7 +300,6 @@ const txtCancelBtn = computed(() => {
 
 <template>
   <div class="space-y-6.5">
-    <!-- Toolbar hidden when Screen context disables search and no custom toolbar slots -->
     <DataTableToolbar
       v-if="effectiveShowSearch || $slots?.['toolbar-left'] || $slots?.['toolbar-right']"
       v-model="internalSearch"
@@ -372,6 +364,7 @@ const txtCancelBtn = computed(() => {
               <tr
                 v-for="i in Math.min(internalItemsPerPage, 15)"
                 :key="'skeleton-' + i"
+                v-memo="[]"
                 class="border-b border-border/70 bg-background transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                 <td
                   v-if="effectiveSelectable"
@@ -397,6 +390,7 @@ const txtCancelBtn = computed(() => {
               <DataTableRow
                 v-for="(row, index) in rows"
                 :key="getRowId(row, effectiveKeyField)"
+                v-memo="[row, selectedIds.has(getRowId(row, effectiveKeyField)), compact, striped, hoverable]"
                 :row="row"
                 :headers="headers"
                 :index="index"
