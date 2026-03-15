@@ -36,6 +36,27 @@ const modalFormSchema: IForm[] = [
     required: true,
   },
   {
+    type: 'fileUploader',
+    name: 'files',
+    label: 'Upload Files',
+    required: true,
+    props: { multiSelect: true },
+  },
+  {
+    type: 'fileUploader',
+    name: 'files',
+    label: 'Upload Files',
+    required: true,
+    props: { multiSelect: true },
+  },
+  {
+    type: 'fileUploader',
+    name: 'files',
+    label: 'Upload Files',
+    required: true,
+    props: { multiSelect: true },
+  },
+  {
     name: 'dueDate',
     label: 'Due Date',
     type: 'date',
