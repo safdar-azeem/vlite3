@@ -188,6 +188,7 @@ const columnHeaders = computed(() => {
         <div
           v-for="(row, rowIndex) in rows"
           :key="row._id"
+          v-memo="[row, disabled, isUpdate, showRowNumbers, canRemoveRow]"
           class="flex group bg-white transition-colors">
           <div
             v-if="showRowNumbers"
