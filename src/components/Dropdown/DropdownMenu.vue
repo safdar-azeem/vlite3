@@ -390,3 +390,16 @@ const shouldShowChevron = (option: IDropdownOption): boolean => {
     </div>
   </div>
 </template>
+
+<style scoped>
+/*
+  Promote the dropdown menu to its own compositor layer.
+  This isolates hover and focus repaints on child items so they
+  never trigger a repaint or re-composite of the parent overlay or viewport.
+*/
+.dropdown-menu {
+  will-change: transform;
+  contain: layout style;
+}
+</style>
+
