@@ -215,7 +215,7 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
         <div
           class="flex gap-1.5 items-center flex-1 min-w-0"
           :class="[wrap ? 'flex-wrap py-0.5' : 'flex-nowrap overflow-hidden py-1']">
-          <span v-if="selectedOptions.length === 0" class="text-muted-foreground pl-1 truncate">
+          <span v-if="selectedOptions.length === 0" class="text-muted-foreground pl-0.5 truncate">
             {{ displayPlaceholder }}
           </span>
 
