@@ -433,3 +433,48 @@ import CreateFolder from './CreateFolder.vue'
   </div>
 </template>
 ```
+
+---
+
+### Custom Components Integration
+
+When you use a custom component in the form schema (`type: MyCustomComponent`), the Form component facilitates a two-way data flow via specific props and events.
+
+#### 1. Data Flow Mechanism
+
+- **Input (Props):** The Form component passes the current state to your component via the `value` prop. It also provides the entire form state via `values` for cross-field logic.
+- **Output (Events):** Your component must emit an `onChange` event with a payload of `{ value: any }` to update the form's internal state.
+
+#### 2. Component Interface
+
+Your custom component should be structured like this to work seamlessly:
+
+```vue
+<script setup lang="ts">
+const props = defineProps<{
+  value: any // The specific value for this field
+  values: Record<string, any> // The entire form state (for context)
+  disabled?: boolean
+  readonly?: boolean
+}>()
+
+const emit = defineEmits<{
+  (e: 'onChange', payload: { value: any; data?: any }): void
+}>()
+
+function update(newValue: any) {
+  // Always emit as an object with a 'value' key
+  emit('onChange', { value: newValue })
+}
+</script>
+```
+
+#### 3. Custom component Schema Registration
+
+```ts
+{
+  name: 'myField',
+  label: 'Custom Field',
+  type: MyCustomComponent, // Pass the component definition directly
+}
+```
