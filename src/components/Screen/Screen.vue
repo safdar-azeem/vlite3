@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed, provide, useSlots } from 'vue'
+import { ref, watch, computed, provide, useSlots, markRaw } from 'vue'
 import Input from '../Input.vue'
 import Button from '../Button.vue'
 import Icon from '../Icon.vue'
@@ -64,21 +64,26 @@ const internalLimit = ref(props.pageInfo?.itemsPerPage || props.paginationProps?
 const selectedRows = ref<any[]>([])
 const itemsToDelete = ref<any[]>([])
 const showDeleteConfirmation = ref(false)
+
+// ── markRaw wrappers to prevent proxying static components ───────────────────
+const rawAddComponent = computed(() => props.addComponent ? markRaw(props.addComponent as any) : undefined)
+const rawAddModal = computed(() => props.addBtn?.modal ? markRaw(props.addBtn.modal as any) : undefined)
+
+const activeComponent = computed(() => {
+  let comp: any
+  if (activeView.value === 'table') comp = props.table || !!slots.table
+  else comp = props.list || !!slots.list || !!slots.grid
+  
+  // Return the raw component if it's an object/component definition to avoid deep proxying
+  return typeof comp === 'object' && comp !== null ? markRaw(comp) : comp
+})
+
 // ── Screen context provided to all descendants ────────────────────────────────
-//
-// DataTable picks this up via inject(SCREEN_CONTEXT_KEY) and:
-// - hides its own search toolbar (Screen owns search)
-// - auto-enables selectable (bulk-delete support)
-// - calls onTableChange() (sort / pagination / search forwarded here)
-//
 const screenContext: ScreenContext = {
   disableSearch: true,
   forceSelectable: props.canSelectRows,
   onTableChange: (state: TableState) => {
-    // Merge sort from DataTable into Screen's state, then trigger refetch
     activeSort.value = { field: state.sort.field, order: state.sort.order }
-    // DataTable also owns pagination when used standalone; inside Screen,
-    // Screen owns pagination — so we only adopt the sort here.
     triggerChange()
   },
 }
@@ -132,10 +137,6 @@ const handleItemsPerPageChange = (limit: number) => {
   triggerChange()
 }
 // ── unified refetch trigger ───────────────────────────────────────────────────
-//
-// Single source of truth for the refetch payload.
-// Standard shape: { pagination, search, sort, filter }
-//
 const triggerChange = () => {
   if (!props.refetch) return
   props.refetch({
@@ -145,11 +146,6 @@ const triggerChange = () => {
     filter: { ...activeFilters.value },
   })
 }
-// ── active component ──────────────────────────────────────────────────────────
-const activeComponent = computed(() => {
-  if (activeView.value === 'table') return props.table || !!slots.table
-  return props.list || !!slots.list || !!slots.grid
-})
 const hasData = computed(() => props.data && props.data.length > 0)
 // ── display helpers ───────────────────────────────────────────────────────────
 const displayTitle = computed(() => (props.titleI18n ? $t(props.titleI18n) : props.title))
@@ -284,7 +280,6 @@ const handleBackendExport = async (format: string) => {
 </script>
 <template>
   <div class="flex flex-col w-full space-y-8">
-    <!-- ── Built-in header ── -->
     <div
       v-if="!customHeader"
       :class="headerClass"
@@ -362,7 +357,6 @@ const handleBackendExport = async (format: string) => {
             :type="filterType"
             v-model="activeFilters"
             @change="triggerChange" />
-          <!-- Search lives in Screen header; DataTable's own search is disabled via context -->
           <div v-if="canSearch" class="w-full md:w-60! max-sm:order-last">
             <Input
               lazy
@@ -376,12 +370,12 @@ const handleBackendExport = async (format: string) => {
         </div>
         <div class="flex items-center gap-3 max-sm:w-full sm:w-auto max-sm:order-last">
           <slot name="actions">
-            <component v-if="addComponent" :is="addComponent" />
+            <component v-if="rawAddComponent" :is="rawAddComponent" />
             <template v-else-if="canAdd">
               <template v-if="addBtn">
                 <Modal
                   v-if="addBtn.modal"
-                  :body="addBtn.modal"
+                  :body="rawAddModal"
                   v-bind="addBtn.modalProps"
                   :refetch="refetch"
                   :data="data"
@@ -457,9 +451,7 @@ const handleBackendExport = async (format: string) => {
       </div>
     </div>
     <slot name="custom-header" v-else />
-    <!-- ── sub-header slot ── -->
     <slot name="sub-header" />
-    <!-- ── Main content area ── -->
     <div class="flex-1 w-full relative" :class="containerClass">
       <template v-if="!hasData && !loading">
         <slot name="empty">
@@ -470,10 +462,10 @@ const handleBackendExport = async (format: string) => {
             :descriptionI18n="emptyDescriptionI18n"
             :icon="emptyIcon">
             <template #action>
-              <component v-if="addComponent" :is="addComponent" />
+              <component v-if="rawAddComponent" :is="rawAddComponent" />
               <template v-else-if="canAdd">
                 <template v-if="addBtn">
-                  <Modal v-if="addBtn.modal" :body="addBtn.modal" v-bind="addBtn.modalProps">
+                  <Modal v-if="addBtn.modal" :body="rawAddModal" v-bind="addBtn.modalProps">
                     <template #trigger>
                       <Button
                         :icon="addBtn.icon || 'fluent:add-16-filled'"
