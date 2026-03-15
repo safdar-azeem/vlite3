@@ -120,7 +120,7 @@ onMounted(() => {
 <template>
   <div class="command-palette-content flex flex-col w-full h-full max-h-[70vh]">
     <!-- Search input row -->
-    <div class="flex items-center gap-3 px-4 py-3.5 border-b border-border/60 shrink-0">
+    <div class="flex items-center gap-3 px-4 py-3 border-b border-border/60 shrink-0">
       <Icon icon="lucide:search" class="w-4 h-4 text-muted-foreground shrink-0" />
       <input
         ref="inputRef"
