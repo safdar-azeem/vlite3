@@ -73,6 +73,7 @@ const handleStepClick = (step: TimelineStep, index: number) => {
       <TimelineItem
         v-for="(step, index) in steps"
         :key="step.id"
+        v-memo="[step, index, activeStep, direction, textPosition, lineStyle, indicatorType, clickable, steps.length]"
         :step="step"
         :index="index"
         :is-last="index === steps.length - 1"
