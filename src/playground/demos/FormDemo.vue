@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import Icon from '@/components/Icon.vue'
 
+import FormPageMode from './forms/FormPageMode.vue'
 import FormBasic from './forms/FormBasic.vue'
 import FormValidation from './forms/FormValidation.vue'
 import FormAdvanced from './forms/FormAdvanced.vue'
@@ -43,6 +44,7 @@ const tabs = [
     icon: 'lucide:database',
     component: FormDataMapping,
   },
+  { id: 'pagemode', label: 'Page Mode', icon: 'lucide:layout-template', component: FormPageMode },
 ]
 </script>
 
