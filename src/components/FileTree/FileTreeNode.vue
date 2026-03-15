@@ -232,6 +232,7 @@ const handleClick = (e: MouseEvent) => {
         <FileTreeNode
           v-for="child in node.children"
           :key="child.id"
+          v-memo="[child, selectedKeys, expandedKeys, indeterminateKeys, loadingKeys, highlightSearch, searchQuery]"
           :node="child"
           :depth="depth + 1"
           :selection-mode="selectionMode"
@@ -256,4 +257,3 @@ const handleClick = (e: MouseEvent) => {
     </div>
   </div>
 </template>
-
