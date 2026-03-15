@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, onUnmounted } from 'vue'
 import Icon from './Icon.vue'
 import {
   useNotifications,
@@ -135,6 +135,12 @@ const handleMouseLeave = () => {
   }, 400)
 }
 
+onUnmounted(() => {
+  if (hoverTimeout) {
+    clearTimeout(hoverTimeout)
+  }
+})
+
 const getTransformOrigin = (pos: ToastPosition) => {
   const y = pos.includes('bottom') ? 'bottom' : 'top'
   const x = pos.includes('right') ? 'right' : pos.includes('left') ? 'left' : 'center'
@@ -178,7 +184,14 @@ const getTransformOrigin = (pos: ToastPosition) => {
               <div
                 v-for="(notification, index) in getNotificationsByPosition(pos)"
                 :key="notification.id"
-                class="toast-item col-start-1 h-max row-start-1 mb-1 w-auto border pl-4 pr-6 py-3 flex gap-2.5 items-start transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu will-change-transform"
+                v-memo="[
+                  notification,
+                  index,
+                  getNotificationsByPosition(pos).length,
+                  isExpanded,
+                  globalConfig.expand,
+                ]"
+                class="toast-item col-start-1 h-max row-start-1 mb-1 w-auto border pl-4 pr-6 py-2.5 flex gap-2.5 items-start transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu"
                 :class="[
                   getVariantClass(notification.type),
                   notification.description || notification.action ? 'rounded-xl' : 'rounded-full',
@@ -225,6 +238,12 @@ const getTransformOrigin = (pos: ToastPosition) => {
 </template>
 
 <style scoped>
+/* Promotes the toast item to its own composition layer to prevent layout repaints across the DOM */
+.toast-item {
+  will-change: transform, opacity;
+  contain: layout style;
+}
+
 .first-toast-enter-active {
   animation: first-toast-in 0.45s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
@@ -268,4 +287,3 @@ const getTransformOrigin = (pos: ToastPosition) => {
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 </style>
-
