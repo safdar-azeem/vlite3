@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { shallowRef } from 'vue'
 import { Kanban, type KanbanColumn, type KanbanLoadDataResult } from '@/components/Kanban'
 import Button from '@/components/Button.vue'
 import DemoSection from '../DemoSection.vue'
 import sourceCode from './KanbanDemo.vue?raw'
 
 // --- Demo 1: Basic ---
-const columns = ref<KanbanColumn[]>([
+const columns = shallowRef<KanbanColumn[]>([
   { id: 'todo', title: 'To Do' },
   { id: 'in-progress', title: 'In Progress' },
   { id: 'done', title: 'Done' },
 ])
 
-const data = ref({
+const data = shallowRef({
   todo: Array.from({ length: 10 }).map((_, i) => ({
     id: `t${i}`,
     title: `Task Todo ${i + 1}`,
@@ -31,7 +31,7 @@ const data = ref({
 })
 
 // --- Demo 2: Lazy Loading ---
-const columnsLazy = ref<KanbanColumn[]>([
+const columnsLazy = shallowRef<KanbanColumn[]>([
   { id: 'backlog', title: 'Backlog' },
   { id: 'review', title: 'Review' },
 ])
@@ -56,12 +56,12 @@ const loadData = async (columnId: string | number, page: number): Promise<Kanban
 }
 
 // --- Demo 3: Slots ---
-const columnsSlots = ref<KanbanColumn[]>([
+const columnsSlots = shallowRef<KanbanColumn[]>([
   { id: 'ideas', title: 'Ideas' },
   { id: 'drafts', title: 'Drafts' },
 ])
 
-const dataSlots = ref({
+const dataSlots = shallowRef({
   ideas: [
     { id: 'idea1', title: 'Add dark mode' },
     { id: 'idea2', title: 'Improve accessibility' },
