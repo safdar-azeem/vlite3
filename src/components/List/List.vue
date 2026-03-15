@@ -146,7 +146,6 @@ function stackedSkeletonCellClass(i: number): string {
 
 <template>
   <div :class="containerClass" role="table" aria-label="Information list">
-    <!-- Section Title -->
     <div
       v-if="displayTitle || titleIcon || $slots.title"
       class="px-3 py-2.5 border-b border-border/70 flex items-center gap-2 bg-gray-50">
@@ -156,11 +155,8 @@ function stackedSkeletonCellClass(i: number): string {
       </slot>
     </div>
 
-    <!-- Loading Skeleton -->
     <template v-if="loading">
-      <!-- Stacked skeleton (responsive) -->
       <template v-if="isStacked">
-        <!-- Mobile: row skeleton -->
         <div class="sm:hidden">
           <div
             v-for="(_, i) in skeletonItems"
@@ -170,7 +166,6 @@ function stackedSkeletonCellClass(i: number): string {
             <div class="h-4 w-2/5 rounded bg-muted/60 animate-pulse" />
           </div>
         </div>
-        <!-- Desktop: stacked grid skeleton -->
         <div class="hidden sm:block">
           <div :class="stackedGridClass">
             <div
@@ -183,7 +178,6 @@ function stackedSkeletonCellClass(i: number): string {
           </div>
         </div>
       </template>
-      <!-- Default skeleton -->
       <div v-else :class="gridClass">
         <div>
           <div
@@ -207,13 +201,12 @@ function stackedSkeletonCellClass(i: number): string {
     </template>
 
     <template v-else>
-      <!-- ═══ Stacked variant ═══ -->
       <template v-if="isStacked">
-        <!-- ── Mobile fallback: default row layout (visible below sm) ── -->
         <div class="sm:hidden">
           <ListFieldRow
             v-for="(field, idx) in visibleFields"
             :key="'mob-' + field.key + idx"
+            v-memo="[field, getObjectValue(field.key, props.data), variant, showColon]"
             :field="field"
             :data="props.data"
             :index="idx"
@@ -230,12 +223,12 @@ function stackedSkeletonCellClass(i: number): string {
           </ListFieldRow>
         </div>
 
-        <!-- ── Desktop: stacked grid layout (visible sm and above) ── -->
         <div class="hidden sm:block">
           <div :class="stackedGridClass">
             <ListFieldRow
               v-for="(field, idx) in visibleFields"
               :key="field.key + idx"
+              v-memo="[field, getObjectValue(field.key, props.data), variant, showColon]"
               :field="field"
               :data="props.data"
               :index="idx"
@@ -255,7 +248,6 @@ function stackedSkeletonCellClass(i: number): string {
           </div>
         </div>
 
-        <!-- Empty state -->
         <div
           v-if="visibleFields.length === 0"
           class="px-3 py-8 text-center text-sm text-muted-foreground">
@@ -263,25 +255,13 @@ function stackedSkeletonCellClass(i: number): string {
         </div>
       </template>
 
-      <!-- ═══ Default row-based layout ═══ -->
       <template v-else>
-        <!--
-          FIX: Double-border between columned rows and full-width (lineByLine) rows.
-
-          Root cause: the last row in each column had `border-b border-border` and
-          the full-width wrapper had `border-t border-border`, producing two
-          overlapping 1px borders that appeared as a thicker/doubled line.
-
-          Solution: the last row in each column omits its `border-b` when
-          `hasFullItems` is true. The `border-t` on the full-width wrapper becomes
-          the sole visual separator — one clean line every time.
-        -->
         <div :class="gridClass">
-          <!-- Left column -->
           <div v-if="columnLayout.left.length > 0" :class="leftDividerClass">
             <ListFieldRow
               v-for="(field, idx) in columnLayout.left"
               :key="field.key + idx"
+              v-memo="[field, getObjectValue(field.key, props.data), variant, showColon]"
               :field="field"
               :data="props.data"
               :index="idx"
@@ -301,11 +281,11 @@ function stackedSkeletonCellClass(i: number): string {
             </ListFieldRow>
           </div>
 
-          <!-- Right column -->
           <div v-if="columns !== 1 && columnLayout.right.length > 0">
             <ListFieldRow
               v-for="(field, idx) in columnLayout.right"
               :key="field.key + idx"
+              v-memo="[field, getObjectValue(field.key, props.data), variant, showColon]"
               :field="field"
               :data="props.data"
               :index="idx"
@@ -325,21 +305,15 @@ function stackedSkeletonCellClass(i: number): string {
             </ListFieldRow>
           </div>
 
-          <!-- Third column (3-col mode) -->
           <div v-if="columns === 3">
-            <!-- intentionally empty; fields distributed by balance algo above -->
-          </div>
+            </div>
         </div>
 
-        <!--
-          Full-width / lineByLine items.
-          border-t is the SOLE separator — column rows have already suppressed
-          their last border-b when this section is present.
-        -->
         <div v-if="hasFullItems" :class="hasColumnItems ? 'border-t border-border' : ''">
           <ListFieldRow
             v-for="(field, idx) in columnLayout.full"
             :key="field.key + idx"
+            v-memo="[field, getObjectValue(field.key, props.data), variant, showColon]"
             :field="field"
             :data="props.data"
             :index="idx"
@@ -356,7 +330,6 @@ function stackedSkeletonCellClass(i: number): string {
           </ListFieldRow>
         </div>
 
-        <!-- Empty state -->
         <div
           v-if="visibleFields.length === 0"
           class="px-3 py-8 text-center text-sm text-muted-foreground">
@@ -365,7 +338,6 @@ function stackedSkeletonCellClass(i: number): string {
       </template>
     </template>
 
-    <!-- Footer slot -->
     <div v-if="$slots.footer" class="border-t border-border/70 px-3 py-2.5">
       <slot name="footer" />
     </div>
