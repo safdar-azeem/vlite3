@@ -47,7 +47,6 @@ function goBack() {
     variant="ghost"
     :icon="icon"
     :size="size"
-    rounded="full"
     :title="tooltip"
     :class="props.class"
     @click="goBack" />
