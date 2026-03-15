@@ -99,3 +99,4 @@ const getGroupLabel = (group: IDropdownOption) => group.labelI18n ? $t(group.lab
     </div>
   </div>
 </template>
+
