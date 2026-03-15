@@ -120,7 +120,10 @@ const HeavyModal = defineAsyncComponent(() => import('./HeavyModal.vue'))
 Before outputting code, silently run this check:
 
 1. Did I accidentally use `backdrop-filter: blur()`? (If yes, rewrite to `rgba()`).
-2. Am I passing a Component to a reactive state? (If yes, add `markRaw()`).
+2. Am I passing a Component instance to a reactive state? (If yes, add `markRaw()`).
 3. Is this a `v-for` loop with complex children? (If yes, add `v-memo`).
 4. Is this a modal/scrollable container? (If yes, add `will-change: transform; contain: layout style;`).
-5. Did I initialize a listener/observer? (If yes, add `onUnmounted` cleanup).
+5. Am I fetching or storing a massive dataset that only gets replaced, not deeply mutated? (If yes, use `shallowRef()` instead of `ref()`).
+6. Am I rendering a heavy, non-reactive block of HTML or a large SVG? (If yes, add `v-once`).
+7. Am I importing a Modal, Drawer, or heavy 3rd-party wrapper that isn't visible on initial load? (If yes, use `defineAsyncComponent`).
+8. Did I initialize a listener, observer, or 3rd-party instance? (If yes, generate the `onUnmounted` cleanup).
