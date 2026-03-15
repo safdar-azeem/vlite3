@@ -35,6 +35,10 @@ export function createVLite(options: VLiteConfig = {}) {
               ...(configState.components?.date || {}),
               ...(options.components.date || {}),
             },
+            empty: {
+              ...(configState.components?.empty || {}),
+              ...(options.components.empty || {}),
+            },
           }
         }
       }
