@@ -470,7 +470,7 @@ const handleCancel = () => {
           ? 'sticky bottom-0 bg-background/95 backdrop-blur-sm pt-3 pb-2 -mx-0.5 px-0.5'
           : 'mt-6',
         // Inside modal: extend to modal edges and add top border always
-        isInsideModal ? '-mx-4 px-4' : '',
+        isInsideModal ? '-mx-4 px-4 pb-0!' : '',
         // Shadow only while actually stuck (sentinel has scrolled out of view)
         isFooterSticky && isFooterStuck ? '' : isFooterSticky ? 'border-t border-transparent' : '',
         // Non-sticky inside modal keeps the original border styling
