@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, shallowRef, watch } from 'vue'
 import type { IForm, IFormFieldChangePayload } from './types'
 import type { InputVariant, InputSize, InputRounded } from '@/types'
 import FormField from './FormField.vue'
@@ -58,8 +58,9 @@ const displayEmptyDescription = computed(() => {
   return res !== 'vlite.customFields.emptyDescription' ? res : 'Add a new item to get started'
 })
 
-// Internal rows state with unique ID for transitions
-const rows = ref<(Record<string, any> & { _id: string })[]>([])
+// PERFORMANCE: Use shallowRef for arrays of items to prevent deep reactivity performance hits 
+// during array transformations and immutability operations.
+const rows = shallowRef<(Record<string, any> & { _id: string })[]>([])
 const generateId = () => `row_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
 // Sync with modelValue
@@ -246,6 +247,12 @@ const columnHeaders = computed(() => {
 </template>
 
 <style scoped>
+/* PERFORMANCE: Promote heavy interactive containers to separate GPU layers */
+.custom-fields-table {
+  will-change: transform;
+  contain: layout style;
+}
+
 /* Remove default margins/padding from inputs inside the table to make them flush */
 .custom-fields-table :deep(.form-field-item) {
   margin-bottom: 0 !important;
