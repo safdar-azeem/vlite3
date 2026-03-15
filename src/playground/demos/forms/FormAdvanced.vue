@@ -9,7 +9,7 @@ const advancedSchema: IForm[] = [
   {
     name: 'paymentMethod',
     label: 'Payment Method',
-    type: 'select',
+    type: 'multiSelect',
     options: [
       { label: 'Credit Card', value: 'credit' },
       { label: 'PayPal', value: 'paypal' },
