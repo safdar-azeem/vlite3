@@ -53,8 +53,12 @@ const isDynamicModalOpen = ref(false)
 const activeModalBody = shallowRef<any>(null)
 const activeModalProps = ref<Record<string, any>>({})
 
-const open = () => { isOpen.value = true }
-const close = () => { isOpen.value = false }
+const open = () => {
+  isOpen.value = true
+}
+const close = () => {
+  isOpen.value = false
+}
 
 const handleOpenDynamicModal = (body: any, modalProps: any) => {
   close()
@@ -131,8 +135,8 @@ const isMac = computed(() =>
 
     <Modal
       v-model:show="isOpen"
-      maxWidth="max-w-2xl"
-      bodyClass="!p-0 flex flex-col h-full"
+      maxWidth="max-w-xl"
+      bodyClass="p-0! flex flex-col h-full"
       :body="CommandPaletteContent"
       :bodyProps="{
         items,
