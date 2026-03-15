@@ -250,7 +250,7 @@ const handleBlur = (event: FocusEvent) => {
     <div v-if="variant === 'stacked'" class="flex flex-col h-full border-l border-input">
       <button
         type="button"
-        class="flex-1 flex items-center justify-center hover:bg-muted/50 w-8 border-b border-input/50"
+        class="flex-1 flex items-center justify-center hover:bg-muted/50 w-8 border-b border-input"
         :disabled="disabled || (max !== undefined && Number(localValue) >= max)"
         @click="increment">
         <Icon
