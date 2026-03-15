@@ -357,7 +357,6 @@ const handleCancel = () => {
         @step-click="goToStep" />
     </div>
 
-    <!-- Form content wrapper: adds bottom padding so sticky footer never overlaps last field -->
     <div :class="footer && isFooterSticky ? 'pb-2' : ''">
       <div v-if="!isGroupedMode" class="form-fields-single">
         <FormFields
@@ -448,13 +447,6 @@ const handleCancel = () => {
         :isSubmitting="isSubmitting"
         :handleSubmit="handleSubmit" />
 
-      <!--
-        Sentinel element: sits at the very end of the scrollable content.
-        The IntersectionObserver watches this element. When it leaves the
-        visible area the footer is truly "stuck", so we apply the shadow.
-        When it becomes visible again (user scrolled to the bottom), the
-        shadow disappears and the footer looks like a natural page element.
-      -->
       <div ref="sentinelRef" class="form-scroll-sentinel h-px w-full" aria-hidden="true" />
     </div>
 
@@ -467,7 +459,7 @@ const handleCancel = () => {
         isMultiStepMode ? 'justify-between' : 'justify-end',
         // Sticky positioning
         isFooterSticky
-          ? 'sticky bottom-0 bg-background/95 backdrop-blur-sm pt-3 pb-2 -mx-0.5 px-0.5'
+          ? 'sticky bottom-0 bg-background/95 pt-3 pb-2 -mx-0.5 px-0.5'
           : 'mt-6',
         // Inside modal: extend to modal edges and add top border always
         isInsideModal ? '-mx-4 px-4 pb-0!' : '',
