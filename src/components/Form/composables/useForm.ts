@@ -31,6 +31,8 @@ export interface UseFormReturn {
   isSubmitting: Ref<boolean>
   /** Whether form has been modified */
   isDirty: Ref<boolean>
+  /** Loading state of individual fields (e.g. file uploads) */
+  fieldLoading: Ref<Record<string, boolean>>
   /** Handle field value change */
   handleFieldChange: (name: string, value: any, data?: any) => void
   /** Validate a single field */
@@ -71,6 +73,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
   const errors = ref<Record<string, string>>({})
   const isSubmitting = ref(false)
   const isDirty = ref(false)
+  const fieldLoading = ref<Record<string, boolean>>({})
   const initialSnapshot = ref<Record<string, any>>(deepClone(formValues.value))
 
   // Flatten schema for easy iteration
@@ -312,62 +315,77 @@ export function useForm(options: UseFormOptions): UseFormReturn {
       const { name, value, field } = fileField
       const isDetailed = field.returnFileObject === true
 
-      // CASE 1: Array of files (Multiple)
-      if (Array.isArray(value)) {
-        // Map the array to a list of promises to upload individual items in parallel
-        const itemPromises = value.map(async (item) => {
-          // Determine if this specific item needs uploading
-          // It needs upload if it's a File object OR a FilePickerValue containing a File
-          const needsUpload =
-            item instanceof File || (item && typeof item === 'object' && item.file instanceof File)
+      // Check if this field actually has files to upload to toggle the loading state
+      const hasFilesToUpload = Array.isArray(value)
+        ? value.some((item) => item instanceof File || (item && typeof item === 'object' && item.file instanceof File))
+        : value instanceof File || (value && typeof value === 'object' && value.file instanceof File)
 
-          if (needsUpload) {
-            // Upload and return the new URL or Object
-            const url = await handleUploadFile(item, folderId)
-            if (url) {
-              return isDetailed ? buildDetailedOutput(item, url) : url
-            }
-            return null
-          }
-
-          // If it's already a string (URL) or doesn't match upload criteria, return as is
-          if (item && typeof item === 'object') {
-            const cleanItem = { ...item }
-            delete cleanItem.file
-            delete cleanItem.base64
-            return cleanItem
-          }
-
-          return item
-        })
-
-        // Wait for all items in this array to finish
-        const newArray = await Promise.all(itemPromises)
-
-        // Return the update instruction
-        return { name, value: newArray }
+      if (hasFilesToUpload) {
+        fieldLoading.value[name] = true
       }
 
-      // CASE 2: Single Value
-      else {
-        const needsUpload =
-          value instanceof File ||
-          (value && typeof value === 'object' && value.file instanceof File)
+      try {
+        // CASE 1: Array of files (Multiple)
+        if (Array.isArray(value)) {
+          // Map the array to a list of promises to upload individual items in parallel
+          const itemPromises = value.map(async (item) => {
+            // Determine if this specific item needs uploading
+            // It needs upload if it's a File object OR a FilePickerValue containing a File
+            const needsUpload =
+              item instanceof File || (item && typeof item === 'object' && item.file instanceof File)
 
-        if (needsUpload) {
-          const url = await handleUploadFile(value, folderId)
-          if (url) {
-            return { name, value: isDetailed ? buildDetailedOutput(value, url) : url }
-          }
-        } else if (value && typeof value === 'object') {
-          const cleanItem = { ...value }
-          delete cleanItem.file
-          delete cleanItem.base64
-          return { name, value: cleanItem }
+            if (needsUpload) {
+              // Upload and return the new URL or Object
+              const url = await handleUploadFile(item, folderId)
+              if (url) {
+                return isDetailed ? buildDetailedOutput(item, url) : url
+              }
+              return null
+            }
+
+            // If it's already a string (URL) or doesn't match upload criteria, return as is
+            if (item && typeof item === 'object') {
+              const cleanItem = { ...item }
+              delete cleanItem.file
+              delete cleanItem.base64
+              return cleanItem
+            }
+
+            return item
+          })
+
+          // Wait for all items in this array to finish
+          const newArray = await Promise.all(itemPromises)
+
+          // Return the update instruction
+          return { name, value: newArray }
         }
 
-        // No update needed for this field
-        return null
+        // CASE 2: Single Value
+        else {
+          const needsUpload =
+            value instanceof File ||
+            (value && typeof value === 'object' && value.file instanceof File)
+
+          if (needsUpload) {
+            const url = await handleUploadFile(value, folderId)
+            if (url) {
+              return { name, value: isDetailed ? buildDetailedOutput(value, url) : url }
+            }
+          } else if (value && typeof value === 'object') {
+            const cleanItem = { ...value }
+            delete cleanItem.file
+            delete cleanItem.base64
+            return { name, value: cleanItem }
+          }
+
+          // No update needed for this field
+          return null
+        }
+      } finally {
+        if (hasFilesToUpload) {
+          fieldLoading.value[name] = false
+        }
       }
     })
 
@@ -463,6 +481,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
     errors,
     isSubmitting,
     isDirty,
+    fieldLoading,
     handleFieldChange,
     validateField,
     validateAll,
