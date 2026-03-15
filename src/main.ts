@@ -153,6 +153,9 @@ const vlite = createVLite({
     form: {
       variant: 'floating',
     },
+    empty: {
+      variant: 'variant1',
+    },
   },
 })
 
