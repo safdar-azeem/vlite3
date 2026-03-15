@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { shallowRef, watch, computed } from 'vue'
 import type { AccordionProps } from './types'
 import AccordionItem from './AccordionItem.vue'
 
@@ -20,8 +20,8 @@ const emit = defineEmits<{
   (e: 'change', value: string | string[]): void
 }>()
 
-// Internal state
-const internalValue = ref<string[]>([])
+// Internal state: Use shallowRef for better performance when updating arrays
+const internalValue = shallowRef<string[]>([])
 
 const normalizeValue = (val: string | string[] | undefined): string[] => {
   if (Array.isArray(val)) return val
@@ -94,6 +94,19 @@ const rootClasses = computed(() => {
     <slot>
       <template v-for="(item, index) in items" :key="item.id">
         <AccordionItem
+          v-memo="[
+            item,
+            internalValue.includes(item.id),
+            variant,
+            size,
+            attached,
+            disabled,
+            showIndex,
+            openIcon,
+            closeIcon,
+            iconVariant,
+            activeIconVariant
+          ]"
           :item="item"
           :is-open="internalValue.includes(item.id)"
           :variant="variant"
