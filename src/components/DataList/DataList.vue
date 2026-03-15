@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, markRaw } from 'vue'
 import { Pagination } from '../Pagination'
 import { Empty } from '../Empty'
 import type { DataListProps } from './types'
@@ -25,6 +25,13 @@ const emit = defineEmits<{
 }>()
 
 const internalLimit = ref(props.pageInfo?.itemsPerPage || props.paginationProps?.itemsPerPage || 10)
+
+// ── prevent deep reactivity on dynamically injected components ──
+const rawItem = computed(() => props.item ? markRaw(props.item as any) : undefined)
+const rawSkeleton = computed(() => {
+  const s = props.skeleton || props.skelton
+  return s ? markRaw(s as any) : undefined
+})
 
 watch(
   () => props.pageInfo?.itemsPerPage,
@@ -68,7 +75,7 @@ const totalPages = computed(() => props.pageInfo?.totalPages || 1)
       <template v-for="i in 8" :key="'skeleton-' + i">
         <slot name="skeleton" :index="i">
           <slot name="skelton" :index="i">
-            <component v-if="skeleton || skelton" :is="skeleton || skelton" />
+            <component v-if="rawSkeleton" :is="rawSkeleton" v-memo="[i]" />
             <div v-else class="h-48 rounded-lg bg-gray-200 animate-pulse w-full"></div>
           </slot>
         </slot>
@@ -91,8 +98,9 @@ const totalPages = computed(() => props.pageInfo?.totalPages || 1)
       <template v-for="(itemData, index) in data" :key="index">
         <slot name="item" :item="itemData" :data="data" :index="index">
           <component
-            v-if="item"
-            :is="item"
+            v-if="rawItem"
+            :is="rawItem"
+            v-memo="[itemData, index]"
             :item="itemData"
             :data="data"
             :index="index"
@@ -113,4 +121,3 @@ const totalPages = computed(() => props.pageInfo?.totalPages || 1)
     </div>
   </div>
 </template>
-
