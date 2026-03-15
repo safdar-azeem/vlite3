@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onUnmounted, ref, watch, type Component, inject, onMounted } from 'vue'
+import { computed, onUnmounted, ref, watch, type Component, inject, onMounted, markRaw } from 'vue'
 import Button from './Button.vue'
 import { useKeyStroke } from '../composables/useKeyStroke'
 import type { SidePanelPosition, SidePanelSize } from '@/types'
@@ -56,7 +56,16 @@ const emit = defineEmits<{
 const visible = ref(props.show)
 let toggleTimeout: ReturnType<typeof setTimeout> | null = null
 
-const dropdownContext = inject('dropdown-context', null) as { close: () => void, onChildToggle?: (isOpen: boolean) => void } | null
+const dropdownContext = inject('dropdown-context', null) as {
+  close: () => void
+  onChildToggle?: (isOpen: boolean) => void
+} | null
+
+// markRaw prevents Vue from wrapping the component definition in a deep
+// reactive Proxy. Without this, every reactive update in the panel body
+// (e.g. a form field change) causes Vue to re-traverse the component
+// definition object — wasted work on every interaction.
+const rawBody = computed(() => (props.body ? markRaw(props.body) : undefined))
 
 watch(
   () => props.show,
@@ -97,10 +106,10 @@ watch(visible, (val) => {
     document.body.style.overflow = 'hidden'
   } else {
     document.body.style.overflow = ''
-    // Performance fix: Wait for the 300ms side panel transition to 
+    // Performance fix: Wait for the 300ms side panel transition to
     // finish before allowing parent dropdowns to unmount from DOM.
     toggleTimeout = setTimeout(() => {
-        dropdownContext?.onChildToggle?.(false)
+      dropdownContext?.onChildToggle?.(false)
     }, 300)
   }
 })
@@ -155,8 +164,8 @@ const displayDescription = computed(() =>
       leave-to-class="opacity-0">
       <div
         v-if="visible"
-        class="fixed inset-0 z-50 bg-[#00000033] v-sidepanel-overlay"
-        :class="[overlayClass, { 'backdrop-blur-[2px]': backdrop }]"
+        class="fixed inset-0 z-50 v-sidepanel-overlay"
+        :class="overlayClass"
         @click="handleBackdropClick"></div>
     </Transition>
 
@@ -193,8 +202,8 @@ const displayDescription = computed(() =>
         </div>
 
         <div class="flex-1 overflow-y-auto px-6 py-4" :class="bodyClass">
-          <template v-if="body">
-            <component :is="body" v-bind="{ ...bodyProps, ...$attrs }" :close="close" />
+          <template v-if="rawBody">
+            <component :is="rawBody" v-bind="{ ...bodyProps, ...$attrs }" :close="close" />
           </template>
           <template v-else>
             <slot :close="close" />
@@ -211,3 +220,31 @@ const displayDescription = computed(() =>
     </Transition>
   </Teleport>
 </template>
+
+<style scoped>
+/*
+  The overlay uses a plain semi-transparent color instead of
+  backdrop-filter: blur(). backdrop-blur forces a full GPU composite pass
+  on every frame — including every hover, focus, and transition event
+  that occurs on elements inside the panel.
+
+  The v-sidepanel-overlay class centralises the background so the
+  :class binding stays clean. When backdrop prop is false, this element
+  is still rendered for click-outside handling but is fully transparent.
+*/
+.v-sidepanel-overlay {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/*
+  Promote the panel body to its own GPU compositor layer.
+  This isolates hover and focus repaints on child elements so they
+  never trigger a repaint of the overlay or the page behind it.
+  contain: layout style prevents internal style recalculations from
+  escaping the panel subtree and causing parent layout invalidations.
+*/
+.sidepanel-body {
+  will-change: transform;
+  contain: layout style;
+}
+</style>
