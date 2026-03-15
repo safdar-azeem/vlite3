@@ -28,6 +28,6 @@ const props = withDefaults(defineProps<Props>(), {
     :disabled="disabled"
     :dir="direction"
     v-bind="triggerProps"
-    class="w-full justify-between! font-normal"
+    class="w-full justify-between! font-normal px-2.5!"
     :class="className" />
 </template>
