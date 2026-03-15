@@ -1,50 +1,70 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import Icon from '../Icon.vue'
+import { computed, defineAsyncComponent } from 'vue'
 import { $t } from '@/utils/i18n'
+import { useVLiteConfig } from '@/core'
 
 interface Props {
-  title?: string
-  titleI18n?: string
-  description?: string
-  descriptionI18n?: string
-  icon?: string
+	title?: string
+	titleI18n?: string
+	description?: string
+	descriptionI18n?: string
+	icon?: string
+	variant?: 'variant1' | 'variant2' | 'variant3' | 'variant4' | 'variant5' | 'variant6' | 'variant7' | 'variant8' | 'variant9' | 'variant10'
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  icon: 'lucide:inbox',
+	icon: 'lucide:inbox',
+	variant: 'variant1',
+})
+
+const config = useVLiteConfig()
+
+const activeVariant = computed(() => {
+	return props.variant || (config?.components as any)?.empty?.variant || 'variant1'
 })
 
 const displayTitle = computed(() => {
-  if (props.titleI18n) return $t(props.titleI18n)
-  if (props.title) return props.title
-  const res = $t('vlite.empty.title')
-  return res !== 'vlite.empty.title' ? res : 'No data found'
+	if (props.titleI18n) return $t(props.titleI18n)
+	if (props.title) return props.title
+	const res = $t('vlite.empty.title')
+	return res !== 'vlite.empty.title' ? res : 'No data found'
 })
 
 const displayDescription = computed(() => {
-  if (props.descriptionI18n) return $t(props.descriptionI18n)
-  if (props.description) return props.description
-  const res = $t('vlite.empty.description')
-  return res !== 'vlite.empty.description' ? res : 'There is nothing to display here right now.'
+	if (props.descriptionI18n) return $t(props.descriptionI18n)
+	if (props.description) return props.description
+	const res = $t('vlite.empty.description')
+	return res !== 'vlite.empty.description' ? res : 'There is nothing to display here right now.'
 })
+
+const variantComponents: Record<string, any> = {
+	variant1: defineAsyncComponent(() => import('./variants/Variant1.vue')),
+	variant2: defineAsyncComponent(() => import('./variants/Variant2.vue')),
+	variant3: defineAsyncComponent(() => import('./variants/Variant3.vue')),
+	variant4: defineAsyncComponent(() => import('./variants/Variant4.vue')),
+	variant5: defineAsyncComponent(() => import('./variants/Variant5.vue')),
+	variant6: defineAsyncComponent(() => import('./variants/Variant6.vue')),
+	variant7: defineAsyncComponent(() => import('./variants/Variant7.vue')),
+	variant8: defineAsyncComponent(() => import('./variants/Variant8.vue')),
+	variant9: defineAsyncComponent(() => import('./variants/Variant9.vue')),
+	variant10: defineAsyncComponent(() => import('./variants/Variant10.vue')),
+}
+
+const SelectedVariant = computed(() => variantComponents[activeVariant.value] || variantComponents.variant1)
 </script>
 
 <template>
-  <div
-    class="flex flex-col items-center justify-center py-28 gap-5 rounded-3xl border border-gray-150 bg-muted/50 w-full mt-4">
-    <div
-      class="w-17 h-17 rounded-full bg-gray-200/60 border border-gray-250 shadow-inner flex items-center justify-center">
-      <Icon :icon="icon" class="w-7 h-7 text-muted-foreground" stroke-width="1.2" />
-    </div>
-    <div class="text-center space-y-1">
-      <h3 class="text-fs-5 font-semibold text-foreground tracking-tight">
-        {{ displayTitle }}
-      </h3>
-      <p class="text-sm text-gray-700 font-light leading-relaxed" v-html="displayDescription"></p>
-    </div>
-    <slot name="action" />
-    <slot />
-  </div>
+	<div class="flex items-center justify-center min-h-[500px] w-full py-16 px-6">
+		<component 
+			:is="SelectedVariant" 
+			:title="displayTitle" 
+			:description="displayDescription" 
+			:icon="icon"
+		>
+			<template v-if="$slots.action" #action>
+				<slot name="action" />
+			</template>
+			<slot />
+		</component>
+	</div>
 </template>
-
