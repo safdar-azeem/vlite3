@@ -273,9 +273,50 @@ export function isComponent(value: any): boolean {
 }
 
 /**
+ * Resolve the canonical empty value for a given field type so that explicitly
+ * clearing a field during an update sends the correct signal to the backend
+ * (Prisma / Postgres) instead of omitting the key from the payload.
+ *
+ * Rules:
+ *  - multiSelect  → []    (empty array, required by array columns)
+ *  - select       → null  (foreign key / enum column)
+ *  - switch/check → false
+ *  - number       → null
+ *  - everything else (text, email, …) → null
+ */
+function resolveEmptyValue(field: IForm): any {
+  const type = field.type as string | undefined
+
+  if (type === 'multiSelect') return []
+  if (type === 'switch' || type === 'check') return false
+  return null
+}
+
+/**
+ * Returns true when a value is considered "empty" for submission purposes:
+ * undefined, null, empty string, or an empty array.
+ */
+function isEmptyValue(val: any): boolean {
+  if (val === undefined || val === null || val === '') return true
+  if (Array.isArray(val) && val.length === 0) return true
+  return false
+}
+
+/**
  * Cleans the submit payload by extracting only schema fields,
  * injecting specified emitFields, and removing ignoreFields recursively.
  * Also processes mapped output and transformation functions.
+ *
+ * KEY BEHAVIOUR (fix for Prisma / Postgres sync on updates):
+ * A field is included in the payload only when:
+ *   1. It has a non-empty value — always included (create & update).
+ *   2. It is empty AND the field key already existed in the original `values`
+ *      object — meaning the user explicitly cleared a pre-existing value during
+ *      an update. In this case the canonical empty value (`[]` for multiSelect,
+ *      `null` for everything else) is sent so the backend overwrites the old data.
+ *
+ * Fields that were never filled in (key absent from `values`) are silently
+ * omitted to keep create payloads lean.
  */
 export function cleanSubmitValues(
   values: Record<string, any>,
@@ -294,7 +335,21 @@ export function cleanSubmitValues(
     if (!field.name) continue
 
     let val = getNestedValue(values, field.name)
-    if (val === undefined) continue
+
+    // Determine whether the field key was present in the submitted values at all.
+    // We check the top-level key (first segment of a dot-notation path) so that
+    // nested paths like "pricing.amount" are treated as present when "pricing" exists.
+    const topLevelKey = field.name.split('.')[0]
+    const fieldKeyExistsInValues = Object.prototype.hasOwnProperty.call(values, topLevelKey)
+
+    if (isEmptyValue(val)) {
+      // Only carry the explicit empty value forward when the key was already
+      // present — i.e. the user cleared a value that existed before (update).
+      // If the key was never in the values object, skip it entirely (create).
+      if (!fieldKeyExistsInValues) continue
+
+      val = resolveEmptyValue(field)
+    }
 
     val = deepClone(val) // Prevent mutation of original form values
 
