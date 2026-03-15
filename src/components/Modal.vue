@@ -55,6 +55,11 @@ const showBlink = ref(false)
 const modalRef = ref<HTMLElement | null>(null)
 let blinkTimeout: ReturnType<typeof setTimeout> | null = null
 
+// Whether a child Form has registered its sticky footer inside this modal.
+// When true, the modal body removes its own bottom padding so the Form footer
+// sits flush against the bottom of the modal with no gap.
+const hasFormWithFooter = ref(false)
+
 const dropdownContext = inject('dropdown-context', null) as {
   close: () => void
   onChildToggle?: (isOpen: boolean) => void
@@ -85,6 +90,13 @@ const setSubmitting = (val: boolean) => {
   isChildSubmitting.value = val
 }
 
+// Called by child Form (via modal-context) to inform the modal that a Form
+// with a visible footer is mounted inside it. The modal then zeroes its own
+// bottom padding so there is no double-spacing between form content and footer.
+const registerFormFooter = (active: boolean) => {
+  hasFormWithFooter.value = active
+}
+
 const close = () => {
   if (isChildSubmitting.value) {
     showBlink.value = true
@@ -106,7 +118,7 @@ const handleClose = () => {
   emit('close')
 }
 
-provide('modal-context', { close, setSubmitting })
+provide('modal-context', { close, setSubmitting, registerFormFooter })
 
 const handleBackdropClick = () => {
   if (props.closeOutside) {
@@ -126,6 +138,8 @@ watch(visible, async (val) => {
   } else {
     document.body.style.overflow = ''
     dropdownContext?.onChildToggle?.(false)
+    // Reset the footer registration when modal closes so re-opens are clean
+    hasFormWithFooter.value = false
   }
 })
 
@@ -189,7 +203,14 @@ const displayDescription = computed(() =>
           </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto px-4 pt-4 pb-3.5 min-h-0" :class="bodyClass">
+        <!--
+          When a child Form with a sticky footer is detected (`hasFormWithFooter`),
+          bottom padding is removed (`pb-0`) so the Form's own footer sits flush
+          at the bottom of the modal with no gap — no per-usage manual override needed.
+        -->
+        <div
+          class="flex-1 overflow-y-auto px-4 pt-4 min-h-0"
+          :class="[hasFormWithFooter ? 'pb-0' : 'pb-3.5', bodyClass]">
           <p v-if="displayDescription" class="text-sm text-muted-foreground mb-3.5">
             {{ displayDescription }}
           </p>
