@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, ref, watch, inject, onMounted, onUnmounted } from 'vue'
+import { computed, ref, watch, inject, onMounted, onUnmounted, getCurrentInstance } from 'vue'
+import { useRouter } from 'vue-router'
 import type { IForm, IFormStep, IFormSubmitPayload } from './types'
 import type {
   InputVariant,
@@ -11,9 +12,11 @@ import type {
 import { useForm } from './composables/useForm'
 import FormFields from './FormFields.vue'
 import Button from '@/components/Button.vue'
+import BackButton from '@/components/BackButton.vue'
 import { Timeline } from '../Timeline'
 import type { TimelineStep } from '@/types'
 import { useVLiteConfig } from '@/core'
+import { $t } from '@/utils/i18n'
 
 interface Props {
   schema: IForm[] | IForm[][]
@@ -42,6 +45,12 @@ interface Props {
   showRequiredAsterisk?: boolean
   /** Pin footer to bottom of viewport/container */
   stickyFooter?: boolean
+  isPage?: boolean
+  pageTitle?: string
+  pageTitleI18n?: string
+  pageTitleClass?: string
+  pageHeaderClass?: string
+  backButtonProps?: ButtonProps
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -63,6 +72,10 @@ const props = withDefaults(defineProps<Props>(), {
   timelineTextPosition: 'right',
   emitFields: () => ['__typename'],
   stickyFooter: false,
+  isPage: false,
+  pageTitleClass: 'text-2xl font-bold',
+  pageHeaderClass: '',
+  backButtonProps: () => ({ size: 'sm', variant: 'ghost', icon: 'heroicons-solid:arrow-left' }),
 })
 
 const emit = defineEmits<{
@@ -70,12 +83,17 @@ const emit = defineEmits<{
   (e: 'onCancel'): void
   (e: 'onStepChange', step: number): void
   (e: 'onAddonAction', action: string): void
+  (e: 'onBack'): void
 }>()
 
 const modalContext = inject<{ close: () => void; setSubmitting?: (val: boolean) => void } | null>(
   'modal-context',
   null
 )
+
+const router = useRouter()
+const instance = getCurrentInstance()
+const hasOnBackEvent = computed(() => !!instance?.vnode.props?.onOnBack)
 
 const vliteConfig = useVLiteConfig()
 const globalFormConfig = computed(() => vliteConfig?.components?.form || {})
@@ -336,6 +354,12 @@ const handleCancel = () => {
     modalContext?.close?.()
   }
 }
+
+const handleBack = () => {
+  if (hasOnBackEvent.value) {
+    emit('onBack')
+  }
+}
 </script>
 
 <template>
@@ -345,6 +369,44 @@ const handleCancel = () => {
     @keydown="handleKeydown"
     @keydown.meta.s.prevent="handleSaveShortcut"
     @keydown.ctrl.s.prevent="handleSaveShortcut">
+    <div
+      v-if="isPage"
+      :class="[
+        'form-page-header sticky top-0 z-30 bg-background flex items-center justify-between border-b border-border pb-4 pt-4 -mt-4 mb-6',
+        pageHeaderClass,
+      ]">
+      <div class="flex items-center gap-3">
+        <Button
+          v-if="!hasOnBackEvent"
+          type="button"
+          v-bind="backButtonProps"
+          @click.prevent="handleBack"
+          class="max-sm:w-8 max-sm:h-8 max-sm:min-w-8 max-sm:min-h-8 max-sm:px-0 flex-shrink-0" />
+        <BackButton
+          v-else
+          v-bind="backButtonProps"
+          class="max-sm:w-8 max-sm:h-8 max-sm:min-w-8 max-sm:min-h-8 max-sm:px-0 flex-shrink-0" />
+        <h1 :class="['text-foreground max-sm:text-lg text-fs-5 truncate', pageTitleClass]">
+          {{ pageTitleI18n ? $t(pageTitleI18n) : pageTitle }}
+        </h1>
+      </div>
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <slot
+          name="header-actions"
+          :values="formValues"
+          :isSubmitting="isSubmitting"
+          :handleSubmit="handleSubmit"></slot>
+        <Button
+          type="button"
+          :variant="isUpdate ? 'outline' : 'primary'"
+          :text="submitText"
+          v-bind="submitProps"
+          :loading="loading || isSubmitting"
+          @click="handleSubmit"
+          class="max-sm:hidden" />
+      </div>
+    </div>
+
     <div
       v-if="isMultiStepMode && timelineSteps.length > 0"
       class="form-timeline"
@@ -458,7 +520,8 @@ const handleCancel = () => {
       v-if="footer"
       ref="footerRef"
       :class="[
-        'form-footer flex items-center gap-3 z-20',
+        'form-footer items-center gap-3 z-20',
+        isPage ? 'flex sm:hidden' : 'flex',
         footerClass,
         isMultiStepMode ? 'justify-between' : 'justify-end',
         // Sticky positioning
