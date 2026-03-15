@@ -141,7 +141,6 @@ function getTotalPerms(): number {
 
 <template>
   <div :class="['permission-matrix', props.class]">
-    <!-- Search -->
     <div v-if="searchable" class="mb-4">
       <Input
         v-model="searchQuery"
@@ -151,16 +150,13 @@ function getTotalPerms(): number {
         show-clear-button />
     </div>
 
-    <!-- Empty state -->
     <div v-if="filteredGroups.length === 0" class="text-center py-12 text-muted-foreground">
       <Icon icon="lucide:search-x" class="w-8 h-8 mx-auto mb-3 opacity-50" />
       <p :class="textSize">No permissions match your search.</p>
     </div>
 
-    <!-- Matrix table -->
     <div v-else class="permission-matrix-wrapper border rounded-lg overflow-auto">
       <table class="w-full border-collapse">
-        <!-- Sticky header (roles) -->
         <thead :class="stickyHeader ? 'sticky top-0 z-10' : ''">
           <tr class="bg-muted">
             <th
@@ -181,7 +177,10 @@ function getTotalPerms(): number {
                   {{ role.label }}
                 </span>
                 <span
-                  :class="[props.size === 'sm' ? 'text-[10px]' : 'text-xs', 'text-muted-foreground']">
+                  :class="[
+                    props.size === 'sm' ? 'text-[10px]' : 'text-xs',
+                    'text-muted-foreground',
+                  ]">
                   {{ getRolePermCount(role.key) }}/{{ getTotalPerms() }}
                 </span>
               </div>
@@ -191,8 +190,19 @@ function getTotalPerms(): number {
 
         <tbody>
           <template v-for="group in filteredGroups" :key="group.key">
-            <!-- Group header row -->
-            <tr class="bg-secondary/60">
+            <tr
+              class="bg-secondary/60"
+              v-memo="[
+                collapsedGroups.has(group.key),
+                collapsible,
+                size,
+                toggleMode,
+                readonly,
+                group.label,
+                group.icon,
+                group.permissions.length,
+                ...roles.map((r) => `${r.key}-${getGroupState(r.key, group)}-${r.locked}`),
+              ]">
               <td
                 :class="[cellPadding, 'border-b cursor-pointer select-none']"
                 @click="toggleGroupCollapse(group.key)">
@@ -210,13 +220,15 @@ function getTotalPerms(): number {
                     {{ group.label }}
                   </span>
                   <span
-                    :class="[props.size === 'sm' ? 'text-[10px]' : 'text-xs', 'text-muted-foreground ml-1']">
+                    :class="[
+                      props.size === 'sm' ? 'text-[10px]' : 'text-xs',
+                      'text-muted-foreground ml-1',
+                    ]">
                     ({{ group.permissions.length }})
                   </span>
                 </div>
               </td>
 
-              <!-- Group bulk toggle per role — td handles click, toggle is display-only -->
               <td
                 v-for="role in roles"
                 :key="role.key"
@@ -237,12 +249,18 @@ function getTotalPerms(): number {
               </td>
             </tr>
 
-            <!-- Permission rows — v-memo skips re-render unless this row's state changes -->
             <template v-if="!collapsedGroups.has(group.key)">
               <tr
                 v-for="perm in group.permissions"
                 :key="perm.key"
-                v-memo="[...roles.map((r) => hasPerm(r.key, perm.key)), readonly]"
+                v-memo="[
+                  readonly,
+                  size,
+                  toggleMode,
+                  perm.label,
+                  perm.description,
+                  ...roles.map((r) => `${r.key}-${hasPerm(r.key, perm.key)}-${r.locked}`),
+                ]"
                 class="hover:bg-accent/40 transition-colors duration-100">
                 <td :class="[cellPadding, 'border-b']">
                   <div class="flex items-center gap-2 pl-6">
@@ -255,7 +273,6 @@ function getTotalPerms(): number {
                   </div>
                 </td>
 
-                <!-- Permission cell per role — td handles click, toggle is display-only -->
                 <td
                   v-for="role in roles"
                   :key="role.key"
@@ -289,6 +306,9 @@ function getTotalPerms(): number {
 <style scoped>
 .permission-matrix-wrapper {
   max-height: 70vh;
+  /* Promote to GPU layer for performance in Modals/Drawers */
+  will-change: transform;
+  contain: layout style;
 }
 
 .permission-matrix-wrapper::-webkit-scrollbar {
