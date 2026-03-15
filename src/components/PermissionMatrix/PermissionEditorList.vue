@@ -53,9 +53,18 @@ function handleToggleGroup(group: PermissionGroup) {
 
   <div v-else class="permission-list-wrapper" :style="customStyles">
     <template v-for="group in groups" :key="group.key">
-      <!-- Group header -->
       <div
         class="custom-list-header flex items-center justify-between cursor-pointer select-none"
+        v-memo="[
+          collapsedGroups.has(group.key),
+          getGroupState(group),
+          readonly,
+          size,
+          toggleMode,
+          collapsible,
+          group.label,
+          group.icon,
+        ]"
         @click="$emit('toggleCollapse', group.key)">
         <div class="flex items-center gap-2">
           <Icon
@@ -75,11 +84,12 @@ function handleToggleGroup(group: PermissionGroup) {
           <span
             :class="[size === 'sm' ? 'text-[10px]' : 'text-xs']"
             style="color: var(--color-muted-foreground)">
-            ({{ group.permissions.filter((p) => hasPerm(p.key)).length }}/{{ group.permissions.length }})
+            ({{ group.permissions.filter((p) => hasPerm(p.key)).length }}/{{
+              group.permissions.length
+            }})
           </span>
         </div>
 
-        <!-- Group bulk toggle — stop propagation so it doesn't trigger collapse -->
         <div class="flex items-center" @click.stop="handleToggleGroup(group)">
           <CheckBox
             v-if="toggleMode === 'checkbox'"
@@ -96,12 +106,11 @@ function handleToggleGroup(group: PermissionGroup) {
         </div>
       </div>
 
-      <!-- Permission rows — v-memo prevents re-render unless this row's checked state changes -->
       <div v-if="!collapsedGroups.has(group.key)" class="custom-list-group-content">
         <div
           v-for="perm in group.permissions"
           :key="perm.key"
-          v-memo="[hasPerm(perm.key), readonly]"
+          v-memo="[hasPerm(perm.key), readonly, size, toggleMode, perm.label, perm.description]"
           class="custom-list-item flex items-center justify-between transition-colors duration-100"
           :class="{ 'cursor-pointer': !readonly }"
           @click="handleTogglePerm(perm.key)">
@@ -116,17 +125,13 @@ function handleToggleGroup(group: PermissionGroup) {
             </Tooltip>
           </div>
 
-          <!-- Toggle is display-only; pointer-events-none prevents double-fire -->
           <div class="flex items-center pointer-events-none">
             <CheckBox
               v-if="toggleMode === 'checkbox'"
               :model-value="hasPerm(perm.key)"
               :disabled="readonly"
               :size="size === 'sm' ? 'xs' : 'sm'" />
-            <Switch
-              v-else
-              :model-value="hasPerm(perm.key)"
-              :disabled="readonly" />
+            <Switch v-else :model-value="hasPerm(perm.key)" :disabled="readonly" />
           </div>
         </div>
       </div>
@@ -140,6 +145,9 @@ function handleToggleGroup(group: PermissionGroup) {
   border-radius: 0.5rem;
   overflow: hidden;
   background-color: var(--color-background);
+  /* Promote to GPU layer for performance in Modals/Drawers */
+  will-change: transform;
+  contain: layout style;
 }
 
 .custom-list-header {
