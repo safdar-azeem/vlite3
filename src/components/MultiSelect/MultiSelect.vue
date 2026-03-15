@@ -37,7 +37,7 @@ const props = withDefaults(defineProps<Props>(), {
   searchable: true,
   variant: 'outline',
   size: 'md',
-  maxVisible: 2,
+  maxVisible: 3,
   loading: false,
   hasMore: false,
   remote: false,
@@ -194,7 +194,9 @@ const triggerClasses = computed(() => {
           : 'bg-background hover:bg-gray-50/70',
     props.variant === 'outline' || props.variant === 'floating'
       ? 'border-input'
-      : props.variant === 'transparent' ? 'border-transparent' : 'border-transparent bg-muted',
+      : props.variant === 'transparent'
+        ? 'border-transparent'
+        : 'border-transparent bg-muted',
     isOpen.value && props.variant !== 'transparent' ? 'border-primary/20' : '',
   ].join(' ')
 })
@@ -210,7 +212,9 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
     :disabled="disabled">
     <template #trigger="{ isOpen }">
       <div :class="triggerClasses">
-        <div class="flex gap-1.5 items-center flex-1 min-w-0" :class="[wrap ? 'flex-wrap py-0.5' : 'flex-nowrap overflow-hidden py-1']">
+        <div
+          class="flex gap-1.5 items-center flex-1 min-w-0"
+          :class="[wrap ? 'flex-wrap py-0.5' : 'flex-nowrap overflow-hidden py-1']">
           <span v-if="selectedOptions.length === 0" class="text-muted-foreground pl-1 truncate">
             {{ displayPlaceholder }}
           </span>
@@ -225,15 +229,23 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
               class="gap-1 pr-1 truncate min-w-0 shrink"
               :class="[
                 wrap ? 'max-w-[150px]' : '',
-                variant === 'transparent' ? 'border-transparent bg-muted/50 text-foreground font-medium shadow-none' : ''
+                variant === 'transparent'
+                  ? 'border-transparent bg-muted/50 text-foreground font-medium shadow-none'
+                  : '',
               ]">
-              <span class="truncate min-w-0">{{ opt.labelI18n ? $t(opt.labelI18n) : opt.label }}</span>
+              <span class="truncate min-w-0">{{
+                opt.labelI18n ? $t(opt.labelI18n) : opt.label
+              }}</span>
               <button
                 v-if="!disabled"
                 type="button"
                 @click.stop="removeOption(opt.value)"
                 class="rounded transition-colors shrink-0 flex items-center justify-center p-px"
-                :class="variant === 'transparent' ? 'text-muted-foreground hover:bg-black/10 hover:text-foreground' : 'hover:bg-destructive/10 hover:text-destructive p-0.5 rounded-full'">
+                :class="
+                  variant === 'transparent'
+                    ? 'text-muted-foreground hover:bg-black/10 hover:text-foreground'
+                    : 'hover:bg-destructive/10 hover:text-destructive p-0.5 rounded-full'
+                ">
                 <Icon icon="lucide:x" class="w-3 h-3" />
               </button>
             </Badge>
@@ -244,13 +256,19 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
               :size="badgeSize"
               :rounded="rounded === 'none' ? 'sm' : 'full'"
               class="shrink-0"
-              :class="variant === 'transparent' ? 'border-transparent bg-muted/50 text-muted-foreground font-medium shadow-none' : ''">
+              :class="
+                variant === 'transparent'
+                  ? 'border-transparent bg-muted/50 text-muted-foreground font-medium shadow-none'
+                  : ''
+              ">
               +{{ hiddenCount }}
             </Badge>
           </template>
         </div>
 
-        <div v-if="showControls" class="flex items-center gap-2 pl-2 shrink-0 text-muted-foreground">
+        <div
+          v-if="showControls"
+          class="flex items-center gap-2 pl-2 shrink-0 text-muted-foreground">
           <Icon
             v-if="selectedOptions.length > 0 && !disabled"
             icon="lucide:x"
