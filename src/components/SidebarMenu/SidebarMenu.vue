@@ -128,8 +128,7 @@ const deriveNestedTabs = (
       isPathMatch(item, path) ||
       item.children.some(
         (child) =>
-          isPathMatch(child, path) ||
-          child.children?.some((grand) => isPathMatch(grand, path))
+          isPathMatch(child, path) || child.children?.some((grand) => isPathMatch(grand, path))
       )
 
     if (!owns) continue
@@ -187,14 +186,18 @@ const syncAll = (path: string) => {
 // Route change — single watcher, single pass
 watch(
   () => route?.path,
-  (path) => { if (path) syncAll(path) },
+  (path) => {
+    if (path) syncAll(path)
+  },
   { immediate: true }
 )
 
 // Items change (e.g. async menu load)
 watch(
   () => props.items,
-  () => { if (route?.path) syncAll(route.path) },
+  () => {
+    if (route?.path) syncAll(route.path)
+  },
   { deep: true }
 )
 
