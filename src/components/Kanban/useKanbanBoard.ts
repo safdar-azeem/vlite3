@@ -1,4 +1,4 @@
-import { ref, reactive } from 'vue'
+import { ref, shallowRef, reactive } from 'vue'
 import type { KanbanPageInfo, KanbanLoadDataResult } from './types'
 
 export function useKanbanBoard(
@@ -6,7 +6,7 @@ export function useKanbanBoard(
   loadDataFn?: (columnId: string | number, page: number) => Promise<KanbanLoadDataResult>,
   initialData?: any[]
 ) {
-  const items = ref<any[]>(initialData ? [...initialData] : [])
+  const items = shallowRef<any[]>(initialData ? [...initialData] : [])
 
   const isInitialLoading = ref(false)
   const isLoadingMore = ref(false)
