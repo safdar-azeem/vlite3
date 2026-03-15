@@ -18,7 +18,15 @@ const props = defineProps<{
   importData: any[]
 }>()
 
-const emits = defineEmits(['update:importMethod', 'update:csvFile', 'update:mappings', 'next'])
+const emits = defineEmits([
+  'update:importMethod', 
+  'update:csvFile', 
+  'update:mappings', 
+  'update:headers',
+  'update:preview',
+  'update:importData',
+  'next'
+])
 
 const t = (key: string, fallback: string, args?: Record<string, any>) => {
   const res = args ? $t(key, args) : $t(key)
@@ -83,7 +91,7 @@ const processCSVData = (content: string) => {
         }
 
         const parsedHeaders = Object.keys(result.data[0] as object)
-        props.headers.splice(0, props.headers.length, ...parsedHeaders)
+        emits('update:headers', parsedHeaders)
 
         const mappedData = result.data.map((item: any) => {
           const newItem: Record<string, any> = {}
@@ -93,8 +101,8 @@ const processCSVData = (content: string) => {
           return newItem
         })
 
-        props.importData.splice(0, props.importData.length, ...mappedData)
-        props.preview.splice(0, props.preview.length, ...result.data.slice(0, 3))
+        emits('update:importData', mappedData)
+        emits('update:preview', result.data.slice(0, 3))
 
         const initialMappings: Record<string, string> = {}
         parsedHeaders.forEach((header) => {
