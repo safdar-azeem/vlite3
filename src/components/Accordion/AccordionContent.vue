@@ -43,7 +43,7 @@ const leave = (el: Element) => {
     @after-enter="afterEnter"
     @before-leave="beforeLeave"
     @leave="leave">
-    <div class="overflow-hidden text-sm transition-all duration-300 ease-in-out">
+    <div class="overflow-hidden text-sm transition-all duration-300 ease-in-out content-wrapper">
       <div :class="['pb-4', props.class]">
         <slot />
       </div>
@@ -55,5 +55,11 @@ const leave = (el: Element) => {
 .accordion-enter-active,
 .accordion-leave-active {
   transition: height 0.3s ease-in-out;
+  will-change: height;
+}
+
+/* Layer promotion for smoother animation layout calculations */
+.content-wrapper {
+  contain: paint;
 }
 </style>
