@@ -36,6 +36,8 @@ interface Props {
   label?: string
   /** Whether the floating label is currently in the 'active' (raised) position */
   floatingActive?: boolean
+  /** Whether the specific field is currently loading/processing */
+  loading?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -47,6 +49,7 @@ const props = withDefaults(defineProps<Props>(), {
   error: '',
   isUpdate: false,
   floatingActive: true,
+  loading: false,
 })
 
 const emit = defineEmits<{
@@ -275,6 +278,7 @@ const fieldProps = computed(() => {
       size: props.size,
       rounded: props.rounded,
       maxSize: props.field.maxFileSize ? props.field.maxFileSize * 1024 * 1024 : undefined,
+      loading: props.loading,
     }
   }
 
@@ -286,6 +290,7 @@ const fieldProps = computed(() => {
       modelValue: props.value,
       editable: !props.readonly,
       maxSize: props.field.maxFileSize ? props.field.maxFileSize * 1024 * 1024 : undefined,
+      loading: props.loading,
     }
   }
 
