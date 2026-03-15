@@ -59,7 +59,6 @@ const SelectedVariant = computed(
 
 <template>
   <div class="flex items-center justify-center min-h-[400px] w-full py-16 px-6">
-    {{ config?.components?.empty?.variant }}
     <component
       :is="SelectedVariant"
       :title="displayTitle"
