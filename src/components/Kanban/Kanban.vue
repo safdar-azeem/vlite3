@@ -41,7 +41,7 @@ const columnData = (colId: string | number) => {
 </script>
 
 <template>
-  <div :class="['flex gap-4 overflow-x-auto p-1 custom-scrollbar-x', props.class]">
+  <div :class="['flex gap-4 overflow-x-auto p-1 custom-scrollbar-x scrollable-container', props.class]">
     <KanbanBoard
       v-for="column in columns"
       :key="column.id"
@@ -88,5 +88,8 @@ const columnData = (colId: string | number) => {
   background-color: var(--color-border);
   border-radius: 10px;
 }
+.scrollable-container {
+  will-change: transform;
+  contain: layout style;
+}
 </style>
-
