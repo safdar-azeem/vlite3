@@ -1,3 +1,4 @@
+import { EmptyVariant } from '@/components/Empty'
 import type { InputVariant, InputSize, InputRounded } from './form.type'
 
 /**
@@ -84,6 +85,14 @@ export interface VLiteConfig {
     }
     date?: {
       format?: string
+    }
+    /**
+     * Global Empty component configuration.
+     * Sets the default variant used when no `variant` prop is passed locally.
+     * Fallback chain: prop > createVLite config > 'variant1'
+     */
+    empty?: {
+      variant?: EmptyVariant
     }
   }
 }
