@@ -10,6 +10,7 @@ import ConfirmationModal from '@/components/ConfirmationModal.vue'
 import { useDropdownIds } from './composables/useDropdownIds'
 import { useDropdownSelection } from './composables/useDropdownSelection'
 import { useDropdownHydration } from './composables/useDropdownHydration'
+
 const props = withDefaults(
   defineProps<{
     selected?: any
@@ -82,6 +83,7 @@ const emit = defineEmits<{
   (e: 'load-more'): void
   (e: 'search', query: string): void
 }>()
+
 const showConfirmation = ref(false)
 const pendingOption = ref<IDropdownOption | null>(null)
 const confirmationConfig = ref<{
@@ -97,6 +99,7 @@ const confirmationConfig = ref<{
   cancelText: 'Cancel',
   variant: 'primary',
 })
+
 const finalPosition = computed(() => {
   if (props.position) return props.position
   return props.direction === 'rtl' ? 'bottom-end' : 'bottom-start'
@@ -105,8 +108,10 @@ const finalNestedPosition = computed(() => {
   if (props.nestedPosition) return props.nestedPosition
   return props.direction === 'rtl' ? 'left-start' : 'right-start'
 })
+
 const internalIsOpen = ref(props.isOpen || false)
 const activeChildrenCount = ref(0)
+
 watch(
   () => props.isOpen,
   (val) => {
@@ -115,15 +120,18 @@ watch(
     }
   }
 )
+
 const handleVisibilityChange = (val: boolean) => {
   internalIsOpen.value = val
   emit('update:isOpen', val)
   if (val) emit('onOpen')
   else emit('onClose')
 }
+
 const handleClose = () => {
   handleVisibilityChange(false)
 }
+
 const handleChildToggle = (childIsOpen: boolean) => {
   if (childIsOpen) {
     activeChildrenCount.value++
@@ -131,11 +139,13 @@ const handleChildToggle = (childIsOpen: boolean) => {
     activeChildrenCount.value = Math.max(0, activeChildrenCount.value - 1)
   }
 }
+
 // Provide a context for child components (like Modal/SidePanel) to safely communicate state
 provide('dropdown-context', {
   close: handleClose,
   onChildToggle: handleChildToggle,
 })
+
 const normalizedPropsOptions = computed<IDropdownOption[]>(() => {
   if (!props.options) return []
   return props.options.map((opt) => {
@@ -145,11 +155,13 @@ const normalizedPropsOptions = computed<IDropdownOption[]>(() => {
     return opt as IDropdownOption
   })
 })
+
 const internalOptions = ref<IDropdownOptions>([])
 // Track whether the initial options batch has been received
 const initialOptionsLoaded = ref(false)
 // Track whether the 1-second settle delay has passed after initial load
 const hydrationReady = ref(false)
+
 watch(
   normalizedPropsOptions,
   (newVal) => {
@@ -177,7 +189,7 @@ watch(
     // Mark initial load done on the first non-empty options batch
     if (!initialOptionsLoaded.value && newVal.length > 0) {
       initialOptionsLoaded.value = true
-      // Wait 1 second after options arrive before allowing hydration,
+      // Wait 10ms after options arrive before allowing hydration,
       // so transient loading states fully settle first
       setTimeout(() => {
         hydrationReady.value = true
@@ -188,6 +200,7 @@ watch(
   },
   { immediate: true } // Performance fix: Removed deep: true to prevent heavy recursion mapping
 )
+
 const combinedOptions = computed(() => {
   const result = [...internalOptions.value]
   const existingValues = new Set(result.map((o) => o.value ?? o.label))
@@ -199,25 +212,30 @@ const combinedOptions = computed(() => {
   })
   return result
 })
+
 const { selectedBuffer, isHydrating, hydrateSelected } = useDropdownHydration({
   fetchSelected: props.fetchSelected,
   getAvailableOptions: () => combinedOptions.value,
   isReady: () => hydrationReady.value,
 })
+
 const { getAllRecursiveIds } = useDropdownIds()
 const selectionProps = reactive({
   ...toRefs(props),
   options: combinedOptions,
 })
+
 const { currentValue, selectedLabel, selectOption } = useDropdownSelection(
   selectionProps as any,
   emit
 )
+
 const finalIgnoreClickOutside = computed(() => {
   const propsList = props.ignoreClickOutside || []
   const recursiveIds = getAllRecursiveIds(combinedOptions.value)
   return [...new Set([...propsList, ...recursiveIds, '.tooltip-container'])]
 })
+
 // Watch for modelValue changes and hydrate only after ready
 watch(
   () => currentValue.value,
@@ -228,6 +246,7 @@ watch(
   },
   { deep: true }
 )
+
 const handleOptionSelect = (option: import('@/types').IDropdownOption) => {
   const needsConfirmation = props.doubleConfirmation || !!option.confirmation
   if (needsConfirmation) {
@@ -259,6 +278,7 @@ const handleOptionSelect = (option: import('@/types').IDropdownOption) => {
     }
   }
 }
+
 const performSelection = (option: import('@/types').IDropdownOption) => {
   const val = option.value ?? option.label
   if (!selectedBuffer.value.has(val)) {
@@ -281,6 +301,7 @@ const performSelection = (option: import('@/types').IDropdownOption) => {
     })
   }
 }
+
 const confirmSelection = () => {
   if (pendingOption.value) {
     performSelection(pendingOption.value)
@@ -288,11 +309,13 @@ const confirmSelection = () => {
     showConfirmation.value = false
   }
 }
+
 const cancelSelection = () => {
   pendingOption.value = null
   showConfirmation.value = false
 }
 </script>
+
 <template>
   <div class="relative inline-block text-left" :style="{ direction: direction }">
     <ToolTip
@@ -323,6 +346,7 @@ const cancelSelection = () => {
             class="w-full" />
         </slot>
       </template>
+
       <template #default>
         <slot />
         <DropdownMenu
@@ -370,6 +394,7 @@ const cancelSelection = () => {
         </DropdownMenu>
       </template>
     </ToolTip>
+
     <ConfirmationModal
       :show="showConfirmation"
       :title="confirmationConfig.title"
@@ -381,3 +406,4 @@ const cancelSelection = () => {
       @cancel="cancelSelection" />
   </div>
 </template>
+
