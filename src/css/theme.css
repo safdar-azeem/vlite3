@@ -544,8 +544,8 @@
 .dark .modal-body .bg-card,
 .dark .sidepanel-body .bg-card,
 .dark .tooltip-container .bg-card {
-  --color-body: #151516 !important;
-  --color-mixture-1: #191818 !important;
+  --color-body: #131313 !important;
+  --color-mixture-1: #131313 !important;
   --color-mixture-2: #ffffff !important;
   background-color: var(--color-body) !important;
 }
