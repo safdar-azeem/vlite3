@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { shallowRef, computed } from 'vue'
 import VueCarouselLite from 'vue-carousel-lite'
 import 'vue-carousel-lite/style.css'
 import type { CarouselProps } from './types'
@@ -29,7 +29,8 @@ const emit = defineEmits<{
   (e: 'slide-change', index: number): void
 }>()
 
-const carouselRef = ref<any>(null)
+// Use shallowRef for 3rd-party component instances to prevent deep proxy traversal
+const carouselRef = shallowRef<any>(null)
 
 // Expose methods
 const goToSlide = (index: number, smooth?: boolean) => {
@@ -68,7 +69,6 @@ defineExpose({
       v-bind="props as any"
       style="height: 100%; width: 100%"
       @slide-change="(index) => emit('slide-change', index)">
-      <!-- Pass through all slots -->
       <template v-for="(_, slot) in $slots" v-slot:[slot]="scope">
         <slot :name="slot" v-bind="scope || {}" />
       </template>
@@ -80,5 +80,8 @@ defineExpose({
 .carousel-wrapper {
   width: 100%;
   position: relative;
+  /* GPU Layer Promotion to isolate transitions */
+  will-change: transform;
+  contain: layout style;
 }
 </style>
