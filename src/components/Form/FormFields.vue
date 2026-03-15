@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, type Component } from 'vue'
+import { computed, ref, markRaw, type Component } from 'vue'
 import type { IForm, IFormFieldChangePayload } from './types'
 import type { InputVariant, InputSize, InputRounded } from '@/types'
 import { getNestedValue, isComponent } from './utils/form.utils'
@@ -87,7 +87,7 @@ const getFieldLabel = (field: IForm) => {
 // Render label as component or string
 const renderLabel = (label: string | Component | undefined): string | Component | undefined => {
   if (!label) return undefined
-  if (isComponent(label)) return label as Component
+  if (isComponent(label)) return markRaw(label as Component)
   return label as string
 }
 
@@ -183,6 +183,19 @@ const getSafeLabel = (field: IForm) => {
     <template v-for="field in schema" :key="field.name">
       <div
         v-if="checkFieldVisible(field)"
+        v-memo="[
+          field,
+          getFieldValue(field),
+          getFieldError(field),
+          checkFieldDisabled(field),
+          checkFieldReadonly(field),
+          focusedFields[field.name],
+          variant,
+          size,
+          rounded,
+          isUpdate,
+          showRequiredAsterisk
+        ]"
         :class="['max-md:col-span-full! form-field-item', getItemClass(field)]">
         <Label
           v-if="
