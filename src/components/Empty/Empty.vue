@@ -2,69 +2,72 @@
 import { computed, defineAsyncComponent } from 'vue'
 import { $t } from '@/utils/i18n'
 import { useVLiteConfig } from '@/core'
+import { EmptyVariant } from '.'
 
 interface Props {
-	title?: string
-	titleI18n?: string
-	description?: string
-	descriptionI18n?: string
-	icon?: string
-	variant?: 'variant1' | 'variant2' | 'variant3' | 'variant4' | 'variant5' | 'variant6' | 'variant7' | 'variant8' | 'variant9' | 'variant10'
+  title?: string
+  titleI18n?: string
+  description?: string
+  descriptionI18n?: string
+  icon?: string
+  variant?: EmptyVariant
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	icon: 'lucide:inbox',
-	variant: 'variant1',
+  icon: 'lucide:inbox',
 })
 
 const config = useVLiteConfig()
 
-const activeVariant = computed(() => {
-	return props.variant || (config?.components as any)?.empty?.variant || 'variant1'
+// Priority: prop > global createVLite config > default 'variant1'
+const activeVariant = computed<EmptyVariant>(() => {
+  return props.variant || (config?.components as any)?.empty?.variant || 'variant1'
 })
 
 const displayTitle = computed(() => {
-	if (props.titleI18n) return $t(props.titleI18n)
-	if (props.title) return props.title
-	const res = $t('vlite.empty.title')
-	return res !== 'vlite.empty.title' ? res : 'No data found'
+  if (props.titleI18n) return $t(props.titleI18n)
+  if (props.title) return props.title
+  const res = $t('vlite.empty.title')
+  return res !== 'vlite.empty.title' ? res : 'No data found'
 })
 
 const displayDescription = computed(() => {
-	if (props.descriptionI18n) return $t(props.descriptionI18n)
-	if (props.description) return props.description
-	const res = $t('vlite.empty.description')
-	return res !== 'vlite.empty.description' ? res : 'There is nothing to display here right now.'
+  if (props.descriptionI18n) return $t(props.descriptionI18n)
+  if (props.description) return props.description
+  const res = $t('vlite.empty.description')
+  return res !== 'vlite.empty.description' ? res : 'There is nothing to display here right now.'
 })
 
-const variantComponents: Record<string, any> = {
-	variant1: defineAsyncComponent(() => import('./variants/Variant1.vue')),
-	variant2: defineAsyncComponent(() => import('./variants/Variant2.vue')),
-	variant3: defineAsyncComponent(() => import('./variants/Variant3.vue')),
-	variant4: defineAsyncComponent(() => import('./variants/Variant4.vue')),
-	variant5: defineAsyncComponent(() => import('./variants/Variant5.vue')),
-	variant6: defineAsyncComponent(() => import('./variants/Variant6.vue')),
-	variant7: defineAsyncComponent(() => import('./variants/Variant7.vue')),
-	variant8: defineAsyncComponent(() => import('./variants/Variant8.vue')),
-	variant9: defineAsyncComponent(() => import('./variants/Variant9.vue')),
-	variant10: defineAsyncComponent(() => import('./variants/Variant10.vue')),
+const variantComponents: Record<EmptyVariant, any> = {
+  variant1: defineAsyncComponent(() => import('./variants/Variant1.vue')),
+  variant2: defineAsyncComponent(() => import('./variants/Variant2.vue')),
+  variant3: defineAsyncComponent(() => import('./variants/Variant3.vue')),
+  variant4: defineAsyncComponent(() => import('./variants/Variant4.vue')),
+  variant5: defineAsyncComponent(() => import('./variants/Variant5.vue')),
+  variant6: defineAsyncComponent(() => import('./variants/Variant6.vue')),
+  variant7: defineAsyncComponent(() => import('./variants/Variant7.vue')),
+  variant8: defineAsyncComponent(() => import('./variants/Variant8.vue')),
+  variant9: defineAsyncComponent(() => import('./variants/Variant9.vue')),
+  variant10: defineAsyncComponent(() => import('./variants/Variant10.vue')),
+  variant11: defineAsyncComponent(() => import('./variants/Variant11.vue')),
 }
 
-const SelectedVariant = computed(() => variantComponents[activeVariant.value] || variantComponents.variant1)
+const SelectedVariant = computed(
+  () => variantComponents[activeVariant.value] || variantComponents.variant1
+)
 </script>
 
 <template>
-	<div class="flex items-center justify-center min-h-[500px] w-full py-16 px-6">
-		<component 
-			:is="SelectedVariant" 
-			:title="displayTitle" 
-			:description="displayDescription" 
-			:icon="icon"
-		>
-			<template v-if="$slots.action" #action>
-				<slot name="action" />
-			</template>
-			<slot />
-		</component>
-	</div>
+  <div class="flex items-center justify-center min-h-[500px] w-full py-16 px-6">
+    <component
+      :is="SelectedVariant"
+      :title="displayTitle"
+      :description="displayDescription"
+      :icon="icon">
+      <template v-if="$slots.action" #action>
+        <slot name="action" />
+      </template>
+      <slot />
+    </component>
+  </div>
 </template>
