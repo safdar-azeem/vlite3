@@ -8,61 +8,82 @@ A schema-driven form builder with built-in validation, multi-step wizards, group
 
 ### Props
 
-| Prop                       | Type                   | Default     | Description                                                            |
-| :------------------------- | :--------------------- | :---------- | :--------------------------------------------------------------------- |
-| `schema`                   | `IForm[] \| IForm[][]` | required    | Array of field definitions (or array of arrays for grouped/multi-step) |
-| `values`                   | `Record<string, any>`  | `{}`        | Initial form values                                                    |
-| `variant`                  | `InputVariant`         | `'outline'` | Style variant for all inputs                                           |
-| `size`                     | `InputSize`            | `'md'`      | Size of inputs                                                         |
-| `rounded`                  | `InputRounded`         | `'md'`      | Border radius of inputs                                                |
-| `class`                    | `string`               | —           | Custom class for form element                                          |
-| `className`                | `string`               | —           | Custom class for grid                                                  |
-| `loading`                  | `boolean`              | `false`     | Loading state on submit button                                         |
-| `submitText`               | `string`               | `'Submit'`  | Label for submit button                                                |
-| `submitProps`              | `ButtonProps`          | —           | Extra props for submit button                                          |
-| `isUpdate`                 | `boolean`              | `false`     | Mode for update/edit operations                                        |
-| `tabs`                     | `IFormStep[]`          | —           | Configuration for multi-step wizard                                    |
-| `groupsHeadings`           | `string[]`             | —           | Headings for grouped layout                                            |
-| `groupHeadingsDescription` | `string[]`             | —           | Descriptions for grouped layout                                        |
-| `folderId`                 | `string`               | —           | Folder ID for file uploads                                             |
-| `cancelText`               | `string`               | `'Cancel'`  | Label for cancel button                                                |
-| `showCancel`               | `boolean`              | `false`     | Show cancel button                                                     |
-| `groupClass`               | `string`               | —           | Custom class for grouped layout                                        |
-| `headerClass`              | `string`               | —           | Custom class for group header                                          |
-| `footerClass`              | `string`               | —           | Custom class for footer                                                |
-| `timelineTextPosition`     | `TimelineTextPosition` | `'bottom'`  | Text position for timeline tabs                                        |
-| `footer`                   | `boolean`              | `true`      | Show footer and submit button                                          |
-| `emitFields`               | `string[]`             | —           | Explicitly include these fields in the submit payload                  |
+| Prop                       | Type                   | Default                                                                | Description                                                                  |
+| :------------------------- | :--------------------- | :--------------------------------------------------------------------- | :--------------------------------------------------------------------------- |
+| `schema`                   | `IForm[] \| IForm[][]` | required                                                               | Array of field definitions (or array of arrays for grouped/multi-step)       |
+| `values`                   | `Record<string, any>`  | `{}`                                                                   | Initial form values                                                          |
+| `variant`                  | `InputVariant`         | global config or `'outline'`                                           | Style variant for all inputs                                                 |
+| `size`                     | `InputSize`            | global config or `'md'`                                                | Size of inputs                                                               |
+| `rounded`                  | `InputRounded`         | global config or `'md'`                                                | Border radius of inputs                                                      |
+| `class`                    | `string`               | —                                                                      | Custom class for the `<form>` element                                        |
+| `className`                | `string`               | —                                                                      | Custom class passed to the inner grid layout                                 |
+| `loading`                  | `boolean`              | `false`                                                                | Loading state on submit button                                               |
+| `footer`                   | `boolean`              | `true`                                                                 | Show footer and submit button                                                |
+| `submitText`               | `string`               | `'Submit'`                                                             | Label for submit button                                                      |
+| `submitProps`              | `ButtonProps`          | —                                                                      | Extra props forwarded to submit button                                       |
+| `cancelText`               | `string`               | `'Cancel'`                                                             | Label for cancel button                                                      |
+| `showCancel`               | `boolean`              | `false`                                                                | Show cancel button (auto-enabled when inside a Modal)                        |
+| `isUpdate`                 | `boolean`              | `false`                                                                | Mode for update/edit operations                                              |
+| `tabs`                     | `IFormStep[]`          | —                                                                      | Configuration for multi-step wizard                                          |
+| `groupsHeadings`           | `string[]`             | —                                                                      | Headings for grouped layout                                                  |
+| `groupHeadingsDescription` | `string[]`             | —                                                                      | Descriptions for grouped layout                                              |
+| `folderId`                 | `string`               | —                                                                      | Folder ID for file uploads                                                   |
+| `groupClass`               | `string`               | —                                                                      | Custom class for grouped layout containers                                   |
+| `headerClass`              | `string`               | —                                                                      | Custom class for group/step headers                                          |
+| `footerClass`              | `string`               | —                                                                      | Custom class for the footer area                                             |
+| `timelineTextPosition`     | `TimelineTextPosition` | `'right'`                                                              | Text position for timeline tabs in multi-step mode                           |
+| `emitFields`               | `string[]`             | `['__typename']`                                                       | Fields to explicitly include in the submit payload (e.g. for GraphQL)        |
+| `showRequiredAsterisk`     | `boolean`              | global config or `true`                                                | Show `*` indicator next to required field labels                             |
+| `stickyFooter`             | `boolean`              | `false`                                                                | Pin the footer to the bottom of the viewport/container                       |
+| `isPage`                   | `boolean`              | `false`                                                                | Enable full-page layout mode (adds sticky header with back button and title) |
+| `pageTitle`                | `string`               | —                                                                      | Title shown in the page-mode header                                          |
+| `pageTitleI18n`            | `string`               | —                                                                      | I18n key for the page-mode title                                             |
+| `pageTitleClass`           | `string`               | `'text-2xl font-bold'`                                                 | CSS class for the page-mode title element                                    |
+| `pageHeaderClass`          | `string`               | —                                                                      | CSS class for the page-mode header container                                 |
+| `backButtonProps`          | `ButtonProps`          | `{ size: 'sm', variant: 'ghost', icon: 'heroicons-solid:arrow-left' }` | Props for the back button in page mode                                       |
+| `backButtonPath`           | `string`               | —                                                                      | Fallback route path for the back button in page mode                         |
+
+> **Global Config:** `variant`, `size`, `rounded`, and `showRequiredAsterisk` resolve from the VLite global config (`vliteConfig.components.form`) when not explicitly passed as props.
+
+> **Modal Integration:** When a Form is rendered inside a `Modal`, the cancel button is automatically shown, the footer becomes sticky, and the `close` method is automatically wired to the `@onSubmit` payload callback and the cancel button.
 
 ### Schema Interface (`IForm`)
 
-| Property           | Type                             | Description                                                          |
-| :----------------- | :------------------------------- | :------------------------------------------------------------------- |
-| `name`             | `string`                         | Field key in values object (supports dot notation)                   |
-| `mapFrom`          | `string`                         | Key to read initial value from the incoming `values` object          |
-| `mapTo`            | `string`                         | Key to write the final value to in the submit payload                |
-| `valueKey`         | `string`                         | Property to extract from nested objects or arrays of objects         |
-| `key`              | `string`                         | Alias for `valueKey`                                                 |
-| `format`           | `(val, rawValues) => any`        | Function to format raw incoming data before it enters the form state |
-| `transform`        | `(val, formValues) => any`       | Function to transform the form's state value before submission       |
-| `label`            | `string \| Component`            | Display label                                                        |
-| `type`             | `IFormFieldType`                 | Input type (text, email, password, select, file, etc.)               |
-| `required`         | `boolean`                        | Marks field as required                                              |
-| `placeholder`      | `string`                         | Input placeholder                                                    |
-| `options`          | `IDropdownOptions`               | Options for select/multiSelect/radio                                 |
-| `validation`       | `(ctx) => string`                | Return error message or empty string                                 |
-| `when`             | `(ctx) => boolean`               | Conditionally show/hide field                                        |
-| `updateValues`     | `(ctx) => Record\<string, any\>` | Dynamically update other fields on change                            |
-| `itemClass`        | `string`                         | Class for field wrapper (e.g. `col-span-2`)                          |
-| `disabled`         | `boolean \| (ctx) => boolean`    | Disable field                                                        |
-| `icon`             | `string`                         | Left icon (Iconify ID)                                               |
-| `iconRight`        | `string`                         | Right icon (Iconify ID)                                              |
-| `addonLeft`        | `string \| IFormAddon`           | Left addon — plain text or addon config object                       |
-| `addonRight`       | `string \| IFormAddon`           | Right addon — plain text or addon config object                      |
-| `props`            | `Record<string, any>`            | Extra props forwarded to the field component                         |
-| `maxFileSize`      | `number`                         | Maximum file size in MB for file/avatar uploads                      |
-| `maxFiles`         | `number`                         | Maximum number of files allowed when multiple is true                |
-| `returnFileObject` | `boolean`                        | Output `{fileName, fileUrl, fileType, fileSize}` on upload           |
+| Property           | Type                           | Description                                                                         |
+| :----------------- | :----------------------------- | :---------------------------------------------------------------------------------- |
+| `name`             | `string`                       | Field key in values object (supports dot notation)                                  |
+| `label`            | `string \| Component`          | Display label (can be a string or a Vue component)                                  |
+| `labelI18n`        | `string`                       | I18n translation key for the label (takes precedence over `label`)                  |
+| `type`             | `IFormFieldType`               | Input type (text, email, password, select, file, etc.)                              |
+| `value`            | `any \| () => any`             | Initial/default value for the field (can be a static value or factory function)     |
+| `placeholder`      | `string`                       | Input placeholder text                                                              |
+| `placeholderI18n`  | `string`                       | I18n key for the placeholder (takes precedence over `placeholder`)                  |
+| `required`         | `boolean`                      | Marks field as required                                                             |
+| `disabled`         | `boolean \| (ctx) => boolean`  | Disable field statically or conditionally                                           |
+| `readonly`         | `boolean \| (ctx) => boolean`  | Make field read-only statically or conditionally                                    |
+| `mapFrom`          | `string`                       | Key to read the initial value from in the incoming `values` object                  |
+| `mapTo`            | `string`                       | Key to write the final value to in the submit payload                               |
+| `valueKey`         | `string`                       | Property to extract from nested objects or arrays of objects                        |
+| `key`              | `string`                       | Alias for `valueKey`                                                                |
+| `format`           | `(val, rawValues) => any`      | Format raw incoming data before it enters form state                                |
+| `transform`        | `(val, formValues) => any`     | Transform the form's state value before submission                                  |
+| `options`          | `IDropdownOptions`             | Options for select/multiSelect/radio fields                                         |
+| `validation`       | `(ctx) => string`              | Custom validator — return an error message or empty string                          |
+| `when`             | `(ctx) => boolean`             | Conditionally show/hide the field                                                   |
+| `updateValues`     | `(ctx) => Record<string, any>` | Dynamically update other fields when this field changes                             |
+| `itemClass`        | `string`                       | CSS class for the field wrapper (e.g. `col-span-2`)                                 |
+| `className`        | `string`                       | CSS class applied to the input element itself                                       |
+| `icon`             | `string`                       | Left icon (Iconify ID)                                                              |
+| `iconRight`        | `string`                       | Right icon (Iconify ID)                                                             |
+| `addonLeft`        | `string \| IFormAddon`         | Left addon — plain text or addon config object                                      |
+| `addonRight`       | `string \| IFormAddon`         | Right addon — plain text or addon config object                                     |
+| `props`            | `Record<string, any>`          | Extra props forwarded to the field component                                        |
+| `min`              | `number`                       | Minimum value for number inputs                                                     |
+| `max`              | `number`                       | Maximum value for number inputs                                                     |
+| `maxFileSize`      | `number`                       | Maximum file size in MB for file/avatar uploads                                     |
+| `maxFiles`         | `number`                       | Maximum number of files allowed when `multiple` is true                             |
+| `returnFileObject` | `boolean`                      | Output `{ fileName, fileUrl, fileType, fileSize }` on upload instead of a plain URL |
+| `isSensitiveField` | `boolean`                      | Mark field as sensitive (e.g. for masking or audit logging)                         |
 
 ### Addon Interface (`IFormAddon`)
 
@@ -89,10 +110,18 @@ export interface IFormAddon {
 
 ### Events
 
-- `@onSubmit` (payload: `{ values, isUpdate }`, close): Emitted when form is valid and submitted.
+- `@onSubmit` (payload: `{ values, isUpdate }`, close): Emitted when form is valid and submitted. The `close` function closes the parent Modal when applicable.
 - `@onCancel`: Emitted when cancel button is clicked.
 - `@onStepChange` (step: `number`): Emitted when step changes in multi-step mode.
 - `@onAddonAction` (action: `string`): Emitted when a button addon is clicked (carries the `action` string from the addon config).
+- `@onBack`: Emitted when the back button in page mode is clicked.
+
+### Slots
+
+| Slot             | Scope                                            | Description                                                                        |
+| :--------------- | :----------------------------------------------- | :--------------------------------------------------------------------------------- |
+| `default`        | `{ values, errors, isSubmitting, handleSubmit }` | Append custom content after the generated form fields                              |
+| `header-actions` | `{ values, isSubmitting, handleSubmit }`         | Custom action buttons in the page-mode header (only visible when `isPage` is true) |
 
 ### Usage
 
@@ -152,7 +181,7 @@ const schema = [
   {
     name: 'taxIds', // Internal form state name
     mapFrom: 'taxes', // Read from 'taxes' array in the incoming data
-    valueKey: 'id', // Automatically extract just the 'id' property from the objects in the array
+    valueKey: 'id', // Automatically extract just the 'id' property from each object
     type: 'multiSelect',
     options: [
       { label: 'VAT', value: 'tax_1' },
@@ -185,7 +214,7 @@ const tabs = [
   { id: 2, title: 'Profile', icon: 'lucide:settings' },
 ]
 
-// Schema is array of arrays
+// Schema is array of arrays — one sub-array per step
 const schema = [
   [
     // Step 1
@@ -199,7 +228,7 @@ const schema = [
 </script>
 
 <template>
-  <Form :steps="tabs" :schema="schema" @onSubmit="console.log" />
+  <Form :tabs="tabs" :schema="schema" @onSubmit="console.log" />
 </template>
 ```
 
@@ -327,7 +356,6 @@ const schema = [
     label: 'Price',
     type: 'text',
     placeholder: '0.00',
-    // Select addon + plain text addon can be mixed
     addonLeft: {
       name: 'currency',
       type: 'select',
@@ -352,6 +380,25 @@ const handleAddonAction = (action) => {
 ```
 
 > **Note:** Plain string addons (e.g. `addonLeft: '$'`) still work exactly as before — fully backward compatible.
+
+#### Page Mode
+
+Use `isPage` to render the form in a full-page layout with a sticky header containing a back button and title.
+
+```vue
+<template>
+  <Form
+    :schema="schema"
+    is-page
+    page-title="Edit Profile"
+    :back-button-path="'/settings'"
+    @onSubmit="handleSubmit">
+    <template #header-actions="{ isSubmitting }">
+      <Button variant="outline" :disabled="isSubmitting">Preview</Button>
+    </template>
+  </Form>
+</template>
+```
 
 #### Form in Lazy Modal (Real-world Example)
 
@@ -469,7 +516,7 @@ function update(newValue: any) {
 </script>
 ```
 
-#### 3. Custom component Schema Registration
+#### 3. Custom Component Schema Registration
 
 ```ts
 {
