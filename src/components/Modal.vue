@@ -9,6 +9,7 @@ import {
   computed,
   nextTick,
   onMounted,
+  markRaw,
 } from 'vue'
 import Button from './Button.vue'
 import { useKeyStroke } from '../composables/useKeyStroke'
@@ -58,6 +59,11 @@ const dropdownContext = inject('dropdown-context', null) as {
   close: () => void
   onChildToggle?: (isOpen: boolean) => void
 } | null
+
+// markRaw prevents Vue from wrapping the component definition in a deep
+// reactive proxy, which would otherwise cause re-evaluation on every form
+// field change and add unnecessary overhead to every render cycle.
+const rawBody = computed(() => (props.body ? markRaw(props.body) : undefined))
 
 watch(
   () => props.show,
@@ -154,8 +160,8 @@ const displayDescription = computed(() =>
   <Teleport to="body">
     <div
       v-if="visible"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-[#00000051] p-4 v-modal-overlay"
-      :class="backdrop && 'backdrop-blur-[2px]'"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 v-modal-overlay"
+      :class="backdrop ? 'v-modal-backdrop' : ''"
       @click="handleBackdropClick">
       <div
         ref="modalRef"
@@ -187,8 +193,8 @@ const displayDescription = computed(() =>
           <p v-if="displayDescription" class="text-sm text-muted-foreground mb-3.5">
             {{ displayDescription }}
           </p>
-          <template v-if="body">
-            <component :is="body" v-bind="{ ...bodyProps, ...$attrs }" :close="handleClose" />
+          <template v-if="rawBody">
+            <component :is="rawBody" v-bind="{ ...bodyProps, ...$attrs }" :close="handleClose" />
           </template>
           <template v-else>
             <slot :close="handleClose" />
@@ -207,6 +213,34 @@ const displayDescription = computed(() =>
 </template>
 
 <style scoped>
+/*
+  The overlay background uses a plain semi-transparent color instead of
+  backdrop-filter: blur(). backdrop-blur forces a full GPU composite pass
+  on every frame — including hover and focus transitions — causing visible
+  frame drops when any interactive element inside the modal is touched.
+
+  The v-modal-backdrop class opts back in only when the backdrop prop is
+  true, keeping a subtle dark scrim without the compositing overhead.
+*/
+.v-modal-overlay {
+  background-color: rgba(0, 0, 0, 0.32);
+}
+
+.v-modal-backdrop {
+  /* Promote the overlay to its own compositor layer so the browser can
+     rasterize it once and reuse the texture. The `transform: translateZ(0)`
+     trick creates a stacking context without triggering blur repaint. */
+  transform: translateZ(0);
+  will-change: opacity;
+}
+
+/* modal-body is promoted separately so hover/focus transitions on its
+   children paint on the GPU without touching the overlay layer. */
+.modal-body {
+  will-change: transform;
+  contain: layout style;
+}
+
 .blink-bg {
   animation: blink-animation 1s infinite;
 }
