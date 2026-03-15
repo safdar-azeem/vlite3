@@ -62,7 +62,7 @@ const props = withDefaults(defineProps<Props>(), {
   footerClass: '',
   timelineTextPosition: 'right',
   emitFields: () => ['__typename'],
-  stickyFooter: true,
+  stickyFooter: false,
 })
 
 const emit = defineEmits<{
@@ -462,9 +462,7 @@ const handleCancel = () => {
         footerClass,
         isMultiStepMode ? 'justify-between' : 'justify-end',
         // Sticky positioning
-        isFooterSticky
-          ? 'sticky bottom-0 bg-background/95 pt-3 pb-2 -mx-0.5 px-0.5'
-          : 'mt-6',
+        isFooterSticky ? 'sticky bottom-0 bg-background/95 pt-3 pb-2 -mx-0.5 px-0.5' : 'mt-6',
         // Inside modal: extend to modal edges and add top border always
         isInsideModal ? '-mx-4 px-4 pb-0!' : '',
         // Shadow only while actually stuck (sentinel has scrolled out of view)
