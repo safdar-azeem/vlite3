@@ -1,6 +1,6 @@
 import type { Component } from 'vue'
 import type { IDropdownOptions } from '@/types'
-import type { InputVariant, InputSize, InputRounded } from '@/types'
+import type { InputVariant, InputSize, InputRounded, ButtonProps } from '@/types'
 
 /**
  * Addon configuration for input field addons (left/right)
@@ -228,6 +228,18 @@ export interface IFormProps {
   footerClass?: string
   /** Fields to explicitly include in the submit payload (e.g., ['__typename', 'id']) */
   emitFields?: string[]
+  /** Enable full-page layout mode */
+  isPage?: boolean
+  /** Title for the page mode header */
+  pageTitle?: string
+  /** I18n key for the page title */
+  pageTitleI18n?: string
+  /** Custom CSS class for the page title */
+  pageTitleClass?: string
+  /** Custom CSS class for the page header container */
+  pageHeaderClass?: string
+  /** Props to pass to the back button in page mode */
+  backButtonProps?: ButtonProps
 }
 
 /**
