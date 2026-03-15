@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, shallowRef } from 'vue'
 import Modal from '../Modal.vue'
 import Button from '../Button.vue'
 import { Timeline } from '../Timeline'
@@ -43,16 +43,18 @@ const displayTitle = computed(() => {
 
 const currentStep = ref(1)
 const isProcessing = ref(false)
-const importData = ref<any[]>([])
+
+// Use shallowRef for massive arrays to avoid deep proxy rendering overhead
+const importData = shallowRef<any[]>([])
 const mappings = ref<Record<string, string>>({})
 const importOptions = ref<ImportOptions>({
   existing: 'replace',
   new: 'create',
 })
 const importMethod = ref('')
-const csvFile = ref<File | null>(null)
-const headers = ref<string[]>([])
-const preview = ref<any[]>([])
+const csvFile = shallowRef<File | null>(null)
+const headers = shallowRef<string[]>([])
+const preview = shallowRef<any[]>([])
 const validationErrors = ref<string[]>([])
 
 const initialProgress: ImportProgress = {
@@ -243,6 +245,32 @@ const txtBack = computed(() => t('vlite.importData.btnBack', 'Back'))
 const txtNext = computed(() => t('vlite.importData.btnNext', 'Next'))
 const txtStart = computed(() => t('vlite.importData.btnStart', 'Start Import'))
 const txtDone = computed(() => t('vlite.importData.btnDone', 'Done'))
+
+// Update functions for shallowRefs
+const updateImportMethod = (val: string) => {
+  importMethod.value = val
+}
+
+const updateCsvFile = (val: File | null) => {
+  csvFile.value = val
+}
+
+const updateMappings = (val: Record<string, string>) => {
+  mappings.value = val
+}
+
+const updateHeaders = (val: string[]) => {
+  headers.value = val
+}
+
+const updatePreview = (val: any[]) => {
+  preview.value = val
+}
+
+const updateImportData = (val: any[]) => {
+  importData.value = val
+}
+
 </script>
 
 <template>
@@ -265,21 +293,28 @@ const txtDone = computed(() => t('vlite.importData.btnDone', 'Done'))
         <div class="min-h-[300px]">
           <ImportStep1
             v-if="currentStep === 1"
-            v-model:importMethod="importMethod"
-            v-model:csvFile="csvFile"
-            v-model:mappings="mappings"
+            :importMethod="importMethod"
+            :csvFile="csvFile"
+            :mappings="mappings"
             :fields="fields"
             :headers="headers"
             :preview="preview"
             :importData="importData"
+            @update:importMethod="updateImportMethod"
+            @update:csvFile="updateCsvFile"
+            @update:mappings="updateMappings"
+            @update:headers="updateHeaders"
+            @update:preview="updatePreview"
+            @update:importData="updateImportData"
             @next="nextStep" />
 
           <ImportStep2
             v-else-if="currentStep === 2"
-            v-model:mappings="mappings"
+            :mappings="mappings"
             :headers="headers"
             :preview="preview"
-            :availableFields="availableFields" />
+            :availableFields="availableFields"
+            @update:mappings="updateMappings" />
 
           <ImportStep3 v-else-if="currentStep === 3" :importOptions="importOptions" />
 
