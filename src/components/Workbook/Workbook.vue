@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, nextTick, computed } from 'vue'
+import { ref, watch, nextTick, computed, shallowRef } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
 import type { WorkbookSheet, WorkbookProps, AddButtonPosition } from './types'
 import SheetItem from './Sheet.vue'
@@ -37,18 +37,33 @@ const emit = defineEmits<{
 const scrollContainer = ref<HTMLElement | null>(null)
 const editingTabId = ref<string | null>(null)
 
-// Drag and Drop State
-const sheetsList = ref<WorkbookSheet[]>([...props.sheets])
+// Drag and Drop State using shallowRef for massive arrays performance boost
+const sheetsList = shallowRef<WorkbookSheet[]>([...props.sheets])
 
 // Watch for external updates to sheets prop
 watch(
   () => props.sheets,
   (newSheets) => {
-    if (JSON.stringify(newSheets) !== JSON.stringify(sheetsList.value)) {
+    let needsUpdate = false
+    
+    // Check if structure (length) changed
+    if (newSheets.length !== sheetsList.value.length) {
+      needsUpdate = true
+    } else {
+      // Fast O(n) check for object reference or ID changes without deep proxy traversal overhead
+      for (let i = 0; i < newSheets.length; i++) {
+        if (newSheets[i] !== sheetsList.value[i] || newSheets[i].id !== sheetsList.value[i].id) {
+          needsUpdate = true
+          break
+        }
+      }
+    }
+
+    if (needsUpdate) {
       sheetsList.value = [...newSheets]
     }
   },
-  { deep: true }
+  { deep: true } // Must be true so parent mutating the array via .push() correctly triggers the watcher
 )
 
 const handleSheetsUpdate = (newItems: WorkbookSheet[]) => {
@@ -128,23 +143,6 @@ const handleDelete = (id: string) => {
   }
 }
 
-// Watchers for "Auto Edit newly added sheet"
-watch(
-  () => props.sheets.length,
-  (newLen, oldLen) => {
-    // Only trigger auto-edit if exactly one sheet was added, and we already had sheets.
-    // This prevents triggering edit mode on initial data hydration or page refresh.
-    if (oldLen !== undefined && oldLen > 0 && newLen === oldLen + 1 && props.addable) {
-      nextTick(() => {
-        const lastSheet = props.sheets[props.sheets.length - 1]
-        if (lastSheet.id === props.modelValue) {
-          editingTabId.value = lastSheet.id
-        }
-      })
-    }
-  }
-)
-
 // Scroll behavior (horizontal wheel)
 const onWheel = (e: WheelEvent) => {
   if (scrollContainer.value) {
@@ -168,7 +166,7 @@ const canDeleteSheet = computed(() => props.sheets.length > 1)
 
       <div
         ref="scrollContainer"
-        class="flex-1 flex items-end overflow-x-auto scrollbar-none overscroll-contain"
+        class="flex-1 flex items-end overflow-x-auto scrollbar-none overscroll-contain sheet-container"
         style="scrollbar-width: none; -ms-overflow-style: none"
         @wheel="onWheel">
         <VueDraggable
@@ -176,10 +174,20 @@ const canDeleteSheet = computed(() => props.sheets.length > 1)
           @update:model-value="handleSheetsUpdate"
           :disabled="!props.draggable || !!editingTabId"
           :animation="150"
-          class="flex items-end">
+          class="flex items-end min-w-max">
           <SheetItem
             v-for="sheet in sheetsList"
             :key="sheet.id"
+            v-memo="[
+              sheet.id,
+              sheet.title,
+              sheet.icon,
+              modelValue === sheet.id,
+              editingTabId === sheet.id,
+              canDeleteSheet,
+              confirmDelete,
+              allowIconChange
+            ]"
             :sheet="sheet"
             :is-active="modelValue === sheet.id"
             :is-editing="editingTabId === sheet.id"
@@ -224,4 +232,8 @@ const canDeleteSheet = computed(() => props.sheets.length > 1)
 </template>
 
 <style scoped>
+.sheet-container {
+  will-change: transform;
+  contain: layout style;
+}
 </style>
