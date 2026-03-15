@@ -96,13 +96,12 @@ const executeItem = (item: CommandPaletteItem) => {
 // Navigation composable — keyboard + pointer-lock + rAF hover
 // ---------------------------------------------------------------------------
 
-const { activeIndex, isPointerLocked, handleKeydown, handleItemMouseenter } =
-  useCommandPaletteNav({
-    flatList,
-    listRef,
-    onExecute: executeItem,
-    onClose: props.close,
-  })
+const { activeIndex, isPointerLocked, handleKeydown, handleItemMouseenter } = useCommandPaletteNav({
+  flatList,
+  listRef,
+  onExecute: executeItem,
+  onClose: props.close,
+})
 
 // Reset active index when query changes
 watch(query, () => {
@@ -120,7 +119,6 @@ onMounted(() => {
 
 <template>
   <div class="command-palette-content flex flex-col w-full h-full max-h-[70vh]">
-
     <!-- Search input row -->
     <div class="flex items-center gap-3 px-4 py-3.5 border-b border-border/60 shrink-0">
       <Icon icon="lucide:search" class="w-4 h-4 text-muted-foreground shrink-0" />
@@ -158,7 +156,6 @@ onMounted(() => {
       role="listbox"
       class="flex-1 overflow-y-auto py-2 scrollbar-thin cp-scroll-container"
       :aria-label="`${totalCount} ${totalCount === 1 ? txtResult : txtResults}`">
-
       <!-- Empty state -->
       <div
         v-if="totalCount === 0"
@@ -185,7 +182,7 @@ onMounted(() => {
           {{ group.label }}
         </div>
 
-        <div role="group" :aria-label="group.label" class="px-2">
+        <div role="group" :aria-label="group.label" class="px-1.5">
           <CommandPaletteItemVue
             v-for="row in group.rows"
             :key="row.item.id"
@@ -211,7 +208,9 @@ onMounted(() => {
       class="px-4 py-2.5 border-t border-border/40 flex items-center gap-4 shrink-0 bg-muted/30"
       aria-hidden="true">
       <span class="flex items-center gap-1 text-[11px] text-muted-foreground/60">
-        <kbd class="px-1 rounded border border-border/60 bg-background text-[10px]">&#8593;&#8595;</kbd>
+        <kbd class="px-1 rounded border border-border/60 bg-background text-[10px]"
+          >&#8593;&#8595;</kbd
+        >
         {{ txtNavigate }}
       </span>
       <span class="flex items-center gap-1 text-[11px] text-muted-foreground/60">
