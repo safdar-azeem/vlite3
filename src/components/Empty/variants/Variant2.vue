@@ -4,16 +4,13 @@ defineProps<{ title: string; description: string; icon: string }>()
 </script>
 
 <template>
-	<div class="flex flex-col md:flex-row items-center gap-6 md:gap-8 p-8 md:p-10 rounded-3xl border bg-background w-full shadow-xs">
-		<div class="w-16 h-16 shrink-0 rounded-2xl bg-foreground flex items-center justify-center shadow-sm">
-			<Icon :icon="icon" class="w-7 h-7 text-background" />
-		</div>
-		<div class="flex-1 text-center md:text-left">
-			<h3 class="text-xl font-bold text-foreground tracking-tight">{{ title }}</h3>
-			<p class="text-sm text-muted mt-1.5 font-medium max-w-lg" v-html="description"></p>
-		</div>
-		<div class="shrink-0 mt-4 md:mt-0">
-			<slot name="action" />
-		</div>
-	</div>
+  <div
+    class="flex w-full flex-col items-center justify-center p-10 min-h-[450px] text-center rounded-2xl border border-transparent bg-muted/20">
+    <Icon :icon="icon" class="mb-5 h-12 w-12 text-muted" stroke-width="1.2" />
+    <h3 class="text-lg font-medium text-foreground">{{ title }}</h3>
+    <p class="mt-2 text-sm text-muted max-w-md mx-auto" v-html="description"></p>
+    <div class="mt-8" v-if="$slots.action">
+      <slot name="action" />
+    </div>
+  </div>
 </template>
