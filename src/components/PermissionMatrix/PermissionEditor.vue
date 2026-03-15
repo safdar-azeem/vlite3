@@ -26,6 +26,7 @@ export interface PermissionEditorProps {
   defaultExpanded?: string[]
   layout?: PermissionEditorLayout
   matrixGroups?: PermissionMatrixGroup[]
+  stickyHeader?: boolean
 }
 
 const props = withDefaults(defineProps<PermissionEditorProps>(), {
@@ -39,6 +40,7 @@ const props = withDefaults(defineProps<PermissionEditorProps>(), {
   layout: 'list',
   groups: () => [],
   matrixGroups: () => [],
+  stickyHeader: true,
 })
 
 const emit = defineEmits<{
@@ -135,6 +137,7 @@ function handleToggleCollapse(groupKey: string) {
       :readonly="readonly"
       :size="size"
       :collapsible="collapsible"
+      :sticky-header="stickyHeader"
       @update:model-value="$emit('update:modelValue', $event)"
       @toggle-collapse="handleToggleCollapse" />
 
