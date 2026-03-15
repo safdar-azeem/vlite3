@@ -36,4 +36,3 @@ export interface AccordionProps {
   contentClass?: string
   itemClass?: string
 }
-
