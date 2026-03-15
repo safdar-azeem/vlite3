@@ -177,4 +177,3 @@ const displayDescription = computed(() => props.item.descriptionI18n ? $t(props.
     </AccordionContent>
   </div>
 </template>
-
