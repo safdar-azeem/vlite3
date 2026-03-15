@@ -81,11 +81,7 @@ const itemOrDescendantIsActive = (
     const itemPath = typeof item.to === 'string' ? item.to : (item.to as any).path
     if (itemPath) {
       if (currentPath === itemPath) return true
-      if (
-        itemPath !== '/' &&
-        itemPath.length > 1 &&
-        currentPath.startsWith(itemPath)
-      ) {
+      if (itemPath !== '/' && itemPath.length > 1 && currentPath.startsWith(itemPath)) {
         const next = currentPath[itemPath.length]
         if (!next || next === '/' || next === '?') return true
       }
@@ -94,9 +90,7 @@ const itemOrDescendantIsActive = (
 
   // Recurse into children
   if (item.children?.length) {
-    return item.children.some((child) =>
-      itemOrDescendantIsActive(child, activeId, currentPath)
-    )
+    return item.children.some((child) => itemOrDescendantIsActive(child, activeId, currentPath))
   }
 
   return false
@@ -326,7 +320,7 @@ const componentProps = computed(() => {
           <Icon
             v-if="item.icon"
             :icon="item.icon"
-            class="shrink-0 transition-colors opacity-80 group-hover:opacity-100" />
+            class="shrink-0 transition-colors opacity-90 group-hover:opacity-100" />
           {{ displayLabel }}
         </div>
       </template>
@@ -359,7 +353,7 @@ const componentProps = computed(() => {
                 <Icon
                   v-if="item.icon"
                   :icon="item.icon"
-                  class="shrink-0 transition-colors opacity-80 group-hover:opacity-100"
+                  class="shrink-0 transition-colors opacity-90 group-hover:opacity-100"
                   :class="[isActive || isOpen ? 'opacity-100' : '']"
                   :style="{
                     width:
@@ -406,7 +400,7 @@ const componentProps = computed(() => {
           <Icon
             v-if="option.icon"
             :icon="option.icon"
-            class="shrink-0 opacity-80"
+            class="shrink-0 opacity-90"
             :style="{ width: context.iconSize, height: context.iconSize }" />
           <span class="truncate flex-1 font-medium">{{ option.label }}</span>
           <span
@@ -446,7 +440,7 @@ const componentProps = computed(() => {
             <Icon
               v-if="item.icon"
               :icon="item.icon"
-              class="shrink-0 transition-colors opacity-80 group-hover:opacity-100"
+              class="shrink-0 transition-colors opacity-90 group-hover:opacity-100"
               :class="[isActive ? 'opacity-100' : '']"
               :style="{
                 width:
