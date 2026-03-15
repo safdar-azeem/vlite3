@@ -51,6 +51,7 @@ interface Props {
   pageTitleClass?: string
   pageHeaderClass?: string
   backButtonProps?: ButtonProps
+  backButtonPath?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -91,10 +92,6 @@ const modalContext = inject<{
   setSubmitting?: (val: boolean) => void
   registerFormFooter?: (active: boolean) => void
 } | null>('modal-context', null)
-
-const router = useRouter()
-const instance = getCurrentInstance()
-const hasOnBackEvent = computed(() => !!instance?.vnode.props?.onOnBack)
 
 const vliteConfig = useVLiteConfig()
 const globalFormConfig = computed(() => vliteConfig?.components?.form || {})
@@ -371,12 +368,6 @@ const handleCancel = () => {
     modalContext?.close?.()
   }
 }
-
-const handleBack = () => {
-  if (hasOnBackEvent.value) {
-    emit('onBack')
-  }
-}
 </script>
 
 <template>
@@ -389,19 +380,13 @@ const handleBack = () => {
     <div
       v-if="isPage"
       :class="[
-        'form-page-header sticky top-0 z-30 bg-background flex items-center justify-between border-b border-border pb-4 pt-4 -mt-4 mb-6',
+        'form-page-header sticky top-0 z-30 bg-background flex items-center justify-between  pb-2 pt-4 -mt-4 mb-6.5',
         pageHeaderClass,
       ]">
       <div class="flex items-center gap-3">
-        <Button
-          v-if="!hasOnBackEvent"
-          type="button"
-          v-bind="backButtonProps"
-          @click.prevent="handleBack"
-          class="max-sm:w-8 max-sm:h-8 max-sm:min-w-8 max-sm:min-h-8 max-sm:px-0 flex-shrink-0" />
         <BackButton
-          v-else
           v-bind="backButtonProps"
+          :fallback="backButtonPath"
           class="max-sm:w-8 max-sm:h-8 max-sm:min-w-8 max-sm:min-h-8 max-sm:px-0 flex-shrink-0" />
         <h1 :class="['text-foreground max-sm:text-lg text-fs-5 truncate', pageTitleClass]">
           {{ pageTitleI18n ? $t(pageTitleI18n) : pageTitle }}
