@@ -160,6 +160,7 @@ const {
   formValues,
   errors,
   isSubmitting,
+  fieldLoading,
   handleFieldChange,
   validateField,
   validateAll,
@@ -363,6 +364,7 @@ const handleCancel = () => {
           :schema="schema as IForm[]"
           :values="formValues"
           :errors="errors"
+          :fieldLoading="fieldLoading"
           :variant="resolvedVariant"
           :size="resolvedSize"
           :rounded="resolvedRounded"
@@ -399,6 +401,7 @@ const handleCancel = () => {
               :schema="groupSchema"
               :values="formValues"
               :errors="errors"
+              :fieldLoading="fieldLoading"
               :variant="resolvedVariant"
               :size="resolvedSize"
               :rounded="resolvedRounded"
@@ -428,6 +431,7 @@ const handleCancel = () => {
           :schema="currentStepSchema"
           :values="formValues"
           :errors="errors"
+          :fieldLoading="fieldLoading"
           :variant="resolvedVariant"
           :size="resolvedSize"
           :rounded="resolvedRounded"
