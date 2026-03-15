@@ -78,3 +78,4 @@ export { GoogleSignInPlugin }
 export * from './components/StatusChip'
 export * from './components/Price'
 export * from './components/Date'
+export * from './core/config.ts'
