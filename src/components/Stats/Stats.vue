@@ -39,7 +39,11 @@ const containerClass = computed(() => {
 })
 
 const getItemClass = (item: StatItemSchema, index: number) => {
-  const base = 'flex p-5 relative transition-all duration-200'
+  // inline-label-value: very compact single row — tighter padding
+  const base =
+    props.layout === 'inline-label-value'
+      ? 'flex px-3.5 py-3 relative transition-all duration-200'
+      : 'flex p-5 relative transition-all duration-200'
 
   const layoutClasses: Record<string, string> = {
     'icon-left': 'flex-row items-center gap-3 text-left',
@@ -53,6 +57,8 @@ const getItemClass = (item: StatItemSchema, index: number) => {
     'floating-icon': 'flex-col items-start gap-1 text-left',
     // split-bar: colored left border accent with stacked text
     'split-bar': 'flex-row items-center gap-3 text-left border-l-4',
+    // inline-label-value: icon + label left, value right — compact row
+    'inline-label-value': 'flex-row items-center gap-2.5 text-left',
   }
 
   const lClass = layoutClasses[props.layout] || layoutClasses['icon-left']
@@ -167,6 +173,28 @@ const getIconBoxClass = (item: StatItemSchema) => {
     }
     return `${base} ${map[c] || map.primary}`
   }
+}
+
+// Compact icon class used only by inline-label-value (no box, just colored icon)
+const getInlineIconClass = (item: StatItemSchema) => {
+  const c = item.color || 'primary'
+  const colorMap: Record<string, string> = {
+    primary: 'text-primary',
+    secondary: 'text-secondary-foreground',
+    success: 'text-success-dark',
+    warning: 'text-warning-dark',
+    danger: 'text-danger-dark',
+    info: 'text-info-dark',
+  }
+  return `shrink-0 ${colorMap[c] || 'text-primary'}`
+}
+
+const getInlineIconStyle = (item: StatItemSchema) => {
+  const c = item.color
+  if (c && !['primary', 'secondary', 'success', 'warning', 'danger', 'info'].includes(c)) {
+    return { color: c }
+  }
+  return {}
 }
 
 const getIconBoxStyle = (item: StatItemSchema) => {
@@ -303,6 +331,36 @@ const getIconBoxStyle = (item: StatItemSchema) => {
             </span>
           </div>
         </div>
+      </template>
+
+      <!-- ====== LAYOUT: inline-label-value (icon left, label next to it, value on far right) ====== -->
+      <template v-else-if="layout === 'inline-label-value'">
+        <!-- Bare colored icon — no box background to keep row compact -->
+        <Icon
+          v-if="item.icon"
+          :icon="item.icon"
+          :class="[getInlineIconClass(item), iconSize || 'w-4.5 h-4.5']"
+          :style="getInlineIconStyle(item)" />
+        <!-- Label -->
+        <span
+          :class="titleSize || '-text-fs-2 font-medium text-muted-foreground truncate'"
+          class="flex-1 min-w-0">
+          {{ item.titleI18n ? $t(item.titleI18n) : item.title }}
+        </span>
+        <!-- Value pushed to the right -->
+        <span :class="valueSize || 'text-sm font-semibold text-foreground tabular-nums shrink-0'">
+          {{ item.value }}
+        </span>
+        <!-- Optional compact trend badge -->
+        <span
+          v-if="item.trend"
+          class="shrink-0 flex items-center gap-0.5 text-xs font-medium"
+          :class="item.trend.isPositive ? 'text-success-dark' : 'text-danger-dark'">
+          <Icon
+            :icon="item.trend.isPositive ? 'lucide:trending-up' : 'lucide:trending-down'"
+            class="w-3 h-3" />
+          {{ item.trend.value }}
+        </span>
       </template>
 
       <!-- ====== LAYOUTS: icon-left / icon-top / icon-right (original) ====== -->
