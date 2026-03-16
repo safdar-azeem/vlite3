@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent } from 'vue'
+import { computed, defineAsyncComponent, markRaw } from 'vue'
 import { $t } from '@/utils/i18n'
 import { useVLiteConfig } from '@/core'
 import { EmptyVariant } from '.'
@@ -38,18 +38,18 @@ const displayDescription = computed(() => {
   return res !== 'vlite.empty.description' ? res : 'There is nothing to display here right now.'
 })
 
-const variantComponents: Record<EmptyVariant, any> = {
-  variant1: defineAsyncComponent(() => import('./variants/Variant1.vue')),
-  variant2: defineAsyncComponent(() => import('./variants/Variant2.vue')),
-  variant3: defineAsyncComponent(() => import('./variants/Variant3.vue')),
-  variant4: defineAsyncComponent(() => import('./variants/Variant4.vue')),
-  variant5: defineAsyncComponent(() => import('./variants/Variant5.vue')),
-  variant6: defineAsyncComponent(() => import('./variants/Variant6.vue')),
-  variant7: defineAsyncComponent(() => import('./variants/Variant7.vue')),
-  variant8: defineAsyncComponent(() => import('./variants/Variant8.vue')),
-  variant9: defineAsyncComponent(() => import('./variants/Variant9.vue')),
-  variant10: defineAsyncComponent(() => import('./variants/Variant10.vue')),
-  variant11: defineAsyncComponent(() => import('./variants/Variant11.vue')),
+const variantComponents: Record<string, any> = {
+  variant1: markRaw(defineAsyncComponent(() => import('./variants/Variant1.vue'))),
+  variant2: markRaw(defineAsyncComponent(() => import('./variants/Variant2.vue'))),
+  variant3: markRaw(defineAsyncComponent(() => import('./variants/Variant3.vue'))),
+  variant4: markRaw(defineAsyncComponent(() => import('./variants/Variant4.vue'))),
+  variant5: markRaw(defineAsyncComponent(() => import('./variants/Variant5.vue'))),
+  variant6: markRaw(defineAsyncComponent(() => import('./variants/Variant6.vue'))),
+  variant7: markRaw(defineAsyncComponent(() => import('./variants/Variant7.vue'))),
+  variant8: markRaw(defineAsyncComponent(() => import('./variants/Variant8.vue'))),
+  variant9: markRaw(defineAsyncComponent(() => import('./variants/Variant9.vue'))),
+  variant10: markRaw(defineAsyncComponent(() => import('./variants/Variant10.vue'))),
+  variant11: markRaw(defineAsyncComponent(() => import('./variants/Variant11.vue'))),
 }
 
 const SelectedVariant = computed(
@@ -58,16 +58,15 @@ const SelectedVariant = computed(
 </script>
 
 <template>
-  <div class="flex items-center justify-center min-h-[400px] w-full py-16 px-6">
+  <div class="flex items-center justify-center min-h-[300px] w-full py-8">
     <component
       :is="SelectedVariant"
       :title="displayTitle"
       :description="displayDescription"
       :icon="icon">
-      <template v-if="$slots.action" #action>
-        <slot name="action" />
+      <template v-for="(_, name) in $slots" #[name]="slotData">
+        <slot :name="name" v-bind="slotData || {}" />
       </template>
-      <slot />
     </component>
   </div>
 </template>
