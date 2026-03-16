@@ -7,6 +7,7 @@ export type StatsLayout =
   | 'centered-value-title'
   | 'floating-icon'
   | 'split-bar'
+  | 'inline-label-value'
 
 export type IconBoxShape = 'rounded' | 'full-rounded' | 'none'
 export type IconBoxStyle = 'filled' | 'transparent'
