@@ -60,10 +60,12 @@ let blinkTimeout: ReturnType<typeof setTimeout> | null = null
 // sits flush against the bottom of the modal with no gap.
 const hasFormWithFooter = ref(false)
 
-const dropdownContext = inject('dropdown-context', null) as {
+const dropdownContext = inject<{
   close: () => void
   onChildToggle?: (isOpen: boolean) => void
-} | null
+  registerChildId?: (id: string) => void
+  unregisterChildId?: (id: string) => void
+} | null>('dropdown-context', null)
 
 // markRaw prevents Vue from wrapping the component definition in a deep
 // reactive proxy, which would otherwise cause re-evaluation on every form
@@ -203,11 +205,6 @@ const displayDescription = computed(() =>
           </div>
         </div>
 
-        <!--
-          When a child Form with a sticky footer is detected (`hasFormWithFooter`),
-          bottom padding is removed (`pb-0`) so the Form's own footer sits flush
-          at the bottom of the modal with no gap — no per-usage manual override needed.
-        -->
         <div
           class="flex-1 overflow-y-auto px-4 pt-4 min-h-0"
           :class="[hasFormWithFooter ? 'pb-0' : 'pb-3.5', bodyClass]">
@@ -234,29 +231,15 @@ const displayDescription = computed(() =>
 </template>
 
 <style scoped>
-/*
-  The overlay background uses a plain semi-transparent color instead of
-  backdrop-filter: blur(). backdrop-blur forces a full GPU composite pass
-  on every frame — including hover and focus transitions — causing visible
-  frame drops when any interactive element inside the modal is touched.
-
-  The v-modal-backdrop class opts back in only when the backdrop prop is
-  true, keeping a subtle dark scrim without the compositing overhead.
-*/
 .v-modal-overlay {
   background-color: rgba(0, 0, 0, 0.32);
 }
 
 .v-modal-backdrop {
-  /* Promote the overlay to its own compositor layer so the browser can
-     rasterize it once and reuse the texture. The `transform: translateZ(0)`
-     trick creates a stacking context without triggering blur repaint. */
   transform: translateZ(0);
   will-change: opacity;
 }
 
-/* modal-body is promoted separately so hover/focus transitions on its
-   children paint on the GPU without touching the overlay layer. */
 .modal-body {
   will-change: transform;
   contain: layout style;
@@ -270,19 +253,15 @@ const displayDescription = computed(() =>
   0% {
     background-color: inherit;
   }
-
   15% {
     background-color: var(--color-gray-250);
   }
-
   35% {
     background-color: inherit;
   }
-
   75% {
     background-color: var(--color-gray-250);
   }
-
   100% {
     background-color: inherit;
   }
