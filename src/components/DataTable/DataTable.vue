@@ -49,7 +49,7 @@ const props = withDefaults(defineProps<DataTableProps>(), {
   rows: () => [],
   selectedRows: () => [],
   search: '',
-  showSearch: true,
+  showSearch: false,
   headers: () => [],
   keyField: 'auto',
   loading: false,
@@ -122,9 +122,24 @@ watch(internalSearch, () => {
   }, 300)
 })
 
-watch(() => props.pageInfo?.itemsPerPage, (v) => { if (v !== undefined) internalItemsPerPage.value = v })
-watch(() => props.paginationProps?.itemsPerPage, (v) => { if (v !== undefined) internalItemsPerPage.value = v })
-watch(() => props.pageInfo?.currentPage, (v) => { if (v) currentPage.value = v })
+watch(
+  () => props.pageInfo?.itemsPerPage,
+  (v) => {
+    if (v !== undefined) internalItemsPerPage.value = v
+  }
+)
+watch(
+  () => props.paginationProps?.itemsPerPage,
+  (v) => {
+    if (v !== undefined) internalItemsPerPage.value = v
+  }
+)
+watch(
+  () => props.pageInfo?.currentPage,
+  (v) => {
+    if (v) currentPage.value = v
+  }
+)
 
 // ── selection ─────────────────────────────────────────────────────────────────
 
@@ -144,9 +159,10 @@ watch(
   { immediate: true, deep: true }
 )
 
-const isAllSelected = computed(() =>
-  props.rows.length > 0 &&
-  props.rows.every((row) => selectedIds.value.has(getRowId(row, effectiveKeyField.value)))
+const isAllSelected = computed(
+  () =>
+    props.rows.length > 0 &&
+    props.rows.every((row) => selectedIds.value.has(getRowId(row, effectiveKeyField.value)))
 )
 
 const isIndeterminate = computed(() => selectedIds.value.size > 0 && !isAllSelected.value)
@@ -155,7 +171,9 @@ const selectedRowsComputed = computed(() => {
   const allAvailable = [...(props.selectedRows || []), ...props.rows]
   const map = new Map()
   allAvailable.forEach((r) => map.set(getRowId(r, effectiveKeyField.value), r))
-  return Array.from(selectedIds.value).map((id) => map.get(id)).filter(Boolean)
+  return Array.from(selectedIds.value)
+    .map((id) => map.get(id))
+    .filter(Boolean)
 })
 
 const toggleSelectAll = (checked: boolean) => {
@@ -183,14 +201,24 @@ const emitSelection = () => {
 
   props.rows.forEach((row) => {
     const id = getRowId(row, effectiveKeyField.value)
-    if (selectedIds.value.has(id)) { newSelected.push(row); seen.add(id) }
+    if (selectedIds.value.has(id)) {
+      newSelected.push(row)
+      seen.add(id)
+    }
   })
   ;(props.selectedRows || []).forEach((row) => {
     const id = getRowId(row, effectiveKeyField.value)
-    if (!seen.has(id) && selectedIds.value.has(id)) { newSelected.push(row); seen.add(id) }
+    if (!seen.has(id) && selectedIds.value.has(id)) {
+      newSelected.push(row)
+      seen.add(id)
+    }
   })
 
-  emit('select', { selected: newSelected, all: isAllSelected.value, indeterminate: isIndeterminate.value })
+  emit('select', {
+    selected: newSelected,
+    all: isAllSelected.value,
+    indeterminate: isIndeterminate.value,
+  })
   emit('update:selectedRows', newSelected)
 }
 
@@ -202,8 +230,10 @@ const handleSort = (field: string) => {
 
   if (sortConfig.value.field === key) {
     if (sortConfig.value.order === 'asc') sortConfig.value.order = 'desc'
-    else if (sortConfig.value.order === 'desc') { sortConfig.value.order = ''; sortConfig.value.field = '' }
-    else sortConfig.value.order = 'asc'
+    else if (sortConfig.value.order === 'desc') {
+      sortConfig.value.order = ''
+      sortConfig.value.field = ''
+    } else sortConfig.value.order = 'asc'
   } else {
     sortConfig.value.field = key
     sortConfig.value.order = 'asc'
@@ -278,15 +308,21 @@ const getColumnWidth = (header: any) => header.width || 'auto'
 
 // ── i18n ──────────────────────────────────────────────────────────────────────
 
-const txtEmptyTitle = computed(() => props.emptyTitleI18n ? $t(props.emptyTitleI18n) : props.emptyTitle)
-const txtEmptyDesc = computed(() => props.emptyDescriptionI18n ? $t(props.emptyDescriptionI18n) : props.emptyDescription)
+const txtEmptyTitle = computed(() =>
+  props.emptyTitleI18n ? $t(props.emptyTitleI18n) : props.emptyTitle
+)
+const txtEmptyDesc = computed(() =>
+  props.emptyDescriptionI18n ? $t(props.emptyDescriptionI18n) : props.emptyDescription
+)
 const txtDeleteConfirmTitle = computed(() => {
   const r = $t('vlite.dataTable.confirmDeleteTitle')
   return r !== 'vlite.dataTable.confirmDeleteTitle' ? r : 'Confirm Deletion'
 })
 const txtDeleteConfirmDesc = computed(() => {
   const r = $t('vlite.dataTable.confirmDeleteDesc')
-  return r !== 'vlite.dataTable.confirmDeleteDesc' ? r : 'Are you sure you want to delete the selected items?'
+  return r !== 'vlite.dataTable.confirmDeleteDesc'
+    ? r
+    : 'Are you sure you want to delete the selected items?'
 })
 const txtDeleteBtn = computed(() => {
   const r = $t('vlite.dataTable.deleteBtn')
@@ -330,7 +366,9 @@ const txtCancelBtn = computed(() => {
           <thead
             :class="[
               '[&_tr]:border-b [&_tr]:border-border bg-muted',
-              variant === 'raised' ? '[&_th:first-child]:rounded-tl-lg [&_th:last-child]:rounded-tr-lg' : '',
+              variant === 'raised'
+                ? '[&_th:first-child]:rounded-tl-lg [&_th:last-child]:rounded-tr-lg'
+                : '',
             ]">
             <tr class="hover:bg-transparent">
               <th
@@ -390,7 +428,13 @@ const txtCancelBtn = computed(() => {
               <DataTableRow
                 v-for="(row, index) in rows"
                 :key="getRowId(row, effectiveKeyField)"
-                v-memo="[row, selectedIds.has(getRowId(row, effectiveKeyField)), compact, striped, hoverable]"
+                v-memo="[
+                  row,
+                  selectedIds.has(getRowId(row, effectiveKeyField)),
+                  compact,
+                  striped,
+                  hoverable,
+                ]"
                 :row="row"
                 :headers="headers"
                 :index="index"
