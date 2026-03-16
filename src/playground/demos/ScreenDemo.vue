@@ -102,14 +102,7 @@ const handleDelete = (items: any[]) => {
           export-mode="backend"
           export-type="user"
           import-type="user"
-          @delete="handleDelete"
-          :add-btn="{
-            modal: AddUser,
-            label: 'Add User',
-            modalProps: {
-              title: 'Add User',
-            },
-          }" />
+          @delete="handleDelete" />
       </div>
     </DemoSection>
   </div>
