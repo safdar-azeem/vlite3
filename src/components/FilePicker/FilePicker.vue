@@ -441,7 +441,7 @@ const inputBaseClass = computed(() => {
           <div
             v-for="(file, index) in displayFiles"
             :key="index"
-            class="relative flex items-center p-3 border border-border rounded-lg bg-body shadow-sm transition-colors group"
+            class="relative flex items-center p-3 border border-border rounded-lg bg-body transition-colors group"
             :class="[!multiSelect && !disabled ? 'cursor-pointer hover:border-primary/50' : '']"
             @click="!multiSelect && !disabled ? triggerInput() : null">
             <div class="shrink-0 mr-3">
@@ -487,7 +487,7 @@ const inputBaseClass = computed(() => {
         <div
           v-if="loading || isProcessing"
           class="absolute inset-0 bg-white/80 flex items-center justify-center rounded-lg z-10">
-          <div class="bg-white p-2 rounded-full shadow-lg">
+          <div class="bg-white p-2 rounded-full">
             <Icon icon="lucide:loader-2" class="w-6 h-6 animate-spin text-primary" />
           </div>
         </div>
