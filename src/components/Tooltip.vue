@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import '@/lib/v-tooltip-lite/css/style.css'
-import ToolTipLite from '@/lib/v-tooltip-lite'
-import type { TooltTipProps } from '@/lib/v-tooltip-lite/types'
+import 'v-tooltip-lite/style.css'
+import ToolTipLite from 'v-tooltip-lite'
+import type { TooltTipProps } from 'v-tooltip-lite/types'
 import { computed } from 'vue'
 import { $t } from '@/utils/i18n'
 
