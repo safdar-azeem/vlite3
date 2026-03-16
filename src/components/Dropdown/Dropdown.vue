@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import ToolTip from 'v-tooltip-lite'
-import 'v-tooltip-lite/style.css'
+import ToolTip from '@/lib/v-tooltip-lite/index.ts'
+import '@/lib/v-tooltip-lite/css/style.css'
 import { computed, ref, watch, reactive, toRefs, provide } from 'vue'
 import type { IDropdownOptions, IDropdownOption, ButtonProps } from '@/types'
-import type { TooltTipPlacement } from 'v-tooltip-lite/types'
+import type { TooltTipPlacement } from '@/lib/v-tooltip-lite/types'
 import DropdownMenu from './DropdownMenu.vue'
 import DropdownTrigger from './DropdownTrigger.vue'
 import ConfirmationModal from '@/components/ConfirmationModal.vue'
@@ -406,4 +406,3 @@ const cancelSelection = () => {
       @cancel="cancelSelection" />
   </div>
 </template>
-
