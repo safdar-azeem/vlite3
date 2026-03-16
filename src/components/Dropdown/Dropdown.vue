@@ -1,9 +1,19 @@
 <script setup lang="ts">
-import ToolTip from '@/lib/v-tooltip-lite/index.ts'
-import '@/lib/v-tooltip-lite/css/style.css'
-import { computed, ref, watch, reactive, toRefs, provide, inject, onMounted, onUnmounted } from 'vue'
+import ToolTip from 'v-tooltip-lite'
+import 'v-tooltip-lite/style.css'
+import {
+  computed,
+  ref,
+  watch,
+  reactive,
+  toRefs,
+  provide,
+  inject,
+  onMounted,
+  onUnmounted,
+} from 'vue'
 import type { IDropdownOptions, IDropdownOption, ButtonProps } from '@/types'
-import type { TooltTipPlacement } from '@/lib/v-tooltip-lite/types'
+import type { TooltTipPlacement } from 'v-tooltip-lite/types'
 import DropdownMenu from './DropdownMenu.vue'
 import DropdownTrigger from './DropdownTrigger.vue'
 import ConfirmationModal from '@/components/ConfirmationModal.vue'
@@ -132,7 +142,7 @@ const registerChildId = (id: string) => {
 }
 
 const unregisterChildId = (id: string) => {
-  childDropdownIds.value = childDropdownIds.value.filter(i => i !== id)
+  childDropdownIds.value = childDropdownIds.value.filter((i) => i !== id)
   parentContext?.unregisterChildId?.(id)
 }
 
@@ -187,7 +197,7 @@ provide('dropdown-context', {
     parentContext?.onChildToggle?.(childIsOpen)
   },
   registerChildId,
-  unregisterChildId
+  unregisterChildId,
 })
 
 const normalizedPropsOptions = computed<IDropdownOption[]>(() => {
