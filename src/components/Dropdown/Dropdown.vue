@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ToolTip from '@/lib/v-tooltip-lite/index.ts'
 import '@/lib/v-tooltip-lite/css/style.css'
-import { computed, ref, watch, reactive, toRefs, provide } from 'vue'
+import { computed, ref, watch, reactive, toRefs, provide, inject, onMounted, onUnmounted } from 'vue'
 import type { IDropdownOptions, IDropdownOption, ButtonProps } from '@/types'
 import type { TooltTipPlacement } from '@/lib/v-tooltip-lite/types'
 import DropdownMenu from './DropdownMenu.vue'
@@ -112,6 +112,42 @@ const finalNestedPosition = computed(() => {
 const internalIsOpen = ref(props.isOpen || false)
 const activeChildrenCount = ref(0)
 
+// Unique context IDs for hierarchical propagation of click-outside exclusions
+const instanceId = `dropdown-${Math.random().toString(36).substring(2, 9)}`
+const uniqueMenuId = computed(() => props.menuId || instanceId)
+const childDropdownIds = ref<string[]>([])
+
+const parentContext = inject<{
+  close: () => void
+  onChildToggle?: (isOpen: boolean) => void
+  registerChildId?: (id: string) => void
+  unregisterChildId?: (id: string) => void
+} | null>('dropdown-context', null)
+
+const registerChildId = (id: string) => {
+  if (!childDropdownIds.value.includes(id)) {
+    childDropdownIds.value.push(id)
+  }
+  parentContext?.registerChildId?.(id)
+}
+
+const unregisterChildId = (id: string) => {
+  childDropdownIds.value = childDropdownIds.value.filter(i => i !== id)
+  parentContext?.unregisterChildId?.(id)
+}
+
+onMounted(() => {
+  if (parentContext?.registerChildId) {
+    parentContext.registerChildId(`#${uniqueMenuId.value}`)
+  }
+})
+
+onUnmounted(() => {
+  if (parentContext?.unregisterChildId) {
+    parentContext.unregisterChildId(`#${uniqueMenuId.value}`)
+  }
+})
+
 watch(
   () => props.isOpen,
   (val) => {
@@ -126,6 +162,8 @@ const handleVisibilityChange = (val: boolean) => {
   emit('update:isOpen', val)
   if (val) emit('onOpen')
   else emit('onClose')
+
+  parentContext?.onChildToggle?.(val)
 }
 
 const handleClose = () => {
@@ -140,10 +178,16 @@ const handleChildToggle = (childIsOpen: boolean) => {
   }
 }
 
-// Provide a context for child components (like Modal/SidePanel) to safely communicate state
+// Provide a context for child components (like nested Dropdowns/Modals)
+// Ensures active layer stacking behaves and click-outside knows what to ignore
 provide('dropdown-context', {
   close: handleClose,
-  onChildToggle: handleChildToggle,
+  onChildToggle: (childIsOpen: boolean) => {
+    handleChildToggle(childIsOpen)
+    parentContext?.onChildToggle?.(childIsOpen)
+  },
+  registerChildId,
+  unregisterChildId
 })
 
 const normalizedPropsOptions = computed<IDropdownOption[]>(() => {
@@ -157,9 +201,7 @@ const normalizedPropsOptions = computed<IDropdownOption[]>(() => {
 })
 
 const internalOptions = ref<IDropdownOptions>([])
-// Track whether the initial options batch has been received
 const initialOptionsLoaded = ref(false)
-// Track whether the 1-second settle delay has passed after initial load
 const hydrationReady = ref(false)
 
 watch(
@@ -186,19 +228,15 @@ watch(
     } else {
       internalOptions.value = newVal
     }
-    // Mark initial load done on the first non-empty options batch
     if (!initialOptionsLoaded.value && newVal.length > 0) {
       initialOptionsLoaded.value = true
-      // Wait 10ms after options arrive before allowing hydration,
-      // so transient loading states fully settle first
       setTimeout(() => {
         hydrationReady.value = true
-        // Re-run hydration now that we are ready
         hydrateSelected(currentValue.value)
       }, 10)
     }
   },
-  { immediate: true } // Performance fix: Removed deep: true to prevent heavy recursion mapping
+  { immediate: true }
 )
 
 const combinedOptions = computed(() => {
@@ -233,10 +271,9 @@ const { currentValue, selectedLabel, selectOption } = useDropdownSelection(
 const finalIgnoreClickOutside = computed(() => {
   const propsList = props.ignoreClickOutside || []
   const recursiveIds = getAllRecursiveIds(combinedOptions.value)
-  return [...new Set([...propsList, ...recursiveIds, '.tooltip-container'])]
+  return [...new Set([...propsList, ...recursiveIds, ...childDropdownIds.value])]
 })
 
-// Watch for modelValue changes and hydrate only after ready
 watch(
   () => currentValue.value,
   (newVal) => {
@@ -327,7 +364,7 @@ const cancelSelection = () => {
       :placement="finalPosition"
       :isOpen="internalIsOpen"
       :keepAlive="activeChildrenCount > 0"
-      :menuId="menuId"
+      :menuId="uniqueMenuId"
       :ignoreClickOutside="finalIgnoreClickOutside"
       class="w-full"
       :className="'dropdown ' + (className || '')"
