@@ -516,18 +516,7 @@ const handleBackendExport = async (format: string) => {
                         {{ getAddBtnLabel }}
                       </Button>
                     </a>
-                    <Button
-                      v-else
-                      :icon="addBtn.icon || 'lucide:plus'"
-                      variant="secondary"
-                      v-bind="addBtn.buttonProps"
-                      @click="addBtn.onClick ? addBtn.onClick() : $emit('add')">
-                      {{ getAddBtnLabel }}
-                    </Button>
                   </template>
-                  <Button v-else icon="lucide:plus" variant="secondary" @click="$emit('add')">{{
-                    getAddBtnLabel
-                  }}</Button>
                 </template>
               </template>
             </template>
