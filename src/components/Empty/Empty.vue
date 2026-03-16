@@ -58,7 +58,7 @@ const SelectedVariant = computed(
 </script>
 
 <template>
-  <div class="flex items-center justify-center min-h-[300px] w-full py-8">
+  <div class="flex items-center justify-center min-h-[300px] w-full py-2">
     <component
       :is="SelectedVariant"
       :title="displayTitle"
