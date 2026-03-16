@@ -522,7 +522,7 @@ const handleCancel = () => {
       v-if="footer"
       ref="footerRef"
       :class="[
-        'form-footer items-center gap-3 z-20',
+        'form-footer items-center gap-3 z-20 rounded-b!',
         isPage ? 'flex sm:hidden' : 'flex',
         footerClass,
         isMultiStepMode ? 'justify-between' : 'justify-end',
@@ -536,7 +536,7 @@ const handleCancel = () => {
         // Show a subtle top shadow while content is scrolling beneath the sticky footer
         isFooterSticky && isFooterStuck ? '' : '',
         // Inside modal: extend footer flush to modal edge padding
-        isInsideModal ? '-mx-4 px-4 pb-3!' : '',
+        isInsideModal ? '-mx-4 px-4 pb-3! mt-4.5!' : '',
         // Non-sticky inside modal keeps the original border styling
         !isFooterSticky && isInsideModal ? 'border-t border-border/75 mt-5' : '',
         !isFooterSticky && !isInsideModal ? 'mt-6' : '',
