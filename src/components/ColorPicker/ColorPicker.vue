@@ -5,7 +5,7 @@ import ColorIro from './ColorIro.vue'
 import Button from '@/components/Button.vue'
 import Input from '@/components/Input.vue'
 import { useEyeDropper } from '@vueuse/core'
-import type { TooltTipPlacement } from 'v-tooltip-lite/types'
+import type { TooltTipPlacement } from '@/lib/v-tooltip-lite/types'
 import type { ButtonProps } from '@/types'
 
 interface Props {
