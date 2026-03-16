@@ -1,8 +1,20 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent, markRaw } from 'vue'
+import { computed, markRaw } from 'vue'
 import { $t } from '@/utils/i18n'
 import { useVLiteConfig } from '@/core'
 import { EmptyVariant } from '.'
+
+import Variant1 from './variants/Variant1.vue'
+import Variant2 from './variants/Variant2.vue'
+import Variant3 from './variants/Variant3.vue'
+import Variant4 from './variants/Variant4.vue'
+import Variant5 from './variants/Variant5.vue'
+import Variant6 from './variants/Variant6.vue'
+import Variant7 from './variants/Variant7.vue'
+import Variant8 from './variants/Variant8.vue'
+import Variant9 from './variants/Variant9.vue'
+import Variant10 from './variants/Variant10.vue'
+import Variant11 from './variants/Variant11.vue'
 
 interface Props {
   title?: string
@@ -39,17 +51,17 @@ const displayDescription = computed(() => {
 })
 
 const variantComponents: Record<string, any> = {
-  variant1: markRaw(defineAsyncComponent(() => import('./variants/Variant1.vue'))),
-  variant2: markRaw(defineAsyncComponent(() => import('./variants/Variant2.vue'))),
-  variant3: markRaw(defineAsyncComponent(() => import('./variants/Variant3.vue'))),
-  variant4: markRaw(defineAsyncComponent(() => import('./variants/Variant4.vue'))),
-  variant5: markRaw(defineAsyncComponent(() => import('./variants/Variant5.vue'))),
-  variant6: markRaw(defineAsyncComponent(() => import('./variants/Variant6.vue'))),
-  variant7: markRaw(defineAsyncComponent(() => import('./variants/Variant7.vue'))),
-  variant8: markRaw(defineAsyncComponent(() => import('./variants/Variant8.vue'))),
-  variant9: markRaw(defineAsyncComponent(() => import('./variants/Variant9.vue'))),
-  variant10: markRaw(defineAsyncComponent(() => import('./variants/Variant10.vue'))),
-  variant11: markRaw(defineAsyncComponent(() => import('./variants/Variant11.vue'))),
+  variant1: markRaw(Variant1),
+  variant2: markRaw(Variant2),
+  variant3: markRaw(Variant3),
+  variant4: markRaw(Variant4),
+  variant5: markRaw(Variant5),
+  variant6: markRaw(Variant6),
+  variant7: markRaw(Variant7),
+  variant8: markRaw(Variant8),
+  variant9: markRaw(Variant9),
+  variant10: markRaw(Variant10),
+  variant11: markRaw(Variant11),
 }
 
 const SelectedVariant = computed(
