@@ -197,7 +197,7 @@ const getSafeLabel = (field: IForm) => {
           rounded,
           isUpdate,
           showRequiredAsterisk,
-          fieldLoading[field.name]
+          fieldLoading[field.name],
         ]"
         :class="['max-md:col-span-full! form-field-item', getItemClass(field)]">
         <Label
@@ -290,7 +290,7 @@ const getSafeLabel = (field: IForm) => {
           <span v-if="field.required" class="text-destructive ml-0.5">*</span>
         </Label>
 
-        <p v-if="getFieldError(field)" class="mt-1 text-sm text-destructive">
+        <p v-if="getFieldError(field)" class="mt-1 -text-fs-2.5 text-destructive">
           {{ getFieldError(field) }}
         </p>
       </div>
