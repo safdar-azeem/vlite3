@@ -5,7 +5,7 @@ import Button from '@/components/Button.vue'
 import IconPicker from 'iconify-icon-picker'
 import 'iconify-icon-picker/style.css'
 import type { ButtonProps } from '@/types'
-import type { TooltTipPlacement } from 'v-tooltip-lite/types'
+import type { TooltTipPlacement } from '@/lib/v-tooltip-lite/types'
 import { $t } from '@/utils/i18n'
 
 interface Props {
