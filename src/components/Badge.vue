@@ -25,7 +25,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   variant: 'default',
-  size: 'md',
+  size: 'sm',
   rounded: 'full',
   class: '',
 })
@@ -35,22 +35,24 @@ const classes = computed(() => {
     xs: 'px-1.5 h-5 text-[10.5px] leading-none',
     sm: 'px-2 h-6 text-xs font-medium',
     md: 'px-2.5 h-7 text-xs font-semibold',
-    lg: 'px-3 h-8 text-sm font-semibold'
+    lg: 'px-3 h-8 text-sm font-semibold',
   }
   const roundedClass = props.rounded === 'none' ? 'rounded-none' : `rounded-${props.rounded}`
-  const baseClasses =
-    `inline-flex items-center ${roundedClass} border ${sizeClasses[props.size] || sizeClasses.md} focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2`
+  const baseClasses = `inline-flex items-center ${roundedClass} border ${sizeClasses[props.size] || sizeClasses.md} focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2`
 
   const variants: Record<string, string> = {
     default: 'border-transparent bg-primary text-primary-foreground hover:bg-primary/80',
     outline: 'text-foreground border-border',
 
     /* Base Semantics */
-    secondary: 'border-secondary-subtle-border bg-secondary-subtle text-secondary-subtle-fg hover:opacity-80',
+    secondary:
+      'border-secondary-subtle-border bg-secondary-subtle text-secondary-subtle-fg hover:opacity-80',
     danger: 'border-danger-subtle-border bg-danger-subtle text-danger-subtle-fg hover:opacity-80',
-    warning: 'border-warning-subtle-border bg-warning-subtle text-warning-subtle-fg hover:opacity-80',
+    warning:
+      'border-warning-subtle-border bg-warning-subtle text-warning-subtle-fg hover:opacity-80',
     info: 'border-info-subtle-border bg-info-subtle text-info-subtle-fg hover:opacity-80',
-    success: 'border-success-subtle-border bg-success-subtle text-success-subtle-fg hover:opacity-80',
+    success:
+      'border-success-subtle-border bg-success-subtle text-success-subtle-fg hover:opacity-80',
 
     /* Extended Semantics */
     purple: 'border-purple-subtle-border bg-purple-subtle text-purple-subtle-fg hover:opacity-80',
