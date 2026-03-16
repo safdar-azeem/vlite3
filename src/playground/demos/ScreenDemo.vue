@@ -56,7 +56,7 @@ const handleDelete = (items: any[]) => {
           title="Users Directory"
           info="This screen allows you to manage system users. You can switch between list and table views."
           description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-          :data="result?.users || []"
+          :data="[]"
           :loading="loading"
           :page-info="result?.pageInfo"
           :refetch="fetchData"
