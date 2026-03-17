@@ -41,6 +41,8 @@ export * from './directives/vScrollReveal'
 export * from './components/AvatarUploader'
 export * from './composables/useNotifications'
 export * from './components/Timeline'
+export * from './components/FilePreview'
+export * from './components/AttachmentsList'
 
 export { default as Icon } from './components/Icon.vue'
 export { default as Logo } from './components/Logo.vue'
