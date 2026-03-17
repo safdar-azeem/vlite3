@@ -248,3 +248,8 @@ html {
     scrollbar-gutter: stable;
   }
 }
+
+.date-picker-day.today:not(.selected) {
+  background-color: var(--color-gray-200) !important;
+  color: var(--color-gray-900) !important;
+}
