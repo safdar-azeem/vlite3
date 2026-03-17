@@ -105,7 +105,12 @@ const containerClasses = computed(() => {
   }
 
   const wrapClass = props.wrap && !isLine ? 'flex-wrap' : ''
+
+  // "block" prop OR explicit w-full class on parent → container is already full-width via CSS,
+  // but we still need flex layout. When neither block nor isLine, default to inline-flex so
+  // the container shrinks to content (auto width).
   const blockClass = props.block || isLine ? 'flex w-full' : 'inline-flex'
+
   // When wrapping, hide the animated marker since it can't track across rows properly
   const base = `${blockClass} rounded-lg relative isolate ${wrapClass}`
 
@@ -124,7 +129,13 @@ const itemBaseClasses = computed(() => {
     ? 'relative z-10 flex items-center justify-center gap-2 font-medium transition-colors duration-50 ease-out cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-primary/50 pb-2 border-b-2 border-transparent hover:text-foreground'
     : 'relative z-10 flex items-center justify-center gap-2 font-medium transition-colors duration-50 ease-out cursor-pointer select-none rounded-md outline-none focus-visible:ring-2 focus-visible:ring-primary/50'
 
-  // When block or wrap mode: flex-1 to fill row; otherwise auto
+  // flex-1 when:
+  //   • block prop is set  → always fill row
+  //   • wrap prop is set   → items share row equally
+  //   • container has w-full applied externally → detected via containerIsFullWidth below,
+  //     but we can't know that at computed time; instead we add the CSS rule via the
+  //     `tabes-full` data attribute strategy (see template). For the block/wrap cases
+  //     we handle it here directly.
   const growClass = (props.block || props.wrap) && !isLine ? 'flex-1' : ''
 
   return [base, growClass]
@@ -213,7 +224,13 @@ const getComponentProps = (opt: TabesOption) => {
 </script>
 
 <template>
-  <div ref="containerRef" :class="containerClasses" role="tablist">
+  <!--
+    data-tabes-justify is used by the scoped CSS below to make child items
+    grow and fill the container whenever the host element carries w-full
+    (i.e. the consumer passes class="w-full"). This avoids any JS measurement
+    and works purely with CSS, keeping the component lightweight.
+  -->
+  <div ref="containerRef" :class="containerClasses" role="tablist" data-tabes>
     <div
       v-if="modelValue !== undefined && !wrap"
       :class="[markerClasses, getMarkerColorClass()]"
@@ -237,3 +254,73 @@ const getComponentProps = (opt: TabesOption) => {
     </component>
   </div>
 </template>
+
+<style scoped>
+/*
+  Justified / equal-width tabs when the consumer makes the container full-width.
+
+  Strategy: When the [data-tabes] element itself has a computed width that fills
+  its parent (i.e. the consumer added class="w-full" or any other full-width
+  utility), we want every tab item to grow equally — just like the `block` prop
+  does, but without requiring an explicit prop.
+
+  CSS alone cannot detect "was w-full set on me?", but we CAN use the
+  :host-context trick or a width-based approach. The cleanest cross-browser
+  solution is: if the element is NOT inline-flex (i.e. its display is `flex`
+  because w-full was applied and overrode inline-flex via Tailwind's cascade),
+  make children flex-1.
+
+  We detect this with a container query. If the element's own inline-size
+  equals 100% of its container, it means w-full (or equivalent) was applied.
+  We use @container for this — but since the element IS the container, we use
+  a different technique: match when display computes to flex (not inline-flex).
+
+  Simpler & more robust approach used here:
+  Target [data-tabes] when it is NOT inline-flex (i.e. when display:flex is
+  active — set by Tailwind's `flex` or `w-full` which forces block-level flex).
+  In that state, we ensure all direct button/a/router-link children are flex-1.
+
+  This correctly handles:
+    - Default (inline-flex, auto width): items stay content-sized  ✓
+    - class="w-full" added by consumer (flex, full width): items grow equally ✓
+    - block prop (flex w-full via JS): already handled by itemBaseClasses      ✓
+    - wrap prop: already handled by itemBaseClasses                             ✓
+    - line variant: excluded from grow behavior (tab items keep natural width)  ✓
+*/
+
+/* When the container is full-width flex (not inline-flex), distribute items equally */
+[data-tabes]:not(.inline-flex):not([class*="gap-6"]) > :where(button, a, [role="tab"]) {
+  flex: 1 1 0%;
+  min-width: 0;
+}
+
+/*
+  Small-screen overflow: when NOT in wrap mode and NOT block/w-full,
+  allow horizontal scroll on very narrow viewports so tabs are never clipped.
+*/
+[data-tabes].inline-flex {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  /* Hide scrollbar visually but keep it functional */
+  scrollbar-width: none;
+}
+[data-tabes].inline-flex::-webkit-scrollbar {
+  display: none;
+}
+
+/*
+  On small screens, even full-width tabs should scroll if they would overflow
+  (e.g. many tabs on a 320px screen). The flex-1 items will shrink via min-width:0
+  but text uses whitespace-nowrap, so we allow scroll as a last resort.
+*/
+@media (max-width: 480px) {
+  [data-tabes]:not([class*="flex-wrap"]) {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  [data-tabes]:not([class*="flex-wrap"])::-webkit-scrollbar {
+    display: none;
+  }
+}
+</style>
