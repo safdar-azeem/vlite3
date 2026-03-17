@@ -255,15 +255,24 @@ export function useForm(options: UseFormOptions): UseFormReturn {
    * Handle field value change with updateValues cascade
    */
   const handleFieldChange = (name: string, value: any, data?: any): void => {
+    // Find the field in schema FIRST
+    const field = flatSchema.value.find((f) => f.name === name)
+
+    // Strict Server-Side-Like State Security Check:
+    // Reject updates if field evaluates to disabled or readonly in the schema.
+    // This strictly prevents users from overriding field values by removing HTML 
+    // attributes like `disabled` or `pointer-events: none` via DevTools.
+    if (field && (isFieldDisabled(field) || isFieldReadonly(field))) {
+      console.warn(`[vlite3/useForm] Blocked attempted update to disabled/readonly field: ${name}`)
+      return
+    }
+
     // Set the new value
     formValues.value = setNestedValue(formValues.value, name, value)
     isDirty.value = true
 
     // Clear error for this field
     delete errors.value[name]
-
-    // Find the field in schema
-    const field = flatSchema.value.find((f) => f.name === name)
 
     // Execute updateValues if defined
     if (field?.updateValues) {
