@@ -10,6 +10,7 @@ const props = withDefaults(defineProps<InputProps>(), {
   modelValue: '',
   type: 'text',
   disabled: false,
+  readonly: false,
   loading: false,
   showClearButton: true,
   autofocus: false,
@@ -243,10 +244,12 @@ const handleChange = (event: Event) => {
 }
 
 const togglePasswordVisibility = () => {
+  if (props.disabled || props.readonly) return
   isPasswordVisible.value = !isPasswordVisible.value
 }
 
 const clearInput = () => {
+  if (props.disabled || props.readonly) return
   emit('update:modelValue', '')
   nextTick(() => {
     inputRef.value?.focus()
@@ -341,6 +344,7 @@ onMounted(() => {
               : displayPlaceholder
           "
           :disabled="disabled"
+          :readonly="readonly"
           :rows="rows"
           :class="inputBaseClass"
           @update:model-value="emit('update:modelValue', $event)"
@@ -358,6 +362,7 @@ onMounted(() => {
               : displayPlaceholder
           "
           :disabled="disabled"
+          :readonly="readonly"
           :min="min"
           :max="max"
           :class="inputBaseClass"
@@ -391,12 +396,12 @@ onMounted(() => {
               'flex items-center justify-center text-muted-foreground',
               disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:text-foreground',
             ]"
-            @click="!disabled && emit('click:icon-right', $event)">
+            @click="!disabled && !readonly && emit('click:icon-right', $event)">
             <Icon :icon="iconRight" class="h-4 w-4" :class="iconRightClass" />
           </div>
 
           <button
-            v-if="type === 'password' && !disabled"
+            v-if="type === 'password' && !disabled && !readonly"
             type="button"
             tabindex="-1"
             class="flex items-center justify-center text-muted-foreground hover:text-foreground focus:outline-none"
@@ -409,6 +414,7 @@ onMounted(() => {
               showClearButton &&
               hasValue &&
               !disabled &&
+              !readonly &&
               !loading &&
               type !== 'textarea' &&
               type !== 'password' &&
