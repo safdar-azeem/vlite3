@@ -22,6 +22,7 @@ export interface InputProps {
   placeholder?: string
   placeholderI18n?: string
   disabled?: boolean
+  readonly?: boolean
   loading?: boolean
   error?: string
   icon?: string
