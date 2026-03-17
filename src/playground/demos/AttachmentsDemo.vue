@@ -31,7 +31,21 @@ const mockAttachments = [
 
     <DemoSection
       title="Attachments List Component"
-      code="<AttachmentsList :attachments='mockAttachments' />">
+      code="const mockAttachments = [
+  {
+    fileName: 'invoice-2023.pdf',
+    fileSize: 1048576, // 1MB
+    fileUrl:
+      'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf',
+  },
+  {
+    fileName: 'company-logo.png',
+    fileSize: 250000,
+    fileUrl:
+      'https://fastly.picsum.photos/id/197/400/400.jpg?hmac=EMGJfztOncchyhxYLBig-GifHwLYkvPrZJvM_oDgYfQ',
+  },
+]
+<AttachmentsList :attachments='mockAttachments' />">
       <div class="max-w-md">
         <AttachmentsList :attachments="mockAttachments" />
       </div>
@@ -39,7 +53,7 @@ const mockAttachments = [
 
     <DemoSection
       title="Without Download"
-      code="<AttachmentsList :attachments='mockAttachments' :can-download='false' :can-view='false' />">
+      code="<AttachmentsList :attachments='mockAttachments' :can-download='false'  />">
       <div class="max-w-md">
         <AttachmentsList :attachments="mockAttachments" :can-download="false" />
       </div>
