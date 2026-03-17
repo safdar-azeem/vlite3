@@ -58,6 +58,7 @@ const props = withDefaults(
     triggerProps?: ButtonProps
     direction?: 'ltr' | 'rtl'
     isNested?: boolean // Used internally to identify child vs root dropdowns
+    disabled?: boolean // Prevents opening and selecting options
   }>(),
   {
     options: () => [],
@@ -82,6 +83,7 @@ const props = withDefaults(
     debounceTime: 300,
     direction: 'ltr',
     isNested: false,
+    disabled: false,
   }
 )
 const emit = defineEmits<{
@@ -162,12 +164,18 @@ watch(
   () => props.isOpen,
   (val) => {
     if (val !== undefined) {
+      if (props.disabled && val) return
       internalIsOpen.value = val
     }
   }
 )
 
 const handleVisibilityChange = (val: boolean) => {
+  if (props.disabled) {
+    internalIsOpen.value = false
+    emit('update:isOpen', false)
+    return
+  }
   internalIsOpen.value = val
   emit('update:isOpen', val)
   if (val) emit('onOpen')
@@ -295,6 +303,8 @@ watch(
 )
 
 const handleOptionSelect = (option: import('@/types').IDropdownOption) => {
+  if (props.disabled || option.disabled) return // Security check against disabled overrides
+
   const needsConfirmation = props.doubleConfirmation || !!option.confirmation
   if (needsConfirmation) {
     pendingOption.value = option
@@ -327,6 +337,8 @@ const handleOptionSelect = (option: import('@/types').IDropdownOption) => {
 }
 
 const performSelection = (option: import('@/types').IDropdownOption) => {
+  if (props.disabled || option.disabled) return
+
   const val = option.value ?? option.label
   if (!selectedBuffer.value.has(val)) {
     selectedBuffer.value.set(val, option)
@@ -389,6 +401,7 @@ const cancelSelection = () => {
             :selected-label="selectedLabel"
             :is-open="isOpen"
             :direction="direction"
+            :disabled="disabled"
             :triggerProps="triggerProps"
             class="w-full" />
         </slot>
@@ -398,12 +411,14 @@ const cancelSelection = () => {
         <slot />
         <DropdownMenu
           v-if="
-            normalizedPropsOptions.length ||
-            combinedOptions.length ||
-            $slots.menu ||
-            $slots.item ||
-            remote ||
-            searchable
+            disabled
+              ? false
+              : normalizedPropsOptions.length ||
+                combinedOptions.length ||
+                $slots.menu ||
+                $slots.item ||
+                remote ||
+                searchable
           "
           :options="normalizedPropsOptions"
           :cachedOptions="combinedOptions"
