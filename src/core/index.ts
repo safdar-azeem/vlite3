@@ -39,6 +39,14 @@ export function createVLite(options: VLiteConfig = {}) {
               ...(configState.components?.empty || {}),
               ...(options.components.empty || {}),
             },
+            statusChip: {
+              ...(configState.components?.statusChip || {}),
+              ...(options.components.statusChip || {}),
+              customStatuses: {
+                ...(configState.components?.statusChip?.customStatuses || {}),
+                ...(options.components.statusChip?.customStatuses || {}),
+              }
+            },
           }
         }
       }
