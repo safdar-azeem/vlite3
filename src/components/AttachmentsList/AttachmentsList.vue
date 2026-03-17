@@ -8,7 +8,10 @@ import { downloadFile } from '@/utils/functions'
 import { FilePreview } from '../FilePreview'
 import type { AttachmentsListProps, AttachmentItem } from './types'
 
-const props = defineProps<AttachmentsListProps>()
+const props = withDefaults(defineProps<AttachmentsListProps>(), {
+  canView: true,
+  canDownload: true,
+})
 
 // Normalize attachments to always be an array
 const normalizedAttachments = computed<AttachmentItem[]>(() => {
@@ -55,15 +58,17 @@ const handleDownload = async (file: AttachmentItem) => {
         </div>
         <div class="flex items-center gap-1 shrink-0">
           <Modal
+            v-if="canView"
             :title="file.fileName || $t('common.words.preview', 'Preview')"
             max-width="max-w-3xl"
             :body="FilePreview"
-            :bodyProps="{ url: file.fileUrl, name: file.fileName }">
+            :bodyProps="{ url: file.fileUrl, name: file.fileName, canDownload }">
             <template #trigger>
               <Button variant="ghost" size="sm" icon="lucide:eye" />
             </template>
           </Modal>
           <Button
+            v-if="canDownload"
             variant="ghost"
             size="sm"
             icon="lucide:download"
