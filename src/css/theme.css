@@ -19,7 +19,8 @@
     --color-muted-foreground: '';
     --color-accent: '';
     --color-accent-foreground: '';
-
+    --color-scrollbar: '';
+    --color-scrollbar-hover: '';
 
     --color-destructive: #ef4444;
     --color-destructive-foreground: #fafafa;
@@ -306,6 +307,8 @@
   --color-border: color-mix(in oklab, var(--color-mixture-1) 92%, var(--color-mixture-2));
   --color-input: color-mix(in oklab, var(--color-mixture-1) 90%, var(--color-mixture-2));
 
+  --color-scrollbar: color-mix(in oklab, var(--color-mixture-1) 80%, var(--color-mixture-2));
+  --color-scrollbar-hover: color-mix(in oklab, var(--color-mixture-1) 75%, var(--color-mixture-2));
 
   --color-secondary: color-mix(in oklab, var(--color-mixture-1) 94.8%, var(--color-mixture-2));
   --color-secondary-foreground: var(--color-foreground);
