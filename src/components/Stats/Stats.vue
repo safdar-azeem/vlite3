@@ -43,14 +43,14 @@ const getItemClass = (item: StatItemSchema, index: number) => {
   const base =
     props.layout === 'inline-label-value'
       ? 'flex px-3.5 py-3 relative transition-all duration-200'
-      : 'flex p-5 relative transition-all duration-200'
+      : 'flex p-3 relative transition-all duration-200'
 
   const layoutClasses: Record<string, string> = {
     'icon-left': 'flex-row items-center gap-3 text-left',
     'icon-right': 'flex-row items-center justify-between gap-3 text-left',
-    'icon-top': 'flex-col items-start gap-3 text-left',
+    'icon-top': 'flex-col items-start gap-1 px-5! pt-2! text-left',
     // title top, value bottom-left, icon bottom-right
-    'title-top-icon-bottom-right': 'flex-col items-start gap-0 text-left',
+    'title-top-icon-bottom-right': 'flex-col items-start gap-0 text-left px-5! py-4!',
     // centered: value on top (bigger/bold), title below — no icon
     'centered-value-title': 'flex-col items-center justify-center text-center gap-1',
     // floating icon overlapping card top-right corner
@@ -226,7 +226,7 @@ const getIconBoxStyle = (item: StatItemSchema) => {
           {{ item.titleI18n ? $t(item.titleI18n) : item.title }}
         </h3>
         <!-- Bottom row: value left, icon right -->
-        <div class="flex items-end justify-between w-full mt-3">
+        <div class="flex items-center justify-between w-full mt-1">
           <div>
             <p :class="valueSize || 'text-2xl font-bold text-foreground truncate'">
               {{ item.value }}
@@ -348,7 +348,8 @@ const getIconBoxStyle = (item: StatItemSchema) => {
           {{ item.titleI18n ? $t(item.titleI18n) : item.title }}
         </span>
         <!-- Value pushed to the right -->
-        <span :class="valueSize || 'text-sm font-semibold text-foreground tabular-nums shrink-0'">
+        <span
+          :class="valueSize || '-text-fs-1 font-semibold text-foreground tabular-nums shrink-0'">
           {{ item.value }}
         </span>
         <!-- Optional compact trend badge -->
