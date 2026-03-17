@@ -76,6 +76,8 @@ export const STATUS_MAP: Record<string, StatusConfig> = {
   late: { variant: 'orange', icon: 'lucide:alarm-clock' },
   partiallyapproved: { variant: 'orange', icon: 'lucide:check' },
   awaitingapproval: { variant: 'warning', icon: 'lucide:clock' },
+  onleave: { variant: 'warning', icon: 'lucide:calendar-clock' },
+  earlycheckout: { variant: 'warning', icon: 'lucide:clock-4' },
 
   // ── Error / Danger / Alternative Warnings ──────────────────────────────────
   inactive: { variant: 'secondary', icon: 'lucide:circle-slash' },
@@ -101,6 +103,7 @@ export const STATUS_MAP: Record<string, StatusConfig> = {
   offline: { variant: 'secondary', icon: 'lucide:wifi-off' },
   danger: { variant: 'danger', icon: 'lucide:alert-circle' },
   declined: { variant: 'danger', icon: 'lucide:thumbs-down' },
+  laidoff: { variant: 'danger', icon: 'lucide:user-minus' },
 
   // ── Neutral / Secondary ────────────────────────────────────────────────────
   new: { variant: 'secondary', icon: 'lucide:sparkles' },
@@ -112,6 +115,8 @@ export const STATUS_MAP: Record<string, StatusConfig> = {
   queued: { variant: 'secondary', icon: 'lucide:list-ordered' },
   requested: { variant: 'secondary', icon: 'lucide:send' },
   invited: { variant: 'secondary', icon: 'lucide:mail' },
+  offday: { variant: 'secondary', icon: 'lucide:calendar-off' },
+  resigned: { variant: 'secondary', icon: 'lucide:user-minus' },
   default: { variant: 'secondary' },
   none: { variant: 'secondary' },
 }
@@ -127,9 +132,19 @@ export function normalizeStatus(status: string): string {
 
 /**
  * Resolves a status string to its StatusConfig.
+ * Checks global custom statuses first to allow overwriting defaults.
  * Falls back to a secondary chip with the raw label if not found.
  */
-export function resolveStatus(status: string): StatusConfig {
+export function resolveStatus(status: string, customStatuses?: Record<string, StatusConfig>): StatusConfig {
   const key = normalizeStatus(status)
+
+  if (customStatuses) {
+    for (const [customKey, customConfig] of Object.entries(customStatuses)) {
+      if (normalizeStatus(customKey) === key) {
+        return customConfig
+      }
+    }
+  }
+
   return STATUS_MAP[key] ?? { variant: 'secondary' }
 }
