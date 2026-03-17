@@ -12,7 +12,7 @@ const loginSchema: IForm[] = [
     type: 'email',
     placeholder: 'john@example.com',
     icon: 'lucide:mail',
-    required: true,
+    disabled: true,
   },
   {
     name: 'password',
@@ -21,12 +21,28 @@ const loginSchema: IForm[] = [
     placeholder: '••••••••',
     icon: 'lucide:lock',
     required: true,
+    disabled: true,
   },
   {
     name: 'rememberMe',
     label: 'Remember me',
     type: 'switch',
     value: false,
+    disabled: true,
+  },
+  {
+    name: 'userType',
+    labelI18n: 'common.words.userType',
+    type: 'multiSelect',
+    disabled: true,
+    options: [
+      { label: 'Employee', value: 'EMPLOYEE' },
+      { label: 'Customer', value: 'CUSTOMER' },
+      { label: 'Supplier', value: 'SUPPLIER' },
+      { label: 'Contractor', value: 'CONTRACTOR' },
+      { label: 'Client', value: 'CLIENT' },
+    ],
+    itemClass: 'col-span-1 sm:col-span-2',
   },
 ]
 
