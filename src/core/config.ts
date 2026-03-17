@@ -20,6 +20,10 @@ const defaultConfig: VLiteConfig = {
     date: {
       format: 'MM/DD/YYYY',
     },
+    statusChip: {
+      hideIcon: false,
+      customStatuses: {},
+    },
   },
 }
 
