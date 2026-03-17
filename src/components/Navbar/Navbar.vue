@@ -224,7 +224,8 @@ const breakpointClasses = computed(() => {
 })
 
 const centerClasses = computed(() => {
-  if (props.variant === 'sidebar') return 'flex-1 py-4 overflow-y-auto'
+  if (props.variant === 'sidebar')
+    return 'flex-1 py-4 overflow-y-auto scrollbar-thin scrollbar-stable'
   switch (props.centerPosition) {
     case 'left':
       return 'flex items-center justify-start'
@@ -293,7 +294,7 @@ const isSidebarFirst = computed(() => {
         aria-label="Sidebar">
         <!-- Sidebar scrollable content (default slot) -->
         <div
-          class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin"
+          class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-stable"
           :class="props.contentClass">
           <slot />
         </div>
@@ -326,7 +327,7 @@ const isSidebarFirst = computed(() => {
       <!-- MAIN CONTENT -->
       <main
         v-if="$slots.main"
-        class="flex-1 overflow-y-auto w-full relative h-full flex flex-col min-h-0">
+        class="flex-1 overflow-y-auto w-full relative h-full flex flex-col min-h-0 scrollbar-thin scrollbar-stable">
         <div v-if="props.renderNestedTabs && nestedTabsItems.length > 0" class="shrink-0 w-full">
           <NavbarTabs
             v-model="activeNestedTab"
@@ -347,7 +348,7 @@ const isSidebarFirst = computed(() => {
             :separator="props.breadcrumbSeparator"
             :size="props.breadcrumbSize" />
         </div>
-        <div class="flex-1 overflow-y-auto w-full relative h-full">
+        <div class="flex-1 overflow-y-auto w-full relative h-full scrollbar-thin scrollbar-stable">
           <slot name="main" />
         </div>
       </main>
@@ -367,7 +368,7 @@ const isSidebarFirst = computed(() => {
         <slot name="logo">Brand</slot>
       </template>
       <div class="flex flex-col h-full">
-        <div class="flex-1 overflow-y-auto px-3.5 pt-4">
+        <div class="flex-1 overflow-y-auto px-3.5 pt-4 scrollbar-thin scrollbar-stable">
           <slot />
         </div>
         <div class="mt-auto pt-2 border-t border-border px-3 py-2" v-if="$slots.right">
@@ -466,7 +467,7 @@ const isSidebarFirst = computed(() => {
             </div>
             <div :class="breakpointClasses.desktopSidebar">
               <div
-                class="flex-1 px-2.5 pt-0 pb-4 overflow-y-auto space-y-4 scrollbar-thin"
+                class="flex-1 px-2.5 pt-0 pb-4 overflow-y-auto space-y-4 scrollbar-thin scrollbar-stable"
                 :class="props.contentClass">
                 <slot name="left" />
                 <slot />
@@ -483,7 +484,9 @@ const isSidebarFirst = computed(() => {
         </nav>
       </Transition>
 
-      <main v-if="$slots.main" class="flex-1 overflow-y-auto w-full relative h-full flex flex-col">
+      <main
+        v-if="$slots.main"
+        class="flex-1 overflow-y-auto w-full relative h-full flex flex-col scrollbar-thin scrollbar-stable">
         <div v-if="props.renderNestedTabs && nestedTabsItems.length > 0" class="shrink-0 w-full">
           <NavbarTabs
             v-model="activeNestedTab"
@@ -504,7 +507,7 @@ const isSidebarFirst = computed(() => {
             :separator="props.breadcrumbSeparator"
             :size="props.breadcrumbSize" />
         </div>
-        <div class="flex-1 overflow-y-auto w-full relative h-full">
+        <div class="flex-1 overflow-y-auto w-full relative h-full scrollbar-thin scrollbar-stable">
           <slot name="main" />
         </div>
       </main>
@@ -515,7 +518,7 @@ const isSidebarFirst = computed(() => {
           ref="mobileMenuRef"
           class="absolute top-[calc(100%_+_1px)] left-0 w-full bg-body border border-border/50 shadow-xl z-50 flex flex-col transition-all duration-300 origin-top overflow-hidden will-change-transform"
           :class="props.menuClass">
-          <div class="flex flex-col max-h-[80vh] overflow-y-auto">
+          <div class="flex flex-col max-h-[80vh] overflow-y-auto scrollbar-thin">
             <slot name="mobile-menu">
               <div class="space-y-1 p-2">
                 <slot name="left" />
@@ -553,7 +556,8 @@ const isSidebarFirst = computed(() => {
             </div>
           </template>
           <template v-else>
-            <div class="flex flex-col space-y-4 flex-1 overflow-y-auto px-3.5!">
+            <div
+              class="flex flex-col space-y-4 flex-1 overflow-y-auto px-3.5! scrollbar-thin scrollbar-stable">
               <slot name="left" />
               <slot />
               <slot name="center" />
@@ -628,7 +632,7 @@ const isSidebarFirst = computed(() => {
       </div>
       <div :class="breakpointClasses.desktopSidebar">
         <div
-          class="flex-1 px-2.5 pt-0 pb-4 overflow-y-auto space-y-4 scrollbar-thin"
+          class="flex-1 px-2.5 pt-0 pb-4 overflow-y-auto space-y-4 scrollbar-thin scrollbar-stable"
           :class="props.contentClass">
           <slot name="left" />
           <slot />
@@ -649,7 +653,7 @@ const isSidebarFirst = computed(() => {
         ref="mobileMenuRef"
         class="absolute top-[calc(100%_+_1px)] left-0 w-full bg-body border border-border/50 shadow-xl z-50 flex flex-col transition-all duration-300 origin-top overflow-hidden will-change-transform"
         :class="props.menuClass">
-        <div class="flex flex-col max-h-[80vh] overflow-y-auto">
+        <div class="flex flex-col max-h-[80vh] overflow-y-auto scrollbar-thin">
           <slot name="mobile-menu">
             <div class="space-y-1 p-2">
               <slot name="left" />
@@ -687,7 +691,8 @@ const isSidebarFirst = computed(() => {
           </div>
         </template>
         <template v-else>
-          <div class="flex flex-col space-y-4 flex-1 overflow-y-auto px-3.5!">
+          <div
+            class="flex flex-col space-y-4 flex-1 overflow-y-auto px-3.5! scrollbar-thin scrollbar-stable">
             <slot name="left" />
             <slot />
             <slot name="center" />
