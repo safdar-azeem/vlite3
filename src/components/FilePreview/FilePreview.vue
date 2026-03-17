@@ -3,7 +3,9 @@ import { VFileViewer } from 'v-file-preview'
 import 'v-file-preview/dist/style.css'
 import type { FilePreviewProps } from './types'
 
-const props = defineProps<FilePreviewProps>()
+const props = withDefaults(defineProps<FilePreviewProps>(), {
+  canDownload: true,
+})
 </script>
 
 <template>
@@ -11,7 +13,7 @@ const props = defineProps<FilePreviewProps>()
     <div
       class="flex-1 relative bg-muted/10 rounded-lg border border-border overflow-hidden flex items-center justify-center">
       <div class="w-full h-full overflow-auto">
-        <VFileViewer :url="url" :name="name" />
+        <VFileViewer :url="url" :name="name" :can-download="canDownload" />
       </div>
     </div>
   </div>
