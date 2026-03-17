@@ -284,7 +284,7 @@ const shouldShowChevron = (option: IDropdownOption): boolean => {
       role="menu"
       v-if="normalizedOptions.length > 0 || $slots.menu"
       :class="[
-        'w-full p-1 space-y-0.5 overflow-y-auto overflow-x-hidden focus:outline-none flex-1',
+        'w-full p-1 space-y-0.5 overflow-y-auto overflow-x-hidden focus:outline-none flex-1 scrollbar-thin',
         props.class,
       ]"
       :style="{ maxHeight: props.maxHeight }"
@@ -402,4 +402,3 @@ const shouldShowChevron = (option: IDropdownOption): boolean => {
   contain: layout style;
 }
 </style>
-
