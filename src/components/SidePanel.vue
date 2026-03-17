@@ -201,7 +201,7 @@ const displayDescription = computed(() =>
             class="-mr-2" />
         </div>
 
-        <div class="flex-1 overflow-y-auto px-6 py-4" :class="bodyClass">
+        <div class="flex-1 overflow-y-auto px-6 py-4 scrollbar-thin scrollbar-stable" :class="bodyClass">
           <template v-if="rawBody">
             <component :is="rawBody" v-bind="{ ...bodyProps, ...$attrs }" :close="close" />
           </template>
