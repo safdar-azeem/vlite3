@@ -32,7 +32,7 @@ const displayDescription = computed(() =>
 
 <template>
   <div
-    :tabindex="0"
+    :tabindex="option.disabled ? -1 : 0"
     data-dropdown-item
     class="relative w-full flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus-visible:bg-accent focus-visible:text-accent-foreground focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-1 data-disabled:pointer-events-none data-disabled:opacity-50"
     :class="[
