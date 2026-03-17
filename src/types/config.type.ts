@@ -1,5 +1,6 @@
 import { EmptyVariant } from '@/components/Empty'
 import type { InputVariant, InputSize, InputRounded } from './form.type'
+import type { ChipVariant } from '@/components/Chip/types'
 
 /**
  * Interface for the file upload handler function.
@@ -44,6 +45,12 @@ export interface VLiteServices {
    * Used by the generic Screen component for the `ExportData` process in backend mode.
    */
   exportApi?: (entity: string, payload: any) => Promise<any>
+}
+
+export interface CustomStatusConfig {
+  variant: ChipVariant | string
+  icon?: string
+  label?: string
 }
 
 /**
@@ -93,6 +100,10 @@ export interface VLiteConfig {
      */
     empty?: {
       variant?: EmptyVariant
+    }
+    statusChip?: {
+      hideIcon?: boolean
+      customStatuses?: Record<string, CustomStatusConfig>
     }
   }
 }
