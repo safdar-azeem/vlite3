@@ -7,6 +7,7 @@ Check the individual Markdown files inside the docs folders for full details.
 
 * [Accordion](https://www.google.com/search?q=./1-Components/Accordion.md)
 * [Alert](https://www.google.com/search?q=./1-Components/Alert.md)
+* [AttachmentsList](https://www.google.com/search?q=./1-Components/AttachmentsList.md)
 * [Avatar](https://www.google.com/search?q=./1-Components/Avatar.md)
 * [AvatarUploader](https://www.google.com/search?q=./1-Components/AvatarUploader.md)
 * [Badge](https://www.google.com/search?q=./1-Components/Badge.md)
@@ -26,6 +27,7 @@ Check the individual Markdown files inside the docs folders for full details.
 * [DatePicker](https://www.google.com/search?q=./1-Components/DatePicker.md)
 * [Dropdown](https://www.google.com/search?q=./1-Components/Dropdown.md)
 * [FilePicker](https://www.google.com/search?q=./1-Components/FilePicker.md)
+* [FilePreview](https://www.google.com/search?q=./1-Components/FilePreview.md)
 * [Forms](https://www.google.com/search?q=./1-Components/Forms.md)
 * [Icon](https://www.google.com/search?q=./1-Components/Icon.md)
 * [IconPicker](https://www.google.com/search?q=./1-Components/IconPicker.md)
