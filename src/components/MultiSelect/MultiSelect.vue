@@ -146,6 +146,8 @@ const hiddenCount = computed(() => {
 })
 
 const handleSelect = (option: IDropdownOption) => {
+  if (props.disabled) return // Security check
+
   const val = option.value ?? option.label
 
   // Save to buffer immediately so it persists across searches
@@ -167,12 +169,16 @@ const handleSelect = (option: IDropdownOption) => {
 }
 
 const removeOption = (value: any) => {
+  if (props.disabled) return // Security check
+
   const newValue = props.modelValue.filter((v) => v !== value)
   emit('update:modelValue', newValue)
   emit('change', newValue)
 }
 
 const clearAll = () => {
+  if (props.disabled) return // Security check
+
   emit('update:modelValue', [])
   emit('change', [])
 }
@@ -184,7 +190,7 @@ const triggerClasses = computed(() => {
   const heightClass = props.variant === 'transparent' ? 'h-full min-h-[40px]' : 'min-h-[40px]'
 
   return [
-    `flex items-center justify-between w-full ${spacingClass} ${heightClass} ${roundedClass} border text-sm transition-colors cursor-pointer`,
+    `flex items-center justify-between w-full ${spacingClass} ${heightClass} ${roundedClass} border text-sm transition-colors cursor-pointer outline-none`,
     props.disabled
       ? 'opacity-50 cursor-not-allowed bg-muted'
       : props.variant === 'floating'
@@ -193,11 +199,13 @@ const triggerClasses = computed(() => {
           ? 'bg-transparent text-foreground'
           : 'bg-background hover:bg-gray-50/70',
     props.variant === 'outline' || props.variant === 'floating'
-      ? 'border-input'
+      ? 'border-input focus-visible:ring-1 focus-visible:ring-primary'
       : props.variant === 'transparent'
         ? 'border-transparent'
         : 'border-transparent bg-muted',
-    isOpen.value && props.variant !== 'transparent' ? 'border-primary/20' : '',
+    isOpen.value && props.variant !== 'transparent'
+      ? 'border-primary/20 ring-1 ring-primary/20'
+      : '',
   ].join(' ')
 })
 
@@ -210,8 +218,12 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
     :close-on-select="false"
     :selectable="true"
     :disabled="disabled">
-    <template #trigger="{ isOpen }">
-      <div :class="triggerClasses">
+    <template #trigger>
+      <div
+        :class="triggerClasses"
+        :tabindex="disabled ? -1 : 0"
+        @keydown.enter.prevent="!disabled && (isOpen = !isOpen)"
+        @keydown.space.prevent="!disabled && (isOpen = !isOpen)">
         <div
           class="flex gap-1.5 items-center flex-1 min-w-0"
           :class="[wrap ? 'flex-wrap py-0.5' : 'flex-nowrap overflow-hidden py-1']">
@@ -285,6 +297,7 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
 
     <template #default>
       <DropdownMenu
+        v-if="!disabled"
         :options="normalizedOptions"
         :cachedOptions="combinedOptions"
         :selected="modelValue"
