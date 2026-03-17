@@ -143,6 +143,7 @@ const fieldProps = computed(() => {
   const type = props.field.type
   const baseProps: Record<string, any> = {
     disabled: props.disabled || props.field.disabled === true,
+    readonly: props.readonly || props.field.readonly === true,
     ...(props?.field || {}),
     ...(props.field.props || {}),
     label: '',
