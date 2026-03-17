@@ -13,7 +13,8 @@ const mockAttachments = [
   {
     fileName: 'company-logo.png',
     fileSize: 250000,
-    fileUrl: 'https://picsum.photos/400/400',
+    fileUrl:
+      'https://fastly.picsum.photos/id/197/400/400.jpg?hmac=EMGJfztOncchyhxYLBig-GifHwLYkvPrZJvM_oDgYfQ',
   },
 ]
 </script>
@@ -30,30 +31,25 @@ const mockAttachments = [
 
     <DemoSection
       title="Attachments List Component"
-      code="const mockAttachments = [
-  {
-    fileName: 'invoice-2023.pdf',
-    fileSize: 1048576, // 1MB
-    fileUrl:
-      'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf',
-  },
-  {
-    fileName: 'company-logo.png',
-    fileSize: 250000,
-    fileUrl: 'https://picsum.photos/400/400',
-  },
-]
-<AttachmentsList :attachments='mockAttachments' />">
+      code="<AttachmentsList :attachments='mockAttachments' />">
       <div class="max-w-md">
         <AttachmentsList :attachments="mockAttachments" />
       </div>
     </DemoSection>
 
     <DemoSection
+      title="Without Download"
+      code="<AttachmentsList :attachments='mockAttachments' :can-download='false' :can-view='false' />">
+      <div class="max-w-md">
+        <AttachmentsList :attachments="mockAttachments" :can-download="false" />
+      </div>
+    </DemoSection>
+
+    <DemoSection
       title="Standalone File Preview"
-      code="<FilePreview url='https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' name='Standalone Document.pdf' />">
+      code="<FilePreview url='https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf' name='Standalone Document.pdf' />">
       <FilePreview
-        url="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+        url="https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf"
         name="Standalone Document.pdf" />
     </DemoSection>
   </div>
