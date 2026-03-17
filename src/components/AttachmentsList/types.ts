@@ -7,4 +7,6 @@ export interface AttachmentItem {
 
 export interface AttachmentsListProps {
   attachments?: AttachmentItem | AttachmentItem[]
+  canView?: boolean
+  canDownload?: boolean
 }
