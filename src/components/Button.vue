@@ -28,7 +28,7 @@ const isInGroup = computed(() => !!buttonGroup?.isInGroup)
 
 const classes = computed(() => {
   const baseClasses =
-    'inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background focus-visible:outline-none  focus:border focus:border-primary disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] cursor-pointer gap-2'
+    'inline-flex items-center justify-center whitespace-nowrap text-sm font-medium  disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] cursor-pointer gap-2'
 
   const variants: Record<ButtonVariant, string> = {
     primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
