@@ -14,7 +14,7 @@ const props = withDefaults(
     placeholderI18n?: string
     modelValue?: any
     value?: any
-    mode: DatePickerMode
+    mode?: DatePickerMode
     minDate?: string
     maxDate?: string
     disabledDates?: { start: string; end?: string }[]
@@ -29,6 +29,7 @@ const props = withDefaults(
     readonly?: boolean
   }>(),
   {
+    mode: 'date',
     minuteInterval: 5,
     teleport: true,
     timeFormat: '12h',
@@ -152,4 +153,3 @@ const handleDateChange = (val: any) => {
       class="w-full justify-start text-left font-normal" />
   </TimePicker>
 </template>
-
