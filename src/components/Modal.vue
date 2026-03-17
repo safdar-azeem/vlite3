@@ -206,7 +206,7 @@ const displayDescription = computed(() =>
         </div>
 
         <div
-          class="flex-1 overflow-y-auto px-4 pt-4 min-h-0"
+          class="flex-1 overflow-y-auto px-4 pt-4 min-h-0 scrollbar-thin scrollbar-stable"
           :class="[hasFormWithFooter ? 'pb-0' : 'pb-3.5', bodyClass]">
           <p v-if="displayDescription" class="text-sm text-muted-foreground mb-3.5">
             {{ displayDescription }}
