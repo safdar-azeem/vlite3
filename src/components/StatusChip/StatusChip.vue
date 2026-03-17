@@ -4,6 +4,7 @@ import { Chip } from '@/components/Chip'
 import type { ChipProps } from '@/components/Chip/types'
 import { resolveStatus } from './status-map'
 import { $t } from '@/utils/i18n'
+import { useVLiteConfig } from '@/core'
 
 interface Props {
   /** The status value (e.g. 'in_progress', 'Approved', 'CANCELLED') */
@@ -13,7 +14,7 @@ interface Props {
   /** i18n key for the label */
   labelI18n?: string
   /** Hide the icon even when one is resolved */
-  hideIcon?: boolean
+  hideIcon?: boolean | null
   /** Override chip size */
   size?: ChipProps['size']
   /** Extra classes */
@@ -21,15 +22,24 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  hideIcon: false,
+  hideIcon: null,
   size: 'small',
   class: '',
 })
 
-const config = computed(() => resolveStatus(props.status))
+const configState = useVLiteConfig()
+const globalConfig = computed(() => configState?.components?.statusChip)
+
+const isIconHidden = computed(() => {
+  if (props.hideIcon !== null) return props.hideIcon
+  return globalConfig.value?.hideIcon ?? false
+})
+
+const config = computed(() => resolveStatus(props.status, globalConfig.value?.customStatuses as any))
 
 const displayLabel = computed(() => {
   if (props.labelI18n) return $t(props.labelI18n)
+  if (config.value.label) return config.value.label
   if (props.label) return props.label
   // Format status as readable label: 'in_progress' → 'In Progress'
   return props.status.replace(/[_\-]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
@@ -40,7 +50,7 @@ const displayLabel = computed(() => {
   <Chip
     :text="displayLabel"
     :variant="config.variant"
-    :icon="hideIcon ? undefined : config.icon"
+    :icon="isIconHidden ? undefined : config.icon"
     :size="size"
     :class="props.class" />
 </template>
