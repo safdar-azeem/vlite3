@@ -42,7 +42,7 @@ const props = withDefaults(defineProps<ScreenProps>(), {
     itemsPerPageOptions: [10, 20, 30, 50],
   }),
   viewProps: () => ({}),
-  canSelectRows: true,
+  hideSelectable: false,
 })
 const vliteConfig = useVLiteConfig()
 const emit = defineEmits<{
@@ -97,7 +97,7 @@ const isFiltered = computed(() => {
 // ── Screen context provided to all descendants ────────────────────────────────
 const screenContext: ScreenContext = {
   disableSearch: true,
-  forceSelectable: props.canSelectRows,
+  forceSelectable: !props.hideSelectable,
   onTableChange: (state: TableState) => {
     activeSort.value = { field: state.sort.field, order: state.sort.order }
     triggerChange()
@@ -325,7 +325,7 @@ const handleBackendExport = async (format: string) => {
         <div
           class="flex items-center gap-2 w-full sm:w-auto flex-1 md:flex-none justify-start sm:justify-end">
           <Button
-            v-if="selectedRows.length > 0 && canSelectRows"
+            v-if="selectedRows.length > 0 && !hideSelectable"
             variant="outline"
             class="hover:bg-destructive/10 shrink-0 h-9! w-9!"
             icon="lucide:trash-2"
@@ -334,17 +334,6 @@ const handleBackendExport = async (format: string) => {
           <div
             v-if="(table || $slots.table) && (list || $slots.list || $slots.grid)"
             class="flex items-center p-1 rounded-md border border-border shrink-0">
-            <button
-              @click="activeView = 'list'"
-              class="p-1.5 rounded"
-              :class="[
-                activeView === 'list'
-                  ? 'bg-secondary/85 dark:bg-secondary shadow-sm text-foreground'
-                  : 'text-muted-foreground hover:text-foreground',
-              ]"
-              :title="txtListView">
-              <Icon icon="lucide:layout-grid" class="w-4 h-4" />
-            </button>
             <button
               @click="activeView = 'table'"
               class="p-1.5 rounded"
@@ -355,6 +344,18 @@ const handleBackendExport = async (format: string) => {
               ]"
               :title="txtTableView">
               <Icon icon="lucide:list" class="w-4 h-4" />
+            </button>
+
+            <button
+              @click="activeView = 'list'"
+              class="p-1.5 rounded"
+              :class="[
+                activeView === 'list'
+                  ? 'bg-secondary/85 dark:bg-secondary shadow-sm text-foreground'
+                  : 'text-muted-foreground hover:text-foreground',
+              ]"
+              :title="txtListView">
+              <Icon icon="lucide:layout-grid" class="w-4 h-4" />
             </button>
           </div>
           <slot name="before-search" />
