@@ -206,6 +206,29 @@ const grayShades = [
   'bg-black',
 ]
 
+const themeShades = [
+  {
+    name: 'Blue',
+    shades: ['bg-blue-50', 'bg-blue-100', 'bg-blue-200', 'bg-blue-300', 'bg-blue-400', 'bg-blue-500', 'bg-blue-600', 'bg-blue-700', 'bg-blue-800', 'bg-blue-900', 'bg-blue-950'],
+  },
+  {
+    name: 'Slate',
+    shades: ['bg-slate-50', 'bg-slate-100', 'bg-slate-200', 'bg-slate-300', 'bg-slate-400', 'bg-slate-500', 'bg-slate-600', 'bg-slate-700', 'bg-slate-800', 'bg-slate-900', 'bg-slate-950'],
+  },
+  {
+    name: 'Red',
+    shades: ['bg-red-50', 'bg-red-100', 'bg-red-200', 'bg-red-300', 'bg-red-400', 'bg-red-500', 'bg-red-600', 'bg-red-700', 'bg-red-800', 'bg-red-900', 'bg-red-950'],
+  },
+  {
+    name: 'Green',
+    shades: ['bg-green-50', 'bg-green-100', 'bg-green-200', 'bg-green-300', 'bg-green-400', 'bg-green-500', 'bg-green-600', 'bg-green-700', 'bg-green-800', 'bg-green-900', 'bg-green-950'],
+  },
+  {
+    name: 'Yellow',
+    shades: ['bg-yellow-50', 'bg-yellow-100', 'bg-yellow-200', 'bg-yellow-300', 'bg-yellow-400', 'bg-yellow-500', 'bg-yellow-600', 'bg-yellow-700', 'bg-yellow-800', 'bg-yellow-900', 'bg-yellow-950'],
+  },
+]
+
 const shadows = ['shadow-sm', 'shadow', 'shadow-lg', 'shadow-xl']
 
 const borderColors = [
@@ -216,7 +239,6 @@ const borderColors = [
 
 <template>
   <div class="space-y-14">
-    <!-- Semantic -->
     <div v-for="group in semanticColors" :key="group.title" class="space-y-4">
       <h2 class="text-lg font-semibold text-foreground">{{ group.title }}</h2>
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -232,7 +254,6 @@ const borderColors = [
       </div>
     </div>
 
-    <!-- Variants -->
     <div class="space-y-6">
       <h2 class="text-lg font-semibold text-foreground">Variants</h2>
       <div v-for="group in variantColors" :key="group.name" class="space-y-3">
@@ -249,7 +270,6 @@ const borderColors = [
       </div>
     </div>
 
-    <!-- Grays -->
     <div class="space-y-4">
       <h2 class="text-lg font-semibold text-foreground">Grays</h2>
       <div class="grid grid-cols-6 md:grid-cols-11 gap-3">
@@ -260,7 +280,19 @@ const borderColors = [
       </div>
     </div>
 
-    <!-- Borders -->
+    <div class="space-y-6">
+      <h2 class="text-lg font-semibold text-foreground">Theme Shades</h2>
+      <div v-for="family in themeShades" :key="family.name" class="space-y-3">
+        <div class="text-sm font-medium text-muted-foreground">{{ family.name }}</div>
+        <div class="grid grid-cols-6 md:grid-cols-11 gap-3">
+          <div v-for="shade in family.shades" :key="shade" class="space-y-1 text-center">
+            <div :class="`${shade}`" class="h-16 rounded-md border border-border"></div>
+            <code class="text-[10px] font-mono text-muted-foreground">{{ shade.replace('bg-', '') }}</code>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="space-y-4">
       <h2 class="text-lg font-semibold text-foreground">Borders</h2>
       <div class="grid grid-cols-3 gap-4">
@@ -274,7 +306,6 @@ const borderColors = [
       </div>
     </div>
 
-    <!-- Shadows -->
     <div class="space-y-4">
       <h2 class="text-lg font-semibold text-foreground">Shadows</h2>
       <div class="grid grid-cols-4 gap-20">
@@ -284,7 +315,6 @@ const borderColors = [
       </div>
     </div>
 
-    <!-- Minimal UI Proof -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <button class="bg-primary text-primary-foreground rounded-lg py-3 font-semibold">
         Primary
