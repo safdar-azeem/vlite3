@@ -14,7 +14,7 @@
 | `searchPlaceholder`     | `string`                   | `'Search...'`       | Placeholder for search input    |
 | `searchPlaceholderI18n` | `string`                   | —                   | i18n key for search placeholder |
 | `loading`               | `boolean`                  | `false`             | Show loading skeleton           |
-| `selectable`            | `boolean`                  | `false`             | Enable row selection. Automatically `true` when inside `Screen`. |
+| `hideSelectable`        | `boolean`                  | `false`             | Disable row selection. Automatically disabled when `hideSelectable: true`. |
 | `sortable`              | `boolean`                  | `false`             | Enable column sorting           |
 | `showPagination`        | `boolean`                  | `true`              | Show footer pagination          |
 | `paginationProps`       | `DataTablePaginationProps` | Default config      | Props forwarded to `Pagination` |
