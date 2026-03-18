@@ -408,7 +408,9 @@ const cancelSelection = () => {
       </template>
 
       <template #default>
-        <slot />
+        <span tabindex="0" v-if="$slots?.default">
+          <slot />
+        </span>
         <DropdownMenu
           v-if="
             disabled
