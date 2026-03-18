@@ -19,6 +19,7 @@ import ScreenOptionsDropdown from './components/ScreenOptionsDropdown.vue'
 import ScreenAddAction from './components/ScreenAddAction.vue'
 import ScreenEmptyState from './components/ScreenEmptyState.vue'
 import ScreenExportModal from './components/ScreenExportModal.vue'
+import ScreenQuickFilters from './components/ScreenQuickFilters.vue'
 
 const props = withDefaults(defineProps<ScreenProps>(), {
   name: '',
@@ -45,6 +46,7 @@ const props = withDefaults(defineProps<ScreenProps>(), {
   }),
   viewProps: () => ({}),
   hideSelectable: false,
+  quickFilters: () => [],
 })
 const vliteConfig = useVLiteConfig()
 const emit = defineEmits<{
@@ -67,6 +69,25 @@ const internalLimit = ref(props.pageInfo?.itemsPerPage || props.paginationProps?
 const selectedRows = ref<any[]>([])
 const itemsToDelete = ref<any[]>([])
 const showDeleteConfirmation = ref(false)
+
+// ── quick-filter state ────────────────────────────────────────────────────────
+/** Initialise to defaultQuickFilter, or the first tab's value, or '' */
+const activeQuickFilter = ref<string | number>(
+  props.defaultQuickFilter !== undefined
+    ? props.defaultQuickFilter
+    : props.quickFilters && props.quickFilters.length > 0
+      ? props.quickFilters[0].value
+      : ''
+)
+
+const hasQuickFilters = computed(() => props.quickFilters && props.quickFilters.length > 0)
+
+/** When quick-filter changes, reset to page 1 and trigger refetch */
+const handleQuickFilterChange = (val: string | number) => {
+  activeQuickFilter.value = val
+  internalPage.value = 1
+  triggerChange()
+}
 
 // ── markRaw wrappers to prevent proxying static components ───────────────────
 const activeComponent = computed(() => {
@@ -161,6 +182,7 @@ const triggerChange = () => {
     search: searchQuery.value,
     sort: { ...activeSort.value },
     filter: { ...activeFilters.value },
+    quickFilter: activeQuickFilter.value,
   })
 }
 
@@ -362,6 +384,19 @@ const handleBackendExport = async (format: string) => {
       </div>
     </div>
     <slot name="custom-header" v-else />
+
+    <!--
+      Quick-filter tabs — rendered between the header and the content area.
+      Collapses gracefully when no quickFilters are provided.
+      The -mt-4 compensates the parent space-y-8 so the tabs sit closer to the header.
+    -->
+    <div v-if="hasQuickFilters" class="mb-1">
+      <ScreenQuickFilters
+        v-model="activeQuickFilter"
+        :options="quickFilters!"
+        @change="handleQuickFilterChange" />
+    </div>
+
     <slot name="sub-header" />
 
     <div class="flex-1 w-full relative" :class="containerClass">
