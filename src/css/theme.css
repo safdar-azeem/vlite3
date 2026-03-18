@@ -74,7 +74,7 @@
     /* Animations */
     --animate-accordion-down: accordion-down 0.2s ease-out;
     --animate-accordion-up: accordion-up 0.2s ease-out;
-    --animate-ripple: ripple 600ms linear;
+    --animate-ripple: ripple 100ms linear;
 
     --text--fs-1: 0.95em;
     --text--fs-1.5: 0.91em;
