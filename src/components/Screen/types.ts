@@ -67,5 +67,5 @@ export interface ScreenProps {
   containerClass?: string
   headerClass?: string
   viewProps?: Record<string, any>
-  canSelectRows?: boolean
+  hideSelectable?: boolean
 }
