@@ -63,6 +63,12 @@ const handleDelete = (items: any[]) => {
           :list="UserList"
           :table="UserTable"
           show-refresh
+          :quick-filters="[
+            { label: 'All',      value: '' },
+            { label: 'Active',   value: 'active' },
+            { label: 'Inactive', value: 'inactive' },
+            { label: 'Pending',  value: 'pending' },
+          ]"
           :filter-schema="[
             {
               name: 'user',
