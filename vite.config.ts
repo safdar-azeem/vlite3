@@ -46,6 +46,7 @@ export default defineConfig({
           'vue3-google-signin',
           'scrollreveal',
           'xlsx',
+          'v-file-preview',
           'file-saver',
           'papaparse',
           'jsbarcode',
