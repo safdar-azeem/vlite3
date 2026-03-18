@@ -34,6 +34,7 @@ const containerClass = computed(() => {
     gridColsClass.value,
     props.attached ? 'gap-0 border-t border-l overflow-hidden' : 'gap-3 sm:gap-4.5',
     props.variant === 'shadow' && props.attached ? 'shadow-md' : '',
+    props?.layout === 'inline-label-value' ? 'rounded-sm overflow-hidden' : '',
     props.class,
   ].join(' ')
 })
