@@ -86,6 +86,7 @@ const txtFilter = computed(() => {
         class="shrink-0 h-9! w-9!">
         <div class="text-gray-800! h-4! w-4! flex items-center justify-center">
           <svg
+            v-once
             xmlns="http://www.w3.org/2000/svg"
             width="1.132em"
             height="1.132em"
@@ -101,7 +102,7 @@ const txtFilter = computed(() => {
         </div>
       </Button>
     </template>
-    <div class="">
+    <div style="will-change: transform; contain: layout style;">
       <Form
         :schema="schema"
         :values="modelValue"
@@ -139,7 +140,7 @@ const txtFilter = computed(() => {
         class="shrink-0 h-9! w-9!" />
     </template>
 
-    <div class="py-4 px-3.5 min-w-[290px]">
+    <div class="py-4 px-3.5 min-w-[290px]" style="will-change: transform; contain: layout style;">
       <Form
         :schema="schema"
         :values="modelValue"
