@@ -68,7 +68,7 @@ export interface DataTableProps {
    */
   keyField?: string
   loading?: boolean
-  selectable?: boolean
+  hideSelectable?: boolean
   emptyTitle?: string
   emptyTitleI18n?: string
   emptyDescription?: string
