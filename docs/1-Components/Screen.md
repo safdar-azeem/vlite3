@@ -23,7 +23,7 @@ Alternatively, you can provide layouts via the `#table`, `#list`, and `#grid` sl
 | `infoI18n`             | `string`                         | —                                                                        | i18n key for the info tooltip.                                                                                                                                                                    |
 | `data`                 | `any[]`                          | `[]`                                                                     | The data array passed down to the active view component/slot.                                                                                                                                     |
 | `loading`              | `boolean`                        | `false`                                                                  | Propagated to child views and disables Refresh button while active.                                                                                                                               |
-| `refetch`              | `Function`                       | —                                                                        | Called on every search, filter, pagination, sort, or quick-filter change. Receives `{ pagination, search, sort, filter, quickFilter }`.                                                           |
+| `refetch`              | `Function`                       | —                                                                        | Called on every search, filter, pagination, sort, or quick-filter change. Receives `{ pagination, search, sort, filter }`.                                                           |
 | `pageInfo`             | `PageInfo`                       | —                                                                        | Pagination metadata (`currentPage`, `totalPages`, `totalItems`, `itemsPerPage`).                                                                                                                  |
 | `paginationProps`      | `ScreenPaginationProps`          | `{ alignment: 'between', navType: 'icon', showItemsPerPage: true, ... }` | Props forwarded to the `Pagination` component.                                                                                                                                                    |
 | `canSearch`            | `boolean`                        | `true`                                                                   | Show/hide the search input.                                                                                                                                                                       |
@@ -32,7 +32,8 @@ Alternatively, you can provide layouts via the `#table`, `#list`, and `#grid` sl
 | `filterSchema`         | `IForm[]`                        | `[]`                                                                     | Form schema for the advanced filter modal/dropdown.                                                                                                                                               |
 | `filterType`           | `'modal' \| 'dropdown'`          | `'modal'`                                                                | Style of the advanced filter trigger.                                                                                                                                                             |
 | `showRefresh`          | `boolean`                        | `false`                                                                  | Show a manual Refresh button in the toolbar.                                                                                                                                                      |
-| `quickFilters`         | `ScreenQuickFilter[]`            | `[]`                                                                     | Array of tab options rendered as a **line-variant tab bar** between the header and content. Selecting a tab resets to page 1 and passes the selected value as `quickFilter` in the refetch payload. |
+| `quickFilters`         | `ScreenQuickFilter[]`            | `[]`                                                                     | Array of tab options rendered as a **line-variant tab bar** between the header and content. Selecting a tab resets to page 1 and merges the value into the `filter` payload under `quickFilterKey`. |
+| `quickFilterKey`       | `string`                         | `'status'`                                                               | The key used when merging the active quick filter value into the `filter` payload. |
 | `defaultQuickFilter`   | `string \| number`               | first tab's value                                                        | Initial quick-filter value. Defaults to the first entry in `quickFilters` when not set.                                                                                                           |
 | `list`                 | `Component`                      | —                                                                        | Component rendered in list/grid view.                                                                                                                                                             |
 | `table`                | `Component`                      | —                                                                        | Component rendered in table view.                                                                                                                                                                 |
@@ -60,7 +61,7 @@ Alternatively, you can provide layouts via the `#table`, `#list`, and `#grid` sl
 
 ### Quick Filters
 
-Quick filters provide a **tab bar** UI pattern common in modern dashboards (Shopify, Linear, Vercel). They appear between the header toolbar and the content area, using a clean `line` variant.
+Quick filters provide a **tab bar** UI pattern common in modern dashboards (Shopify, Linear, Vercel). They appear between the header toolbar and the content area, using a clean `line` variant. The selected value will be seamlessly injected into the `filter` payload when refetching, completely invisible to the main Screen Filter state.
 
 #### `ScreenQuickFilter` type
 ```ts
@@ -72,27 +73,29 @@ export interface ScreenQuickFilter {
   /** Optional badge/count shown next to the label, e.g. "Active (12)" */
   count?: number
 }
-```
+````
 
 #### Refetch payload
 
-When a quick-filter tab is selected, `refetch` is called with an augmented payload:
+When a quick-filter tab is selected, `refetch` is called, and the quick filter's value is automatically injected into the `filter` object using the `quickFilterKey` (which defaults to `'status'`):
+
 ```ts
 refetch({
   pagination: { page: 1, limit: 10 },
   search: '...',
   sort: { field: '', order: '' },
-  filter: { ... },
-  quickFilter: 'active', // ← the selected tab value; '' means "All"
+  filter: { status: 'active', ...otherFilters }, // ← The selected tab value mapped to quickFilterKey
 })
 ```
 
 #### Examples
 
 **Products screen**
+
 ```vue
 <Screen
   title="Products"
+  quick-filter-key="productStatus"
   :quick-filters="[
     { label: 'All',      value: '' },
     { label: 'Active',   value: 'active' },
@@ -103,20 +106,22 @@ refetch({
 ```
 
 **Orders screen**
+
 ```vue
 <Screen
   title="Orders"
+  quick-filter-key="status"
   :quick-filters="[
     { label: 'All',        value: '' },
-    { label: 'Completed',  value: 'completed',  count="124" },
-    { label: 'Processing', value: 'processing', count="8" },
-    { label: 'Pending',    value: 'pending',    count="3" },
+    { label: 'Completed',  value: 'completed',  count: 124 },
+    { label: 'Processing', value: 'processing', count: 8 },
+    { label: 'Pending',    value: 'pending',    count: 3 },
     { label: 'Cancelled',  value: 'cancelled' },
   ]"
   :refetch="fetchOrders" />
 ```
 
----
+-----
 
 ### Slots
 
@@ -134,7 +139,7 @@ refetch({
 | `list`          | Slot-based list view. Same scoped props as `#table`.                                                                    |
 | `grid`          | Slot-based grid view (treated as list mode). Same scoped props.                                                         |
 
----
+-----
 
 ### Events
 
@@ -143,11 +148,12 @@ refetch({
 | `add`    | —         | Emitted when the default Add is clicked (no `addBtn` configured). |
 | `delete` | `any[]`   | Emitted after the user confirms bulk/row deletion.                |
 
----
+-----
 
 ### Usage
 
 #### Basic with quick filters
+
 ```vue
 <Screen
   name="orders"
@@ -156,6 +162,7 @@ refetch({
   :loading="loading"
   :page-info="pageInfo"
   :table="OrderTable"
+  quick-filter-key="status"
   :quick-filters="[
     { label: 'All',        value: '' },
     { label: 'Completed',  value: 'completed' },
@@ -166,18 +173,18 @@ refetch({
   :refetch="fetchOrders" />
 ```
 
-#### Reading `quickFilter` in your refetch handler
+#### Reading `filter` in your refetch handler
+
 ```ts
 const fetchOrders = (payload) => {
-  const { pagination, search, filter, quickFilter } = payload
-  // quickFilter === '' → show all
-  // quickFilter === 'pending' → filter by pending status
+  const { pagination, search, filter } = payload
+  // The quickFilter value is seamlessly embedded inside the `filter` object
   api.getOrders({
     page: pagination.page,
     limit: pagination.limit,
     search,
-    status: quickFilter || undefined,
-    ...filter,
+    ...filter, 
   })
 }
 ```
+
