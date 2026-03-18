@@ -53,7 +53,7 @@ const props = withDefaults(defineProps<DataTableProps>(), {
   headers: () => [],
   keyField: 'auto',
   loading: false,
-  selectable: false,
+  hideSelectable: false,
   emptyIcon: 'lucide:inbox',
   showPagination: true,
   paginationProps: () => ({
@@ -89,7 +89,7 @@ const effectiveShowSearch = computed(() => {
   return props.showSearch
 })
 
-const effectiveSelectable = computed(() => props.selectable || !!screenContext?.forceSelectable)
+const effectiveSelectable = computed(() => !props.hideSelectable || !!screenContext?.forceSelectable)
 const effectiveKeyField = computed(() => resolveKeyField(props.rows, props.keyField))
 
 // ── internal state ────────────────────────────────────────────────────────────
