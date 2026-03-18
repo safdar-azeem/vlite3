@@ -32,8 +32,8 @@ Alternatively, you can provide layouts via the `#table`, `#list`, and `#grid` sl
 | `filterSchema`         | `IForm[]`                        | `[]`                                                                     | Form schema for the advanced filter modal/dropdown.                                                                                                                                               |
 | `filterType`           | `'modal' \| 'dropdown'`          | `'modal'`                                                                | Style of the advanced filter trigger.                                                                                                                                                             |
 | `showRefresh`          | `boolean`                        | `false`                                                                  | Show a manual Refresh button in the toolbar.                                                                                                                                                      |
-| `quickFilters`         | `ScreenQuickFilter[]`            | `[]`                                                                     | Array of tab options rendered as a **line-variant tab bar** between the header and content. Selecting a tab resets to page 1 and merges the value into the `filter` payload under `quickFilterKey`. |
-| `quickFilterKey`       | `string`                         | `'status'`                                                               | The key used when merging the active quick filter value into the `filter` payload. |
+| `quickFilters`         | `ScreenQuickFilter[]`            | `[]`                                                                     | Array of tab options rendered as a **line-variant tab bar** between the header and content. Selecting a tab resets to page 1 and adds the value to the `filter` property in the refetch based on the provided key. |
+| `quickFilterKey`       | `string`                         | `'status'`                                                               | The key used to add the active quick filter value to the `filter` property in the refetch. Default will be `status`. |
 | `defaultQuickFilter`   | `string \| number`               | first tab's value                                                        | Initial quick-filter value. Defaults to the first entry in `quickFilters` when not set.                                                                                                           |
 | `list`                 | `Component`                      | —                                                                        | Component rendered in list/grid view.                                                                                                                                                             |
 | `table`                | `Component`                      | —                                                                        | Component rendered in table view.                                                                                                                                                                 |
@@ -61,7 +61,7 @@ Alternatively, you can provide layouts via the `#table`, `#list`, and `#grid` sl
 
 ### Quick Filters
 
-Quick filters provide a **tab bar** UI pattern common in modern dashboards (Shopify, Linear, Vercel). They appear between the header toolbar and the content area, using a clean `line` variant. The selected value will be seamlessly injected into the `filter` payload when refetching, completely invisible to the main Screen Filter state.
+Quick filters provide a **tab bar** UI pattern common in modern dashboards (Shopify, Linear, Vercel). They appear between the header toolbar and the content area, using a clean `line` variant. The selected value will add to the `filter` property in the refetch based on the provided key. Default will be `status`. This behavior is completely invisible to the main Screen Filter state.
 
 #### `ScreenQuickFilter` type
 ```ts
@@ -77,7 +77,7 @@ export interface ScreenQuickFilter {
 
 #### Refetch payload
 
-When a quick-filter tab is selected, `refetch` is called, and the quick filter's value is automatically injected into the `filter` object using the `quickFilterKey` (which defaults to `'status'`):
+When a quick-filter tab is selected, `refetch` is called, and the quick filter's value is automatically added to the `filter` property based on the provided `quickFilterKey` (default will be `'status'`):
 
 ```ts
 refetch({
