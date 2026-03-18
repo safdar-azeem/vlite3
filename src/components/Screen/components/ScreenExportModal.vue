@@ -48,7 +48,7 @@ const txtSelectFormat = computed(() => {
         v-bind="typeof exportProps === 'object' ? exportProps : {}"
         :title="txtExportData"
         class="hidden!" />
-      <div class="px-1 py-1 text-sm">
+      <div class="px-1 py-1 text-sm" style="will-change: transform; contain: layout style;">
         <h6 class="font-medium mb-3 text-muted-foreground">
           {{ txtSelectFormat }}
         </h6>
@@ -60,6 +60,7 @@ const txtSelectFormat = computed(() => {
               { value: 'json', label: 'JSON (.json)', icon: 'lucide:file-json' },
             ]"
             :key="format.value"
+            v-memo="[format.value, format.label, format.icon]"
             variant="outline"
             class="w-full flex items-center justify-start gap-3 h-12"
             @click="exportDataRef?.exportData(format.value, close)">
