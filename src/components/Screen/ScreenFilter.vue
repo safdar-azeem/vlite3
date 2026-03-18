@@ -102,7 +102,7 @@ const txtFilter = computed(() => {
         </div>
       </Button>
     </template>
-    <div style="will-change: transform; contain: layout style;">
+    <div style="will-change: transform; contain: layout style">
       <Form
         :schema="schema"
         :values="modelValue"
@@ -140,7 +140,7 @@ const txtFilter = computed(() => {
         class="shrink-0 h-9! w-9!" />
     </template>
 
-    <div class="py-4 px-3.5 min-w-[290px]" style="will-change: transform; contain: layout style;">
+    <div class="py-4 px-3.5 min-w-[290px]" style="will-change: transform; contain: layout style">
       <Form
         :schema="schema"
         :values="modelValue"
