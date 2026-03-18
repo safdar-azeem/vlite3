@@ -64,10 +64,10 @@ const handleDelete = (items: any[]) => {
           :table="UserTable"
           show-refresh
           :quick-filters="[
-            { label: 'All',      value: '' },
-            { label: 'Active',   value: 'active' },
+            { label: 'All', value: '' },
+            { label: 'Active', value: 'active' },
             { label: 'Inactive', value: 'inactive' },
-            { label: 'Pending',  value: 'pending' },
+            { label: 'Pending', value: 'pending' },
           ]"
           :filter-schema="[
             {
@@ -108,7 +108,14 @@ const handleDelete = (items: any[]) => {
           export-mode="backend"
           export-type="user"
           import-type="user"
-          @delete="handleDelete" />
+          @delete="handleDelete"
+          :add-btn="{
+            modal: AddUser,
+            label: 'Add User',
+            modalProps: {
+              title: 'Add User',
+            },
+          }" />
       </div>
     </DemoSection>
   </div>
