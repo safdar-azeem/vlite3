@@ -28,7 +28,7 @@ const props = withDefaults(defineProps<SidebarMenuProps>(), {
   menuOffset: () => [0, 10],
   orientation: 'vertical',
   mobileBreakpoint: 'none',
-  showTooltip: true,
+  showTooltip: false,
   forceTreeView: false,
 })
 
