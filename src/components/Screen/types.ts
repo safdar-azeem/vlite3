@@ -4,7 +4,9 @@ import { ButtonVariant } from '@/types'
 import { IForm } from '../Form'
 import type { ExportField } from '../ExportData/types'
 import type { ImportField } from '../ImportData/types'
+
 export interface ScreenPaginationProps extends Omit<PaginationProps, 'currentPage' | 'totalPages'> {}
+
 export interface AddBtnConfig {
   label?: string
   labelI18n?: string
@@ -18,6 +20,21 @@ export interface AddBtnConfig {
   modalProps?: Record<string, any>
   buttonProps?: Record<string, any>
 }
+
+/**
+ * A single quick-filter tab option.
+ * `value` is what gets emitted in the refetch payload under `quickFilter`.
+ * Use `value: ''` (or `value: 'all'`) for the "All" tab — it resets the quick filter.
+ */
+export interface ScreenQuickFilter {
+  label: string
+  labelI18n?: string
+  value: string | number
+  icon?: string
+  /** Optional badge/count displayed next to the label */
+  count?: number
+}
+
 export interface ScreenProps {
   name?: string
   title?: string
@@ -30,14 +47,16 @@ export interface ScreenProps {
   data?: any[]
   loading?: boolean
   /**
-   * Called on every search, filter, pagination, or sort change.
-   * Standard payload shape: { pagination, search, sort, filter }
+   * Called on every search, filter, pagination, sort, or quick-filter change.
+   * Standard payload shape: { pagination, search, sort, filter, quickFilter }
    */
   refetch?: (payload: {
     pagination: { page: number; limit: number }
     search: string
     sort: Record<string, any>
     filter: Record<string, any>
+    /** The currently selected quick-filter value ('' means "All") */
+    quickFilter: string | number
   }) => void
   paginationProps?: ScreenPaginationProps
   emptyTitle?: string
@@ -68,4 +87,20 @@ export interface ScreenProps {
   headerClass?: string
   viewProps?: Record<string, any>
   hideSelectable?: boolean
+  /**
+   * Quick-filter tabs rendered below the header (above the content).
+   * Inspired by modern dashboards (Shopify, Linear, Vercel).
+   * Example:
+   *   [
+   *     { label: 'All',       value: '' },
+   *     { label: 'Active',    value: 'active' },
+   *     { label: 'Draft',     value: 'draft' },
+   *     { label: 'Archived',  value: 'archived' },
+   *   ]
+   */
+  quickFilters?: ScreenQuickFilter[]
+  /**
+   * Default selected quick-filter value. Defaults to the first tab's value.
+   */
+  defaultQuickFilter?: string | number
 }
