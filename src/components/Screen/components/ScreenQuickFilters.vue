@@ -11,11 +11,12 @@
 import { computed } from 'vue'
 import { Tabes } from '../../Tabes'
 import type { ScreenQuickFilter } from '../types'
-import type { TabesOption } from '../../Tabes/types'
+import type { TabesOption, TabesVariant } from '../../Tabes/types'
 
 const props = defineProps<{
   modelValue: string | number
   options: ScreenQuickFilter[]
+  variant?: TabesVariant
 }>()
 
 const emit = defineEmits<{
@@ -43,9 +44,10 @@ const handleChange = (val: string | number) => {
 <template>
   <div class="w-max">
     <Tabes
+      class="border-b-0! border-0! pb-0.5"
       :model-value="modelValue"
       :options="tabesOptions"
-      variant="line"
+      :variant="variant || 'line'"
       @change="handleChange" />
   </div>
 </template>
