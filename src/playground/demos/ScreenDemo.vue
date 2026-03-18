@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, defineAsyncComponent } from 'vue'
 import { Screen } from '@/components/Screen'
 import DemoSection from '../DemoSection.vue'
 import sourceCode from './ScreenDemo.vue?raw'
 import { useGetUsers } from '../composables/useGetUsers'
 import Button from '@/components/Button.vue'
 
-// Custom List and Table components specific to the Screen
-import UserList from './ScreenDemoComponents/UserList.vue'
-import UserTable from './ScreenDemoComponents/UserTable.vue'
-import AddUser from './ScreenDemoComponents/AddUser.vue'
+// Lazy Loading custom heavy components specific to the Screen
+const UserList = defineAsyncComponent(() => import('./ScreenDemoComponents/UserList.vue'))
+const UserTable = defineAsyncComponent(() => import('./ScreenDemoComponents/UserTable.vue'))
+const AddUser = defineAsyncComponent(() => import('./ScreenDemoComponents/AddUser.vue'))
 
 const { result, loading, refetch } = useGetUsers()
 
