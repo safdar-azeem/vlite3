@@ -4,8 +4,12 @@ import { ButtonVariant } from '@/types'
 import { IForm } from '../Form'
 import type { ExportField } from '../ExportData/types'
 import type { ImportField } from '../ImportData/types'
+import { TabesVariant } from '../Tabes'
 
-export interface ScreenPaginationProps extends Omit<PaginationProps, 'currentPage' | 'totalPages'> {}
+export interface ScreenPaginationProps extends Omit<
+  PaginationProps,
+  'currentPage' | 'totalPages'
+> {}
 
 export interface AddBtnConfig {
   label?: string
@@ -23,7 +27,7 @@ export interface AddBtnConfig {
 
 /**
  * A single quick-filter tab option.
- * `value` is what gets emitted in the refetch payload under `quickFilter`.
+ * `value` is what gets emitted in the refetch payload.
  * Use `value: ''` (or `value: 'all'`) for the "All" tab — it resets the quick filter.
  */
 export interface ScreenQuickFilter {
@@ -48,15 +52,13 @@ export interface ScreenProps {
   loading?: boolean
   /**
    * Called on every search, filter, pagination, sort, or quick-filter change.
-   * Standard payload shape: { pagination, search, sort, filter, quickFilter }
+   * Standard payload shape: { pagination, search, sort, filter }
    */
   refetch?: (payload: {
     pagination: { page: number; limit: number }
     search: string
     sort: Record<string, any>
     filter: Record<string, any>
-    /** The currently selected quick-filter value ('' means "All") */
-    quickFilter: string | number
   }) => void
   paginationProps?: ScreenPaginationProps
   emptyTitle?: string
@@ -91,16 +93,22 @@ export interface ScreenProps {
    * Quick-filter tabs rendered below the header (above the content).
    * Inspired by modern dashboards (Shopify, Linear, Vercel).
    * Example:
-   *   [
-   *     { label: 'All',       value: '' },
-   *     { label: 'Active',    value: 'active' },
-   *     { label: 'Draft',     value: 'draft' },
-   *     { label: 'Archived',  value: 'archived' },
-   *   ]
+   * [
+   * { label: 'All',       value: '' },
+   * { label: 'Active',    value: 'active' },
+   * { label: 'Draft',     value: 'draft' },
+   * { label: 'Archived',  value: 'archived' },
+   * ]
    */
   quickFilters?: ScreenQuickFilter[]
+  /**
+   * The key used to inject the active quick filter into the refetch filter payload.
+   * Defaults to 'status'.
+   */
+  quickFilterKey?: string
   /**
    * Default selected quick-filter value. Defaults to the first tab's value.
    */
   defaultQuickFilter?: string | number
+  quickFilterVariant?: TabesVariant
 }
