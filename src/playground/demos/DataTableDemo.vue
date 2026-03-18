@@ -187,7 +187,6 @@ const handleDelete = (rows: User[]) => {
         :variant="isRaised ? 'raised' : 'default'"
         :pagination-props="paginationProps"
         key-field="_id"
-        selectable
         hoverable
         bordered
         empty-title="No users found"
