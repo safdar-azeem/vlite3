@@ -47,6 +47,8 @@ const props = withDefaults(defineProps<ScreenProps>(), {
   viewProps: () => ({}),
   hideSelectable: false,
   quickFilters: () => [],
+  quickFilterKey: 'status',
+  quickFilterVariant: 'line',
 })
 const vliteConfig = useVLiteConfig()
 const emit = defineEmits<{
@@ -177,12 +179,22 @@ const handleItemsPerPageChange = (limit: number) => {
 // ── unified refetch trigger ───────────────────────────────────────────────────
 const triggerChange = () => {
   if (!props.refetch) return
+
+  const combinedFilters = { ...activeFilters.value }
+
+  if (
+    activeQuickFilter.value !== '' &&
+    activeQuickFilter.value !== null &&
+    activeQuickFilter.value !== undefined
+  ) {
+    combinedFilters[props.quickFilterKey] = activeQuickFilter.value
+  }
+
   props.refetch({
     pagination: { page: internalPage.value, limit: internalLimit.value },
     search: searchQuery.value,
     sort: { ...activeSort.value },
-    filter: { ...activeFilters.value },
-    quickFilter: activeQuickFilter.value,
+    filter: combinedFilters,
   })
 }
 
@@ -385,15 +397,14 @@ const handleBackendExport = async (format: string) => {
     </div>
     <slot name="custom-header" v-else />
 
-    <!--
-      Quick-filter tabs — rendered between the header and the content area.
-      Collapses gracefully when no quickFilters are provided.
-      The -mt-4 compensates the parent space-y-8 so the tabs sit closer to the header.
-    -->
-    <div v-if="hasQuickFilters" class="mb-1">
+    <div
+      v-if="hasQuickFilters"
+      class="max-sm:-mt-1"
+      :class="quickFilterVariant == 'line' ? 'mb-1.5 sm:mb-0' : 'mb-2'">
       <ScreenQuickFilters
         v-model="activeQuickFilter"
         :options="quickFilters!"
+        :variant="quickFilterVariant"
         @change="handleQuickFilterChange" />
     </div>
 
