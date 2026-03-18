@@ -52,7 +52,7 @@ Alternatively, you can provide layouts via the `#table`, `#list`, and `#grid` sl
 | `containerClass`       | `string`                         | —                                                                        | Additional CSS classes applied to the main content area wrapper `div`.                                                                                                                            |
 | `headerClass`          | `string`                         | —                                                                        | Additional CSS classes applied to the header row `div`.                                                                                                                                           |
 | `viewProps`            | `Record<string, any>`            | `{}`                                                                     | Props object forwarded to the `list` / `table` child components (and `#list` / `#table` / `#grid` slots). Solves the case where the parent screen cannot directly pass props to those components. |
-| `canSelectRows`        | `boolean`                        | `true`                                                                   | Permission flag (styled like `canAdd` / `canSearch`) to enable/disable row selection. When `false`, checkboxes, bulk-delete button and `forceSelectable` context are disabled.                    |
+| `hideSelectable`       | `boolean`                        | `false`                                                                  | Permission flag to disable row selection. When `true`, checkboxes, bulk-delete button and `forceSelectable` context are disabled.                                                               |
 
 ---
 
@@ -179,7 +179,7 @@ When `DataTable` is a child of `Screen` (passed via `:table` prop or `#table` sl
 | Behaviour | What happens |
 | :--- | :--- |
 | **Search disabled** | `DataTable` hides its own search toolbar — `Screen` owns the search input. |
-| **Selectable forced** | `DataTable` enables row checkboxes **only if `canSelectRows` is `true`** for `Screen`'s bulk-delete feature. |
+| **Selectable forced** | `DataTable` enables row checkboxes **unless `hideSelectable` is `true`** for `Screen`'s bulk-delete feature. |
 | **Sort forwarded** | Every `@change` from `DataTable` (sort click, page change) is forwarded to `Screen`'s `refetch` via `ScreenContext.onTableChange`. |
 The `refetch` payload always uses the standardised shape `{ pagination, search, sort, filter }` regardless of which interaction triggered it.
 
