@@ -17,7 +17,7 @@ const defaultConfig: VLiteConfig = {
     price: {
       currency: 'USD',
     },
-    date: {
+    datetime: {
       format: 'MM/DD/YYYY',
     },
     statusChip: {
