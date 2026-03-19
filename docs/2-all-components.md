@@ -1,4 +1,3 @@
-
 # All Components Reference
 
 Check the individual Markdown files inside the docs folders for full details.
@@ -21,6 +20,7 @@ Check the individual Markdown files inside the docs folders for full details.
 * [ChoiceBox](https://www.google.com/search?q=./1-Components/ChoiceBox.md)
 * [ColorPicker](https://www.google.com/search?q=./1-Components/ColorPicker.md)
 * [ConfirmationModal](https://www.google.com/search?q=./1-Components/ConfirmationModal.md)
+* [CustomFields](https://www.google.com/search?q=./1-Components/CustomFields.md)
 * [DataList](https://www.google.com/search?q=./1-Components/DataList.md)
 * [DataTable](https://www.google.com/search?q=./1-Components/DataTable.md)
 * [Date](https://www.google.com/search?q=./1-Components/Date.md)
@@ -72,3 +72,4 @@ Check the individual Markdown files inside the docs folders for full details.
 * [PermissionEditor](https://www.google.com/search?q=./2-advance-components/PermissionEditor.md)
 * [PricingPlan](https://www.google.com/search?q=./2-advance-components/PricingPlan.md)
 * [Workbook](https://www.google.com/search?q=./2-advance-components/Workbook.md)
+
