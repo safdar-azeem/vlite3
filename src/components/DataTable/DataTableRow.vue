@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import CheckBox from '../CheckBox.vue'
 import Price from '../Price/Price.vue'
-import Date from '../Date/Date.vue'
+import DateTime from '../DateTime/DateTime.vue'
 import type { TableHeader } from './types'
 
 interface Props {
@@ -161,7 +161,7 @@ const handleSelect = () => {
           class="truncate block"
           :title="String(getNestedValue(row, header.field))" />
 
-        <Date
+        <DateTime
           v-else-if="header.type === 'date'"
           :value="getNestedValue(row, header.field)"
           class="truncate block"
