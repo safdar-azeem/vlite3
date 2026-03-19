@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, ref, shallowRef, watch } from 'vue'
+import { VueDraggable } from 'vue-draggable-plus'
 import type { IForm, IFormFieldChangePayload } from './types'
 import type { InputVariant, InputSize, InputRounded } from '@/types'
 import FormField from './FormField.vue'
 import Button from '@/components/Button.vue'
 import Label from '../Label.vue'
+import Icon from '@/components/Icon.vue'
 import { $t } from '@/utils/i18n'
 
 interface Props {
@@ -15,6 +17,7 @@ interface Props {
   size?: InputSize
   rounded?: InputRounded
   disabled?: boolean
+  draggable?: boolean
   minRows?: number
   maxRows?: number
   addButtonText?: string
@@ -34,6 +37,7 @@ const props = withDefaults(defineProps<Props>(), {
   size: 'md',
   rounded: 'md',
   disabled: false,
+  draggable: false,
   minRows: 0,
   addButtonText: 'Add Row',
   showRowNumbers: false,
@@ -123,6 +127,11 @@ const handleFieldChange = (
   emitChange(newRows)
 }
 
+const handleDragUpdate = (newRows: (Record<string, any> & { _id: string })[]) => {
+  rows.value = newRows
+  emitChange(newRows)
+}
+
 const emitChange = (value: (Record<string, any> & { _id: string })[]) => {
   const cleanValue = value.map(({ _id, ...rest }) => rest)
   emit('update:modelValue', cleanValue)
@@ -172,6 +181,7 @@ const columnHeaders = computed(() => {
       <div
         v-if="columnHeaders.length > 0"
         class="flex border-b border-border bg-muted/50 text-gray-800 text-xs font-semibold uppercase tracking-wider">
+        <div v-if="draggable" class="w-10 flex-none p-3 border-r border-border"></div>
         <div v-if="showRowNumbers" class="w-10 flex-none p-3 text-center border-r border-border">
           #
         </div>
@@ -185,12 +195,28 @@ const columnHeaders = computed(() => {
         <div v-if="canRemoveRow" class="w-10 flex-none p-3"></div>
       </div>
 
-      <TransitionGroup name="list" tag="div" class="divide-y divide-border">
+      <VueDraggable
+        :model-value="rows"
+        @update:model-value="handleDragUpdate"
+        :disabled="!draggable || disabled"
+        :animation="150"
+        handle=".drag-handle"
+        ghost-class="opacity-50"
+        class="divide-y divide-border"
+      >
         <div
           v-for="(row, rowIndex) in rows"
           :key="row._id"
-          v-memo="[row, disabled, isUpdate, showRowNumbers, canRemoveRow]"
+          v-memo="[row, disabled, isUpdate, showRowNumbers, canRemoveRow, draggable, rowIndex]"
           class="flex group bg-white transition-colors">
+          
+          <div
+            v-if="draggable"
+            class="w-10 flex-none flex items-center justify-center border-r border-border bg-muted/5 drag-handle transition-colors"
+            :class="disabled ? 'cursor-not-allowed opacity-50' : 'cursor-grab active:cursor-grabbing hover:bg-muted/10 text-muted-foreground hover:text-foreground'">
+            <Icon icon="lucide:grip-vertical" class="w-4 h-4" />
+          </div>
+
           <div
             v-if="showRowNumbers"
             class="w-10 flex-none flex items-center justify-center text-xs text-muted-foreground border-r border-border bg-muted/20">
@@ -234,7 +260,7 @@ const columnHeaders = computed(() => {
               @click="removeRow(rowIndex)" />
           </div>
         </div>
-      </TransitionGroup>
+      </VueDraggable>
 
       <div
         v-if="rows.length === 0"
