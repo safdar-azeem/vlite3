@@ -7,7 +7,7 @@ import type { CarouselProps } from './types'
 const props = withDefaults(defineProps<CarouselProps>(), {
   data: () => [],
   pagination: 'dots',
-  paginationSize: 'md',
+  paginationSize: 'sm',
   paginationPosition: 'bottom-center',
   direction: 'horizontal',
   autoPlay: false,
