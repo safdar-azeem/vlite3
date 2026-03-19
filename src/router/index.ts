@@ -26,6 +26,7 @@ import IconPickerDemo from '../playground/demos/IconPickerDemo.vue'
 import DatePickerDemo from '../playground/demos/DatePickerDemo.vue'
 import DateRangePickerDemo from '../playground/demos/DateRangePickerDemo.vue'
 import FormDemo from '../playground/demos/FormDemo.vue'
+import ChatDemo from '../playground/demos/ChatDemo.vue'
 
 // Feedback / Overlays
 import AlertDemo from '../playground/demos/AlertDemo.vue'
@@ -69,7 +70,6 @@ import ImportDataDemo from '../playground/demos/ImportDataDemo.vue'
 import PriceDemo from '../playground/demos/PriceDemo.vue'
 import DateDemo from '../playground/demos/DateDemo.vue'
 import EmptyDemo from '../playground/demos/EmptyDemo.vue'
-
 import GoogleLoginDemo from '../playground/GoogleLoginDemo.vue'
 import I18nDemo from '../playground/demos/I18nDemo.vue'
 
@@ -101,6 +101,7 @@ const routes = [
       { path: 'datepicker', component: DatePickerDemo },
       { path: 'daterangepicker', component: DateRangePickerDemo },
       { path: 'form', component: FormDemo },
+      { path: 'chat', component: ChatDemo },
       { path: 'googlelogin', component: GoogleLoginDemo },
       { path: 'alert', component: AlertDemo },
       { path: 'modal', component: ModalDemo },
