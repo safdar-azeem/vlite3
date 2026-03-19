@@ -46,6 +46,7 @@ const props = withDefaults(defineProps<ScreenProps>(), {
   }),
   viewProps: () => ({}),
   hideSelectable: false,
+  hideDeleteBtn: false,
   quickFilters: () => [],
   quickFilterKey: 'status',
   quickFilterVariant: 'line',
@@ -319,8 +320,10 @@ const handleBackendExport = async (format: string) => {
       <ScreenHeaderTitle
         :title="title"
         :title-i18n="titleI18n"
+        :title-class="titleClass"
         :description="description"
         :description-i18n="descriptionI18n"
+        :description-class="descriptionClass"
         :info="info"
         :info-i18n="infoI18n">
         <template #title v-if="$slots.title"><slot name="title" /></template>
@@ -331,7 +334,7 @@ const handleBackendExport = async (format: string) => {
         <div
           class="flex items-center gap-2 w-full sm:w-auto flex-1 md:flex-none justify-start sm:justify-end">
           <Button
-            v-if="selectedRows.length > 0 && !hideSelectable"
+            v-if="selectedRows.length > 0 && !hideSelectable && !hideDeleteBtn"
             variant="outline"
             class="hover:bg-destructive/10 shrink-0 h-9! w-9!"
             icon="lucide:trash-2"
@@ -396,19 +399,17 @@ const handleBackendExport = async (format: string) => {
       </div>
     </div>
     <slot name="custom-header" v-else />
-
+    <slot name="sub-header" />
     <div
       v-if="hasQuickFilters"
-      class="max-sm:-mt-1"
-      :class="quickFilterVariant == 'line' ? 'mb-1.5 sm:mb-0' : 'mb-2'">
+      class="-mt-1"
+      :class="quickFilterVariant == 'line' ? 'mb-1.5 sm:mb-1' : 'mb-2'">
       <ScreenQuickFilters
         v-model="activeQuickFilter"
         :options="quickFilters!"
         :variant="quickFilterVariant"
         @change="handleQuickFilterChange" />
     </div>
-
-    <slot name="sub-header" />
 
     <div class="flex-1 w-full relative" :class="containerClass">
       <template v-if="!hasData && !loading">
