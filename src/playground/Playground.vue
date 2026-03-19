@@ -65,6 +65,7 @@ const menuItems: SidebarMenuItemSchema[] = [
     label: 'Feedback & Overlays',
     icon: 'lucide:message-square',
     children: [
+      { label: 'Chat Interface', to: '/chat', icon: 'lucide:message-circle' },
       { label: 'Alert', to: '/alert', icon: 'lucide:alert-circle' },
       { label: 'Modal', to: '/modal', icon: 'lucide:app-window' },
       { label: 'SidePanel', to: '/sidepanel', icon: 'lucide:panel-right' },
@@ -146,18 +147,24 @@ const menuItems: SidebarMenuItemSchema[] = [
           />
         </div>
       </template>
+
       <template #right>
-        <div class="flex items-center gap-2 px-2 py-2" :class="isSidebarCompact ? 'flex-col justify-center' : 'flex-row justify-between'">
+        <div
+          class="flex items-center gap-2 px-2 py-2"
+          :class="isSidebarCompact ? 'flex-col justify-center' : 'flex-row justify-between'"
+        >
           <ThemeToggle />
           <p v-if="!isSidebarCompact" class="text-xs text-muted-foreground">v0.6.2</p>
         </div>
       </template>
+
       <template #logo>
         <div class="font-bold text-lg flex items-center gap-2 mr-6">
           <div class="w-7 h-7 rounded bg-primary text-white flex items-center justify-center">V</div>
           Vlite3
         </div>
       </template>
+
       <template #header="{ toggleSidebar, toggle, breadcrumbItems }">
         <div class="h-13 border-b bg-background flex items-center justify-between px-4 w-full shadow-sm">
           <div class="flex items-center gap-2 min-w-0 flex-1">
@@ -168,10 +175,12 @@ const menuItems: SidebarMenuItemSchema[] = [
               @click="toggleCompact"
               class="max-md:hidden shrink-0"
             />
+
             <div class="font-bold text-lg flex items-center gap-2 mr-6">
               <div class="w-7 h-7 rounded bg-primary text-white flex items-center justify-center">V</div>
               Vlite3
             </div>
+
             <NavbarCommandPalette
               :enabled="true"
               triggerClass="w-[200px] hidden sm:inline-flex"
@@ -179,35 +188,22 @@ const menuItems: SidebarMenuItemSchema[] = [
               placeholder="Search components..."
               shortcut-key="k"
             />
+
             <div v-if="breadcrumbItems?.length > 1" class="hidden md:flex items-center pl-3 border-l border-border ml-1">
               <Breadcrumb :items="breadcrumbItems" separator="slash" size="sm" />
             </div>
           </div>
+
           <div class="flex gap-2 items-center shrink-0">
             <Button variant="ghost" size="sm" icon="lucide:bell" rounded="full" />
             <Avatar size="sm" fallback="JD" class="bg-primary/20 text-primary" />
           </div>
         </div>
       </template>
+
       <template #main>
-        <div class="flex-1 w-full flex flex-col h-full bg-body relative z-0">
-          <div class="flex-1 overflow-y-auto scroll-smooth">
-            <div class="max-w-[1950px] mx-auto px-14 py-6 md:py-5">
-              <router-view v-slot="{ Component }">
-                <Transition
-                  mode="out-in"
-                  enter-active-class="transition duration-200 ease-out"
-                  enter-from-class="opacity-0 translate-y-2"
-                  enter-to-class="opacity-100 translate-y-0"
-                  leave-active-class="transition duration-150 ease-in"
-                  leave-from-class="opacity-100 translate-y-0"
-                  leave-to-class="opacity-0 translate-y-2"
-                >
-                  <component :is="Component" />
-                </Transition>
-              </router-view>
-            </div>
-          </div>
+        <div class="flex-1 w-full flex flex-col min-h-0 bg-gray-50 dark:bg-card h-[calc(100vh-52px)] overflow-y-auto px-4 md:px-10 py-6 scrollbar-thin">
+          <router-view></router-view>
         </div>
       </template>
     </Navbar>
