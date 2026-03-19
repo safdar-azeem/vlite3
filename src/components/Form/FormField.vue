@@ -311,6 +311,7 @@ const fieldProps = computed(() => {
       rounded: props.rounded,
       maxSize: props.field.maxFileSize ? props.field.maxFileSize * 1024 * 1024 : undefined,
       loading: props.loading,
+      allowRename: props.field.props?.allowRename ?? true,
     }
   }
 
