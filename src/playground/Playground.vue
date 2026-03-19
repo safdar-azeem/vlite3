@@ -124,8 +124,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       breadcrumb
       :render-nested-tabs="isSidebarCompact"
       class="border-r border-border"
-      :class="isSidebarCompact ? 'w-28' : 'w-64'"
-    >
+      :class="isSidebarCompact ? 'w-28' : 'w-64'">
       <template #default>
         <div class="py-3" :class="isSidebarCompact ? 'px-1' : 'px-2'">
           <SidebarMenu
@@ -136,23 +135,25 @@ const menuItems: SidebarMenuItemSchema[] = [
             :compact="isSidebarCompact"
             :render-mode="isSidebarCompact ? 'popover' : 'tree'"
             show-compact-labels
-            :default-expanded="['Core', 'Forms & Auth', 'Feedback & Overlays', 'Navigation & Data']"
-          />
+            :default-expanded="[
+              'Core',
+              'Forms & Auth',
+              'Feedback & Overlays',
+              'Navigation & Data',
+            ]" />
           <SidebarMenu
             class="md:hidden"
             :show-tooltip="false"
             :allow-multiple="true"
             :items="menuItems"
-            :force-tree-view="true"
-          />
+            :force-tree-view="true" />
         </div>
       </template>
 
       <template #right>
         <div
           class="flex items-center gap-2 px-2 py-2"
-          :class="isSidebarCompact ? 'flex-col justify-center' : 'flex-row justify-between'"
-        >
+          :class="isSidebarCompact ? 'flex-col justify-center' : 'flex-row justify-between'">
           <ThemeToggle />
           <p v-if="!isSidebarCompact" class="text-xs text-muted-foreground">v0.6.2</p>
         </div>
@@ -160,24 +161,28 @@ const menuItems: SidebarMenuItemSchema[] = [
 
       <template #logo>
         <div class="font-bold text-lg flex items-center gap-2 mr-6">
-          <div class="w-7 h-7 rounded bg-primary text-white flex items-center justify-center">V</div>
+          <div class="w-7 h-7 rounded bg-primary text-white flex items-center justify-center">
+            V
+          </div>
           Vlite3
         </div>
       </template>
 
       <template #header="{ toggleSidebar, toggle, breadcrumbItems }">
-        <div class="h-13 border-b bg-background flex items-center justify-between px-4 w-full shadow-sm">
+        <div
+          class="h-13 border-b bg-background flex items-center justify-between px-4 w-full shadow-sm">
           <div class="flex items-center gap-2 min-w-0 flex-1">
             <Button variant="ghost" icon="lucide:menu" @click="toggle" class="md:hidden shrink-0" />
             <Button
               variant="ghost"
               :icon="isSidebarCompact ? 'lucide:panel-left-open' : 'lucide:panel-left-close'"
               @click="toggleCompact"
-              class="max-md:hidden shrink-0"
-            />
+              class="max-md:hidden shrink-0" />
 
             <div class="font-bold text-lg flex items-center gap-2 mr-6">
-              <div class="w-7 h-7 rounded bg-primary text-white flex items-center justify-center">V</div>
+              <div class="w-7 h-7 rounded bg-primary text-white flex items-center justify-center">
+                V
+              </div>
               Vlite3
             </div>
 
@@ -186,10 +191,11 @@ const menuItems: SidebarMenuItemSchema[] = [
               triggerClass="w-[200px] hidden sm:inline-flex"
               :menu-items="menuItems"
               placeholder="Search components..."
-              shortcut-key="k"
-            />
+              shortcut-key="k" />
 
-            <div v-if="breadcrumbItems?.length > 1" class="hidden md:flex items-center pl-3 border-l border-border ml-1">
+            <div
+              v-if="breadcrumbItems?.length > 1"
+              class="hidden md:flex items-center pl-3 border-l border-border ml-1">
               <Breadcrumb :items="breadcrumbItems" separator="slash" size="sm" />
             </div>
           </div>
@@ -202,7 +208,8 @@ const menuItems: SidebarMenuItemSchema[] = [
       </template>
 
       <template #main>
-        <div class="flex-1 w-full flex flex-col min-h-0 bg-gray-50 dark:bg-card h-[calc(100vh-52px)] overflow-y-auto px-4 md:px-10 py-6 scrollbar-thin">
+        <div
+          class="flex-1 w-full flex flex-col min-h-0 bg-body dark:bg-card h-[calc(100vh-52px)] overflow-y-auto px-4 md:px-10 py-6 scrollbar-thin">
           <router-view></router-view>
         </div>
       </template>
