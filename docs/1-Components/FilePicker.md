@@ -15,6 +15,7 @@
 | `maxFiles`        | `number`                                       | —            | Max number of allowed files                 |
 | `loading`         | `boolean`                                      | `false`      | Show loading state                          |
 | `disabled`        | `boolean`                                      | `false`      | Disable interaction                         |
+| `allowRename`     | `boolean`                                      | `false`      | Allow renaming files directly in the dropzone |
 | `placeholder`     | `string`                                       | —            | Placeholder (for `input` variant)           |
 | `placeholderI18n` | `string`                                       | —            | I18n key for input placeholder              |
 | `textI18n`        | `string`                                       | —            | I18n key for dropzone text                  |
@@ -28,8 +29,9 @@ export interface FilePickerValue {
   fileName: string
   fileType: string
   fileSize: number
-  file: File // Actual File object
+  file: File | null // Actual File object (null if URL)
   base64: string // Populated if returnFormat='base64'
+  isUrl?: boolean
 }
 ```
 
