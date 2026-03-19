@@ -14,9 +14,9 @@ const setGlobalFormat = (format: string) => {
   updateConfig({
     components: {
       date: {
-        format: format
-      }
-    }
+        format: format,
+      },
+    },
   })
 }
 </script>
@@ -26,7 +26,8 @@ const setGlobalFormat = (format: string) => {
     <div>
       <h2 class="text-2xl font-bold mb-1">Date</h2>
       <p class="text-gray-500 text-sm">
-        A utility component to consistently format dates powered by <code>dayjs</code>. It inherits its format from the global configuration, but can be overridden seamlessly via props.
+        A utility component to consistently format dates powered by <code>dayjs</code>. It inherits
+        its format from the global configuration, but can be overridden seamlessly via props.
       </p>
     </div>
 
@@ -77,21 +78,60 @@ const setGlobalFormat = (format: string) => {
       </div>
     </DemoSection>
 
+    <DemoSection title="Time String Formatting" :code="sourceCode">
+      <div class="space-y-4 text-base font-medium">
+        <p class="text-sm text-muted-foreground">
+          The component can intelligently parse bare time strings (e.g., <code>"09:00"</code>,
+          <code>"17:00"</code>) and format them nicely. By default, it uses <code>h:mm A</code> for
+          time strings.
+        </p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div class="flex flex-col gap-1">
+            <span class="text-xs text-muted-foreground">"09:00"</span>
+            <FormattedDate :value="'09:00'" />
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-xs text-muted-foreground">"17:00"</span>
+            <FormattedDate :value="'17:00'" />
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-xs text-muted-foreground">"13:30:45"</span>
+            <FormattedDate :value="'13:30:45'" />
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-xs text-muted-foreground">"17:00" (Custom: HH:mm)</span>
+            <FormattedDate :value="'17:00'" format="HH:mm" />
+          </div>
+        </div>
+      </div>
+    </DemoSection>
+
     <DemoSection title="Dynamic Global Configuration" :code="sourceCode">
       <div class="space-y-6">
         <div class="flex flex-col gap-2">
-          <span class="text-sm font-medium">Current Global Format: <strong class="text-primary">{{ config?.components?.date?.format || 'MM/DD/YYYY' }}</strong></span>
-          <p class="text-sm text-muted-foreground">Change the application-wide format. DataTables and Lists using type <code>date</code> will automatically adapt.</p>
+          <span class="text-sm font-medium"
+            >Current Global Format:
+            <strong class="text-primary">{{
+              config?.components?.date?.format || 'MM/DD/YYYY'
+            }}</strong></span
+          >
+          <p class="text-sm text-muted-foreground">
+            Change the application-wide format. DataTables and Lists using type
+            <code>date</code> will automatically adapt.
+          </p>
         </div>
 
         <div class="flex gap-3 flex-wrap">
           <Button variant="outline" @click="setGlobalFormat('MM/DD/YYYY')">US: MM/DD/YYYY</Button>
           <Button variant="outline" @click="setGlobalFormat('DD/MM/YYYY')">EU: DD/MM/YYYY</Button>
           <Button variant="outline" @click="setGlobalFormat('YYYY-MM-DD')">ISO: YYYY-MM-DD</Button>
-          <Button variant="outline" @click="setGlobalFormat('MMMM D, YYYY')">Word: MMMM D, YYYY</Button>
+          <Button variant="outline" @click="setGlobalFormat('MMMM D, YYYY')"
+            >Word: MMMM D, YYYY</Button
+          >
         </div>
 
-        <div class="p-6 border border-border rounded-xl bg-card shadow-sm flex items-center gap-8 text-2xl font-semibold text-foreground">
+        <div
+          class="p-6 border border-border rounded-xl bg-card shadow-sm flex items-center gap-8 text-2xl font-semibold text-foreground">
           <FormattedDate :value="today" />
         </div>
       </div>
