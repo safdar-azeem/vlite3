@@ -105,6 +105,11 @@ const activeComponent = computed(() => {
 // ── Computed: true when the user has an active search or any filter applied ──
 const isFiltered = computed(() => {
   if (searchQuery.value && searchQuery.value.trim() !== '') return true
+  if (
+    activeQuickFilter.value !== '' &&
+    activeQuickFilter.value !== null &&
+    activeQuickFilter.value !== undefined
+  ) return true
   if (!activeFilters.value) return false
   return Object.keys(activeFilters.value).some(
     (k) =>
