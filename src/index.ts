@@ -79,5 +79,5 @@ export { createVLite, useVLiteConfig } from './core'
 export { GoogleSignInPlugin }
 export * from './components/StatusChip'
 export * from './components/Price'
-export * from './components/Date'
+export * from './components/DateTime'
 export * from './core/config.ts'
