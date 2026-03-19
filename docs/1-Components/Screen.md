@@ -12,50 +12,53 @@ Alternatively, you can provide layouts via the `#table`, `#list`, and `#grid` sl
 
 ### Props
 
-| Prop                   | Type                             | Default                                                                  | Description                                                                                                                                                                                       |
-| :--------------------- | :------------------------------- | :----------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `name`                 | `string`                         | `''`                                                                     | Optional identifier used to persist the view state (list vs table). Combined with `title` to form a unique storage key.                                                                           |
-| `title`                | `string`                         | `''`                                                                     | Page title displayed at the top of the screen header.                                                                                                                                             |
-| `titleI18n`            | `string`                         | —                                                                        | i18n key for the page title. Takes priority over `title` when set.                                                                                                                                |
-| `description`          | `string`                         | `''`                                                                     | Subtitle/description text rendered below the title.                                                                                                                                               |
-| `descriptionI18n`      | `string`                         | —                                                                        | i18n key for the description.                                                                                                                                                                     |
-| `info`                 | `string`                         | —                                                                        | Tooltip info text shown next to the title via an info icon.                                                                                                                                       |
-| `infoI18n`             | `string`                         | —                                                                        | i18n key for the info tooltip.                                                                                                                                                                    |
-| `data`                 | `any[]`                          | `[]`                                                                     | The data array passed down to the active view component/slot.                                                                                                                                     |
-| `loading`              | `boolean`                        | `false`                                                                  | Propagated to child views and disables Refresh button while active.                                                                                                                               |
-| `refetch`              | `Function`                       | —                                                                        | Called on every search, filter, pagination, sort, or quick-filter change. Receives `{ pagination, search, sort, filter }`.                                                           |
-| `pageInfo`             | `PageInfo`                       | —                                                                        | Pagination metadata (`currentPage`, `totalPages`, `totalItems`, `itemsPerPage`).                                                                                                                  |
-| `paginationProps`      | `ScreenPaginationProps`          | `{ alignment: 'between', navType: 'icon', showItemsPerPage: true, ... }` | Props forwarded to the `Pagination` component.                                                                                                                                                    |
-| `canSearch`            | `boolean`                        | `true`                                                                   | Show/hide the search input.                                                                                                                                                                       |
-| `canAdd`               | `boolean`                        | `true`                                                                   | Show/hide the Add button.                                                                                                                                                                         |
-| `pagination`           | `boolean`                        | `true`                                                                   | Show/hide the pagination bar.                                                                                                                                                                     |
-| `filterSchema`         | `IForm[]`                        | `[]`                                                                     | Form schema for the advanced filter modal/dropdown.                                                                                                                                               |
-| `filterType`           | `'modal' \| 'dropdown'`          | `'modal'`                                                                | Style of the advanced filter trigger.                                                                                                                                                             |
-| `showRefresh`          | `boolean`                        | `false`                                                                  | Show a manual Refresh button in the toolbar.                                                                                                                                                      |
-| `quickFilters`         | `ScreenQuickFilter[]`            | `[]`                                                                     | Array of tab options rendered as a **line-variant tab bar** between the header and content. Selecting a tab resets to page 1 and adds the value to the `filter` property in the refetch based on the provided key. |
-| `quickFilterKey`       | `string`                         | `'status'`                                                               | The key used to add the active quick filter value to the `filter` property in the refetch. Default will be `status`. |
-| `defaultQuickFilter`   | `string \| number`               | first tab's value                                                        | Initial quick-filter value. Defaults to the first entry in `quickFilters` when not set.                                                                                                           |
-| `list`                 | `Component`                      | —                                                                        | Component rendered in list/grid view.                                                                                                                                                             |
-| `table`                | `Component`                      | —                                                                        | Component rendered in table view.                                                                                                                                                                 |
-| `addBtn`               | `AddBtnConfig`                   | —                                                                        | Configuration for the Add button (label, icon, variant, modal, router link, etc.).                                                                                                                |
-| `addComponent`         | `Component`                      | —                                                                        | Fully custom component to replace the default Add button area.                                                                                                                                    |
-| `exportSchema`         | `ExportField[]`                  | `[]`                                                                     | Fields definition for the Export feature.                                                                                                                                                         |
-| `importSchema`         | `ImportField[]`                  | `[]`                                                                     | Fields definition for the Import feature.                                                                                                                                                         |
-| `exportProps`          | `Record<string,any> \| boolean`  | `false`                                                                  | Extra props forwarded to `ExportData`. Set to `true` to enable with defaults.                                                                                                                     |
-| `importProps`          | `Record<string,any> \| boolean`  | `false`                                                                  | Extra props forwarded to `ImportData`. Set to `true` to enable with defaults.                                                                                                                     |
-| `exportMode`           | `'frontend' \| 'backend'`        | `'frontend'`                                                             | Export processing mode.                                                                                                                                                                           |
-| `exportType`           | `string`                         | —                                                                        | Identifier passed to `vliteConfig.services.exportApi` for backend exports.                                                                                                                        |
-| `importType`           | `string`                         | —                                                                        | Identifier passed to `vliteConfig.services.importApi` for backend imports.                                                                                                                        |
-| `customHeader`         | `boolean`                        | `false`                                                                  | When `true`, hides the auto-generated header — use the `#custom-header` slot instead.                                                                                                            |
-| `emptyTitle`           | `string`                         | —                                                                        | Title shown in the empty state.                                                                                                                                                                   |
-| `emptyTitleI18n`       | `string`                         | —                                                                        | i18n key for the empty state title.                                                                                                                                                               |
-| `emptyDescription`     | `string`                         | —                                                                        | Description shown in the empty state.                                                                                                                                                             |
-| `emptyDescriptionI18n` | `string`                         | —                                                                        | i18n key for the empty state description.                                                                                                                                                         |
-| `emptyIcon`            | `string`                         | `'lucide:inbox'`                                                         | Icon shown in the empty state.                                                                                                                                                                    |
-| `containerClass`       | `string`                         | —                                                                        | Extra CSS class applied to the content wrapper `<div>`.                                                                                                                                           |
-| `headerClass`          | `string`                         | —                                                                        | Extra CSS class applied to the header row `<div>`.                                                                                                                                                |
-| `viewProps`            | `Record<string,any>`             | `{}`                                                                     | Additional props forwarded to the active view component.                                                                                                                                          |
-| `hideSelectable`       | `boolean`                        | `false`                                                                  | Hides the row-selection checkbox and bulk-delete button.                                                                                                                                          |
+| Prop                   | Type                            | Default                                                                  | Description                                                                                                                                                                                                        |
+| :--------------------- | :------------------------------ | :----------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                 | `string`                        | `''`                                                                     | Optional identifier used to persist the view state (list vs table). Combined with `title` to form a unique storage key.                                                                                            |
+| `title`                | `string`                        | `''`                                                                     | Page title displayed at the top of the screen header.                                                                                                                                                              |
+| `titleI18n`            | `string`                        | —                                                                        | i18n key for the page title. Takes priority over `title` when set.                                                                                                                                                 |
+| `description`          | `string`                        | `''`                                                                     | Subtitle/description text rendered below the title.                                                                                                                                                                |
+| `descriptionI18n`      | `string`                        | —                                                                        | i18n key for the description.                                                                                                                                                                                      |
+| `info`                 | `string`                        | —                                                                        | Tooltip info text shown next to the title via an info icon.                                                                                                                                                        |
+| `infoI18n`             | `string`                        | —                                                                        | i18n key for the info tooltip.                                                                                                                                                                                     |
+| `data`                 | `any[]`                         | `[]`                                                                     | The data array passed down to the active view component/slot.                                                                                                                                                      |
+| `loading`              | `boolean`                       | `false`                                                                  | Propagated to child views and disables Refresh button while active.                                                                                                                                                |
+| `refetch`              | `Function`                      | —                                                                        | Called on every search, filter, pagination, sort, or quick-filter change. Receives `{ pagination, search, sort, filter }`.                                                                                         |
+| `pageInfo`             | `PageInfo`                      | —                                                                        | Pagination metadata (`currentPage`, `totalPages`, `totalItems`, `itemsPerPage`).                                                                                                                                   |
+| `paginationProps`      | `ScreenPaginationProps`         | `{ alignment: 'between', navType: 'icon', showItemsPerPage: true, ... }` | Props forwarded to the `Pagination` component.                                                                                                                                                                     |
+| `canSearch`            | `boolean`                       | `true`                                                                   | Show/hide the search input.                                                                                                                                                                                        |
+| `canAdd`               | `boolean`                       | `true`                                                                   | Show/hide the Add button.                                                                                                                                                                                          |
+| `pagination`           | `boolean`                       | `true`                                                                   | Show/hide the pagination bar.                                                                                                                                                                                      |
+| `filterSchema`         | `IForm[]`                       | `[]`                                                                     | Form schema for the advanced filter modal/dropdown.                                                                                                                                                                |
+| `filterType`           | `'modal' \| 'dropdown'`         | `'modal'`                                                                | Style of the advanced filter trigger.                                                                                                                                                                              |
+| `showRefresh`          | `boolean`                       | `false`                                                                  | Show a manual Refresh button in the toolbar.                                                                                                                                                                       |
+| `quickFilters`         | `ScreenQuickFilter[]`           | `[]`                                                                     | Array of tab options rendered as a **line-variant tab bar** between the header and content. Selecting a tab resets to page 1 and adds the value to the `filter` property in the refetch based on the provided key. |
+| `quickFilterKey`       | `string`                        | `'status'`                                                               | The key used to add the active quick filter value to the `filter` property in the refetch. Default will be `status`.                                                                                               |
+| `defaultQuickFilter`   | `string \| number`              | first tab's value                                                        | Initial quick-filter value. Defaults to the first entry in `quickFilters` when not set.                                                                                                                            |
+| `list`                 | `Component`                     | —                                                                        | Component rendered in list/grid view.                                                                                                                                                                              |
+| `table`                | `Component`                     | —                                                                        | Component rendered in table view.                                                                                                                                                                                  |
+| `addBtn`               | `AddBtnConfig`                  | —                                                                        | Configuration for the Add button (label, icon, variant, modal, router link, etc.).                                                                                                                                 |
+| `addComponent`         | `Component`                     | —                                                                        | Fully custom component to replace the default Add button area.                                                                                                                                                     |
+| `exportSchema`         | `ExportField[]`                 | `[]`                                                                     | Fields definition for the Export feature.                                                                                                                                                                          |
+| `importSchema`         | `ImportField[]`                 | `[]`                                                                     | Fields definition for the Import feature.                                                                                                                                                                          |
+| `exportProps`          | `Record<string,any> \| boolean` | `false`                                                                  | Extra props forwarded to `ExportData`. Set to `true` to enable with defaults.                                                                                                                                      |
+| `importProps`          | `Record<string,any> \| boolean` | `false`                                                                  | Extra props forwarded to `ImportData`. Set to `true` to enable with defaults.                                                                                                                                      |
+| `exportMode`           | `'frontend' \| 'backend'`       | `'frontend'`                                                             | Export processing mode.                                                                                                                                                                                            |
+| `exportType`           | `string`                        | —                                                                        | Identifier passed to `vliteConfig.services.exportApi` for backend exports.                                                                                                                                         |
+| `importType`           | `string`                        | —                                                                        | Identifier passed to `vliteConfig.services.importApi` for backend imports.                                                                                                                                         |
+| `customHeader`         | `boolean`                       | `false`                                                                  | When `true`, hides the auto-generated header — use the `#custom-header` slot instead.                                                                                                                              |
+| `emptyTitle`           | `string`                        | —                                                                        | Title shown in the empty state.                                                                                                                                                                                    |
+| `emptyTitleI18n`       | `string`                        | —                                                                        | i18n key for the empty state title.                                                                                                                                                                                |
+| `emptyDescription`     | `string`                        | —                                                                        | Description shown in the empty state.                                                                                                                                                                              |
+| `emptyDescriptionI18n` | `string`                        | —                                                                        | i18n key for the empty state description.                                                                                                                                                                          |
+| `emptyIcon`            | `string`                        | `'lucide:inbox'`                                                         | Icon shown in the empty state.                                                                                                                                                                                     |
+| `containerClass`       | `string`                        | —                                                                        | Extra CSS class applied to the content wrapper `<div>`.                                                                                                                                                            |
+| `headerClass`          | `string`                        | —                                                                        | Extra CSS class applied to the header row `<div>`.                                                                                                                                                                 |
+| `titleClass`           | `string`                        | —                                                                        | Extra CSS class applied to the title `<h1>`.                                                                                                                                                                       |
+| `descriptionClass`     | `string`                        | —                                                                        | Extra CSS class applied to the description `<p>`.                                                                                                                                                                  |
+| `viewProps`            | `Record<string,any>`            | `{}`                                                                     | Additional props forwarded to the active view component.                                                                                                                                                           |
+| `hideSelectable`       | `boolean`                       | `false`                                                                  | Hides the row-selection checkbox and bulk-delete button.                                                                                                                                                           |
+| `hideDeleteBtn`        | `boolean`                       | `true`                                                                   | Show/hide the bulk delete button when rows are selected.                                                                                                                                                           |
 
 ---
 
@@ -64,6 +67,7 @@ Alternatively, you can provide layouts via the `#table`, `#list`, and `#grid` sl
 Quick filters provide a **tab bar** UI pattern common in modern dashboards (Shopify, Linear, Vercel). They appear between the header toolbar and the content area, using a clean `line` variant. The selected value will add to the `filter` property in the refetch based on the provided key. Default will be `status`. This behavior is completely invisible to the main Screen Filter state.
 
 #### `ScreenQuickFilter` type
+
 ```ts
 export interface ScreenQuickFilter {
   label: string
@@ -73,7 +77,7 @@ export interface ScreenQuickFilter {
   /** Optional badge/count shown next to the label, e.g. "Active (12)" */
   count?: number
 }
-````
+```
 
 #### Refetch payload
 
@@ -97,9 +101,9 @@ refetch({
   title="Products"
   quick-filter-key="productStatus"
   :quick-filters="[
-    { label: 'All',      value: '' },
-    { label: 'Active',   value: 'active' },
-    { label: 'Draft',    value: 'draft' },
+    { label: 'All', value: '' },
+    { label: 'Active', value: 'active' },
+    { label: 'Draft', value: 'draft' },
     { label: 'Archived', value: 'archived' },
   ]"
   :refetch="fetchProducts" />
@@ -112,43 +116,43 @@ refetch({
   title="Orders"
   quick-filter-key="status"
   :quick-filters="[
-    { label: 'All',        value: '' },
-    { label: 'Completed',  value: 'completed',  count: 124 },
+    { label: 'All', value: '' },
+    { label: 'Completed', value: 'completed', count: 124 },
     { label: 'Processing', value: 'processing', count: 8 },
-    { label: 'Pending',    value: 'pending',    count: 3 },
-    { label: 'Cancelled',  value: 'cancelled' },
+    { label: 'Pending', value: 'pending', count: 3 },
+    { label: 'Cancelled', value: 'cancelled' },
   ]"
   :refetch="fetchOrders" />
 ```
 
------
+---
 
 ### Slots
 
-| Slot            | Description                                                                                                             |
-| :-------------- | :---------------------------------------------------------------------------------------------------------------------- |
-| `title`         | Replaces the `<h1>` title element.                                                                                      |
-| `description`   | Replaces the description paragraph.                                                                                     |
-| `before-search` | Injected before the search input in the toolbar.                                                                        |
-| `actions`       | Replaces the entire Add button area (use to provide fully custom action buttons).                                       |
-| `after-add`     | Appended after the Add button / ScreenOptionsDropdown.                                                                  |
-| `custom-header` | Full replacement header (only rendered when `customHeader: true`).                                                      |
-| `sub-header`    | Rendered after the main header row and after the quick-filter tabs, before the content.                                 |
-| `empty`         | Custom empty state (replaces `ScreenEmptyState`).                                                                       |
-| `table`         | Slot-based table view. Receives `{ data, loading, selectedRows, delete, updateSelectedRows }`.                          |
-| `list`          | Slot-based list view. Same scoped props as `#table`.                                                                    |
-| `grid`          | Slot-based grid view (treated as list mode). Same scoped props.                                                         |
+| Slot            | Description                                                                                    |
+| :-------------- | :--------------------------------------------------------------------------------------------- |
+| `title`         | Replaces the `<h1>` title element.                                                             |
+| `description`   | Replaces the description paragraph.                                                            |
+| `before-search` | Injected before the search input in the toolbar.                                               |
+| `actions`       | Replaces the entire Add button area (use to provide fully custom action buttons).              |
+| `after-add`     | Appended after the Add button / ScreenOptionsDropdown.                                         |
+| `custom-header` | Full replacement header (only rendered when `customHeader: true`).                             |
+| `sub-header`    | Rendered after the main header row and after the quick-filter tabs, before the content.        |
+| `empty`         | Custom empty state (replaces `ScreenEmptyState`).                                              |
+| `table`         | Slot-based table view. Receives `{ data, loading, selectedRows, delete, updateSelectedRows }`. |
+| `list`          | Slot-based list view. Same scoped props as `#table`.                                           |
+| `grid`          | Slot-based grid view (treated as list mode). Same scoped props.                                |
 
------
+---
 
 ### Events
 
-| Event    | Payload   | Description                            |
-| :------- | :-------- | :------------------------------------- |
-| `add`    | —         | Emitted when the default Add is clicked (no `addBtn` configured). |
-| `delete` | `any[]`   | Emitted after the user confirms bulk/row deletion.                |
+| Event    | Payload | Description                                                       |
+| :------- | :------ | :---------------------------------------------------------------- |
+| `add`    | —       | Emitted when the default Add is clicked (no `addBtn` configured). |
+| `delete` | `any[]` | Emitted after the user confirms bulk/row deletion.                |
 
------
+---
 
 ### Usage
 
@@ -164,11 +168,11 @@ refetch({
   :table="OrderTable"
   quick-filter-key="status"
   :quick-filters="[
-    { label: 'All',        value: '' },
-    { label: 'Completed',  value: 'completed' },
+    { label: 'All', value: '' },
+    { label: 'Completed', value: 'completed' },
     { label: 'Processing', value: 'processing' },
-    { label: 'Pending',    value: 'pending' },
-    { label: 'Cancelled',  value: 'cancelled' },
+    { label: 'Pending', value: 'pending' },
+    { label: 'Cancelled', value: 'cancelled' },
   ]"
   :refetch="fetchOrders" />
 ```
@@ -183,8 +187,7 @@ const fetchOrders = (payload) => {
     page: pagination.page,
     limit: pagination.limit,
     search,
-    ...filter, 
+    ...filter,
   })
 }
 ```
-
