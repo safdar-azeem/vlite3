@@ -13,8 +13,9 @@ export interface FilePickerValue {
   fileName: string
   fileType: string
   fileSize: number
-  file: File
+  file: File | null
   base64: string
+  isUrl?: boolean
 }
 
 interface Props {
@@ -32,6 +33,7 @@ interface Props {
   textI18n?: string
   size?: InputSize
   rounded?: InputRounded
+  allowRename?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -44,6 +46,7 @@ const props = withDefaults(defineProps<Props>(), {
   variant: 'dropzone',
   size: 'md',
   rounded: 'md',
+  allowRename: false,
 })
 
 const emit = defineEmits<{
@@ -319,6 +322,49 @@ const clearAll = () => {
   emit('change', null)
 }
 
+const handleFileNameChange = (index: number, newName: string) => {
+  if (props.disabled || props.loading) return
+
+  let newValue: any
+  if (props.multiSelect && Array.isArray(props.modelValue)) {
+    newValue = [...props.modelValue]
+    if (typeof newValue[index] === 'object' && newValue[index] !== null) {
+      newValue[index] = { ...newValue[index], fileName: newName }
+    } else if (typeof newValue[index] === 'string') {
+      newValue[index] = {
+        fileName: newName,
+        fileType: 'unknown',
+        fileSize: 0,
+        file: null,
+        base64: newValue[index],
+        isUrl: true,
+      }
+    }
+  } else {
+    if (
+      props.modelValue &&
+      typeof props.modelValue === 'object' &&
+      !Array.isArray(props.modelValue)
+    ) {
+      newValue = { ...props.modelValue, fileName: newName }
+    } else if (typeof props.modelValue === 'string') {
+      newValue = {
+        fileName: newName,
+        fileType: 'unknown',
+        fileSize: 0,
+        file: null,
+        base64: props.modelValue,
+        isUrl: true,
+      }
+    }
+  }
+
+  if (newValue !== undefined) {
+    emit('update:modelValue', newValue)
+    emit('change', newValue)
+  }
+}
+
 // Input Variant Logic
 const inputDisplayValue = computed(() => {
   if (!hasValue.value) return ''
@@ -449,11 +495,41 @@ const inputBaseClass = computed(() => {
                 <Icon icon="lucide:file-text" class="w-5 h-5" />
               </div>
             </div>
+            <div class="flex-1 min-w-0 flex flex-col items-start overflow-hidden">
+              <div
+                v-if="allowRename && !disabled"
+                class="inline-flex items-center group/rename w-fit max-w-full mb-0.5">
+                <div class="grid relative w-fit max-w-full items-center -ml-1">
+                  <span
+                    class="invisible whitespace-pre col-start-1 row-start-1 text-sm font-medium px-1 py-0.5 max-w-full overflow-hidden text-ellipsis">
+                    {{ file.fileName || 'Enter file name' }}
+                  </span>
 
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-foreground truncate">
+                  <input
+                    :value="file.fileName"
+                    @click.stop
+                    @input="handleFileNameChange(index, ($event.target as HTMLInputElement).value)"
+                    class="col-start-1 row-start-1 w-auto min-w-[2ch] text-sm font-medium text-foreground bg-transparent border-b border-transparent hover:border-border focus:border-primary outline-none transition-colors py-0.5 px-1"
+                    placeholder="Enter file name" />
+                </div>
+
+                <div
+                  class="flex-shrink-0 ml-1 text-muted-foreground/50 group-hover/rename:text-foreground transition-colors cursor-text"
+                  @click.stop="
+                    (e) =>
+                      (e.currentTarget as HTMLElement).previousElementSibling
+                        ?.querySelector('input')
+                        ?.focus()
+                  "
+                  title="Rename file">
+                  <Icon icon="lucide:pencil" class="w-3.5 h-3.5" />
+                </div>
+              </div>
+
+              <p v-else class="text-sm font-medium text-foreground truncate w-full">
                 {{ file.fileName }}
               </p>
+
               <p class="text-xs text-muted-foreground">
                 {{ formatFileSize(file.fileSize) }}
               </p>
