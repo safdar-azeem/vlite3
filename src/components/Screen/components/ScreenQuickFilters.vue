@@ -44,7 +44,7 @@ const handleChange = (val: string | number) => {
 <template>
   <div class="w-max">
     <Tabes
-      class="border-b-0! border-0! pb-0.5"
+      class="border-b-0! border-0! pb-0"
       :model-value="modelValue"
       :options="tabesOptions"
       :variant="variant || 'line'"
