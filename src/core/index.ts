@@ -31,9 +31,9 @@ export function createVLite(options: VLiteConfig = {}) {
               ...(configState.components?.price || {}),
               ...(options.components.price || {}),
             },
-            date: {
-              ...(configState.components?.date || {}),
-              ...(options.components.date || {}),
+            datetime: {
+              ...(configState.components?.datetime || {}),
+              ...(options.components.datetime || {}),
             },
             empty: {
               ...(configState.components?.empty || {}),
@@ -45,7 +45,7 @@ export function createVLite(options: VLiteConfig = {}) {
               customStatuses: {
                 ...(configState.components?.statusChip?.customStatuses || {}),
                 ...(options.components.statusChip?.customStatuses || {}),
-              }
+              },
             },
           }
         }
