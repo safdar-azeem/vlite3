@@ -352,6 +352,7 @@ const fieldProps = computed(() => {
       modelValue: Array.isArray(props.value) ? props.value : [],
       schema: props.field.props?.schema || [],
       headers: props.field.props?.headers || [],
+      draggable: props.field.props?.draggable || false,
       values: props.values,
       variant: props.variant,
       size: props.size,
