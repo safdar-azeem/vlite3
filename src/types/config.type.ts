@@ -90,7 +90,7 @@ export interface VLiteConfig {
     price?: {
       currency?: string
     }
-    date?: {
+    datetime?: {
       format?: string
     }
     /**
