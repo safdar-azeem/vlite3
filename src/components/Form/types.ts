@@ -96,6 +96,7 @@ export type IFormWhen = (context: IFormContext) => boolean
 export interface IFormCustomFieldsProps {
   schema: IForm[]
   headers?: string[]
+  draggable?: boolean
 }
 
 /**
