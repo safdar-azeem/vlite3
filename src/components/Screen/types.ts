@@ -87,8 +87,11 @@ export interface ScreenProps {
   showRefresh?: boolean
   containerClass?: string
   headerClass?: string
+  titleClass?: string
+  descriptionClass?: string
   viewProps?: Record<string, any>
   hideSelectable?: boolean
+  hideDeleteBtn?: boolean
   /**
    * Quick-filter tabs rendered below the header (above the content).
    * Inspired by modern dashboards (Shopify, Linear, Vercel).
