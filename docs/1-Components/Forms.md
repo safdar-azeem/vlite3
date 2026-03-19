@@ -277,7 +277,7 @@ const schema = [
     name: 'resume',
     label: 'Resume',
     type: 'fileUploader', // Dropzone style
-    props: { accept: '.pdf' },
+    props: { accept: '.pdf', allowRename: true },
     maxFileSize: 10, // Maximum file size of 10MB
     returnFileObject: true, // Output { fileName, fileUrl, fileType, fileSize } instead of just URL
   },
