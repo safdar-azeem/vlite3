@@ -243,6 +243,7 @@ const schema = [
     label: 'Team Members',
     type: 'customFields',
     props: {
+      draggable: true, // Enable drag and drop reordering
       headers: ['Name', 'Role'],
       schema: [
         { name: 'name', label: 'Name', type: 'text' },
