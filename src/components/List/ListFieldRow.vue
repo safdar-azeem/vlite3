@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import Icon from '../Icon.vue'
 import Price from '../Price/Price.vue'
-import Date from '../Date/Date.vue'
+import DateTime from '../DateTime/DateTime.vue'
 import { $t } from '@/utils/i18n'
 import type { ListField, StackedBorderStyle } from './types'
 import { getObjectValue, getStatusColorClass, formatNumber } from './utils'
@@ -127,7 +127,6 @@ const stackedCellClass = computed(() => {
 </script>
 
 <template>
-  <!-- ═══ Stacked variant cell ═══ -->
   <div
     v-if="isStacked"
     :class="[
@@ -159,7 +158,7 @@ const stackedCellClass = computed(() => {
               :value="rawValue"
               class="text-sm font-semibold text-foreground break-words leading-snug"
               :class="valueClass" />
-            <Date
+            <DateTime
               v-else-if="isDateType"
               :value="rawValue"
               :format="dateFormatType"
@@ -200,7 +199,7 @@ const stackedCellClass = computed(() => {
           :value="rawValue"
           class="text-sm font-semibold text-foreground break-words leading-snug"
           :class="valueClass" />
-        <Date
+        <DateTime
           v-else-if="isDateType"
           :value="rawValue"
           :format="dateFormatType"
@@ -255,7 +254,7 @@ const stackedCellClass = computed(() => {
               :value="rawValue"
               class="text-sm text-gray-600 break-words leading-snug"
               :class="valueClass" />
-            <Date
+            <DateTime
               v-else-if="isDateType"
               :value="rawValue"
               :format="dateFormatType"
@@ -293,7 +292,7 @@ const stackedCellClass = computed(() => {
           :value="rawValue"
           class="text-sm text-gray-900 break-words leading-snug"
           :class="valueClass" />
-        <Date
+        <DateTime
           v-else-if="isDateType"
           :value="rawValue"
           :format="dateFormatType"
@@ -342,7 +341,7 @@ const stackedCellClass = computed(() => {
             :value="rawValue"
             class="text-sm text-gray-600 text-right break-words"
             :class="valueClass" />
-          <Date
+          <DateTime
             v-else-if="isDateType"
             :value="rawValue"
             :format="dateFormatType"
@@ -379,7 +378,7 @@ const stackedCellClass = computed(() => {
           :value="rawValue"
           class="text-sm text-gray-900 text-right break-words leading-snug"
           :class="valueClass" />
-        <Date
+        <DateTime
           v-else-if="isDateType"
           :value="rawValue"
           :format="dateFormatType"
