@@ -2024,10 +2024,10 @@ uri-js@^4.2.2, uri-js@^4.4.1:
   dependencies:
     punycode "^2.1.0"
 
-v-datepicker-lite@^0.1.6:
-  version "0.1.6"
-  resolved "https://registry.npmjs.org/v-datepicker-lite/-/v-datepicker-lite-0.1.6.tgz"
-  integrity sha512-AzYexkzQr37o1pJmjAW+cu6M6S+SGwlJZJkfmIHsr34qa73Vi+Z5clTaWgujgT3Azg3mYZye611DNq12vv+Qjw==
+v-datepicker-lite@^0.1.8:
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/v-datepicker-lite/-/v-datepicker-lite-0.1.8.tgz#f26b9c600af3a2aa66ff4a3cb55d4837b7e3a334"
+  integrity sha512-DIJB8yJlIX5fGEf+7fS6hVYmBdLnfZ37Zh0NoYTg/5QWctB4oQ/hfaUy2TdIBtJskAXbTAAikNgcA7qXwpa+Xg==
   dependencies:
     v-tooltip-lite "^0.1.0"
 
