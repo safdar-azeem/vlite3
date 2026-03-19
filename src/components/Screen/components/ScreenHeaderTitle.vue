@@ -11,6 +11,8 @@ const props = defineProps<{
   descriptionI18n?: string
   info?: string
   infoI18n?: string
+  titleClass?: string
+  descriptionClass?: string
 }>()
 
 const displayTitle = computed(() => (props.titleI18n ? $t(props.titleI18n) : props.title))
@@ -23,7 +25,9 @@ const displayDescription = computed(() =>
   <div class="flex flex-col shrink-0">
     <slot name="title">
       <div v-if="displayTitle" class="flex items-center! gap-2">
-        <h1 class="text-fs-7.5 font-bold text-foreground">{{ displayTitle }}</h1>
+        <h1 class="text-fs-7.5 font-bold text-foreground" :class="titleClass">
+          {{ displayTitle }}
+        </h1>
         <Tooltip v-if="info || infoI18n" :content="info" :content-i18n="infoI18n" placement="right">
           <Icon
             icon="lucide:info"
@@ -32,7 +36,10 @@ const displayDescription = computed(() =>
       </div>
     </slot>
     <slot name="description">
-      <p v-if="displayDescription" class="text-sm text-gray-700 mt-1 md:max-w-[450px]">
+      <p
+        v-if="displayDescription"
+        class="text-sm text-gray-700 mt-1 md:max-w-[450px]"
+        :class="descriptionClass">
         {{ displayDescription }}
       </p>
     </slot>
