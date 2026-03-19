@@ -57,7 +57,7 @@ const formattedTime = computed(() => {
           </div>
         </div>
         
-        <div class="opacity-0 group-hover/bubble:opacity-100 transition-opacity flex gap-1 px-2 pointer-events-none group-hover/bubble:pointer-events-auto">
+        <div class="opacity-0 group-hover/bubble:opacity-100 focus-within:opacity-100 transition-opacity flex gap-1 px-2 pointer-events-none group-hover/bubble:pointer-events-auto focus-within:pointer-events-auto">
             <Button v-if="isSender || allowEditAll" variant="ghost" size="xs" icon="lucide:pencil" rounded="full" class="text-muted-foreground hover:text-foreground h-7 w-7" @click="emit('edit', message)" aria-label="Edit message" />
             <Button v-if="isSender || allowDeleteAll" variant="ghost" size="xs" icon="lucide:trash-2" rounded="full" class="text-muted-foreground hover:text-destructive h-7 w-7" @click="emit('delete', message.id)" aria-label="Delete message" />
         </div>
