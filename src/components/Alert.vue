@@ -33,25 +33,27 @@ const handleClose = () => {
   emit('close')
 }
 
-const displayTitle = computed(() => props.titleI18n ? $t(props.titleI18n) : props.title)
-const displayDescription = computed(() => props.descriptionI18n ? $t(props.descriptionI18n) : props.description)
+const displayTitle = computed(() => (props.titleI18n ? $t(props.titleI18n) : props.title))
+const displayDescription = computed(() =>
+  props.descriptionI18n ? $t(props.descriptionI18n) : props.description
+)
 
 const variantClasses = computed(() => {
   const variants: Record<AlertVariant, string> = {
-    primary: 'bg-primary-light text-primary border-primary/15',
-    success: 'bg-success-light text-success-dark border-success/25',
-    warning: 'bg-warning-light text-warning-dark border-warning/20',
-    danger: 'bg-danger-light text-danger-dark border-danger/15',
+    danger: 'bg-danger-subtle text-danger-subtle-fg border-danger-subtle-border/20',
+    primary: 'bg-primary-light text-primary-light-fg border-primary/10',
+    success: 'bg-success-subtle text-success-subtle-fg border-success-subtle-border/20',
+    warning: 'bg-warning-subtle text-warning-subtle-fg border-warning-subtle-border/20',
   }
   return variants[props.variant]
 })
 
 const iconClasses = computed(() => {
   const variants: Record<AlertVariant, string> = {
-    primary: 'text-primary!',
-    success: 'text-success-dark!',
-    warning: 'text-warning-dark!',
-    danger: 'text-danger-dark!',
+    primary: 'text-primary-light-fg!',
+    success: 'text-success-subtle-fg!',
+    warning: 'text-warning-subtle-fg!',
+    danger: 'text-danger-subtle-fg!',
   }
   return variants[props.variant]
 })
@@ -93,7 +95,9 @@ const computedRole = computed(() => {
       <h5 :class="titleClasses" v-if="displayTitle">
         {{ displayTitle }}
       </h5>
-      <div v-if="displayDescription || $slots.default" class="text-sm opacity-90 [&_p]:leading-relaxed">
+      <div
+        v-if="displayDescription || $slots.default"
+        class="text-sm opacity-90 [&_p]:leading-relaxed">
         <slot>
           {{ displayDescription }}
         </slot>
@@ -111,4 +115,3 @@ const computedRole = computed(() => {
     </button>
   </div>
 </template>
-
