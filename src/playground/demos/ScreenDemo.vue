@@ -5,6 +5,7 @@ import DemoSection from '../DemoSection.vue'
 import sourceCode from './ScreenDemo.vue?raw'
 import { useGetUsers } from '../composables/useGetUsers'
 import Button from '@/components/Button.vue'
+import Input from '@/components/Input.vue'
 
 // Lazy Loading custom heavy components specific to the Screen
 const UserList = defineAsyncComponent(() => import('./ScreenDemoComponents/UserList.vue'))
@@ -115,7 +116,11 @@ const handleDelete = (items: any[]) => {
             modalProps: {
               title: 'Add User',
             },
-          }" />
+          }">
+          <template #sub-header>
+            <Input />
+          </template>
+        </Screen>
       </div>
     </DemoSection>
   </div>
