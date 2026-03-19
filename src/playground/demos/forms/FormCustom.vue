@@ -28,6 +28,7 @@ const customFieldsSchema: IForm[] = [
     type: 'customFields',
     itemClass: 'col-span-2',
     props: {
+      draggable: true,
       schema: [
         {
           name: 'platform',
