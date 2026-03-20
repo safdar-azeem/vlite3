@@ -208,6 +208,10 @@ provide('dropdown-context', {
   unregisterChildId,
 })
 
+// Shield children (like Forms rendered inside this Dropdown) from inheriting an ancestor Modal's context.
+// This prevents a Form inside a Dropdown from taking over the parent Modal's footer styling and loading states.
+provide('modal-context', null)
+
 const normalizedPropsOptions = computed<IDropdownOption[]>(() => {
   if (!props.options) return []
   return props.options.map((opt) => {
