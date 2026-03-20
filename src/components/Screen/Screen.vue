@@ -109,7 +109,8 @@ const isFiltered = computed(() => {
     activeQuickFilter.value !== '' &&
     activeQuickFilter.value !== null &&
     activeQuickFilter.value !== undefined
-  ) return true
+  )
+    return true
   if (!activeFilters.value) return false
   return Object.keys(activeFilters.value).some(
     (k) =>
@@ -407,7 +408,7 @@ const handleBackendExport = async (format: string) => {
     <slot name="sub-header" />
     <div
       v-if="hasQuickFilters"
-      class="-mt-1"
+      class="-mt-1 max-sm:hidden!"
       :class="quickFilterVariant == 'line' ? 'mb-1.5 sm:mb-1' : 'mb-2'">
       <ScreenQuickFilters
         v-model="activeQuickFilter"
