@@ -313,7 +313,6 @@ export function useForm(options: UseFormOptions): UseFormReturn {
           updateError: setFieldError,
         })
 
-        console.log('updatedValues :>> ', updatedValues)
         if (updatedValues && typeof updatedValues === 'object') {
           formValues.value = { ...formValues.value, ...updatedValues }
         }
