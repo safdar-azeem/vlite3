@@ -254,7 +254,7 @@ const handleBlur = (event: FocusEvent) => {
         :disabled="disabled || (max !== undefined && Number(localValue) >= max)"
         @click="increment">
         <Icon
-          icon="lucide:chevron-up"
+          icon="fluent:chevron-up-20-filled"
           :class="size === 'xs' || size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5'" />
       </button>
       <button
@@ -263,7 +263,7 @@ const handleBlur = (event: FocusEvent) => {
         :disabled="disabled || (min !== undefined && Number(localValue) <= min)"
         @click="decrement">
         <Icon
-          icon="lucide:chevron-down"
+          icon="fluent:chevron-down-20-filled"
           :class="size === 'xs' || size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5'" />
       </button>
     </div>
