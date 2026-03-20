@@ -34,11 +34,11 @@ export interface UseFormReturn {
   /** Loading state of individual fields (e.g. file uploads) */
   fieldLoading: Ref<Record<string, boolean>>
   /** Handle field value change */
-  handleFieldChange: (name: string, value: any, data?: any) => void
+  handleFieldChange: (name: string, value: any, data?: any) => Promise<void>
   /** Validate a single field */
-  validateField: (field: IForm) => string
+  validateField: (field: IForm) => Promise<string>
   /** Validate all fields */
-  validateAll: () => boolean
+  validateAll: () => Promise<boolean>
   /** Check if field is visible */
   isFieldVisible: (field: IForm) => boolean
   /** Check if field is disabled */
@@ -68,16 +68,19 @@ export function useForm(options: UseFormOptions): UseFormReturn {
   const { schema, values: initialValues, isUpdate = false, folderId, onSubmit } = options
   const { handleUploadFile } = useFileUpload()
 
-  // Initialize form values
-  const formValues = ref<Record<string, any>>(initializeFormValues(schema, initialValues))
+  // Initialize form values. Deep clone fast initial structure if available
+  // It will be correctly shaped asynchronously via init() shortly after.
+  const formValues = ref<Record<string, any>>(initialValues ? deepClone(initialValues) : {})
   const errors = ref<Record<string, string>>({})
   const isSubmitting = ref(false)
   const isDirty = ref(false)
   const fieldLoading = ref<Record<string, boolean>>({})
-  
-  // PERFORMANCE: Use shallowRef for initialSnapshot to prevent deep proxy traversal 
+
+  // PERFORMANCE: Use shallowRef for initialSnapshot to prevent deep proxy traversal
   // since it's only read from or completely replaced.
-  const initialSnapshot = shallowRef<Record<string, any>>(deepClone(formValues.value))
+  const initialSnapshot = shallowRef<Record<string, any>>(
+    initialValues ? deepClone(initialValues) : {}
+  )
 
   // Flatten schema for easy iteration
   const flatSchema = computed<IForm[]>(() => {
@@ -85,14 +88,27 @@ export function useForm(options: UseFormOptions): UseFormReturn {
     return Array.isArray(schema[0]) ? (schema as IForm[][]).flat() : (schema as IForm[])
   })
 
+  // Async initializer to safely handle async formats and standard formats
+  const init = async (vals?: Record<string, any>) => {
+    try {
+      const initialized = await initializeFormValues(schema, vals)
+      formValues.value = initialized
+      initialSnapshot.value = deepClone(initialized)
+      isDirty.value = false
+    } catch (e) {
+      console.error('[useForm] Initialization error:', e)
+    }
+  }
+
+  // Initial call
+  init(initialValues)
+
   // Watch for external value changes
   watch(
     () => initialValues,
     (newValues) => {
       if (newValues) {
-        formValues.value = initializeFormValues(schema, newValues)
-        initialSnapshot.value = deepClone(formValues.value)
-        isDirty.value = false
+        init(newValues)
       }
     },
     { deep: true }
@@ -161,14 +177,16 @@ export function useForm(options: UseFormOptions): UseFormReturn {
   /**
    * Validate a single field
    */
-  const validateField = (field: IForm): string => {
+  const validateField = async (field: IForm): Promise<string> => {
     const value = getFieldValue(field.name)
     let error = ''
 
     // Resolve translation for error messages
-    const fieldLabel = field.labelI18n 
-      ? $t(field.labelI18n) 
-      : (typeof field.label === 'string' ? field.label : field.name)
+    const fieldLabel = field.labelI18n
+      ? $t(field.labelI18n)
+      : typeof field.label === 'string'
+        ? field.label
+        : field.name
 
     // Required validation
     if (field.required) {
@@ -210,13 +228,21 @@ export function useForm(options: UseFormOptions): UseFormReturn {
       }
     }
 
-    // Custom validation (only if required passed or not required)
+    // Custom validation (only if required passed or not required) - now supports async safely
     if (!error && field.validation) {
-      error = field.validation({
-        value,
-        values: formValues.value,
-        isUpdate,
-      })
+      fieldLoading.value[field.name] = true
+      try {
+        error = await field.validation({
+          value,
+          values: formValues.value,
+          isUpdate,
+        })
+      } catch (err) {
+        console.error(`[useForm] Validation error in field ${field.name}:`, err)
+        error = 'Validation failed'
+      } finally {
+        fieldLoading.value[field.name] = false
+      }
     }
 
     // Update error state
@@ -232,17 +258,19 @@ export function useForm(options: UseFormOptions): UseFormReturn {
   /**
    * Validate all visible fields
    */
-  const validateAll = (): boolean => {
+  const validateAll = async (): Promise<boolean> => {
     clearErrors()
     let isValid = true
 
+    // Iterate through all fields so that we generate errors everywhere they exist,
+    // not just returning early.
     for (const field of flatSchema.value) {
       // Skip invisible fields
       if (!isFieldVisible(field)) continue
       // Skip disabled fields
       if (isFieldDisabled(field)) continue
 
-      const error = validateField(field)
+      const error = await validateField(field)
       if (error) {
         isValid = false
       }
@@ -254,13 +282,13 @@ export function useForm(options: UseFormOptions): UseFormReturn {
   /**
    * Handle field value change with updateValues cascade
    */
-  const handleFieldChange = (name: string, value: any, data?: any): void => {
+  const handleFieldChange = async (name: string, value: any, data?: any): Promise<void> => {
     // Find the field in schema FIRST
     const field = flatSchema.value.find((f) => f.name === name)
 
     // Strict Server-Side-Like State Security Check:
     // Reject updates if field evaluates to disabled or readonly in the schema.
-    // This strictly prevents users from overriding field values by removing HTML 
+    // This strictly prevents users from overriding field values by removing HTML
     // attributes like `disabled` or `pointer-events: none` via DevTools.
     if (field && (isFieldDisabled(field) || isFieldReadonly(field))) {
       console.warn(`[vlite3/useForm] Blocked attempted update to disabled/readonly field: ${name}`)
@@ -276,15 +304,23 @@ export function useForm(options: UseFormOptions): UseFormReturn {
 
     // Execute updateValues if defined
     if (field?.updateValues) {
-      const updatedValues = field.updateValues({
-        values: formValues.value,
-        data,
-        isUpdate,
-        updateError: setFieldError,
-      })
+      fieldLoading.value[name] = true
+      try {
+        const updatedValues = await field.updateValues({
+          values: formValues.value,
+          data,
+          isUpdate,
+          updateError: setFieldError,
+        })
 
-      if (updatedValues && typeof updatedValues === 'object') {
-        formValues.value = { ...formValues.value, ...updatedValues }
+        console.log('updatedValues :>> ', updatedValues)
+        if (updatedValues && typeof updatedValues === 'object') {
+          formValues.value = { ...formValues.value, ...updatedValues }
+        }
+      } catch (e) {
+        console.error(`[useForm] Error in updateValues for ${name}:`, e)
+      } finally {
+        fieldLoading.value[name] = false
       }
     }
   }
@@ -315,7 +351,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
         fileType: item?.fileType || fileObj?.type || 'application/octet-stream',
         fileSize: item?.fileSize || fileObj?.size || 0,
       }
-      
+
       delete output.file
       delete output.base64
       return output
@@ -329,8 +365,13 @@ export function useForm(options: UseFormOptions): UseFormReturn {
 
       // Check if this field actually has files to upload to toggle the loading state
       const hasFilesToUpload = Array.isArray(value)
-        ? value.some((item) => item instanceof File || (item && typeof item === 'object' && item.file instanceof File))
-        : value instanceof File || (value && typeof value === 'object' && value.file instanceof File)
+        ? value.some(
+            (item) =>
+              item instanceof File ||
+              (item && typeof item === 'object' && item.file instanceof File)
+          )
+        : value instanceof File ||
+          (value && typeof value === 'object' && value.file instanceof File)
 
       if (hasFilesToUpload) {
         fieldLoading.value[name] = true
@@ -344,7 +385,8 @@ export function useForm(options: UseFormOptions): UseFormReturn {
             // Determine if this specific item needs uploading
             // It needs upload if it's a File object OR a FilePickerValue containing a File
             const needsUpload =
-              item instanceof File || (item && typeof item === 'object' && item.file instanceof File)
+              item instanceof File ||
+              (item && typeof item === 'object' && item.file instanceof File)
 
             if (needsUpload) {
               // Upload and return the new URL or Object
@@ -404,7 +446,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
     // Wait for ALL field updates to complete
     const updates = await Promise.all(fieldUpdatePromises)
 
-    // Apply the updates to the payload values AND the active form state 
+    // Apply the updates to the payload values AND the active form state
     // to preserve uploaded references upon failed DB mutations.
     updates.forEach((update) => {
       if (update) {
@@ -440,7 +482,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
    */
   const handleSubmit = async (): Promise<void> => {
     // Validate all fields
-    const isValid = validateAll()
+    const isValid = await validateAll()
     if (!isValid) return
 
     isSubmitting.value = true
@@ -453,7 +495,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
       processedValues = cleanCustomFieldsValues(processedValues)
 
       // Clean payload based on schema and emit/ignore fields
-      processedValues = cleanSubmitValues(
+      processedValues = await cleanSubmitValues(
         processedValues,
         schema,
         options.emitFields,
