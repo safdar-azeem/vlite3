@@ -35,7 +35,7 @@ const getAddBtnLabel = computed(() => {
 
 <template>
   <Empty
-    class="py-0.5!"
+    class="py-3!"
     :title="emptyTitle"
     :titleI18n="emptyTitleI18n"
     :description="emptyDescription"
