@@ -8,6 +8,7 @@ import Button from '@/components/Button.vue'
 import Label from '../Label.vue'
 import Icon from '@/components/Icon.vue'
 import { $t } from '@/utils/i18n'
+import { evaluateConditional } from './utils/form.utils'
 
 interface Props {
   modelValue?: Record<string, any>[]
@@ -159,6 +160,26 @@ const columnHeaders = computed(() => {
     return field.labelI18n ? $t(field.labelI18n) : field.label || field.name
   })
 })
+
+const getRowContext = (rowIndex: number) => ({
+  values: { ...(props.values || {}), ...(rows.value[rowIndex] || {}) },
+  isUpdate: props.isUpdate
+})
+
+const isFieldDisabled = (rowIndex: number, field: IForm): boolean => {
+  if (props.disabled) return true
+  return evaluateConditional(field.disabled, getRowContext(rowIndex))
+}
+
+const isFieldReadonly = (rowIndex: number, field: IForm): boolean => {
+  return evaluateConditional(field.readonly, getRowContext(rowIndex))
+}
+
+const isFieldVisible = (rowIndex: number, field: IForm): boolean => {
+  if (!field.when) return true
+  return evaluateConditional(field.when, getRowContext(rowIndex))
+}
+
 </script>
 
 <template>
@@ -229,6 +250,7 @@ const columnHeaders = computed(() => {
             class="flex-1 min-w-0 relative"
             :class="{ 'border-l border-border': fIdx > 0 }">
             <FormField
+              v-if="isFieldVisible(rowIndex, field)"
               :field="{
                 ...field,
                 props: {
@@ -242,7 +264,8 @@ const columnHeaders = computed(() => {
               :variant="'transparent'"
               size="sm"
               rounded="none"
-              :disabled="disabled"
+              :disabled="isFieldDisabled(rowIndex, field)"
+              :readonly="isFieldReadonly(rowIndex, field)"
               :isUpdate="isUpdate"
               class="w-full h-full min-h-[40px]"
               @change="(payload) => handleFieldChange(rowIndex, field.name, payload)" />
