@@ -28,7 +28,8 @@ A schema-driven form builder with built-in validation, multi-step wizards, group
 | `groupsHeadings`           | `string[]`             | —                                                                      | Headings for grouped layout                                                  |
 | `groupHeadingsDescription` | `string[]`             | —                                                                      | Descriptions for grouped layout                                              |
 | `folderId`                 | `string`               | —                                                                      | Folder ID for file uploads                                                   |
-| `groupClass`               | `string`               | —                                                                      | Custom class for grouped layout containers                                   |
+| `groupClass`               | `string`               | —                                                                      | Custom class for group items                                                 |
+| `groupContainerClass`      | `string`               | —                                                                      | Custom class for grouped layout containers                                   |
 | `headerClass`              | `string`               | —                                                                      | Custom class for group/step headers                                          |
 | `footerClass`              | `string`               | —                                                                      | Custom class for the footer area                                             |
 | `timelineTextPosition`     | `TimelineTextPosition` | `'right'`                                                              | Text position for timeline tabs in multi-step mode                           |
@@ -49,41 +50,41 @@ A schema-driven form builder with built-in validation, multi-step wizards, group
 
 ### Schema Interface (`IForm`)
 
-| Property           | Type                           | Description                                                                         |
-| :----------------- | :----------------------------- | :---------------------------------------------------------------------------------- |
-| `name`             | `string`                       | Field key in values object (supports dot notation)                                  |
-| `label`            | `string \| Component`          | Display label (can be a string or a Vue component)                                  |
-| `labelI18n`        | `string`                       | I18n translation key for the label (takes precedence over `label`)                  |
-| `type`             | `IFormFieldType`               | Input type (text, email, password, select, file, etc.)                              |
-| `value`            | `any \| () => any`             | Initial/default value for the field (can be a static value or factory function)     |
-| `placeholder`      | `string`                       | Input placeholder text                                                              |
-| `placeholderI18n`  | `string`                       | I18n key for the placeholder (takes precedence over `placeholder`)                  |
-| `required`         | `boolean`                      | Marks field as required                                                             |
-| `disabled`         | `boolean \| (ctx) => boolean`  | Disable field statically or conditionally                                           |
-| `readonly`         | `boolean \| (ctx) => boolean`  | Make field read-only statically or conditionally                                    |
-| `mapFrom`          | `string`                       | Key to read the initial value from in the incoming `values` object                  |
-| `mapTo`            | `string`                       | Key to write the final value to in the submit payload                               |
-| `valueKey`         | `string`                       | Property to extract from nested objects or arrays of objects                        |
-| `key`              | `string`                       | Alias for `valueKey`                                                                |
-| `format`           | `(val, rawValues) => any`      | Format raw incoming data before it enters form state                                |
-| `transform`        | `(val, formValues) => any`     | Transform the form's state value before submission                                  |
-| `options`          | `IDropdownOptions`             | Options for select/multiSelect/radio fields                                         |
-| `validation`       | `(ctx) => string`              | Custom validator — return an error message or empty string                          |
-| `when`             | `(ctx) => boolean`             | Conditionally show/hide the field                                                   |
-| `updateValues`     | `(ctx) => Record<string, any>` | Dynamically update other fields when this field changes                             |
-| `itemClass`        | `string`                       | CSS class for the field wrapper (e.g. `col-span-2`)                                 |
-| `className`        | `string`                       | CSS class applied to the input element itself                                       |
-| `icon`             | `string`                       | Left icon (Iconify ID)                                                              |
-| `iconRight`        | `string`                       | Right icon (Iconify ID)                                                             |
-| `addonLeft`        | `string \| IFormAddon`         | Left addon — plain text or addon config object                                      |
-| `addonRight`       | `string \| IFormAddon`         | Right addon — plain text or addon config object                                     |
-| `props`            | `Record<string, any>`          | Extra props forwarded to the field component                                        |
-| `min`              | `number`                       | Minimum value for number inputs                                                     |
-| `max`              | `number`                       | Maximum value for number inputs                                                     |
-| `maxFileSize`      | `number`                       | Maximum file size in MB for file/avatar uploads                                     |
-| `maxFiles`         | `number`                       | Maximum number of files allowed when `multiple` is true                             |
-| `returnFileObject` | `boolean`                      | Output `{ fileName, fileUrl, fileType, fileSize }` on upload instead of a plain URL |
-| `isSensitiveField` | `boolean`                      | Mark field as sensitive (e.g. for masking or audit logging)                         |
+| Property           | Type                              | Description                                                                         |
+| :----------------- | :-------------------------------- | :---------------------------------------------------------------------------------- |
+| `name`             | `string`                          | Field key in values object (supports dot notation)                                  |
+| `label`            | `string \| Component`             | Display label (can be a string or a Vue component)                                  |
+| `labelI18n`        | `string`                          | I18n translation key for the label (takes precedence over `label`)                  |
+| `type`             | `IFormFieldType`                  | Input type (text, email, password, select, file, etc.)                              |
+| `value`            | `any \| () => any`                | Initial/default value for the field (can be a static value or factory function)     |
+| `placeholder`      | `string`                          | Input placeholder text                                                              |
+| `placeholderI18n`  | `string`                          | I18n key for the placeholder (takes precedence over `placeholder`)                  |
+| `required`         | `boolean`                         | Marks field as required                                                             |
+| `disabled`         | `boolean \| (ctx) => boolean`     | Disable field statically or conditionally                                           |
+| `readonly`         | `boolean \| (ctx) => boolean`     | Make field read-only statically or conditionally                                    |
+| `mapFrom`          | `string`                          | Key to read the initial value from in the incoming `values` object                  |
+| `mapTo`            | `string`                          | Key to write the final value to in the submit payload                               |
+| `valueKey`         | `string`                          | Property to extract from nested objects or arrays of objects                        |
+| `key`              | `string`                          | Alias for `valueKey`                                                                |
+| `format`           | `(val, rawVals) => Promise\|any`  | Format raw incoming data before it enters form state                                |
+| `transform`        | `(val, formVals) => Promise\|any` | Transform the form's state value before submission                                  |
+| `options`          | `IDropdownOptions`                | Options for select/multiSelect/radio fields                                         |
+| `validation`       | `(ctx) => string \| Promise`      | Custom validator — return an error message or empty string                          |
+| `when`             | `(ctx) => boolean`                | Conditionally show/hide the field                                                   |
+| `updateValues`     | `(ctx) => Record \| Promise`      | Dynamically update other fields when this field changes                             |
+| `itemClass`        | `string`                          | CSS class for the field wrapper (e.g. `col-span-2`)                                 |
+| `className`        | `string`                          | CSS class applied to the input element itself                                       |
+| `icon`             | `string`                          | Left icon (Iconify ID)                                                              |
+| `iconRight`        | `string`                          | Right icon (Iconify ID)                                                             |
+| `addonLeft`        | `string \| IFormAddon`            | Left addon — plain text or addon config object                                      |
+| `addonRight`       | `string \| IFormAddon`            | Right addon — plain text or addon config object                                     |
+| `props`            | `Record<string, any>`             | Extra props forwarded to the field component                                        |
+| `min`              | `number`                          | Minimum value for number inputs                                                     |
+| `max`              | `number`                          | Maximum value for number inputs                                                     |
+| `maxFileSize`      | `number`                          | Maximum file size in MB for file/avatar uploads                                     |
+| `maxFiles`         | `number`                          | Maximum number of files allowed when `multiple` is true                             |
+| `returnFileObject` | `boolean`                         | Output `{ fileName, fileUrl, fileType, fileSize }` on upload instead of a plain URL |
+| `isSensitiveField` | `boolean`                         | Mark field as sensitive (e.g. for masking or audit logging)                         |
 
 ### Addon Interface (`IFormAddon`)
 
@@ -160,14 +161,19 @@ const schema = [
     // Only show if role is admin
     when: ({ values }) => values.role === 'admin',
     // Custom validation
-    validation: ({ value }) => (value === 'SECRET' ? '' : 'Invalid code'),
+    validation: async ({ value }) => {
+      if (value !== 'SECRET') return 'Invalid code'
+      // Example Async validation
+      // const res = await verifyCodeAsync(value)
+      return ''
+    },
   },
 ]
 ```
 
 #### Data Mapping & Formatting
 
-The Form component can automatically extract, format, and transform complex API data structures so you don't have to write boilerplate mapping code.
+The Form component can automatically extract, format, and transform complex API data structures so you don't have to write boilerplate mapping code. Both `format` and `transform` now seamlessly support `async` promises.
 
 ```javascript
 // Example API Response:
@@ -194,7 +200,7 @@ const schema = [
     mapTo: 'inventory_sizes', // Write back to 'inventory_sizes' in the submit payload
     type: 'customFields',
     // Transform data before submission (e.g., ensure quantities are Numbers)
-    transform: (val) => val.map((s) => ({ ...s, qty: Number(s.qty) })),
+    transform: async (val) => val.map((s) => ({ ...s, qty: Number(s.qty) })),
     props: {
       schema: [
         { name: 'sizeId', type: 'select' /* options... */ },
