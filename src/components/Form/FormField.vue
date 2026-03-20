@@ -141,10 +141,15 @@ const fieldComponent = computed(() => {
 // Build props for the component
 const fieldProps = computed(() => {
   const type = props.field.type
+  
+  // Destructure disabled and readonly to prevent the raw schema function from 
+  // overriding the evaluated boolean props passed by the parent (FormFields.vue)
+  const { disabled: _schemaDisabled, readonly: _schemaReadonly, ...restField } = props.field
+
   const baseProps: Record<string, any> = {
-    disabled: props.disabled || props.field.disabled === true,
-    readonly: props.readonly || props.field.readonly === true,
-    ...(props?.field || {}),
+    ...restField,
+    disabled: props.disabled || _schemaDisabled === true,
+    readonly: props.readonly || _schemaReadonly === true,
     ...(props.field.props || {}),
     label: '',
     labelI18n: '',
