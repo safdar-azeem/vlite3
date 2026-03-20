@@ -71,7 +71,7 @@ export interface IFormValidationContext {
   isUpdate?: boolean
 }
 
-export type IFormValidation = (context: IFormValidationContext) => string
+export type IFormValidation = (context: IFormValidationContext) => string | Promise<string>
 
 /**
  * UpdateValues function signature - allows computed/derived fields
@@ -83,7 +83,7 @@ export interface IFormUpdateContext {
   updateError?: (name: string, error: string) => void
 }
 
-export type IFormUpdateValues = (context: IFormUpdateContext) => Record<string, any>
+export type IFormUpdateValues = (context: IFormUpdateContext) => Record<string, any> | void | Promise<Record<string, any> | void>
 
 /**
  * When condition - controls field visibility
@@ -114,9 +114,9 @@ export interface IForm {
   /** Alias for valueKey */
   key?: string
   /** Format raw value before passing to form state */
-  format?: (value: any, rawValues: Record<string, any>) => any
+  format?: (value: any, rawValues: Record<string, any>) => any | Promise<any>
   /** Transform form value before submitting */
-  transform?: (value: any, formValues: Record<string, any>) => any
+  transform?: (value: any, formValues: Record<string, any>) => any | Promise<any>
   /** Field label - can be string or Vue component */
   label?: string | Component
   /** I18n translation key for the label */
