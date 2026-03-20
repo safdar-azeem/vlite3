@@ -74,11 +74,12 @@ function seedAddonValue(
 
 /**
  * Initialize form values from schema and optional initial values
+ * Updated to support Async format handlers cleanly without race conditions.
  */
-export function initializeFormValues(
+export async function initializeFormValues(
   schema: IForm[] | IForm[][],
   initialValues?: Record<string, any>
-): Record<string, any> {
+): Promise<Record<string, any>> {
   let values: Record<string, any> = initialValues ? deepClone(initialValues) : {}
 
   // Flatten schema if grouped
@@ -104,7 +105,7 @@ export function initializeFormValues(
       }
 
       if (field.format) {
-        existingValue = field.format(existingValue, initialValues || {})
+        existingValue = await field.format(existingValue, initialValues || {})
       }
     }
 
@@ -278,11 +279,11 @@ export function isComponent(value: any): boolean {
  * (Prisma / Postgres) instead of omitting the key from the payload.
  *
  * Rules:
- *  - multiSelect  → []    (empty array, required by array columns)
- *  - select       → null  (foreign key / enum column)
- *  - switch/check → false
- *  - number       → null
- *  - everything else (text, email, …) → null
+ * - multiSelect  → []    (empty array, required by array columns)
+ * - select       → null  (foreign key / enum column)
+ * - switch/check → false
+ * - number       → null
+ * - everything else (text, email, …) → null
  */
 function resolveEmptyValue(field: IForm): any {
   const type = field.type as string | undefined
@@ -309,21 +310,21 @@ function isEmptyValue(val: any): boolean {
  *
  * KEY BEHAVIOUR (fix for Prisma / Postgres sync on updates):
  * A field is included in the payload only when:
- *   1. It has a non-empty value — always included (create & update).
- *   2. It is empty AND the field key already existed in the original `values`
- *      object — meaning the user explicitly cleared a pre-existing value during
- *      an update. In this case the canonical empty value (`[]` for multiSelect,
- *      `null` for everything else) is sent so the backend overwrites the old data.
+ * 1. It has a non-empty value — always included (create & update).
+ * 2. It is empty AND the field key already existed in the original `values`
+ * object — meaning the user explicitly cleared a pre-existing value during
+ * an update. In this case the canonical empty value (`[]` for multiSelect,
+ * `null` for everything else) is sent so the backend overwrites the old data.
  *
  * Fields that were never filled in (key absent from `values`) are silently
  * omitted to keep create payloads lean.
  */
-export function cleanSubmitValues(
+export async function cleanSubmitValues(
   values: Record<string, any>,
   schema: IForm[] | IForm[][],
   emitFields?: string[],
   ignoreFields?: string[]
-): Record<string, any> {
+): Promise<Record<string, any>> {
   const isPassthrough = emitFields === undefined && ignoreFields === undefined
   const result: Record<string, any> = isPassthrough ? deepClone(values) : {}
 
@@ -355,14 +356,15 @@ export function cleanSubmitValues(
 
     if (field.type === 'customFields' && field.props?.schema && Array.isArray(val)) {
       const nestedSchema = field.props.schema as IForm[]
-      val = val.map((item: any) => cleanSubmitValues(item, nestedSchema, emitFields, ignoreFields))
+      // Re-map cleanly with Promise.all for independent rows
+      val = await Promise.all(val.map((item: any) => cleanSubmitValues(item, nestedSchema, emitFields, ignoreFields)))
     }
 
     let needsUpdate = false
 
-    // Apply transform for submit payload
+    // Apply transform for submit payload - Now supports async explicitly
     if (field.transform) {
-      val = field.transform(val, values)
+      val = await field.transform(val, values)
       needsUpdate = true
     }
 
