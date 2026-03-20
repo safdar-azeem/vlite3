@@ -89,7 +89,12 @@ const effectiveShowSearch = computed(() => {
   return props.showSearch
 })
 
-const effectiveSelectable = computed(() => !props.hideSelectable || !!screenContext?.forceSelectable)
+const effectiveSelectable = computed(() => {
+  if (screenContext) {
+    return screenContext.forceSelectable
+  }
+  return !props.hideSelectable
+})
 const effectiveKeyField = computed(() => resolveKeyField(props.rows, props.keyField))
 
 // ── internal state ────────────────────────────────────────────────────────────
