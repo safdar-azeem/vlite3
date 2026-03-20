@@ -38,6 +38,8 @@ interface Props {
   class?: string
   className?: string
   groupClass?: string
+  groupBodyClass?: string
+  groupContainerClass?: string
   headerClass?: string
   footerClass?: string
   timelineTextPosition?: TimelineTextPosition
@@ -68,6 +70,8 @@ const props = withDefaults(defineProps<Props>(), {
   class: '',
   className: '',
   groupClass: '',
+  groupBodyClass: '',
+  groupContainerClass: '',
   headerClass: '',
   footerClass: '',
   timelineTextPosition: 'right',
@@ -241,7 +245,7 @@ const onFieldChange = (name: string, payload: { value: any; data?: any }) => {
   handleFieldChange(name, payload.value, payload.data)
 }
 
-const validateCurrentStep = (): boolean => {
+const validateCurrentStep = async (): Promise<boolean> => {
   if (!isMultiStepMode.value) return true
 
   const stepSchema = currentStepSchema.value
@@ -251,7 +255,7 @@ const validateCurrentStep = (): boolean => {
     if (!isFieldVisible(field)) continue
     if (isFieldDisabled(field)) continue
 
-    const error = validateField(field)
+    const error = await validateField(field)
     if (error) {
       isValid = false
     }
@@ -275,9 +279,10 @@ const isLastStep = computed(() => {
   return currentStep.value === groupedSchemas.value.length - 1
 })
 
-const goNext = () => {
+const goNext = async () => {
   if (!canGoNext.value) return
-  if (!validateCurrentStep()) return
+  const isValid = await validateCurrentStep()
+  if (!isValid) return
   currentStep.value++
   emit('onStepChange', currentStep.value)
 }
@@ -304,12 +309,12 @@ const handleSubmit = async () => {
   if (isMultiStepMode.value) {
     // Intermediate step in create mode → go next
     if (!isLastStep.value && !props.isUpdate) {
-      goNext()
+      await goNext()
       return
     }
 
     // Update mode or last step → validate all steps and submit
-    const isValid = validateAll()
+    const isValid = await validateAll()
     if (!isValid) {
       const firstErrorStepIndex = groupedSchemas.value.findIndex((group) =>
         group.some((field) => !!errors.value[field.name])
@@ -442,7 +447,10 @@ const handleCancel = () => {
           @addonAction="(action: string) => emit('onAddonAction', action)" />
       </div>
 
-      <div v-else-if="isGroupedMode && !isMultiStepMode" class="form-groups space-y-6">
+      <div
+        v-else-if="isGroupedMode && !isMultiStepMode"
+        class="form-groups space-y-6"
+        :class="groupContainerClass">
         <div
           v-for="(groupSchema, groupIndex) in groupedSchemas"
           :key="groupIndex"
@@ -460,7 +468,7 @@ const handleCancel = () => {
             </p>
           </div>
 
-          <div class="form-group-body p-4.5">
+          <div class="form-group-body p-4.5" :class="groupBodyClass">
             <FormFields
               :schema="groupSchema"
               :values="formValues"
