@@ -22,7 +22,7 @@ const txtTableView = computed(() => {
 </script>
 
 <template>
-  <div class="flex items-center p-1 rounded-md border border-border shrink-0">
+  <div class="flex items-center p-1 rounded-md bg-body border border-border shrink-0">
     <button
       @click="emit('update:modelValue', 'table')"
       class="p-1.5 rounded"
