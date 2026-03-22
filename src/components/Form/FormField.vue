@@ -26,6 +26,7 @@ interface Props {
   field: IForm
   value: any
   values: Record<string, any>
+  errors?: Record<string, string>
   variant?: InputVariant
   size?: InputSize
   rounded?: InputRounded
@@ -352,6 +353,7 @@ const fieldProps = computed(() => {
   if (type === 'customFields') {
     return {
       ...baseProps,
+      name: props.field.name,
       label: props?.field?.label,
       labelI18n: props?.field?.labelI18n,
       modelValue: Array.isArray(props.value) ? props.value : [],
@@ -359,6 +361,7 @@ const fieldProps = computed(() => {
       headers: props.field.props?.headers || [],
       draggable: props.field.props?.draggable || false,
       values: props.values,
+      errors: props.errors,
       variant: props.variant,
       size: props.size,
       rounded: props.rounded,
