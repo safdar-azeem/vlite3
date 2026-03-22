@@ -269,6 +269,7 @@ const getSafeLabel = (field: IForm) => {
                   : undefined
             "
             :values="values"
+            :errors="errors"
             :variant="variant"
             :size="size"
             :rounded="rounded"
