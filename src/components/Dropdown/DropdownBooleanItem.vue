@@ -17,7 +17,9 @@ const emit = defineEmits<{
   (e: 'change', value: boolean, option: IDropdownOption): void
 }>()
 
-const displayLabel = computed(() => props.option.labelI18n ? $t(props.option.labelI18n) : props.option.label)
+const displayLabel = computed(() =>
+  props.option.labelI18n ? $t(props.option.labelI18n) : props.option.label
+)
 
 const handleToggle = (newValue: boolean) => {
   emit('change', newValue, props.option)
@@ -26,6 +28,7 @@ const handleToggle = (newValue: boolean) => {
 
 <template>
   <div
+    tabindex="0"
     data-dropdown-item
     class="relative flex cursor-pointer select-none items-center justify-between rounded-sm px-2 py-1.5 text-sm outline-none transition-colors"
     :class="[
@@ -33,7 +36,11 @@ const handleToggle = (newValue: boolean) => {
     ]"
     @click.stop="handleToggle(!value)">
     <div class="flex items-center gap-2 flex-1 min-w-0">
-      <Icon v-if="option.icon || option.emoji" :icon="option.icon" :emoji="option.emoji" class="h-4 w-4 shrink-0 opacity-70" />
+      <Icon
+        v-if="option.icon || option.emoji"
+        :icon="option.icon"
+        :emoji="option.emoji"
+        class="h-4 w-4 shrink-0 opacity-70" />
       <span class="truncate font-medium">{{ displayLabel }}</span>
     </div>
     <Switch
