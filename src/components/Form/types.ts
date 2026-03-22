@@ -53,7 +53,10 @@ export type IFormFieldType =
  * Context passed to conditional functions
  */
 export interface IFormContext {
+  /** The local scope values (row values in customFields, or global values at root level) */
   values: Record<string, any>
+  /** The root form state */
+  globalValues?: Record<string, any>
   isUpdate?: boolean
 }
 
@@ -68,6 +71,7 @@ export type IFormDisabled = boolean | ((context: IFormContext) => boolean)
 export interface IFormValidationContext {
   value: any
   values: Record<string, any>
+  globalValues?: Record<string, any>
   isUpdate?: boolean
 }
 
@@ -77,7 +81,9 @@ export type IFormValidation = (context: IFormValidationContext) => string | Prom
  * UpdateValues function signature - allows computed/derived fields
  */
 export interface IFormUpdateContext {
+  value: any
   values: Record<string, any>
+  globalValues?: Record<string, any>
   data?: any
   isUpdate?: boolean
   updateError?: (name: string, error: string) => void
