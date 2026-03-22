@@ -36,7 +36,7 @@ export interface UseFormReturn {
   /** Handle field value change */
   handleFieldChange: (name: string, value: any, data?: any) => Promise<void>
   /** Validate a single field */
-  validateField: (field: IForm) => Promise<string>
+  validateField: (field: IForm, basePath?: string) => Promise<string>
   /** Validate all fields */
   validateAll: () => Promise<boolean>
   /** Check if field is visible */
@@ -117,6 +117,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
   // Get form context for conditional evaluations
   const getContext = (): IFormContext => ({
     values: formValues.value,
+    globalValues: formValues.value,
     isUpdate,
   })
 
@@ -177,8 +178,9 @@ export function useForm(options: UseFormOptions): UseFormReturn {
   /**
    * Validate a single field
    */
-  const validateField = async (field: IForm): Promise<string> => {
-    const value = getFieldValue(field.name)
+  const validateField = async (field: IForm, basePath = ''): Promise<string> => {
+    const fieldPath = basePath ? `${basePath}.${field.name}` : field.name
+    const value = getFieldValue(fieldPath)
     let error = ''
 
     // Resolve translation for error messages
@@ -230,26 +232,57 @@ export function useForm(options: UseFormOptions): UseFormReturn {
 
     // Custom validation (only if required passed or not required) - now supports async safely
     if (!error && field.validation) {
-      fieldLoading.value[field.name] = true
+      fieldLoading.value[fieldPath] = true
       try {
         error = await field.validation({
           value,
           values: formValues.value,
+          globalValues: formValues.value,
           isUpdate,
         })
       } catch (err) {
-        console.error(`[useForm] Validation error in field ${field.name}:`, err)
+        console.error(`[useForm] Validation error in field ${fieldPath}:`, err)
         error = 'Validation failed'
       } finally {
-        fieldLoading.value[field.name] = false
+        fieldLoading.value[fieldPath] = false
       }
     }
 
     // Update error state
     if (error) {
-      errors.value[field.name] = error
+      errors.value[fieldPath] = error
     } else {
-      delete errors.value[field.name]
+      delete errors.value[fieldPath]
+    }
+
+    // Recursively validate nested customFields
+    if (field.type === 'customFields' && field.props?.schema) {
+      const nestedSchema = field.props.schema as IForm[]
+      const rows = Array.isArray(value) ? value : []
+      let hasNestedError = false
+      for (let i = 0; i < rows.length; i++) {
+        const rowValues = rows[i] || {}
+        const rowContext = { values: rowValues, globalValues: formValues.value, isUpdate }
+
+        for (const nestedField of nestedSchema) {
+          const isVisible = !nestedField.when || evaluateConditional(nestedField.when, rowContext)
+          const isDisabled = evaluateConditional(nestedField.disabled, rowContext)
+
+          if (isVisible && !isDisabled) {
+            const nestedError = await validateField(nestedField, `${fieldPath}.${i}`)
+            if (nestedError) {
+              hasNestedError = true
+            }
+          } else {
+             delete errors.value[`${fieldPath}.${i}.${nestedField.name}`]
+          }
+        }
+      }
+      
+      if (hasNestedError && !error) {
+        error = 'Please fix errors in the list.'
+        errors.value[fieldPath] = error
+      }
     }
 
     return error
@@ -307,7 +340,9 @@ export function useForm(options: UseFormOptions): UseFormReturn {
       fieldLoading.value[name] = true
       try {
         const updatedValues = await field.updateValues({
+          value, // Exposing the explicitly requested value
           values: formValues.value,
+          globalValues: formValues.value,
           data,
           isUpdate,
           updateError: setFieldError,
