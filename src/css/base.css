@@ -253,3 +253,8 @@ html {
   background-color: var(--color-gray-200) !important;
   color: var(--color-gray-900) !important;
 }
+
+.year-view-layout .years-section {
+  max-height: 210px !important;
+  overflow-y: auto !important;
+}
