@@ -135,6 +135,18 @@ export async function initializeFormValues(
     // Seed addon default values
     values = seedAddonValue(values, field.addonLeft)
     values = seedAddonValue(values, field.addonRight)
+    
+    // Support nested CustomFields formatting recursively
+    if (field.type === 'customFields' && field.props?.schema) {
+      const nestedSchema = field.props.schema as IForm[]
+      let nestedValues = getNestedValue(values, field.name)
+      if (Array.isArray(nestedValues) && nestedValues.length > 0) {
+        const initializedArray = await Promise.all(
+          nestedValues.map((item) => initializeFormValues(nestedSchema, item))
+        )
+        Object.assign(values, setNestedValue(values, field.name, initializedArray))
+      }
+    }
   }
 
   return values
