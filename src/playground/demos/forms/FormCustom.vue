@@ -34,6 +34,11 @@ const customFieldsSchema: IForm[] = [
           name: 'platform',
           label: 'Platform',
           type: 'select',
+          updateValues: ({ values, value }) => {
+            console.log('values :>> ', values)
+            console.log('value :>> ', value)
+            return values
+          },
           options: [
             { label: 'Twitter', value: 'twitter' },
             { label: 'LinkedIn', value: 'linkedin' },
