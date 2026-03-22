@@ -26,6 +26,9 @@ const customFieldsSchema: IForm[] = [
     name: 'socialLinks',
     label: 'Social Media Links',
     type: 'customFields',
+    updateValues: ({ values, value }) => {
+      console.log('values :>> ', values)
+    },
     itemClass: 'col-span-2',
     props: {
       draggable: true,
@@ -37,7 +40,10 @@ const customFieldsSchema: IForm[] = [
           updateValues: ({ values, value }) => {
             console.log('values :>> ', values)
             console.log('value :>> ', value)
-            return values
+            return {
+              ...values,
+              url: 'https://' + value.platform + '.com',
+            }
           },
           options: [
             { label: 'Twitter', value: 'twitter' },
