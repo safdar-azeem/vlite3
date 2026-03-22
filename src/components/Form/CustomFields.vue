@@ -8,9 +8,10 @@ import Button from '@/components/Button.vue'
 import Label from '../Label.vue'
 import Icon from '@/components/Icon.vue'
 import { $t } from '@/utils/i18n'
-import { evaluateConditional } from './utils/form.utils'
+import { evaluateConditional, setNestedValue } from './utils/form.utils'
 
 interface Props {
+  name?: string
   modelValue?: Record<string, any>[]
   schema: IForm[]
   headers?: string[]
@@ -28,12 +29,15 @@ interface Props {
   showRowNumbers?: boolean
   /** All form values for context */
   values?: Record<string, any>
+  /** Form Validation errors passed down */
+  errors?: Record<string, string>
   isUpdate?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   modelValue: () => [],
   headers: () => [],
+  errors: () => ({}),
   variant: 'outline',
   size: 'md',
   rounded: 'md',
@@ -114,7 +118,7 @@ const removeRow = (index: number) => {
   emitChange(newRows)
 }
 
-const handleFieldChange = (
+const handleFieldChange = async (
   rowIndex: number,
   fieldName: string,
   payload: IFormFieldChangePayload
@@ -124,6 +128,35 @@ const handleFieldChange = (
     ...newRows[rowIndex],
     [fieldName]: payload.value,
   }
+
+  // Handle updateValues for the specific nested field seamlessly
+  const field = props.schema.find((f) => f.name === fieldName)
+  if (field && field.updateValues) {
+    try {
+      const rowValues = newRows[rowIndex]
+      
+      // Global Values: Re-construct global state with the patched array before execution
+      let simulatedGlobalValues = { ...(props.values || {}) }
+      if (props.name) {
+        simulatedGlobalValues = setNestedValue(simulatedGlobalValues, props.name, newRows)
+      }
+
+      const updatedValues = await field.updateValues({
+        value: payload.value,
+        values: rowValues, // strictly local row scope
+        globalValues: simulatedGlobalValues, // strictly global root scope
+        data: payload.data,
+        isUpdate: props.isUpdate,
+      })
+      
+      if (updatedValues && typeof updatedValues === 'object') {
+        newRows[rowIndex] = { ...newRows[rowIndex], ...updatedValues }
+      }
+    } catch (e) {
+      console.error(`[CustomFields] Error in updateValues for ${fieldName}:`, e)
+    }
+  }
+
   rows.value = newRows
   emitChange(newRows)
 }
@@ -161,10 +194,17 @@ const columnHeaders = computed(() => {
   })
 })
 
-const getRowContext = (rowIndex: number) => ({
-  values: { ...(props.values || {}), ...(rows.value[rowIndex] || {}) },
-  isUpdate: props.isUpdate
-})
+const getRowContext = (rowIndex: number) => {
+  let contextValues = { ...(props.values || {}) }
+  if (props.name) {
+    contextValues = setNestedValue(contextValues, props.name, rows.value)
+  }
+  return {
+    values: rows.value[rowIndex] || {},
+    globalValues: contextValues,
+    isUpdate: props.isUpdate
+  }
+}
 
 const isFieldDisabled = (rowIndex: number, field: IForm): boolean => {
   if (props.disabled) return true
@@ -180,6 +220,14 @@ const isFieldVisible = (rowIndex: number, field: IForm): boolean => {
   return evaluateConditional(field.when, getRowContext(rowIndex))
 }
 
+const getRowErrorsHash = (rowIndex: number) => {
+  if (!props.errors || !props.name) return ''
+  const prefix = `${props.name}.${rowIndex}.`
+  return Object.keys(props.errors)
+    .filter((k) => k.startsWith(prefix))
+    .map((k) => props.errors![k])
+    .join(',')
+}
 </script>
 
 <template>
@@ -228,7 +276,7 @@ const isFieldVisible = (rowIndex: number, field: IForm): boolean => {
         <div
           v-for="(row, rowIndex) in rows"
           :key="row._id"
-          v-memo="[row, disabled, isUpdate, showRowNumbers, canRemoveRow, draggable, rowIndex]"
+          v-memo="[row, disabled, isUpdate, showRowNumbers, canRemoveRow, draggable, rowIndex, getRowErrorsHash(rowIndex)]"
           class="flex group bg-white transition-colors">
           
           <div
@@ -260,7 +308,9 @@ const isFieldVisible = (rowIndex: number, field: IForm): boolean => {
                 label: undefined
               }"
               :value="getFieldValue(rowIndex, field.name)"
-              :values="values || {}"
+              :values="rows[rowIndex] || {}"
+              :errors="errors"
+              :error="name && errors ? errors[`${name}.${rowIndex}.${field.name}`] : ''"
               :variant="'transparent'"
               size="sm"
               rounded="none"
