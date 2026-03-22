@@ -280,7 +280,7 @@ const shouldShowChevron = (option: IDropdownOption): boolean => {
 
     <div
       ref="containerRef"
-      tabindex="0"
+      :tabindex="showSearch ? -1 : 0"
       role="menu"
       v-if="normalizedOptions.length > 0 || $slots.menu"
       :class="[
