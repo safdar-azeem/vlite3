@@ -280,6 +280,7 @@ const handleQuickRangeSelect = (option: IDropdownOption) => {
               :max-date="startMaxDate"
               :min-date="minDate"
               :disabled="disabled"
+              class="min-w-[270px]"
               :readonly="readonly" />
           </div>
 
@@ -300,6 +301,7 @@ const handleQuickRangeSelect = (option: IDropdownOption) => {
               mode="date"
               :min-date="endMinDate"
               :max-date="maxDate"
+              class="min-w-[270px]"
               :disabled="disabled"
               :readonly="readonly" />
           </div>
