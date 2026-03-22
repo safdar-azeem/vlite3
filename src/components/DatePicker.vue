@@ -67,6 +67,14 @@ const displayValue = computed(() => {
     const d = new Date(actualValue.value)
     if (isNaN(d.getTime())) return String(actualValue.value)
 
+    if (props.mode === 'week') {
+      const endDate = new Date(d)
+      endDate.setDate(d.getDate() + 6)
+      const startStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      const endStr = endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      return `${startStr} - ${endStr}`
+    }
+
     const showTime = props.mode === 'dateTime' && hasTimePart(actualValue.value)
 
     return d.toLocaleDateString('en-US', {
