@@ -58,22 +58,43 @@ const hasTimePart = (val: any): boolean => {
   return false
 }
 
+// Returns { start: Date, end: Date } for week mode given any raw date value (Date, string, or already a range object)
+const getWeekRange = (val: any): { start: Date; end: Date } | null => {
+  try {
+    // Already a { start, end } object — use directly
+    if (val && typeof val === 'object' && val.start && val.end) {
+      const start = new Date(val.start)
+      const end = new Date(val.end)
+      if (!isNaN(start.getTime()) && !isNaN(end.getTime())) return { start, end }
+    }
+
+    const d = new Date(val)
+    if (isNaN(d.getTime())) return null
+    const start = new Date(d)
+    const end = new Date(d)
+    end.setDate(start.getDate() + 6)
+    return { start, end }
+  } catch {
+    return null
+  }
+}
+
 const displayValue = computed(() => {
   if (!actualValue.value) return ''
 
   if (props.mode === 'time') return actualValue.value
 
+  if (props.mode === 'week') {
+    const range = getWeekRange(actualValue.value)
+    if (!range) return ''
+    const startStr = range.start.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    const endStr = range.end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    return `${startStr} - ${endStr}`
+  }
+
   try {
     const d = new Date(actualValue.value)
     if (isNaN(d.getTime())) return String(actualValue.value)
-
-    if (props.mode === 'week') {
-      const endDate = new Date(d)
-      endDate.setDate(d.getDate() + 6)
-      const startStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-      const endStr = endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-      return `${startStr} - ${endStr}`
-    }
 
     const showTime = props.mode === 'dateTime' && hasTimePart(actualValue.value)
 
@@ -97,9 +118,25 @@ const displayPlaceholder = computed(() => {
   return res !== 'vlite.datePicker.placeholder' ? res : 'Select date'
 })
 
+// In week mode, emit both start and end dates as an object { start, end }
 const handleDateChange = (val: any) => {
+  if (props.mode === 'week') {
+    const range = getWeekRange(val)
+    if (range) {
+      actualValue.value = { start: range.start, end: range.end }
+      return
+    }
+  }
   actualValue.value = val
 }
+
+// For the inner DatePicker, pass only the start Date in week mode to avoid passing the object down
+const innerPickerValue = computed(() => {
+  if (props.mode === 'week' && actualValue.value && typeof actualValue.value === 'object' && actualValue.value.start) {
+    return actualValue.value.start
+  }
+  return actualValue.value
+})
 </script>
 
 <template>
@@ -125,7 +162,7 @@ const handleDateChange = (val: any) => {
 
     <div class="overflow-hidden min-w-[300px]">
       <DatePicker
-        :value="actualValue"
+        :value="innerPickerValue"
         :mode="mode"
         :min-date="minDate"
         :max-date="maxDate"
