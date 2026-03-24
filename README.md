@@ -224,84 +224,73 @@ Override these variables in `:root` or within a `.dark` class (when using class-
 
 ### Extended Color Variants
 
-For more complex components, vlite3 provides extended variants for main semantic colors (`primary`, `danger`, `warning`, `info`, `success`). These are useful for building nuanced UIs with subtle backgrounds, hover states, and accessible text.
+For more complex components, **vlite3** provides extended variants for main semantic colors (`primary`, `danger`, `warning`, `info`, `success`). These help create nuanced UIs with subtle backgrounds, hover states, and accessible text.
 
-| Base Color  | Variant Variables           | Usage Description |
-| ----------- | --------------------------- | ----------------- |
-| **Primary** | `--color-primary-light`<br> |
+---
 
-<br>`--color-primary-dark`<br>
+#### Primary
 
-<br>`--color-primary-fg`<br>
+| Variable                   | Description                            |
+| -------------------------- | -------------------------------------- |
+| `--color-primary-light`    | Subtle background (e.g., 10% opacity)  |
+| `--color-primary-dark`     | Hover state for the main color         |
+| `--color-primary-fg`       | Text color on top of the main color    |
+| `--color-primary-fg-light` | Text color on top of the light variant |
 
-<br>`--color-primary-fg-light` | **Light**: Subtle background (e.g., 10% opacity).<br>
+---
 
-<br>**Dark**: Hover state for the main color.<br>
+#### Danger
 
-<br>**Fg**: Text color on top of the _main_ color.<br>
+| Variable                  | Description                         |
+| ------------------------- | ----------------------------------- |
+| `--color-danger-light`    | Error backgrounds (alerts)          |
+| `--color-danger-dark`     | Hover state for destructive buttons |
+| `--color-danger-fg`       | Text on destructive buttons         |
+| `--color-danger-fg-light` | Text on error alerts                |
 
-<br>**Fg-Light**: Text color on top of the _light_ variant. |
-| **Danger** | `--color-danger-light`<br>
+---
 
-<br>`--color-danger-dark`<br>
+#### Warning
 
-<br>`--color-danger-fg`<br>
+| Variable                   | Description                         |
+| -------------------------- | ----------------------------------- |
+| `--color-warning-light`    | Warning backgrounds                 |
+| `--color-warning-dark`     | Active or emphasized warning states |
+| `--color-warning-fg`       | Text on warning badges              |
+| `--color-warning-fg-light` | Text on warning backgrounds         |
 
-<br>`--color-danger-fg-light` | **Light**: Error backgrounds (alerts).<br>
+---
 
-<br>**Dark**: Hover state for destructive buttons.<br>
+#### Success
 
-<br>**Fg**: Text on destructive buttons.<br>
+| Variable                   | Description                     |
+| -------------------------- | ------------------------------- |
+| `--color-success-light`    | Success backgrounds (toasts)    |
+| `--color-success-dark`     | Hover or active success actions |
+| `--color-success-fg`       | Text on success buttons         |
+| `--color-success-fg-light` | Text on success backgrounds     |
 
-<br>**Fg-Light**: Text on error alerts. |
-| **Warning** | `--color-warning-light`<br>
+---
 
-<br>`--color-warning-dark`<br>
+#### Info
 
-<br>`--color-warning-fg`<br>
+| Variable                | Description                  |
+| ----------------------- | ---------------------------- |
+| `--color-info-light`    | Info backgrounds             |
+| `--color-info-dark`     | Hover or active info actions |
+| `--color-info-fg`       | Text on info buttons         |
+| `--color-info-fg-light` | Text on info backgrounds     |
 
-<br>`--color-warning-fg-light` | **Light**: Warning backgrounds.<br>
+---
 
-<br>**Dark**: Active/Determined warning states.<br>
-
-<br>**Fg**: Text on warning badges.<br>
-
-<br>**Fg-Light**: Text on warning backgrounds. |
-| **Success** | `--color-success-light`<br>
-
-<br>`--color-success-dark`<br>
-
-<br>`--color-success-fg`<br>
-
-<br>`--color-success-fg-light` | **Light**: Success backgrounds (toasts).<br>
-
-<br>**Dark**: Hover/Active success actions.<br>
-
-<br>**Fg**: Text on success buttons.<br>
-
-<br>**Fg-Light**: Text on success backgrounds. |
-| **Info** | `--color-info-light`<br>
-
-<br>`--color-info-dark`<br>
-
-<br>`--color-info-fg`<br>
-
-<br>`--color-info-fg-light` | **Light**: Info backgrounds.<br>
-
-<br>**Dark**: Hover/Active info actions.<br>
-
-<br>**Fg**: Text on info buttons.<br>
-
-<br>**Fg-Light**: Text on info backgrounds. |
-
-**Example Usage:**
+### Example Usage
 
 ```html
 <div class="bg-success-light text-success-fg-light border border-success/20">
   Operation Completed
 </div>
 
-<button class="bg-danger text-danger-fg hover:bg-danger-dark">Delete</button>
+<button class="bg-danger text-danger-fg hover:bg-dang
 ```
 
 ### Additional Colors
