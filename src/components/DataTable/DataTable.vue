@@ -90,11 +90,15 @@ const effectiveShowSearch = computed(() => {
 })
 
 const effectiveSelectable = computed(() => {
+  // If hideSelectable is explicitly set to true on DataTable, always respect it —
+  // even when inside a Screen context. This allows per-table override.
+  if (props.hideSelectable) return false
   if (screenContext) {
     return screenContext.forceSelectable
   }
-  return !props.hideSelectable
+  return true
 })
+
 const effectiveKeyField = computed(() => resolveKeyField(props.rows, props.keyField))
 
 // ── internal state ────────────────────────────────────────────────────────────
@@ -379,8 +383,8 @@ const txtCancelBtn = computed(() => {
               <th
                 v-if="effectiveSelectable"
                 scope="col"
-                class="w-[48px] px-0 text-center font-medium text-muted-foreground"
-                style="width: 48px">
+                class="w-[40px] px-0 text-center font-medium text-muted-foreground"
+                style="width: 40px">
                 <div class="flex items-center justify-center">
                   <CheckBox
                     :model-value="isAllSelected"
@@ -436,6 +440,7 @@ const txtCancelBtn = computed(() => {
                 v-memo="[
                   row,
                   selectedIds.has(getRowId(row, effectiveKeyField)),
+                  effectiveSelectable,
                   compact,
                   striped,
                   hoverable,
