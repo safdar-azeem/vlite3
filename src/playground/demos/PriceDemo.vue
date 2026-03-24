@@ -6,7 +6,7 @@ import Button from '@/components/Button.vue'
 import { updateConfig, useVLiteConfig } from '@/core'
 import DemoSection from '../DemoSection.vue'
 import sourceCode from './PriceDemo.vue?raw'
-import { formatCurrency } from '@/utils'
+import { formatCurrency, getDefaultDateRange } from '@/utils'
 
 const dynamicValue = ref(1234.56)
 const config = useVLiteConfig()
