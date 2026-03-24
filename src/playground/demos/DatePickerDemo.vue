@@ -7,7 +7,7 @@ import sourceCode from './DatePickerDemo.vue?raw'
 const today = new Date()
 
 const dateValue = ref<Date | null>(today)
-const weekValue = ref<Date | null>(today)
+const weekValue = ref<{ start: Date; end: Date } | null>(null)
 const monthValue = ref<Date | null>(today)
 const time12hValue = ref<string>('22:05')
 const time24hValue = ref<string>('22:05')
@@ -26,6 +26,12 @@ const disabledDates = [
   },
   { start: new Date(today.getFullYear(), today.getMonth(), 25).toISOString().split('T')[0] },
 ]
+
+const formatWeekValue = (val: { start: Date; end: Date } | null) => {
+  if (!val) return 'null'
+  const fmt = (d: Date) => d.toLocaleDateString()
+  return `{ start: ${fmt(val.start)}, end: ${fmt(val.end)} }`
+}
 </script>
 
 <template>
@@ -51,7 +57,10 @@ const disabledDates = [
           <h3 class="text-sm font-semibold text-gray-900">Week Mode</h3>
           <DatePicker v-model="weekValue" mode="week" placeholder="Select week" />
           <p class="text-xs text-gray-500">
-            Value: {{ weekValue ? weekValue.toLocaleDateString() : 'null' }}
+            Value: {{ formatWeekValue(weekValue) }}
+          </p>
+          <p class="text-xs text-blue-500">
+            Returns both the first and last date of the selected week.
           </p>
         </div>
 
