@@ -218,7 +218,7 @@ const triggerChange = () => {
     payload.sort = sortPayload
   }
 
-  props.refetch(payload)
+  props.refetch(payload as any)
 }
 
 const hasData = computed(() => props.data && props.data.length > 0)
