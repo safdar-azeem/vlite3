@@ -32,7 +32,7 @@ const props = withDefaults(defineProps<ScreenProps>(), {
   emptyIcon: 'lucide:inbox',
   filterSchema: () => [],
   filterType: 'modal',
-  showRefresh: false,
+  showRefresh: true,
   exportSchema: () => [],
   importSchema: () => [],
   exportProps: false,
@@ -197,12 +197,28 @@ const triggerChange = () => {
     combinedFilters[props.quickFilterKey] = activeQuickFilter.value
   }
 
-  props.refetch({
+  // Only include sort in the payload when both field and order are non-empty
+  const sortPayload =
+    activeSort.value.field && activeSort.value.order
+      ? { field: activeSort.value.field, order: activeSort.value.order }
+      : undefined
+
+  const payload: {
+    pagination: { page: number; limit: number }
+    search: string
+    filter: Record<string, any>
+    sort?: { field: string; order: string }
+  } = {
     pagination: { page: internalPage.value, limit: internalLimit.value },
     search: searchQuery.value,
-    sort: { ...activeSort.value },
     filter: combinedFilters,
-  })
+  }
+
+  if (sortPayload) {
+    payload.sort = sortPayload
+  }
+
+  props.refetch(payload)
 }
 
 const hasData = computed(() => props.data && props.data.length > 0)
