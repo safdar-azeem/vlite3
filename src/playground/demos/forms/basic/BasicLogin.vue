@@ -18,7 +18,6 @@ const loginSchema: IForm[] = [
     label: 'Password',
     type: 'password',
     icon: 'lucide:lock',
-
     required: true,
   },
   {
