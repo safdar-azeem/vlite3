@@ -69,7 +69,9 @@ const id = getUniqueId() // e.g. '65a1b2c3d4e5f6a7b8c9d0e1'
 Returns `true` if the current device is an Apple device (Mac, iPhone, or Safari browser).
 
 ```ts
-if (isAppleDevice()) { /* Apple-specific logic */ }
+if (isAppleDevice()) {
+  /* Apple-specific logic */
+}
 ```
 
 ### `downloadFile(fileUrl, fileName)`
@@ -85,10 +87,10 @@ downloadFile('https://example.com/file.pdf', 'My File')
 Returns `true` if the value is null, undefined, empty string, 0, empty array, or object with all empty values.
 
 ```ts
-isEmpty(null)       // true
-isEmpty([])         // true
-isEmpty({ a: '' })  // true
-isEmpty('hello')    // false
+isEmpty(null) // true
+isEmpty([]) // true
+isEmpty({ a: '' }) // true
+isEmpty('hello') // false
 ```
 
 ### `removeExtraProperties(data, propertiesToRemove)`
@@ -128,9 +130,9 @@ camelCase('HelloWorld') // 'helloWorld'
 Converts a string into a URL-friendly slug. Handles Unicode via NFD normalization, strips diacritics, collapses whitespace/special characters into hyphens.
 
 ```ts
-slugify('Hello World!')     // 'hello-world'
-slugify('Crème Brûlée')     // 'creme-brulee'
-slugify('  --foo  bar-- ')  // 'foo-bar'
+slugify('Hello World!') // 'hello-world'
+slugify('Crème Brûlée') // 'creme-brulee'
+slugify('  --foo  bar-- ') // 'foo-bar'
 ```
 
 ### `randomNumber(min, max)`
@@ -138,8 +140,8 @@ slugify('  --foo  bar-- ')  // 'foo-bar'
 Generates a random integer between `min` and `max` (inclusive). Throws `TypeError` for non-finite values, `RangeError` if `min > max`.
 
 ```ts
-randomNumber(1, 10)  // e.g. 7
-randomNumber(-5, 5)  // e.g. -2
+randomNumber(1, 10) // e.g. 7
+randomNumber(-5, 5) // e.g. -2
 ```
 
 ### `truncate(text, length, ellipsis?)`
@@ -147,9 +149,9 @@ randomNumber(-5, 5)  // e.g. -2
 Truncates text to a given length, breaking at the last word boundary. Default ellipsis is `'…'`.
 
 ```ts
-truncate('Hello, beautiful world!', 13)        // 'Hello,…'
-truncate('Hello, beautiful world!', 13, '...')  // 'Hello,...'
-truncate('Short', 100)                          // 'Short'
+truncate('Hello, beautiful world!', 13) // 'Hello,…'
+truncate('Hello, beautiful world!', 13, '...') // 'Hello,...'
+truncate('Short', 100) // 'Short'
 ```
 
 ### `formatCurrency(amount, locale?, currency?)`
@@ -157,9 +159,9 @@ truncate('Short', 100)                          // 'Short'
 Formats a number as a locale-aware currency string using `Intl.NumberFormat`. Defaults to `'en-US'` locale and `'USD'` currency.
 
 ```ts
-formatCurrency(1234.5)                  // '$1,234.50'
-formatCurrency(1234.5, 'de-DE', 'EUR')  // '1.234,50 €'
-formatCurrency(0)                       // '$0.00'
+formatCurrency(1234.5) // '$1,234.50'
+formatCurrency(1234.5, 'de-DE', 'EUR') // '1.234,50 €'
+formatCurrency(0) // '$0.00'
 ```
 
 ### `delay(ms)`
@@ -185,3 +187,37 @@ const ok = await copyToClipboard('Hello!')
 if (ok) showToast('Copied!')
 ```
 
+## `getDefaultDateRange`
+
+This utility provides standardized date ranges for dashboards, reports, and date pickers. It uses Day.js for immutability and timezone safety.
+
+### 2. Function Signature
+
+```typescript
+/**
+ * @param mode - The range type: 'week' | 'month' | '3-months' | '6-months' | 'year' | 'last-week' | 'last-month'
+ * @param maxDate - (Optional) Caps the end date (e.g., set to dayjs() to prevent future dates)
+ * @param anchorDate - (Optional) The reference date for calculation (defaults to today)
+ */
+const range = getDefaultDateRange(mode, maxDate, anchorDate)
+```
+
+### 3. Logic & Behaviors
+
+#### **A. The 7-Day "Smart Lookback"**
+
+For **Calendar Modes** (`week`, `month`, `3-months`, `6-months`, `year`), if the current date is between the **1st and 7th** of the month, the utility automatically shifts the entire range back by one month.
+
+- **Why?** This prevents dashboards from appearing "empty" at the start of a new month before data has been collected.
+
+#### **B. Rolling vs. Calendar Windows**
+
+The utility distinguishes between "Current Period" and "Last X Period":
+
+| Mode             | Type     | Logic                        | Example (if today is March 24) |
+| :--------------- | :------- | :--------------------------- | :----------------------------- |
+| **`month`**      | Calendar | Full current month           | March 1 — March 31             |
+| **`week`**       | Calendar | Full current week            | March 22 — March 28            |
+| **`last-month`** | Rolling  | Last 30 days including today | Feb 23 — March 24              |
+| **`last-week`**  | Rolling  | Last 7 days including today  | March 18 — March 24            |
+| **`year`**       | Rolling  | Last 12 full months          | April 1 (Prev Year) — March 31 |
