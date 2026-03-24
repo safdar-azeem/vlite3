@@ -2,7 +2,7 @@
 import { computed, markRaw, type Component } from 'vue'
 import type { IForm, IFormAddon, IFormFieldChangePayload } from './types'
 import type { InputVariant, InputSize, InputRounded } from '@/types'
-import { isComponent } from './utils/form.utils'
+import { isComponent, resolveFieldType } from './utils/form.utils'
 import { isAddonObject } from './utils/form.utils'
 import NumberInput from '@/components/NumberInput.vue'
 import Button from '@/components/Button.vue'
@@ -70,18 +70,27 @@ const handleInput = (value: any) => {
   emit('change', { value })
 }
 
+// Dynamically resolve type using context
+const resolvedType = computed(() => {
+  return resolveFieldType(props.field, {
+    values: props.values,
+    globalValues: props.values,
+    isUpdate: props.isUpdate
+  })
+})
+
 /**
  * True when the field is type='number' AND isSensitiveField=true.
  * In this case we render Input.vue (which already has the eye-toggle)
  * with type='password', but coerce the emitted value to Number.
  */
 const isSensitiveNumber = computed(
-  () => props.field.type === 'number' && props.field.isSensitiveField === true
+  () => resolvedType.value === 'number' && props.field.isSensitiveField === true
 )
 
 // Get the component to render based on field type
 const fieldComponent = computed(() => {
-  const type = props.field.type
+  const type = resolvedType.value
 
   // Custom component passed directly
   if (isComponent(type)) {
@@ -145,7 +154,7 @@ const fieldComponent = computed(() => {
 
 // Build props for the component
 const fieldProps = computed(() => {
-  const type = props.field.type
+  const type = resolvedType.value
   
   // Destructure disabled and readonly to prevent the raw schema function from 
   // overriding the evaluated boolean props passed by the parent (FormFields.vue)
@@ -199,7 +208,7 @@ const fieldProps = computed(() => {
       min: props.field.min,
       max: props.field.max,
       rows: type === 'textarea' ? props.field.props?.rows || 3 : undefined,
-      class: `${props.field.className}`,
+      class: `${props.field.className || ''}`,
     }
   }
 
@@ -397,7 +406,7 @@ const fieldProps = computed(() => {
 
 // Build event handlers
 const fieldEvents = computed(() => {
-  const type = props.field.type
+  const type = resolvedType.value
 
   // v-model components (emit 'update:modelValue')
   if (
@@ -527,7 +536,7 @@ const hasObjectAddons = computed(() => {
 
 // Check if the field is an input-type field (where addons make sense)
 const isInputType = computed(() => {
-  const type = props.field.type
+  const type = resolvedType.value
   return (
     type === 'text' ||
     type === 'email' ||
@@ -611,7 +620,7 @@ const handleAddonAction = (addon: IFormAddon) => {
   <component
     v-else
     :is="fieldComponent"
-    :class="['switch', 'check'].includes(field?.type as string) ? '' : 'w-full'"
+    :class="['switch', 'check'].includes(resolvedType as string) ? '' : 'w-full'"
     v-bind="{
       ...fieldProps,
       ...(field?.props || {}),
