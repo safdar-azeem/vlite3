@@ -1,10 +1,43 @@
-import type { IForm, IFormAddon, IFormContext, IFormDisabled, IFormWhen } from '../types'
+import type { IForm, IFormAddon, IFormContext, IFormDisabled, IFormWhen, IFormFieldType } from '../types'
 
 /**
  * Helper: check if an addon definition is an object config (not a plain string)
  */
 export function isAddonObject(addon: string | IFormAddon | undefined): addon is IFormAddon {
   return !!addon && typeof addon === 'object'
+}
+
+/**
+ * Check if a value is a Vue component
+ */
+export function isComponent(value: any): boolean {
+  if (!value) return false
+  // Vue components are objects with render function or template
+  return (
+    typeof value === 'object' &&
+    (typeof value.render === 'function' ||
+      typeof value.setup === 'function' ||
+      value.__name !== undefined ||
+      value.name !== undefined)
+  )
+}
+
+/**
+ * Resolves the dynamic field type evaluator (if present) to return the actual field type component or string
+ */
+export function resolveFieldType(
+  field: IForm,
+  context: IFormContext
+): IFormFieldType | undefined {
+  if (typeof field.type === 'function' && !isComponent(field.type)) {
+    try {
+      return (field.type as Function)(context)
+    } catch (e) {
+      console.error(`[vlite3/Form] Error evaluating dynamic type for field "${field.name}":`, e)
+      return 'text' // Fallback to prevent crash
+    }
+  }
+  return field.type as IFormFieldType | undefined
 }
 
 /**
@@ -79,15 +112,22 @@ function seedAddonValue(
 export async function initializeFormValues(
   schema: IForm[] | IForm[][],
   initialValues?: Record<string, any>,
-  isUpdate: boolean = false
+  globalValuesContext?: Record<string, any>
 ): Promise<Record<string, any>> {
   let values: Record<string, any> = initialValues ? deepClone(initialValues) : {}
+  const globalValues = globalValuesContext || values
 
   // Flatten schema if grouped
   const flatSchema = Array.isArray(schema[0]) ? (schema as IForm[][]).flat() : (schema as IForm[])
 
   for (const field of flatSchema) {
     if (!field.name) continue
+
+    // Evaluate 'when' condition during initialization to prevent hidden fields from seeding defaults
+    if (field.when) {
+      const isVisible = evaluateConditional(field.when, { values, globalValues })
+      if (!isVisible) continue
+    }
 
     const sourceName = field.mapFrom || field.name
     let existingValue = initialValues ? getNestedValue(initialValues, sourceName) : undefined
@@ -122,12 +162,9 @@ export async function initializeFormValues(
       }
 
       if (existingValue === undefined) {
-        const isVisible = !field.when || evaluateConditional(field.when, { values, globalValues: values, isUpdate })
-        if (isVisible) {
-          const defaultValue = typeof field.value === 'function' ? field.value() : field.value
-          if (defaultValue !== undefined) {
-            Object.assign(values, setNestedValue(values, field.name, defaultValue))
-          }
+        const defaultValue = typeof field.value === 'function' ? field.value() : field.value
+        if (defaultValue !== undefined) {
+          Object.assign(values, setNestedValue(values, field.name, defaultValue))
         }
       } else {
         Object.assign(values, setNestedValue(values, field.name, existingValue))
@@ -137,19 +174,16 @@ export async function initializeFormValues(
     }
 
     // Seed addon default values
-    const isVisible = !field.when || evaluateConditional(field.when, { values, globalValues: values, isUpdate })
-    if (isVisible) {
-      values = seedAddonValue(values, field.addonLeft)
-      values = seedAddonValue(values, field.addonRight)
-    }
+    values = seedAddonValue(values, field.addonLeft)
+    values = seedAddonValue(values, field.addonRight)
     
     // Support nested CustomFields formatting recursively
-    if (field.type === 'customFields' && field.props?.schema) {
+    if (resolveFieldType(field, { values, globalValues }) === 'customFields' && field.props?.schema) {
       const nestedSchema = field.props.schema as IForm[]
       let nestedValues = getNestedValue(values, field.name)
       if (Array.isArray(nestedValues) && nestedValues.length > 0) {
         const initializedArray = await Promise.all(
-          nestedValues.map((item) => initializeFormValues(nestedSchema, item, isUpdate))
+          nestedValues.map((item) => initializeFormValues(nestedSchema, item, globalValues))
         )
         Object.assign(values, setNestedValue(values, field.name, initializedArray))
       }
@@ -199,16 +233,27 @@ export function filterNullCustomFields(
  */
 export function collectFileFields(
   schema: IForm[] | IForm[][],
-  values: Record<string, any>
+  values: Record<string, any>,
+  globalValuesContext?: Record<string, any>,
+  isUpdateContext?: boolean
 ): Array<{ name: string; value: any; type: string; field: IForm }> {
   const fileFields: Array<{ name: string; value: any; type: string; field: IForm }> = []
+  const globalValues = globalValuesContext || values
 
   const flatSchema = Array.isArray(schema[0]) ? (schema as IForm[][]).flat() : (schema as IForm[])
 
   for (const field of flatSchema) {
     if (!field.name) continue
 
-    const fieldType = field.type
+    const context = { values, globalValues, isUpdate: isUpdateContext }
+
+    // Do not collect files from hidden fields
+    if (field.when) {
+      const isVisible = evaluateConditional(field.when, context)
+      if (!isVisible) continue
+    }
+
+    const fieldType = resolveFieldType(field, context)
     if (fieldType === 'file' || fieldType === 'avatarUpload' || fieldType === 'fileUploader') {
       const value = getNestedValue(values, field.name)
       if (value) {
@@ -226,21 +271,32 @@ export function collectFileFields(
       const customFieldsValue = getNestedValue(values, field.name)
       if (Array.isArray(customFieldsValue)) {
         const nestedSchema = field.props.schema as IForm[]
-        const nestedFileFields = nestedSchema.filter(
-          (f) => f.type === 'file' || f.type === 'avatarUpload' || f.type === 'fileUploader'
-        )
+        const nestedFileFields = nestedSchema.filter((f) => {
+          // Fast preliminary check before evaluating type per row
+          return !isComponent(f.type) 
+        })
 
         if (nestedFileFields.length > 0) {
           customFieldsValue.forEach((item, index) => {
             nestedFileFields.forEach((fileField) => {
-              const value = item?.[fileField.name]
-              if (value) {
-                fileFields.push({
-                  name: `${field.name}.${index}.${fileField.name}`,
-                  value,
-                  type: fileField.type as string,
-                  field: fileField,
-                })
+              const rowContext = { values: item || {}, globalValues, isUpdate: isUpdateContext }
+              
+              if (fileField.when) {
+                const isVisible = evaluateConditional(fileField.when, rowContext)
+                if (!isVisible) return
+              }
+
+              const nestedFieldType = resolveFieldType(fileField, rowContext)
+              if (nestedFieldType === 'file' || nestedFieldType === 'avatarUpload' || nestedFieldType === 'fileUploader') {
+                const value = item?.[fileField.name]
+                if (value) {
+                  fileFields.push({
+                    name: `${field.name}.${index}.${fileField.name}`,
+                    value,
+                    type: nestedFieldType as string,
+                    field: fileField,
+                  })
+                }
               }
             })
           })
@@ -278,21 +334,6 @@ export function getFieldKey(name: string): string {
 }
 
 /**
- * Check if a value is a Vue component
- */
-export function isComponent(value: any): boolean {
-  if (!value) return false
-  // Vue components are objects with render function or template
-  return (
-    typeof value === 'object' &&
-    (typeof value.render === 'function' ||
-      typeof value.setup === 'function' ||
-      value.__name !== undefined ||
-      value.name !== undefined)
-  )
-}
-
-/**
  * Resolve the canonical empty value for a given field type so that explicitly
  * clearing a field during an update sends the correct signal to the backend
  * (Prisma / Postgres) instead of omitting the key from the payload.
@@ -304,8 +345,8 @@ export function isComponent(value: any): boolean {
  * - number       → null
  * - everything else (text, email, …) → null
  */
-function resolveEmptyValue(field: IForm): any {
-  const type = field.type as string | undefined
+function resolveEmptyValue(field: IForm, context: IFormContext): any {
+  const type = resolveFieldType(field, context) as string | undefined
 
   if (type === 'multiSelect') return []
   if (type === 'switch' || type === 'check') return false
@@ -343,10 +384,12 @@ export async function cleanSubmitValues(
   schema: IForm[] | IForm[][],
   emitFields?: string[],
   ignoreFields?: string[],
-  isUpdate: boolean = false
+  globalValuesContext?: Record<string, any>,
+  isUpdateContext?: boolean
 ): Promise<Record<string, any>> {
   const isPassthrough = emitFields === undefined && ignoreFields === undefined
   const result: Record<string, any> = isPassthrough ? deepClone(values) : {}
+  const globalValues = globalValuesContext || values
 
   const flatSchema = Array.isArray(schema[0]) ? (schema as IForm[][]).flat() : (schema as IForm[])
   const fieldsToEmit = emitFields || []
@@ -355,18 +398,12 @@ export async function cleanSubmitValues(
   for (const field of flatSchema) {
     if (!field.name) continue
 
-    const isVisible = !field.when || evaluateConditional(field.when, { values, globalValues: values, isUpdate })
-    if (!isVisible) {
-      if (isPassthrough) {
-        const parts = field.name.split('.')
-        let target = result
-        for (let i = 0; i < parts.length - 1; i++) {
-          if (!target) break
-          target = target[parts[i]]
-        }
-        if (target) delete target[parts[parts.length - 1]]
-      }
-      continue
+    const context = { values, globalValues, isUpdate: isUpdateContext }
+
+    // Strip hidden fields from the final payload
+    if (field.when) {
+      const isVisible = evaluateConditional(field.when, context)
+      if (!isVisible) continue
     }
 
     let val = getNestedValue(values, field.name)
@@ -377,21 +414,23 @@ export async function cleanSubmitValues(
     const topLevelKey = field.name.split('.')[0]
     const fieldKeyExistsInValues = Object.prototype.hasOwnProperty.call(values, topLevelKey)
 
+    const fieldType = resolveFieldType(field, context)
+
     if (isEmptyValue(val)) {
       // Only carry the explicit empty value forward when the key was already
       // present — i.e. the user cleared a value that existed before (update).
       // If the key was never in the values object, skip it entirely (create).
       if (!fieldKeyExistsInValues) continue
 
-      val = resolveEmptyValue(field)
+      val = resolveEmptyValue(field, context)
     }
 
     val = deepClone(val) // Prevent mutation of original form values
 
-    if (field.type === 'customFields' && field.props?.schema && Array.isArray(val)) {
+    if (fieldType === 'customFields' && field.props?.schema && Array.isArray(val)) {
       const nestedSchema = field.props.schema as IForm[]
       // Re-map cleanly with Promise.all for independent rows
-      val = await Promise.all(val.map((item: any) => cleanSubmitValues(item, nestedSchema, emitFields, ignoreFields, isUpdate)))
+      val = await Promise.all(val.map((item: any) => cleanSubmitValues(item, nestedSchema, emitFields, ignoreFields, globalValues, isUpdateContext)))
     }
 
     let needsUpdate = false
