@@ -200,6 +200,11 @@ This utility provides standardized date ranges for dashboards, reports, and date
  * @param anchorDate - (Optional) The reference date for calculation (defaults to today)
  */
 const range = getDefaultDateRange(mode, maxDate, anchorDate)
+// Result
+export interface DateRangeResult {
+  startDate: string
+  endDate: string
+}
 ```
 
 ### 3. Logic & Behaviors
