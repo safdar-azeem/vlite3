@@ -2,7 +2,7 @@
 import { computed, ref, markRaw, type Component } from 'vue'
 import type { IForm, IFormFieldChangePayload } from './types'
 import type { InputVariant, InputSize, InputRounded } from '@/types'
-import { getNestedValue, isComponent } from './utils/form.utils'
+import { getNestedValue, isComponent, resolveFieldType } from './utils/form.utils'
 import Label from '@/components/Label.vue'
 import FormField from './FormField.vue'
 import { $t } from '@/utils/i18n'
@@ -45,6 +45,15 @@ const emit = defineEmits<{
 const className = computed(() => {
   if (props.className) return props.className
 })
+
+// Resolve dynamic type string
+const getResolvedType = (field: IForm) => {
+  return resolveFieldType(field, {
+    values: props.values,
+    globalValues: props.values,
+    isUpdate: props.isUpdate
+  })
+}
 
 // Get value for a field
 const getFieldValue = (field: IForm): any => {
@@ -126,16 +135,17 @@ const handleFocusOut = (fieldName: string) => {
 
 const isFloatingActive = (field: IForm) => {
   const val = getFieldValue(field)
+  const type = getResolvedType(field)
   let hasValue =
     val !== undefined && val !== null && val !== '' && !(Array.isArray(val) && val.length === 0)
   const hasNumericValue = typeof val === 'number' && !isNaN(val)
 
-  if (field.type === 'dateRangePicker' && val && typeof val === 'object') {
+  if (type === 'dateRangePicker' && val && typeof val === 'object') {
     hasValue = !!(val.startDate || val.endDate || val.start || val.end)
   }
 
   // For native inputs (text, number, etc), float the label when focused
-  if (delegatesFloatingLabel(field) || field.type === 'number') {
+  if (delegatesFloatingLabel(field) || type === 'number') {
     return focusedFields.value[field.name] || hasValue || hasNumericValue
   }
 
@@ -145,19 +155,20 @@ const isFloatingActive = (field: IForm) => {
 }
 
 const delegatesFloatingLabel = (field: IForm) => {
-  const type = field.type || 'text'
+  const type = getResolvedType(field) || 'text'
   return ['text', 'email', 'password', 'tel', 'url', 'search', 'textarea'].includes(type as string)
 }
 
 const getFloatingLeftClass = (field: IForm) => {
+  const type = getResolvedType(field)
   // Split number input: space for the left minus button
-  if (field.type === 'number') {
+  if (type === 'number') {
     const numVariant = field.props?.variant ?? 'split'
     // Only split has a left-side button; stacked/ghost do not
     return numVariant === 'split' ? 'left-4' : 'left-3'
   }
   // DatePicker and ColorPicker have icons/previews hardcoded at left-3
-  if (field.type === 'date' || field.type === 'time' || field.type === 'color' || field.type === 'dateRangePicker') {
+  if (type === 'date' || type === 'time' || type === 'color' || type === 'dateRangePicker') {
     return 'left-10'
   }
   return 'left-3'
@@ -165,7 +176,7 @@ const getFloatingLeftClass = (field: IForm) => {
 
 const shouldHideExternalLabel = (field: IForm) => {
   if (props.variant !== 'floating') return false
-  const type = field.type || 'text'
+  const type = getResolvedType(field) || 'text'
   const unfloatingTypes = [
     'switch',
     'check',
@@ -202,14 +213,15 @@ const getSafeLabel = (field: IForm) => {
           isUpdate,
           showRequiredAsterisk,
           fieldLoading[field.name],
+          getResolvedType(field)
         ]"
         :class="['max-md:col-span-full! form-field-item', getItemClass(field)]">
         <Label
           v-if="
             getFieldLabel(field) &&
-            field.type !== 'switch' &&
-            field.type !== 'check' &&
-            field.type !== 'customFields' &&
+            getResolvedType(field) !== 'switch' &&
+            getResolvedType(field) !== 'check' &&
+            getResolvedType(field) !== 'customFields' &&
             !shouldHideExternalLabel(field)
           "
           :for="field.name"
@@ -227,7 +239,7 @@ const getSafeLabel = (field: IForm) => {
 
         <div
           class="relative"
-          :class="['switch', 'check'].includes(field.type as string) ? 'w-auto' : 'w-full'"
+          :class="['switch', 'check'].includes(getResolvedType(field) as string) ? 'w-auto' : 'w-full'"
           @focusin="handleFocusIn(field.name)"
           @focusout="handleFocusOut(field.name)">
           <label
@@ -266,7 +278,7 @@ const getSafeLabel = (field: IForm) => {
             :value="getFieldValue(field)"
             :floatingActive="isFloatingActive(field)"
             :label="
-              field.type === 'customFields'
+              getResolvedType(field) === 'customFields'
                 ? undefined
                 : shouldHideExternalLabel(field)
                   ? getSafeLabel(field)
@@ -288,7 +300,7 @@ const getSafeLabel = (field: IForm) => {
         </div>
 
         <Label
-          v-if="getFieldLabel(field) && (field.type === 'switch' || field.type === 'check')"
+          v-if="getFieldLabel(field) && (getResolvedType(field) === 'switch' || getResolvedType(field) === 'check')"
           :for="field.name"
           class="ml-2 text-sm font-medium cursor-pointer">
           {{ getFieldLabel(field) }}
