@@ -91,7 +91,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
   // Async initializer to safely handle async formats and standard formats
   const init = async (vals?: Record<string, any>) => {
     try {
-      const initialized = await initializeFormValues(schema, vals)
+      const initialized = await initializeFormValues(schema, vals, isUpdate)
       formValues.value = initialized
       initialSnapshot.value = deepClone(initialized)
       isDirty.value = false
@@ -533,7 +533,8 @@ export function useForm(options: UseFormOptions): UseFormReturn {
         processedValues,
         schema,
         options.emitFields,
-        options.emitFields
+        options.emitFields,
+        isUpdate
       )
 
       // Call onSubmit callback
