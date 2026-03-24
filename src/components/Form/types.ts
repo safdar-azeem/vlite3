@@ -37,6 +37,7 @@ export type IFormFieldType =
   | 'url'
   | 'search'
   | 'date'
+  | 'dateRangePicker'
   | 'textarea'
   | 'time'
   | 'iconPicker'
