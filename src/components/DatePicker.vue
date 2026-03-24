@@ -58,6 +58,53 @@ const hasTimePart = (val: any): boolean => {
   return false
 }
 
+/**
+ * Converts any date value into a local-midnight Date (no timezone offset applied).
+ * This prevents UTC midnight (e.g. 2026-03-15T00:00:00.000Z) from being
+ * shifted to the previous day in negative-offset timezones.
+ */
+const toLocalDate = (val: any): Date | null => {
+  if (!val) return null
+
+  // Already a Date object — zero out time to local midnight
+  if (val instanceof Date) {
+    if (isNaN(val.getTime())) return null
+    return new Date(val.getFullYear(), val.getMonth(), val.getDate())
+  }
+
+  if (typeof val === 'string') {
+    // Pure date string "YYYY-MM-DD" — parse as local date directly
+    const pureDate = /^\d{4}-\d{2}-\d{2}$/.test(val)
+    if (pureDate) {
+      const [y, m, d] = val.split('-').map(Number)
+      return new Date(y, m - 1, d)
+    }
+
+    // ISO string with time — extract date portion and build local midnight
+    if (val.includes('T')) {
+      const datePart = val.split('T')[0]
+      const [y, m, d] = datePart.split('-').map(Number)
+      return new Date(y, m - 1, d)
+    }
+
+    // Fallback
+    const d = new Date(val)
+    return isNaN(d.getTime()) ? null : d
+  }
+
+  return null
+}
+
+/**
+ * Formats a local Date to "YYYY-MM-DD" without any timezone conversion.
+ */
+const toLocalDateString = (d: Date): string => {
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
+}
+
 // Returns { startDate: Date, endDate: Date } for week mode given any raw date value (Date, string, or already a range object)
 const getWeekRange = (val: any): { startDate: Date; endDate: Date } | null => {
   try {
@@ -66,15 +113,14 @@ const getWeekRange = (val: any): { startDate: Date; endDate: Date } | null => {
       const s = val.startDate || val.start
       const e = val.endDate || val.end
       if (s && e) {
-        const start = new Date(s)
-        const end = new Date(e)
-        if (!isNaN(start.getTime()) && !isNaN(end.getTime()))
-          return { startDate: start, endDate: end }
+        const start = toLocalDate(s)
+        const end = toLocalDate(e)
+        if (start && end) return { startDate: start, endDate: end }
       }
     }
 
-    const d = new Date(val)
-    if (isNaN(d.getTime())) return null
+    const d = toLocalDate(val)
+    if (!d) return null
     const start = new Date(d)
     const end = new Date(d)
     end.setDate(start.getDate() + 6)
@@ -106,6 +152,18 @@ const displayValue = computed(() => {
   }
 
   try {
+    // For date and month modes, use timezone-safe local date
+    if (props.mode === 'date' || props.mode === 'month') {
+      const d = toLocalDate(actualValue.value)
+      if (!d) return String(actualValue.value)
+      return d.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })
+    }
+
+    // dateTime mode — preserve time as-is (user picked it locally)
     const d = new Date(actualValue.value)
     if (isNaN(d.getTime())) return String(actualValue.value)
 
@@ -132,14 +190,28 @@ const displayPlaceholder = computed(() => {
 })
 
 // In week mode, emit both start and end dates as an object { startDate, endDate }
+// In date/month modes, emit a plain "YYYY-MM-DD" string to avoid timezone drift.
 const handleDateChange = (val: any) => {
   if (props.mode === 'week') {
     const range = getWeekRange(val)
     if (range) {
-      actualValue.value = { startDate: range.startDate, endDate: range.endDate }
+      actualValue.value = {
+        startDate: toLocalDateString(range.startDate),
+        endDate: toLocalDateString(range.endDate),
+      }
       return
     }
   }
+
+  if (props.mode === 'date' || props.mode === 'month') {
+    const d = toLocalDate(val)
+    if (d) {
+      // Emit as local date string "YYYY-MM-DD" — no UTC conversion, no timezone drift
+      actualValue.value = toLocalDateString(d)
+      return
+    }
+  }
+
   actualValue.value = val
 }
 
