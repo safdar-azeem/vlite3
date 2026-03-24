@@ -1,4 +1,5 @@
 import { configState } from '@/core'
+import dayjs, { Dayjs, OpUnitType } from 'dayjs'
 
 /**
  * Creates a debounced function that delays invoking the provided function
@@ -334,5 +335,92 @@ export const copyToClipboard = async (text: string): Promise<boolean> => {
     return success
   } catch {
     return false
+  }
+}
+
+export type DateRangeMode =
+  | 'week'
+  | 'month'
+  | '3-months'
+  | '6-months'
+  | 'year'
+  | 'last-week'
+  | 'last-month'
+
+export interface DateRangeResult {
+  startDate: string
+  endDate: string
+  startDayjs: Dayjs
+  endDayjs: Dayjs
+}
+
+export const getDefaultDateRange = (
+  mode: DateRangeMode = 'month',
+  maxDate?: Dayjs | string | Date,
+  anchorDate: Dayjs = dayjs()
+): DateRangeResult => {
+  // Use anchorDate (usually today) as the primary 'end' point for "Last X" modes
+  let end: Dayjs = anchorDate
+  let start: Dayjs
+
+  // 1. Dynamic Lookback Logic (for Calendar-based modes)
+  let targetDate = anchorDate
+  if (['week', 'month', '3-months', '6-months', 'year'].includes(mode) && anchorDate.date() <= 7) {
+    targetDate = anchorDate.subtract(1, 'month')
+  }
+
+  switch (mode) {
+    case 'last-week':
+      // ROLLING 7 DAYS: Ends today, starts 6 days ago
+      start = anchorDate.subtract(6, 'day').startOf('day')
+      end = anchorDate.endOf('day')
+      break
+
+    case 'last-month':
+      // ROLLING 30 DAYS: Ends today, starts 29 days ago
+      start = anchorDate.subtract(29, 'day').startOf('day')
+      end = anchorDate.endOf('day')
+      break
+
+    case 'year':
+      // ROLLING 12 MONTHS (Full month blocks)
+      start = targetDate.subtract(11, 'month').startOf('month')
+      end = targetDate.endOf('month')
+      break
+
+    case '6-months':
+      start = targetDate.subtract(5, 'month').startOf('month')
+      end = targetDate.endOf('month')
+      break
+
+    case '3-months':
+      start = targetDate.subtract(2, 'month').startOf('month')
+      end = targetDate.endOf('month')
+      break
+
+    case 'week':
+      start = targetDate.startOf('week')
+      end = targetDate.endOf('week')
+      break
+
+    case 'month':
+    default:
+      start = targetDate.startOf('month')
+      end = targetDate.endOf('month')
+      break
+  }
+
+  // 2. Max Date Constraint (Ensures we don't go into the future)
+  if (maxDate) {
+    const max = dayjs(maxDate)
+    if (end.isAfter(max)) end = max
+    if (start.isAfter(max)) start = max.startOf('day')
+  }
+
+  return {
+    startDate: start.format('YYYY-MM-DD'),
+    endDate: end.format('YYYY-MM-DD'),
+    startDayjs: start,
+    endDayjs: end,
   }
 }
