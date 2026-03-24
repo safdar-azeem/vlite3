@@ -350,8 +350,6 @@ export type DateRangeMode =
 export interface DateRangeResult {
   startDate: string
   endDate: string
-  startDayjs: Dayjs
-  endDayjs: Dayjs
 }
 
 export const getDefaultDateRange = (
@@ -420,7 +418,5 @@ export const getDefaultDateRange = (
   return {
     startDate: start.format('YYYY-MM-DD'),
     endDate: end.format('YYYY-MM-DD'),
-    startDayjs: start,
-    endDayjs: end,
   }
 }
