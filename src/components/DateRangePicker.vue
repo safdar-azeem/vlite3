@@ -9,8 +9,8 @@ import VDatePicker from 'v-datepicker-lite'
 import 'v-datepicker-lite/style.css'
 
 export interface DateRange {
-  start: any
-  end: any
+  startDate: any
+  endDate: any
 }
 
 const props = withDefaults(
@@ -47,32 +47,40 @@ watch(isDropdownOpen, (isOpen) => {
 })
 
 const range = computed({
-  get: () => props.modelValue || { start: null, end: null },
+  get: () => {
+    const val = props.modelValue
+    if (!val) return { startDate: null, endDate: null }
+    // Add graceful fallback parsing for old data structures if they sneak in
+    return {
+      startDate: val.startDate !== undefined ? val.startDate : (val as any).start,
+      endDate: val.endDate !== undefined ? val.endDate : (val as any).end,
+    }
+  },
   set: (val) => {
     emit('update:modelValue', val)
     emit('change', val)
   },
 })
 
-const updateStart = (val: any) => {
-  range.value = { ...range.value, start: val }
+const updateStartDate = (val: any) => {
+  range.value = { ...range.value, startDate: val }
 }
 
-const updateEnd = (val: any) => {
-  range.value = { ...range.value, end: val }
+const updateEndDate = (val: any) => {
+  range.value = { ...range.value, endDate: val }
 }
 
 const startMaxDate = computed(() => {
-  if (range.value.end) {
-    const d = new Date(range.value.end)
+  if (range.value.endDate) {
+    const d = new Date(range.value.endDate)
     if (!isNaN(d.getTime())) return d.toISOString()
   }
   return props.maxDate
 })
 
 const endMinDate = computed(() => {
-  if (range.value.start) {
-    const d = new Date(range.value.start)
+  if (range.value.startDate) {
+    const d = new Date(range.value.startDate)
     if (!isNaN(d.getTime())) return d.toISOString()
   }
   return props.minDate
@@ -166,56 +174,56 @@ const quickRanges = computed<IDropdownOption[]>(() => [
 
 const handleQuickRangeSelect = (option: IDropdownOption) => {
   const today = new Date()
-  let start = new Date()
-  let end = new Date()
+  let startDate = new Date()
+  let endDate = new Date()
 
   today.setHours(0, 0, 0, 0)
-  start.setHours(0, 0, 0, 0)
-  end.setHours(0, 0, 0, 0)
+  startDate.setHours(0, 0, 0, 0)
+  endDate.setHours(0, 0, 0, 0)
 
   switch (option.value) {
     case 'today':
-      start = new Date(today)
-      end = new Date(today)
+      startDate = new Date(today)
+      endDate = new Date(today)
       break
     case 'yesterday':
-      start = new Date(today)
-      start.setDate(start.getDate() - 1)
-      end = new Date(start)
+      startDate = new Date(today)
+      startDate.setDate(startDate.getDate() - 1)
+      endDate = new Date(startDate)
       break
     case 'last_7_days':
-      start = new Date(today)
-      start.setDate(start.getDate() - 6)
-      end = new Date(today)
+      startDate = new Date(today)
+      startDate.setDate(startDate.getDate() - 6)
+      endDate = new Date(today)
       break
     case 'last_30_days':
-      start = new Date(today)
-      start.setDate(start.getDate() - 29)
-      end = new Date(today)
+      startDate = new Date(today)
+      startDate.setDate(startDate.getDate() - 29)
+      endDate = new Date(today)
       break
     case 'this_month':
-      start = new Date(today.getFullYear(), today.getMonth(), 1)
-      end = new Date(today)
+      startDate = new Date(today.getFullYear(), today.getMonth(), 1)
+      endDate = new Date(today)
       break
     case 'last_month':
-      start = new Date(today.getFullYear(), today.getMonth() - 1, 1)
-      end = new Date(today.getFullYear(), today.getMonth(), 0)
+      startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1)
+      endDate = new Date(today.getFullYear(), today.getMonth(), 0)
       break
     case 'last_6_months':
-      start = new Date(today.getFullYear(), today.getMonth() - 5, 1)
-      end = new Date(today)
+      startDate = new Date(today.getFullYear(), today.getMonth() - 5, 1)
+      endDate = new Date(today)
       break
     case 'this_year':
-      start = new Date(today.getFullYear(), 0, 1)
-      end = new Date(today)
+      startDate = new Date(today.getFullYear(), 0, 1)
+      endDate = new Date(today)
       break
     case 'last_year':
-      start = new Date(today.getFullYear() - 1, 0, 1)
-      end = new Date(today.getFullYear() - 1, 11, 31)
+      startDate = new Date(today.getFullYear() - 1, 0, 1)
+      endDate = new Date(today.getFullYear() - 1, 11, 31)
       break
   }
 
-  range.value = { start, end }
+  range.value = { startDate, endDate }
   pickerKey.value++ // Force pickers to refresh natively to reflect exact quick range selection
   isDropdownOpen.value = false
 }
@@ -234,17 +242,15 @@ const handleQuickRangeSelect = (option: IDropdownOption) => {
         :variant="variant || 'outline'"
         :size="size || 'md'"
         :disabled="disabled"
-        class="w-max justify-between text-left font-normal"
+        class="w-full justify-between text-left font-normal"
         :class="[triggerClass, { 'ring-1 ring-ring ring-offset-[1]': isOpen }]">
-        <div class="flex items-center justify-between gap-2 w-full">
-          <span :class="{ 'text-muted-foreground': !range.start }">
-            {{ range.start ? formatDate(range.start) : placeholderStart }}
+        <div class="flex items-center justify-start gap-2 w-full">
+          <span :class="{ 'text-muted-foreground': !range.startDate }">
+            {{ range.startDate ? formatDate(range.startDate) : placeholderStart }}
           </span>
-          <Icon
-            icon="lucide:arrow-right"
-            class="w-4 h-4 text-muted-foreground opacity-60 shrink-0" />
-          <span :class="{ 'text-muted-foreground': !range.end }">
-            {{ range.end ? formatDate(range.end) : placeholderEnd }}
+          —
+          <span :class="{ 'text-muted-foreground': !range.endDate }">
+            {{ range.endDate ? formatDate(range.endDate) : placeholderEnd }}
           </span>
         </div>
       </Button>
@@ -274,8 +280,8 @@ const handleQuickRangeSelect = (option: IDropdownOption) => {
           <div class="border border-border rounded-md overflow-hidden bg-background">
             <VDatePicker
               :key="'start-' + pickerKey"
-              :value="range.start"
-              @change="updateStart"
+              :value="range.startDate"
+              @change="updateStartDate"
               mode="date"
               :max-date="startMaxDate"
               :min-date="minDate"
@@ -296,8 +302,8 @@ const handleQuickRangeSelect = (option: IDropdownOption) => {
           <div class="border border-border rounded-md overflow-hidden bg-background">
             <VDatePicker
               :key="'end-' + pickerKey"
-              :value="range.end"
-              @change="updateEnd"
+              :value="range.endDate"
+              @change="updateEndDate"
               mode="date"
               :min-date="endMinDate"
               :max-date="maxDate"
