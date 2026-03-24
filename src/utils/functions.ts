@@ -1,3 +1,5 @@
+import { configState } from '@/core'
+
 /**
  * Creates a debounced function that delays invoking the provided function
  * until after the specified delay has elapsed since the last time it was invoked.
@@ -161,7 +163,7 @@ export function throttle<T extends (...args: any[]) => any>(
  *
  * @example
  * slugify('Hello World!')       // 'hello-world'
- * slugify('Crème Brûlée')       // 'creme-brulee'
+ * slugify('Creme Brulee')       // 'creme-brulee'
  * slugify('  --foo  bar-- ')    // 'foo-bar'
  */
 export const slugify = (input: string): string => {
@@ -178,7 +180,7 @@ export const slugify = (input: string): string => {
 
 /**
  * Generates a random integer between `min` and `max` (inclusive).
- * Uses `Math.random()` — not suitable for cryptographic purposes.
+ * Uses `Math.random()` -- not suitable for cryptographic purposes.
  *
  * @param min The lower bound (inclusive)
  * @param max The upper bound (inclusive)
@@ -207,16 +209,16 @@ export const randomNumber = (min: number, max: number): number => {
  * to avoid mid-word cuts.
  *
  * @param text The string to truncate
- * @param length Maximum character length (must be ≥ 0)
- * @param ellipsis The suffix appended when truncated (default: `'…'`)
+ * @param length Maximum character length (must be >= 0)
+ * @param ellipsis The suffix appended when truncated (default: '...')
  * @returns The truncated string, or the original if already within the limit
  *
  * @example
- * truncate('Hello, beautiful world!', 13)         // 'Hello,…'
+ * truncate('Hello, beautiful world!', 13)         // 'Hello,...'
  * truncate('Hello, beautiful world!', 13, '...')   // 'Hello,...'
  * truncate('Short', 100)                           // 'Short'
  */
-export const truncate = (text: string, length: number, ellipsis: string = '…'): string => {
+export const truncate = (text: string, length: number, ellipsis: string = '...'): string => {
   if (typeof text !== 'string') return ''
   if (!Number.isFinite(length) || length < 0) return text
   if (text.length <= length) return text
@@ -235,25 +237,37 @@ export const truncate = (text: string, length: number, ellipsis: string = '…')
  * Formats a numeric amount as a locale-aware currency string
  * using the `Intl.NumberFormat` API.
  *
+ * Reads the default currency from the global VLite config (`configState`)
+ * when no explicit `currency` argument is provided. Falls back to `'USD'`
+ * if no global config value is set.
+ *
  * @param amount The numeric value to format
  * @param locale A BCP 47 locale string (default: `'en-US'`)
- * @param currency An ISO 4217 currency code (default: `'USD'`)
+ * @param currency An ISO 4217 currency code. Defaults to the globally configured
+ *   currency from `createVLite({ components: { price: { currency: '...' } } })`,
+ *   or `'USD'` if not configured.
  * @returns The formatted currency string
  *
  * @example
- * formatCurrency(1234.5)                  // '$1,234.50'
- * formatCurrency(1234.5, 'de-DE', 'EUR')  // '1.234,50 €'
- * formatCurrency(0)                       // '$0.00'
+ * formatCurrency(1234.5)                  // uses global currency, e.g. 'Rs1,234.50' if PKR is set
+ * formatCurrency(1234.5, 'de-DE', 'EUR')  // '1.234,50 E'
+ * formatCurrency(0)                       // '$0.00' (when no global config)
  */
 export const formatCurrency = (
   amount: number,
   locale: string = 'en-US',
-  currency: string = 'USD'
+  currency?: string
 ): string => {
   if (!Number.isFinite(amount)) return ''
+
+  // Lazily import configState to avoid circular dependency issues at module load time.
+  // configState is a singleton reactive object set up in core/config.ts.
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const resolvedCurrency = currency || configState?.components?.price?.currency || 'USD'
+
   return new Intl.NumberFormat(locale, {
     style: 'currency',
-    currency,
+    currency: resolvedCurrency,
   }).format(amount)
 }
 
@@ -261,7 +275,7 @@ export const formatCurrency = (
  * Returns a Promise that resolves after the specified number of milliseconds.
  * Useful for artificial delays, polling intervals, or animation timing.
  *
- * @param ms Delay duration in milliseconds (must be ≥ 0)
+ * @param ms Delay duration in milliseconds (must be >= 0)
  * @returns A Promise that resolves to `void` after the delay
  *
  * @example
