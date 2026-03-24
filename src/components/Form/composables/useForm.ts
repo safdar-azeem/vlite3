@@ -91,7 +91,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
   // Async initializer to safely handle async formats and standard formats
   const init = async (vals?: Record<string, any>) => {
     try {
-      const initialized = await initializeFormValues(schema, vals, isUpdate)
+      const initialized = await initializeFormValues(schema, vals, formValues.value, isUpdate)
       formValues.value = initialized
       initialSnapshot.value = deepClone(initialized)
       isDirty.value = false
@@ -323,8 +323,8 @@ export function useForm(options: UseFormOptions): UseFormReturn {
     // Reject updates if field evaluates to disabled or readonly in the schema.
     // This strictly prevents users from overriding field values by removing HTML
     // attributes like `disabled` or `pointer-events: none` via DevTools.
-    if (field && (isFieldDisabled(field) || isFieldReadonly(field))) {
-      console.warn(`[vlite3/useForm] Blocked attempted update to disabled/readonly field: ${name}`)
+    if (field && (!isFieldVisible(field) || isFieldDisabled(field) || isFieldReadonly(field))) {
+      console.warn(`[vlite3/useForm] Blocked attempted update to disabled/readonly/hidden field: ${name}`)
       return
     }
 
@@ -365,7 +365,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
    */
   const processFileUploads = async (): Promise<Record<string, any>> => {
     const values = deepClone(formValues.value)
-    const fileFields = collectFileFields(schema, values)
+    const fileFields = collectFileFields(schema, values, formValues.value, isUpdate)
 
     // Helper to format detailed object output if returnFileObject is true
     const buildDetailedOutput = (item: any, url: string) => {
@@ -499,6 +499,8 @@ export function useForm(options: UseFormOptions): UseFormReturn {
     const cleaned = { ...values }
 
     for (const field of flatSchema.value) {
+      if (!isFieldVisible(field)) continue // Skip hidden customFields
+
       if (field.type === 'customFields' && field.props?.schema) {
         const fieldValue = getNestedValue(cleaned, field.name)
         if (Array.isArray(fieldValue)) {
@@ -533,7 +535,8 @@ export function useForm(options: UseFormOptions): UseFormReturn {
         processedValues,
         schema,
         options.emitFields,
-        options.emitFields,
+        undefined,
+        formValues.value,
         isUpdate
       )
 
