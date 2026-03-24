@@ -126,9 +126,13 @@ const handleFocusOut = (fieldName: string) => {
 
 const isFloatingActive = (field: IForm) => {
   const val = getFieldValue(field)
-  const hasValue =
+  let hasValue =
     val !== undefined && val !== null && val !== '' && !(Array.isArray(val) && val.length === 0)
   const hasNumericValue = typeof val === 'number' && !isNaN(val)
+
+  if (field.type === 'dateRangePicker' && val && typeof val === 'object') {
+    hasValue = !!(val.startDate || val.endDate || val.start || val.end)
+  }
 
   // For native inputs (text, number, etc), float the label when focused
   if (delegatesFloatingLabel(field) || field.type === 'number') {
@@ -153,7 +157,7 @@ const getFloatingLeftClass = (field: IForm) => {
     return numVariant === 'split' ? 'left-4' : 'left-3'
   }
   // DatePicker and ColorPicker have icons/previews hardcoded at left-3
-  if (field.type === 'date' || field.type === 'time' || field.type === 'color') {
+  if (field.type === 'date' || field.type === 'time' || field.type === 'color' || field.type === 'dateRangePicker') {
     return 'left-10'
   }
   return 'left-3'
