@@ -78,7 +78,8 @@ function seedAddonValue(
  */
 export async function initializeFormValues(
   schema: IForm[] | IForm[][],
-  initialValues?: Record<string, any>
+  initialValues?: Record<string, any>,
+  isUpdate: boolean = false
 ): Promise<Record<string, any>> {
   let values: Record<string, any> = initialValues ? deepClone(initialValues) : {}
 
@@ -121,9 +122,12 @@ export async function initializeFormValues(
       }
 
       if (existingValue === undefined) {
-        const defaultValue = typeof field.value === 'function' ? field.value() : field.value
-        if (defaultValue !== undefined) {
-          Object.assign(values, setNestedValue(values, field.name, defaultValue))
+        const isVisible = !field.when || evaluateConditional(field.when, { values, globalValues: values, isUpdate })
+        if (isVisible) {
+          const defaultValue = typeof field.value === 'function' ? field.value() : field.value
+          if (defaultValue !== undefined) {
+            Object.assign(values, setNestedValue(values, field.name, defaultValue))
+          }
         }
       } else {
         Object.assign(values, setNestedValue(values, field.name, existingValue))
@@ -133,8 +137,11 @@ export async function initializeFormValues(
     }
 
     // Seed addon default values
-    values = seedAddonValue(values, field.addonLeft)
-    values = seedAddonValue(values, field.addonRight)
+    const isVisible = !field.when || evaluateConditional(field.when, { values, globalValues: values, isUpdate })
+    if (isVisible) {
+      values = seedAddonValue(values, field.addonLeft)
+      values = seedAddonValue(values, field.addonRight)
+    }
     
     // Support nested CustomFields formatting recursively
     if (field.type === 'customFields' && field.props?.schema) {
@@ -142,7 +149,7 @@ export async function initializeFormValues(
       let nestedValues = getNestedValue(values, field.name)
       if (Array.isArray(nestedValues) && nestedValues.length > 0) {
         const initializedArray = await Promise.all(
-          nestedValues.map((item) => initializeFormValues(nestedSchema, item))
+          nestedValues.map((item) => initializeFormValues(nestedSchema, item, isUpdate))
         )
         Object.assign(values, setNestedValue(values, field.name, initializedArray))
       }
@@ -335,7 +342,8 @@ export async function cleanSubmitValues(
   values: Record<string, any>,
   schema: IForm[] | IForm[][],
   emitFields?: string[],
-  ignoreFields?: string[]
+  ignoreFields?: string[],
+  isUpdate: boolean = false
 ): Promise<Record<string, any>> {
   const isPassthrough = emitFields === undefined && ignoreFields === undefined
   const result: Record<string, any> = isPassthrough ? deepClone(values) : {}
@@ -346,6 +354,20 @@ export async function cleanSubmitValues(
 
   for (const field of flatSchema) {
     if (!field.name) continue
+
+    const isVisible = !field.when || evaluateConditional(field.when, { values, globalValues: values, isUpdate })
+    if (!isVisible) {
+      if (isPassthrough) {
+        const parts = field.name.split('.')
+        let target = result
+        for (let i = 0; i < parts.length - 1; i++) {
+          if (!target) break
+          target = target[parts[i]]
+        }
+        if (target) delete target[parts[parts.length - 1]]
+      }
+      continue
+    }
 
     let val = getNestedValue(values, field.name)
 
@@ -369,7 +391,7 @@ export async function cleanSubmitValues(
     if (field.type === 'customFields' && field.props?.schema && Array.isArray(val)) {
       const nestedSchema = field.props.schema as IForm[]
       // Re-map cleanly with Promise.all for independent rows
-      val = await Promise.all(val.map((item: any) => cleanSubmitValues(item, nestedSchema, emitFields, ignoreFields)))
+      val = await Promise.all(val.map((item: any) => cleanSubmitValues(item, nestedSchema, emitFields, ignoreFields, isUpdate)))
     }
 
     let needsUpdate = false
