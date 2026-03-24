@@ -148,7 +148,7 @@ function stackedSkeletonCellClass(i: number): string {
   <div :class="containerClass" role="table" aria-label="Information list">
     <div
       v-if="displayTitle || titleIcon || $slots.title"
-      class="px-3 py-2.5 border-b border-border/70 flex items-center gap-2 bg-gray-50">
+      class="px-3 py-2.5 border-b border-border/70 flex items-center gap-2 bg-muted">
       <slot name="title">
         <Icon v-if="titleIcon" :icon="titleIcon" class="w-4 h-4 text-muted-foreground shrink-0" />
         <h3 class="text-sm font-semibold text-gray-900 tracking-tight">{{ displayTitle }}</h3>
@@ -305,8 +305,7 @@ function stackedSkeletonCellClass(i: number): string {
             </ListFieldRow>
           </div>
 
-          <div v-if="columns === 3">
-            </div>
+          <div v-if="columns === 3"></div>
         </div>
 
         <div v-if="hasFullItems" :class="hasColumnItems ? 'border-t border-border' : ''">
