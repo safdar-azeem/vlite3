@@ -26,8 +26,8 @@ const emit = defineEmits<{
  */
 const effectiveSortKey = computed(() => props.header.sortKey || props.header.field)
 
-const isSorted = computed(() =>
-  props.sortConfig?.field === effectiveSortKey.value && props.sortConfig?.order
+const isSorted = computed(
+  () => props.sortConfig?.field === effectiveSortKey.value && props.sortConfig?.order
 )
 
 const sortIcon = computed(() => {
@@ -63,9 +63,9 @@ const displayTitle = computed(() =>
 <template>
   <th
     scope="col"
-    class="h-10 px-3 text-left align-middle font-medium text-muted-foreground transition-colors [&:has([role=checkbox])]:pr-0 overflow-hidden"
+    class="px-3 text-left align-middle font-medium text-muted-foreground transition-colors [&:has([role=checkbox])]:pr-0 overflow-hidden"
     :class="[
-      compact ? 'py-2' : 'py-3!',
+      compact ? 'py-2.5!' : 'py-3!',
       header.sortable !== false && tableSortable ? 'cursor-pointer hover:bg-muted/50' : '',
       header.hideOnMobile ? 'hidden md:table-cell' : '',
     ]"
@@ -78,7 +78,9 @@ const displayTitle = computed(() =>
         <Icon
           :icon="sortIcon"
           class="w-3.5 h-3.5 transition-all text-muted-foreground mt-0.5"
-          :class="[isSorted ? 'opacity-100 text-foreground' : 'opacity-0 group-hover:opacity-100']" />
+          :class="[
+            isSorted ? 'opacity-100 text-foreground' : 'opacity-0 group-hover:opacity-100',
+          ]" />
       </span>
     </div>
   </th>
