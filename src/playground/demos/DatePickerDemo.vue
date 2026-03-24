@@ -6,19 +6,24 @@ import sourceCode from './DatePickerDemo.vue?raw'
 
 const today = new Date()
 
-const dateValue = ref<Date | null>(today)
-const weekValue = ref<{ startDate: Date; endDate: Date } | null>(null)
-const monthValue = ref<Date | null>(today)
+const dateValue = ref<string | null>(
+  `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+)
+const weekValue = ref<{ startDate: string; endDate: string } | null>(null)
+const monthValue = ref<string | null>(
+  `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+)
 const time12hValue = ref<string>('22:05')
 const time24hValue = ref<string>('22:05')
 const dateTimeValue = ref<Date | null>(today)
 const interval15mValue = ref<Date | null>(today)
 const interval30mValue = ref<string>('10:30')
-const restrictedValue = ref<Date | null>(today)
+const restrictedValue = ref<string | null>(
+  `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+)
 
-const minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate())
-  .toISOString()
-  .split('T')[0]
+const minDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+
 const disabledDates = [
   {
     start: new Date(today.getFullYear(), today.getMonth(), 15).toISOString().split('T')[0],
@@ -27,10 +32,19 @@ const disabledDates = [
   { start: new Date(today.getFullYear(), today.getMonth(), 25).toISOString().split('T')[0] },
 ]
 
-const formatWeekValue = (val: { startDate: Date; endDate: Date } | null) => {
+// Accepts string "YYYY-MM-DD" or Date — always formats safely without timezone drift
+const fmtDate = (val: string | Date | null | undefined): string => {
   if (!val) return 'null'
-  const fmt = (d: Date) => d.toLocaleDateString()
-  return `{ startDate: ${fmt(val.startDate)}, endDate: ${fmt(val.endDate)} }`
+  if (typeof val === 'string') {
+    const [y, m, d] = val.split('-').map(Number)
+    return new Date(y, m - 1, d).toLocaleDateString()
+  }
+  return val.toLocaleDateString()
+}
+
+const formatWeekValue = (val: { startDate: string; endDate: string } | null) => {
+  if (!val) return 'null'
+  return `{ startDate: ${fmtDate(val.startDate)}, endDate: ${fmtDate(val.endDate)} }`
 }
 </script>
 
@@ -48,17 +62,13 @@ const formatWeekValue = (val: { startDate: Date; endDate: Date } | null) => {
         <div class="space-y-2">
           <h3 class="text-sm font-semibold text-gray-900">Date Mode</h3>
           <DatePicker v-model="dateValue" mode="date" placeholder="Select date" />
-          <p class="text-xs text-gray-500">
-            Value: {{ dateValue ? dateValue.toLocaleDateString() : 'null' }}
-          </p>
+          <p class="text-xs text-gray-500">Value: {{ fmtDate(dateValue) }}</p>
         </div>
 
         <div class="space-y-2">
           <h3 class="text-sm font-semibold text-gray-900">Week Mode</h3>
           <DatePicker v-model="weekValue" mode="week" placeholder="Select week" />
-          <p class="text-xs text-gray-500">
-            Value: {{ formatWeekValue(weekValue) }}
-          </p>
+          <p class="text-xs text-gray-500">Value: {{ formatWeekValue(weekValue) }}</p>
           <p class="text-xs text-blue-500">
             Returns both the first and last date of the selected week.
           </p>
@@ -67,9 +77,7 @@ const formatWeekValue = (val: { startDate: Date; endDate: Date } | null) => {
         <div class="space-y-2">
           <h3 class="text-sm font-semibold text-gray-900">Month Mode</h3>
           <DatePicker v-model="monthValue" mode="month" placeholder="Select month" />
-          <p class="text-xs text-gray-500">
-            Value: {{ monthValue ? monthValue.toLocaleDateString() : 'null' }}
-          </p>
+          <p class="text-xs text-gray-500">Value: {{ fmtDate(monthValue) }}</p>
         </div>
 
         <div class="space-y-2">
