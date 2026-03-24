@@ -62,7 +62,6 @@ const handleDelete = (items: any[]) => {
           :page-info="result?.pageInfo"
           :refetch="fetchData"
           :list="UserList"
-          hide-selectable
           :table="UserTable"
           show-refresh
           :quick-filters="[
