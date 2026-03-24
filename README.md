@@ -404,16 +404,19 @@ Follow these rules strictly to ensure visual consistency and predictable styling
 - [x] **Label**
 - [x] **Badge**
 - [x] **Chip**
+- [x] **StatusChip**
 - [x] **Logo**
 - [x] **Navbar**
 - [x] **SidebarMenu**
 - [x] **SidePanel**
 - [x] **Breadcrumb**
 - [x] **List**
+- [x] **AttachmentsList**
 - [x] **Masonry Grid**
 - [x] **Stats**
 - [x] **ThemeToggle**
 - [x] **Screen**
+- [x] **ChatInterface**
 
 ### Inputs & Forms
 
@@ -454,11 +457,14 @@ Follow these rules strictly to ensure visual consistency and predictable styling
 - [x] **Tabes**
 - [x] **Masonry**
 - [x] **Stats**
+- [x] **Price**
+- [x] **Date**
 
 ### Feedback & Overlays
 
 - [x] **Alert**
 - [x] **Modal**
+- [x] **Empty**
 - [x] **ConfirmationModal**
 - [x] **ToastNotification**
 - [x] **Tooltip**
