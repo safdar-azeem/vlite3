@@ -62,6 +62,11 @@ export interface IFormContext {
 }
 
 /**
+ * Dynamic Type Definition
+ */
+export type IFormDynamicType = IFormFieldType | ((context: IFormContext) => IFormFieldType)
+
+/**
  * Disabled/Readonly can be boolean or function
  */
 export type IFormDisabled = boolean | ((context: IFormContext) => boolean)
@@ -132,8 +137,8 @@ export interface IForm {
   placeholder?: string
   /** I18n translation key for the placeholder */
   placeholderI18n?: string
-  /** Field type - determines which component renders */
-  type?: IFormFieldType
+  /** Field type - determines which component renders (supports dynamic evaluation) */
+  type?: IFormDynamicType
   /** Initial/default value - can be static or function */
   value?: any | (() => any)
   /** Additional props passed to field component */
