@@ -7,7 +7,7 @@ import sourceCode from './DatePickerDemo.vue?raw'
 const today = new Date()
 
 const dateValue = ref<Date | null>(today)
-const weekValue = ref<{ start: Date; end: Date } | null>(null)
+const weekValue = ref<{ startDate: Date; endDate: Date } | null>(null)
 const monthValue = ref<Date | null>(today)
 const time12hValue = ref<string>('22:05')
 const time24hValue = ref<string>('22:05')
@@ -27,10 +27,10 @@ const disabledDates = [
   { start: new Date(today.getFullYear(), today.getMonth(), 25).toISOString().split('T')[0] },
 ]
 
-const formatWeekValue = (val: { start: Date; end: Date } | null) => {
+const formatWeekValue = (val: { startDate: Date; endDate: Date } | null) => {
   if (!val) return 'null'
   const fmt = (d: Date) => d.toLocaleDateString()
-  return `{ start: ${fmt(val.start)}, end: ${fmt(val.end)} }`
+  return `{ startDate: ${fmt(val.startDate)}, endDate: ${fmt(val.endDate)} }`
 }
 </script>
 
