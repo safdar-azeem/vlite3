@@ -4,12 +4,12 @@ import DateRangePicker, { type DateRange } from '@/components/DateRangePicker.vu
 import DemoSection from '../DemoSection.vue'
 import sourceCode from './DateRangePickerDemo.vue?raw'
 
-const basicRange = ref<DateRange>({ start: null, end: null })
+const basicRange = ref<DateRange>({ startDate: null, endDate: null })
 const prefilledRange = ref<DateRange>({
-  start: new Date(new Date().setDate(new Date().getDate() - 7)),
-  end: new Date(),
+  startDate: new Date(new Date().setDate(new Date().getDate() - 7)),
+  endDate: new Date(),
 })
-const withoutQuickRanges = ref<DateRange>({ start: null, end: null })
+const withoutQuickRanges = ref<DateRange>({ startDate: null, endDate: null })
 </script>
 
 <template>
