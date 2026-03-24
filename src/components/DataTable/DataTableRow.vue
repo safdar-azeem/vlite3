@@ -129,11 +129,7 @@ const handleSelect = () => {
     ]"
     :data-state="isSelected ? 'selected' : undefined"
     @click="handleRowClick">
-    <td
-      v-if="selectable"
-      class="w-[48px] px-0 py-5.5! align-middle text-center"
-      style="width: 48px"
-      @click.stop>
+    <td v-if="selectable" class="px-0! py-1! align-middle text-center" @click.stop>
       <div class="flex items-center justify-center">
         <CheckBox :model-value="isSelected" size="xs" @update:model-value="handleSelect" />
       </div>
@@ -144,7 +140,7 @@ const handleSelect = () => {
       :key="header.field"
       class="align-middle overflow-hidden"
       :class="[
-        compact ? 'p-2' : 'py-2! px-3 -text-fs-1.5!',
+        compact ? 'py-1! -text-fs-1.5! max-sm:pr-10!' : 'py-3! pr-5! max-sm:pr-10! -text-fs-1.5!',
         alignClass(header),
         header.hideOnMobile ? 'hidden md:table-cell' : '',
         getCellClass(header, getNestedValue(row, header.field), row),
