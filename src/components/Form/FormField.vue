@@ -18,6 +18,7 @@ import Dropdown from '@/components/Dropdown/Dropdown.vue'
 
 import MultiSelect from '@/components/MultiSelect/MultiSelect.vue'
 import DatePicker from '@/components/DatePicker.vue'
+import DateRangePicker from '@/components/DateRangePicker.vue'
 import ColorPicker from '@/components/ColorPicker/ColorPicker.vue'
 import IconPicker from '@/components/IconPicker.vue'
 import CustomFieldsComponent from './CustomFields.vue'
@@ -117,6 +118,9 @@ const fieldComponent = computed(() => {
     case 'date':
     case 'time':
       return DatePicker
+
+    case 'dateRangePicker':
+      return DateRangePicker
 
     case 'file':
     case 'fileUploader':
@@ -302,6 +306,16 @@ const fieldProps = computed(() => {
     }
   }
 
+  // DateRangePicker
+  if (type === 'dateRangePicker') {
+    return {
+      ...baseProps,
+      modelValue: props.value,
+      variant: props.variant === 'floating' ? 'outline-floating' : props.variant || 'outline',
+      size: props.size,
+    }
+  }
+
   // FilePicker
   if (type === 'fileUploader' || type === 'file') {
     return {
@@ -437,8 +451,8 @@ const fieldEvents = computed(() => {
     }
   }
 
-  // DatePicker emits onChange
-  if (type === 'date' || type === 'time') {
+  // DatePicker / DateRangePicker emits onChange
+  if (type === 'date' || type === 'time' || type === 'dateRangePicker') {
     return {
       change: (value: any) => handleChange(value),
     }
