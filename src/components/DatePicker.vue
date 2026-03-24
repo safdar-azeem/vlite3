@@ -58,14 +58,19 @@ const hasTimePart = (val: any): boolean => {
   return false
 }
 
-// Returns { start: Date, end: Date } for week mode given any raw date value (Date, string, or already a range object)
-const getWeekRange = (val: any): { start: Date; end: Date } | null => {
+// Returns { startDate: Date, endDate: Date } for week mode given any raw date value (Date, string, or already a range object)
+const getWeekRange = (val: any): { startDate: Date; endDate: Date } | null => {
   try {
-    // Already a { start, end } object — use directly
-    if (val && typeof val === 'object' && val.start && val.end) {
-      const start = new Date(val.start)
-      const end = new Date(val.end)
-      if (!isNaN(start.getTime()) && !isNaN(end.getTime())) return { start, end }
+    // Already a { startDate, endDate } object — use directly (fallback to start/end for backward compat during parsing)
+    if (val && typeof val === 'object') {
+      const s = val.startDate || val.start
+      const e = val.endDate || val.end
+      if (s && e) {
+        const start = new Date(s)
+        const end = new Date(e)
+        if (!isNaN(start.getTime()) && !isNaN(end.getTime()))
+          return { startDate: start, endDate: end }
+      }
     }
 
     const d = new Date(val)
@@ -73,7 +78,7 @@ const getWeekRange = (val: any): { start: Date; end: Date } | null => {
     const start = new Date(d)
     const end = new Date(d)
     end.setDate(start.getDate() + 6)
-    return { start, end }
+    return { startDate: start, endDate: end }
   } catch {
     return null
   }
@@ -87,8 +92,16 @@ const displayValue = computed(() => {
   if (props.mode === 'week') {
     const range = getWeekRange(actualValue.value)
     if (!range) return ''
-    const startStr = range.start.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-    const endStr = range.end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    const startStr = range.startDate.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    })
+    const endStr = range.endDate.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    })
     return `${startStr} - ${endStr}`
   }
 
@@ -118,12 +131,12 @@ const displayPlaceholder = computed(() => {
   return res !== 'vlite.datePicker.placeholder' ? res : 'Select date'
 })
 
-// In week mode, emit both start and end dates as an object { start, end }
+// In week mode, emit both start and end dates as an object { startDate, endDate }
 const handleDateChange = (val: any) => {
   if (props.mode === 'week') {
     const range = getWeekRange(val)
     if (range) {
-      actualValue.value = { start: range.start, end: range.end }
+      actualValue.value = { startDate: range.startDate, endDate: range.endDate }
       return
     }
   }
@@ -132,8 +145,8 @@ const handleDateChange = (val: any) => {
 
 // For the inner DatePicker, pass only the start Date in week mode to avoid passing the object down
 const innerPickerValue = computed(() => {
-  if (props.mode === 'week' && actualValue.value && typeof actualValue.value === 'object' && actualValue.value.start) {
-    return actualValue.value.start
+  if (props.mode === 'week' && actualValue.value && typeof actualValue.value === 'object') {
+    return actualValue.value.startDate || actualValue.value.start || actualValue.value
   }
   return actualValue.value
 })
@@ -150,7 +163,7 @@ const innerPickerValue = computed(() => {
     <template #trigger>
       <slot :value="actualValue" :displayValue="displayValue">
         <Button
-          :text="displayValue || displayPlaceholder"
+          :text="displayValue?.replace('-', '—') || displayPlaceholder"
           :variant="variant || 'outline'"
           :size="size || 'md'"
           :icon="icon || 'lucide:calendar'"
