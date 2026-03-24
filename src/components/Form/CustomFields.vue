@@ -8,7 +8,7 @@ import Button from '@/components/Button.vue'
 import Label from '../Label.vue'
 import Icon from '@/components/Icon.vue'
 import { $t } from '@/utils/i18n'
-import { evaluateConditional, setNestedValue } from './utils/form.utils'
+import { evaluateConditional, setNestedValue, resolveFieldType } from './utils/form.utils'
 
 interface Props {
   name?: string
@@ -206,6 +206,10 @@ const getRowContext = (rowIndex: number) => {
   }
 }
 
+const getResolvedType = (field: IForm, rowIndex: number) => {
+  return resolveFieldType(field, getRowContext(rowIndex))
+}
+
 const isFieldDisabled = (rowIndex: number, field: IForm): boolean => {
   if (props.disabled) return true
   return evaluateConditional(field.disabled, getRowContext(rowIndex))
@@ -302,7 +306,7 @@ const getRowErrorsHash = (rowIndex: number) => {
               :field="{
                 ...field,
                 props: {
-                  ...(field.type === 'multiSelect' ? { showControls: false, wrap: false } : {}),
+                  ...(getResolvedType(field, rowIndex) === 'multiSelect' ? { showControls: false, wrap: false } : {}),
                   ...(field.props || {})
                 },
                 label: undefined
