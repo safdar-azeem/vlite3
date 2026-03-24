@@ -16,9 +16,11 @@ const loginSchema: IForm[] = [
   {
     name: 'password',
     label: 'Password',
-    type: 'password',
-    placeholder: '••••••••',
+    type: 'date',
     icon: 'lucide:lock',
+    props: {
+      mode: 'week',
+    },
     required: true,
   },
   {
