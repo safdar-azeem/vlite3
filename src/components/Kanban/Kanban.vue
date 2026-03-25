@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import KanbanBoard from './KanbanBoard.vue'
-import type { KanbanColumn, KanbanLoadDataResult, KanbanChangeEvent } from './types'
+import type { KanbanColumn, KanbanLoadDataResult, KanbanChangeEvent, KanbanMoveEvent } from './types'
 
 const props = withDefaults(defineProps<{
   columns: KanbanColumn[]
@@ -22,11 +23,55 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
   (e: 'change', payload: KanbanChangeEvent): void
+  (e: 'move', payload: KanbanMoveEvent): void
   (e: 'update:data', val: Record<string | number, any[]>): void
 }>()
 
+// Internal state to track cross-column moves and consolidate the dual events
+const moveBuffer = ref<{
+  remove?: { columnId: string | number; event: any }
+  add?: { columnId: string | number; event: any }
+}>({})
+
 const handleChange = (payload: KanbanChangeEvent) => {
   emit('change', payload)
+
+  // Consolidated logic for cross-column moves
+  if (payload.type === 'remove') {
+    moveBuffer.value.remove = { columnId: payload.columnId, event: payload.event }
+  } else if (payload.type === 'add') {
+    moveBuffer.value.add = { columnId: payload.columnId, event: payload.event }
+  } else if (payload.type === 'update') {
+    // This handles reordering within the same column
+    emit('move', {
+      itemId: payload.event.data?.[props.itemKey] || payload.event.item?._underlying_vm_?.[props.itemKey],
+      item: payload.event.data,
+      fromColumnId: payload.columnId,
+      toColumnId: payload.columnId,
+      oldIndex: payload.event.oldIndex,
+      newIndex: payload.event.newIndex
+    })
+  }
+
+  // If we have both parts of a cross-column move, emit the consolidated 'move' event
+  if (moveBuffer.value.remove && moveBuffer.value.add) {
+    const { remove, add } = moveBuffer.value
+    emit('move', {
+      itemId: add.event.data?.[props.itemKey],
+      item: add.event.data,
+      fromColumnId: remove.columnId,
+      toColumnId: add.columnId,
+      oldIndex: remove.event.oldIndex,
+      newIndex: add.event.newIndex
+    })
+    // Reset buffer
+    moveBuffer.value = {}
+  }
+
+  // Clear buffer if it's a partial event that doesn't complete (safety)
+  setTimeout(() => {
+    moveBuffer.value = {}
+  }, 100)
 }
 
 const updateColumnData = (columnId: string | number, items: any[]) => {
