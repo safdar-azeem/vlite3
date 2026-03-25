@@ -105,16 +105,6 @@ const dummyDictionary: Record<string, string> = {
 // Setup vLite with global i18n handler
 const vlite = createVLite({
   services: {
-    t: (key: string, ...args: any[]) => {
-      // Basic interpolation support for demonstration (e.g. {count})
-      let translation = dummyDictionary[key] || key
-      if (args.length > 0 && typeof args[0] === 'object') {
-        Object.entries(args[0]).forEach(([k, v]) => {
-          translation = translation.replace(new RegExp(`{${k}}`, 'g'), String(v))
-        })
-      }
-      return translation
-    },
     importApi: async (entity, payload) => {
       console.log(`[VLite Mock API] Importing to ${entity}...`)
       return new Promise((resolve) => {
@@ -141,20 +131,6 @@ const vlite = createVLite({
           resolve(true)
         }, 1000)
       })
-    },
-  },
-  components: {
-    price: {
-      currency: 'PKR',
-    },
-    datetime: {
-      format: 'MM-DD-YY',
-    },
-    form: {
-      variant: 'floating',
-    },
-    empty: {
-      variant: 'variant1',
     },
   },
 })
