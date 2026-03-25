@@ -174,8 +174,8 @@ const resolvedInputType = computed(() => {
   return props.type === 'number' ? 'tel' : 'text'
 })
 
-// Resolved inputmode: no numeric inputmode when mask is active (password fields)
-const resolvedInputMode = computed(() => {
+// Resolved inputmode: typed as the literal union Vue expects
+const resolvedInputMode = computed((): 'numeric' | 'text' | undefined => {
   if (props.mask) return undefined
   return props.type === 'number' ? 'numeric' : undefined
 })
