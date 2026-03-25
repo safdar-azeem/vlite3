@@ -14,29 +14,31 @@ const messages = ref<ChatMessage[]>([
     senderId: 'user_2',
     senderName: 'Alice',
     timestamp: new Date(Date.now() - 1000 * 60 * 60),
-    avatar: 'https://i.pravatar.cc/150?img=5'
+    avatar: 'https://i.pravatar.cc/150?img=5',
   },
   {
     id: 2,
-    text: 'I\'m good! Just working on the new Chat component for vlite3. I have attached the latest design assets.',
+    text: "I'm good! Just working on the new Chat component for vlite3. I have attached the latest design assets.",
     senderId: 'user_1',
     senderName: 'Me',
     timestamp: new Date(Date.now() - 1000 * 60 * 5),
     attachments: [
       {
         fileName: 'design_preview.png',
-        fileUrl: 'https://via.placeholder.com/150',
+        fileUrl:
+          'https://fastly.picsum.photos/id/197/400/400.jpg?hmac=EMGJfztOncchyhxYLBig-GifHwLYkvPrZJvM_oDgYfQ',
         fileType: 'image/png',
-        fileSize: 1024 * 150
+        fileSize: 1024 * 150,
       },
       {
         fileName: 'requirements_doc.pdf',
-        fileUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+        fileUrl:
+          'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf',
         fileType: 'application/pdf',
-        fileSize: 1024 * 1024 * 2.5
-      }
-    ]
-  }
+        fileSize: 1024 * 1024 * 2.5,
+      },
+    ],
+  },
 ])
 
 const handleAdd = (text: string, attachments?: ChatAttachment[]) => {
@@ -46,16 +48,16 @@ const handleAdd = (text: string, attachments?: ChatAttachment[]) => {
     senderId: currentUserId,
     senderName: 'Me',
     timestamp: new Date(),
-    attachments: attachments || []
+    attachments: attachments || [],
   })
 }
 
 const handleDelete = (id: string | number) => {
-  messages.value = messages.value.filter(m => m.id !== id)
+  messages.value = messages.value.filter((m) => m.id !== id)
 }
 
 const handleEdit = (updatedMsg: ChatMessage) => {
-  const index = messages.value.findIndex(m => m.id === updatedMsg.id)
+  const index = messages.value.findIndex((m) => m.id === updatedMsg.id)
   if (index !== -1) {
     // Replace the old message with the updated one to trigger reactivity correctly
     messages.value[index] = { ...updatedMsg }
@@ -67,12 +69,12 @@ const page = ref(1)
 
 const handleRefetch = () => {
   if (loadingMore.value) return
-  
+
   // Stop fetching after 3 pages to simulate end of history
   if (page.value >= 3) return
-  
+
   loadingMore.value = true
-  
+
   setTimeout(() => {
     const olderMessages: ChatMessage[] = [
       {
@@ -81,14 +83,14 @@ const handleRefetch = () => {
         senderId: 'user_2',
         senderName: 'Alice',
         timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * page.value),
-        avatar: 'https://i.pravatar.cc/150?img=5'
+        avatar: 'https://i.pravatar.cc/150?img=5',
       },
       {
         id: Date.now() - Math.random() * 100000,
         text: `Older message batch ${page.value} - Message 2`,
         senderId: 'user_1',
         senderName: 'Me',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 23 * page.value)
+        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 23 * page.value),
       },
       {
         id: Date.now() - Math.random() * 100000,
@@ -96,10 +98,10 @@ const handleRefetch = () => {
         senderId: 'user_3',
         senderName: 'Bob',
         timestamp: new Date(Date.now() - 1000 * 60 * 60 * 22 * page.value),
-        avatar: 'https://i.pravatar.cc/150?img=11'
-      }
-    ].sort((a,b) => (a.timestamp as Date).getTime() - (b.timestamp as Date).getTime())
-    
+        avatar: 'https://i.pravatar.cc/150?img=11',
+      },
+    ].sort((a, b) => (a.timestamp as Date).getTime() - (b.timestamp as Date).getTime())
+
     messages.value = [...olderMessages, ...messages.value]
     page.value++
     loadingMore.value = false
@@ -118,7 +120,8 @@ const allowEditAll = ref(false)
     <div>
       <h2 class="text-2xl font-bold mb-2">Chat Interface</h2>
       <p class="text-gray-500">
-        A completely agnostic, highly reusable, enterprise-grade Chat component supporting reverse infinite scrolling, editing, deleting, file attachments, and responsive textareas.
+        A completely agnostic, highly reusable, enterprise-grade Chat component supporting reverse
+        infinite scrolling, editing, deleting, file attachments, and responsive textareas.
       </p>
     </div>
 
@@ -128,25 +131,30 @@ const allowEditAll = ref(false)
           <input type="checkbox" v-model="showAvatar" class="rounded border-gray-300" /> Show Avatar
         </label>
         <label class="flex items-center gap-2 text-sm cursor-pointer">
-          <input type="checkbox" v-model="showUserInfo" class="rounded border-gray-300" /> Show User Info
+          <input type="checkbox" v-model="showUserInfo" class="rounded border-gray-300" /> Show User
+          Info
         </label>
         <label class="flex items-center gap-2 text-sm cursor-pointer">
-          <input type="checkbox" v-model="showTimestamp" class="rounded border-gray-300" /> Show Timestamp
+          <input type="checkbox" v-model="showTimestamp" class="rounded border-gray-300" /> Show
+          Timestamp
         </label>
       </div>
 
       <div class="flex gap-4 flex-wrap">
         <label class="flex items-center gap-2 text-sm cursor-pointer text-blue-600 font-medium">
-          <input type="checkbox" v-model="allowDeleteAll" class="rounded border-blue-300" /> Admin: Allow Delete All
+          <input type="checkbox" v-model="allowDeleteAll" class="rounded border-blue-300" /> Admin:
+          Allow Delete All
         </label>
         <label class="flex items-center gap-2 text-sm cursor-pointer text-blue-600 font-medium">
-          <input type="checkbox" v-model="allowEditAll" class="rounded border-blue-300" /> Admin: Allow Edit All
+          <input type="checkbox" v-model="allowEditAll" class="rounded border-blue-300" /> Admin:
+          Allow Edit All
         </label>
       </div>
     </div>
 
     <DemoSection title="Standard Chat with Attachments" :code="sourceCode">
-      <div class="h-[600px] border border-border rounded-xl overflow-hidden bg-card flex flex-col shadow-sm">
+      <div
+        class="h-[600px] border border-border rounded-xl overflow-hidden bg-card flex flex-col shadow-sm">
         <ChatInterface
           :data="messages"
           :current-user-id="currentUserId"
@@ -161,8 +169,7 @@ const allowEditAll = ref(false)
           @add="handleAdd"
           @delete="handleDelete"
           @edit="handleEdit"
-          @refetch="handleRefetch"
-        />
+          @refetch="handleRefetch" />
       </div>
     </DemoSection>
   </div>
