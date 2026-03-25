@@ -104,7 +104,7 @@ const formattedDate = computed(() => dayjs(currentTime.value).format(props.dateF
     <!-- Date display -->
     <p
       v-if="showDate"
-      class="text-fs-1 font-normal text-muted-foreground mt-3.5 tracking-wide"
+      class="text-fs-1 font-normal text-muted-foreground mt-2.5 tracking-wide"
       :class="dateClass">
       {{ formattedDate }}
     </p>
