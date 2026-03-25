@@ -367,17 +367,37 @@ function isEmptyValue(val: any): boolean {
 }
 
 /**
+ * Recursively strips the given field keys from an object and all nested objects/arrays.
+ */
+function stripFields(obj: any, fields: string[]): void {
+  if (!obj || typeof obj !== 'object') return
+  if (Array.isArray(obj)) {
+    obj.forEach((item) => stripFields(item, fields))
+  } else {
+    for (const key of fields) {
+      delete obj[key]
+    }
+    for (const key in obj) {
+      stripFields(obj[key], fields)
+    }
+  }
+}
+
+/**
  * Cleans the submit payload by extracting only schema fields,
- * injecting specified emitFields, and removing ignoreFields recursively.
- * Also processes mapped output and transformation functions.
+ * stripping emitFields (e.g. GraphQL __typename) from the payload recursively,
+ * and removing ignoreFields. Also processes mapped output and transformation functions.
+ *
+ * emitFields: fields to STRIP from the payload (e.g. ['__typename']).
+ *   Default is ['__typename'] — this removes GraphQL metadata from all nested objects.
  *
  * KEY BEHAVIOUR (fix for Prisma / Postgres sync on updates):
  * A field is included in the payload only when:
  * 1. It has a non-empty value — always included (create & update).
  * 2. It is empty AND the field key already existed in the original `values`
- * object — meaning the user explicitly cleared a pre-existing value during
- * an update. In this case the canonical empty value (`[]` for multiSelect,
- * `null` for everything else) is sent so the backend overwrites the old data.
+ *    object — meaning the user explicitly cleared a pre-existing value during
+ *    an update. In this case the canonical empty value (`[]` for multiSelect,
+ *    `null` for everything else) is sent so the backend overwrites the old data.
  *
  * Fields that were never filled in (key absent from `values`) are silently
  * omitted to keep create payloads lean.
@@ -395,7 +415,8 @@ export async function cleanSubmitValues(
   const globalValues = globalValuesContext || values
 
   const flatSchema = Array.isArray(schema[0]) ? (schema as IForm[][]).flat() : (schema as IForm[])
-  const fieldsToEmit = emitFields || []
+  // emitFields are fields to STRIP from the final payload (e.g. __typename from GraphQL responses)
+  const fieldsToStrip = emitFields || []
   const fieldsToIgnore = ignoreFields || []
 
   for (const field of flatSchema) {
@@ -461,66 +482,14 @@ export async function cleanSubmitValues(
     }
   }
 
-  if (fieldsToEmit.length > 0) {
-    const injectEmits = (source: any, target: any) => {
-      if (!source || typeof source !== 'object') return
-      if (!target || typeof target !== 'object') return
-
-      if (Array.isArray(source) && Array.isArray(target)) {
-        // Infer missing emitFields from siblings in the source array
-        // (Useful for newly added items like file uploads that lack a __typename)
-        for (const key of fieldsToEmit) {
-          const siblingValue = source.find((item: any) => item && typeof item === 'object' && item[key] !== undefined)?.[key]
-          if (siblingValue !== undefined) {
-            target.forEach((tItem: any) => {
-              if (tItem && typeof tItem === 'object' && tItem[key] === undefined) {
-                tItem[key] = deepClone(siblingValue)
-              }
-            })
-          }
-        }
-
-        source.forEach((sItem, i) => {
-          if (target[i]) injectEmits(sItem, target[i])
-        })
-      } else {
-        for (const key of fieldsToEmit) {
-          if (source[key] !== undefined && target[key] === undefined) {
-            target[key] = deepClone(source[key])
-          }
-        }
-        for (const key in target) {
-          if (typeof target[key] === 'object' && typeof source[key] === 'object') {
-            injectEmits(source[key], target[key])
-          }
-        }
-      }
-    }
-
-    for (const key of fieldsToEmit) {
-      if (values[key] !== undefined && result[key] === undefined) {
-        result[key] = deepClone(values[key])
-      }
-    }
-
-    injectEmits(values, result)
+  // Strip emitFields (e.g. __typename) recursively from the entire result tree
+  if (fieldsToStrip.length > 0) {
+    stripFields(result, fieldsToStrip)
   }
 
+  // Strip ignoreFields recursively
   if (fieldsToIgnore.length > 0) {
-    const removeIgnores = (obj: any) => {
-      if (!obj || typeof obj !== 'object') return
-      if (Array.isArray(obj)) {
-        obj.forEach(removeIgnores)
-      } else {
-        for (const key of fieldsToIgnore) {
-          delete obj[key]
-        }
-        for (const key in obj) {
-          removeIgnores(obj[key])
-        }
-      }
-    }
-    removeIgnores(result)
+    stripFields(result, fieldsToIgnore)
   }
 
   return result
