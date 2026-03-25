@@ -27,5 +27,14 @@ import sourceCode from './BadgeDemo.vue?raw'
         <Badge variant="danger">Danger</Badge>
       </div>
     </DemoSection>
+
+    <DemoSection title="Sizes" :code="sourceCode">
+      <div class="flex flex-wrap gap-2">
+        <Badge size="xs">Extra Small</Badge>
+        <Badge size="sm">Small</Badge>
+        <Badge size="md">Medium</Badge>
+        <Badge size="lg">Large</Badge>
+      </div>
+    </DemoSection>
   </div>
 </template>
