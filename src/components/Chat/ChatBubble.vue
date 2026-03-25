@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import Avatar from '../Avatar.vue'
 import Button from '../Button.vue'
 import type { ChatMessage } from './ChatInterface.vue'
@@ -13,6 +13,11 @@ const props = defineProps<{
   showTimestamp: boolean
   allowDeleteAll?: boolean
   allowEditAll?: boolean
+  /**
+   * When true, the delete button requires a second click (confirmation) before emitting the delete event.
+   * Defaults to true.
+   */
+  confirmDelete?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -25,6 +30,45 @@ const formattedTime = computed(() => {
   const date = new Date(props.message.timestamp)
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 })
+
+// --- Delete confirmation state ---
+// Tracks whether the user has clicked delete once and is now in "confirm" mode
+const pendingDelete = ref(false)
+let confirmTimer: ReturnType<typeof setTimeout> | null = null
+
+const handleDeleteClick = () => {
+  // If confirmDelete prop is false, emit immediately without double-confirm
+  if (props.confirmDelete === false) {
+    emit('delete', props.message.id)
+    return
+  }
+
+  if (pendingDelete.value) {
+    // Second click — confirmed
+    pendingDelete.value = false
+    if (confirmTimer) {
+      clearTimeout(confirmTimer)
+      confirmTimer = null
+    }
+    emit('delete', props.message.id)
+  } else {
+    // First click — enter pending state
+    pendingDelete.value = true
+    // Auto-cancel after 3 seconds if user doesn't confirm
+    confirmTimer = setTimeout(() => {
+      pendingDelete.value = false
+      confirmTimer = null
+    }, 3000)
+  }
+}
+
+const cancelPendingDelete = () => {
+  pendingDelete.value = false
+  if (confirmTimer) {
+    clearTimeout(confirmTimer)
+    confirmTimer = null
+  }
+}
 </script>
 
 <template>
@@ -45,6 +89,7 @@ const formattedTime = computed(() => {
       <div
         class="relative flex items-center group/bubble"
         :class="isSender ? 'flex-row-reverse' : 'flex-row'">
+        <!-- Bubble -->
         <div
           class="px-3.5 py-2.5 rounded-2xl break-words relative min-w-[60px]"
           :class="[
@@ -56,10 +101,15 @@ const formattedTime = computed(() => {
             {{ message.text }}
           </p>
 
+          <!-- Attachments rendered inline inside the bubble -->
           <div
             v-if="message.attachments && message.attachments.length > 0"
-            :class="{ 'mt-3': message.text }">
-            <AttachmentsList :attachments="message.attachments" />
+            :class="{ 'mt-2': message.text }">
+            <AttachmentsList
+              :attachments="message.attachments"
+              variant="inline"
+              :can-view="true"
+              :can-download="true" />
           </div>
 
           <div
@@ -70,6 +120,7 @@ const formattedTime = computed(() => {
           </div>
         </div>
 
+        <!-- Action buttons (edit + delete) -->
         <div
           class="opacity-0 group-hover/bubble:opacity-100 focus-within:opacity-100 transition-opacity flex gap-1 px-2 pointer-events-none group-hover/bubble:pointer-events-auto focus-within:pointer-events-auto">
           <Button
@@ -81,15 +132,39 @@ const formattedTime = computed(() => {
             class="text-muted-foreground hover:text-foreground h-7 w-7"
             @click="emit('edit', message)"
             aria-label="Edit message" />
-          <Button
-            v-if="isSender || allowDeleteAll"
-            variant="ghost"
-            size="xs"
-            icon="lucide:trash-2"
-            rounded="full"
-            class="text-muted-foreground hover:text-destructive h-7 w-7"
-            @click="emit('delete', message.id)"
-            aria-label="Delete message" />
+
+          <!-- Delete button: shows check icon when in pending-confirm state -->
+          <template v-if="isSender || allowDeleteAll">
+            <div class="relative flex items-center">
+              <Button
+                variant="ghost"
+                size="xs"
+                :icon="pendingDelete ? 'lucide:check' : 'lucide:trash-2'"
+                rounded="full"
+                class="h-7 w-7 transition-colors"
+                @click="handleDeleteClick"
+                :aria-label="pendingDelete ? 'Confirm delete' : 'Delete message'" />
+              <!-- Small X to cancel pending delete -->
+              <button
+                v-if="pendingDelete"
+                class="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 rounded-full bg-muted border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+                @click.stop="cancelPendingDelete"
+                aria-label="Cancel delete">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="w-2 h-2">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+          </template>
         </div>
       </div>
 
