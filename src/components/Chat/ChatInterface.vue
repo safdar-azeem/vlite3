@@ -1,7 +1,19 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick, watch, computed } from 'vue'
 import ChatBubble from './ChatBubble.vue'
 import Button from '../Button.vue'
+import Icon from '../Icon.vue'
+import FilePicker from '../FilePicker/FilePicker.vue'
+import type { FilePickerValue } from '../FilePicker/FilePicker.vue'
+import { useFileUpload } from '../Form/composables/useFileUpload'
+
+export interface ChatAttachment {
+  fileUrl: string
+  fileName?: string
+  fileType?: string
+  fileSize?: number
+  [key: string]: any
+}
 
 export interface ChatMessage {
   id: string | number
@@ -11,6 +23,7 @@ export interface ChatMessage {
   avatar?: string
   timestamp?: string | Date
   isEdited?: boolean
+  attachments?: ChatAttachment[]
   [key: string]: any
 }
 
@@ -25,6 +38,8 @@ const props = withDefaults(
     isLoadingMore?: boolean
     allowDeleteAll?: boolean
     allowEditAll?: boolean
+    folderId?: string
+    maxFileSize?: number
   }>(),
   {
     showAvatar: true,
@@ -38,7 +53,7 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  (e: 'add', text: string): void
+  (e: 'add', text: string, attachments?: ChatAttachment[]): void
   (e: 'delete', id: string | number): void
   (e: 'edit', message: ChatMessage): void
   (e: 'refetch'): void
@@ -52,6 +67,9 @@ const inputText = ref('')
 const previousScrollHeight = ref(0)
 const isPrepend = ref(false)
 const editingMessage = ref<ChatMessage | null>(null)
+
+const selectedFiles = ref<FilePickerValue[]>([])
+const { handleUploadFiles, loading: isUploading } = useFileUpload()
 
 // Intersection Observer for Reverse Infinite Scroll
 let observer: IntersectionObserver | null = null
@@ -129,7 +147,9 @@ const handleInput = () => {
 const handleKeyDown = (e: KeyboardEvent) => {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault()
-    handleSend()
+    if (!isUploading.value) {
+      handleSend()
+    }
   } else if (e.key === 'Escape' && editingMessage.value) {
     e.preventDefault()
     cancelEdit()
@@ -157,10 +177,27 @@ const cancelEdit = () => {
   }
 }
 
-const handleSend = () => {
-  const text = inputText.value.trim()
-  if (!text) return
+const canSend = computed(() => {
+  const hasText = !!inputText.value.trim()
+  const hasFiles = Array.isArray(selectedFiles.value) && selectedFiles.value.length > 0
+  return (hasText || hasFiles) && !isUploading.value
+})
 
+const removeSelectedFile = (index: number) => {
+  if (isUploading.value) return
+  if (Array.isArray(selectedFiles.value)) {
+    selectedFiles.value.splice(index, 1)
+    if (selectedFiles.value.length === 0) {
+      selectedFiles.value = []
+    }
+  }
+}
+
+const handleSend = async () => {
+  if (!canSend.value) return
+
+  const text = inputText.value.trim()
+  const hasFiles = Array.isArray(selectedFiles.value) && selectedFiles.value.length > 0
   const wasEditing = !!editingMessage.value
 
   if (wasEditing && editingMessage.value) {
@@ -169,11 +206,27 @@ const handleSend = () => {
       emit('edit', { ...editingMessage.value, text, isEdited: true })
     }
     editingMessage.value = null
+    inputText.value = ''
   } else {
-    emit('add', text)
-  }
+    let attachments: ChatAttachment[] = []
+    
+    if (hasFiles) {
+      const filesToUpload = selectedFiles.value.map(f => f.file).filter(Boolean) as File[]
+      if (filesToUpload.length > 0) {
+        const urls = await handleUploadFiles(filesToUpload, props.folderId)
+        attachments = selectedFiles.value.map((f, i) => ({
+          fileUrl: urls[i] || '',
+          fileName: f.fileName,
+          fileType: f.fileType,
+          fileSize: f.fileSize
+        })).filter(a => a.fileUrl !== null && a.fileUrl !== '')
+      }
+    }
 
-  inputText.value = ''
+    emit('add', text, attachments.length > 0 ? attachments : undefined)
+    selectedFiles.value = []
+    inputText.value = ''
+  }
 
   if (textareaRef.value) {
     textareaRef.value.style.height = 'auto'
@@ -287,27 +340,58 @@ const handleSend = () => {
         </div>
       </div>
 
-      <div
-        class="relative flex items-end gap-2 bg-card border border-border rounded-xl p-1 shadow-sm focus-within:border-primary transition-colors">
-        <textarea
-          ref="textareaRef"
-          v-model="inputText"
-          :placeholder="placeholder"
-          class="flex-1 max-h-[120px] min-h-[20px] w-full resize-none bg-transparent px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground scrollbar-thin"
-          rows="1"
-          aria-label="Message input"
-          @input="handleInput"
-          @keydown="handleKeyDown" />
-        <div class="shrink-0 mb-1 mr-1">
-          <Button
-            variant="primary"
-            size="sm"
-            :icon="editingMessage ? 'lucide:check' : 'lucide:send'"
-            rounded="full"
-            class="h-8 w-8 px-0 transition-transform active:scale-95"
-            :disabled="!inputText.trim()"
-            @click="handleSend"
-            :aria-label="editingMessage ? 'Save changes' : 'Send message'" />
+      <div class="relative flex flex-col bg-card border border-border rounded-xl shadow-sm focus-within:border-primary transition-colors overflow-hidden">
+        
+        <div v-if="Array.isArray(selectedFiles) && selectedFiles.length > 0" class="flex flex-wrap gap-2 p-3 bg-muted/10 border-b border-border">
+          <div v-for="(file, index) in selectedFiles" :key="index" class="relative flex items-center gap-2 bg-background border border-border rounded-md p-1.5 pr-8 max-w-[200px] shadow-sm">
+            <Icon icon="lucide:file-text" class="w-4 h-4 text-primary shrink-0" />
+            <span class="text-xs truncate font-medium" :title="file.fileName">{{ file.fileName }}</span>
+            <button @click="removeSelectedFile(index)" :disabled="isUploading" class="absolute right-1 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-destructive rounded-full hover:bg-muted/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+              <Icon icon="lucide:x" class="w-3 h-3" />
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-end gap-2 p-1">
+          <div class="shrink-0 mb-1 ml-1">
+            <FilePicker v-model="selectedFiles" :multi-select="true" :max-size="maxFileSize" return-format="file">
+              <template #trigger="{ trigger }">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  icon="lucide:paperclip" 
+                  rounded="full" 
+                  class="h-8 w-8 px-0 text-muted-foreground hover:text-foreground transition-colors" 
+                  @click="trigger" 
+                  :disabled="isUploading" 
+                  aria-label="Attach files" />
+              </template>
+            </FilePicker>
+          </div>
+
+          <textarea
+            ref="textareaRef"
+            v-model="inputText"
+            :placeholder="placeholder"
+            :disabled="isUploading"
+            class="flex-1 max-h-[120px] min-h-[20px] w-full resize-none bg-transparent px-2 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground scrollbar-thin disabled:opacity-50"
+            rows="1"
+            aria-label="Message input"
+            @input="handleInput"
+            @keydown="handleKeyDown" />
+            
+          <div class="shrink-0 mb-1 mr-1">
+            <Button
+              variant="primary"
+              size="sm"
+              :icon="isUploading ? 'lucide:loader-2' : (editingMessage ? 'lucide:check' : 'lucide:send')"
+              :loading="isUploading"
+              rounded="full"
+              class="h-8 w-8 px-0 transition-transform active:scale-95"
+              :disabled="!canSend"
+              @click="handleSend"
+              :aria-label="editingMessage ? 'Save changes' : 'Send message'" />
+          </div>
         </div>
       </div>
     </div>
