@@ -1,98 +1,98 @@
-# Kanban
+# Kanban Board
 
 **Import:** `import { Kanban } from 'vlite3'`
 
 ### Description
 
-A fully functional, production-ready drag-and-drop Kanban board supporting multiple dynamic columns, customizable item templates, cross-board dragging, and infinite scrolling/pagination handlers per column.
+A high-performance, production-ready Kanban system built for Vue 3. It supports cross-column drag-and-drop, infinite scrolling per column, and consolidated event handling to simplify backend synchronization.
 
 ### Props
 
-| Prop             | Type                                  | Default          | Description                              |
-| :--------------- | :------------------------------------ | :--------------- | :--------------------------------------- |
-| `columns`        | `KanbanColumn[]`                      | required         | Array of columns/boards                  |
-| `data`           | `Record<string \| number, any[]>`     | `{}`             | Items grouped by column ID               |
-| `group`          | `string`                              | `'kanban-group'` | D&D group identifier                     |
-| `itemKey`        | `string`                              | `'id'`           | The unique identifier property for items |
-| `loadData`       | `(columnId, page) => Promise<Result>` | —                | Function to load more items if paginated |
-| `boardClass`     | `string`                              | —                | Custom class for the board container     |
-| `headerClass`    | `string`                              | —                | Custom class for column headers          |
-| `bodyClass`      | `string`                              | —                | Custom class for column bodies           |
-| `draggableClass` | `string`                              | —                | Custom class for draggable items         |
-| `ghostClass`     | `string`                              | —                | Custom class for the drag ghost element  |
-| `class`          | `string`                              | `h-full w-full`  | Custom class for the Kanban container    |
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `columns` | `KanbanColumn[]` | **Required** | Defines the vertical boards/status columns. |
+| `data` | `Record<string, any[]>` | `{}` | The items for each column, keyed by `column.id`. (Supports `v-model:data`) |
+| `group` | `string` | `'kanban-group'` | Unique identifier to allow dragging between different Kanban instances. |
+| `itemKey` | `string` | `'id'` | The property name used as a unique identifier for items. |
+| `loadData` | `Function` | `undefined` | Async function for infinite scrolling: `(colId, page) => Promise<Result>`. |
+| `boardClass` | `string` | `undefined` | Custom CSS class for the column container (e.g., to set width). |
+| `headerClass` | `string` | `undefined` | Custom CSS class for the column header. |
+| `bodyClass` | `string` | `undefined` | Custom CSS class for the scrollable item list. |
+| `draggableClass` | `string` | `undefined` | Class applied to the draggable area inside a column. |
+| `ghostClass` | `string` | `'kanban-ghost'` | Class applied to the "phantom" item during drag. |
+
+---
+
+### Events
+
+| Event | Payload | Description |
+| :--- | :--- | :--- |
+| `@update:data` | `Record<string, any[]>` | Emitted when the data structure changes. Used for 2-way binding. |
+| `@move` | `KanbanMoveEvent` | **Recommended.** Consolidated event emitted once per move (even across columns). Perfect for API calls. |
+| `@change` | `KanbanChangeEvent` | Low-level event. Emits 'add', 'remove', or 'update' for each individual column change. |
+
+---
 
 ### Type Definitions
 
 ```ts
 export interface KanbanColumn {
-  id: string | number
-  title: string
-  [key: string]: any
+  id: string | number;
+  title: string;
+  titleI18n?: string; // Optional key for localization
 }
 
-export interface KanbanChangeEvent {
-  moved?: { element: any; newIndex: number; oldIndex: number }
-  added?: { element: any; newIndex: number }
-  removed?: { element: any; oldIndex: number }
+export interface KanbanMoveEvent {
+  itemId: string | number;     // The ID of the item moved
+  item: any;                   // The full item data
+  fromColumnId: string | number;
+  toColumnId: string | number;
+  oldIndex: number;
+  newIndex: number;
 }
 ```
 
-### Events
+---
 
-- `@update:data` (data: `Record<string | number, any[]>`): Emitted when items move. Use with `v-model:data`.
-- `@change` (payload: `KanbanChangeEvent`): Emitted on internal drag-and-drop interaction.
+### Implementation Guide
 
-### Slots
-
-| Slot            | Description                                     | Scoped Props          |
-| --------------- | ----------------------------------------------- | --------------------- |
-| `column-header` | Replaces the default column header              | `{ column }`          |
-| `prepend-item`  | Content above the items list                    | `{ column }`          |
-| `item`          | Content template for the individual items/cards | `{ element, column }` |
-| `append-item`   | Content below the items list                    | `{ column }`          |
-
-### Usage
-
-#### Basic Implementation
-
+#### 1. Basic Setup
 ```vue
 <script setup>
 import { ref } from 'vue'
+import { Kanban } from 'vlite3'
 
-const columns = ref([
-  { id: 'todo', title: 'To Do' },
-  { id: 'in-progress', title: 'In Progress' },
-  { id: 'done', title: 'Done' },
-])
+const columns = [{ id: 'todo', title: 'To Do' }, { id: 'done', title: 'Done' }]
+const boardData = ref({ todo: [{ id: 1, title: 'Task A' }], done: [] })
 
-const boardData = ref({
-  todo: [{ id: '1', title: 'Research competitors' }],
-  'in-progress': [{ id: '2', title: 'Develop Kanban component' }],
-  done: [{ id: '3', title: 'Setup Vue 3 project' }],
-})
+const onMove = (e) => {
+  // Single consolidated event for your API
+  console.log(`Item ${e.itemId} moved from ${e.fromColumnId} to ${e.toColumnId}`)
+}
 </script>
 
 <template>
-  <Kanban v-model:data="boardData" :columns="columns" />
+  <Kanban v-model:data="boardData" :columns="columns" @move="onMove" />
 </template>
 ```
 
-#### Advanced Templating
+#### 2. Advanced Customization (Slots)
+The Kanban component uses scoped slots for maximum UI flexibility.
 
-```vue
-<Kanban v-model:data="boardData" :columns="columns">
-  <template #column-header="{ column }">
-    <div class="flex items-center gap-2 p-3 font-bold">
-      <span class="w-3 h-3 rounded-full bg-blue-500"></span>
-      {{ column.title }}
-    </div>
-  </template>
+| Slot Name | Scoped Props | Usage |
+| :--- | :--- | :--- |
+| `column-header` | `{ column, pageInfo }` | Replace the entire header UI. |
+| `prepend-item` | `{ column, items }` | Add a "Create Task" button at the top of a column. |
+| `item` | `{ item, column }` | **Crucial.** Customize the card design. |
+| `append-item` | `{ column, items }` | Add footers or summary info at the bottom. |
 
-  <template #item="{ element }">
-    <div class="bg-card border rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow">
-      <h4 class="font-medium">{{ element.title }}</h4>
-    </div>
-  </template>
-</Kanban>
-```
+
+
+---
+
+### Senior Engineer's Notes (Best Practices)
+
+1.  **Event Handling:** Always prefer `@move` over `@change`. `@change` triggers twice when moving between columns (one `remove`, one `add`). `@move` abstracts this complexity and provides a single payload suitable for database updates.
+2.  **Performance:** The board uses `v-memo` internally on items. Ensure your item data is as flat as possible for optimal re-rendering.
+3.  **Layout:** The Kanban container uses `overflow-x: auto`. Ensure the parent container has a defined height (e.g., `h-screen` or `h-[600px]`) to enable independent vertical scrolling for columns.
+4.  **Lazy Loading:** When using `loadData`, the component manages pagination state automatically. Ensure your backend returns the total page count to prevent unnecessary requests.
