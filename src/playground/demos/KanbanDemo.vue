@@ -69,8 +69,20 @@ const dataSlots = shallowRef({
   drafts: [{ id: 'draft1', title: 'Release notes v2.0' }],
 })
 
-const handleChange = (e: any) => {
-  console.log('Kanban changed:', e)
+const handleChange = (event: any) => {
+  console.log(
+    'event :>> ',
+    JSON.stringify({
+      type: event.type,
+      columnId: event.columnId,
+      event: {
+        data: event.event.data,
+        newIndex: event.event.newIndex,
+        oldIndex: event.event.oldIndex,
+        removed: event.event.removed,
+      },
+    })
+  )
 }
 
 const handleAddTask = (columnId: string | number) => {
