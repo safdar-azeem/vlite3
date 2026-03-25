@@ -15,6 +15,15 @@ const messages = ref<ChatMessage[]>([
     senderName: 'Alice',
     timestamp: new Date(Date.now() - 1000 * 60 * 60),
     avatar: 'https://i.pravatar.cc/150?img=5',
+    attachments: [
+      {
+        fileName: 'design_preview.png',
+        fileUrl:
+          'https://fastly.picsum.photos/id/197/400/400.jpg?hmac=EMGJfztOncchyhxYLBig-GifHwLYkvPrZJvM_oDgYfQ',
+        fileType: 'image/png',
+        fileSize: 1024 * 150,
+      },
+    ],
   },
   {
     id: 2,
