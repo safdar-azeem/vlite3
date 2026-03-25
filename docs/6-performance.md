@@ -83,17 +83,6 @@ When generating large SVGs, complex static footers, or massive text blocks that 
 
 If your generated code instantiates an event listener (`window.addEventListener`), an interval (`setInterval`), an observer (`IntersectionObserver`), or a 3rd-party library instance, you MUST generate the corresponding cleanup code in `onUnmounted`.
 
-### 6. Lazy Loading
-
-For heavy, conditional UI components (like complex Dialogs, Rich Text Editors, or heavy Charts), generate them using `defineAsyncComponent` rather than standard imports.
-
-```typescript
-import { defineAsyncComponent } from 'vue'
-const HeavyModal = defineAsyncComponent(() => import('./HeavyModal.vue'))
-```
-
----
-
 ### 7. The `backdrop-filter` Ban
 
 **NEVER** generate CSS containing `backdrop-filter: blur()` for Modals, Drawers, Popovers, Dropdowns, or any overlay with nested interactive elements.
