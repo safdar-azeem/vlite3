@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { OTPInput } from '@/components/OTPInput'
-import Button from '@/components/Button.vue'
 import DemoSection from '../DemoSection.vue'
 import sourceCode from './OTPInputDemo.vue?raw'
 
@@ -12,6 +11,9 @@ const code4 = ref('')
 const code5 = ref('')
 const code6 = ref('')
 const code7 = ref('')
+const codeMask = ref('')
+const codeFluid = ref('')
+const codeMaskFluid = ref('')
 
 const handleComplete = (val: string) => {
 	console.log('OTP Complete:', val)
@@ -132,6 +134,73 @@ const handleComplete = (val: string) => {
 						type="text"
 						class="uppercase" />
 					<p class="text-xs text-gray-400 mt-1">Try typing letters</p>
+				</div>
+			</div>
+		</DemoSection>
+
+		<!-- Mask (hidden input) -->
+		<DemoSection title="Mask (Password-like)" :code="sourceCode">
+			<div class="grid gap-6">
+				<div>
+					<p class="text-sm font-medium mb-2 text-gray-600">
+						Masked — digits hidden like a password
+					</p>
+					<OTPInput
+						v-model="codeMask"
+						mask
+						@complete="handleComplete" />
+					<p class="mt-2 text-sm text-gray-500">Value: {{ codeMask }}</p>
+				</div>
+				<div>
+					<p class="text-sm font-medium mb-2 text-gray-600">
+						Masked + Solid variant
+					</p>
+					<OTPInput
+						v-model="codeMask"
+						mask
+						variant="solid" />
+				</div>
+			</div>
+		</DemoSection>
+
+		<!-- Fluid (stretch to parent) -->
+		<DemoSection title="Fluid (fills parent width)" :code="sourceCode">
+			<div class="grid gap-6">
+				<div>
+					<p class="text-sm font-medium mb-2 text-gray-600">
+						Fluid — inputs stretch equally to fill container
+					</p>
+					<div class="w-full max-w-sm">
+						<OTPInput
+							v-model="codeFluid"
+							fluid />
+					</div>
+					<p class="mt-2 text-sm text-gray-500">Value: {{ codeFluid }}</p>
+				</div>
+				<div>
+					<p class="text-sm font-medium mb-2 text-gray-600">
+						Fluid + Attached + Solid
+					</p>
+					<div class="w-full max-w-sm">
+						<OTPInput
+							v-model="codeFluid"
+							fluid
+							attached
+							variant="solid" />
+					</div>
+				</div>
+				<div>
+					<p class="text-sm font-medium mb-2 text-gray-600">
+						Fluid + Mask (hidden + stretched)
+					</p>
+					<div class="w-full max-w-sm">
+						<OTPInput
+							v-model="codeMaskFluid"
+							fluid
+							mask
+							@complete="handleComplete" />
+					</div>
+					<p class="mt-2 text-sm text-gray-500">Value: {{ codeMaskFluid }}</p>
 				</div>
 			</div>
 		</DemoSection>
