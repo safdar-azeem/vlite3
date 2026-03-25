@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { shallowRef } from 'vue'
-import { Kanban, type KanbanColumn, type KanbanLoadDataResult } from '@/components/Kanban'
+import { Kanban, type KanbanColumn, type KanbanLoadDataResult, type KanbanMoveEvent } from '@/components/Kanban'
 import Button from '@/components/Button.vue'
 import DemoSection from '../DemoSection.vue'
 import sourceCode from './KanbanDemo.vue?raw'
@@ -69,20 +69,14 @@ const dataSlots = shallowRef({
   drafts: [{ id: 'draft1', title: 'Release notes v2.0' }],
 })
 
-const handleChange = (event: any) => {
-  console.log(
-    'event :>> ',
-    JSON.stringify({
-      type: event.type,
-      columnId: event.columnId,
-      event: {
-        data: event.event.data,
-        newIndex: event.event.newIndex,
-        oldIndex: event.event.oldIndex,
-        removed: event.event.removed,
-      },
-    })
-  )
+const handleChange = (e: any) => {
+  console.log('Low-level change:', e)
+}
+
+const handleMove = (e: KanbanMoveEvent) => {
+  console.log('🚀 Consolidated Move (Production Standard):', e)
+  // Here is where you would make your single API call:
+  // api.tasks.updateStatus(e.itemId, { columnId: e.toColumnId, position: e.newIndex })
 }
 
 const handleAddTask = (columnId: string | number) => {
@@ -101,7 +95,12 @@ const handleAddTask = (columnId: string | number) => {
 
     <DemoSection title="Basic Kanban (Static Data)" :code="sourceCode">
       <div class="h-[500px]">
-        <Kanban :columns="columns" v-model:data="data" @change="handleChange">
+        <Kanban 
+          :columns="columns" 
+          v-model:data="data" 
+          @change="handleChange"
+          @move="handleMove"
+        >
           <template #item="{ item }">
             <div
               class="bg-body p-3 rounded-lg shadow-sm border border-border cursor-grab active:cursor-grabbing hover:border-primary transition-colors">
@@ -119,7 +118,8 @@ const handleAddTask = (columnId: string | number) => {
           :columns="columnsSlots"
           v-model:data="dataSlots"
           group="slots-group"
-          @change="handleChange">
+          @change="handleChange"
+          @move="handleMove">
           <template #prepend-item="{ column }">
             <div class="mb-3 px-1">
               <Button
@@ -156,7 +156,8 @@ const handleAddTask = (columnId: string | number) => {
           :columns="columnsLazy"
           :load-data="loadData"
           group="lazy-kanban"
-          @change="handleChange">
+          @change="handleChange"
+          @move="handleMove">
           <template #item="{ item }">
             <div
               class="bg-body p-3 rounded-lg shadow-sm border border-border cursor-grab active:cursor-grabbing hover:border-primary transition-colors">
