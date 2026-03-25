@@ -12,6 +12,10 @@ interface Props {
   variant?: 'solid' | 'outline' | 'ghost'
   attached?: boolean
   size?: 'sm' | 'md' | 'lg'
+  // New: mask input like password
+  mask?: boolean
+  // New: make inputs stretch to fill parent width equally
+  fluid?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -25,6 +29,8 @@ const props = withDefaults(defineProps<Props>(), {
   variant: 'outline',
   attached: false,
   size: 'md',
+  mask: false,
+  fluid: false,
 })
 
 const emit = defineEmits<{
@@ -162,27 +168,48 @@ onMounted(() => {
   }
 })
 
+// Resolved input type: mask overrides number/text to password-like display
+const resolvedInputType = computed(() => {
+  if (props.mask) return 'password'
+  return props.type === 'number' ? 'tel' : 'text'
+})
+
+// Resolved inputmode: no numeric inputmode when mask is active (password fields)
+const resolvedInputMode = computed(() => {
+  if (props.mask) return undefined
+  return props.type === 'number' ? 'numeric' : undefined
+})
+
 // Styling Computed Props
 const containerClasses = computed(() => {
-  return ['flex items-center', props.attached ? '-space-x-px' : 'gap-2'].join(' ')
+  const gap = props.attached ? '-space-x-px' : 'gap-2'
+  const width = props.fluid ? 'w-full' : ''
+  return ['flex items-center', gap, width].filter(Boolean).join(' ')
 })
 
 const inputClasses = (index: number) => {
   const base =
     'text-center font-medium transition-all focus:outline-none focus:z-10 disabled:opacity-50 disabled:cursor-not-allowed placeholder:text-muted-foreground'
 
-  const sizes = {
-    sm: 'w-8 h-8 text-sm',
-    md: 'w-10 h-10 text-lg',
-    lg: 'w-12 h-12 text-xl',
-  }
+  // fluid: flex-1 min-w-0 removes fixed width; non-fluid keeps fixed size per size prop
+  const sizes = props.fluid
+    ? {
+        sm: 'flex-1 min-w-0 h-8 text-sm',
+        md: 'flex-1 min-w-0 h-10 text-lg',
+        lg: 'flex-1 min-w-0 h-12 text-xl',
+      }
+    : {
+        sm: 'w-8 h-8 text-sm',
+        md: 'w-10 h-10 text-lg',
+        lg: 'w-12 h-12 text-xl',
+      }
 
   const variants = {
     solid:
       'bg-muted border border-transparent focus:border-primary focus:ring-2 focus:ring-primary',
     outline: 'border border-input focus:border-primary focus:ring-2 focus:ring-primary',
     ghost:
-      'bg-transparent border border-transparent hover:bg-accent focus:focus:border-primary focus:ring-2 focus:ring-primary',
+      'bg-transparent border border-transparent hover:bg-accent focus:border-primary focus:ring-2 focus:ring-primary',
   }
 
   // Error state override
@@ -206,8 +233,8 @@ const inputClasses = (index: number) => {
       :key="index"
       :ref="(el) => setInputRef(el, index)"
       :value="digits[index]"
-      :type="type === 'number' ? 'tel' : 'text'"
-      inputmode="numeric"
+      :type="resolvedInputType"
+      :inputmode="resolvedInputMode"
       :maxlength="1"
       :disabled="disabled"
       :placeholder="placeholder"
