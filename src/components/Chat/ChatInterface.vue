@@ -38,6 +38,11 @@ const props = withDefaults(
     isLoadingMore?: boolean
     allowDeleteAll?: boolean
     allowEditAll?: boolean
+    /**
+     * When true (default), the delete button requires a second click to confirm deletion.
+     * Set to false to delete immediately on first click.
+     */
+    confirmDelete?: boolean
     folderId?: string
     maxFileSize?: number
   }>(),
@@ -49,6 +54,7 @@ const props = withDefaults(
     isLoadingMore: false,
     allowDeleteAll: false,
     allowEditAll: false,
+    confirmDelete: true,
   }
 )
 
@@ -209,17 +215,19 @@ const handleSend = async () => {
     inputText.value = ''
   } else {
     let attachments: ChatAttachment[] = []
-    
+
     if (hasFiles) {
       const filesToUpload = selectedFiles.value.map(f => f.file).filter(Boolean) as File[]
       if (filesToUpload.length > 0) {
         const urls = await handleUploadFiles(filesToUpload, props.folderId)
-        attachments = selectedFiles.value.map((f, i) => ({
-          fileUrl: urls[i] || '',
-          fileName: f.fileName,
-          fileType: f.fileType,
-          fileSize: f.fileSize
-        })).filter(a => a.fileUrl !== null && a.fileUrl !== '')
+        attachments = selectedFiles.value
+          .map((f, i) => ({
+            fileUrl: urls[i] || '',
+            fileName: f.fileName,
+            fileType: f.fileType,
+            fileSize: f.fileSize,
+          }))
+          .filter(a => a.fileUrl !== null && a.fileUrl !== '')
       }
     }
 
@@ -291,6 +299,7 @@ const handleSend = async () => {
           :show-timestamp="showTimestamp"
           :allow-delete-all="allowDeleteAll"
           :allow-edit-all="allowEditAll"
+          :confirm-delete="confirmDelete"
           @delete="$emit('delete', $event)"
           @edit="startEditing" />
       </div>
@@ -340,13 +349,24 @@ const handleSend = async () => {
         </div>
       </div>
 
-      <div class="relative flex flex-col bg-card border border-border rounded-xl shadow-sm focus-within:border-primary transition-colors overflow-hidden">
-        
-        <div v-if="Array.isArray(selectedFiles) && selectedFiles.length > 0" class="flex flex-wrap gap-2 p-3 bg-muted/10 border-b border-border">
-          <div v-for="(file, index) in selectedFiles" :key="index" class="relative flex items-center gap-2 bg-background border border-border rounded-md p-1.5 pr-8 max-w-[200px] shadow-sm">
+      <div
+        class="relative flex flex-col bg-card border border-border rounded-xl shadow-sm focus-within:border-primary transition-colors overflow-hidden">
+        <!-- Selected file previews -->
+        <div
+          v-if="Array.isArray(selectedFiles) && selectedFiles.length > 0"
+          class="flex flex-wrap gap-2 p-3 bg-muted/10 border-b border-border">
+          <div
+            v-for="(file, index) in selectedFiles"
+            :key="index"
+            class="relative flex items-center gap-2 bg-background border border-border rounded-md p-1.5 pr-8 max-w-[200px] shadow-sm">
             <Icon icon="lucide:file-text" class="w-4 h-4 text-primary shrink-0" />
-            <span class="text-xs truncate font-medium" :title="file.fileName">{{ file.fileName }}</span>
-            <button @click="removeSelectedFile(index)" :disabled="isUploading" class="absolute right-1 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-destructive rounded-full hover:bg-muted/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            <span class="text-xs truncate font-medium" :title="file.fileName">{{
+              file.fileName
+            }}</span>
+            <button
+              @click="removeSelectedFile(index)"
+              :disabled="isUploading"
+              class="absolute right-1 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-destructive rounded-full hover:bg-muted/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
               <Icon icon="lucide:x" class="w-3 h-3" />
             </button>
           </div>
@@ -354,16 +374,20 @@ const handleSend = async () => {
 
         <div class="flex items-end gap-2 p-1">
           <div class="shrink-0 mb-1 ml-1">
-            <FilePicker v-model="selectedFiles" :multi-select="true" :max-size="maxFileSize" return-format="file">
+            <FilePicker
+              v-model="selectedFiles"
+              :multi-select="true"
+              :max-size="maxFileSize"
+              return-format="file">
               <template #trigger="{ trigger }">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  icon="lucide:paperclip" 
-                  rounded="full" 
-                  class="h-8 w-8 px-0 text-muted-foreground hover:text-foreground transition-colors" 
-                  @click="trigger" 
-                  :disabled="isUploading" 
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  icon="lucide:paperclip"
+                  rounded="full"
+                  class="h-8 w-8 px-0 text-muted-foreground hover:text-foreground transition-colors"
+                  @click="trigger"
+                  :disabled="isUploading"
                   aria-label="Attach files" />
               </template>
             </FilePicker>
@@ -379,12 +403,18 @@ const handleSend = async () => {
             aria-label="Message input"
             @input="handleInput"
             @keydown="handleKeyDown" />
-            
+
           <div class="shrink-0 mb-1 mr-1">
             <Button
               variant="primary"
               size="sm"
-              :icon="isUploading ? 'lucide:loader-2' : (editingMessage ? 'lucide:check' : 'lucide:send')"
+              :icon="
+                isUploading
+                  ? 'lucide:loader-2'
+                  : editingMessage
+                    ? 'lucide:check'
+                    : 'lucide:send'
+              "
               :loading="isUploading"
               rounded="full"
               class="h-8 w-8 px-0 transition-transform active:scale-95"
