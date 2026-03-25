@@ -9,4 +9,9 @@ export interface AttachmentsListProps {
   attachments?: AttachmentItem | AttachmentItem[]
   canView?: boolean
   canDownload?: boolean
+  /**
+   * 'default' - standalone card style with border/muted background
+   * 'inline'  - transparent overlay style for embedding inside chat bubbles
+   */
+  variant?: 'default' | 'inline'
 }
