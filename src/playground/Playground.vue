@@ -87,6 +87,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'StatusChip', to: '/statuschip', icon: 'lucide:badge-check' },
       { label: 'Price', to: '/price', icon: 'lucide:circle-dollar-sign' },
       { label: 'Date', to: '/datetime', icon: 'lucide:calendar-days' },
+      { label: 'Clock', to: '/clock', icon: 'lucide:clock-3' },
       { label: 'List', to: '/list', icon: 'lucide:layout-list' },
       { label: 'DataTable', to: '/datatable', icon: 'lucide:table-2' },
       { label: 'DataList', to: '/datalist', icon: 'lucide:layout-grid' },
