@@ -32,7 +32,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const classes = computed(() => {
   const sizeClasses: Record<string, string> = {
-    xs: 'px-1.5 h-5 text-[10.5px] leading-none',
+    xs: 'px-1.5 h-4 text-[9px] leading-none',
     sm: 'px-2 h-6 text-xs font-medium',
     md: 'px-2.5 h-7 text-xs font-semibold',
     lg: 'px-3 h-8 text-sm font-semibold',
