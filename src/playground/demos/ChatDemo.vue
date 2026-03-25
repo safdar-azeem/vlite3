@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import DemoSection from '../DemoSection.vue'
-import { ChatInterface, type ChatMessage } from '@/components/Chat'
+import { ChatInterface, type ChatMessage, type ChatAttachment } from '@/components/Chat'
 import sourceCode from './ChatDemo.vue?raw'
 
 const currentUserId = 'user_1'
+const chatFolderId = 'demo-chat-attachments'
 
 const messages = ref<ChatMessage[]>([
   {
@@ -17,20 +18,35 @@ const messages = ref<ChatMessage[]>([
   },
   {
     id: 2,
-    text: 'I\'m good! Just working on the new Chat component for vlite3.',
+    text: 'I\'m good! Just working on the new Chat component for vlite3. I have attached the latest design assets.',
     senderId: 'user_1',
     senderName: 'Me',
-    timestamp: new Date(Date.now() - 1000 * 60 * 5)
+    timestamp: new Date(Date.now() - 1000 * 60 * 5),
+    attachments: [
+      {
+        fileName: 'design_preview.png',
+        fileUrl: 'https://via.placeholder.com/150',
+        fileType: 'image/png',
+        fileSize: 1024 * 150
+      },
+      {
+        fileName: 'requirements_doc.pdf',
+        fileUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+        fileType: 'application/pdf',
+        fileSize: 1024 * 1024 * 2.5
+      }
+    ]
   }
 ])
 
-const handleAdd = (text: string) => {
+const handleAdd = (text: string, attachments?: ChatAttachment[]) => {
   messages.value.push({
     id: Date.now(),
     text,
     senderId: currentUserId,
     senderName: 'Me',
-    timestamp: new Date()
+    timestamp: new Date(),
+    attachments: attachments || []
   })
 }
 
@@ -102,7 +118,7 @@ const allowEditAll = ref(false)
     <div>
       <h2 class="text-2xl font-bold mb-2">Chat Interface</h2>
       <p class="text-gray-500">
-        A completely agnostic, highly reusable, enterprise-grade Chat component supporting reverse infinite scrolling, editing, deleting, and responsive textareas.
+        A completely agnostic, highly reusable, enterprise-grade Chat component supporting reverse infinite scrolling, editing, deleting, file attachments, and responsive textareas.
       </p>
     </div>
 
@@ -129,8 +145,8 @@ const allowEditAll = ref(false)
       </div>
     </div>
 
-    <DemoSection title="Standard Chat" :code="sourceCode">
-      <div class="h-[500px] border border-border rounded-xl overflow-hidden bg-card flex flex-col shadow-sm">
+    <DemoSection title="Standard Chat with Attachments" :code="sourceCode">
+      <div class="h-[600px] border border-border rounded-xl overflow-hidden bg-card flex flex-col shadow-sm">
         <ChatInterface
           :data="messages"
           :current-user-id="currentUserId"
@@ -140,6 +156,8 @@ const allowEditAll = ref(false)
           :is-loading-more="loadingMore"
           :allow-delete-all="allowDeleteAll"
           :allow-edit-all="allowEditAll"
+          :folder-id="chatFolderId"
+          :max-file-size="10 * 1024 * 1024"
           @add="handleAdd"
           @delete="handleDelete"
           @edit="handleEdit"
