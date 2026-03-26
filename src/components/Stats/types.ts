@@ -35,6 +35,7 @@ export interface StatsProps {
   layout?: StatsLayout
   columns?: number | string
   attached?: boolean
+  loading?: boolean
   titleSize?: string
   valueSize?: string
   iconSize?: string
