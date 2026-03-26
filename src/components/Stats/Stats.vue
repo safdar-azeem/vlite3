@@ -29,12 +29,17 @@ const gridColsClass = computed(() => {
 })
 
 const containerClass = computed(() => {
+  // Transparent + attached: no outer borders — they would show as a visible line
+  // since there is no background to blend them away.
+  const attachedBorderClass =
+    props.attached && props.variant !== 'transparent' ? 'border-t border-l overflow-hidden' : 'overflow-hidden'
+
   return [
     'grid',
     gridColsClass.value,
-    props.attached ? 'gap-0 border-t border-l overflow-hidden' : 'gap-3 sm:gap-4.5',
+    props.attached ? `gap-0 ${attachedBorderClass}` : 'gap-3 sm:gap-4.5',
     props.variant === 'shadow' && props.attached ? 'shadow-md' : '',
-    props?.layout === 'inline-label-value' ? 'rounded-sm overflow-hidden' : '',
+    props?.layout === 'inline-label-value' ? 'rounded-sm' : '',
     props.class,
   ].join(' ')
 })
@@ -67,9 +72,16 @@ const getItemClass = (item: StatItemSchema, index: number) => {
   let variantClasses = ''
 
   if (props.attached) {
-    variantClasses = 'border-b border-r hover:bg-muted/30'
-    if (props.variant !== 'transparent') {
-      variantClasses += ' bg-card'
+    // Per-variant background for attached mode
+    if (props.variant === 'transparent') {
+      // No borders, no background — fully see-through
+      variantClasses = 'border-b border-r border-transparent hover:bg-muted/30'
+    } else if (props.variant === 'outline') {
+      // outline attached: border dividers only, no background fill
+      variantClasses = 'border-b border-r hover:bg-muted/30'
+    } else {
+      // shadow / solid attached: surface background
+      variantClasses = 'border-b border-r hover:bg-muted/30 bg-card'
     }
   } else {
     switch (props.variant) {
@@ -87,10 +99,11 @@ const getItemClass = (item: StatItemSchema, index: number) => {
         break
       }
       case 'outline':
-        variantClasses = 'bg-body border'
+        // No explicit background — inherits from page so it stays transparent
+        variantClasses = 'border'
         break
       case 'shadow':
-        variantClasses = 'bg-body shadow-md border border-border/50'
+        variantClasses = 'bg-card shadow-md border border-border/50'
         break
       case 'transparent':
         variantClasses = 'bg-transparent'
