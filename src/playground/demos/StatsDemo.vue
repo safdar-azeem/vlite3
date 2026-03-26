@@ -93,6 +93,33 @@ const inlineItems = [
       <p class="text-gray-500">A customizable component to display key metrics and statistics.</p>
     </div>
 
+    <div>
+      <h4 class="text-sm font-medium text-muted-foreground mb-3">
+        Inline Label Value (compact row: icon + label left, value right)
+      </h4>
+      <Stats :items="inlineItems" :columns="4" layout="inline-label-value" variant="outline" />
+    </div>
+
+    <div>
+      <h4 class="text-sm font-medium text-muted-foreground mb-3">Inline Label Value — Attached</h4>
+      <Stats
+        :items="inlineItems"
+        :columns="4"
+        layout="inline-label-value"
+        variant="outline"
+        attached />
+    </div>
+
+    <div>
+      <h4 class="text-sm font-medium text-muted-foreground mb-3">Inline Label Value — Attached</h4>
+      <Stats
+        :items="inlineItems"
+        :columns="4"
+        layout="inline-label-value"
+        variant="transparent"
+        attached />
+    </div>
+
     <DemoSection title="Variants" :code="sourceCode">
       <div class="space-y-8">
         <div>
@@ -172,25 +199,6 @@ const inlineItems = [
             Split Bar (colored left border accent)
           </h4>
           <Stats :items="standardItems" layout="split-bar" variant="outline" />
-        </div>
-
-        <div>
-          <h4 class="text-sm font-medium text-muted-foreground mb-3">
-            Inline Label Value (compact row: icon + label left, value right)
-          </h4>
-          <Stats :items="inlineItems" :columns="4" layout="inline-label-value" variant="outline" />
-        </div>
-
-        <div>
-          <h4 class="text-sm font-medium text-muted-foreground mb-3">
-            Inline Label Value — Attached
-          </h4>
-          <Stats
-            :items="inlineItems"
-            :columns="4"
-            layout="inline-label-value"
-            variant="outline"
-            attached />
         </div>
       </div>
     </DemoSection>
