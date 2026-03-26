@@ -69,6 +69,17 @@ const columnLayout = computed<ColumnLayout>(() => {
     full.unshift(...overflow)
   }
 
+  // ── Odd-item promotion ────────────────────────────────
+  // When the total number of column items (excluding lineByLine fields) is odd,
+  // left will have exactly one more item than right (diff === 1).
+  // That last lone item would render as a half-width orphan in the left column.
+  // We promote it to full-width so it spans the entire row, giving a clean,
+  // balanced layout for counts like 3, 5, 7, 9, 11…
+  if (props.columns === 2 && left.length === right.length + 1) {
+    const lastItem = left.pop()!
+    full.unshift(lastItem)
+  }
+
   return { left, right, full }
 })
 
