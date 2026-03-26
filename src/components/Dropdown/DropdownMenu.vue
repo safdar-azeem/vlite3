@@ -267,6 +267,7 @@ const shouldShowChevron = (option: IDropdownOption): boolean => {
         :placeholder="tSearch"
         icon="lucide:search"
         size="sm"
+        :autofocus="true"
         class="font-medium!"
         input-class="-ml-1"
         variant="transparent"
