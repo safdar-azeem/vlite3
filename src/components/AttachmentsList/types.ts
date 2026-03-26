@@ -15,7 +15,6 @@ export interface AttachmentsListProps {
    * Layout presentation variant
    * 'default' | 'list' - standard vertical list
    * 'inline'  - transparent overlay style for embedding inside chat bubbles
-   * 'grid'    - compact squared grid with overlay actions (ideal for galleries)
    * 'card'    - larger card format with prominent preview area
    */
   variant?: 'default' | 'list' | 'inline' | 'card'
@@ -35,4 +34,57 @@ export interface AttachmentsListProps {
    * Default: true
    */
   showDownloadInList?: boolean
+  // ── Custom CSS class hooks ───────────────────────────────────────────────
+  /**
+   * Class applied to the root wrapper <div> of the component.
+   */
+  rootClass?: string
+  /**
+   * Class applied to the card grid container (card variant only).
+   */
+  gridClass?: string
+  /**
+   * Class applied to each card item wrapper (card variant only).
+   */
+  cardClass?: string
+  /**
+   * Class applied to the card thumbnail/preview area (card variant only).
+   */
+  cardThumbnailClass?: string
+  /**
+   * Class applied to the card footer info area (card variant only).
+   */
+  cardInfoClass?: string
+  /**
+   * Class applied to the card overlay actions container (card variant only).
+   */
+  cardActionsClass?: string
+  /**
+   * Class applied to the list container (default/list/inline variants).
+   */
+  listClass?: string
+  /**
+   * Class applied to each list item row (default/list/inline variants).
+   */
+  itemClass?: string
+  /**
+   * Class applied to the icon box within a list item.
+   */
+  itemIconBoxClass?: string
+  /**
+   * Class applied to the file name text element.
+   */
+  itemNameClass?: string
+  /**
+   * Class applied to the file size / subtext element.
+   */
+  itemSizeClass?: string
+  /**
+   * Class applied to the actions container within a list item.
+   */
+  itemActionsClass?: string
+  /**
+   * Class applied to the "empty state" placeholder div.
+   */
+  emptyClass?: string
 }
