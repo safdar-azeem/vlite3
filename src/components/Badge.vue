@@ -32,10 +32,10 @@ const props = withDefaults(defineProps<Props>(), {
 
 const classes = computed(() => {
   const sizeClasses: Record<string, string> = {
-    xs: 'px-1.5 h-4 text-[9px] leading-none',
-    sm: 'px-2 h-6 text-xs font-medium',
-    md: 'px-2.5 h-7 text-xs font-semibold',
-    lg: 'px-3 h-8 text-sm font-semibold',
+    xs: 'px-1.5 h-4 text-[9.8px] font-medium leading-none',
+    sm: 'px-2 h-5.5 text-xs font-medium',
+    md: 'px-2.5 h-6.5 text-xs font-semibold',
+    lg: 'px-3 h-7.5 text-sm font-semibold',
   }
   const roundedClass = props.rounded === 'none' ? 'rounded-none' : `rounded-${props.rounded}`
   const baseClasses = `inline-flex items-center ${roundedClass} border ${sizeClasses[props.size] || sizeClasses.md} focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2`
