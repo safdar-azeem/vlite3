@@ -60,10 +60,81 @@ const emit = defineEmits<{
 // ── internal state ────────────────────────────────────────────────────────────
 const slots = useSlots()
 const activeViewKey = computed(() => props.name || props.title || 'default-screen')
-const activeView = usePersistentState<'table' | 'list'>(
-  `view-mode-${activeViewKey.value}`,
-  props.table || slots.table ? 'table' : 'list'
-)
+
+// ── Dynamic views resolution ──────────────────────────────────────────────────
+/**
+ * Resolved view definitions. Priority:
+ * 1. `views` prop (fully dynamic, any number of views)
+ * 2. Legacy `table` / `list` props — normalised into the same ScreenView shape
+ * 3. Slots: `table`, `list`, `grid` — handled separately in template
+ */
+const resolvedViews = computed(() => {
+  // Dynamic views prop takes full priority
+  if (props.views && props.views.length > 0) {
+    return props.views.map((v) => ({
+      ...v,
+      component:
+        typeof v.component === 'object' && v.component !== null
+          ? markRaw(v.component)
+          : v.component,
+    }))
+  }
+
+  // Legacy table / list props → normalise to ScreenView[]
+  const legacy: any[] = []
+  if (props.table) {
+    legacy.push({
+      key: 'table',
+      component: markRaw(props.table),
+      icon: 'lucide:list',
+      label: 'Table View',
+    })
+  }
+  if (props.list) {
+    legacy.push({
+      key: 'list',
+      component: markRaw(props.list),
+      icon: 'lucide:layout-grid',
+      label: 'List View',
+    })
+  }
+  return legacy
+})
+
+/** Keys of all resolved views for the toggle */
+const resolvedViewKeys = computed(() => resolvedViews.value.map((v) => v.key))
+
+/** Whether we have more than one view to toggle between */
+const hasMultipleViews = computed(() => {
+  const dynamicCount = resolvedViews.value.length
+  const slotCount = [slots.table, slots.list, slots.grid].filter(Boolean).length
+  return dynamicCount + slotCount > 1
+})
+
+// ── Persist active view; default to first available view key ─────────────────
+const defaultView = computed(() => {
+  if (props.views && props.views.length > 0) return props.views[0].key
+  if (props.table || slots.table) return 'table'
+  if (props.list || slots.list || slots.grid) return 'list'
+  return 'table'
+})
+
+const activeView = usePersistentState<string>(`view-mode-${activeViewKey.value}`, defaultView.value)
+
+// ── Active component for dynamic/legacy views ─────────────────────────────────
+const activeComponent = computed(() => {
+  const view = resolvedViews.value.find((v) => v.key === activeView.value)
+  return view?.component ?? null
+})
+
+// ── Slot-based view matching: slots use fixed keys table / list / grid ────────
+const activeSlotName = computed<'table' | 'list' | 'grid' | null>(() => {
+  if (activeView.value === 'table' && slots.table) return 'table'
+  if (activeView.value === 'list' && slots.list) return 'list'
+  if (activeView.value === 'list' && slots.grid) return 'grid'
+  return null
+})
+
 const searchQuery = ref('')
 const activeFilters = ref<Record<string, any>>({})
 const activeSort = ref<{ field: string; order: string }>({ field: '', order: '' })
@@ -91,16 +162,6 @@ const handleQuickFilterChange = (val: string | number) => {
   internalPage.value = 1
   triggerChange()
 }
-
-// ── markRaw wrappers to prevent proxying static components ───────────────────
-const activeComponent = computed(() => {
-  let comp: any
-  if (activeView.value === 'table') comp = props.table || !!slots.table
-  else comp = props.list || !!slots.list || !!slots.grid
-
-  // Return the raw component if it's an object/component definition to avoid deep proxying
-  return typeof comp === 'object' && comp !== null ? markRaw(comp) : comp
-})
 
 // ── Computed: true when the user has an active search or any filter applied ──
 const isFiltered = computed(() => {
@@ -258,7 +319,7 @@ const txtMissingView = computed(() => {
   const r = $t('vlite.screen.missingView')
   return r !== 'vlite.screen.missingView'
     ? r
-    : 'Please provide a `:list` or `:table` component or slot.'
+    : 'Please provide a `:list`, `:table`, or `:views` component/slot.'
 })
 
 const hasExportOrImport = computed(
@@ -363,9 +424,15 @@ const handleBackendExport = async (format: string) => {
             :title="txtDeleteSelected"
             @click="requestDelete(selectedRows)" />
 
+          <!--
+            ScreenViewToggle: shows when there are multiple views available.
+            Passes the `views` array for dynamic multi-view support.
+            Falls back to legacy two-button mode when `views` is absent.
+          -->
           <ScreenViewToggle
-            v-if="(table || $slots.table) && (list || $slots.list || $slots.grid)"
-            v-model="activeView" />
+            v-if="hasMultipleViews"
+            v-model="activeView"
+            :views="views && views.length > 0 ? views : undefined" />
 
           <slot name="before-search" />
 
@@ -424,8 +491,8 @@ const handleBackendExport = async (format: string) => {
     <slot name="sub-header" />
     <div
       v-if="hasQuickFilters"
-      class="-mt-1 max-sm:hidden!"
-      :class="quickFilterVariant == 'line' ? 'mb-1.5 sm:mb-1' : 'mb-2'">
+      class="-mt-1.5 max-sm:hidden!"
+      :class="quickFilterVariant == 'line' ? 'mb-1.5 sm:mb-3' : 'mb-3.5'">
       <ScreenQuickFilters
         v-model="activeQuickFilter"
         :options="quickFilters!"
@@ -449,8 +516,12 @@ const handleBackendExport = async (format: string) => {
           :add-btn="addBtn" />
       </template>
       <template v-else>
+        <!--
+          Slot-based views: fixed keys table / list / grid.
+          These receive the same scoped props as before for backward compatibility.
+        -->
         <slot
-          v-if="activeView === 'table' && $slots.table"
+          v-if="activeSlotName === 'table'"
           name="table"
           :data="data"
           :loading="loading"
@@ -458,7 +529,7 @@ const handleBackendExport = async (format: string) => {
           :delete="requestDelete"
           :update-selected-rows="(val: any[]) => (selectedRows = val)" />
         <slot
-          v-else-if="activeView === 'list' && $slots.list"
+          v-else-if="activeSlotName === 'list'"
           name="list"
           :data="data"
           :loading="loading"
@@ -466,13 +537,18 @@ const handleBackendExport = async (format: string) => {
           :delete="requestDelete"
           :update-selected-rows="(val: any[]) => (selectedRows = val)" />
         <slot
-          v-else-if="activeView === 'list' && $slots.grid"
+          v-else-if="activeSlotName === 'grid'"
           name="grid"
           :data="data"
           :loading="loading"
           :selected-rows="selectedRows"
           :delete="requestDelete"
           :update-selected-rows="(val: any[]) => (selectedRows = val)" />
+
+        <!--
+          Component-based views: works for both dynamic `views` prop and legacy
+          `table` / `list` props (both normalised into resolvedViews).
+        -->
         <component
           :is="activeComponent"
           v-else-if="activeComponent"
@@ -483,6 +559,7 @@ const handleBackendExport = async (format: string) => {
           :delete="requestDelete"
           @delete="handleComponentDelete"
           v-bind="viewProps" />
+
         <div
           v-else
           class="p-8 text-center text-muted-foreground border border-dashed border-border rounded-lg">
