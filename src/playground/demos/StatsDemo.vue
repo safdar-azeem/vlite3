@@ -93,6 +93,17 @@ const inlineItems = [
       <p class="text-gray-500">A customizable component to display key metrics and statistics.</p>
     </div>
 
+    <div>
+      <h4 class="text-sm font-medium text-muted-foreground mb-3">Inline Label Value — Attached</h4>
+      <Stats
+        :items="inlineItems"
+        :columns="4"
+        layout="inline-label-value"
+        variant="outline"
+        loading
+        attached />
+    </div>
+
     <DemoSection title="Variants" :code="sourceCode">
       <div class="space-y-8">
         <div>
