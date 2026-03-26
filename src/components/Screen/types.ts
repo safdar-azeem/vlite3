@@ -39,6 +39,32 @@ export interface ScreenQuickFilter {
   count?: number
 }
 
+/**
+ * A named view definition for dynamic multi-view support.
+ * Pass an array of these via the `views` prop to render any number of views
+ * (table, list, kanban, calendar, etc.) with automatic toggle buttons.
+ *
+ * @example
+ * :views="[
+ *   { key: 'table',    component: UserTable,    icon: 'lucide:list',         label: 'Table' },
+ *   { key: 'list',     component: UserList,     icon: 'lucide:layout-grid',  label: 'Grid' },
+ *   { key: 'kanban',   component: UserKanban,   icon: 'lucide:kanban',       label: 'Kanban' },
+ *   { key: 'calendar', component: UserCalendar, icon: 'lucide:calendar',     label: 'Calendar' },
+ * ]"
+ */
+export interface ScreenView {
+  /** Unique key used to identify and persist this view */
+  key: string
+  /** The Vue component to render for this view */
+  component: Component | any
+  /** Icon string (e.g. lucide icon name) shown in the view toggle button */
+  icon?: string
+  /** Tooltip / aria-label for the toggle button */
+  label?: string
+  /** i18n key for the label */
+  labelI18n?: string
+}
+
 export interface ScreenProps {
   name?: string
   title?: string
@@ -76,8 +102,31 @@ export interface ScreenProps {
   exportMode?: 'frontend' | 'backend'
   importType?: string
   exportType?: string
+  /**
+   * Legacy: single list component (list/grid view).
+   * Prefer `views` prop for multi-view support.
+   */
   list?: Component | any
+  /**
+   * Legacy: single table component.
+   * Prefer `views` prop for multi-view support.
+   */
   table?: Component | any
+  /**
+   * Dynamic multi-view definitions. When provided, replaces the legacy
+   * `table` / `list` props and renders a toggle button for each view.
+   * Supports any number of views: table, list, kanban, calendar, etc.
+   *
+   * The first entry becomes the default active view (unless persisted state exists).
+   *
+   * @example
+   * :views="[
+   *   { key: 'table',    component: UserTable,    icon: 'lucide:list',        label: 'Table' },
+   *   { key: 'kanban',   component: UserKanban,   icon: 'lucide:kanban',      label: 'Kanban' },
+   *   { key: 'calendar', component: UserCalendar, icon: 'lucide:calendar',    label: 'Calendar' },
+   * ]"
+   */
+  views?: ScreenView[]
   customHeader?: boolean
   canSearch?: boolean
   canAdd?: boolean
@@ -95,13 +144,6 @@ export interface ScreenProps {
   /**
    * Quick-filter tabs rendered below the header (above the content).
    * Inspired by modern dashboards (Shopify, Linear, Vercel).
-   * Example:
-   * [
-   * { label: 'All',       value: '' },
-   * { label: 'Active',    value: 'active' },
-   * { label: 'Draft',     value: 'draft' },
-   * { label: 'Archived',  value: 'archived' },
-   * ]
    */
   quickFilters?: ScreenQuickFilter[]
   /**
