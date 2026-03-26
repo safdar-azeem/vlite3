@@ -4,8 +4,12 @@
 
 ### Description
 
-`Screen` is a high-level smart wrapper component designed to standardise page layouts. It automatically manages titles, search, pagination, custom filters, primary actions (Add buttons/modals), empty states, delete operations, and seamlessly toggles between `list` and `table` child components (or slots). View mode (table/list) is automatically persisted using `usePersistentState`.
+`Screen` is a high-level smart wrapper component designed to standardise page layouts. It automatically manages titles, search, pagination, custom filters, primary actions (Add buttons/modals), empty states, delete operations, and seamlessly toggles between view components. View mode is automatically persisted using `usePersistentState`.
+
+It supports **any number of named views** — table, list, kanban, calendar, or any custom view — via the `views` prop. The legacy `table` and `list` props remain fully supported for backward compatibility.
+
 It also supports built-in **Export** and **Import** capabilities (via `ExportData` and `ImportData` sub-components) accessible through a contextual dropdown menu when configured.
+
 Alternatively, you can provide layouts via the `#table`, `#list`, and `#grid` slots instead of component props, which also support the view toggling and receive all necessary props exactly like the child components do.
 
 ---
@@ -14,7 +18,7 @@ Alternatively, you can provide layouts via the `#table`, `#list`, and `#grid` sl
 
 | Prop                   | Type                            | Default                                                                  | Description                                                                                                                                                                                                        |
 | :--------------------- | :------------------------------ | :----------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`                 | `string`                        | `''`                                                                     | Optional identifier used to persist the view state (list vs table). Combined with `title` to form a unique storage key.                                                                                            |
+| `name`                 | `string`                        | `''`                                                                     | Optional identifier used to persist the view state. Combined with `title` to form a unique storage key.                                                                                                            |
 | `title`                | `string`                        | `''`                                                                     | Page title displayed at the top of the screen header.                                                                                                                                                              |
 | `titleI18n`            | `string`                        | —                                                                        | i18n key for the page title. Takes priority over `title` when set.                                                                                                                                                 |
 | `description`          | `string`                        | `''`                                                                     | Subtitle/description text rendered below the title.                                                                                                                                                                |
@@ -32,11 +36,12 @@ Alternatively, you can provide layouts via the `#table`, `#list`, and `#grid` sl
 | `filterSchema`         | `IForm[]`                       | `[]`                                                                     | Form schema for the advanced filter modal/dropdown.                                                                                                                                                                |
 | `filterType`           | `'modal' \| 'dropdown'`         | `'modal'`                                                                | Style of the advanced filter trigger.                                                                                                                                                                              |
 | `showRefresh`          | `boolean`                       | `false`                                                                  | Show a manual Refresh button in the toolbar.                                                                                                                                                                       |
-| `quickFilters`         | `ScreenQuickFilter[]`           | `[]`                                                                     | Array of tab options rendered as a **line-variant tab bar** between the header and content. Selecting a tab resets to page 1 and adds the value to the `filter` property in the refetch based on the provided key. |
-| `quickFilterKey`       | `string`                        | `'status'`                                                               | The key used to add the active quick filter value to the `filter` property in the refetch. Default will be `status`.                                                                                               |
+| `quickFilters`         | `ScreenQuickFilter[]`           | `[]`                                                                     | Array of tab options rendered as a **line-variant tab bar** between the header and content.                                                                                                                        |
+| `quickFilterKey`       | `string`                        | `'status'`                                                               | The key used to add the active quick filter value to the `filter` property in the refetch.                                                                                                                         |
 | `defaultQuickFilter`   | `string \| number`              | first tab's value                                                        | Initial quick-filter value. Defaults to the first entry in `quickFilters` when not set.                                                                                                                            |
-| `list`                 | `Component`                     | —                                                                        | Component rendered in list/grid view.                                                                                                                                                                              |
-| `table`                | `Component`                     | —                                                                        | Component rendered in table view.                                                                                                                                                                                  |
+| `views`                | `ScreenView[]`                  | —                                                                        | **Dynamic multi-view definitions.** Pass any number of named views (table, list, kanban, calendar, etc.). Each entry renders a toggle button and maps to its component. The first entry is the default view.      |
+| `list`                 | `Component`                     | —                                                                        | **Legacy.** Component rendered in list/grid view. Prefer `views` for new usage.                                                                                                                                   |
+| `table`                | `Component`                     | —                                                                        | **Legacy.** Component rendered in table view. Prefer `views` for new usage.                                                                                                                                       |
 | `addBtn`               | `AddBtnConfig`                  | —                                                                        | Configuration for the Add button (label, icon, variant, modal, router link, etc.).                                                                                                                                 |
 | `addComponent`         | `Component`                     | —                                                                        | Fully custom component to replace the default Add button area.                                                                                                                                                     |
 | `exportSchema`         | `ExportField[]`                 | `[]`                                                                     | Fields definition for the Export feature.                                                                                                                                                                          |
@@ -62,12 +67,92 @@ Alternatively, you can provide layouts via the `#table`, `#list`, and `#grid` sl
 
 ---
 
+### `ScreenView` type
+```ts
+export interface ScreenView {
+  /** Unique key used to identify and persist this view */
+  key: string
+  /** The Vue component to render for this view */
+  component: Component | any
+  /** Icon string (e.g. lucide icon name) shown in the view toggle button */
+  icon?: string
+  /** Tooltip / aria-label for the toggle button */
+  label?: string
+  /** i18n key for the label */
+  labelI18n?: string
+}
+```
+
+---
+
+### Multi-View Support (`views` prop)
+
+The `views` prop enables fully dynamic, extensible view switching. Pass an array of `ScreenView` objects — each renders a toggle button and maps to its component. The first entry becomes the default active view (unless persisted state overrides it).
+
+All view components receive the same standard props: `data`, `loading`, `refetch`, `selectedRows`, `delete`, and anything in `viewProps`.
+
+#### Example — Table + List + Kanban + Calendar
+```vue
+<script setup>
+import { defineAsyncComponent } from 'vue'
+const UserTable    = defineAsyncComponent(() => import('./UserTable.vue'))
+const UserList     = defineAsyncComponent(() => import('./UserList.vue'))
+const UserKanban   = defineAsyncComponent(() => import('./UserKanban.vue'))
+const UserCalendar = defineAsyncComponent(() => import('./UserCalendar.vue'))
+</script>
+
+<template>
+  <Screen
+    name="users"
+    title="Users"
+    :data="users"
+    :loading="loading"
+    :refetch="fetchUsers"
+    :views="[
+      { key: 'table',    component: UserTable,    icon: 'lucide:list',        label: 'Table' },
+      { key: 'list',     component: UserList,     icon: 'lucide:layout-grid', label: 'Grid' },
+      { key: 'kanban',   component: UserKanban,   icon: 'lucide:kanban',      label: 'Kanban' },
+      { key: 'calendar', component: UserCalendar, icon: 'lucide:calendar',    label: 'Calendar' },
+    ]" />
+</template>
+```
+
+#### Example — Two views only
+```vue
+<Screen
+  name="orders"
+  title="Orders"
+  :data="orders"
+  :refetch="fetchOrders"
+  :views="[
+    { key: 'table', component: OrderTable, icon: 'lucide:list',        label: 'Table' },
+    { key: 'board', component: OrderBoard, icon: 'lucide:layout-panel-left', label: 'Board' },
+  ]" />
+```
+
+---
+
+### Legacy Props (`table` / `list`)
+
+The original `table` and `list` props are fully supported and work exactly as before. They are normalised internally into the `views` system with default icons and keys.
+```vue
+<!-- Legacy usage — still works -->
+<Screen
+  name="users"
+  title="Users"
+  :data="users"
+  :table="UserTable"
+  :list="UserList"
+  :refetch="fetchUsers" />
+```
+
+---
+
 ### Quick Filters
 
 Quick filters provide a **tab bar** UI pattern common in modern dashboards (Shopify, Linear, Vercel). They appear between the header toolbar and the content area, using a clean `line` variant. The selected value will add to the `filter` property in the refetch based on the provided key. Default will be `status`. This behavior is completely invisible to the main Screen Filter state.
 
 #### `ScreenQuickFilter` type
-
 ```ts
 export interface ScreenQuickFilter {
   label: string
@@ -82,47 +167,13 @@ export interface ScreenQuickFilter {
 #### Refetch payload
 
 When a quick-filter tab is selected, `refetch` is called, and the quick filter's value is automatically added to the `filter` property based on the provided `quickFilterKey` (default will be `'status'`):
-
 ```ts
 refetch({
   pagination: { page: 1, limit: 10 },
   search: '...',
   sort: { field: '', order: '' },
-  filter: { status: 'active', ...otherFilters }, // ← The selected tab value mapped to quickFilterKey
+  filter: { status: 'active', ...otherFilters }, // The selected tab value mapped to quickFilterKey
 })
-```
-
-#### Examples
-
-**Products screen**
-
-```vue
-<Screen
-  title="Products"
-  quick-filter-key="productStatus"
-  :quick-filters="[
-    { label: 'All', value: '' },
-    { label: 'Active', value: 'active' },
-    { label: 'Draft', value: 'draft' },
-    { label: 'Archived', value: 'archived' },
-  ]"
-  :refetch="fetchProducts" />
-```
-
-**Orders screen**
-
-```vue
-<Screen
-  title="Orders"
-  quick-filter-key="status"
-  :quick-filters="[
-    { label: 'All', value: '' },
-    { label: 'Completed', value: 'completed', count: 124 },
-    { label: 'Processing', value: 'processing', count: 8 },
-    { label: 'Pending', value: 'pending', count: 3 },
-    { label: 'Cancelled', value: 'cancelled' },
-  ]"
-  :refetch="fetchOrders" />
 ```
 
 ---
@@ -151,43 +202,3 @@ refetch({
 | :------- | :------ | :---------------------------------------------------------------- |
 | `add`    | —       | Emitted when the default Add is clicked (no `addBtn` configured). |
 | `delete` | `any[]` | Emitted after the user confirms bulk/row deletion.                |
-
----
-
-### Usage
-
-#### Basic with quick filters
-
-```vue
-<Screen
-  name="orders"
-  title="Orders"
-  :data="orders"
-  :loading="loading"
-  :page-info="pageInfo"
-  :table="OrderTable"
-  quick-filter-key="status"
-  :quick-filters="[
-    { label: 'All', value: '' },
-    { label: 'Completed', value: 'completed' },
-    { label: 'Processing', value: 'processing' },
-    { label: 'Pending', value: 'pending' },
-    { label: 'Cancelled', value: 'cancelled' },
-  ]"
-  :refetch="fetchOrders" />
-```
-
-#### Reading `filter` in your refetch handler
-
-```ts
-const fetchOrders = (payload) => {
-  const { pagination, search, filter } = payload
-  // The quickFilter value is seamlessly embedded inside the `filter` object
-  api.getOrders({
-    page: pagination.page,
-    limit: pagination.limit,
-    search,
-    ...filter,
-  })
-}
-```
