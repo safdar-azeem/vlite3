@@ -16,6 +16,19 @@ const props = withDefaults(defineProps<AttachmentsListProps>(), {
   size: 'md',
   clickToPreview: false,
   showDownloadInList: true,
+  rootClass: '',
+  gridClass: '',
+  cardClass: '',
+  cardThumbnailClass: '',
+  cardInfoClass: '',
+  cardActionsClass: '',
+  listClass: '',
+  itemClass: '',
+  itemIconBoxClass: '',
+  itemNameClass: '',
+  itemSizeClass: '',
+  itemActionsClass: '',
+  emptyClass: '',
 })
 
 // Tracks which file index has its preview modal open (for programmatic open via clickToPreview)
@@ -73,7 +86,7 @@ const sizeClasses = computed(() => {
     case 'lg':
       return {
         item: 'pl-3.5 pr-3 py-3 gap-3',
-        iconBox: 'w-10 h-10 rounded-lg',
+        iconBox: 'w-11 h-11 rounded-lg',
         icon: 'w-5 h-5',
         text: 'text-sm',
         subtext: '-text-fs-3.5',
@@ -83,10 +96,10 @@ const sizeClasses = computed(() => {
     case 'md':
     default:
       return {
-        item: 'px-2.5 py-2 gap-2',
-        iconBox: 'w-8 h-8 rounded-md',
+        item: 'px-2.5 py-2.5 gap-2',
+        iconBox: 'w-9 h-9 rounded-md',
         icon: 'w-4 h-4',
-        text: 'text-xs',
+        text: '-text-fs-2',
         subtext: 'text-[10px]',
         actions: 'w-7 h-7 !min-w-[20px] !min-h-[20px]',
         actionIcon: 'w-4 h-4',
@@ -105,20 +118,26 @@ const hasListActions = computed(() => showViewAction.value || showDownloadAction
 </script>
 
 <template>
-  <div class="w-full">
+  <!-- vl-attachments-list: root wrapper -->
+  <div class="vl-attachments-list w-full" :class="rootClass">
     <template v-if="normalizedAttachments.length > 0">
       <!-- ────────────────────────────────────────────────── CARD VARIANT ── -->
+      <!-- vl-attachments-list__grid: card grid container -->
       <div
         v-if="variant === 'card'"
-        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        class="vl-attachments-list__grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+        :class="gridClass">
+        <!-- vl-attachments-list__card: individual card item -->
         <div
           v-for="(file, index) in normalizedAttachments"
           :key="index"
-          class="relative group rounded-xl border border-border bg-body overflow-hidden hover:shadow-md transition-all flex flex-col"
-          :class="{ 'cursor-pointer': clickToPreview && canView }"
+          class="vl-attachments-list__card relative group rounded-xl border border-border bg-body overflow-hidden hover:shadow-md transition-all flex flex-col"
+          :class="[{ 'cursor-pointer': clickToPreview && canView }, cardClass]"
           @click="openPreview(index)">
+          <!-- vl-attachments-list__card-thumbnail: card preview/image area -->
           <div
-            class="h-40 w-full bg-muted/30 flex items-center justify-center overflow-hidden relative border-b border-border">
+            class="vl-attachments-list__card-thumbnail h-40 w-full bg-muted/30 flex items-center justify-center overflow-hidden relative border-b border-border"
+            :class="cardThumbnailClass">
             <img
               v-if="isImage(file)"
               :src="file.thumbnailUrl || file.fileUrl"
@@ -128,10 +147,11 @@ const hasListActions = computed(() => showViewAction.value || showDownloadAction
               :icon="getFileTypeIcon(file.fileName, file.fileUrl, file.fileType)"
               class="w-12 h-12 text-muted-foreground/40 transition-transform group-hover:scale-110" />
 
-            <!-- Overlay actions — hidden when clickToPreview is active -->
+            <!-- vl-attachments-list__card-actions: overlay actions (hidden when clickToPreview) -->
             <div
               v-if="!clickToPreview"
-              class="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              class="vl-attachments-list__card-actions absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
+              :class="cardActionsClass">
               <Modal
                 v-if="canView"
                 :title="file.fileName || $t('common.words.preview', 'Preview')"
@@ -156,11 +176,18 @@ const hasListActions = computed(() => showViewAction.value || showDownloadAction
             </div>
           </div>
 
-          <div class="p-3 flex flex-col min-w-0">
-            <span class="text-sm font-medium truncate" :title="file.fileName">
+          <!-- vl-attachments-list__card-info: card footer with name/size -->
+          <div
+            class="vl-attachments-list__card-info p-3 flex flex-col min-w-0"
+            :class="cardInfoClass">
+            <!-- vl-attachments-list__item-name: file name text -->
+            <span
+              class="vl-attachments-list__item-name text-sm font-medium truncate"
+              :title="file.fileName">
               {{ file.fileName || 'Unnamed File' }}
             </span>
-            <span class="text-xs text-muted-foreground mt-0.5">
+            <!-- vl-attachments-list__item-size: file size text -->
+            <span class="vl-attachments-list__item-size text-xs text-muted-foreground mt-0.5">
               {{ formatSize(file.fileSize) }}
             </span>
           </div>
@@ -178,25 +205,30 @@ const hasListActions = computed(() => showViewAction.value || showDownloadAction
       </div>
 
       <!-- ───────────────────────────── DEFAULT / LIST / INLINE VARIANTS ── -->
-      <div v-else class="flex flex-col gap-1.5">
+      <!-- vl-attachments-list__list: vertical list container -->
+      <div v-else class="vl-attachments-list__list flex flex-col gap-1.5" :class="listClass">
+        <!-- vl-attachments-list__item: individual list row -->
         <div
           v-for="(file, index) in normalizedAttachments"
           :key="index"
-          class="flex items-center justify-between transition-colors rounded-lg"
+          class="vl-attachments-list__item flex items-center justify-between transition-colors rounded-lg"
           :class="[
             variant === 'inline'
               ? 'bg-[#79797924] hover:bg-[#7979793f]'
               : 'border border-border bg-muted/20 hover:bg-muted/40',
             sizeClasses.item,
             clickToPreview && canView ? 'cursor-pointer select-none' : '',
+            itemClass,
           ]"
           @click="openPreview(index)">
           <div class="flex items-center gap-3 overflow-hidden min-w-0">
+            <!-- vl-attachments-list__item-icon-box: icon/thumbnail container -->
             <div
-              class="flex items-center justify-center shrink-0 overflow-hidden relative"
+              class="vl-attachments-list__item-icon-box flex items-center justify-center shrink-0 overflow-hidden relative"
               :class="[
                 sizeClasses.iconBox,
                 variant === 'inline' ? 'bg-[#79797924] hover:bg-[#7979793f]' : 'bg-primary/10',
+                itemIconBoxClass,
               ]">
               <img
                 v-if="isImage(file)"
@@ -209,28 +241,36 @@ const hasListActions = computed(() => showViewAction.value || showDownloadAction
             </div>
 
             <div class="flex flex-col overflow-hidden leading-tight min-w-0">
+              <!-- vl-attachments-list__item-name: file name text -->
               <span
-                class="font-medium truncate"
-                :class="[sizeClasses.text, variant === 'inline' ? '' : 'text-foreground']"
+                class="vl-attachments-list__item-name font-medium truncate"
+                :class="[
+                  sizeClasses.text,
+                  variant === 'inline' ? '' : 'text-foreground',
+                  itemNameClass,
+                ]"
                 :title="file.fileName">
                 {{ file.fileName || 'Unnamed File' }}
               </span>
+              <!-- vl-attachments-list__item-size: file size subtext -->
               <span
-                class="mt-0.5"
+                class="vl-attachments-list__item-size mt-0.5"
                 :class="[
                   sizeClasses.subtext,
                   variant === 'inline' ? 'opacity-50' : 'text-muted-foreground',
+                  itemSizeClass,
                 ]">
                 {{ formatSize(file.fileSize) }}
               </span>
             </div>
           </div>
 
-          <!-- Action buttons — only rendered when there is at least one visible action -->
+          <!-- vl-attachments-list__item-actions: action buttons container -->
+          <!-- Only rendered when there is at least one visible action -->
           <div
             v-if="hasListActions"
-            class="flex items-center shrink-0 ml-2"
-            :class="size !== 'lg' ? 'gap-0.5' : 'gap-0'"
+            class="vl-attachments-list__item-actions flex items-center shrink-0 ml-2"
+            :class="[size !== 'lg' ? 'gap-0.5' : 'gap-0', itemActionsClass]"
             @click.stop>
             <template v-if="variant === 'inline'">
               <Modal
@@ -301,9 +341,11 @@ const hasListActions = computed(() => showViewAction.value || showDownloadAction
       </div>
     </template>
 
+    <!-- vl-attachments-list__empty: empty state placeholder -->
     <div
       v-else
-      class="text-sm text-muted-foreground italic bg-muted/10 p-4 rounded-lg border border-dashed border-border text-center">
+      class="vl-attachments-list__empty text-sm text-muted-foreground italic bg-muted/10 p-4 rounded-lg border border-dashed border-border text-center"
+      :class="emptyClass">
       {{ $t('common.words.noAttachments', 'No attachments found.') }}
     </div>
   </div>
