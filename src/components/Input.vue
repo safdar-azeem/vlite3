@@ -288,7 +288,10 @@ const handleAnimationStart = (event: AnimationEvent) => {
 onMounted(() => {
   if (props.autofocus) {
     nextTick(() => {
-      inputRef.value?.focus()
+      setTimeout(() => {
+        inputRef.value?.focus()
+        isFocused.value = true
+      }, 100)
     })
   }
 
