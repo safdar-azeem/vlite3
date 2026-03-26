@@ -4,22 +4,21 @@
 
 ### Description
 
-A high-performance, production-ready Kanban system built for Vue 3. It supports cross-column drag-and-drop, infinite scrolling per column, and consolidated event handling to simplify backend synchronization.
+A high-performance, production-ready Kanban system built for Vue 3. It supports cross-column drag-and-drop, infinite scrolling per column, intelligent auto-grouping from flat arrays, and consolidated fractional indexing for optimal database performance.
 
 ### Props
 
 | Prop | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
 | `columns` | `KanbanColumn[]` | **Required** | Defines the vertical boards/status columns. |
-| `data` | `Record<string, any[]>` | `{}` | The items for each column, keyed by `column.id`. (Supports `v-model:data`) |
+| `rawData` | `any[]` | `undefined` | **Recommended.** Provide a flat array. The board will automatically group, sort, and manage drag-and-drop positions internally. |
+| `groupKey` | `string` | `'status'` | The object property used to group flat `rawData` into columns (e.g., `'status'` or `'stage'`). |
+| `positionKey` | `string` | `'position'` | The object property used to define the sorting order within a column. |
+| `data` | `Record<string, any[]>` | `{}` | Legacy manual grouping structure. (Supports `v-model:data`) |
 | `group` | `string` | `'kanban-group'` | Unique identifier to allow dragging between different Kanban instances. |
 | `itemKey` | `string` | `'id'` | The property name used as a unique identifier for items. |
 | `loadData` | `Function` | `undefined` | Async function for infinite scrolling: `(colId, page) => Promise<Result>`. |
-| `boardClass` | `string` | `undefined` | Custom CSS class for the column container (e.g., to set width). |
-| `headerClass` | `string` | `undefined` | Custom CSS class for the column header. |
-| `bodyClass` | `string` | `undefined` | Custom CSS class for the scrollable item list. |
-| `draggableClass` | `string` | `undefined` | Class applied to the draggable area inside a column. |
-| `ghostClass` | `string` | `'kanban-ghost'` | Class applied to the "phantom" item during drag. |
+| `boardClass` | `string` | `undefined` | Custom CSS class for the column container. |
 
 ---
 
@@ -27,58 +26,43 @@ A high-performance, production-ready Kanban system built for Vue 3. It supports 
 
 | Event | Payload | Description |
 | :--- | :--- | :--- |
-| `@update:data` | `Record<string, any[]>` | Emitted when the data structure changes. Used for 2-way binding. |
-| `@move` | `KanbanMoveEvent` | **Recommended.** Consolidated event emitted once per move (even across columns). Perfect for API calls. |
-| `@change` | `KanbanChangeEvent` | Low-level event. Emits 'add', 'remove', or 'update' for each individual column change. |
-
----
-
-### Type Definitions
-
-```ts
-export interface KanbanColumn {
-  id: string | number;
-  title: string;
-  titleI18n?: string; // Optional key for localization
-}
-
-export interface KanbanMoveEvent {
-  itemId: string | number;     // The ID of the item moved
-  item: any;                   // The full item data
-  fromColumnId: string | number;
-  toColumnId: string | number;
-  oldIndex: number;
-  newIndex: number;
-}
-```
+| `@item-moved` | `(itemId, toColumnId, newPosition, item)` | **The ultimate API event.** Emits the calculated fractional index when dropped. Perfect for updating the backend instantly. |
+| `@update:data` | `Record<string, any[]>` | Emitted when the manual `data` structure changes. |
+| `@move` | `KanbanMoveEvent` | High-level move event detailing `fromColumn`, `toColumn`, `oldIndex`, `newIndex`. |
 
 ---
 
 ### Implementation Guide
 
-#### 1. Basic Setup
+#### The Auto-Calculation Approach (Recommended)
+By supplying a flat array (`rawData`), the `<Kanban>` component fully abstracts away complex grouping watchers, map sorting, and the mathematical fractional indexing required to compute exact drag-and-drop placements (LexoRank style positioning).
+
 ```vue
 <script setup>
-import { ref } from 'vue'
 import { Kanban } from 'vlite3'
 
+// 1. Just fetch your flat array of tasks
+const data = [{ id: 1, title: 'Task A', status: 'todo', position: 1024 }]
 const columns = [{ id: 'todo', title: 'To Do' }, { id: 'done', title: 'Done' }]
-const boardData = ref({ todo: [{ id: 1, title: 'Task A' }], done: [] })
 
-const onMove = (e) => {
-  // Single consolidated event for your API
-  console.log(`Item ${e.itemId} moved from ${e.fromColumnId} to ${e.toColumnId}`)
+// 2. Map the @item-moved event directly to your API mutation
+const syncWithBackend = async (id, newStatus, newPosition) => {
+    await api.tasks.update(id, { status: newStatus, position: newPosition })
 }
 </script>
 
 <template>
-  <Kanban v-model:data="boardData" :columns="columns" @move="onMove" />
+  <Kanban 
+    :raw-data="data" 
+    group-key="status" 
+    position-key="position"
+    :columns="columns" 
+    @item-moved="syncWithBackend" 
+  />
 </template>
 ```
 
-#### 2. Advanced Customization (Slots)
-The Kanban component uses scoped slots for maximum UI flexibility.
-
+#### Slots Customization
 | Slot Name | Scoped Props | Usage |
 | :--- | :--- | :--- |
 | `column-header` | `{ column, pageInfo }` | Replace the entire header UI. |
@@ -86,13 +70,10 @@ The Kanban component uses scoped slots for maximum UI flexibility.
 | `item` | `{ item, column }` | **Crucial.** Customize the card design. |
 | `append-item` | `{ column, items }` | Add footers or summary info at the bottom. |
 
-
-
 ---
 
 ### Senior Engineer's Notes (Best Practices)
 
-1.  **Event Handling:** Always prefer `@move` over `@change`. `@change` triggers twice when moving between columns (one `remove`, one `add`). `@move` abstracts this complexity and provides a single payload suitable for database updates.
-2.  **Performance:** The board uses `v-memo` internally on items. Ensure your item data is as flat as possible for optimal re-rendering.
-3.  **Layout:** The Kanban container uses `overflow-x: auto`. Ensure the parent container has a defined height (e.g., `h-screen` or `h-[600px]`) to enable independent vertical scrolling for columns.
-4.  **Lazy Loading:** When using `loadData`, the component manages pagination state automatically. Ensure your backend returns the total page count to prevent unnecessary requests.
+1.  **Stop writing boilerplate:** Always prefer `:raw-data` and `@item-moved` over manually managing a `Record<string, any[]>` grouping state and computing next/prev positions manually.
+2.  **Optimistic UI Built-In:** The component manages its own internal reactivity on drops. It automatically updates the object locally so the UI feels instantaneous while your API call is being made.
+3.  **Performance:** The board uses `v-memo` internally on items and explicitly prevents parent state reactivity death-loops by shallow cloning your `rawData` input.
