@@ -1,175 +1,160 @@
 <script setup lang="ts">
 import { shallowRef } from 'vue'
-import { Kanban, type KanbanColumn, type KanbanLoadDataResult, type KanbanMoveEvent } from '@/components/Kanban'
+import { Kanban, type KanbanColumn, type KanbanLoadDataResult } from '@/components/Kanban'
 import Button from '@/components/Button.vue'
 import DemoSection from '../DemoSection.vue'
 import sourceCode from './KanbanDemo.vue?raw'
 
-// --- Demo 1: Basic ---
-const columns = shallowRef<KanbanColumn[]>([
-  { id: 'todo', title: 'To Do' },
-  { id: 'in-progress', title: 'In Progress' },
-  { id: 'done', title: 'Done' },
+// --- Demo 1: Auto-Calculation (Recommended Flat Array) ---
+const columnsFlat = shallowRef<KanbanColumn[]>([
+	{ id: 'todo', title: 'To Do' },
+	{ id: 'in-progress', title: 'In Progress' },
+	{ id: 'done', title: 'Done' },
 ])
 
-const data = shallowRef({
-  todo: Array.from({ length: 10 }).map((_, i) => ({
-    id: `t${i}`,
-    title: `Task Todo ${i + 1}`,
-    status: 'Pending',
-  })),
-  'in-progress': Array.from({ length: 5 }).map((_, i) => ({
-    id: `i${i}`,
-    title: `Task In Progress ${i + 1}`,
-    status: 'Active',
-  })),
-  done: Array.from({ length: 3 }).map((_, i) => ({
-    id: `d${i}`,
-    title: `Task Done ${i + 1}`,
-    status: 'Completed',
-  })),
-})
+const flatData = shallowRef([
+	{ id: 't1', title: 'Task 1', status: 'todo', position: 1024 },
+	{ id: 't2', title: 'Task 2', status: 'todo', position: 2048 },
+	{ id: 't3', title: 'Task 3', status: 'in-progress', position: 1024 },
+])
+
+const handleItemMoved = (itemId: string, newStatus: string, newPosition: number, item: any) => {
+	console.log(`🚀 API Sync: Update Item ${itemId}`, { status: newStatus, position: newPosition })
+	console.log(`Optimistic local item is already updated:`, item)
+}
 
 // --- Demo 2: Lazy Loading ---
 const columnsLazy = shallowRef<KanbanColumn[]>([
-  { id: 'backlog', title: 'Backlog' },
-  { id: 'review', title: 'Review' },
+	{ id: 'backlog', title: 'Backlog' },
+	{ id: 'review', title: 'Review' },
 ])
 
 const loadData = async (columnId: string | number, page: number): Promise<KanbanLoadDataResult> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const items = Array.from({ length: 10 }).map((_, i) => ({
-        id: `${columnId}-p${page}-${i}`,
-        title: `Task ${columnId} - Page ${page} - #${i + 1}`,
-      }))
-      resolve({
-        items,
-        pageInfo: {
-          currentPage: page,
-          totalPages: 3,
-          totalItems: 30,
-        },
-      })
-    }, 1000)
-  })
+	return new Promise((resolve) => {
+		setTimeout(() => {
+			const items = Array.from({ length: 10 }).map((_, i) => ({
+				id: `${columnId}-p${page}-${i}`,
+				title: `Task ${columnId} - Page ${page} - #${i + 1}`,
+			}))
+			resolve({
+				items,
+				pageInfo: {
+					currentPage: page,
+					totalPages: 3,
+					totalItems: 30,
+				},
+			})
+		}, 1000)
+	})
 }
 
-// --- Demo 3: Slots ---
+// --- Demo 3: Slots (Legacy grouped data usage) ---
 const columnsSlots = shallowRef<KanbanColumn[]>([
-  { id: 'ideas', title: 'Ideas' },
-  { id: 'drafts', title: 'Drafts' },
+	{ id: 'ideas', title: 'Ideas' },
+	{ id: 'drafts', title: 'Drafts' },
 ])
 
 const dataSlots = shallowRef({
-  ideas: [
-    { id: 'idea1', title: 'Add dark mode' },
-    { id: 'idea2', title: 'Improve accessibility' },
-  ],
-  drafts: [{ id: 'draft1', title: 'Release notes v2.0' }],
+	ideas: [
+		{ id: 'idea1', title: 'Add dark mode' },
+		{ id: 'idea2', title: 'Improve accessibility' },
+	],
+	drafts: [{ id: 'draft1', title: 'Release notes v2.0' }],
 })
 
-const handleChange = (e: any) => {
-  console.log('Low-level change:', e)
-}
-
-const handleMove = (e: KanbanMoveEvent) => {
-  console.log('🚀 Consolidated Move (Production Standard):', e)
-  // Here is where you would make your single API call:
-  // api.tasks.updateStatus(e.itemId, { columnId: e.toColumnId, position: e.newIndex })
-}
-
 const handleAddTask = (columnId: string | number) => {
-  alert(`Trigger add task for column: ${columnId}`)
+	alert(`Trigger add task for column: ${columnId}`)
 }
 </script>
 
 <template>
-  <div class="space-y-12 pb-20">
-    <div>
-      <h2 class="text-2xl font-bold text-gray-900">Kanban</h2>
-      <p class="mt-2 text-gray-500">
-        Production-ready drag and drop boards with pagination and lazy loading.
-      </p>
-    </div>
+	<div class="space-y-12 pb-20">
+		<div>
+			<h2 class="text-2xl font-bold text-gray-900">Kanban</h2>
+			<p class="mt-2 text-gray-500">
+				Production-ready drag and drop boards with pagination, intelligent positioning, and lazy loading.
+			</p>
+		</div>
 
-    <DemoSection title="Basic Kanban (Static Data)" :code="sourceCode">
-      <div class="h-[500px]">
-        <Kanban 
-          :columns="columns" 
-          v-model:data="data" 
-          @change="handleChange"
-          @move="handleMove"
-        >
-          <template #item="{ item }">
-            <div
-              class="bg-body p-3 rounded-lg shadow-sm border border-border cursor-grab active:cursor-grabbing hover:border-primary transition-colors">
-              <h4 class="font-medium text-sm text-foreground">{{ item.title }}</h4>
-              <div class="mt-2 text-xs text-muted-foreground">{{ item.status }}</div>
-            </div>
-          </template>
-        </Kanban>
-      </div>
-    </DemoSection>
+		<DemoSection title="Smart Board (Flat Array & Auto Calculate)" :code="sourceCode">
+			<div class="h-[500px]">
+				<Kanban 
+					:raw-data="flatData" 
+					group-key="status"
+					position-key="position"
+					:columns="columnsFlat" 
+					@item-moved="handleItemMoved"
+				>
+					<template #item="{ item }">
+						<div
+							class="bg-body p-3 rounded-lg shadow-sm border border-border cursor-grab active:cursor-grabbing hover:border-primary transition-colors flex flex-col gap-2">
+							<h4 class="font-medium text-sm text-foreground">{{ item.title }}</h4>
+							<div class="flex justify-between items-center text-xs text-muted-foreground">
+								<span>{{ item.status }}</span>
+								<span class="font-mono bg-muted/50 px-1 py-0.5 rounded">Pos: {{ item.position }}</span>
+							</div>
+						</div>
+					</template>
+				</Kanban>
+			</div>
+			<p class="mt-4 text-sm text-muted-foreground italic">
+				Try dragging tasks. Check the console to see the exact API payload. The Kanban handles fractional indexing math internally!
+			</p>
+		</DemoSection>
 
-    <DemoSection title="With Prepend & Append Slots" :code="sourceCode">
-      <div class="h-[500px]">
-        <Kanban
-          :columns="columnsSlots"
-          v-model:data="dataSlots"
-          group="slots-group"
-          @change="handleChange"
-          @move="handleMove">
-          <template #prepend-item="{ column }">
-            <div class="mb-3 px-1">
-              <Button
-                variant="outline"
-                size="sm"
-                class="w-full border-dashed text-muted-foreground hover:text-foreground hover:border-primary"
-                icon="lucide:plus"
-                @click="handleAddTask(column.id)">
-                Add Task
-              </Button>
-            </div>
-          </template>
+		<DemoSection title="With Prepend & Append Slots" :code="sourceCode">
+			<div class="h-[500px]">
+				<Kanban
+					:columns="columnsSlots"
+					v-model:data="dataSlots"
+					group="slots-group">
+					<template #prepend-item="{ column }">
+						<div class="mb-3 px-1">
+							<Button
+								variant="outline"
+								size="sm"
+								class="w-full border-dashed text-muted-foreground hover:text-foreground hover:border-primary"
+								icon="lucide:plus"
+								@click="handleAddTask(column.id)">
+								Add Task
+							</Button>
+						</div>
+					</template>
 
-          <template #item="{ item }">
-            <div
-              class="bg-body p-3 rounded-lg shadow-sm border border-border cursor-grab active:cursor-grabbing hover:border-primary transition-colors">
-              <h4 class="font-medium text-sm text-foreground">{{ item.title }}</h4>
-            </div>
-          </template>
+					<template #item="{ item }">
+						<div
+							class="bg-body p-3 rounded-lg shadow-sm border border-border cursor-grab active:cursor-grabbing hover:border-primary transition-colors">
+							<h4 class="font-medium text-sm text-foreground">{{ item.title }}</h4>
+						</div>
+					</template>
 
-          <template #append-item="{ items }">
-            <div
-              class="mt-4 pt-4 border-t border-border/50 text-center text-xs text-muted-foreground">
-              End of list ({{ items.length }} items)
-            </div>
-          </template>
-        </Kanban>
-      </div>
-    </DemoSection>
+					<template #append-item="{ items }">
+						<div
+							class="mt-4 pt-4 border-t border-border/50 text-center text-xs text-muted-foreground">
+							End of list ({{ items.length }} items)
+						</div>
+					</template>
+				</Kanban>
+			</div>
+		</DemoSection>
 
-    <DemoSection title="Lazy Loaded Columns (Infinite Scroll)" :code="sourceCode">
-      <div class="h-[500px]">
-        <Kanban
-          :columns="columnsLazy"
-          :load-data="loadData"
-          group="lazy-kanban"
-          @change="handleChange"
-          @move="handleMove">
-          <template #item="{ item }">
-            <div
-              class="bg-body p-3 rounded-lg shadow-sm border border-border cursor-grab active:cursor-grabbing hover:border-primary transition-colors">
-              <h4 class="font-medium text-sm text-foreground">{{ item.title }}</h4>
-            </div>
-          </template>
-        </Kanban>
-      </div>
-      <p class="mt-4 text-sm text-muted-foreground italic">
-        Scroll to the bottom of the Backlog or Review columns to trigger lazy loading of the next
-        page. Notice the minimal spinner at the bottom without shifting existing items.
-      </p>
-    </DemoSection>
-  </div>
+		<DemoSection title="Lazy Loaded Columns (Infinite Scroll)" :code="sourceCode">
+			<div class="h-[500px]">
+				<Kanban
+					:columns="columnsLazy"
+					:load-data="loadData"
+					group="lazy-kanban">
+					<template #item="{ item }">
+						<div
+							class="bg-body p-3 rounded-lg shadow-sm border border-border cursor-grab active:cursor-grabbing hover:border-primary transition-colors">
+							<h4 class="font-medium text-sm text-foreground">{{ item.title }}</h4>
+						</div>
+					</template>
+				</Kanban>
+			</div>
+			<p class="mt-4 text-sm text-muted-foreground italic">
+				Scroll to the bottom of the Backlog or Review columns to trigger lazy loading of the next page. Notice the minimal spinner at the bottom without shifting existing items.
+			</p>
+		</DemoSection>
+	</div>
 </template>
