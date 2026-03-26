@@ -181,6 +181,23 @@ const isFiltered = computed(() => {
   )
 })
 
+const hasData = computed(() => props.data && props.data.length > 0)
+
+// ── Screen state exposed to all slots ─────────────────────────────────────────
+const screenState = computed(() => ({
+  activeView: activeView.value,
+  searchQuery: searchQuery.value,
+  activeFilters: activeFilters.value,
+  activeQuickFilter: activeQuickFilter.value,
+  activeSort: activeSort.value,
+  page: internalPage.value,
+  limit: internalLimit.value,
+  selectedRows: selectedRows.value,
+  isFiltered: isFiltered.value,
+  hasData: hasData.value,
+  loading: props.loading,
+}))
+
 // ── Screen context provided to all descendants ────────────────────────────────
 const screenContext: ScreenContext = {
   disableSearch: true,
@@ -281,8 +298,6 @@ const triggerChange = () => {
 
   props.refetch(payload as any)
 }
-
-const hasData = computed(() => props.data && props.data.length > 0)
 
 // ── display helpers ───────────────────────────────────────────────────────────
 const txtDeleteSelected = computed(() => {
@@ -409,8 +424,10 @@ const handleBackendExport = async (format: string) => {
         :description-class="descriptionClass"
         :info="info"
         :info-i18n="infoI18n">
-        <template #title v-if="$slots.title"><slot name="title" /></template>
-        <template #description v-if="$slots.description"><slot name="description" /></template>
+        <template #title v-if="$slots.title"><slot name="title" v-bind="screenState" /></template>
+        <template #description v-if="$slots.description"
+          ><slot name="description" v-bind="screenState"
+        /></template>
       </ScreenHeaderTitle>
 
       <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2.5 w-full justify-end">
@@ -424,17 +441,12 @@ const handleBackendExport = async (format: string) => {
             :title="txtDeleteSelected"
             @click="requestDelete(selectedRows)" />
 
-          <!--
-            ScreenViewToggle: shows when there are multiple views available.
-            Passes the `views` array for dynamic multi-view support.
-            Falls back to legacy two-button mode when `views` is absent.
-          -->
           <ScreenViewToggle
             v-if="hasMultipleViews"
             v-model="activeView"
             :views="views && views.length > 0 ? views : undefined" />
 
-          <slot name="before-search" />
+          <slot name="before-search" v-bind="screenState" />
 
           <Button
             v-if="showRefresh"
@@ -466,7 +478,7 @@ const handleBackendExport = async (format: string) => {
         </div>
 
         <div class="flex items-center gap-3 max-sm:w-full sm:w-auto max-sm:order-last">
-          <slot name="actions">
+          <slot name="actions" v-bind="screenState">
             <ScreenAddAction
               :can-add="canAdd"
               :add-component="addComponent"
@@ -483,12 +495,12 @@ const handleBackendExport = async (format: string) => {
             :import-props="importProps"
             @select="handleDropdownSelect" />
 
-          <slot name="after-add" />
+          <slot name="after-add" v-bind="screenState" />
         </div>
       </div>
     </div>
-    <slot name="custom-header" v-else />
-    <slot name="sub-header" />
+    <slot name="custom-header" v-else v-bind="screenState" />
+    <slot name="sub-header" v-bind="screenState" />
     <div
       v-if="hasQuickFilters"
       class="-mt-1.5 max-sm:hidden!"
@@ -502,7 +514,7 @@ const handleBackendExport = async (format: string) => {
 
     <div class="flex-1 w-full relative" :class="containerClass">
       <template v-if="!hasData && !loading">
-        <slot name="empty" v-if="$slots.empty" />
+        <slot name="empty" v-if="$slots.empty" v-bind="screenState" />
         <ScreenEmptyState
           v-else
           :empty-title="emptyTitle"
@@ -516,10 +528,6 @@ const handleBackendExport = async (format: string) => {
           :add-btn="addBtn" />
       </template>
       <template v-else>
-        <!--
-          Slot-based views: fixed keys table / list / grid.
-          These receive the same scoped props as before for backward compatibility.
-        -->
         <slot
           v-if="activeSlotName === 'table'"
           name="table"
@@ -527,7 +535,8 @@ const handleBackendExport = async (format: string) => {
           :loading="loading"
           :selected-rows="selectedRows"
           :delete="requestDelete"
-          :update-selected-rows="(val: any[]) => (selectedRows = val)" />
+          :update-selected-rows="(val: any[]) => (selectedRows = val)"
+          v-bind="screenState" />
         <slot
           v-else-if="activeSlotName === 'list'"
           name="list"
@@ -535,7 +544,8 @@ const handleBackendExport = async (format: string) => {
           :loading="loading"
           :selected-rows="selectedRows"
           :delete="requestDelete"
-          :update-selected-rows="(val: any[]) => (selectedRows = val)" />
+          :update-selected-rows="(val: any[]) => (selectedRows = val)"
+          v-bind="screenState" />
         <slot
           v-else-if="activeSlotName === 'grid'"
           name="grid"
@@ -543,12 +553,9 @@ const handleBackendExport = async (format: string) => {
           :loading="loading"
           :selected-rows="selectedRows"
           :delete="requestDelete"
-          :update-selected-rows="(val: any[]) => (selectedRows = val)" />
+          :update-selected-rows="(val: any[]) => (selectedRows = val)"
+          v-bind="screenState" />
 
-        <!--
-          Component-based views: works for both dynamic `views` prop and legacy
-          `table` / `list` props (both normalised into resolvedViews).
-        -->
         <component
           :is="activeComponent"
           v-else-if="activeComponent"
