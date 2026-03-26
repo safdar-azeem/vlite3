@@ -103,11 +103,20 @@ const cancelPendingDelete = () => {
           <div
             v-if="message.attachments && message.attachments.length > 0"
             :class="{ 'mt-2': message.text }">
+            <!--
+              Minimal chat bubble attachment mode:
+              - clickToPreview: clicking the item opens preview (no eye icon)
+              - showDownloadInList: false — download icon removed from the list row
+              - canDownload: true — download remains available inside the preview modal
+            -->
             <AttachmentsList
               :attachments="message.attachments"
               variant="inline"
+              size="sm"
               :can-view="true"
-              :can-download="true" />
+              :can-download="true"
+              :click-to-preview="true"
+              :show-download-in-list="false" />
           </div>
 
           <div
