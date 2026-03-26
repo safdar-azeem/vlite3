@@ -27,7 +27,7 @@ const messages = ref<ChatMessage[]>([
   },
   {
     id: 2,
-    text: "I'm good! Just working on the new Chat component for vlite3. I have attached the latest design assets.",
+    text: '',
     senderId: 'user_1',
     senderName: 'Me',
     timestamp: new Date(Date.now() - 1000 * 60 * 5),
