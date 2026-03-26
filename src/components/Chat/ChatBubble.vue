@@ -89,7 +89,6 @@ const cancelPendingDelete = () => {
       <div
         class="relative flex items-center group/bubble"
         :class="isSender ? 'flex-row-reverse' : 'flex-row'">
-        <!-- Bubble -->
         <div
           class="px-3.5 py-2.5 rounded-2xl break-words relative min-w-[60px]"
           :class="[
@@ -101,7 +100,6 @@ const cancelPendingDelete = () => {
             {{ message.text }}
           </p>
 
-          <!-- Attachments rendered inline inside the bubble -->
           <div
             v-if="message.attachments && message.attachments.length > 0"
             :class="{ 'mt-2': message.text }">
@@ -120,11 +118,10 @@ const cancelPendingDelete = () => {
           </div>
         </div>
 
-        <!-- Action buttons (edit + delete) -->
         <div
           class="opacity-0 group-hover/bubble:opacity-100 focus-within:opacity-100 transition-opacity flex gap-1 px-2 pointer-events-none group-hover/bubble:pointer-events-auto focus-within:pointer-events-auto">
           <Button
-            v-if="isSender || allowEditAll"
+            v-if="(isSender || allowEditAll) && message.text?.trim()"
             variant="ghost"
             size="xs"
             icon="lucide:pencil"
@@ -133,7 +130,6 @@ const cancelPendingDelete = () => {
             @click="emit('edit', message)"
             aria-label="Edit message" />
 
-          <!-- Delete button: shows check icon when in pending-confirm state -->
           <template v-if="isSender || allowDeleteAll">
             <div class="relative flex items-center">
               <Button
@@ -144,7 +140,6 @@ const cancelPendingDelete = () => {
                 class="h-7 w-7 transition-colors"
                 @click="handleDeleteClick"
                 :aria-label="pendingDelete ? 'Confirm delete' : 'Delete message'" />
-              <!-- Small X to cancel pending delete -->
               <button
                 v-if="pendingDelete"
                 class="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 rounded-full bg-muted border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
