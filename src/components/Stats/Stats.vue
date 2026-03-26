@@ -9,6 +9,7 @@ const props = withDefaults(defineProps<StatsProps>(), {
   layout: 'icon-left',
   columns: 4,
   attached: false,
+  loading: false,
   titleSize: '',
   valueSize: '',
   iconSize: '',
@@ -32,7 +33,9 @@ const containerClass = computed(() => {
   // Transparent + attached: no outer borders — they would show as a visible line
   // since there is no background to blend them away.
   const attachedBorderClass =
-    props.attached && props.variant !== 'transparent' ? 'border-t border-l overflow-hidden' : 'overflow-hidden'
+    props.attached && props.variant !== 'transparent'
+      ? 'border-t border-l border-border overflow-hidden'
+      : 'overflow-hidden'
 
   return [
     'grid',
@@ -45,11 +48,8 @@ const containerClass = computed(() => {
 })
 
 const getItemClass = (item: StatItemSchema, index: number) => {
-  // inline-label-value: very compact single row — tighter padding
   const base =
-    props.layout === 'inline-label-value'
-      ? 'flex px-3.5 py-3 relative transition-all duration-200'
-      : 'flex p-3 relative transition-all duration-200'
+    props.layout === 'inline-label-value' ? 'flex px-3.5 py-3 relative ' : 'flex p-3 relative '
 
   const layoutClasses: Record<string, string> = {
     'icon-left': 'flex-row items-center gap-3 text-left',
@@ -73,15 +73,16 @@ const getItemClass = (item: StatItemSchema, index: number) => {
 
   if (props.attached) {
     // Per-variant background for attached mode
+    // Added border-border to ensure standard border coloring and prevent currentColor rendering bugs
     if (props.variant === 'transparent') {
       // No borders, no background — fully see-through
       variantClasses = 'border-b border-r border-transparent hover:bg-muted/30'
     } else if (props.variant === 'outline') {
       // outline attached: border dividers only, no background fill
-      variantClasses = 'border-b border-r hover:bg-muted/30'
+      variantClasses = 'border-b border-r border-border hover:bg-muted/30'
     } else {
       // shadow / solid attached: surface background
-      variantClasses = 'border-b border-r hover:bg-muted/30 bg-card'
+      variantClasses = 'border-b border-r border-border hover:bg-muted/30 bg-card'
     }
   } else {
     switch (props.variant) {
@@ -99,8 +100,8 @@ const getItemClass = (item: StatItemSchema, index: number) => {
         break
       }
       case 'outline':
-        // No explicit background — inherits from page so it stays transparent
-        variantClasses = 'border'
+        // Added explicit border-border for consistency
+        variantClasses = 'border border-border'
         break
       case 'shadow':
         variantClasses = 'bg-card shadow-md border border-border/50'
@@ -233,19 +234,17 @@ const getIconBoxStyle = (item: StatItemSchema) => {
       :key="item.id || index"
       :class="getItemClass(item, index)"
       :style="getItemStyle(item)">
-      <!-- ====== LAYOUT: title-top-icon-bottom-right ====== -->
       <template v-if="layout === 'title-top-icon-bottom-right'">
-        <!-- Title at top -->
         <h3 :class="titleSize || 'text-sm font-medium text-muted-foreground truncate w-full'">
           {{ item.titleI18n ? $t(item.titleI18n) : item.title }}
         </h3>
-        <!-- Bottom row: value left, icon right -->
         <div class="flex items-center justify-between w-full mt-1">
           <div>
-            <p :class="valueSize || 'text-2xl font-bold text-foreground truncate'">
+            <div v-if="loading" class="h-8 w-24 bg-gray-100 animate-pulse rounded-md"></div>
+            <p v-else :class="valueSize || 'text-2xl font-bold text-foreground truncate'">
               {{ item.value }}
             </p>
-            <div v-if="item.trend" class="mt-1 flex items-center gap-1 text-sm">
+            <div v-if="item.trend && !loading" class="mt-1 flex items-center gap-1 text-sm">
               <Icon
                 :icon="item.trend.isPositive ? 'lucide:trending-up' : 'lucide:trending-down'"
                 :class="item.trend.isPositive ? 'text-success' : 'text-danger'"
@@ -266,15 +265,15 @@ const getIconBoxStyle = (item: StatItemSchema) => {
         </div>
       </template>
 
-      <!-- ====== LAYOUT: centered-value-title (no icon) ====== -->
       <template v-else-if="layout === 'centered-value-title'">
-        <p :class="valueSize || 'text-3xl font-bold text-foreground'">
+        <div v-if="loading" class="h-9 w-24 bg-gray-100 animate-pulse rounded-md"></div>
+        <p v-else :class="valueSize || 'text-3xl font-bold text-foreground'">
           {{ item.value }}
         </p>
         <h3 :class="titleSize || 'text-sm font-medium text-muted-foreground'">
           {{ item.titleI18n ? $t(item.titleI18n) : item.title }}
         </h3>
-        <div v-if="item.trend" class="flex items-center gap-1 text-sm">
+        <div v-if="item.trend && !loading" class="flex items-center gap-1 text-sm">
           <Icon
             :icon="item.trend.isPositive ? 'lucide:trending-up' : 'lucide:trending-down'"
             :class="item.trend.isPositive ? 'text-success' : 'text-danger'"
@@ -287,7 +286,6 @@ const getIconBoxStyle = (item: StatItemSchema) => {
         </div>
       </template>
 
-      <!-- ====== LAYOUT: floating-icon (icon absolutely positioned top-right) ====== -->
       <template v-else-if="layout === 'floating-icon'">
         <div
           v-if="item.icon"
@@ -298,10 +296,11 @@ const getIconBoxStyle = (item: StatItemSchema) => {
         <h3 :class="titleSize || 'text-sm font-medium text-muted-foreground truncate pr-12'">
           {{ item.titleI18n ? $t(item.titleI18n) : item.title }}
         </h3>
-        <p :class="valueSize || 'text-2xl font-bold text-foreground truncate mt-1'">
+        <div v-if="loading" class="h-8 w-20 bg-gray-100 animate-pulse rounded-md mt-1"></div>
+        <p v-else :class="valueSize || 'text-2xl font-bold text-foreground truncate mt-1'">
           {{ item.value }}
         </p>
-        <div v-if="item.trend" class="mt-2 flex items-center gap-1.5 text-sm">
+        <div v-if="item.trend && !loading" class="mt-2 flex items-center gap-1.5 text-sm">
           <Icon
             :icon="item.trend.isPositive ? 'lucide:trending-up' : 'lucide:trending-down'"
             :class="item.trend.isPositive ? 'text-success' : 'text-danger'"
@@ -317,7 +316,6 @@ const getIconBoxStyle = (item: StatItemSchema) => {
         </div>
       </template>
 
-      <!-- ====== LAYOUT: split-bar (colored left border, stacked text, no icon) ====== -->
       <template v-else-if="layout === 'split-bar'">
         <div class="flex-1 flex flex-col justify-center min-w-0">
           <h3
@@ -327,10 +325,11 @@ const getIconBoxStyle = (item: StatItemSchema) => {
             ">
             {{ item.titleI18n ? $t(item.titleI18n) : item.title }}
           </h3>
-          <p :class="valueSize || 'text-3xl font-black text-foreground truncate mt-0.5'">
+          <div v-if="loading" class="h-9 w-24 bg-gray-100 animate-pulse rounded-md mt-0.5"></div>
+          <p v-else :class="valueSize || 'text-3xl font-black text-foreground truncate mt-0.5'">
             {{ item.value }}
           </p>
-          <div v-if="item.trend" class="mt-1 flex items-center gap-1 text-sm">
+          <div v-if="item.trend && !loading" class="mt-1 flex items-center gap-1 text-sm">
             <Icon
               :icon="item.trend.isPositive ? 'lucide:trending-up' : 'lucide:trending-down'"
               :class="item.trend.isPositive ? 'text-success' : 'text-danger'"
@@ -347,28 +346,25 @@ const getIconBoxStyle = (item: StatItemSchema) => {
         </div>
       </template>
 
-      <!-- ====== LAYOUT: inline-label-value (icon left, label next to it, value on far right) ====== -->
       <template v-else-if="layout === 'inline-label-value'">
-        <!-- Bare colored icon — no box background to keep row compact -->
         <Icon
           v-if="item.icon"
           :icon="item.icon"
           :class="[getInlineIconClass(item), iconSize || 'w-4.5 h-4.5']"
           :style="getInlineIconStyle(item)" />
-        <!-- Label -->
         <span
           :class="titleSize || '-text-fs-2 font-medium text-muted-foreground truncate'"
           class="flex-1 min-w-0">
           {{ item.titleI18n ? $t(item.titleI18n) : item.title }}
         </span>
-        <!-- Value pushed to the right -->
+        <div v-if="loading" class="h-6 w-8 bg-gray-100 animate-pulse rounded-sm shrink-0"></div>
         <span
+          v-else
           :class="valueSize || '-text-fs-1 font-semibold text-foreground tabular-nums shrink-0'">
           {{ item.value }}
         </span>
-        <!-- Optional compact trend badge -->
         <span
-          v-if="item.trend"
+          v-if="item.trend && !loading"
           class="shrink-0 flex items-center gap-0.5 text-xs font-medium"
           :class="item.trend.isPositive ? 'text-success-dark' : 'text-danger-dark'">
           <Icon
@@ -378,7 +374,6 @@ const getIconBoxStyle = (item: StatItemSchema) => {
         </span>
       </template>
 
-      <!-- ====== LAYOUTS: icon-left / icon-top / icon-right (original) ====== -->
       <template v-else>
         <div
           v-if="item.icon && layout !== 'icon-right'"
@@ -392,11 +387,12 @@ const getIconBoxStyle = (item: StatItemSchema) => {
             {{ item.titleI18n ? $t(item.titleI18n) : item.title }}
           </h3>
           <div class="flex items-baseline gap-2 mt-1">
-            <p :class="valueSize || 'text-2xl font-bold text-foreground truncate'">
+            <div v-if="loading" class="h-8 w-24 bg-gray-100 animate-pulse rounded-md"></div>
+            <p v-else :class="valueSize || 'text-2xl font-bold text-foreground truncate'">
               {{ item.value }}
             </p>
           </div>
-          <div v-if="item.trend" class="mt-2 flex items-center gap-1.5 text-sm">
+          <div v-if="item.trend && !loading" class="mt-2 flex items-center gap-1.5 text-sm">
             <Icon
               :icon="item.trend.isPositive ? 'lucide:trending-up' : 'lucide:trending-down'"
               :class="item.trend.isPositive ? 'text-success' : 'text-danger'"
