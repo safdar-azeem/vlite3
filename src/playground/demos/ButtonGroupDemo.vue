@@ -17,7 +17,6 @@ import sourceCode from './ButtonGroupDemo.vue?raw'
         <Button>Years</Button>
         <Button>Months</Button>
         <Button>Days</Button>
-        <Button icon="lucide:trash-2" />
       </ButtonGroup>
     </DemoSection>
 
