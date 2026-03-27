@@ -5,7 +5,7 @@ import { FilePreview } from '@/components/FilePreview'
 
 const mockAttachments = [
   {
-    fileName: 'invoice-2023.pdf',
+    fileName: '626182816_18093985156987193_1998335512335153763_n.jpg',
     fileSize: 1048576, // 1MB
     fileUrl:
       'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf',
