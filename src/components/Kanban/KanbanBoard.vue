@@ -81,8 +81,8 @@ const displayTitle = computed(() =>
 <template>
   <div
     :class="[
-      'flex flex-col bg-card rounded-lg overflow-hidden shrink-0 border border-border/60',
-      boardClass || 'w-80',
+      'flex flex-col bg-card rounded-lg overflow-hidden shrink-0 border border-border/50 w-full flex-1 min-w-75',
+      boardClass,
     ]">
     <div :class="['p-3 border-b border-border/80 ', headerClass]">
       <slot name="header" :column="column" :pageInfo="pageInfo">
