@@ -51,6 +51,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  // PERFORMANCE: memory leak prevention
   scrollRef.value?.removeEventListener('scroll', updateScrollState)
 })
 
@@ -112,13 +113,6 @@ const variantItemInactive: Record<NavbarTabsVariant, string> = {
   ghost: 'text-muted-foreground hover:text-foreground hover:bg-accent/50',
 }
 
-/**
- * Active check:
- * - If item.exact is set, require an exact path match.
- * - Otherwise use startsWith BUT also require that the next character
- *   after the matched prefix is either end-of-string or '/' or '?'.
- *   This prevents /button matching /buttongroup.
- */
 const isActive = (item: NavbarTabItem): boolean => {
   const current = route.path
   if (!item.to) return false
@@ -181,10 +175,13 @@ const getItemClasses = (item: NavbarTabItem): string => {
         'flex-1 overflow-x-auto scroll-smooth navbar-tabs-no-scrollbar',
         containerVariantClasses[variant],
       ]"
+      style="will-change: transform; contain: layout style;"
       aria-label="Page tabs">
+      
       <RouterLink
         v-for="(item, index) in items"
         :key="index"
+        v-memo="[item, isActive(item), item.disabled]"
         :ref="(el) => setItemRef(el, index)"
         :to="item.to || ''"
         role="tab"
