@@ -161,4 +161,10 @@ export interface ScreenProps {
    */
   defaultQuickFilter?: string | number
   quickFilterVariant?: TabesVariant
+  /**
+   * Array of view keys that should bypass the default empty state
+   * and always render their component even when there is no data.
+   * Useful for kanban boards or calendars where empty columns/grids are needed.
+   */
+  skipEmptyViews?: string[]
 }
