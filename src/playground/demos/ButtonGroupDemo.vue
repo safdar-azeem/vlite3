@@ -12,12 +12,48 @@ import sourceCode from './ButtonGroupDemo.vue?raw'
       <p class="text-gray-500">Group a series of buttons together on a single line.</p>
     </div>
 
-    <DemoSection title="Attached (Default)" :code="sourceCode">
+    <DemoSection title="Attached (Default Mixed)" :code="sourceCode">
       <ButtonGroup>
-        <Button>Years</Button>
-        <Button>Months</Button>
-        <Button>Days</Button>
+        <Button size="sm">Years</Button>
+        <Button size="sm">Months</Button>
+        <Button size="sm">Days</Button>
+        <Button size="sm" icon="lucide:settings" />
+        <Button size="sm" icon="lucide:arrow-down" />
       </ButtonGroup>
+    </DemoSection>
+    
+    <DemoSection title="Sizes (Icon Only Support)" :code="sourceCode">
+      <div class="space-y-4">
+        <div class="flex items-center gap-6">
+          <label class="w-16 text-sm text-gray-500">Small</label>
+          <ButtonGroup>
+            <Button size="sm" icon="lucide:align-left" />
+            <Button size="sm" icon="lucide:align-center" />
+            <Button size="sm" icon="lucide:align-right" />
+            <Button size="sm" icon="lucide:align-justify" />
+          </ButtonGroup>
+        </div>
+
+        <div class="flex items-center gap-6">
+          <label class="w-16 text-sm text-gray-500">Medium</label>
+          <ButtonGroup>
+            <Button size="md" icon="lucide:align-left" />
+            <Button size="md" icon="lucide:align-center" />
+            <Button size="md" icon="lucide:align-right" />
+            <Button size="md" icon="lucide:align-justify" />
+          </ButtonGroup>
+        </div>
+
+        <div class="flex items-center gap-6">
+          <label class="w-16 text-sm text-gray-500">Large</label>
+          <ButtonGroup>
+            <Button size="lg" icon="lucide:align-left" />
+            <Button size="lg" icon="lucide:align-center" />
+            <Button size="lg" icon="lucide:align-right" />
+            <Button size="lg" icon="lucide:align-justify" />
+          </ButtonGroup>
+        </div>
+      </div>
     </DemoSection>
 
     <DemoSection title="Detached" :code="sourceCode">
