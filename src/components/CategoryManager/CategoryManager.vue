@@ -264,6 +264,13 @@ provide<CategoryManagerContext>('categoryManager', {
   deleteItem: handleDelete,
   readonly: computed(() => props.readonly),
 })
+
+// Focus directive to handle conditional rendering
+const vFocus = {
+  mounted: (el: HTMLElement) => {
+    setTimeout(() => el.focus(), 10)
+  }
+}
 </script>
 
 <template>
@@ -304,7 +311,7 @@ provide<CategoryManagerContext>('categoryManager', {
       </Button>
     </div>
 
-    <div v-else class="w-full">
+    <div v-else class="w-full tree-wrapper scrollable-container" style="will-change: transform; contain: layout style;">
       <CategoryNode
         :modelValue="internalData"
         @update:modelValue="handleRootUpdate"
@@ -312,42 +319,44 @@ provide<CategoryManagerContext>('categoryManager', {
 
       <div
         v-if="inlineState.mode === 'add-root'"
-        class="flex items-center gap-2 py-1 px-2 bg-transparent w-full mt-2">
+        class="flex items-center gap-1.5 py-1.5 px-2 bg-background border border-border shadow-sm rounded-lg w-full mt-2">
         <IconPicker
           v-model="inlineState.icon"
-          :btn-props="{ variant: 'ghost', size: 'sm', class: 'h-8 w-8 p-0 text-muted-foreground hover:text-foreground shrink-0 rounded-md' }"
+          :btn-props="{ variant: 'ghost', size: 'xs', class: 'h-7 w-7 p-0 text-muted-foreground hover:text-foreground shrink-0 rounded-md' }"
           position="bottom-start" />
         <input
+          v-focus
           v-model="inlineState.title"
-          class="flex-1 bg-transparent border-0 border-b border-primary/40 focus:border-primary outline-none focus:ring-0 px-1 py-1 text-sm transition-colors w-full rounded-none shadow-none"
+          class="flex-1 bg-transparent border-0 outline-none focus:ring-0 px-1 py-1 text-sm transition-colors w-full shadow-none caret-primary text-foreground placeholder:text-muted-foreground"
           placeholder="New root category..."
-          autofocus
           @keyup.enter="saveInline"
           @keyup.esc="cancelInline" />
         <Button
           variant="primary"
-          size="sm"
+          size="xs"
           icon="lucide:check"
-          class="shrink-0 h-8 w-8 px-0"
+          class="shrink-0 h-7 w-7 px-0"
           title="Save"
           @click="saveInline" />
         <Button
           variant="ghost"
-          size="sm"
+          size="xs"
           icon="lucide:x"
-          class="shrink-0 h-8 w-8 px-0"
+          class="shrink-0 h-7 w-7 px-0"
           title="Cancel"
           @click="cancelInline" />
       </div>
     </div>
 
     <Modal v-model:show="isModalOpen" :title="modalTitle" max-width="max-w-md">
-      <Form
-        :schema="activeSchema"
-        :values="formValues"
-        :isUpdate="modalMode === 'edit'"
-        submitText="Save Details"
-        @onSubmit="handleFormSubmit" />
+      <div class="modal-body" style="will-change: transform; contain: layout style;">
+        <Form
+          :schema="activeSchema"
+          :values="formValues"
+          :isUpdate="modalMode === 'edit'"
+          submitText="Save Details"
+          @onSubmit="handleFormSubmit" />
+      </div>
     </Modal>
   </div>
 </template>
