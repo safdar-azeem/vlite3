@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted, useSlots, provide, watch } from 'vue'
+import { computed, ref, shallowRef, onMounted, onUnmounted, useSlots, provide, watch, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import { useBreakpoints, breakpointsTailwind, onClickOutside, useLocalStorage } from '@vueuse/core'
 import Icon from '../Icon.vue'
@@ -36,9 +36,6 @@ const props = withDefaults(defineProps<NavbarProps>(), {
   breadcrumbHomeIcon: 'lucide:home',
   breadcrumbPosition: 'header',
   breadcrumbClass: '',
-  // New: controls layout mode style
-  // 'classic' = old behavior (header full width top, sidebar+main below)
-  // 'sidebar-first' = sidebar full height left, header+main on right
   layoutMode: 'sidebar-first',
 })
 
@@ -50,7 +47,8 @@ const breadcrumbData = props.breadcrumb
     })
   : { items: computed(() => []) }
 
-const nestedTabsItems = ref<NavbarTabItem[]>([])
+// PERFORMANCE: Use shallowRef for large datasets that are completely replaced
+const nestedTabsItems = shallowRef<NavbarTabItem[]>([])
 const activeNestedTab = ref<string | number>('')
 
 provide('navbar-context', {
@@ -71,6 +69,8 @@ const isScrolled = ref(false)
 const slots = useSlots()
 const mobileMenuRef = ref<HTMLElement | null>(null)
 const mobileTriggerRef = ref<HTMLElement | null>(null)
+const mainScrollRef = ref<HTMLElement | null>(null)
+const layoutMainRef = ref<HTMLElement | null>(null)
 
 // Sidebar visibility state — persisted in localStorage
 const isSidebarVisible = useLocalStorage<boolean>('vlite-navbar-sidebar-visible', true)
@@ -115,6 +115,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  // PERFORMANCE: Prevent memory leaks
   window.removeEventListener('scroll', handleScroll)
 })
 
@@ -131,9 +132,11 @@ const containerClasses = computed(() => {
 
   const base = 'bg-body'
 
+  // PERFORMANCE: Avoid backdrop-filter: blur() as it forces full-frame GPU composites.
+  // Using plain semi-transparent backgrounds instead.
   const effects = [
     props.glass && (isScrolled.value || isSidebar || props.floating)
-      ? 'backdrop-blur-md bg-background/80 supports-[backdrop-filter]:bg-background/60'
+      ? 'bg-background/95' 
       : 'bg-background',
     props.border && !props.floating
       ? isSidebar
@@ -237,6 +240,18 @@ watch(
   () => route.path,
   () => {
     isMobileMenuOpen.value = false
+    nextTick(() => {
+      // Reset scroll position on route change
+      if (mainScrollRef.value) {
+        mainScrollRef.value.scrollTop = 0
+        if (mainScrollRef.value.firstElementChild) {
+          (mainScrollRef.value.firstElementChild as HTMLElement).scrollTop = 0
+        }
+      }
+      if (layoutMainRef.value) {
+        layoutMainRef.value.scrollTop = 0
+      }
+    })
   }
 )
 
@@ -261,21 +276,9 @@ const isSidebarFirst = computed(() => {
 </script>
 
 <template>
-  <!--
-    ============================================================
-    LAYOUT MODE — SIDEBAR FIRST
-    Sidebar spans full height on the left.
-    Header + Main are stacked on the right.
-    ============================================================
-  -->
   <div
     v-if="isSidebarFirst"
     class="vlite-app-layout flex flex-row w-full h-full bg-body overflow-hidden">
-    <!--
-      SIDEBAR — full height, left edge
-      Hidden on mobile (SidePanel handles mobile nav)
-      Collapses via sidebarToggle
-    -->
     <Transition
       enter-active-class="transition-all duration-300 ease-in-out"
       leave-active-class="transition-all duration-300 ease-in-out"
@@ -292,14 +295,13 @@ const isSidebarFirst = computed(() => {
         ]"
         role="navigation"
         aria-label="Sidebar">
-        <!-- Sidebar scrollable content (default slot) -->
         <div
           class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-stable"
+          style="will-change: transform; contain: layout style;"
           :class="props.contentClass">
           <slot />
         </div>
 
-        <!-- Sidebar bottom pinned footer (right slot) -->
         <div
           v-if="$slots.right"
           class="shrink-0 border-t border-border bg-background"
@@ -309,11 +311,7 @@ const isSidebarFirst = computed(() => {
       </nav>
     </Transition>
 
-    <!--
-      RIGHT COLUMN — header on top, main content below
-    -->
     <div class="flex flex-col flex-1 min-w-0 h-full overflow-hidden">
-      <!-- HEADER — spans only the right column -->
       <header v-if="$slots.header" class="w-full shrink-0 z-20 bg-background">
         <slot
           name="header"
@@ -324,9 +322,9 @@ const isSidebarFirst = computed(() => {
           :breadcrumb-items="breadcrumbData.items.value" />
       </header>
 
-      <!-- MAIN CONTENT -->
       <main
         v-if="$slots.main"
+        ref="layoutMainRef"
         class="flex-1 overflow-y-auto w-full relative h-full flex flex-col min-h-0 scrollbar-thin scrollbar-stable">
         <div v-if="props.renderNestedTabs && nestedTabsItems.length > 0" class="shrink-0 w-full">
           <NavbarTabs
@@ -348,13 +346,15 @@ const isSidebarFirst = computed(() => {
             :separator="props.breadcrumbSeparator"
             :size="props.breadcrumbSize" />
         </div>
-        <div class="flex-1 overflow-y-auto w-full relative h-full scrollbar-thin scrollbar-stable">
+        <div
+          ref="mainScrollRef"
+          style="will-change: transform; contain: layout style;"
+          class="flex-1 overflow-y-auto w-full relative h-full scrollbar-thin scrollbar-stable">
           <slot name="main" />
         </div>
       </main>
     </div>
 
-    <!-- Mobile SidePanel drawer (below breakpoint) -->
     <SidePanel
       v-model:show="isMobileMenuOpen"
       position="left"
@@ -378,12 +378,6 @@ const isSidebarFirst = computed(() => {
     </SidePanel>
   </div>
 
-  <!--
-    ============================================================
-    LAYOUT MODE — CLASSIC (original behavior)
-    Header full width on top, sidebar + main below.
-    ============================================================
-  -->
   <div
     v-else-if="isLayoutMode"
     class="vlite-app-layout flex flex-col w-full h-full bg-body overflow-hidden">
@@ -486,6 +480,7 @@ const isSidebarFirst = computed(() => {
 
       <main
         v-if="$slots.main"
+        ref="layoutMainRef"
         class="flex-1 overflow-y-auto w-full relative h-full flex flex-col scrollbar-thin scrollbar-stable">
         <div v-if="props.renderNestedTabs && nestedTabsItems.length > 0" class="shrink-0 w-full">
           <NavbarTabs
@@ -507,7 +502,10 @@ const isSidebarFirst = computed(() => {
             :separator="props.breadcrumbSeparator"
             :size="props.breadcrumbSize" />
         </div>
-        <div class="flex-1 overflow-y-auto w-full relative h-full scrollbar-thin scrollbar-stable">
+        <div
+          ref="mainScrollRef"
+          style="will-change: transform; contain: layout style;"
+          class="flex-1 overflow-y-auto w-full relative h-full scrollbar-thin scrollbar-stable">
           <slot name="main" />
         </div>
       </main>
@@ -518,7 +516,7 @@ const isSidebarFirst = computed(() => {
           ref="mobileMenuRef"
           class="absolute top-[calc(100%_+_1px)] left-0 w-full bg-body border border-border/50 shadow-xl z-50 flex flex-col transition-all duration-300 origin-top overflow-hidden will-change-transform"
           :class="props.menuClass">
-          <div class="flex flex-col max-h-[80vh] overflow-y-auto scrollbar-thin">
+          <div class="flex flex-col max-h-[80vh] overflow-y-auto scrollbar-thin" style="will-change: transform; contain: layout style;">
             <slot name="mobile-menu">
               <div class="space-y-1 p-2">
                 <slot name="left" />
@@ -571,11 +569,6 @@ const isSidebarFirst = computed(() => {
     </div>
   </div>
 
-  <!--
-    ============================================================
-    STANDALONE NAV (no layout mode)
-    ============================================================
-  -->
   <nav v-else :class="containerClasses" role="navigation">
     <template v-if="variant === 'header'">
       <div class="flex items-center gap-4 shrink-0 z-10">
@@ -653,7 +646,7 @@ const isSidebarFirst = computed(() => {
         ref="mobileMenuRef"
         class="absolute top-[calc(100%_+_1px)] left-0 w-full bg-body border border-border/50 shadow-xl z-50 flex flex-col transition-all duration-300 origin-top overflow-hidden will-change-transform"
         :class="props.menuClass">
-        <div class="flex flex-col max-h-[80vh] overflow-y-auto scrollbar-thin">
+        <div class="flex flex-col max-h-[80vh] overflow-y-auto scrollbar-thin" style="will-change: transform; contain: layout style;">
           <slot name="mobile-menu">
             <div class="space-y-1 p-2">
               <slot name="left" />
