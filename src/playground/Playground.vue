@@ -104,6 +104,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Heatmap', to: '/heatmap', icon: 'lucide:activity' },
       { label: 'File Tree', to: '/filetree', icon: 'lucide:folder-tree' },
       { label: 'Kanban', to: '/kanban', icon: 'lucide:kanban' },
+      { label: 'Category Manager', to: '/categorymanager', icon: 'lucide:folder-tree' },
       { label: 'Workbook', to: '/workbook', icon: 'lucide:folder-edit' },
       { label: 'Carousel', to: '/carousel', icon: 'lucide:gallery-horizontal' },
       { label: 'Breadcrumb', to: '/breadcrumb', icon: 'lucide:chevrons-right' },
