@@ -46,10 +46,10 @@ export interface ScreenQuickFilter {
  *
  * @example
  * :views="[
- *   { key: 'table',    component: UserTable,    icon: 'lucide:list',         label: 'Table' },
- *   { key: 'list',     component: UserList,     icon: 'lucide:layout-grid',  label: 'Grid' },
- *   { key: 'kanban',   component: UserKanban,   icon: 'lucide:kanban',       label: 'Kanban' },
- *   { key: 'calendar', component: UserCalendar, icon: 'lucide:calendar',     label: 'Calendar' },
+ * { key: 'table',    component: UserTable,    icon: 'lucide:list',         label: 'Table' },
+ * { key: 'list',     component: UserList,     icon: 'lucide:layout-grid',  label: 'Grid' },
+ * { key: 'kanban',   component: UserKanban,   icon: 'lucide:kanban',       label: 'Kanban' },
+ * { key: 'calendar', component: UserCalendar, icon: 'lucide:calendar',     label: 'Calendar' },
  * ]"
  */
 export interface ScreenView {
@@ -121,9 +121,9 @@ export interface ScreenProps {
    *
    * @example
    * :views="[
-   *   { key: 'table',    component: UserTable,    icon: 'lucide:list',        label: 'Table' },
-   *   { key: 'kanban',   component: UserKanban,   icon: 'lucide:kanban',      label: 'Kanban' },
-   *   { key: 'calendar', component: UserCalendar, icon: 'lucide:calendar',    label: 'Calendar' },
+   * { key: 'table',    component: UserTable,    icon: 'lucide:list',        label: 'Table' },
+   * { key: 'kanban',   component: UserKanban,   icon: 'lucide:kanban',      label: 'Kanban' },
+   * { key: 'calendar', component: UserCalendar, icon: 'lucide:calendar',    label: 'Calendar' },
    * ]"
    */
   views?: ScreenView[]
@@ -146,6 +146,11 @@ export interface ScreenProps {
    * Inspired by modern dashboards (Shopify, Linear, Vercel).
    */
   quickFilters?: ScreenQuickFilter[]
+  /**
+   * Optional array of view keys (e.g., ['table', 'list']) where quick filters should be visible.
+   * If omitted, quick filters are shown on all views.
+   */
+  quickFilterViews?: string[]
   /**
    * The key used to inject the active quick filter into the refetch filter payload.
    * Defaults to 'status'.
