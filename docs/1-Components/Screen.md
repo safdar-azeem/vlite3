@@ -65,6 +65,7 @@ Alternatively, you can provide layouts via the `#table`, `#list`, and `#grid` sl
 | `viewProps`            | `Record<string,any>`            | `{}`                                                                     | Additional props forwarded to the active view component.                                                                                                                                                           |
 | `hideSelectable`       | `boolean`                       | `false`                                                                  | Hides the row-selection checkbox and bulk-delete button.                                                                                                                                                           |
 | `hideDeleteBtn`        | `boolean`                       | `true`                                                                   | Show/hide the bulk delete button when rows are selected.                                                                                                                                                           |
+| `skipEmptyViews`       | `string[]`                      | `[]`                                                                     | Array of view keys that should bypass the default empty state and always render their component even when there is no data. Useful for kanban boards or calendars where empty columns/grids are needed.            |
 
 ---
 
@@ -204,4 +205,3 @@ refetch({
 | :------- | :------ | :---------------------------------------------------------------- |
 | `add`    | —       | Emitted when the default Add is clicked (no `addBtn` configured). |
 | `delete` | `any[]` | Emitted after the user confirms bulk/row deletion.                |
-
