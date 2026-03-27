@@ -221,7 +221,12 @@ const hasListActions = computed(() => showViewAction.value || showDownloadAction
             itemClass,
           ]"
           @click="openPreview(index)">
-          <div class="flex items-center gap-3 overflow-hidden min-w-0">
+          <!--
+            min-w-0 on this wrapper is required so the flex child (text column)
+            can actually shrink and allow `truncate` to kick in.
+            overflow-hidden ensures nothing bleeds out of the row bounds.
+          -->
+          <div class="flex items-center gap-3 overflow-hidden min-w-0 flex-1">
             <!-- vl-attachments-list__item-icon-box: icon/thumbnail container -->
             <div
               class="vl-attachments-list__item-icon-box flex items-center justify-center shrink-0 overflow-hidden relative"
@@ -240,10 +245,16 @@ const hasListActions = computed(() => showViewAction.value || showDownloadAction
                 :class="[sizeClasses.icon, variant === 'inline' ? 'opacity-75' : 'text-primary']" />
             </div>
 
+            <!--
+              min-w-0 here is the key: a flex child in a flex row won't shrink
+              below its content size unless min-w-0 is set, which means `truncate`
+              on the child span has no room to work. With min-w-0 the column
+              can shrink freely and truncation happens correctly.
+            -->
             <div class="flex flex-col overflow-hidden leading-tight min-w-0">
               <!-- vl-attachments-list__item-name: file name text -->
               <span
-                class="vl-attachments-list__item-name font-medium truncate"
+                class="vl-attachments-list__item-name font-medium truncate block"
                 :class="[
                   sizeClasses.text,
                   variant === 'inline' ? '' : 'text-foreground',
