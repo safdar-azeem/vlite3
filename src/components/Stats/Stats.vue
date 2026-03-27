@@ -240,7 +240,7 @@ const getIconBoxStyle = (item: StatItemSchema) => {
         </h3>
         <div class="flex items-center justify-between w-full mt-1">
           <div>
-            <div v-if="loading" class="h-8 w-24 bg-gray-100 animate-pulse rounded-md"></div>
+            <div v-if="loading" class="h-8 w-24 bg-gray-50 animate-pulse rounded-md"></div>
             <p v-else :class="valueSize || 'text-2xl font-bold text-foreground truncate'">
               {{ item.value }}
             </p>
@@ -266,7 +266,7 @@ const getIconBoxStyle = (item: StatItemSchema) => {
       </template>
 
       <template v-else-if="layout === 'centered-value-title'">
-        <div v-if="loading" class="h-9 w-24 bg-gray-100 animate-pulse rounded-md"></div>
+        <div v-if="loading" class="h-9 w-24 bg-gray-50 animate-pulse rounded-md"></div>
         <p v-else :class="valueSize || 'text-3xl font-bold text-foreground'">
           {{ item.value }}
         </p>
@@ -296,7 +296,7 @@ const getIconBoxStyle = (item: StatItemSchema) => {
         <h3 :class="titleSize || 'text-sm font-medium text-muted-foreground truncate pr-12'">
           {{ item.titleI18n ? $t(item.titleI18n) : item.title }}
         </h3>
-        <div v-if="loading" class="h-8 w-20 bg-gray-100 animate-pulse rounded-md mt-1"></div>
+        <div v-if="loading" class="h-8 w-20 bg-gray-50 animate-pulse rounded-md mt-1"></div>
         <p v-else :class="valueSize || 'text-2xl font-bold text-foreground truncate mt-1'">
           {{ item.value }}
         </p>
@@ -325,7 +325,7 @@ const getIconBoxStyle = (item: StatItemSchema) => {
             ">
             {{ item.titleI18n ? $t(item.titleI18n) : item.title }}
           </h3>
-          <div v-if="loading" class="h-9 w-24 bg-gray-100 animate-pulse rounded-md mt-0.5"></div>
+          <div v-if="loading" class="h-9 w-24 bg-gray-50 animate-pulse rounded-md mt-0.5"></div>
           <p v-else :class="valueSize || 'text-3xl font-black text-foreground truncate mt-0.5'">
             {{ item.value }}
           </p>
@@ -357,7 +357,7 @@ const getIconBoxStyle = (item: StatItemSchema) => {
           class="flex-1 min-w-0">
           {{ item.titleI18n ? $t(item.titleI18n) : item.title }}
         </span>
-        <div v-if="loading" class="h-6 w-8 bg-gray-100 animate-pulse rounded-sm shrink-0"></div>
+        <div v-if="loading" class="h-6 w-5 bg-gray-50 animate-pulse rounded-sm shrink-0"></div>
         <span
           v-else
           :class="valueSize || '-text-fs-1 font-semibold text-foreground tabular-nums shrink-0'">
@@ -387,7 +387,7 @@ const getIconBoxStyle = (item: StatItemSchema) => {
             {{ item.titleI18n ? $t(item.titleI18n) : item.title }}
           </h3>
           <div class="flex items-baseline gap-2 mt-1">
-            <div v-if="loading" class="h-8 w-24 bg-gray-100 animate-pulse rounded-md"></div>
+            <div v-if="loading" class="h-8 w-24 bg-gray-50 animate-pulse rounded-md"></div>
             <p v-else :class="valueSize || 'text-2xl font-bold text-foreground truncate'">
               {{ item.value }}
             </p>
