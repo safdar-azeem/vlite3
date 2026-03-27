@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted, shallowRef } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted, shallowRef, markRaw } from 'vue'
 import Icon from './Icon.vue'
 import Modal from './Modal.vue'
 import { CommandPaletteContent } from './CommandPalette'
@@ -62,7 +62,9 @@ const close = () => {
 
 const handleOpenDynamicModal = (body: any, modalProps: any) => {
   close()
-  activeModalBody.value = body
+  // PERFORMANCE: markRaw strictly enforces that nested components 
+  // do not trigger recursive reactivity trees.
+  activeModalBody.value = body ? markRaw(body) : null
   activeModalProps.value = modalProps || {}
   isDynamicModalOpen.value = true
 }
@@ -84,6 +86,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  // PERFORMANCE: memory leak prevention
   window.removeEventListener('keydown', handleGlobalKeydown)
 })
 
