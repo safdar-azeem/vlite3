@@ -21,6 +21,8 @@ export interface CategoryManagerProps {
   emptyTitle?: string
   /** Description for the empty state */
   emptyDescription?: string
+  /** Size modifier for the category nodes */
+  size?: 'sm' | 'md' | 'lg'
 }
 
 export interface InlineState {
@@ -48,4 +50,5 @@ export interface CategoryManagerContext {
   ) => void
   deleteItem: (item: CategoryItem) => void
   readonly: ComputedRef<boolean>
+  size: ComputedRef<'sm' | 'md' | 'lg'>
 }
