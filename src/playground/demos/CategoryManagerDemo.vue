@@ -91,6 +91,7 @@ const logEvent = (type: string, payload: any) => {
             without wasting space if they lack subcategories.
           </p>
           <CategoryManager
+            size="md"
             v-model="categoryData"
             :formSchema="customFormSchema"
             @onAdd="(item) => logEvent('Added', item)"
