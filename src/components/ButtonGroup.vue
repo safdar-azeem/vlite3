@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, provide } from 'vue'
+import { computed } from 'vue'
 import type { ButtonGroupDirection, ButtonVariant, ButtonSize } from '@/types'
 
 interface Props {
@@ -17,8 +17,6 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const isVertical = computed(() => props.direction === 'vertical')
-
-provide('buttonGroup', { isInGroup: true })
 </script>
 
 <template>
@@ -26,7 +24,7 @@ provide('buttonGroup', { isInGroup: true })
     role="group"
     :class="[
       'inline-flex button-group',
-      isVertical ? 'flex-col' : 'flex-row',
+      isVertical ? 'flex-col items-stretch' : 'flex-row items-center',
       props.class,
       attached ? 'attached-group' : 'gap-2',
       attached && isVertical ? 'vertical-group' : '',
@@ -36,24 +34,9 @@ provide('buttonGroup', { isInGroup: true })
 </template>
 
 <style scoped>
-/* Normalize icon-only buttons to match text button height inside a group */
-.button-group :deep(button) {
-  align-self: stretch;
-  height: auto !important;
-  min-height: unset !important;
-  min-width: unset !important;
-  width: auto !important;
-}
-
-/* For icon-only buttons in a horizontal group, constrain width to be square based on height */
-.button-group:not(.vertical-group) :deep(button) {
-  aspect-ratio: unset;
-}
-
 /* GENERAL SHARED */
 .attached-group :deep(button) {
   position: relative;
-  --radius: 0.375rem;
 }
 .attached-group :deep(button:focus-visible),
 .attached-group :deep(button:hover) {
@@ -66,42 +49,36 @@ provide('buttonGroup', { isInGroup: true })
 }
 
 /* Rounded corners - Horizontal */
+/* We use !important here so that if the user applies a `rounded-full` prop to the button, 
+   the inner edges are properly squared off, while the outer edges remain perfectly rounded! */
 .attached-group:not(.vertical-group) :deep(button:first-child) {
-  border-top-left-radius: var(--radius);
-  border-bottom-left-radius: var(--radius);
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
 }
 .attached-group:not(.vertical-group) :deep(button:not(:first-child):not(:last-child)) {
-  border-radius: 0;
+  border-radius: 0 !important;
 }
 .attached-group:not(.vertical-group) :deep(button:last-child) {
-  border-top-right-radius: var(--radius);
-  border-bottom-right-radius: var(--radius);
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
 }
 
-/* Vertical */
+/* VERTICAL */
 .vertical-group :deep(button:not(:first-child)) {
   margin-top: -1px;
 }
 
 /* Rounded corners - Vertical */
 .vertical-group :deep(button:first-child) {
-  border-top-left-radius: var(--radius);
-  border-top-right-radius: var(--radius);
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
 }
 .vertical-group :deep(button:not(:first-child):not(:last-child)) {
-  border-radius: 0;
+  border-radius: 0 !important;
 }
 .vertical-group :deep(button:last-child) {
-  border-bottom-left-radius: var(--radius);
-  border-bottom-right-radius: var(--radius);
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
 }
 
 /* --- DIVIDERS FOR SOLID VARIANTS --- */
