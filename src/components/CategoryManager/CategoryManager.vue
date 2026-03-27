@@ -14,6 +14,7 @@ const props = withDefaults(defineProps<CategoryManagerProps>(), {
   readonly: false,
   emptyTitle: 'No Categories Found',
   emptyDescription: 'Get started by creating your first category.',
+  size: 'md',
 })
 
 const emit = defineEmits<{
@@ -263,6 +264,7 @@ provide<CategoryManagerContext>('categoryManager', {
   openModalForm,
   deleteItem: handleDelete,
   readonly: computed(() => props.readonly),
+  size: computed(() => props.size),
 })
 
 // Focus directive to handle conditional rendering
