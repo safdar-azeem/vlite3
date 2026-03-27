@@ -38,10 +38,17 @@ const onChange = () => emit('change')
 const isReadonly = computed(() => ctx?.readonly.value || false)
 
 const nodeTextClass = computed(() => {
+  // Consistent color for all subcategories, varying only in font weight
   if (props.level === 0) return 'text-sm font-semibold text-foreground'
-  if (props.level === 1) return 'text-sm font-medium text-gray-800 dark:text-gray-200'
-  return 'text-sm text-gray-600 dark:text-gray-400'
+  return 'text-sm font-medium text-foreground'
 })
+
+// Custom focus directive to ensure reliable focus when nested inputs appear
+const vFocus = {
+  mounted: (el: HTMLElement) => {
+    setTimeout(() => el.focus(), 10)
+  },
+}
 </script>
 
 <template>
@@ -54,10 +61,23 @@ const nodeTextClass = computed(() => {
     :disabled="isReadonly"
     class="min-h-[2px]"
     @change="onChange">
-    <div v-for="item in internalList" :key="item.id" class="mb-1.5 flex flex-col">
+    <div
+      v-for="item in internalList"
+      :key="item.id"
+      class="mb-1.5 flex flex-col"
+      v-memo="[
+        item.id,
+        item.title,
+        item.icon,
+        item.children?.length,
+        ctx?.expandedIds.value.has(item.id),
+        ctx?.inlineState.value.targetId === item.id,
+        ctx?.inlineState.value.mode,
+        isReadonly,
+      ]">
       <div
-        class="group flex items-center justify-between p-2 rounded-lg transition-colors bg-background dark:bg-card hover:bg-muted/30 border border-border shadow-sm">
-        <div class="flex items-center gap-2 overflow-hidden flex-1">
+        class="group flex items-center justify-between p-1.5 md:p-2 rounded-lg transition-colors bg-background dark:bg-card border border-border shadow-sm">
+        <div class="flex items-center gap-1.5 overflow-hidden flex-1">
           <button
             v-if="item.children && item.children.length > 0"
             @click="ctx?.toggleExpand(item.id)"
@@ -71,7 +91,7 @@ const nodeTextClass = computed(() => {
 
           <div
             v-if="!isReadonly"
-            class="drag-handle cursor-grab active:cursor-grabbing text-muted-foreground/50 hover:text-foreground transition-colors p-0.5 shrink-0">
+            class="drag-handle cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-foreground transition-colors p-0.5 shrink-0">
             <Icon icon="lucide:grip-vertical" class="w-4 h-4" />
           </div>
 
@@ -101,7 +121,7 @@ const nodeTextClass = computed(() => {
             v-if="!isReadonly"
             v-model="item.title"
             :class="[
-              'bg-transparent border-0 border-b border-transparent hover:border-border focus:border-primary outline-none focus:ring-0 px-1 py-0.5 -ml-1 transition-colors w-full truncate cursor-text min-w-0 rounded-none shadow-none',
+              'bg-transparent border-0 outline-none focus:ring-0 px-1 py-0.5 -ml-1 transition-colors w-full truncate cursor-text min-w-0 shadow-none caret-primary',
               nodeTextClass,
             ]"
             placeholder="Category title..."
@@ -158,7 +178,7 @@ const nodeTextClass = computed(() => {
             ctx?.inlineState.value.mode === 'add-child' &&
             ctx.inlineState.value.targetId === item.id
           "
-          class="flex items-center gap-2 py-1 px-2 bg-transparent w-full mb-1.5 pl-6">
+          class="flex items-center gap-1.5 py-1.5 px-2 bg-background border border-border shadow-sm rounded-lg w-full mb-1.5">
           <IconPicker
             v-model="ctx.inlineState.value.icon"
             :btn-props="{
@@ -168,10 +188,10 @@ const nodeTextClass = computed(() => {
             }"
             position="bottom-start" />
           <input
+            v-focus
             v-model="ctx.inlineState.value.title"
-            class="flex-1 bg-transparent border-0 border-b border-primary/40 focus:border-primary outline-none focus:ring-0 px-1 py-0.5 text-sm transition-colors w-full rounded-none shadow-none"
-            placeholder="New subcategory..."
-            autofocus
+            class="flex-1 bg-transparent border-0 outline-none focus:ring-0 px-1 py-0.5 text-sm transition-colors w-full shadow-none caret-primary text-foreground placeholder:text-muted-foreground"
+            placeholder="New subcategory title..."
             @keyup.enter="ctx.saveInline()"
             @keyup.esc="ctx.cancelInline()" />
           <Button
