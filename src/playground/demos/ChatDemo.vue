@@ -10,14 +10,14 @@ const chatFolderId = 'demo-chat-attachments'
 const messages = ref<ChatMessage[]>([
   {
     id: 1,
-    text: 'Hey! How are you doing?',
+    text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     senderId: 'user_2',
     senderName: 'Alice',
     timestamp: new Date(Date.now() - 1000 * 60 * 60),
     avatar: 'https://i.pravatar.cc/150?img=5',
     attachments: [
       {
-        fileName: 'design_preview.png',
+        fileName: '626182816_18093985156987193_1998335512335153763_n.jpg',
         fileUrl:
           'https://fastly.picsum.photos/id/197/400/400.jpg?hmac=EMGJfztOncchyhxYLBig-GifHwLYkvPrZJvM_oDgYfQ',
         fileType: 'image/png',
@@ -163,7 +163,7 @@ const allowEditAll = ref(false)
 
     <DemoSection title="Standard Chat with Attachments" :code="sourceCode">
       <div
-        class="h-[600px] border border-border rounded-xl overflow-hidden bg-card flex flex-col shadow-sm">
+        class="h-[600px] border border-border rounded-xl w-[400px] overflow-hidden bg-card flex flex-col shadow-sm">
         <ChatInterface
           :data="messages"
           :current-user-id="currentUserId"
