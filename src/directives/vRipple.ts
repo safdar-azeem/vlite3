@@ -7,28 +7,56 @@ const handleRipple = (event: MouseEvent, el: HTMLElement) => {
   const x = event.clientX - rect.left
   const y = event.clientY - rect.top
 
-  const circle = document.createElement('span')
   const diameter = Math.max(rect.width, rect.height)
   const radius = diameter / 2
 
-  circle.style.width = circle.style.height = `${diameter}px`
-  circle.style.left = `${x - radius}px`
-  circle.style.top = `${y - radius}px`
-  circle.style.position = 'absolute'
-  circle.style.pointerEvents = 'none'
+  el.querySelectorAll('.ripple').forEach((r) => r.remove())
+
+  const circle = document.createElement('span')
+  circle.style.cssText = `
+    width: ${diameter}px;
+    height: ${diameter}px;
+    left: ${x - radius}px;
+    top: ${y - radius}px;
+    position: absolute;
+    pointer-events: none;
+    border-radius: 50%;
+    transform: scale(0);
+    opacity: 0;
+    will-change: transform, opacity;
+    background-color: rgba(255, 255, 255, 1);
+  `
   circle.classList.add('ripple')
-
-  // Only remove existing ripples belonging to this specific element
-  const existingRipples = el.querySelectorAll('.ripple')
-  existingRipples.forEach((ripple) => ripple.remove())
-
   el.appendChild(circle)
 
-  setTimeout(() => {
-    if (circle && circle.parentNode) {
+  let startTime: number | null = null
+  const duration = 400
+
+  const animate = (timestamp: number) => {
+    if (!startTime) startTime = timestamp
+    const progress = Math.min((timestamp - startTime) / duration, 1)
+
+    // Ease-out
+    const eased = 1 - Math.pow(1 - progress, 3)
+
+    // Scale 0 -> 2.5 (subtle, not full coverage)
+    const scale = eased * 2.5
+    // Peak opacity 0.08, then fade out after 40%
+    const opacity = progress < 0.4
+      ? progress * 0.2
+      : 0.08 * (1 - (progress - 0.4) / 0.6)
+
+    circle.style.transform = `scale(${scale})`
+    circle.style.opacity = `${opacity}`
+
+    if (progress < 1) {
+      requestAnimationFrame(animate)
+    } else {
       circle.remove()
     }
-  }, 600)
+  }
+
+  requestAnimationFrame(animate)
 }
 
 export const vRipple = {
@@ -44,7 +72,6 @@ export const vRipple = {
     if (el._rippleHandler) {
       el.removeEventListener('click', el._rippleHandler)
     }
-    const existingRipples = el.querySelectorAll('.ripple')
-    existingRipples.forEach((ripple) => ripple.remove())
+    el.querySelectorAll('.ripple').forEach((r) => r.remove())
   },
 }
