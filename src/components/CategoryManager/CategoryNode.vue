@@ -29,18 +29,33 @@ const internalList = computed({
 
 const handleUpdate = (val: CategoryItem[], item: CategoryItem) => {
   item.children = val
-  emit('update:modelValue', [...internalList.value])
+  // Fix nested dropping bug by emitting a local change event up the tree instead of aggressively emitting stale state.
   emit('change')
 }
 
 const onChange = () => emit('change')
 
 const isReadonly = computed(() => ctx?.readonly.value || false)
+const size = computed(() => ctx?.size.value || 'md')
+
+const nodePaddingClass = computed(() => {
+  if (size.value === 'sm') return 'p-1 md:p-1.5'
+  if (size.value === 'lg') return 'p-2 md:p-3'
+  return 'p-1.5 md:p-2'
+})
 
 const nodeTextClass = computed(() => {
-  // Consistent color for all subcategories, varying only in font weight
-  if (props.level === 0) return 'text-sm font-semibold text-foreground'
-  return 'text-sm font-medium text-foreground'
+  const isRoot = props.level === 0
+  const weight = isRoot ? 'font-semibold' : 'font-medium'
+  if (size.value === 'sm') return `text-xs ${weight} text-foreground`
+  if (size.value === 'lg') return `text-base ${weight} text-foreground`
+  return `text-sm ${weight} text-foreground`
+})
+
+const iconSizeClass = computed(() => {
+  if (size.value === 'sm') return 'w-3.5 h-3.5'
+  if (size.value === 'lg') return 'w-5 h-5'
+  return 'w-4 h-4'
 })
 
 // Custom focus directive to ensure reliable focus when nested inputs appear
@@ -74,25 +89,30 @@ const vFocus = {
         ctx?.inlineState.value.targetId === item.id,
         ctx?.inlineState.value.mode,
         isReadonly,
+        size
       ]">
       <div
-        class="group flex items-center justify-between p-1.5 md:p-2 rounded-lg transition-colors bg-background dark:bg-card border border-border shadow-sm">
+        :class="[
+          'group flex items-center justify-between rounded-lg transition-colors bg-background border border-border shadow-sm',
+          nodePaddingClass
+        ]">
         <div class="flex items-center gap-1.5 overflow-hidden flex-1">
           <button
             v-if="item.children && item.children.length > 0"
             @click="ctx?.toggleExpand(item.id)"
-            class="flex items-center justify-center w-5 h-5 shrink-0 text-muted-foreground hover:bg-muted rounded transition-colors">
+            :class="[
+              'flex items-center justify-center shrink-0 text-muted-foreground hover:bg-muted rounded transition-colors',
+              size === 'sm' ? 'w-4 h-4' : size === 'lg' ? 'w-6 h-6' : 'w-5 h-5'
+            ]">
             <Icon
-              :icon="
-                ctx?.expandedIds.value.has(item.id) ? 'lucide:chevron-down' : 'lucide:chevron-right'
-              "
-              class="w-4 h-4" />
+              :icon="ctx?.expandedIds.value.has(item.id) ? 'lucide:chevron-down' : 'lucide:chevron-right'"
+              :class="iconSizeClass" />
           </button>
 
           <div
             v-if="!isReadonly"
             class="drag-handle cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-foreground transition-colors p-0.5 shrink-0">
-            <Icon icon="lucide:grip-vertical" class="w-4 h-4" />
+            <Icon icon="lucide:grip-vertical" :class="iconSizeClass" />
           </div>
 
           <IconPicker
@@ -101,8 +121,8 @@ const vFocus = {
             :btn-props="{
               variant: 'ghost',
               size: 'xs',
-              iconClass: 'h-4 w-4',
-              class: 'h-6 w-6 p-0 text-muted-foreground hover:text-foreground shrink-0 rounded-md',
+              iconClass: iconSizeClass,
+              class: (size === 'sm' ? 'h-5 w-5' : size === 'lg' ? 'h-7 w-7' : 'h-6 w-6') + ' p-0 text-muted-foreground hover:text-foreground shrink-0 rounded-md',
             }"
             position="bottom-start"
             @onSelect="
@@ -115,7 +135,7 @@ const vFocus = {
           <Icon
             v-else-if="item.icon"
             :icon="item.icon"
-            class="w-4 h-4 shrink-0 text-muted-foreground" />
+            :class="[iconSizeClass, 'shrink-0 text-muted-foreground']" />
 
           <input
             v-if="!isReadonly"
