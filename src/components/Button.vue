@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, useSlots } from 'vue'
+import { computed, useSlots } from 'vue'
 import Icon from './Icon.vue'
 import { vRipple } from '../directives/vRipple'
 import type { ButtonVariant, ButtonSize, ButtonRounded, ButtonProps } from '@/types'
@@ -22,13 +22,8 @@ const isOnlyIcon = computed(
   () => props?.asIcon || (props.icon && !displayText.value && !slots.default)
 )
 
-// Detect if inside a ButtonGroup — in groups, icon-only buttons use text button sizing (height auto via CSS)
-const buttonGroup = inject<{ isInGroup: boolean } | null>('buttonGroup', null)
-const isInGroup = computed(() => !!buttonGroup?.isInGroup)
-
 const classes = computed(() => {
-  const baseClasses =
-    'inline-flex items-center justify-center whitespace-nowrap text-sm font-medium  disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] cursor-pointer gap-2'
+  const baseClasses = `inline-flex items-center justify-center whitespace-nowrap text-sm font-medium disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] cursor-pointer gap-2 ${isOnlyIcon.value ? 'icon-only shrink-0' : ''}`
 
   const variants: Record<ButtonVariant, string> = {
     primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
@@ -71,18 +66,8 @@ const classes = computed(() => {
     sm: 'h-7.5 w-7.5 min-h-7.5 min-w-7.5',
     sm2: 'h-8 w-8 min-h-8 min-w-8',
     md: 'h-9 w-9 min-h-9 min-w-9',
-    lg: 'h-9.5 w-9.5 min-h-9.5 min-w-9.5',
-    xl: 'h-10 w-10 min-h-10 min-w-10',
-  }
-
-  // Inside a ButtonGroup: icon-only buttons use text button px but no fixed height (height comes from CSS stretch)
-  const groupIconSizes: Record<ButtonSize, string> = {
-    xs: 'px-2',
-    sm: 'px-3',
-    sm2: 'px-3',
-    md: 'px-4',
-    lg: 'px-6',
-    xl: 'px-10',
+    lg: 'h-10 w-10 min-h-10 min-w-10',
+    xl: 'h-12 w-12 min-h-12 min-w-12',
   }
 
   const roundedVariants: Record<ButtonRounded, string> = {
@@ -96,12 +81,7 @@ const classes = computed(() => {
     full: 'rounded-full',
   }
 
-  let sizeClass: string
-  if (isOnlyIcon.value) {
-    sizeClass = isInGroup.value ? groupIconSizes[props.size] : iconSizes[props.size]
-  } else {
-    sizeClass = sizes[props.size]
-  }
+  let sizeClass = isOnlyIcon.value ? iconSizes[props.size] : sizes[props.size]
 
   return [
     baseClasses,
