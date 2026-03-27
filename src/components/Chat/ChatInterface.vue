@@ -27,6 +27,18 @@ export interface ChatMessage {
   [key: string]: any
 }
 
+/**
+ * A rendered list item is either a real message or a date separator pill.
+ * The separator carries only the label to display and a stable key.
+ */
+type DateSeparator = {
+  _type: 'separator'
+  _key: string
+  label: string
+}
+
+type ListItem = ChatMessage | DateSeparator
+
 const props = withDefaults(
   defineProps<{
     data: ChatMessage[]
@@ -246,6 +258,82 @@ const handleSend = async () => {
     scrollToBottom()
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Date separator logic
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Returns a normalised YYYY-MM-DD string for a given timestamp.
+ * Used to compare whether two messages fall on the same calendar day.
+ */
+const toDateKey = (ts: string | Date | undefined): string => {
+  if (!ts) return ''
+  const d = new Date(ts)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+/**
+ * Formats a date into a human-friendly separator label:
+ *   - "Today"
+ *   - "Yesterday"
+ *   - "Mon, 24 Mar" (within the current year)
+ *   - "Mon, 24 Mar 2023" (older years)
+ */
+const formatSeparatorLabel = (ts: string | Date): string => {
+  const date = new Date(ts)
+  const now = new Date()
+
+  const todayKey = toDateKey(now)
+  const msgKey = toDateKey(date)
+
+  if (msgKey === todayKey) return 'Today'
+
+  const yesterday = new Date(now)
+  yesterday.setDate(now.getDate() - 1)
+  if (msgKey === toDateKey(yesterday)) return 'Yesterday'
+
+  // Named day + date for recent history; add year when it differs
+  const sameYear = date.getFullYear() === now.getFullYear()
+  return date.toLocaleDateString(undefined, {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    ...(sameYear ? {} : { year: 'numeric' }),
+  })
+}
+
+/**
+ * Builds a flat list of messages interleaved with date separator entries.
+ * A separator is inserted whenever the calendar day changes between consecutive
+ * messages (or before the very first message). Messages without a timestamp
+ * are rendered as-is without triggering a new separator.
+ */
+const renderedItems = computed<ListItem[]>(() => {
+  const items: ListItem[] = []
+  let lastDateKey = ''
+
+  for (const msg of props.data) {
+    const key = toDateKey(msg.timestamp)
+
+    if (key && key !== lastDateKey) {
+      items.push({
+        _type: 'separator',
+        _key: `sep-${key}`,
+        label: formatSeparatorLabel(msg.timestamp!),
+      })
+      lastDateKey = key
+    }
+
+    items.push(msg)
+  }
+
+  return items
+})
+
+/** Type guard used in the template to distinguish separators from messages */
+const isSeparator = (item: ListItem): item is DateSeparator =>
+  (item as DateSeparator)._type === 'separator'
 </script>
 
 <template>
@@ -289,19 +377,40 @@ const handleSend = async () => {
       </div>
 
       <div class="flex flex-col gap-2 pb-2">
-        <ChatBubble
-          v-for="msg in data"
-          :key="msg.id"
-          :message="msg"
-          :is-sender="msg.senderId === currentUserId"
-          :show-avatar="showAvatar"
-          :show-user-info="showUserInfo"
-          :show-timestamp="showTimestamp"
-          :allow-delete-all="allowDeleteAll"
-          :allow-edit-all="allowEditAll"
-          :confirm-delete="confirmDelete"
-          @delete="$emit('delete', $event)"
-          @edit="startEditing" />
+        <template v-for="item in renderedItems" :key="isSeparator(item) ? item._key : item.id">
+          <!--
+            Date separator pill: centred, pill-shaped, muted.
+            Uses a horizontal rule on each side so it stretches full width.
+            No extra props needed — computed entirely from message timestamps.
+          -->
+          <div
+            v-if="isSeparator(item)"
+            class="flex items-center gap-3 py-1 select-none"
+            role="separator">
+            <div class="flex-1 h-px bg-border/60"></div>
+            <span
+              class="shrink-0 px-3 py-0.5 rounded-full text-[11px] font-medium text-muted-foreground bg-muted/60 border border-border/40 tracking-wide">
+              {{ item.label }}
+            </span>
+            <div class="flex-1 h-px bg-border/60"></div>
+          </div>
+
+          <!--
+            Normal chat bubble — cast item since we've narrowed it via isSeparator guard
+          -->
+          <ChatBubble
+            v-else
+            :message="(item as ChatMessage)"
+            :is-sender="(item as ChatMessage).senderId === currentUserId"
+            :show-avatar="showAvatar"
+            :show-user-info="showUserInfo"
+            :show-timestamp="showTimestamp"
+            :allow-delete-all="allowDeleteAll"
+            :allow-edit-all="allowEditAll"
+            :confirm-delete="confirmDelete"
+            @delete="$emit('delete', $event)"
+            @edit="startEditing" />
+        </template>
       </div>
     </div>
 
