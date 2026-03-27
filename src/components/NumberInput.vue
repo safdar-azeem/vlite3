@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, onBeforeUnmount } from 'vue'
 import Icon from './Icon.vue'
 
 export interface NumberInputProps {
@@ -162,14 +162,51 @@ const updateValue = (val: number) => {
   emit('change', newValue)
 }
 
+// Long press / repeat handling
+let timer: ReturnType<typeof setTimeout> | null = null
+let interval: ReturnType<typeof setInterval> | null = null
+
+const stopContinuous = () => {
+  if (timer) clearTimeout(timer)
+  if (interval) clearInterval(interval)
+  timer = null
+  interval = null
+}
+
 const increment = () => {
+  if (props.disabled || props.readonly || (props.max !== undefined && Number(localValue.value) >= props.max)) {
+    stopContinuous()
+    return
+  }
   const current = Number(localValue.value) || 0
   updateValue(current + props.step)
 }
 
 const decrement = () => {
+  if (props.disabled || props.readonly || (props.min !== undefined && Number(localValue.value) <= props.min)) {
+    stopContinuous()
+    return
+  }
   const current = Number(localValue.value) || 0
   updateValue(current - props.step)
+}
+
+const startContinuous = (action: 'inc' | 'dec', e: PointerEvent) => {
+  if (e.button !== 0 && e.pointerType === 'mouse') return // Ignore right-clicks
+
+  stopContinuous()
+
+  // Execute immediately on press
+  if (action === 'inc') increment()
+  else decrement()
+
+  // Delay before starting continuous triggers
+  timer = setTimeout(() => {
+    interval = setInterval(() => {
+      if (action === 'inc') increment()
+      else decrement()
+    }, 50) // Speed of auto-increment
+  }, 400) // 400ms delay
 }
 
 const handleInput = (event: Event) => {
@@ -196,12 +233,13 @@ const handleBlur = (event: FocusEvent) => {
   }
 }
 
-// Long press / repeat handling could be added here
+onBeforeUnmount(() => {
+  stopContinuous()
+})
 </script>
 
 <template>
   <div :class="[wrapperClasses, 'overflow-hidden']">
-    <!-- Split Variant: Minus on Left -->
     <button
       v-if="variant === 'split'"
       type="button"
@@ -211,7 +249,11 @@ const handleBlur = (event: FocusEvent) => {
         variant === 'split' && mode !== 'solid' ? roundedLeftStyles : '',
       ]"
       :disabled="disabled || (min !== undefined && Number(localValue) <= min)"
-      @click="decrement">
+      @pointerdown="startContinuous('dec', $event)"
+      @pointerup="stopContinuous"
+      @pointerleave="stopContinuous"
+      @pointercancel="stopContinuous"
+      @contextmenu.prevent>
       <Icon icon="lucide:minus" :class="sizeStyles.icon" />
     </button>
 
@@ -232,7 +274,6 @@ const handleBlur = (event: FocusEvent) => {
       @keydown.up.prevent="increment"
       @keydown.down.prevent="decrement" />
 
-    <!-- Split Variant: Plus on Right -->
     <button
       v-if="variant === 'split'"
       type="button"
@@ -242,17 +283,24 @@ const handleBlur = (event: FocusEvent) => {
         variant === 'split' && mode !== 'solid' ? roundedRightStyles : '',
       ]"
       :disabled="disabled || (max !== undefined && Number(localValue) >= max)"
-      @click="increment">
+      @pointerdown="startContinuous('inc', $event)"
+      @pointerup="stopContinuous"
+      @pointerleave="stopContinuous"
+      @pointercancel="stopContinuous"
+      @contextmenu.prevent>
       <Icon icon="lucide:plus" :class="sizeStyles.icon" />
     </button>
 
-    <!-- Stacked Variant: Both on Right -->
     <div v-if="variant === 'stacked'" class="flex flex-col h-full border-l border-input">
       <button
         type="button"
         class="flex-1 flex items-center justify-center hover:bg-muted/50 w-8 border-b border-input"
         :disabled="disabled || (max !== undefined && Number(localValue) >= max)"
-        @click="increment">
+        @pointerdown="startContinuous('inc', $event)"
+        @pointerup="stopContinuous"
+        @pointerleave="stopContinuous"
+        @pointercancel="stopContinuous"
+        @contextmenu.prevent>
         <Icon
           icon="fluent:chevron-up-20-filled"
           :class="size === 'xs' || size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5'" />
@@ -261,7 +309,11 @@ const handleBlur = (event: FocusEvent) => {
         type="button"
         class="flex-1 flex items-center justify-center hover:bg-muted/50 w-8"
         :disabled="disabled || (min !== undefined && Number(localValue) <= min)"
-        @click="decrement">
+        @pointerdown="startContinuous('dec', $event)"
+        @pointerup="stopContinuous"
+        @pointerleave="stopContinuous"
+        @pointercancel="stopContinuous"
+        @contextmenu.prevent>
         <Icon
           icon="fluent:chevron-down-20-filled"
           :class="size === 'xs' || size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5'" />
@@ -283,4 +335,3 @@ input[type='number'] {
   appearance: textfield;
 }
 </style>
-```
