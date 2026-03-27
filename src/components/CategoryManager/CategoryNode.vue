@@ -151,7 +151,7 @@ const vFocus = {
               ]"
               placeholder="Category title..."
               @change="ctx?.saveItem(item)"
-              @keyup.enter="$event.target.blur()"
+              @keyup.enter="($event.target as HTMLInputElement).blur()"
               @click.stop />
             <span v-else :class="['truncate', nodeTextClass]">{{ item.title }}</span>
           </div>
