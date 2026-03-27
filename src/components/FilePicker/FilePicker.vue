@@ -323,7 +323,7 @@ const clearAll = () => {
 }
 
 const handleFileNameChange = (index: number, newName: string) => {
-  if (props.disabled || props.loading) return
+  if (props.disabled || props.loading || isProcessing.value) return
 
   let newValue: any
   if (props.multiSelect && Array.isArray(props.modelValue)) {
@@ -488,8 +488,12 @@ const inputBaseClass = computed(() => {
             v-for="(file, index) in displayFiles"
             :key="index"
             class="relative flex items-center p-3 border border-border rounded-lg bg-body transition-colors group"
-            :class="[!multiSelect && !disabled ? 'cursor-pointer hover:border-primary/50' : '']"
-            @click="!multiSelect && !disabled ? triggerInput() : null">
+            :class="[
+              !multiSelect && !disabled && !loading && !isProcessing
+                ? 'cursor-pointer hover:border-primary/50'
+                : '',
+            ]"
+            @click="!multiSelect && !disabled && !loading && !isProcessing ? triggerInput() : null">
             <div class="shrink-0 mr-3">
               <div class="p-2 bg-primary-light rounded text-primary-fg-light">
                 <Icon icon="lucide:file-text" class="w-5 h-5" />
@@ -497,7 +501,7 @@ const inputBaseClass = computed(() => {
             </div>
             <div class="flex-1 min-w-0 flex flex-col items-start overflow-hidden">
               <div
-                v-if="allowRename && !disabled"
+                v-if="allowRename && !disabled && !loading && !isProcessing"
                 class="inline-flex items-center group/rename w-fit max-w-full mb-0.5">
                 <div class="grid relative w-fit max-w-full items-center -ml-1">
                   <span
@@ -522,7 +526,7 @@ const inputBaseClass = computed(() => {
                         ?.focus()
                   "
                   title="Rename file">
-                  <Icon icon="lucide:pencil" class="w-3.5 h-3.5" />
+                  <Icon icon="lucide:pencil" class="w-3 h-3" />
                 </div>
               </div>
 
@@ -530,14 +534,18 @@ const inputBaseClass = computed(() => {
                 {{ file.fileName }}
               </p>
 
-              <p class="text-xs text-muted-foreground">
+              <p class="text-xs text-muted-foreground -mt-1">
                 {{ formatFileSize(file.fileSize) }}
               </p>
             </div>
 
-            <div class="flex-shrink-0 ml-3 flex gap-2">
+            <div class="flex-shrink-0 ml-3 flex gap-2 items-center">
+              <Icon
+                v-if="loading || isProcessing"
+                icon="lucide:loader-2"
+                class="w-4 h-4 animate-spin text-primary" />
               <Button
-                v-if="!disabled && !loading"
+                v-else-if="!disabled"
                 size="xs"
                 variant="ghost"
                 icon="lucide:x"
@@ -557,14 +565,6 @@ const inputBaseClass = computed(() => {
               :text="tAddMore"
               :disabled="disabled || loading || isProcessing"
               @click="triggerInput" />
-          </div>
-        </div>
-
-        <div
-          v-if="loading || isProcessing"
-          class="absolute inset-0 bg-white/80 flex items-center justify-center rounded-lg z-10">
-          <div class="bg-white p-2 rounded-full">
-            <Icon icon="lucide:loader-2" class="w-6 h-6 animate-spin text-primary" />
           </div>
         </div>
       </div>
