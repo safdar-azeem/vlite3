@@ -50,6 +50,7 @@ const props = withDefaults(defineProps<ScreenProps>(), {
   quickFilters: () => [],
   quickFilterKey: 'status',
   quickFilterVariant: 'line',
+  skipEmptyViews: () => [],
 })
 const vliteConfig = useVLiteConfig()
 const emit = defineEmits<{
@@ -188,6 +189,11 @@ const isFiltered = computed(() => {
 })
 
 const hasData = computed(() => props.data && props.data.length > 0)
+
+const shouldSkipEmptyState = computed(() => {
+  if (!props.skipEmptyViews || props.skipEmptyViews.length === 0) return false
+  return props.skipEmptyViews.includes(activeView.value)
+})
 
 // ── Screen state exposed to all slots ─────────────────────────────────────────
 const screenState = computed(() => ({
@@ -519,7 +525,7 @@ const handleBackendExport = async (format: string) => {
     </div>
 
     <div class="flex-1 w-full relative" :class="containerClass">
-      <template v-if="!hasData && !loading">
+      <template v-if="!hasData && !loading && !shouldSkipEmptyState">
         <slot name="empty" v-if="$slots.empty" v-bind="screenState" />
         <ScreenEmptyState
           v-else
