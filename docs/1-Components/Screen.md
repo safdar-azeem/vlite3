@@ -37,6 +37,7 @@ Alternatively, you can provide layouts via the `#table`, `#list`, and `#grid` sl
 | `filterType`           | `'modal' \| 'dropdown'`         | `'modal'`                                                                | Style of the advanced filter trigger.                                                                                                                                                                              |
 | `showRefresh`          | `boolean`                       | `false`                                                                  | Show a manual Refresh button in the toolbar.                                                                                                                                                                       |
 | `quickFilters`         | `ScreenQuickFilter[]`           | `[]`                                                                     | Array of tab options rendered as a **line-variant tab bar** between the header and content.                                                                                                                        |
+| `quickFilterViews`     | `string[]`                      | —                                                                        | Optional array of view keys (e.g., `['table', 'list']`) where quick filters should be visible. If omitted, quick filters are shown on all views.                                                                   |
 | `quickFilterKey`       | `string`                        | `'status'`                                                               | The key used to add the active quick filter value to the `filter` property in the refetch.                                                                                                                         |
 | `defaultQuickFilter`   | `string \| number`              | first tab's value                                                        | Initial quick-filter value. Defaults to the first entry in `quickFilters` when not set.                                                                                                                            |
 | `views`                | `ScreenView[]`                  | —                                                                        | **Dynamic multi-view definitions.** Pass any number of named views (table, list, kanban, calendar, etc.). Each entry renders a toggle button and maps to its component. The first entry is the default view.      |
@@ -136,7 +137,6 @@ const UserCalendar = defineAsyncComponent(() => import('./UserCalendar.vue'))
 
 The original `table` and `list` props are fully supported and work exactly as before. They are normalised internally into the `views` system with default icons and keys.
 ```vue
-<!-- Legacy usage — still works -->
 <Screen
   name="users"
   title="Users"
@@ -151,6 +151,8 @@ The original `table` and `list` props are fully supported and work exactly as be
 ### Quick Filters
 
 Quick filters provide a **tab bar** UI pattern common in modern dashboards (Shopify, Linear, Vercel). They appear between the header toolbar and the content area, using a clean `line` variant. The selected value will add to the `filter` property in the refetch based on the provided key. Default will be `status`. This behavior is completely invisible to the main Screen Filter state.
+
+By default, quick filters are shown across all active views. You can restrict their visibility to specific views by passing an array of view keys to the `quickFilterViews` prop (e.g., `:quick-filter-views="['table', 'kanban']"`).
 
 #### `ScreenQuickFilter` type
 ```ts
@@ -202,3 +204,4 @@ refetch({
 | :------- | :------ | :---------------------------------------------------------------- |
 | `add`    | —       | Emitted when the default Add is clicked (no `addBtn` configured). |
 | `delete` | `any[]` | Emitted after the user confirms bulk/row deletion.                |
+
