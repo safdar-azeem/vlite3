@@ -72,43 +72,37 @@ const cancelPendingDelete = () => {
 </script>
 
 <template>
-  <div class="flex w-full gap-3 group" :class="isSender ? 'flex-row-reverse' : 'flex-row'">
+  <div class="flex w-full min-w-0 gap-3 group" :class="isSender ? 'flex-row-reverse' : 'flex-row'">
     <div v-if="showAvatar" class="flex-shrink-0 flex flex-col justify-end pb-1">
       <Avatar :src="message.avatar" :alt="message.senderName" size="sm" />
     </div>
 
     <div
-      class="flex flex-col max-w-[85%] md:max-w-[75%]"
+      class="flex flex-col min-w-0 overflow-hidden max-w-[85%]"
       :class="isSender ? 'items-end' : 'items-start'">
       <div
-        v-if="showUserInfo && message.senderName && !isSender"
-        class="mb-1 text-xs text-muted-foreground ml-1">
-        {{ message.senderName }}
-      </div>
-
-      <div
-        class="relative flex items-center group/bubble"
+        class="relative flex items-center min-w-0 max-w-full group/bubble"
         :class="isSender ? 'flex-row-reverse' : 'flex-row'">
         <div
-          class="px-3.5 py-2.5 rounded-2xl break-words relative min-w-[60px]"
+          class="px-3.5 py-2.5 rounded-2xl break-words relative min-w-[60px] max-w-full min-w-0 overflow-hidden"
           :class="[
             isSender
               ? 'bg-primary text-primary-foreground rounded-br-sm'
               : 'bg-muted text-foreground rounded-bl-sm',
           ]">
-          <p v-if="message.text" class="text-sm whitespace-pre-wrap leading-relaxed">
+          <div
+            v-if="showUserInfo && message.senderName && !isSender"
+            class="mb-0.5 text-[9px] font-medium tracking-wide uppercase opacity-80 truncate text-gray-900/80">
+            {{ message.senderName }}
+          </div>
+
+          <p v-if="message.text" class="text-sm whitespace-pre-wrap leading-relaxed break-words">
             {{ message.text }}
           </p>
 
           <div
             v-if="message.attachments && message.attachments.length > 0"
-            :class="{ 'mt-2': message.text }">
-            <!--
-              Minimal chat bubble attachment mode:
-              - clickToPreview: clicking the item opens preview (no eye icon)
-              - showDownloadInList: false — download icon removed from the list row
-              - canDownload: true — download remains available inside the preview modal
-            -->
+            :class="{ 'mt-2': message.text || (showUserInfo && !isSender) }">
             <AttachmentsList
               :attachments="message.attachments"
               variant="inline"
@@ -120,15 +114,33 @@ const cancelPendingDelete = () => {
           </div>
 
           <div
-            v-if="message.isEdited"
-            class="text-[10px] opacity-70 mt-0.5 text-right"
-            :class="isSender ? 'text-primary-foreground' : 'text-muted-foreground'">
-            (edited)
+            v-if="showTimestamp && (message.timestamp || message.isEdited)"
+            class="mt-1 flex items-center gap-1"
+            :class="isSender ? 'justify-end' : 'justify-start'">
+            <span
+              v-if="message.isEdited"
+              class="text-[10px] opacity-60"
+              :class="isSender ? 'text-primary-foreground' : 'text-muted-foreground'">
+              edited
+            </span>
+            <span
+              v-if="message.isEdited && message.timestamp"
+              class="text-[10px] opacity-40"
+              :class="isSender ? 'text-primary-foreground' : 'text-muted-foreground'">
+              ·
+            </span>
+            <span
+              v-if="message.timestamp"
+              class="text-[10px] opacity-60 tabular-nums"
+              :class="isSender ? 'text-primary-foreground' : 'text-muted-foreground'">
+              {{ formattedTime }}
+            </span>
           </div>
         </div>
 
         <div
-          class="opacity-0 group-hover/bubble:opacity-100 focus-within:opacity-100 transition-opacity flex gap-1 px-2 pointer-events-none group-hover/bubble:pointer-events-auto focus-within:pointer-events-auto">
+          class="opacity-0 group-hover/bubble:opacity-100 focus-within:opacity-100 transition-opacity flex gap-0 pointer-events-none group-hover/bubble:pointer-events-auto focus-within:pointer-events-auto z-10"
+          :class="isSender ? 'right-full pr-1' : 'left-full pl-1'">
           <Button
             v-if="(isSender || allowEditAll) && message.text?.trim()"
             variant="ghost"
@@ -170,12 +182,6 @@ const cancelPendingDelete = () => {
             </div>
           </template>
         </div>
-      </div>
-
-      <div
-        v-if="showTimestamp && message.timestamp"
-        class="mt-1 text-[10px] text-muted-foreground mx-1">
-        {{ formattedTime }}
       </div>
     </div>
   </div>
