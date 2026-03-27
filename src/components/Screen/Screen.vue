@@ -154,7 +154,13 @@ const activeQuickFilter = ref<string | number>(
       : ''
 )
 
-const hasQuickFilters = computed(() => props.quickFilters && props.quickFilters.length > 0)
+const hasQuickFilters = computed(() => {
+  if (!props.quickFilters || props.quickFilters.length === 0) return false
+  if (props.quickFilterViews && props.quickFilterViews.length > 0) {
+    return props.quickFilterViews.includes(activeView.value)
+  }
+  return true
+})
 
 /** When quick-filter changes, reset to page 1 and trigger refetch */
 const handleQuickFilterChange = (val: string | number) => {
