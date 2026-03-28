@@ -70,7 +70,7 @@ const handleDelete = (items: any[]) => {
             { label: 'Inactive', value: 'inactive' },
             { label: 'Pending', value: 'pending' },
           ]"
-          :quick-filter-views="['table']"
+          :skip-quick-filter-views="['list']"
           :filter-schema="[
             {
               name: 'user',
