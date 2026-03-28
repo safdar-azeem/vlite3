@@ -4,7 +4,7 @@
 
 ### Description
 
-A high-performance, production-ready Kanban system built for Vue 3. It supports cross-column drag-and-drop, infinite scrolling per column, intelligent auto-grouping from flat arrays, and consolidated fractional indexing for optimal database performance.
+A high-performance, production-ready Kanban system built for Vue 3. It supports cross-column drag-and-drop, infinite scrolling per column, intelligent auto-grouping from flat arrays, consolidated fractional indexing for optimal database performance, and granular disabled/locked controls at both the board and item level.
 
 ### Props
 
@@ -17,8 +17,20 @@ A high-performance, production-ready Kanban system built for Vue 3. It supports 
 | `data` | `Record<string, any[]>` | `{}` | Legacy manual grouping structure. (Supports `v-model:data`) |
 | `group` | `string` | `'kanban-group'` | Unique identifier to allow dragging between different Kanban instances. |
 | `itemKey` | `string` | `'id'` | The property name used as a unique identifier for items. |
-| `loadData` | `Function` | `undefined` | Async function for infinite scrolling: `(colId, page) => Promise<Result>`. |
+| `loadData` | `Function` | `undefined` | Async function for infinite scrolling: `(colId, page) => Promise<r>`. |
 | `boardClass` | `string` | `undefined` | Custom CSS class for the column container. |
+| `isItemDisabled` | `(item: any) => boolean` | `undefined` | Predicate called per item. Return `true` to lock that specific item in place — it cannot be dragged to any column. The item still renders normally. |
+
+---
+
+### `KanbanColumn` Shape
+
+| Property | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `string \| number` | **Required** | Unique column identifier. Must match the value of `groupKey` in your data. |
+| `title` | `string` | **Required** | Display title rendered in the column header. |
+| `titleI18n` | `string` | `undefined` | i18n key. When provided, takes precedence over `title`. |
+| `disabled` | `boolean` | `undefined` | When `true`, the entire column is locked. Items cannot be dragged **into** or **out of** this column. A 🔒 badge is shown in the default header. |
 
 ---
 
@@ -62,13 +74,134 @@ const syncWithBackend = async (id, newStatus, newPosition) => {
 </template>
 ```
 
+---
+
+#### Disabling an Entire Column (Board-Level Lock)
+
+Set `disabled: true` on any column definition to fully lock that board. Sortable.js will natively reject all drag attempts into or out of it — no workarounds needed. The column receives a visual tint and a 🔒 badge in the default header.
+
+**Use case:** "Archived", "Closed", "Released" columns that must remain read-only.
+
+```vue
+<script setup>
+import { Kanban } from 'vlite3'
+
+const columns = [
+  { id: 'active',   title: 'Active' },
+  { id: 'archived', title: 'Archived', disabled: true }, // 🔒 fully locked
+]
+
+const data = [
+  { id: 1, title: 'Live feature',    status: 'active',   position: 1024 },
+  { id: 2, title: 'Retired feature', status: 'archived', position: 1024 },
+]
+</script>
+
+<template>
+  <Kanban :raw-data="data" :columns="columns" group-key="status" position-key="position" />
+</template>
+```
+
+---
+
+#### Disabling Specific Items (Item-Level Lock)
+
+Pass an `:is-item-disabled` predicate. Any item for which the predicate returns `true` is individually locked — it cannot be dragged anywhere, but it still renders and is visible. Other items in the same column remain freely draggable.
+
+**Use case:** Tasks that are "in review", "assigned to another user", or flagged with a `locked` property.
+
+```vue
+<script setup>
+import { Kanban } from 'vlite3'
+
+const columns = [
+  { id: 'todo',        title: 'To Do' },
+  { id: 'in-progress', title: 'In Progress' },
+]
+
+const data = [
+  { id: 1, title: 'Normal task',  status: 'todo', position: 1024, locked: false },
+  { id: 2, title: 'Locked task',  status: 'todo', position: 2048, locked: true }, // 🔒 item locked
+  { id: 3, title: 'Another task', status: 'todo', position: 3072, locked: false },
+]
+
+// Return true for any item that should be undraggable
+const isItemDisabled = (item) => item.locked === true
+</script>
+
+<template>
+  <Kanban
+    :raw-data="data"
+    :columns="columns"
+    group-key="status"
+    position-key="position"
+    :is-item-disabled="isItemDisabled"
+  />
+</template>
+```
+
+---
+
+#### Combining Both: Locked Column + Locked Items
+
+Both controls are fully composable. You can lock a whole column **and** lock individual items in other columns at the same time.
+
+```vue
+<script setup>
+import { Kanban } from 'vlite3'
+
+const columns = [
+  { id: 'active',   title: 'Active' },
+  { id: 'archived', title: 'Archived', disabled: true }, // board-level lock
+]
+
+const data = [
+  { id: 1, title: 'Free task',   status: 'active',   position: 1024, locked: false },
+  { id: 2, title: 'Locked task', status: 'active',   position: 2048, locked: true  }, // item-level lock
+  { id: 3, title: 'Archived A',  status: 'archived', position: 1024, locked: false },
+]
+
+const isItemDisabled = (item) => item.locked === true
+</script>
+
+<template>
+  <Kanban
+    :raw-data="data"
+    :columns="columns"
+    group-key="status"
+    position-key="position"
+    :is-item-disabled="isItemDisabled"
+  />
+</template>
+```
+
+---
+
 #### Slots Customization
+
 | Slot Name | Scoped Props | Usage |
 | :--- | :--- | :--- |
 | `column-header` | `{ column, pageInfo }` | Replace the entire header UI. |
 | `prepend-item` | `{ column, items }` | Add a "Create Task" button at the top of a column. |
-| `item` | `{ item, column }` | **Crucial.** Customize the card design. |
+| `item` | `{ item, column, isDisabled }` | **Crucial.** Customize the card design. `isDisabled` is `true` when the item or its board is locked. |
 | `append-item` | `{ column, items }` | Add footers or summary info at the bottom. |
+
+The `isDisabled` scoped prop on the `#item` slot lets you apply custom visual styling to locked items without duplicating the disable logic:
+
+```vue
+<template #item="{ item, isDisabled }">
+  <div
+    :class="[
+      'p-3 rounded-lg border transition-colors',
+      isDisabled
+        ? 'opacity-60 cursor-not-allowed border-border'
+        : 'cursor-grab hover:border-primary border-border',
+    ]">
+    <h4 class="text-sm font-medium">{{ item.title }}</h4>
+    <span v-if="item.locked" class="text-xs text-amber-600">🔒 Locked</span>
+  </div>
+</template>
+```
 
 ---
 
@@ -77,3 +210,6 @@ const syncWithBackend = async (id, newStatus, newPosition) => {
 1.  **Stop writing boilerplate:** Always prefer `:raw-data` and `@item-moved` over manually managing a `Record<string, any[]>` grouping state and computing next/prev positions manually.
 2.  **Optimistic UI Built-In:** The component manages its own internal reactivity on drops. It automatically updates the object locally so the UI feels instantaneous while your API call is being made.
 3.  **Performance:** The board uses `v-memo` internally on items and explicitly prevents parent state reactivity death-loops by shallow cloning your `rawData` input.
+4.  **Prefer board-level `disabled` for whole-column locks:** Setting `disabled: true` on a column delegates rejection to Sortable.js natively — it is zero-cost and happens before any Vue event fires.
+5.  **Prefer `:is-item-disabled` over CSS tricks for item locks:** The predicate hooks into Sortable.js's `filter` option, so the drag is cancelled at the library level, not patched after the fact. This means `@item-moved` and `@move` are never called for disabled items — your backend stays safe without extra guards.
+6.  **Use `isDisabled` in the `#item` slot for visual feedback:** The slot prop is already computed for you — no need to call your predicate again inside the template.
