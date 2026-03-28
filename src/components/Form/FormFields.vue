@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, markRaw, type Component } from 'vue'
-import type { IForm, IFormFieldChangePayload } from './types'
+import type { IForm, IFormFieldChangePayload, IFormAddon } from './types'
 import type { InputVariant, InputSize, InputRounded } from '@/types'
 import { getNestedValue, isComponent, resolveFieldType } from './utils/form.utils'
 import Label from '@/components/Label.vue'
@@ -122,6 +122,14 @@ const handleAddonAction = (action: string) => {
   emit('addonAction', action)
 }
 
+// Helper to extract addon name for memoization
+const getAddonName = (addon: string | IFormAddon | undefined): string | null => {
+  if (addon && typeof addon === 'object' && addon.name) {
+    return addon.name
+  }
+  return null
+}
+
 // Support for floating labels for non-input components
 const focusedFields = ref<Record<string, boolean>>({})
 
@@ -213,7 +221,10 @@ const getSafeLabel = (field: IForm) => {
           isUpdate,
           showRequiredAsterisk,
           fieldLoading[field.name],
-          getResolvedType(field)
+          getResolvedType(field),
+          (isComponent(getResolvedType(field)) || getResolvedType(field) === 'customFields') ? values : null,
+          getAddonName(field.addonLeft) ? getNestedValue(values, getAddonName(field.addonLeft) as string) : null,
+          getAddonName(field.addonRight) ? getNestedValue(values, getAddonName(field.addonRight) as string) : null
         ]"
         :class="['max-md:col-span-full! form-field-item', getItemClass(field)]">
         <Label
