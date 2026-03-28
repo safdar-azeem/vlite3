@@ -87,10 +87,12 @@ const inlineItems = [
 </script>
 
 <template>
-  <div class="space-y-10">
-    <div class="space-y-2">
-      <h2 class="text-2xl font-bold">Stats</h2>
-      <p class="text-gray-500">A customizable component to display key metrics and statistics.</p>
+  <div class="space-y-12">
+    <div class="space-y-4 pb-8 border-b border-border/50">
+      <h2 class="text-3xl font-extrabold tracking-tight lg:text-4xl text-foreground">Stats</h2>
+      <p class="text-lg text-muted-foreground w-full max-w-[80%]">
+        A customizable component to display key metrics and statistics.
+      </p>
     </div>
 
     <div>
