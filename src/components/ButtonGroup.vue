@@ -45,47 +45,47 @@ const isVertical = computed(() => props.direction === 'vertical')
 
 /* HORIZONTAL */
 .attached-group:not(.vertical-group) :deep(button:not(:first-child)) {
-  margin-left: -1px;
+  margin-inline-start: -1px;
 }
 
 /* Rounded corners - Horizontal */
 /* We use !important here so that if the user applies a `rounded-full` prop to the button, 
    the inner edges are properly squared off, while the outer edges remain perfectly rounded! */
 .attached-group:not(.vertical-group) :deep(button:first-child) {
-  border-top-right-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
+  border-start-end-radius: 0 !important;
+  border-end-end-radius: 0 !important;
 }
 .attached-group:not(.vertical-group) :deep(button:not(:first-child):not(:last-child)) {
   border-radius: 0 !important;
 }
 .attached-group:not(.vertical-group) :deep(button:last-child) {
-  border-top-left-radius: 0 !important;
-  border-bottom-left-radius: 0 !important;
+  border-start-start-radius: 0 !important;
+  border-end-start-radius: 0 !important;
 }
 
 /* VERTICAL */
 .vertical-group :deep(button:not(:first-child)) {
-  margin-top: -1px;
+  margin-block-start: -1px;
 }
 
 /* Rounded corners - Vertical */
 .vertical-group :deep(button:first-child) {
-  border-bottom-left-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
+  border-end-start-radius: 0 !important;
+  border-end-end-radius: 0 !important;
 }
 .vertical-group :deep(button:not(:first-child):not(:last-child)) {
   border-radius: 0 !important;
 }
 .vertical-group :deep(button:last-child) {
-  border-top-left-radius: 0 !important;
-  border-top-right-radius: 0 !important;
+  border-start-start-radius: 0 !important;
+  border-start-end-radius: 0 !important;
 }
 
 /* --- DIVIDERS FOR SOLID VARIANTS --- */
 .attached-group:not(.vertical-group) :deep(button:not(:first-child):not(.border))::before {
   content: '';
   position: absolute;
-  left: 0;
+  inset-inline-start: 0;
   top: 0;
   bottom: 0;
   width: 1px;
