@@ -13,6 +13,11 @@ export interface KanbanColumn {
   id: string | number
   title: string
   titleI18n?: string
+  /**
+   * When true, no items can be dragged INTO or OUT OF this column.
+   * The column acts as a locked/read-only board.
+   */
+  disabled?: boolean
   [key: string]: any
 }
 
@@ -53,4 +58,12 @@ export interface KanbanProps {
   draggableClass?: string
   ghostClass?: string
   class?: string
+  /**
+   * Predicate called for every item. When it returns true, that specific
+   * item is locked in place and cannot be dragged to another column.
+   * The item still renders normally; only its drag handle is suppressed.
+   *
+   * Example: :is-item-disabled="(item) => item.locked === true"
+   */
+  isItemDisabled?: (item: any) => boolean
 }
