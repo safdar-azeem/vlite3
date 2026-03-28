@@ -124,6 +124,7 @@ const showTimestamp = ref(true)
 const showEditedStatus = ref(true)
 const allowDeleteAll = ref(false)
 const allowEditAll = ref(false)
+const allowFileUpload = ref(true)
 </script>
 
 <template>
@@ -153,6 +154,9 @@ const allowEditAll = ref(false)
           <input type="checkbox" v-model="showEditedStatus" class="rounded border-gray-300" /> Show
           Edited Status
         </label>
+        <label class="flex items-center gap-2 text-sm cursor-pointer">
+          <input type="checkbox" v-model="allowFileUpload" class="rounded border-gray-300" /> Allow File Upload
+        </label>
       </div>
 
       <div class="flex gap-4 flex-wrap">
@@ -180,6 +184,7 @@ const allowEditAll = ref(false)
           :is-loading-more="loadingMore"
           :allow-delete-all="allowDeleteAll"
           :allow-edit-all="allowEditAll"
+          :allow-file-upload="allowFileUpload"
           :folder-id="chatFolderId"
           :max-file-size="10 * 1024 * 1024"
           @add="handleAdd"
