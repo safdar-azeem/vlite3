@@ -19,6 +19,7 @@ A fully-featured, enterprise-grade chat component supporting reverse infinite sc
 | `isLoadingMore` | `boolean`             | `false`              | When `true`, shows a spinner at the top of the message list (used during reverse-scroll pagination).             |
 | `allowDeleteAll`| `boolean`             | `false`              | When `true`, allows the current user to delete messages sent by others (admin mode).                             |
 | `allowEditAll`  | `boolean`             | `false`              | When `true`, allows the current user to edit messages sent by others (admin mode).                               |
+| `allowFileUpload`| `boolean`            | `true`               | When `true` (default), shows the file attachment picker button.                                                  |
 | `confirmDelete` | `boolean`             | `true`               | When `true`, the delete button requires a second click to confirm. Set to `false` to delete on first click.      |
 | `folderId`      | `string`              | `undefined`          | The storage folder ID passed to the file upload handler when attaching files.                                    |
 | `maxFileSize`   | `number`              | `undefined`          | Maximum allowed file size in bytes for attachments (e.g. `10 * 1024 * 1024` for 10 MB).                         |
