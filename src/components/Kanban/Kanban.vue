@@ -92,6 +92,14 @@ const handleMoveCalculation = (colId: string | number, newIndex: number) => {
   emit('item-moved', item[props.itemKey], colId, newPos, item)
 }
 
+/**
+ * Resolve whether a column is disabled by its id.
+ * A column is disabled when KanbanColumn.disabled === true.
+ */
+const isColumnDisabled = (columnId: string | number): boolean => {
+  return props.columns.find((c) => c.id === columnId)?.disabled === true
+}
+
 const handleChange = (payload: KanbanChangeEvent) => {
   emit('change', payload)
 
@@ -100,7 +108,12 @@ const handleChange = (payload: KanbanChangeEvent) => {
   } else if (payload.type === 'add') {
     moveBuffer.value.add = { columnId: payload.columnId, event: payload.event }
   } else if (payload.type === 'update') {
-    // Same column reorder
+    // Same column reorder — skip if that column is disabled
+    if (isColumnDisabled(payload.columnId)) {
+      moveBuffer.value = {}
+      return
+    }
+
     handleMoveCalculation(payload.columnId, payload.event.newIndex)
 
     emit('move', {
@@ -117,6 +130,12 @@ const handleChange = (payload: KanbanChangeEvent) => {
   // If we have both parts of a cross-column move, emit consolidated event & calculate position
   if (moveBuffer.value.remove && moveBuffer.value.add) {
     const { remove, add } = moveBuffer.value
+
+    // Guard: block moves that originate from or land in a disabled column
+    if (isColumnDisabled(remove.columnId) || isColumnDisabled(add.columnId)) {
+      moveBuffer.value = {}
+      return
+    }
 
     handleMoveCalculation(add.columnId, add.event.newIndex)
 
@@ -168,6 +187,7 @@ const columnData = (colId: string | number) => {
       :body-class="bodyClass"
       :draggable-class="draggableClass"
       :ghost-class="ghostClass"
+      :is-item-disabled="isItemDisabled"
       @change="handleChange"
       @update:columnData="(items) => updateColumnData(column.id, items)">
       <template #header="slotProps">
