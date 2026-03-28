@@ -6,6 +6,7 @@ import Icon from '../Icon.vue'
 import FilePicker from '../FilePicker/FilePicker.vue'
 import type { FilePickerValue } from '../FilePicker/FilePicker.vue'
 import { useFileUpload } from '../Form/composables/useFileUpload'
+import { $t } from '@/utils/i18n'
 
 export interface ChatAttachment {
   fileUrl: string
@@ -46,7 +47,24 @@ const props = withDefaults(
     showAvatar?: boolean
     showUserInfo?: boolean
     showTimestamp?: boolean
+
+    // Feature Toggles & Customization
+    showEditedStatus?: boolean
+    editedText?: string
+    editedTextI18n?: string
+
+    // I18n Props
     placeholder?: string
+    placeholderI18n?: string
+    loadingMoreText?: string
+    loadingMoreTextI18n?: string
+    emptyText?: string
+    emptyTextI18n?: string
+    editingText?: string
+    editingTextI18n?: string
+    cancelEditText?: string
+    cancelEditTextI18n?: string
+
     isLoadingMore?: boolean
     allowDeleteAll?: boolean
     allowEditAll?: boolean
@@ -62,7 +80,7 @@ const props = withDefaults(
     showAvatar: true,
     showUserInfo: true,
     showTimestamp: true,
-    placeholder: 'Type a message...',
+    showEditedStatus: true,
     isLoadingMore: false,
     allowDeleteAll: false,
     allowEditAll: false,
@@ -88,6 +106,58 @@ const editingMessage = ref<ChatMessage | null>(null)
 
 const selectedFiles = ref<FilePickerValue[]>([])
 const { handleUploadFiles, loading: isUploading } = useFileUpload()
+
+// --- Computed Texts (i18n support) ---
+const displayPlaceholder = computed(() => {
+  if (props.placeholderI18n) {
+    const res = $t(props.placeholderI18n)
+    if (res !== props.placeholderI18n) return res
+  }
+  if (props.placeholder) return props.placeholder
+  const globalRes = $t('vlite.chat.placeholder')
+  return globalRes !== 'vlite.chat.placeholder' ? globalRes : 'Type a message...'
+})
+
+const displayLoadingMore = computed(() => {
+  if (props.loadingMoreTextI18n) {
+    const res = $t(props.loadingMoreTextI18n)
+    if (res !== props.loadingMoreTextI18n) return res
+  }
+  if (props.loadingMoreText) return props.loadingMoreText
+  const globalRes = $t('vlite.chat.loadingMore')
+  return globalRes !== 'vlite.chat.loadingMore' ? globalRes : 'Loading older messages...'
+})
+
+const displayEmptyText = computed(() => {
+  if (props.emptyTextI18n) {
+    const res = $t(props.emptyTextI18n)
+    if (res !== props.emptyTextI18n) return res
+  }
+  if (props.emptyText) return props.emptyText
+  const globalRes = $t('vlite.chat.empty')
+  return globalRes !== 'vlite.chat.empty' ? globalRes : 'No messages yet'
+})
+
+const displayEditingText = computed(() => {
+  if (props.editingTextI18n) {
+    const res = $t(props.editingTextI18n)
+    if (res !== props.editingTextI18n) return res
+  }
+  if (props.editingText) return props.editingText
+  const globalRes = $t('vlite.chat.editing')
+  return globalRes !== 'vlite.chat.editing' ? globalRes : 'Editing:'
+})
+
+const displayCancelEditText = computed(() => {
+  if (props.cancelEditTextI18n) {
+    const res = $t(props.cancelEditTextI18n)
+    if (res !== props.cancelEditTextI18n) return res
+  }
+  if (props.cancelEditText) return props.cancelEditText
+  const globalRes = $t('vlite.chat.cancelEdit')
+  return globalRes !== 'vlite.chat.cancelEdit' ? globalRes : 'Press Esc to cancel'
+})
+// -------------------------------------
 
 // Intersection Observer for Reverse Infinite Scroll
 let observer: IntersectionObserver | null = null
@@ -229,7 +299,7 @@ const handleSend = async () => {
     let attachments: ChatAttachment[] = []
 
     if (hasFiles) {
-      const filesToUpload = selectedFiles.value.map(f => f.file).filter(Boolean) as File[]
+      const filesToUpload = selectedFiles.value.map((f) => f.file).filter(Boolean) as File[]
       if (filesToUpload.length > 0) {
         const urls = await handleUploadFiles(filesToUpload, props.folderId)
         attachments = selectedFiles.value
@@ -239,7 +309,7 @@ const handleSend = async () => {
             fileType: f.fileType,
             fileSize: f.fileSize,
           }))
-          .filter(a => a.fileUrl !== null && a.fileUrl !== '')
+          .filter((a) => a.fileUrl !== null && a.fileUrl !== '')
       }
     }
 
@@ -275,10 +345,10 @@ const toDateKey = (ts: string | Date | undefined): string => {
 
 /**
  * Formats a date into a human-friendly separator label:
- *   - "Today"
- *   - "Yesterday"
- *   - "Mon, 24 Mar" (within the current year)
- *   - "Mon, 24 Mar 2023" (older years)
+ * - "Today"
+ * - "Yesterday"
+ * - "Mon, 24 Mar" (within the current year)
+ * - "Mon, 24 Mar 2023" (older years)
  */
 const formatSeparatorLabel = (ts: string | Date): string => {
   const date = new Date(ts)
@@ -287,11 +357,17 @@ const formatSeparatorLabel = (ts: string | Date): string => {
   const todayKey = toDateKey(now)
   const msgKey = toDateKey(date)
 
-  if (msgKey === todayKey) return 'Today'
+  if (msgKey === todayKey) {
+    const globalRes = $t('vlite.chat.today')
+    return globalRes !== 'vlite.chat.today' ? globalRes : 'Today'
+  }
 
   const yesterday = new Date(now)
   yesterday.setDate(now.getDate() - 1)
-  if (msgKey === toDateKey(yesterday)) return 'Yesterday'
+  if (msgKey === toDateKey(yesterday)) {
+    const globalRes = $t('vlite.chat.yesterday')
+    return globalRes !== 'vlite.chat.yesterday' ? globalRes : 'Yesterday'
+  }
 
   // Named day + date for recent history; add year when it differs
   const sameYear = date.getFullYear() === now.getFullYear()
@@ -367,13 +443,13 @@ const isSeparator = (item: ListItem): item is DateSeparator =>
             fill="currentColor"
             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
-        Loading older messages...
+        {{ displayLoadingMore }}
       </div>
 
       <div
         v-if="!data.length && !isLoadingMore"
         class="flex items-center justify-center h-full text-muted-foreground text-sm">
-        No messages yet
+        {{ displayEmptyText }}
       </div>
 
       <div class="flex flex-col gap-2 pb-2">
@@ -400,7 +476,7 @@ const isSeparator = (item: ListItem): item is DateSeparator =>
           -->
           <ChatBubble
             v-else
-            :message="(item as ChatMessage)"
+            :message="item as ChatMessage"
             :is-sender="(item as ChatMessage).senderId === currentUserId"
             :show-avatar="showAvatar"
             :show-user-info="showUserInfo"
@@ -408,6 +484,9 @@ const isSeparator = (item: ListItem): item is DateSeparator =>
             :allow-delete-all="allowDeleteAll"
             :allow-edit-all="allowEditAll"
             :confirm-delete="confirmDelete"
+            :show-edited-status="showEditedStatus"
+            :edited-text="editedText"
+            :edited-text-i18n="editedTextI18n"
             @delete="$emit('delete', $event)"
             @edit="startEditing" />
         </template>
@@ -430,14 +509,14 @@ const isSeparator = (item: ListItem): item is DateSeparator =>
             stroke-linejoin="round">
             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
           </svg>
-          <span class="truncate max-w-[200px] sm:max-w-[300px] md:max-w-[400px]"
-            >Editing: {{ editingMessage.text }}</span
-          >
+          <span class="truncate max-w-[200px] sm:max-w-[300px] md:max-w-[400px]">
+            {{ displayEditingText }} {{ editingMessage.text }}
+          </span>
         </div>
         <div class="flex items-center gap-2 shrink-0">
-          <span class="text-[10px] hidden sm:inline-block opacity-60 mr-1"
-            >Press Esc to cancel</span
-          >
+          <span class="text-[10px] hidden sm:inline-block opacity-60 mr-1">
+            {{ displayCancelEditText }}
+          </span>
           <button
             @click="cancelEdit"
             class="hover:text-foreground p-0.5 rounded-full hover:bg-muted transition-colors"
@@ -481,8 +560,8 @@ const isSeparator = (item: ListItem): item is DateSeparator =>
           </div>
         </div>
 
-        <div class="flex items-end gap-2 p-1">
-          <div class="shrink-0 mb-1 ml-1">
+        <div class="flex items-end gap-0 p-1">
+          <div class="shrink-0 mb-0.5 ml-1">
             <FilePicker
               v-model="selectedFiles"
               :multi-select="true"
@@ -494,7 +573,7 @@ const isSeparator = (item: ListItem): item is DateSeparator =>
                   size="sm"
                   icon="lucide:paperclip"
                   rounded="full"
-                  class="h-8 w-8 px-0 text-muted-foreground hover:text-foreground transition-colors"
+                  class="px-0 text-muted-foreground hover:text-foreground transition-colors"
                   @click="trigger"
                   :disabled="isUploading"
                   aria-label="Attach files" />
@@ -505,7 +584,7 @@ const isSeparator = (item: ListItem): item is DateSeparator =>
           <textarea
             ref="textareaRef"
             v-model="inputText"
-            :placeholder="placeholder"
+            :placeholder="displayPlaceholder"
             :disabled="isUploading"
             class="flex-1 max-h-[120px] min-h-[20px] w-full resize-none bg-transparent px-2 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground scrollbar-thin disabled:opacity-50"
             rows="1"
@@ -513,16 +592,12 @@ const isSeparator = (item: ListItem): item is DateSeparator =>
             @input="handleInput"
             @keydown="handleKeyDown" />
 
-          <div class="shrink-0 mb-1 mr-1">
+          <div class="shrink-0 mb-0.5 mr-1">
             <Button
               variant="primary"
               size="sm"
               :icon="
-                isUploading
-                  ? 'lucide:loader-2'
-                  : editingMessage
-                    ? 'lucide:check'
-                    : 'lucide:send'
+                isUploading ? 'lucide:loader-2' : editingMessage ? 'lucide:check' : 'lucide:send'
               "
               :loading="isUploading"
               rounded="full"
