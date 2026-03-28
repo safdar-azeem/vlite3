@@ -67,9 +67,25 @@ const activeViewKey = computed(() => props.name || props.title || 'default-scree
 /**
  * Resolved view definitions. Priority:
  * 1. `views` prop (fully dynamic, any number of views)
- * 2. Legacy `table` / `list` props — normalised into the same ScreenView shape
- * 3. Slots: `table`, `list`, `grid` — handled separately in template
+ * 2. Legacy `table` / `list` / `kanban` / `calendar` props & slots — normalised into the same ScreenView shape
  */
+const txtTableView = computed(() => {
+  const r = $t('vlite.screen.tableView')
+  return r !== 'vlite.screen.tableView' ? r : 'Table View'
+})
+const txtListView = computed(() => {
+  const r = $t('vlite.screen.listView')
+  return r !== 'vlite.screen.listView' ? r : 'List View'
+})
+const txtKanbanView = computed(() => {
+  const r = $t('vlite.screen.kanbanView')
+  return r !== 'vlite.screen.kanbanView' ? r : 'Kanban View'
+})
+const txtCalendarView = computed(() => {
+  const r = $t('vlite.screen.calendarView')
+  return r !== 'vlite.screen.calendarView' ? r : 'Calendar View'
+})
+
 const resolvedViews = computed(() => {
   // Dynamic views prop takes full priority
   if (props.views && props.views.length > 0) {
@@ -82,22 +98,38 @@ const resolvedViews = computed(() => {
     }))
   }
 
-  // Legacy table / list props → normalise to ScreenView[]
+  // Legacy table / list / kanban / calendar props & slots
   const legacy: any[] = []
-  if (props.table) {
+  if (props.table || slots.table) {
     legacy.push({
       key: 'table',
-      component: markRaw(props.table),
+      component: props.table ? markRaw(props.table) : null,
       icon: 'lucide:list',
-      label: 'Table View',
+      label: txtTableView.value,
     })
   }
-  if (props.list) {
+  if (props.list || slots.list || slots.grid) {
     legacy.push({
       key: 'list',
-      component: markRaw(props.list),
+      component: props.list ? markRaw(props.list) : null,
       icon: 'lucide:layout-grid',
-      label: 'List View',
+      label: txtListView.value,
+    })
+  }
+  if (props.kanban || slots.kanban) {
+    legacy.push({
+      key: 'kanban',
+      component: props.kanban ? markRaw(props.kanban) : null,
+      icon: 'lucide:kanban',
+      label: txtKanbanView.value,
+    })
+  }
+  if (props.calendar || slots.calendar) {
+    legacy.push({
+      key: 'calendar',
+      component: props.calendar ? markRaw(props.calendar) : null,
+      icon: 'lucide:calendar',
+      label: txtCalendarView.value,
     })
   }
   return legacy
@@ -107,17 +139,11 @@ const resolvedViews = computed(() => {
 const resolvedViewKeys = computed(() => resolvedViews.value.map((v) => v.key))
 
 /** Whether we have more than one view to toggle between */
-const hasMultipleViews = computed(() => {
-  const dynamicCount = resolvedViews.value.length
-  const slotCount = [slots.table, slots.list, slots.grid].filter(Boolean).length
-  return dynamicCount + slotCount > 1
-})
+const hasMultipleViews = computed(() => resolvedViews.value.length > 1)
 
 // ── Persist active view; default to first available view key ─────────────────
 const defaultView = computed(() => {
-  if (props.views && props.views.length > 0) return props.views[0].key
-  if (props.table || slots.table) return 'table'
-  if (props.list || slots.list || slots.grid) return 'list'
+  if (resolvedViews.value.length > 0) return resolvedViews.value[0].key
   return 'table'
 })
 
@@ -129,11 +155,13 @@ const activeComponent = computed(() => {
   return view?.component ?? null
 })
 
-// ── Slot-based view matching: slots use fixed keys table / list / grid ────────
-const activeSlotName = computed<'table' | 'list' | 'grid' | null>(() => {
+// ── Slot-based view matching: slots use fixed keys ────────
+const activeSlotName = computed<'table' | 'list' | 'grid' | 'kanban' | 'calendar' | null>(() => {
   if (activeView.value === 'table' && slots.table) return 'table'
   if (activeView.value === 'list' && slots.list) return 'list'
   if (activeView.value === 'list' && slots.grid) return 'grid'
+  if (activeView.value === 'kanban' && slots.kanban) return 'kanban'
+  if (activeView.value === 'calendar' && slots.calendar) return 'calendar'
   return null
 })
 
@@ -457,7 +485,7 @@ const handleBackendExport = async (format: string) => {
           <ScreenViewToggle
             v-if="hasMultipleViews"
             v-model="activeView"
-            :views="views && views.length > 0 ? views : undefined" />
+            :views="resolvedViews" />
 
           <slot name="before-search" v-bind="screenState" />
 
@@ -562,6 +590,24 @@ const handleBackendExport = async (format: string) => {
         <slot
           v-else-if="activeSlotName === 'grid'"
           name="grid"
+          :data="data"
+          :loading="loading"
+          :selected-rows="selectedRows"
+          :delete="requestDelete"
+          :update-selected-rows="(val: any[]) => (selectedRows = val)"
+          v-bind="screenState" />
+        <slot
+          v-else-if="activeSlotName === 'kanban'"
+          name="kanban"
+          :data="data"
+          :loading="loading"
+          :selected-rows="selectedRows"
+          :delete="requestDelete"
+          :update-selected-rows="(val: any[]) => (selectedRows = val)"
+          v-bind="screenState" />
+        <slot
+          v-else-if="activeSlotName === 'calendar'"
+          name="calendar"
           :data="data"
           :loading="loading"
           :selected-rows="selectedRows"
