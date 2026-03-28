@@ -49,7 +49,7 @@ const containerClass = computed(() => {
 
 const getItemClass = (item: StatItemSchema, index: number) => {
   const base =
-    props.layout === 'inline-label-value' ? 'flex px-3.5 py-3 relative ' : 'flex p-3 relative '
+    props.layout === 'inline-label-value' ? 'flex px-3.5 py-3' : 'flex p-3'
 
   const layoutClasses: Record<string, string> = {
     'icon-left': 'flex-row items-center gap-3 text-left',
@@ -60,7 +60,7 @@ const getItemClass = (item: StatItemSchema, index: number) => {
     // centered: value on top (bigger/bold), title below — no icon
     'centered-value-title': 'flex-col items-center justify-center text-center gap-1',
     // floating icon overlapping card top-right corner
-    'floating-icon': 'flex-col items-start gap-1 text-left',
+    'floating-icon': 'flex-col items-start gap-1 text-left relative',
     // split-bar: colored left border accent with stacked text
     'split-bar': 'flex-row items-center gap-3 text-left border-l-4',
     // inline-label-value: icon + label left, value right — compact row
@@ -76,13 +76,13 @@ const getItemClass = (item: StatItemSchema, index: number) => {
     // Added border-border to ensure standard border coloring and prevent currentColor rendering bugs
     if (props.variant === 'transparent') {
       // No borders, no background — fully see-through
-      variantClasses = 'border-b border-r border-transparent hover:bg-muted/30'
+      variantClasses = 'border-b border-r border-transparent bg-transparent hover:bg-muted/30 transition-colors'
     } else if (props.variant === 'outline') {
       // outline attached: border dividers only, no background fill
-      variantClasses = 'border-b border-r border-border hover:bg-muted/30'
+      variantClasses = 'border-b border-r border-border bg-transparent hover:bg-muted/30 transition-colors'
     } else {
       // shadow / solid attached: surface background
-      variantClasses = 'border-b border-r border-border hover:bg-muted/30 bg-card'
+      variantClasses = 'border-b border-r border-border bg-card hover:bg-muted/30 transition-colors'
     }
   } else {
     switch (props.variant) {
