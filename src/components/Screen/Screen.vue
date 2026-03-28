@@ -51,6 +51,7 @@ const props = withDefaults(defineProps<ScreenProps>(), {
   quickFilterKey: 'status',
   quickFilterVariant: 'line',
   skipEmptyViews: () => [],
+  skipQuickFilterViews: () => [],
 })
 const vliteConfig = useVLiteConfig()
 const emit = defineEmits<{
@@ -157,8 +158,8 @@ const activeQuickFilter = ref<string | number>(
 
 const hasQuickFilters = computed(() => {
   if (!props.quickFilters || props.quickFilters.length === 0) return false
-  if (props.quickFilterViews && props.quickFilterViews.length > 0) {
-    return props.quickFilterViews.includes(activeView.value)
+  if (props.skipQuickFilterViews && props.skipQuickFilterViews.length > 0) {
+    return !props.skipQuickFilterViews.includes(activeView.value)
   }
   return true
 })
