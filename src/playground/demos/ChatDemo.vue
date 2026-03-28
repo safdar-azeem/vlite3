@@ -15,6 +15,7 @@ const messages = ref<ChatMessage[]>([
     senderName: 'Alice',
     timestamp: new Date(Date.now() - 1000 * 60 * 60),
     avatar: 'https://i.pravatar.cc/150?img=5',
+    isEdited: true,
     attachments: [
       {
         fileName: '626182816_18093985156987193_1998335512335153763_n.jpg',
@@ -120,6 +121,7 @@ const handleRefetch = () => {
 const showAvatar = ref(true)
 const showUserInfo = ref(true)
 const showTimestamp = ref(true)
+const showEditedStatus = ref(true)
 const allowDeleteAll = ref(false)
 const allowEditAll = ref(false)
 </script>
@@ -147,6 +149,10 @@ const allowEditAll = ref(false)
           <input type="checkbox" v-model="showTimestamp" class="rounded border-gray-300" /> Show
           Timestamp
         </label>
+        <label class="flex items-center gap-2 text-sm cursor-pointer">
+          <input type="checkbox" v-model="showEditedStatus" class="rounded border-gray-300" /> Show
+          Edited Status
+        </label>
       </div>
 
       <div class="flex gap-4 flex-wrap">
@@ -170,6 +176,7 @@ const allowEditAll = ref(false)
           :show-avatar="showAvatar"
           :show-user-info="showUserInfo"
           :show-timestamp="showTimestamp"
+          :show-edited-status="showEditedStatus"
           :is-loading-more="loadingMore"
           :allow-delete-all="allowDeleteAll"
           :allow-edit-all="allowEditAll"
