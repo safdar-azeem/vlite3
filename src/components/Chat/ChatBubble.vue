@@ -4,6 +4,7 @@ import Avatar from '../Avatar.vue'
 import Button from '../Button.vue'
 import type { ChatMessage } from './ChatInterface.vue'
 import { AttachmentsList } from '../AttachmentsList'
+import { $t } from '@/utils/i18n'
 
 const props = defineProps<{
   message: ChatMessage
@@ -18,6 +19,12 @@ const props = defineProps<{
    * Defaults to true.
    */
   confirmDelete?: boolean
+  /**
+   * Toggle to show or hide the "edited" status indicator on messages
+   */
+  showEditedStatus?: boolean
+  editedText?: string
+  editedTextI18n?: string
 }>()
 
 const emit = defineEmits<{
@@ -29,6 +36,16 @@ const formattedTime = computed(() => {
   if (!props.message.timestamp) return ''
   const date = new Date(props.message.timestamp)
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+})
+
+const displayEditedText = computed(() => {
+  if (props.editedTextI18n) {
+    const res = $t(props.editedTextI18n)
+    if (res !== props.editedTextI18n) return res
+  }
+  if (props.editedText) return props.editedText
+  const globalRes = $t('vlite.chat.edited')
+  return globalRes !== 'vlite.chat.edited' ? globalRes : 'edited'
 })
 
 // --- Delete confirmation state ---
@@ -118,13 +135,13 @@ const cancelPendingDelete = () => {
             class="mt-1 flex items-center gap-1"
             :class="isSender ? 'justify-end' : 'justify-start'">
             <span
-              v-if="message.isEdited"
+              v-if="message.isEdited && showEditedStatus !== false"
               class="text-[10px] opacity-60"
               :class="isSender ? 'text-primary-foreground' : 'text-muted-foreground'">
-              edited
+              {{ displayEditedText }}
             </span>
             <span
-              v-if="message.isEdited && message.timestamp"
+              v-if="message.isEdited && showEditedStatus !== false && message.timestamp"
               class="text-[10px] opacity-40"
               :class="isSender ? 'text-primary-foreground' : 'text-muted-foreground'">
               ·
