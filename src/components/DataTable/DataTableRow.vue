@@ -56,6 +56,10 @@ const formatValue = (header: TableHeader, value: any, row: any): string => {
 const getCellClass = (header: TableHeader, value: any, row: any): string => {
   const classes: string[] = []
 
+  if (header.width && /^w-/.test(header.width)) {
+    classes.push(header.width)
+  }
+
   if (header.capitalize) {
     classes.push('capitalize')
   }
@@ -138,37 +142,43 @@ const handleSelect = () => {
     <td
       v-for="header in headers"
       :key="header.field"
-      class="align-middle overflow-hidden"
+      class="align-middle overflow-hidden max-w-[400px] whitespace-normal break-words"
+      :style="{
+        ...(header.width && !/^w-/.test(header.width) ? { width: header.width } : {}),
+        ...(header.minWidth ? { minWidth: header.minWidth } : {}),
+      }"
       :class="[
         compact ? 'py-1! -text-fs-1.5! max-sm:pr-10!' : 'py-3! pr-5! max-sm:pr-10! -text-fs-1.5!',
         alignClass(header),
         header.hideOnMobile ? 'hidden md:table-cell' : '',
         getCellClass(header, getNestedValue(row, header.field), row),
       ]">
-      <slot
-        :name="header.field"
-        :value="getNestedValue(row, header.field)"
-        :row="row"
-        :index="index"
-        :field="header.field">
-        <Price
-          v-if="header.type === 'price'"
+      <div class="max-h-[80px] overflow-y-auto w-full">
+        <slot
+          :name="header.field"
           :value="getNestedValue(row, header.field)"
-          class="truncate block"
-          :title="String(getNestedValue(row, header.field))" />
+          :row="row"
+          :index="index"
+          :field="header.field">
+          <Price
+            v-if="header.type === 'price'"
+            :value="getNestedValue(row, header.field)"
+            class="block"
+            :title="String(getNestedValue(row, header.field))" />
 
-        <DateTime
-          v-else-if="header.type === 'date'"
-          :value="getNestedValue(row, header.field)"
-          class="truncate block"
-          :title="String(getNestedValue(row, header.field))" />
+          <DateTime
+            v-else-if="header.type === 'date'"
+            :value="getNestedValue(row, header.field)"
+            class="block"
+            :title="String(getNestedValue(row, header.field))" />
 
-        <span
-          v-else
-          class="truncate block"
-          :title="String(getNestedValue(row, header.field))"
-          v-html="formatValue(header, getNestedValue(row, header.field), row)" />
-      </slot>
+          <span
+            v-else
+            class="block"
+            :title="String(getNestedValue(row, header.field))"
+            v-html="formatValue(header, getNestedValue(row, header.field), row)" />
+        </slot>
+      </div>
     </td>
   </tr>
 </template>
