@@ -29,6 +29,16 @@ const dummyDictionary: Record<string, string> = {
   'vlite.filePicker.dragAndDrop': 'o arrastrar y soltar (Translated)',
   'vlite.filePicker.addMore': 'Añadir más (Translated)',
 
+  // Chat Interface i18n
+  'vlite.chat.edited': 'editado (Translated)',
+  'vlite.chat.loadingMore': 'Cargando mensajes antiguos... (Translated)',
+  'vlite.chat.empty': 'Aún no hay mensajes (Translated)',
+  'vlite.chat.editing': 'Editando: (Translated)',
+  'vlite.chat.cancelEdit': 'Presiona Esc para cancelar (Translated)',
+  'vlite.chat.placeholder': 'Escribe un mensaje... (Translated)',
+  'vlite.chat.today': 'Hoy (Translated)',
+  'vlite.chat.yesterday': 'Ayer (Translated)',
+
   // DataList / Empty
   'vlite.empty.title': 'No se encontraron datos (Translated)',
   'vlite.empty.description': 'No hay nada que mostrar aquí en este momento. (Translated)',
@@ -105,6 +115,7 @@ const dummyDictionary: Record<string, string> = {
 // Setup vLite with global i18n handler
 const vlite = createVLite({
   services: {
+    t: (key: string) => dummyDictionary[key] || key, // Enable the test dictionary
     importApi: async (entity, payload) => {
       console.log(`[VLite Mock API] Importing to ${entity}...`)
       return new Promise((resolve) => {
@@ -141,7 +152,7 @@ const app = createApp(App)
 app.directive('scroll-reveal', vScrollReveal)
 
 // Setup plugins
-app.use(vlite)
+// app.use(vlite)
 app.use(router)
 
 app.mount('#app')
