@@ -316,20 +316,24 @@ const tableClass = computed(() => ['w-full caption-bottom -text-fs-1', props.tab
 
 const getColumnStyle = (header: TableHeader) => {
   const style: Record<string, string> = {}
-  if (header.width && !/^w-/.test(header.width)) {
+  if (header.width && !/(?:^|\s|:)w-/.test(header.width)) {
     style.width = header.width
   }
-  if (header.minWidth) {
+  if (header.minWidth && !/(?:^|\s|:)min-w-/.test(header.minWidth)) {
     style.minWidth = header.minWidth
   }
   return style
 }
 
 const getColumnClass = (header: TableHeader) => {
-  if (header.width && /^w-/.test(header.width)) {
-    return header.width
+  const classes: string[] = []
+  if (header.width && /(?:^|\s|:)w-/.test(header.width)) {
+    classes.push(header.width)
   }
-  return ''
+  if (header.minWidth && /(?:^|\s|:)min-w-/.test(header.minWidth)) {
+    classes.push(header.minWidth)
+  }
+  return classes.join(' ')
 }
 
 // ── i18n ──────────────────────────────────────────────────────────────────────
