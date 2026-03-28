@@ -18,6 +18,14 @@ const props = defineProps<{
   bodyClass?: string
   draggableClass?: string
   ghostClass?: string
+  /**
+   * Optional predicate forwarded from the parent <Kanban> component.
+   * When it returns true for a given item, that item's wrapper receives
+   * the CSS class "kanban-item--disabled" which is set as the
+   * VueDraggable `filter` selector — Sortable.js will skip those elements
+   * during drag operations while still rendering them normally.
+   */
+  isItemDisabled?: (item: any) => boolean
 }>()
 
 const emit = defineEmits<{
@@ -76,18 +84,64 @@ const onUpdateEvent = (e: any) => {
 const displayTitle = computed(() =>
   props.column.titleI18n ? $t(props.column.titleI18n) : props.column.title
 )
+
+/**
+ * Whether the entire board/column is disabled.
+ * When true, VueDraggable operates in sort:false + no cross-column mode
+ * by passing a disabled group config, and the board gets a visual hint.
+ */
+const isBoardDisabled = computed(() => props.column.disabled === true)
+
+/**
+ * VueDraggable group option.
+ *
+ * - Normal board  → items can be dragged in and out freely (group name only).
+ * - Disabled board → pull:false + put:false locks the column completely so
+ *   Sortable.js itself rejects any drag entering or leaving this column,
+ *   providing a native, instant rejection without needing JS guards.
+ */
+const draggableGroup = computed(() => {
+  if (isBoardDisabled.value) {
+    return { name: props.group, pull: false, put: false }
+  }
+  return props.group
+})
+
+/**
+ * CSS class appended to every item that is individually disabled.
+ * VueDraggable's `filter` prop accepts a CSS selector; Sortable.js will
+ * ignore elements matching it during drag start — the item is rendered
+ * normally but cannot be picked up.
+ */
+const DISABLED_ITEM_CLASS = 'kanban-item--disabled'
+
+/**
+ * Resolve whether a specific item should be individually disabled.
+ */
+const isItemDisabledFn = (item: any): boolean => {
+  return typeof props.isItemDisabled === 'function' ? props.isItemDisabled(item) : false
+}
 </script>
 
 <template>
   <div
     :class="[
       'flex flex-col bg-card rounded-lg overflow-hidden shrink-0 border border-border/50 w-full flex-1 min-w-75',
+      // Visual indicator for a fully-disabled/locked board
+      isBoardDisabled && 'kanban-board--disabled',
       boardClass,
     ]">
     <div :class="['p-3 border-b border-border/80 ', headerClass]">
       <slot name="header" :column="column" :pageInfo="pageInfo">
         <div class="flex items-center justify-between font-semibold text-foreground">
           <span>{{ displayTitle }}</span>
+          <!-- Lock badge shown only when the entire board is disabled -->
+          <span
+            v-if="isBoardDisabled"
+            class="kanban-lock-badge"
+            title="This column is locked — items cannot be moved in or out">
+            🔒
+          </span>
         </div>
       </slot>
     </div>
@@ -118,10 +172,12 @@ const displayTitle = computed(() =>
         <VueDraggable
           :model-value="items"
           @update:model-value="handleItemsUpdate"
-          :group="group"
+          :group="draggableGroup"
           :animation="150"
           :ghostClass="ghostClass || 'kanban-ghost'"
           :class="['flex-1 flex flex-col gap-2 min-h-[50px] py-1', draggableClass]"
+          :filter="`.${DISABLED_ITEM_CLASS}`"
+          :preventOnFilter="true"
           @add="onAdd"
           @remove="onRemove"
           @update="onUpdateEvent">
@@ -129,9 +185,21 @@ const displayTitle = computed(() =>
             v-for="item in items"
             :key="item[itemKey || 'id']"
             v-memo="[item]"
-            class="cursor-grab active:cursor-grabbing">
-            <slot name="item" :item="item" :column="column">
-              <div class="bg-body p-3 rounded-md shadow-sm border border-border text-sm">
+            :class="[
+              // Board-disabled → all items show default cursor (no grab)
+              // Item-disabled  → specific item shows not-allowed cursor
+              isBoardDisabled
+                ? 'cursor-default'
+                : isItemDisabledFn(item)
+                  ? `${DISABLED_ITEM_CLASS} cursor-not-allowed`
+                  : 'cursor-grab active:cursor-grabbing',
+            ]">
+            <slot name="item" :item="item" :column="column" :is-disabled="isBoardDisabled || isItemDisabledFn(item)">
+              <div
+                :class="[
+                  'bg-body p-3 rounded-md shadow-sm border border-border text-sm',
+                  (isBoardDisabled || isItemDisabledFn(item)) && 'opacity-60',
+                ]">
                 {{ item.title || item.name || item.id }}
               </div>
             </slot>
@@ -162,5 +230,18 @@ const displayTitle = computed(() =>
 .scrollable-container {
   will-change: transform;
   contain: layout style;
+}
+
+/* Disabled board: subtle background tint + reduced opacity to signal locked state */
+.kanban-board--disabled {
+  opacity: 0.75;
+  background-color: color-mix(in srgb, var(--color-card) 85%, var(--color-muted) 15%);
+}
+
+/* Lock badge next to the column title */
+.kanban-lock-badge {
+  font-size: 0.75rem;
+  line-height: 1;
+  user-select: none;
 }
 </style>
