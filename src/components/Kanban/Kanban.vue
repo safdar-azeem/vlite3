@@ -1,13 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import KanbanBoard from './KanbanBoard.vue'
-import type {
-  KanbanColumn,
-  KanbanLoadDataResult,
-  KanbanChangeEvent,
-  KanbanMoveEvent,
-  KanbanProps,
-} from './types'
+import type { KanbanChangeEvent, KanbanMoveEvent, KanbanProps } from './types'
 
 const props = withDefaults(defineProps<KanbanProps>(), {
   group: 'kanban-group',
