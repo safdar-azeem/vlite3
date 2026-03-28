@@ -6,10 +6,10 @@ import sourceCode from './ButtonDemo.vue?raw'
 </script>
 
 <template>
-  <div class="space-y-10">
-    <div class="space-y-2">
-      <h2 class="text-2xl font-bold">Button</h2>
-      <p class="text-gray-500">
+  <div class="space-y-12">
+    <div class="space-y-4 pb-8 border-b border-border/50">
+      <h2 class="text-3xl font-extrabold tracking-tight lg:text-4xl text-foreground">Button</h2>
+      <p class="text-lg text-muted-foreground w-full max-w-[80%]">
         Triggers an event or action. They let users know what will happen next.
       </p>
     </div>
