@@ -56,8 +56,12 @@ const formatValue = (header: TableHeader, value: any, row: any): string => {
 const getCellClass = (header: TableHeader, value: any, row: any): string => {
   const classes: string[] = []
 
-  if (header.width && /^w-/.test(header.width)) {
+  if (header.width && /(?:^|\s|:)w-/.test(header.width)) {
     classes.push(header.width)
+  }
+
+  if (header.minWidth && /(?:^|\s|:)min-w-/.test(header.minWidth)) {
+    classes.push(header.minWidth)
   }
 
   if (header.capitalize) {
@@ -144,8 +148,8 @@ const handleSelect = () => {
       :key="header.field"
       class="align-middle overflow-hidden max-w-[400px] whitespace-normal break-words"
       :style="{
-        ...(header.width && !/^w-/.test(header.width) ? { width: header.width } : {}),
-        ...(header.minWidth ? { minWidth: header.minWidth } : {}),
+        ...(header.width && !/(?:^|\s|:)w-/.test(header.width) ? { width: header.width } : {}),
+        ...(header.minWidth && !/(?:^|\s|:)min-w-/.test(header.minWidth) ? { minWidth: header.minWidth } : {}),
       }"
       :class="[
         compact ? 'py-1! -text-fs-1.5! max-sm:pr-10!' : 'py-3! pr-5! max-sm:pr-10! -text-fs-1.5!',
