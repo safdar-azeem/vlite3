@@ -389,15 +389,15 @@ function stripFields(obj: any, fields: string[]): void {
  * and removing ignoreFields. Also processes mapped output and transformation functions.
  *
  * emitFields: fields to STRIP from the payload (e.g. ['__typename']).
- *   Default is ['__typename'] — this removes GraphQL metadata from all nested objects.
+ * Default is ['__typename'] — this removes GraphQL metadata from all nested objects.
  *
  * KEY BEHAVIOUR (fix for Prisma / Postgres sync on updates):
  * A field is included in the payload only when:
  * 1. It has a non-empty value — always included (create & update).
  * 2. It is empty AND the field key already existed in the original `values`
- *    object — meaning the user explicitly cleared a pre-existing value during
- *    an update. In this case the canonical empty value (`[]` for multiSelect,
- *    `null` for everything else) is sent so the backend overwrites the old data.
+ * object — meaning the user explicitly cleared a pre-existing value during
+ * an update. In this case the canonical empty value (`[]` for multiSelect,
+ * `null` for everything else) is sent so the backend overwrites the old data.
  *
  * Fields that were never filled in (key absent from `values`) are silently
  * omitted to keep create payloads lean.
@@ -410,11 +410,24 @@ export async function cleanSubmitValues(
   globalValuesContext?: Record<string, any>,
   isUpdateContext?: boolean
 ): Promise<Record<string, any>> {
-  const isPassthrough = emitFields === undefined && ignoreFields === undefined
-  const result: Record<string, any> = isPassthrough ? deepClone(values) : {}
+  // Start with a clone of all values to preserve fields injected via updateValues
+  const result: Record<string, any> = deepClone(values)
   const globalValues = globalValuesContext || values
 
   const flatSchema = Array.isArray(schema[0]) ? (schema as IForm[][]).flat() : (schema as IForm[])
+  
+  // PRE-CALCULATE VISIBILITY TO SUPPORT SAME-NAME FIELDS
+  // This ensures that if multiple schema entries share the same name (mutually exclusive fields),
+  // a hidden entry doesn't accidentally delete the value provided by a visible one.
+  const visibleFields = new Set<string>()
+  for (const field of flatSchema) {
+    if (!field.name) continue
+    const context = { values, globalValues, isUpdate: isUpdateContext }
+    if (!field.when || evaluateConditional(field.when, context)) {
+      visibleFields.add(field.name)
+    }
+  }
+
   // emitFields are fields to STRIP from the final payload (e.g. __typename from GraphQL responses)
   const fieldsToStrip = emitFields || []
   const fieldsToIgnore = ignoreFields || []
@@ -427,7 +440,14 @@ export async function cleanSubmitValues(
     // Strip hidden fields from the final payload
     if (field.when) {
       const isVisible = evaluateConditional(field.when, context)
-      if (!isVisible) continue
+      if (!isVisible) {
+        // Only delete from result if NO OTHER entry for this name is visible in the entire schema.
+        // This allows same-named fields to function correctly when mutually exclusive.
+        if (!visibleFields.has(field.name)) {
+          delete result[field.name]
+        }
+        continue
+      }
     }
 
     let val = getNestedValue(values, field.name)
@@ -444,8 +464,13 @@ export async function cleanSubmitValues(
       // Only carry the explicit empty value forward when the key was already
       // present — i.e. the user cleared a value that existed before (update).
       // If the key was never in the values object, skip it entirely (create).
-      if (!fieldKeyExistsInValues) continue
-
+      if (!fieldKeyExistsInValues) {
+        // Only delete if no other instance of this field is visible and providing a value.
+        if (!visibleFields.has(field.name)) {
+          delete result[field.name]
+        }
+        continue
+      }
       val = resolveEmptyValue(field, context)
     }
 
@@ -457,24 +482,16 @@ export async function cleanSubmitValues(
       val = await Promise.all(val.map((item: any) => cleanSubmitValues(item, nestedSchema, emitFields, ignoreFields, globalValues, isUpdateContext)))
     }
 
-    let needsUpdate = false
-
     // Apply transform for submit payload - Now supports async explicitly
     if (field.transform) {
       val = await field.transform(val, values)
-      needsUpdate = true
     }
 
     const targetName = field.mapTo || field.name
+    
+    // If we are mapping to a different key, handle the relocation
     if (targetName !== field.name) {
-      needsUpdate = true
-      // Cleanup original passthrough key if dynamically relocated top-level
-      if (isPassthrough && !field.name.includes('.')) {
-        delete result[field.name]
-      }
-    }
-
-    if (!isPassthrough || needsUpdate) {
+      delete result[field.name]
       Object.assign(result, setNestedValue(result, targetName, val))
     } else {
       // Standard passthrough overwrite to ensure correctly processed nested arrays persist
