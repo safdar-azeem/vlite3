@@ -68,6 +68,7 @@ const props = withDefaults(
     isLoadingMore?: boolean
     allowDeleteAll?: boolean
     allowEditAll?: boolean
+    allowFileUpload?: boolean
     /**
      * When true (default), the delete button requires a second click to confirm deletion.
      * Set to false to delete immediately on first click.
@@ -84,6 +85,7 @@ const props = withDefaults(
     isLoadingMore: false,
     allowDeleteAll: false,
     allowEditAll: false,
+    allowFileUpload: true,
     confirmDelete: true,
   }
 )
@@ -561,7 +563,7 @@ const isSeparator = (item: ListItem): item is DateSeparator =>
         </div>
 
         <div class="flex items-end gap-0 p-1">
-          <div class="shrink-0 mb-0.5 ml-1">
+          <div v-if="allowFileUpload" class="shrink-0 mb-0.5 ml-1">
             <FilePicker
               v-model="selectedFiles"
               :multi-select="true"
