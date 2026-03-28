@@ -9,7 +9,7 @@ import { useFileUpload } from '../Form/composables/useFileUpload'
 import { $t } from '@/utils/i18n'
 
 export interface ChatAttachment {
-  fileUrl: string
+  fileUrl?: string
   fileName?: string
   fileType?: string
   fileSize?: number
