@@ -12,29 +12,13 @@ const loginSchema: IForm[] = [
     type: 'email',
     placeholder: 'john@example.com',
     icon: 'lucide:mail',
-    updateValues: ({ values }) => {
-      return {
-        ...values,
-        newField: 'new value',
-      }
-    },
   },
   {
-    name: 'text',
-    label: 'text',
-    type: 'text',
+    name: 'password',
+    label: 'Password',
+    type: 'password',
     icon: 'lucide:lock',
-    value: 'hello 11',
-    when: ({ values }) => !values.rememberMe,
-  },
-  {
-    name: 'text',
-    label: 'text',
-    type: 'text',
-    icon: 'lucide:lock',
-
-    value: 'hello 2',
-    when: ({ values }) => values.rememberMe,
+    required: true,
   },
   {
     name: 'rememberMe',
