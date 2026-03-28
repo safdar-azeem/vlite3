@@ -1,7 +1,7 @@
 export interface AttachmentItem {
   fileName?: string
   fileSize?: number
-  fileUrl: string
+  fileUrl?: string
   thumbnailUrl?: string
   fileType?: string
   [key: string]: any
