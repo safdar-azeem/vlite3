@@ -103,6 +103,14 @@ export interface ScreenProps {
   importType?: string
   exportType?: string
   /**
+   * Native setup for Kanban views (mimics legacy list).
+   */
+  kanban?: Component | any
+  /**
+   * Native setup for Calendar views (mimics legacy list).
+   */
+  calendar?: Component | any
+  /**
    * Legacy: single list component (list/grid view).
    * Prefer `views` prop for multi-view support.
    */
