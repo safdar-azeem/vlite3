@@ -63,7 +63,7 @@ const displayTitle = computed(() =>
 <template>
   <th
     scope="col"
-    class="px-3 text-left align-middle font-medium text-muted-foreground transition-colors [&:has([role=checkbox])]:pr-0 overflow-hidden"
+    class="px-3 text-left align-middle font-medium text-muted-foreground transition-colors [&:has([role=checkbox])]:pr-0 overflow-hidden max-w-[400px]"
     :class="[
       compact ? 'py-2.5!' : 'py-3!',
       header.sortable !== false && tableSortable ? 'cursor-pointer hover:bg-muted/50' : '',
