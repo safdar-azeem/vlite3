@@ -147,10 +147,10 @@ export interface ScreenProps {
    */
   quickFilters?: ScreenQuickFilter[]
   /**
-   * Optional array of view keys (e.g., ['table', 'list']) where quick filters should be visible.
+   * Array of view keys (e.g., ['calendar', 'kanban']) where quick filters should be hidden.
    * If omitted, quick filters are shown on all views.
    */
-  quickFilterViews?: string[]
+  skipQuickFilterViews?: string[]
   /**
    * The key used to inject the active quick filter into the refetch filter payload.
    * Defaults to 'status'.
