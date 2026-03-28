@@ -65,6 +65,25 @@ const dataSlots = shallowRef({
 const handleAddTask = (columnId: string | number) => {
 	alert(`Trigger add task for column: ${columnId}`)
 }
+
+// --- Demo 4: Disabled Board & Disabled Items ---
+// The "Archived" column has disabled:true — nothing can enter or leave it.
+// In the "Active" column, items whose `locked` flag is true cannot be moved.
+const columnsDisabled = shallowRef<KanbanColumn[]>([
+	{ id: 'active', title: 'Active' },
+	{ id: 'archived', title: 'Archived', disabled: true },
+])
+
+const disabledData = shallowRef([
+	{ id: 'd1', title: 'Normal Task — drag me freely', status: 'active', position: 1024, locked: false },
+	{ id: 'd2', title: 'Locked Item — cannot be moved', status: 'active', position: 2048, locked: true },
+	{ id: 'd3', title: 'Another Normal Task', status: 'active', position: 3072, locked: false },
+	{ id: 'd4', title: 'Archived Task A', status: 'archived', position: 1024, locked: false },
+	{ id: 'd5', title: 'Archived Task B', status: 'archived', position: 2048, locked: false },
+])
+
+// Item-level disable predicate: items with locked:true cannot be dragged
+const isItemDisabled = (item: any): boolean => item.locked === true
 </script>
 
 <template>
@@ -154,6 +173,44 @@ const handleAddTask = (columnId: string | number) => {
 			</div>
 			<p class="mt-4 text-sm text-muted-foreground italic">
 				Scroll to the bottom of the Backlog or Review columns to trigger lazy loading of the next page. Notice the minimal spinner at the bottom without shifting existing items.
+			</p>
+		</DemoSection>
+
+		<!-- Demo 4: Disabled Board Column & Disabled Individual Items -->
+		<DemoSection title="Disabled Board & Disabled Items" :code="sourceCode">
+			<div class="h-[500px]">
+				<Kanban
+					:raw-data="disabledData"
+					group-key="status"
+					position-key="position"
+					:columns="columnsDisabled"
+					:is-item-disabled="isItemDisabled"
+					group="disabled-kanban"
+					@item-moved="handleItemMoved">
+					<template #item="{ item, isDisabled }">
+						<div
+							:class="[
+								'bg-body p-3 rounded-lg shadow-sm border transition-colors flex flex-col gap-1',
+								isDisabled
+									? 'border-border opacity-60 cursor-not-allowed select-none'
+									: 'border-border cursor-grab active:cursor-grabbing hover:border-primary',
+							]">
+							<h4 class="font-medium text-sm text-foreground">{{ item.title }}</h4>
+							<div class="flex gap-2 items-center text-xs text-muted-foreground">
+								<span
+									v-if="item.locked"
+									class="inline-flex items-center gap-1 bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 px-1.5 py-0.5 rounded text-[10px] font-medium">
+									🔒 Locked
+								</span>
+							</div>
+						</div>
+					</template>
+				</Kanban>
+			</div>
+			<p class="mt-4 text-sm text-muted-foreground italic">
+				The <strong>Archived</strong> column is fully locked — items cannot be dragged in or out (board-level).
+				The <strong>"Locked Item"</strong> in Active cannot be dragged at all (item-level).
+				All other tasks are freely movable between non-disabled columns.
 			</p>
 		</DemoSection>
 	</div>
