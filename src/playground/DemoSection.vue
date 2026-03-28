@@ -51,13 +51,21 @@ async function copyCode() {
         <div class="flex space-x-1 rounded-lg bg-muted/80 p-1">
           <button
             class="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            :class="activeTab === 'preview' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:bg-background/50'"
+            :class="
+              activeTab === 'preview'
+                ? 'bg-background text-foreground shadow-sm'
+                : 'text-muted-foreground hover:bg-background/50'
+            "
             @click="activeTab = 'preview'">
             Preview
           </button>
           <button
             class="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            :class="activeTab === 'code' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:bg-background/50'"
+            :class="
+              activeTab === 'code'
+                ? 'bg-background text-foreground shadow-sm'
+                : 'text-muted-foreground hover:bg-background/50'
+            "
             @click="activeTab = 'code'">
             Code
           </button>
@@ -68,7 +76,7 @@ async function copyCode() {
       <div
         v-show="activeTab === 'preview'"
         class="preview-container relative min-h-[300px] flex items-center justify-center rounded-xl border border-border bg-background p-10 mt-2">
-        <div class="w-full flex items-center justify-center">
+        <div class="w-full flex items-center justify-center flex-1">
           <slot />
         </div>
       </div>
@@ -77,7 +85,8 @@ async function copyCode() {
       <div
         v-show="activeTab === 'code'"
         class="demo-code-panel relative rounded-xl border border-border/60 bg-[#0d1117] text-white shadow-sm overflow-hidden mt-2">
-        <div class="flex items-center justify-between px-4 py-2 border-b border-border/20 bg-[#161b22]">
+        <div
+          class="flex items-center justify-between px-4 py-2 border-b border-border/20 bg-[#161b22]">
           <span class="text-xs font-mono text-muted-foreground">vue</span>
           <button class="demo-copy-btn" @click="copyCode">
             <template v-if="copied">
@@ -113,7 +122,8 @@ async function copyCode() {
             </template>
           </button>
         </div>
-        <div class="demo-code-body p-4 overflow-x-auto text-sm leading-relaxed max-h-[600px] scrollbar-thin scrollbar-thumb-muted">
+        <div
+          class="demo-code-body p-4 overflow-x-auto text-sm leading-relaxed max-h-[600px] scrollbar-thin scrollbar-thumb-muted">
           <pre><code v-html="highlightedCode"></code></pre>
         </div>
       </div>
