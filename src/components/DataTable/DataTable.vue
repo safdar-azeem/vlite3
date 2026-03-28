@@ -313,7 +313,24 @@ const containerClass = computed(() => {
 })
 
 const tableClass = computed(() => ['w-full caption-bottom -text-fs-1', props.tableClass].join(' '))
-const getColumnWidth = (header: any) => header.width || 'auto'
+
+const getColumnStyle = (header: TableHeader) => {
+  const style: Record<string, string> = {}
+  if (header.width && !/^w-/.test(header.width)) {
+    style.width = header.width
+  }
+  if (header.minWidth) {
+    style.minWidth = header.minWidth
+  }
+  return style
+}
+
+const getColumnClass = (header: TableHeader) => {
+  if (header.width && /^w-/.test(header.width)) {
+    return header.width
+  }
+  return ''
+}
 
 // ── i18n ──────────────────────────────────────────────────────────────────────
 
@@ -402,7 +419,8 @@ const txtCancelBtn = computed(() => {
                 :table-sortable="sortable"
                 @sort="handleSort"
                 class="last:pr-5!"
-                :style="{ width: getColumnWidth(header) }" />
+                :class="getColumnClass(header)"
+                :style="getColumnStyle(header)" />
             </tr>
           </thead>
 
