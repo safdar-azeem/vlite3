@@ -20,6 +20,7 @@ import { ref, computed, watch } from 'vue'
 import Icon from '@/components/Icon.vue'
 import FilePicker from '@/components/FilePicker/FilePicker.vue'
 import type { FilePickerValue } from '@/components/FilePicker/FilePicker.vue'
+import { $t } from '@/utils/i18n'
 
 defineOptions({
   name: 'ThumbnailSelector',
@@ -74,6 +75,17 @@ watch(
 const previewUrl = computed(() => internalThumbnail.value || internalImages.value[0] || null)
 
 // ─── Actions ──────────────────────────────────────────────────────────────────
+
+const t = (key: string, fallback: string, args?: Record<string, any>) => {
+  const res = args ? $t(key, args) : $t(key)
+  return res !== key ? res : fallback
+}
+
+const txtThumbnailPreview = computed(() => t('vlite.thumbnailSelector.preview', 'Thumbnail preview'))
+const txtNoImageSelected = computed(() => t('vlite.thumbnailSelector.noImageSelected', 'No image selected'))
+const txtImage = computed(() => t('vlite.thumbnailSelector.image', 'Image'))
+const txtRemoveImage = computed(() => t('vlite.thumbnailSelector.removeImage', 'Remove image'))
+const txtUpload = computed(() => t('vlite.thumbnailSelector.upload', 'Upload'))
 
 const selectThumbnail = (url: string) => {
   if (props.disabled || props.loading) return
@@ -155,10 +167,10 @@ const handleUpload = (fileVal: FilePickerValue | FilePickerValue[] | null) => {
         v-if="previewUrl"
         :src="previewUrl"
         class="w-full h-full object-cover"
-        alt="Thumbnail preview" />
+        :alt="txtThumbnailPreview" />
       <div v-else class="flex flex-col items-center gap-2 text-muted-foreground/40 select-none">
         <Icon icon="lucide:image" class="w-10 h-10" />
-        <span class="text-xs">No image selected</span>
+        <span class="text-xs">{{ txtNoImageSelected }}</span>
       </div>
     </div>
 
@@ -194,7 +206,7 @@ const handleUpload = (fileVal: FilePickerValue | FilePickerValue[] | null) => {
         ]"
         @click="selectThumbnail(url)">
         <!-- Image preview -->
-        <img :src="url" class="w-full h-full object-cover" :alt="`Image ${index + 1}`" />
+        <img :src="url" class="w-full h-full object-cover" :alt="`${txtImage} ${index + 1}`" />
 
         <!--
           Delete button — visibility is driven purely by the scoped CSS rule
@@ -207,7 +219,7 @@ const handleUpload = (fileVal: FilePickerValue | FilePickerValue[] | null) => {
           v-if="!disabled"
           type="button"
           class="vl-thumbnail-selector__delete absolute top-0.5 right-0.5 z-10 w-5 h-5 flex items-center justify-center rounded-full bg-background/90 border border-border text-muted-foreground shadow-sm opacity-0 transition-opacity duration-150 hover:text-destructive hover:border-destructive"
-          title="Remove image"
+          :title="txtRemoveImage"
           @click.stop="removeImage(url, $event)">
           <Icon icon="lucide:x" class="w-3 h-3" />
         </button>
@@ -243,7 +255,7 @@ const handleUpload = (fileVal: FilePickerValue | FilePickerValue[] | null) => {
             @click="trigger">
             <Icon v-if="isLoading || loading" icon="lucide:loader-2" class="w-5 h-5 animate-spin" />
             <Icon v-else icon="lucide:plus" class="w-5 h-5" />
-            <span class="text-[10px] mt-0.5 leading-tight">Upload</span>
+            <span class="text-[10px] mt-0.5 leading-tight">{{ txtUpload }}</span>
           </button>
         </template>
       </FilePicker>
