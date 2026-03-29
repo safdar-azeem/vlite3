@@ -418,12 +418,12 @@ const isSeparator = (item: ListItem): item is DateSeparator =>
   <div class="flex flex-col w-full h-full flex-1 min-h-0 bg-transparent">
     <div
       ref="messageListRef"
-      class="flex-1 overflow-y-auto px-4 py-4 scrollbar-thin scrollbar-stable"
+      class="flex-1 overflow-y-auto px-4 py-4 scrollbar-thin scrollbar-stable flex flex-col"
       role="log"
       aria-live="polite"
       aria-label="Chat messages"
-      style="will-change: transform; contain: layout style">
-      <div ref="observerTargetRef" class="h-1 w-full shrink-0"></div>
+      style="will-change: transform; contain: layout style; overflow-anchor: auto;">
+      <div ref="observerTargetRef" class="h-1 w-full shrink-0" style="overflow-anchor: none;"></div>
 
       <div
         v-if="isLoadingMore"
@@ -450,11 +450,11 @@ const isSeparator = (item: ListItem): item is DateSeparator =>
 
       <div
         v-if="!data.length && !isLoadingMore"
-        class="flex items-center justify-center h-full text-muted-foreground text-sm">
+        class="flex items-center justify-center flex-1 h-full text-muted-foreground text-sm">
         {{ displayEmptyText }}
       </div>
 
-      <div class="flex flex-col gap-2 pb-2">
+      <div class="flex flex-col gap-2 pb-2 mt-auto">
         <template v-for="item in renderedItems" :key="isSeparator(item) ? item._key : item.id">
           <!--
             Date separator pill: centred, pill-shaped, muted.
