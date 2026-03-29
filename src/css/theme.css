@@ -37,7 +37,7 @@
         var(--color-primary, #000000));
 
     /* Danger */
-    --color-danger-light: #fff2f2;
+    --color-danger-light: #FFECEE;
     --color-danger: #ff3b30;
     --color-danger-dark: #ee392e;
     --color-danger-fg: #ffffff;
@@ -152,9 +152,9 @@
     --color-warning-subtle-border: #fcd34d;
     /* amber-300 */
 
-    --color-danger-subtle: #fee2e2;
+    --color-danger-subtle: #FFECEE;
     /* red-100 */
-    --color-danger-subtle-fg: #991b1b;
+    --color-danger-subtle-fg: #EC6D6E;
     /* red-800 */
     --color-danger-subtle-border: #fca5a5;
     /* red-300 */
