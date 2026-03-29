@@ -554,14 +554,14 @@
 }
 
 .dark .bg-card {
-  --color-body: #0B0B0B !important;
+  --color-body: #0f0f0f !important;
   --color-mixture-1: #111 !important;
   --color-mixture-2: #ffffff !important;
-  background-color: #111 !important;
+  background-color: #0f0f0f !important;
 }
 
 .dark .bg-card .bg-body {
-  --color-mixture-1: #0f0f0f !important;
+  --color-mixture-1: #0e0e0e !important;
   --color-mixture-2: #ffffff !important;
 }
 
