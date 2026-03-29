@@ -49,6 +49,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'MultiSelect', to: '/multiselect', icon: 'lucide:list-checks' },
       { label: 'ChoiceBox', to: '/choicebox', icon: 'lucide:layout-grid' },
       { label: 'FilePicker', to: '/filepicker', icon: 'lucide:upload-cloud' },
+      { label: 'ThumbnailSelector', to: '/thumbnailselector', icon: 'lucide:image' },
       { label: 'Textarea', to: '/textarea', icon: 'lucide:align-left' },
       { label: 'CheckBox', to: '/checkbox', icon: 'lucide:check-square' },
       { label: 'Switch', to: '/switch', icon: 'lucide:toggle-left' },
