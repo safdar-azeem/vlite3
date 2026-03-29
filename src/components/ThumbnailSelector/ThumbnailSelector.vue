@@ -172,7 +172,7 @@ const handleUpload = (fileVal: FilePickerValue | FilePickerValue[] | null) => {
       when cards are hovered / selected, preventing full-page recomposition.
     -->
     <div
-      class="vl-thumbnail-selector__grid flex flex-wrap gap-2"
+      class="vl-thumbnail-selector__grid grid grid-cols-3 sm:grid-cols-4 gap-2"
       style="will-change: transform; contain: layout style">
       <!-- Uploaded image cards.
            HOVER FIX: We intentionally do NOT use Tailwind's `group` /
@@ -184,8 +184,8 @@ const handleUpload = (fileVal: FilePickerValue | FilePickerValue[] | null) => {
       <div
         v-for="(url, index) in internalImages"
         :key="url + index"
-        class="vl-thumbnail-selector__card relative rounded-md overflow-hidden cursor-pointer shrink-0 border-2 transition-all duration-150"
-        style="width: 72px; height: 72px"
+        class="vl-thumbnail-selector__card relative rounded-md overflow-hidden cursor-pointer border-2 transition-all duration-150 w-full"
+        style="aspect-ratio: 1/1"
         :class="[
           internalThumbnail === url
             ? 'border-primary shadow-sm shadow-primary/20'
@@ -237,8 +237,8 @@ const handleUpload = (fileVal: FilePickerValue | FilePickerValue[] | null) => {
         <template #trigger="{ trigger, isLoading }">
           <button
             type="button"
-            class="vl-thumbnail-selector__upload flex flex-col items-center justify-center rounded-md border-2 border-dashed border-border text-muted-foreground/60 hover:border-primary/50 hover:text-primary/60 transition-all cursor-pointer shrink-0"
-            style="width: 72px; height: 72px"
+            class="vl-thumbnail-selector__upload flex flex-col items-center justify-center rounded-md border-2 border-dashed border-border text-muted-foreground/60 hover:border-primary/50 hover:text-primary/60 transition-all cursor-pointer w-full"
+            style="aspect-ratio: 1/1"
             :class="isLoading || loading ? 'opacity-60 pointer-events-none' : ''"
             @click="trigger">
             <Icon v-if="isLoading || loading" icon="lucide:loader-2" class="w-5 h-5 animate-spin" />
