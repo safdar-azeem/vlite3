@@ -156,7 +156,7 @@ const cancelPendingDelete = () => {
         </div>
 
         <div
-          class="opacity-0 group-hover/bubble:opacity-100 focus-within:opacity-100 transition-opacity flex gap-0 pointer-events-none group-hover/bubble:pointer-events-auto focus-within:pointer-events-auto z-10"
+          class="absolute top-1/2 -translate-y-1/2 opacity-0 group-hover/bubble:opacity-100 focus-within:opacity-100 transition-opacity flex gap-0 pointer-events-none group-hover/bubble:pointer-events-auto focus-within:pointer-events-auto z-10"
           :class="isSender ? 'right-full pr-1' : 'left-full pl-1'">
           <Button
             v-if="(isSender || allowEditAll) && message.text?.trim()"
