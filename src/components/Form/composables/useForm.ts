@@ -360,8 +360,12 @@ export function useForm(options: UseFormOptions): UseFormReturn {
   }
 
   /**
-   * Process file uploads before submission
-   * Handles both single files and arrays of files (parallel upload)
+   * Process file uploads before submission.
+   * Handles both single files and arrays of files (parallel upload).
+   *
+   * Extended to handle `thumbnailSelector` fields:
+   *   - Iterates images[] and uploads any base64 data URIs via the global upload service
+   *   - Replaces base64 strings with resolved URLs in both images[] and thumbnail
    */
   const processFileUploads = async (): Promise<Record<string, any>> => {
     const values = deepClone(formValues.value)
@@ -395,6 +399,51 @@ export function useForm(options: UseFormOptions): UseFormReturn {
     // This allows all uploads across all fields to happen in parallel
     const fieldUpdatePromises = fileFields.map(async (fileField) => {
       const { name, value, field } = fileField
+
+      /**
+       * ThumbnailSelector: value is { images: string[], thumbnail: string | null }
+       * Upload each base64 image in parallel, then rebuild the object with resolved URLs.
+       * The thumbnail reference is updated to the resolved URL if it was a base64 string.
+       */
+      if (fileField.type === 'thumbnailSelector') {
+        const thumbnailValue = value as { images: string[]; thumbnail: string | null }
+        const images: string[] = Array.isArray(thumbnailValue.images) ? thumbnailValue.images : []
+        const oldThumbnail = thumbnailValue.thumbnail
+
+        fieldLoading.value[name] = true
+        try {
+          // Upload all base64 images in parallel; keep already-resolved URLs as-is
+          const uploadedImages = await Promise.all(
+            images.map(async (img: string) => {
+              if (img.startsWith('data:image/')) {
+                // Convert base64 data URI to a File object for the upload service
+                const res = await fetch(img)
+                const blob = await res.blob()
+                const file = new File([blob], `thumbnail-${Date.now()}.${blob.type.split('/')[1] || 'jpg'}`, { type: blob.type })
+                const url = await handleUploadFile(file, folderId)
+                return url || img // Fallback to original if upload failed
+              }
+              return img // Already a resolved URL
+            })
+          )
+
+          // Update thumbnail reference: if the selected thumbnail was a base64 string,
+          // find its resolved URL by matching position in the original array.
+          let resolvedThumbnail = oldThumbnail
+          if (oldThumbnail && oldThumbnail.startsWith('data:image/')) {
+            const oldIndex = images.indexOf(oldThumbnail)
+            if (oldIndex !== -1 && uploadedImages[oldIndex]) {
+              resolvedThumbnail = uploadedImages[oldIndex] as string
+            }
+          }
+
+          const resolvedValue = { images: uploadedImages as string[], thumbnail: resolvedThumbnail }
+          return { name, value: resolvedValue }
+        } finally {
+          fieldLoading.value[name] = false
+        }
+      }
+
       const isDetailed = field.returnFileObject === true
 
       // Check if this field actually has files to upload to toggle the loading state
