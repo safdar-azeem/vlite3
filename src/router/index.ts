@@ -17,6 +17,7 @@ import NumberInputDemo from '../playground/demos/NumberInputDemo.vue'
 import MultiSelectDemo from '../playground/demos/MultiSelectDemo.vue'
 import ChoiceBoxDemo from '../playground/demos/ChoiceBoxDemo.vue'
 import FilePickerDemo from '../playground/demos/FilePickerDemo.vue'
+import ThumbnailSelectorDemo from '../playground/demos/ThumbnailSelectorDemo.vue'
 import TextareaDemo from '../playground/demos/TextareaDemo.vue'
 import CheckBoxDemo from '../playground/demos/CheckBoxDemo.vue'
 import SwitchDemo from '../playground/demos/SwitchDemo.vue'
@@ -94,6 +95,7 @@ const routes = [
       { path: 'multiselect', component: MultiSelectDemo },
       { path: 'choicebox', component: ChoiceBoxDemo },
       { path: 'filepicker', component: FilePickerDemo },
+      { path: 'thumbnail-selector', component: ThumbnailSelectorDemo },
       { path: 'textarea', component: TextareaDemo },
       { path: 'checkbox', component: CheckBoxDemo },
       { path: 'switch', component: SwitchDemo },
