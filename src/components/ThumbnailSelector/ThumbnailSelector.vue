@@ -76,7 +76,7 @@ const previewUrl = computed(() => internalThumbnail.value || internalImages.valu
 // ─── Actions ──────────────────────────────────────────────────────────────────
 
 const selectThumbnail = (url: string) => {
-  if (props.disabled) return
+  if (props.disabled || props.loading) return
   internalThumbnail.value = url
   emit('update:thumbnail', url)
   emit('change', { images: internalImages.value, thumbnail: url })
@@ -84,7 +84,7 @@ const selectThumbnail = (url: string) => {
 
 const removeImage = (url: string, event: MouseEvent) => {
   event.stopPropagation()
-  if (props.disabled) return
+  if (props.disabled || props.loading) return
 
   const newImages = internalImages.value.filter((img) => img !== url)
   internalImages.value = newImages
@@ -190,7 +190,7 @@ const handleUpload = (fileVal: FilePickerValue | FilePickerValue[] | null) => {
           internalThumbnail === url
             ? 'border-primary shadow-sm shadow-primary/20'
             : 'border-border',
-          disabled ? 'pointer-events-none opacity-60' : '',
+          disabled || loading ? 'pointer-events-none opacity-60' : '',
         ]"
         @click="selectThumbnail(url)">
         <!-- Image preview -->
