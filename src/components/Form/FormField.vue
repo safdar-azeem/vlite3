@@ -14,6 +14,7 @@ import CheckBox from '@/components/CheckBox.vue'
 import Textarea from '@/components/Textarea.vue'
 import FilePicker from '@/components/FilePicker/FilePicker.vue'
 import AvatarUploader from '@/components/AvatarUploader/AvatarUploader.vue'
+import ThumbnailSelectorComponent from '@/components/ThumbnailSelector/ThumbnailSelector.vue'
 import Dropdown from '@/components/Dropdown/Dropdown.vue'
 
 import MultiSelect from '@/components/MultiSelect/MultiSelect.vue'
@@ -146,6 +147,9 @@ const fieldComponent = computed(() => {
 
     case 'customFields':
       return CustomFieldsComponent
+
+    case 'thumbnailSelector':
+      return ThumbnailSelectorComponent
 
     default:
       return Input
@@ -392,6 +396,26 @@ const fieldProps = computed(() => {
     }
   }
 
+  /**
+   * ThumbnailSelector
+   *
+   * The form value for this field is an object: { images: string[], thumbnail: string | null }
+   * On submit, useForm's processFileUploads will walk images[] and upload any base64 data URIs
+   * via the global upload service, replacing them with resolved URLs — same pipeline as avatarUpload.
+   */
+  if (type === 'thumbnailSelector') {
+    const val = props.value && typeof props.value === 'object' ? props.value : { images: [], thumbnail: null }
+    return {
+      ...baseProps,
+      images: Array.isArray(val.images) ? val.images : [],
+      thumbnail: val.thumbnail ?? null,
+      disabled: props.disabled || _schemaDisabled === true,
+      loading: props.loading,
+      maxSize: props.field.maxFileSize,
+      label: props.field.label as string | undefined,
+    }
+  }
+
   // Custom component
   if (isComponent(type)) {
     return {
@@ -514,6 +538,37 @@ const fieldEvents = computed(() => {
   if (type === 'customFields') {
     return {
       change: (value: any) => handleChange(value),
+    }
+  }
+
+  /**
+   * ThumbnailSelector emits:
+   *  - change          → { images, thumbnail }  (primary; used by form)
+   *  - update:images   → string[]
+   *  - update:thumbnail → string | null
+   *
+   * We merge all three into a single form value: { images, thumbnail }
+   * so useForm stores the complete object under the field name.
+   */
+  if (type === 'thumbnailSelector') {
+    return {
+      change: (payload: { images: string[]; thumbnail: string | null }) => {
+        handleChange(payload)
+      },
+      'update:images': (images: string[]) => {
+        // Merge images update into existing value object
+        const current = props.value && typeof props.value === 'object'
+          ? props.value
+          : { images: [], thumbnail: null }
+        handleChange({ ...current, images })
+      },
+      'update:thumbnail': (thumbnail: string | null) => {
+        // Merge thumbnail update into existing value object
+        const current = props.value && typeof props.value === 'object'
+          ? props.value
+          : { images: [], thumbnail: null }
+        handleChange({ ...current, thumbnail })
+      },
     }
   }
 
