@@ -55,29 +55,29 @@ const emit = defineEmits<{
   (e: 'error', error: string): void
 }>()
 
+const t = (key: string, fallback: string, args?: Record<string, any>) => {
+  const res = args ? $t(key, args) : $t(key)
+  return res !== key ? res : fallback
+}
+
 const displayPlaceholder = computed(() =>
   props.placeholderI18n
     ? $t(props.placeholderI18n)
     : props.placeholder !== undefined
       ? props.placeholder
-      : 'Select file...'
+      : t('vlite.filePicker.selectFile', 'Select file...')
 )
 
 const displayText = computed(() => {
   if (props.textI18n) return $t(props.textI18n)
-  const res = $t('vlite.filePicker.clickToUpload')
-  return res !== 'vlite.filePicker.clickToUpload' ? res : 'Click to upload'
+  return t('vlite.filePicker.clickToUpload', 'Click to upload')
 })
 
-const tDragAndDrop = computed(() => {
-  const res = $t('vlite.filePicker.dragAndDrop')
-  return res !== 'vlite.filePicker.dragAndDrop' ? res : 'or drag and drop'
-})
-
-const tAddMore = computed(() => {
-  const res = $t('vlite.filePicker.addMore')
-  return res !== 'vlite.filePicker.addMore' ? res : 'Add more'
-})
+const tDragAndDrop = computed(() => t('vlite.filePicker.dragAndDrop', 'or drag and drop'))
+const tAddMore = computed(() => t('vlite.filePicker.addMore', 'Add more'))
+const tUnknownFile = computed(() => t('vlite.filePicker.unknownFile', 'Unknown File'))
+const tEnterFileName = computed(() => t('vlite.filePicker.enterFileName', 'Enter file name'))
+const tRenameFile = computed(() => t('vlite.filePicker.renameFile', 'Rename file'))
 
 const fileInput = ref<HTMLInputElement | null>(null)
 const isDragging = ref(false)
@@ -107,7 +107,7 @@ const displayFiles = computed(() => {
   // Normalize strings (URLs) to objects for display
   return values.map((val) => {
     if (typeof val === 'string') {
-      const fileName = val.split('/').pop() || 'Unknown File'
+      const fileName = val.split('/').pop() || tUnknownFile.value
       return {
         fileName: decodeURIComponent(fileName),
         fileType: 'unknown',
@@ -506,7 +506,7 @@ const inputBaseClass = computed(() => {
                 <div class="grid relative w-fit max-w-full items-center -ml-1">
                   <span
                     class="invisible whitespace-pre col-start-1 row-start-1 text-sm font-medium px-1 py-0.5 max-w-full overflow-hidden text-ellipsis">
-                    {{ file.fileName || 'Enter file name' }}
+                    {{ file.fileName || tEnterFileName }}
                   </span>
 
                   <input
@@ -514,18 +514,18 @@ const inputBaseClass = computed(() => {
                     @click.stop
                     @input="handleFileNameChange(index, ($event.target as HTMLInputElement).value)"
                     class="col-start-1 row-start-1 w-auto min-w-[2ch] text-sm font-medium text-foreground bg-transparent border-b border-transparent hover:border-border focus:border-primary outline-none transition-colors py-0.5 px-1"
-                    placeholder="Enter file name" />
+                    :placeholder="tEnterFileName" />
                 </div>
 
                 <div
-                  class="flex-shrink-0 ml-1 text-muted-foreground/50 group-hover/rename:text-foreground transition-colors cursor-text"
+                  class="shrink-0 ml-1 text-muted-foreground/50 group-hover/rename:text-foreground transition-colors cursor-text"
                   @click.stop="
                     (e) =>
                       (e.currentTarget as HTMLElement).previousElementSibling
                         ?.querySelector('input')
                         ?.focus()
                   "
-                  title="Rename file">
+                  :title="tRenameFile">
                   <Icon icon="lucide:pencil" class="w-3 h-3" />
                 </div>
               </div>
@@ -539,7 +539,7 @@ const inputBaseClass = computed(() => {
               </p>
             </div>
 
-            <div class="flex-shrink-0 ml-3 flex gap-2 items-center">
+            <div class="shrink-0 ml-3 flex gap-2 items-center">
               <Icon
                 v-if="loading || isProcessing"
                 icon="lucide:loader-2"
