@@ -11,12 +11,14 @@ import type {
 } from '@/types'
 import { useForm } from './composables/useForm'
 import FormFields from './FormFields.vue'
+import FormField from './FormField.vue'
 import Button from '@/components/Button.vue'
 import BackButton from '@/components/BackButton.vue'
 import { Timeline } from '../Timeline'
 import type { TimelineStep } from '@/types'
 import { useVLiteConfig } from '@/core'
 import { $t } from '@/utils/i18n'
+import { resolveFieldType } from './utils/form.utils'
 
 interface Props {
   schema: IForm[] | IForm[][]
@@ -191,6 +193,37 @@ const currentStepSchema = computed((): IForm[] => {
   if (!isMultiStepMode.value) return []
   return groupedSchemas.value[currentStep.value] || []
 })
+
+// ─── ThumbnailSelector side-panel extraction ──────────────────────────────────
+/**
+ * Scans a flat schema and returns the first field whose resolved type is
+ * 'thumbnailSelector'. Multi-step and grouped modes are intentionally excluded
+ * (the thumbnail panel only applies to the single flat-schema layout) so we
+ * never accidentally hide a field from a step or group.
+ *
+ * We re-use resolveFieldType from form.utils so dynamic type functions are
+ * evaluated correctly — same context the rest of the form uses.
+ */
+const thumbnailField = computed<IForm | null>(() => {
+  if (isGroupedMode.value) return null // Groups/multi-step: render inline as usual
+  const flatSchema = props.schema as IForm[]
+  return (
+    flatSchema.find((f) => {
+      const resolved = resolveFieldType(f, {
+        values: formValues.value,
+        globalValues: formValues.value,
+        isUpdate: props.isUpdate,
+      })
+      return resolved === 'thumbnailSelector'
+    }) ?? null
+  )
+})
+
+/**
+ * True when there is a thumbnailSelector field in a non-grouped schema.
+ * Drives the side-panel layout switch.
+ */
+const hasThumbnailPanel = computed(() => !!thumbnailField.value)
 
 const {
   formValues,
@@ -382,6 +415,8 @@ const handleCancel = () => {
     @keydown="handleKeydown"
     @keydown.meta.s.prevent="handleSaveShortcut"
     @keydown.ctrl.s.prevent="handleSaveShortcut">
+
+    <!-- ── Page header (isPage mode) ──────────────────────────────────────── -->
     <div
       v-if="isPage"
       :class="[
@@ -414,6 +449,7 @@ const handleCancel = () => {
       </div>
     </div>
 
+    <!-- ── Multi-step timeline ─────────────────────────────────────────────── -->
     <div
       v-if="isMultiStepMode && timelineSteps.length > 0"
       class="form-timeline"
@@ -427,9 +463,75 @@ const handleCancel = () => {
         @step-click="goToStep" />
     </div>
 
+    <!-- ── Body ───────────────────────────────────────────────────────────── -->
     <div :class="footer && isFooterSticky ? 'pb-2' : ''">
-      <div v-if="!isGroupedMode" class="form-fields-single">
+
+      <!--
+        FLAT SCHEMA — single array (no groups, no steps)
+        When a thumbnailSelector field is detected, we split the layout into:
+          LEFT  (flex-1)         : all regular fields
+          RIGHT (min-w-[350px])  : ThumbnailSelector panel
+
+        On small screens the thumbnail panel moves to the TOP so the user sees
+        the image picker before the text fields — consistent with the task spec.
+
+        The thumbnailSelector field is filtered OUT of the <FormFields> pass
+        via the `excludeTypes` prop so it is never rendered twice.
+      -->
+      <div v-if="!isGroupedMode">
+        <!-- Side-panel layout when thumbnailSelector is present -->
+        <div
+          v-if="hasThumbnailPanel"
+          class="flex flex-col lg:flex-row gap-6">
+
+          <!--
+            Thumbnail panel
+            - Mobile  : order-first → renders on TOP
+            - Desktop : order-last  → renders on RIGHT, min-width 350px
+          -->
+          <div class="w-full order-first lg:order-last lg:min-w-[350px] lg:max-w-[380px] shrink-0">
+            <FormField
+              v-if="thumbnailField && isFieldVisible(thumbnailField)"
+              :field="thumbnailField"
+              :value="formValues[thumbnailField.name]"
+              :values="formValues"
+              :errors="errors"
+              :variant="resolvedVariant"
+              :size="resolvedSize"
+              :rounded="resolvedRounded"
+              :disabled="isFieldDisabled(thumbnailField)"
+              :readonly="isFieldReadonly(thumbnailField)"
+              :error="errors[thumbnailField.name] || ''"
+              :isUpdate="isUpdate"
+              :loading="fieldLoading[thumbnailField?.name]"
+              @change="(payload) => onFieldChange(thumbnailField!.name, payload)" />
+          </div>
+
+          <!-- Regular fields (thumbnailSelector excluded) -->
+          <div class="flex-1 min-w-0 order-last lg:order-first">
+            <FormFields
+              :schema="schema as IForm[]"
+              :values="formValues"
+              :errors="errors"
+              :fieldLoading="fieldLoading"
+              :variant="resolvedVariant"
+              :size="resolvedSize"
+              :rounded="resolvedRounded"
+              :className="className"
+              :isUpdate="isUpdate"
+              :showRequiredAsterisk="resolvedShowRequiredAsterisk"
+              :isFieldVisible="isFieldVisible"
+              :isFieldDisabled="isFieldDisabled"
+              :isFieldReadonly="isFieldReadonly"
+              :excludeTypes="['thumbnailSelector']"
+              @change="onFieldChange"
+              @addonAction="(action: string) => emit('onAddonAction', action)" />
+          </div>
+        </div>
+
+        <!-- Normal flat layout (no thumbnailSelector in schema) -->
         <FormFields
+          v-else
           :schema="schema as IForm[]"
           :values="formValues"
           :errors="errors"
@@ -447,6 +549,7 @@ const handleCancel = () => {
           @addonAction="(action: string) => emit('onAddonAction', action)" />
       </div>
 
+      <!-- ── Grouped schema (no steps) ──────────────────────────────────── -->
       <div
         v-else-if="isGroupedMode && !isMultiStepMode"
         class="form-groups space-y-6"
@@ -489,6 +592,7 @@ const handleCancel = () => {
         </div>
       </div>
 
+      <!-- ── Multi-step schema ───────────────────────────────────────────── -->
       <div v-else-if="isMultiStepMode" class="form-step">
         <div v-if="tabs?.[currentStep]" :class="['form-step-header mb-6', headerClass]">
           <h2 class="text-lg font-semibold text-foreground">
@@ -517,6 +621,7 @@ const handleCancel = () => {
           @addonAction="(action: string) => emit('onAddonAction', action)" />
       </div>
 
+      <!-- Default slot — available in all modes -->
       <slot
         :values="formValues"
         :errors="errors"
@@ -526,6 +631,7 @@ const handleCancel = () => {
       <div ref="sentinelRef" class="form-scroll-sentinel h-px w-full" aria-hidden="true" />
     </div>
 
+    <!-- ── Footer ─────────────────────────────────────────────────────────── -->
     <div
       v-if="footer"
       ref="footerRef"
