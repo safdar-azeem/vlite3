@@ -18,7 +18,7 @@ const messages = ref<ChatMessage[]>([
     isEdited: true,
     attachments: [
       {
-        fileName: '626182816_18093985156987193_1998335512335153763_n.jpg',
+        fileName: '626182816_185153763_n.jpg',
         fileUrl:
           'https://fastly.picsum.photos/id/197/400/400.jpg?hmac=EMGJfztOncchyhxYLBig-GifHwLYkvPrZJvM_oDgYfQ',
         fileType: 'image/png',
@@ -155,7 +155,8 @@ const allowFileUpload = ref(true)
           Edited Status
         </label>
         <label class="flex items-center gap-2 text-sm cursor-pointer">
-          <input type="checkbox" v-model="allowFileUpload" class="rounded border-gray-300" /> Allow File Upload
+          <input type="checkbox" v-model="allowFileUpload" class="rounded border-gray-300" /> Allow
+          File Upload
         </label>
       </div>
 
@@ -173,7 +174,7 @@ const allowFileUpload = ref(true)
 
     <DemoSection title="Standard Chat with Attachments" :code="sourceCode">
       <div
-        class="h-[600px] border border-border rounded-xl w-[400px] overflow-hidden bg-card flex flex-col shadow-sm">
+        class="h-[600px] border border-border rounded-xl w-[200px] overflow-hidden bg-card flex flex-col shadow-sm">
         <ChatInterface
           :data="messages"
           :current-user-id="currentUserId"
