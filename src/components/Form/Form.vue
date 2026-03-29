@@ -415,7 +415,6 @@ const handleCancel = () => {
     @keydown="handleKeydown"
     @keydown.meta.s.prevent="handleSaveShortcut"
     @keydown.ctrl.s.prevent="handleSaveShortcut">
-
     <!-- ── Page header (isPage mode) ──────────────────────────────────────── -->
     <div
       v-if="isPage"
@@ -465,7 +464,6 @@ const handleCancel = () => {
 
     <!-- ── Body ───────────────────────────────────────────────────────────── -->
     <div :class="footer && isFooterSticky ? 'pb-2' : ''">
-
       <!--
         FLAT SCHEMA — single array (no groups, no steps)
         When a thumbnailSelector field is detected, we split the layout into:
@@ -480,10 +478,7 @@ const handleCancel = () => {
       -->
       <div v-if="!isGroupedMode">
         <!-- Side-panel layout when thumbnailSelector is present -->
-        <div
-          v-if="hasThumbnailPanel"
-          class="flex flex-col lg:flex-row gap-6">
-
+        <div v-if="hasThumbnailPanel" class="flex flex-col lg:flex-row gap-10 lg:gap-12">
           <!--
             Thumbnail panel
             - Mobile  : order-first → renders on TOP
