@@ -24,6 +24,13 @@ interface Props {
   isFieldDisabled?: (field: IForm) => boolean
   /** Function to check if field is readonly */
   isFieldReadonly?: (field: IForm) => boolean
+  /**
+   * Field types to exclude from rendering.
+   * Used by Form.vue to prevent thumbnailSelector (and any future side-panel
+   * field types) from being rendered inline with regular fields when they are
+   * already rendered in a dedicated side panel.
+   */
+  excludeTypes?: string[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -34,6 +41,7 @@ const props = withDefaults(defineProps<Props>(), {
   isUpdate: false,
   showRequiredAsterisk: true,
   fieldLoading: () => ({}),
+  excludeTypes: () => [],
 })
 
 const emit = defineEmits<{
@@ -53,6 +61,18 @@ const getResolvedType = (field: IForm) => {
     globalValues: props.values,
     isUpdate: props.isUpdate
   })
+}
+
+/**
+ * Returns false when the field's resolved type is in the excludeTypes list.
+ * This allows Form.vue to hoist certain field types (e.g. thumbnailSelector)
+ * out of the regular grid and into a dedicated side panel, without rendering
+ * them twice.
+ */
+const isNotExcluded = (field: IForm): boolean => {
+  if (!props.excludeTypes || props.excludeTypes.length === 0) return true
+  const resolved = getResolvedType(field) as string | undefined
+  return !resolved || !props.excludeTypes.includes(resolved)
 }
 
 // Get value for a field
@@ -206,8 +226,14 @@ const getSafeLabel = (field: IForm) => {
 <template>
   <div :class="['grid', variant === 'floating' ? 'gap-5 mt-1' : 'gap-4', className]">
     <template v-for="field in schema" :key="field.name">
+      <!--
+        Render the field only when:
+        1. It passes the visibility check (when condition)
+        2. Its resolved type is NOT in the excludeTypes list
+           (thumbnailSelector fields are rendered by Form.vue in the side panel)
+      -->
       <div
-        v-if="checkFieldVisible(field)"
+        v-if="checkFieldVisible(field) && isNotExcluded(field)"
         v-memo="[
           field,
           getFieldValue(field),
