@@ -48,6 +48,7 @@ export type IFormFieldType =
   | 'select'
   | 'multiSelect'
   | 'avatarUpload'
+  | 'thumbnailSelector'
   | Component
 
 /**
