@@ -232,7 +232,22 @@ export function filterNullCustomFields(
 }
 
 /**
- * Collect file fields from schema that need upload processing
+ * Returns true if a string value is a base64 data URI that needs uploading.
+ * Blob object URLs (blob:...) are local references and should NOT be uploaded
+ * via the service — they are preview-only and will be replaced by a re-upload
+ * from the original File object if needed.
+ */
+function isBase64DataUri(val: any): boolean {
+  return typeof val === 'string' && val.startsWith('data:image/')
+}
+
+/**
+ * Collect file fields from schema that need upload processing.
+ *
+ * Extended to handle `thumbnailSelector` fields:
+ *   - The field value is { images: string[], thumbnail: string | null }
+ *   - Each image URL that is a base64 data URI is collected for upload
+ *   - After upload the images array and thumbnail are updated with resolved URLs
  */
 export function collectFileFields(
   schema: IForm[] | IForm[][],
@@ -266,6 +281,27 @@ export function collectFileFields(
           type: fieldType as string,
           field,
         })
+      }
+    }
+
+    /**
+     * ThumbnailSelector: collect the whole { images, thumbnail } object.
+     * processFileUploads in useForm.ts handles uploading individual base64 images
+     * within the object and reconstructing the { images, thumbnail } with resolved URLs.
+     */
+    if (fieldType === 'thumbnailSelector') {
+      const value = getNestedValue(values, field.name)
+      if (value && typeof value === 'object') {
+        const hasBase64Images = Array.isArray(value.images) &&
+          value.images.some((img: any) => isBase64DataUri(img))
+        if (hasBase64Images) {
+          fileFields.push({
+            name: field.name,
+            value,
+            type: 'thumbnailSelector',
+            field,
+          })
+        }
       }
     }
 
@@ -342,16 +378,18 @@ export function getFieldKey(name: string): string {
  * (Prisma / Postgres) instead of omitting the key from the payload.
  *
  * Rules:
- * - multiSelect  → []    (empty array, required by array columns)
- * - select       → null  (foreign key / enum column)
- * - switch/check → false
- * - number       → null
+ * - multiSelect       → []    (empty array, required by array columns)
+ * - thumbnailSelector → { images: [], thumbnail: null }
+ * - select            → null  (foreign key / enum column)
+ * - switch/check      → false
+ * - number            → null
  * - everything else (text, email, …) → null
  */
 function resolveEmptyValue(field: IForm, context: IFormContext): any {
   const type = resolveFieldType(field, context) as string | undefined
 
   if (type === 'multiSelect') return []
+  if (type === 'thumbnailSelector') return { images: [], thumbnail: null }
   if (type === 'switch' || type === 'check') return false
   return null
 }
