@@ -27,44 +27,64 @@ The `status` value is normalized before lookup: lowercased, and all `-`, `_`, an
 
 ### Resolved Status Groups
 
-**Payments & Finance**
+**Payments & ERP / Finance**
 
 | Status value       | Variant   |
 | :----------------- | :-------- |
 | `paid`             | `success` |
 | `unpaid`           | `danger`  |
 | `pending`          | `warning` |
-| `partially_paid`   | `warning` |
-| `refunded`         | `info`    |
-| `overdue`          | `danger`  |
-| `void`             | `secondary`|
-| `cancelled`        | `danger`  |
+| `partially_paid`   | `cyan`    |
+| `refunded`         | `pink`    |
+| `overdue`          | `orange`  |
+| `void` / `voided`  | `secondary`|
+| `cancelled`        | `pink`    |
+| `invoiced`         | `indigo`  |
+| `billed`           | `indigo`  |
+| `unbilled`         | `warning` |
+| `quoted`           | `cyan`    |
+| `cleared`          | `success` |
+| `reconciled`       | `success` |
+| `unreconciled`     | `warning` |
+| `posted`           | `success` |
+| `unposted`         | `secondary`|
+| `settled`          | `success` |
+| `authorized`       | `success` |
+| `unauthorized`     | `danger`  |
 
 **Orders & Fulfillment**
 
 | Status value    | Variant   |
 | :-------------- | :-------- |
-| `confirmed`     | `info`    |
+| `confirmed`     | `success` |
 | `processing`    | `info`    |
 | `in_progress`   | `info`    |
-| `dispatched`    | `info`    |
-| `in_transit`    | `info`    |
-| `shipped`       | `info`    |
-| `delivered`     | `success` |
+| `dispatched`    | `cyan`    |
+| `in_transit`    | `purple`  |
+| `shipped`       | `teal`    |
+| `delivered`     | `teal`    |
 | `completed`     | `success` |
 | `rejected`      | `danger`  |
 
-**HR & Attendance**
+**HR & Recruiting**
 
-| Status value  | Variant    |
-| :------------ | :--------- |
-| `present`     | `success`  |
-| `absent`      | `danger`   |
-| `active`      | `success`  |
-| `inactive`    | `secondary`|
-| `on_hold`     | `warning`  |
-| `terminated`  | `danger`   |
-| `suspended`   | `danger`   |
+| Status value   | Variant    |
+| :------------- | :--------- |
+| `present`      | `success`  |
+| `absent`       | `danger`   |
+| `active`       | `success`  |
+| `inactive`     | `secondary`|
+| `on_hold`      | `orange`   |
+| `terminated`   | `danger`   |
+| `suspended`    | `pink`     |
+| `hired`        | `success`  |
+| `interviewing` | `indigo`   |
+| `shortlisted`  | `teal`     |
+| `offered`      | `purple`   |
+| `onboarding`   | `info`     |
+| `probation`    | `warning`  |
+| `promoted`     | `success`  |
+| `relocated`    | `cyan`     |
 
 **Inventory & Stock**
 
@@ -87,6 +107,28 @@ The `status` value is normalized before lookup: lowercased, and all `-`, `_`, an
 | `done`               | `success` |
 | `awaiting_approval`  | `warning` |
 | `partially_approved` | `warning` |
+
+**Priority & Severity**
+
+| Status value         | Variant   |
+| :------------------- | :-------- |
+| `critical`           | `danger`  |
+| `high`               | `danger`  |
+| `urgent`             | `danger`  |
+| `medium`             | `warning` |
+| `normal`             | `secondary`|
+| `minor`              | `secondary`|
+| `trivial`            | `secondary`|
+| `low`                | `orange` / `secondary` | 
+
+**Boolean & Logic**
+
+| Status value | Variant   |
+| :----------- | :-------- |
+| `yes`        | `success` |
+| `no`         | `danger`  |
+| `true`       | `success` |
+| `false`      | `danger`  |
 
 > Unknown statuses fall back to the `secondary` variant with the status string formatted as a readable label (e.g. `some_custom_status` → `Some Custom Status`).
 
