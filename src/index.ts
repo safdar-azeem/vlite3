@@ -46,6 +46,7 @@ export * from './components/Timeline'
 export * from './components/FilePreview'
 export * from './components/AttachmentsList'
 export * from './components/CustomFieldsDisplay'
+export * from './components/Invoice'
 
 export { default as Icon } from './components/Icon.vue'
 export { default as Logo } from './components/Logo.vue'
