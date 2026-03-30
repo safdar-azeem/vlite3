@@ -10,7 +10,7 @@ const loading = ref(true)
 onMounted(() => {
   setTimeout(() => {
     loading.value = false
-  }, 2000)
+  }, 1000)
 })
 
 const loginSchema: IForm[] = [
@@ -30,13 +30,14 @@ const loginSchema: IForm[] = [
   },
   {
     name: 'rememberMe',
-    type: 'thumbnailSelector',
+    type: 'switch',
   },
 ]
 
 const submittedValues = ref<any>({
   email: 'john@example.com',
   password: '123456',
+  rememberMe: true,
 })
 
 const handleSubmit = (payload: IFormSubmitPayload) => {
