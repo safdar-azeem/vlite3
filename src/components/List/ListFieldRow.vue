@@ -29,6 +29,13 @@ interface Props {
    * - `'divider'` — Left border on non-first cells per row + extra left padding.
    */
   stackedBorderStyle?: StackedBorderStyle
+  /**
+   * Character length threshold beyond which the standard horizontal row
+   * automatically switches to the lineByLine (block) layout.
+   * Applies to the standard row only (not stacked/lineByLine-forced rows).
+   * Default: 60. Set to 0 to disable auto-switching.
+   */
+  autoLineByLineThreshold?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -39,6 +46,7 @@ const props = withDefaults(defineProps<Props>(), {
   index: 0,
   stackedColIndex: 0,
   stackedBorderStyle: 'none',
+  autoLineByLineThreshold: 50,
 })
 
 const showSensitive = ref(false)
@@ -102,10 +110,17 @@ const isStacked = computed(() => props.variant === 'stacked')
 
 /**
  * Whether this row is in lineByLine (block) mode.
- * In this mode the label acts as a header and the value renders
- * on a new line below it, occupying full container width.
+ * True when explicitly set via field.lineByLine, OR when the resolved
+ * value string length exceeds autoLineByLineThreshold.
  */
-const isLineByLine = computed(() => !!props.field.lineByLine)
+const isLineByLine = computed(() => {
+  if (props.field.lineByLine) return true
+  if (props.autoLineByLineThreshold > 0) {
+    const len = String(resolvedValue.value ?? '').length
+    return len > props.autoLineByLineThreshold
+  }
+  return false
+})
 
 /**
  * Stacked cell padding/border class.
@@ -202,6 +217,7 @@ const stackedCellClass = computed(() => {
   <!-- ═══ lineByLine (block) row ═══
        Label renders as a header; value starts on a new line below it,
        spanning the full container width. Text alignment is start (left).
+       Triggered either by field.lineByLine or auto-detection via autoLineByLineThreshold.
   -->
   <div
     v-else-if="isLineByLine"
