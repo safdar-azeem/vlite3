@@ -499,4 +499,60 @@ export const getYear = (): string => dayjs().toISOString()
 export const getNextYear = (): string => dayjs().add(1, 'year').toISOString()
 export const getPrevYear = (): string => dayjs().subtract(1, 'year').toISOString()
 
+// ----------------------------------------------------------------------
+// General Date Formatter
+// ----------------------------------------------------------------------
+
+/**
+ * Formats a given date/time value using the global VLite configuration or an explicit format.
+ * Automatically handles time-only strings (e.g., '13:00').
+ *
+ * @param value The date/time to format
+ * @param format Optional explicit format string overriding the global config.
+ * @param type The type of date/time ('date' | 'dateTime' | 'time') to determine default formats.
+ */
+export const formatDate = (
+  value: string | number | Date | Dayjs | null | undefined,
+  format?: string,
+  type?: 'date' | 'dateTime' | 'time'
+): string => {
+  if (value === null || value === undefined || value === '') return '--'
+
+  const baseFormat = configState?.components?.datetime?.format || 'MM/DD/YYYY'
+
+  // 1. Auto-detect pure time strings like "13:00" or "01:10"
+  if (typeof value === 'string') {
+    const val = value.trim()
+    if (/^([01]?\d|2[0-3]):([0-5]\d)(:([0-5]\d))?$/.test(val)) {
+      const parts = val.split(':')
+      const hh = parts[0].padStart(2, '0')
+      const mm = parts[1]
+      const ss = parts[2] || '00'
+
+      const d = dayjs(`1970-01-01T${hh}:${mm}:${ss}`)
+      if (d.isValid()) {
+        const timeFormat = format || (type === 'time' ? 'hh:mm A' : 'hh:mm A')
+        return d.format(timeFormat)
+      }
+    }
+  }
+
+  // 2. Resolve final format for dates and dateTimes
+  let resolvedFormat = format
+  if (!resolvedFormat) {
+    if (type === 'dateTime') {
+      resolvedFormat = `${baseFormat} hh:mm A`
+    } else {
+      // Default to strict date (e.g. 'MM/DD/YYYY')
+      resolvedFormat = baseFormat
+    }
+  }
+
+  const d = dayjs(value)
+  if (!d.isValid()) return String(value)
+
+  return d.format(resolvedFormat)
+}
+
+
 
