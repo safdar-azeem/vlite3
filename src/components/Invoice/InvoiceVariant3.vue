@@ -12,7 +12,7 @@ const props = withDefaults(
     /** Reduces padding, spacing, and font sizes for print-friendly output */
     compact?: boolean
   }>(),
-  { compact: false },
+  { compact: false }
 )
 
 const d = computed(() => props.data)
@@ -20,18 +20,18 @@ const d = computed(() => props.data)
 
 <template>
   <div
-    class="v-invoice-v3 bg-card text-card-foreground border border-border shadow-sm rounded-md overflow-hidden"
-    :class="compact ? 'text-xs' : 'text-sm'"
-  >
+    class="v-invoice-v3 bg-body text-foreground border border-border shadow-sm rounded-md overflow-hidden"
+    :class="compact ? 'text-xs' : 'text-sm'">
     <!-- Top Bar -->
     <div
       class="bg-primary flex justify-between items-center text-primary-foreground"
-      :class="compact ? 'px-6 py-3' : 'px-6 py-4'"
-    >
+      :class="compact ? 'px-6 py-3' : 'px-6 py-4'">
       <div class="flex items-center gap-2">
-        <span class="font-bold uppercase tracking-wider" :class="compact ? 'text-base' : 'text-lg'">{{
-          d.brandTitle || 'Invoice'
-        }}</span>
+        <span
+          class="font-bold uppercase tracking-wider"
+          :class="compact ? 'text-base' : 'text-lg'"
+          >{{ d.brandTitle || 'Invoice' }}</span
+        >
         <span class="opacity-80">#{{ d.invoiceNumber }}</span>
       </div>
       <Badge
@@ -61,9 +61,7 @@ const d = computed(() => props.data)
 
         <!-- Billed To -->
         <div v-if="d.customerInfo">
-          <h4
-            class="font-semibold text-muted-foreground uppercase tracking-wider text-xs mb-1"
-          >
+          <h4 class="font-semibold text-muted-foreground uppercase tracking-wider text-xs mb-1">
             Billed To
           </h4>
           <p class="font-semibold text-sm">{{ d.customerInfo.name }}</p>
@@ -96,22 +94,67 @@ const d = computed(() => props.data)
       <div class="border border-border rounded">
         <table class="w-full text-left whitespace-nowrap">
           <thead
-            class="bg-muted text-muted-foreground uppercase font-semibold border-b border-border"
-            :class="compact ? 'text-xs' : 'text-xs'"
-          >
+            class="bg-muted text-muted-foreground uppercase font-semibold border-b border-border text-xs">
             <tr>
-              <th scope="col" :class="compact ? 'px-3 py-1.5' : 'px-4 py-2'">Item</th>
-              <th scope="col" class="w-16 text-right" :class="compact ? 'px-3 py-1.5' : 'px-4 py-2 w-24'">Qty</th>
-              <th scope="col" class="text-right" :class="compact ? 'px-3 py-1.5 w-24' : 'px-4 py-2 w-32'">Price</th>
-              <th scope="col" class="text-right" :class="compact ? 'px-3 py-1.5 w-24' : 'px-4 py-2 w-32'">Total</th>
+              <th scope="col" :class="compact ? 'px-3 py-1.5' : 'px-4 py-2'">Product</th>
+              <th
+                scope="col"
+                class="w-16 text-right"
+                :class="compact ? 'px-3 py-1.5' : 'px-4 py-2 w-24'">
+                Qty
+              </th>
+              <th
+                scope="col"
+                class="text-right"
+                :class="compact ? 'px-3 py-1.5 w-24' : 'px-4 py-2 w-32'">
+                Price
+              </th>
+              <th
+                scope="col"
+                class="text-right"
+                :class="compact ? 'px-3 py-1.5 w-24' : 'px-4 py-2 w-32'">
+                Total
+              </th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-border" :class="compact ? 'text-xs' : 'text-xs'">
+          <tbody class="divide-y divide-border text-xs">
             <tr v-for="(item, index) in d.items" :key="item.id || index" class="hover:bg-muted/30">
-              <td class="font-medium" :class="compact ? 'px-3 py-1.5' : 'px-4 py-2'">{{ item.name }}</td>
-              <td class="text-right tabular-nums" :class="compact ? 'px-3 py-1.5' : 'px-4 py-2'">{{ item.quantity }}</td>
-              <td class="text-right tabular-nums" :class="compact ? 'px-3 py-1.5' : 'px-4 py-2'"><Price :value="item.price" /></td>
-              <td class="text-right tabular-nums font-semibold" :class="compact ? 'px-3 py-1.5' : 'px-4 py-2'">
+              <td :class="compact ? 'px-3 py-1.5' : 'px-4 py-2'">
+                <div class="flex items-center gap-2">
+                  <div
+                    v-if="item.thumbnail"
+                    class="shrink-0 rounded bg-muted overflow-hidden border border-border"
+                    :class="compact ? 'w-8 h-8' : 'w-9 h-9'">
+                    <img
+                      :src="item.thumbnail"
+                      :alt="item.name"
+                      class="w-full h-full object-cover" />
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <div
+                      class="font-semibold text-foreground truncate"
+                      :title="item.name"
+                      :class="compact ? '' : 'text-[13px]'">
+                      {{ item.name }}
+                    </div>
+                    <div
+                      v-if="item.sku"
+                      class="text-[9px] text-muted-foreground font-normal uppercase tracking-tight truncate"
+                      :title="item.sku">
+                      SKU: {{ item.sku }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td class="text-right tabular-nums" :class="compact ? 'px-3 py-1.5' : 'px-4 py-2'">
+                {{ item.quantity }}
+              </td>
+              <td class="text-right tabular-nums" :class="compact ? 'px-3 py-1.5' : 'px-4 py-2'">
+                <Price :value="item.price" />
+              </td>
+              <td
+                class="text-right tabular-nums font-semibold"
+                :class="compact ? 'px-3 py-1.5' : 'px-4 py-2'">
                 <Price :value="item.total" />
               </td>
             </tr>
@@ -121,9 +164,13 @@ const d = computed(() => props.data)
         <!-- Compact Totals -->
         <div
           class="bg-muted/30 border-t border-border flex justify-end"
-          :class="compact ? 'p-3' : 'p-4'"
-        >
-          <div :class="compact ? 'w-full max-w-[200px] space-y-1 text-xs' : 'w-full max-w-[240px] space-y-1 text-xs'">
+          :class="compact ? 'p-3' : 'p-4'">
+          <div
+            :class="
+              compact
+                ? 'w-full max-w-[200px] space-y-1 text-xs'
+                : 'w-full max-w-[240px] space-y-1 text-xs'
+            ">
             <div
               v-for="(total, idx) in d.totals"
               :key="idx"
@@ -134,8 +181,7 @@ const d = computed(() => props.data)
                     ? 'pt-1.5 mt-1.5 border-t border-border font-bold text-xs text-foreground'
                     : 'pt-2 mt-2 border-t border-border font-bold text-sm text-foreground'
                   : 'text-muted-foreground font-medium'
-              "
-            >
+              ">
               <span>{{ total.label }}</span>
               <Price :value="total.value" />
             </div>
@@ -143,13 +189,13 @@ const d = computed(() => props.data)
         </div>
       </div>
 
-      <div v-if="d.notes" class="text-muted-foreground border-t border-border text-xs" :class="compact ? 'pt-2' : 'pt-2'">
+      <div
+        v-if="d.notes"
+        class="text-muted-foreground border-t border-border text-xs"
+        :class="compact ? 'pt-2' : 'pt-2'">
         <strong>Notes:</strong> <span class="whitespace-pre-wrap">{{ d.notes }}</span>
       </div>
-      <div
-        v-if="d.footerText"
-        class="text-center text-muted-foreground opacity-70 text-xs"
-      >
+      <div v-if="d.footerText" class="text-center text-muted-foreground opacity-70 text-xs">
         {{ d.footerText }}
       </div>
     </div>
