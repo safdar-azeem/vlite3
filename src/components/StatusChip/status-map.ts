@@ -105,6 +105,46 @@ export const STATUS_MAP: Record<string, StatusConfig> = {
   declined: { variant: 'danger', icon: 'lucide:thumbs-down' },
   laidoff: { variant: 'danger', icon: 'lucide:user-minus' },
 
+  // ── Priority / Severity ────────────────────────────────────────────────────
+  critical: { variant: 'danger', icon: 'lucide:alert-octagon' },
+  high: { variant: 'danger', icon: 'lucide:arrow-up-circle' },
+  urgent: { variant: 'danger', icon: 'lucide:zap' },
+  medium: { variant: 'warning', icon: 'lucide:minus-circle' },
+  normal: { variant: 'secondary', icon: 'lucide:circle' },
+  minor: { variant: 'secondary', icon: 'lucide:arrow-down' },
+  trivial: { variant: 'secondary', icon: 'lucide:info' },
+
+  // ── Boolean / Logic ────────────────────────────────────────────────────────
+  yes: { variant: 'success', icon: 'lucide:check' },
+  no: { variant: 'danger', icon: 'lucide:x' },
+  true: { variant: 'success', icon: 'lucide:check' },
+  false: { variant: 'danger', icon: 'lucide:x' },
+
+  // ── Finance / Accounting / Sales ───────────────────────────────────────────
+  invoiced: { variant: 'indigo', icon: 'lucide:receipt' },
+  billed: { variant: 'indigo', icon: 'lucide:receipt-text' },
+  unbilled: { variant: 'warning', icon: 'lucide:file-warning' },
+  quoted: { variant: 'cyan', icon: 'lucide:file-text' },
+  authorized: { variant: 'success', icon: 'lucide:shield-check' },
+  unauthorized: { variant: 'danger', icon: 'lucide:shield-off' },
+  cleared: { variant: 'success', icon: 'lucide:check-circle' },
+  reconciled: { variant: 'success', icon: 'lucide:check-square' },
+  unreconciled: { variant: 'warning', icon: 'lucide:alert-circle' },
+  posted: { variant: 'success', icon: 'lucide:file-check' },
+  unposted: { variant: 'secondary', icon: 'lucide:file-x' },
+  settled: { variant: 'success', icon: 'lucide:handshake' },
+  voided: { variant: 'secondary', icon: 'lucide:ban' },
+
+  // ── HR / Recruiting ────────────────────────────────────────────────────────
+  hired: { variant: 'success', icon: 'lucide:user-check' },
+  interviewing: { variant: 'indigo', icon: 'lucide:users' },
+  shortlisted: { variant: 'teal', icon: 'lucide:list-checks' },
+  offered: { variant: 'purple', icon: 'lucide:award' },
+  onboarding: { variant: 'info', icon: 'lucide:user-plus' },
+  probation: { variant: 'warning', icon: 'lucide:user-cog' },
+  promoted: { variant: 'success', icon: 'lucide:trending-up' },
+  relocated: { variant: 'cyan', icon: 'lucide:plane' },
+
   // ── Neutral / Secondary ────────────────────────────────────────────────────
   new: { variant: 'secondary', icon: 'lucide:sparkles' },
   unassigned: { variant: 'secondary', icon: 'lucide:user-x' },
