@@ -555,7 +555,7 @@
 
 .dark .bg-card {
   --color-body: #111111 !important;
-  --color-mixture-1: #111 !important;
+  --color-mixture-1: #1b1b1b !important;
   --color-mixture-2: #ffffff !important;
   background-color: #111111 !important;
 }
@@ -569,7 +569,9 @@
   background-color: var(--color-gray-50);
 }
 
+
 .bg-card {
+  --color-body: #FAFAFA !important;
   --color-mixture-1: #FAFAFA !important;
   --color-mixture-2: #000000 !important;
   background-color: #FAFAFA !important;
