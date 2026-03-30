@@ -1,0 +1,73 @@
+.import-table {
+  width: 100%;
+  font-size: 0.875rem;
+  text-align: left;
+  border-collapse: collapse;
+}
+
+.import-thead {
+  font-size: 0.75rem;
+  color: var(--color-muted-foreground, #6b7280);
+  text-transform: uppercase;
+  background-color: var(--color-muted, #f3f4f6);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.import-th {
+  padding: 0.75rem 1rem;
+  font-weight: 650 !important;
+  color: var(--color-gray-900);
+}
+
+.import-th-center {
+  text-align: center;
+  width: 4rem;
+}
+
+.import-tbody .import-tr {
+  border-bottom: 1px solid var(--color-border, #e5e7eb);
+}
+
+.import-tbody .import-tr:last-child {
+  border-bottom: none;
+}
+
+.import-tr-active {
+  transition: background-color 0.2s ease-in-out;
+}
+
+.import-tr-active:hover {
+  background-color: var(--color-gray-50);
+}
+
+.import-tr-ignored {
+  background-color: var(--color-muted, #f3f4f6);
+  opacity: 0.6;
+}
+
+.import-td-header {
+  padding: 0.75rem 1rem;
+  font-weight: 500;
+  color: var(--color-foreground, #111827);
+  white-space: nowrap;
+}
+
+.import-td-dropdown {
+  padding: 0.5rem 1rem;
+  min-width: 200px;
+}
+
+.import-td-preview {
+  padding: 0.75rem 1rem;
+  color: var(--color-muted-foreground, #6b7280);
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.import-td-action {
+  padding: 0.75rem 1rem;
+  text-align: center;
+  vertical-align: middle;
+}
