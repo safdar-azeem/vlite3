@@ -87,4 +87,9 @@ export interface InvoiceData {
 export interface InvoiceProps {
   data: InvoiceData
   variant?: InvoiceVariant
+  /**
+   * When true, reduces padding, spacing, and font sizes across the invoice
+   * for a more compact, print-friendly layout that uses less paper.
+   */
+  compact?: boolean
 }
