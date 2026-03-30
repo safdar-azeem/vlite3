@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
   emptyText: '--',
   keyProp: 'key',
   valueProp: 'value',
-  listValueThreshold: 60,
+  listValueThreshold: 50,
 })
 
 const displayTitle = computed(() => {
