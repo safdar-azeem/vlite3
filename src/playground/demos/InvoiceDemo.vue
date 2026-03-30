@@ -77,7 +77,7 @@ const salesInvoice: InvoiceData = {
       description: 'Full access to all premium features for 12 months.',
       quantity: 2,
       price: 599,
-      total: 1198,
+      total: 1098,
     },
     {
       id: 2,
@@ -137,6 +137,7 @@ const posInvoice: InvoiceData = {
       id: 1,
       sku: 'PIZ-MARG-L',
       name: 'Margherita Pizza (L)',
+      size: 'Large',
       quantity: 1,
       price: 18.5,
       total: 18.5,
@@ -147,9 +148,12 @@ const posInvoice: InvoiceData = {
       id: 4,
       sku: 'BEV-WATR-S',
       name: 'Sparkling Water (500ml)',
+      size: '500ml',
       quantity: 4,
       price: 3.0,
-      total: 12.0,
+      discount: 2.0,
+      discountLabel: 'B3G1F',
+      total: 10.0,
     },
   ],
   totals: [
@@ -442,14 +446,13 @@ const invoiceLineItemFields = [
   { name: 'thumbnail', type: 'string?', desc: 'URL for the product thumbnail image.' },
   { name: 'sku', type: 'string?', desc: 'Product SKU / identifier code.' },
   { name: 'name', type: 'string', desc: 'Product or service name.' },
-  {
-    name: 'description',
-    type: 'string?',
-    desc: 'Detailed description (hidden in most compact views).',
-  },
+  { name: 'description', type: 'string?', desc: 'Detailed description.' },
+  { name: 'size', type: 'string?', desc: 'Product size or variation (e.g. "XL", "Blue").' },
   { name: 'quantity', type: 'number', desc: 'Number of units.' },
   { name: 'price', type: 'number', desc: 'Unit price.' },
-  { name: 'total', type: 'number', desc: 'Total line amount (usually quantity * price).' },
+  { name: 'discount', type: 'number?', desc: 'Discount amount applied to this line item.' },
+  { name: 'discountLabel', type: 'string?', desc: 'Label for the discount (e.g. "10% OFF").' },
+  { name: 'total', type: 'number', desc: 'Total line amount after discounts.' },
 ]
 </script>
 
