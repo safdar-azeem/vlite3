@@ -5,6 +5,7 @@ export { default as Form } from './Form.vue'
 export { default as FormField } from './FormField.vue'
 export { default as FormFields } from './FormFields.vue'
 export { default as CustomFields } from './CustomFields.vue'
+export { default as FormSkeleton } from './FormSkeleton.vue'
 
 // Types
 export * from './types'
