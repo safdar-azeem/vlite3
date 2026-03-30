@@ -87,6 +87,7 @@ const txtNoImageSelected = computed(() => t('vlite.thumbnailSelector.noImageSele
 const txtImage = computed(() => t('vlite.thumbnailSelector.image', 'Image'))
 const txtRemoveImage = computed(() => t('vlite.thumbnailSelector.removeImage', 'Remove image'))
 const txtUpload = computed(() => t('vlite.thumbnailSelector.upload', 'Upload'))
+const txtDragToReorder = computed(() => t('vlite.thumbnailSelector.dragToReorder', 'Drag to reorder'))
 
 const selectThumbnail = (url: string) => {
   if (props.disabled || props.loading) return
@@ -196,6 +197,7 @@ const handleDragUpdate = (newImages: string[]) => {
       :animation="150"
       :disabled="disabled || loading"
       draggable=".vl-thumbnail-selector__card"
+      handle=".drag-handle"
       filter=".vl-thumbnail-selector__filepicker-inline, .vl-thumbnail-selector__upload"
       ghost-class="opacity-50"
       class="vl-thumbnail-selector__grid grid grid-cols-3 sm:grid-cols-4 gap-2"
@@ -221,6 +223,15 @@ const handleDragUpdate = (newImages: string[]) => {
         @click="selectThumbnail(url)">
         <!-- Image preview -->
         <img :src="url" class="w-full h-full object-cover" :alt="`${txtImage} ${index + 1}`" />
+
+        <!-- Drag handle -->
+        <div
+          v-if="!disabled"
+          class="drag-handle vl-thumbnail-selector__drag-handle absolute top-1 left-1 z-10 w-6 h-6 flex items-center justify-center rounded bg-background/60 backdrop-blur-sm border border-border text-muted-foreground shadow-sm cursor-grab active:cursor-grabbing hover:bg-background/90 hover:text-foreground opacity-0 transition-opacity duration-150"
+          :title="txtDragToReorder"
+          @click.stop>
+          <Icon icon="lucide:grip-horizontal" class="w-3.5 h-3.5" />
+        </div>
 
         <!--
           Delete button — visibility is driven purely by the scoped CSS rule
@@ -295,7 +306,7 @@ const handleDragUpdate = (newImages: string[]) => {
 }
 
 /*
- * Scoped hover rule for the delete button.
+ * Scoped hover rules for the action buttons (delete, drag handle).
  *
  * WHY scoped CSS instead of Tailwind group-hover:
  * Tailwind's `group` must be placed on an ancestor element. If that ancestor
@@ -305,7 +316,8 @@ const handleDragUpdate = (newImages: string[]) => {
  * individual card element, hover activation is strictly isolated to the card
  * the pointer is physically over.
  */
-.vl-thumbnail-selector__card:hover .vl-thumbnail-selector__delete {
+.vl-thumbnail-selector__card:hover .vl-thumbnail-selector__delete,
+.vl-thumbnail-selector__card:hover .vl-thumbnail-selector__drag-handle {
   opacity: 1;
 }
 
