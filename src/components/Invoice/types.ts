@@ -29,6 +29,10 @@ export interface InvoiceCompanyInfo {
 
 export interface InvoiceLineItem {
   id: string | number
+  /** Thumbnail image URL for the product */
+  thumbnail?: string
+  /** Product SKU */
+  sku?: string
   name: string
   description?: string
   quantity: number
