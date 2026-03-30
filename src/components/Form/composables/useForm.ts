@@ -59,13 +59,16 @@ export interface UseFormReturn {
   handleSubmit: () => Promise<void>
   /** Flattened schema for iteration */
   flatSchema: ComputedRef<IForm[]>
+  /** Re-initialize form with new schema/values (useful for async data loading) */
+  reinitialize: (newSchema?: IForm[] | IForm[][], newValues?: Record<string, any>) => Promise<void>
 }
 
 /**
  * Main form composable for managing form state, validation, and submission
  */
 export function useForm(options: UseFormOptions): UseFormReturn {
-  const { schema, values: initialValues, isUpdate = false, folderId, onSubmit } = options
+  // Use let instead of const so we can re-assign them if reinitialized
+  let { schema, values: initialValues, isUpdate = false, folderId, onSubmit } = options
   const { handleUploadFile } = useFileUpload()
 
   // Initialize form values. Deep clone fast initial structure if available
@@ -76,6 +79,9 @@ export function useForm(options: UseFormOptions): UseFormReturn {
   const isDirty = ref(false)
   const fieldLoading = ref<Record<string, boolean>>({})
 
+  // Expose schema reactively for flatSchema computed property
+  const activeSchema = shallowRef<IForm[] | IForm[][]>(schema)
+
   // PERFORMANCE: Use shallowRef for initialSnapshot to prevent deep proxy traversal
   // since it's only read from or completely replaced.
   const initialSnapshot = shallowRef<Record<string, any>>(
@@ -84,14 +90,15 @@ export function useForm(options: UseFormOptions): UseFormReturn {
 
   // Flatten schema for easy iteration
   const flatSchema = computed<IForm[]>(() => {
-    if (!schema) return []
-    return Array.isArray(schema[0]) ? (schema as IForm[][]).flat() : (schema as IForm[])
+    const s = activeSchema.value
+    if (!s) return []
+    return Array.isArray(s[0]) ? (s as IForm[][]).flat() : (s as IForm[])
   })
 
   // Async initializer to safely handle async formats and standard formats
   const init = async (vals?: Record<string, any>) => {
     try {
-      const initialized = await initializeFormValues(schema, vals, formValues.value, isUpdate)
+      const initialized = await initializeFormValues(activeSchema.value, vals, formValues.value, isUpdate)
       formValues.value = initialized
       initialSnapshot.value = deepClone(initialized)
       isDirty.value = false
@@ -369,7 +376,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
    */
   const processFileUploads = async (): Promise<Record<string, any>> => {
     const values = deepClone(formValues.value)
-    const fileFields = collectFileFields(schema, values, formValues.value, isUpdate)
+    const fileFields = collectFileFields(activeSchema.value, values, formValues.value, isUpdate)
 
     // Helper to format detailed object output if returnFileObject is true
     const buildDetailedOutput = (item: any, url: string) => {
@@ -582,7 +589,7 @@ export function useForm(options: UseFormOptions): UseFormReturn {
       // Clean payload based on schema and emit/ignore fields
       processedValues = await cleanSubmitValues(
         processedValues,
-        schema,
+        activeSchema.value,
         options.emitFields,
         undefined,
         formValues.value,
@@ -617,6 +624,23 @@ export function useForm(options: UseFormOptions): UseFormReturn {
     isDirty.value = false
   }
 
+  /**
+   * Re-initialize form with potentially new schema and values
+   */
+  const reinitialize = async (newSchema?: IForm[] | IForm[][], newValues?: Record<string, any>): Promise<void> => {
+    if (newSchema !== undefined) {
+      activeSchema.value = newSchema
+    }
+    
+    // Explicitly update initialValues variable the watcher monitors
+    if (newValues !== undefined) {
+      initialValues = newValues
+    }
+    
+    // Call init to re-process values against the (new) schema
+    await init(newValues !== undefined ? newValues : initialValues)
+  }
+
   return {
     formValues,
     errors,
@@ -636,5 +660,6 @@ export function useForm(options: UseFormOptions): UseFormReturn {
     resetForm,
     handleSubmit,
     flatSchema,
+    reinitialize,
   }
 }

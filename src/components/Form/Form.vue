@@ -240,6 +240,7 @@ const {
   isFieldDisabled,
   isFieldReadonly,
   handleSubmit: formSubmit,
+  reinitialize,
 } = useForm({
   schema: props.schema,
   values: props.values,
@@ -268,13 +269,13 @@ onUnmounted(() => {
 })
 
 watch(
-  () => props.values,
-  (newValues) => {
-    if (newValues) {
-      // Re-initialize is handled in useForm watch
+  [() => props.schema, () => props.values, () => props.schemaLoading],
+  ([newSchema, newValues, loading]) => {
+    // Only reinitialize if we are not explicitly blocked by schemaLoading
+    if (!loading) {
+      reinitialize(newSchema, newValues)
     }
-  },
-  { deep: true }
+  }
 )
 
 const onFieldChange = (name: string, payload: { value: any; data?: any }) => {

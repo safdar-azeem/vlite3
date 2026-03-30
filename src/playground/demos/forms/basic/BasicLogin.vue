@@ -1,9 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { Form, type IForm, type IFormSubmitPayload } from '@/components/Form'
 import Icon from '@/components/Icon.vue'
 import DemoSection from '../../../DemoSection.vue'
 import sourceCode from './BasicLogin.vue?raw'
+
+const loading = ref(true)
+
+onMounted(() => {
+  setTimeout(() => {
+    loading.value = false
+  }, 2000)
+})
 
 const loginSchema: IForm[] = [
   {
@@ -26,7 +34,10 @@ const loginSchema: IForm[] = [
   },
 ]
 
-const submittedValues = ref<any>(null)
+const submittedValues = ref<any>({
+  email: 'john@example.com',
+  password: '123456',
+})
 
 const handleSubmit = (payload: IFormSubmitPayload) => {
   submittedValues.value = payload.values
@@ -37,7 +48,12 @@ const handleSubmit = (payload: IFormSubmitPayload) => {
   <DemoSection title="Login Form" :code="sourceCode">
     <div class="flex flex-col lg:flex-row gap-6">
       <div class="flex-1 max-w-3xl">
-        <Form :schema="loginSchema" submitText="Sign In" @onSubmit="handleSubmit" />
+        <Form
+          :schema="loginSchema"
+          submitText="Sign In"
+          :values="submittedValues"
+          @onSubmit="handleSubmit"
+          :schema-loading="loading" />
       </div>
       <!-- Inline Submitted Values -->
       <div v-if="submittedValues" class="flex-1 max-w-md">
