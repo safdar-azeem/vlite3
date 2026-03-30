@@ -146,7 +146,7 @@ const d = computed(() => props.data)
                 scope="col"
                 class="font-bold text-muted-foreground uppercase tracking-widest"
                 :class="compact ? 'py-2 text-xs' : 'py-4 text-xs'">
-                Description
+                Product
               </th>
               <th
                 scope="col"
@@ -173,15 +173,37 @@ const d = computed(() => props.data)
               v-for="(item, index) in d.items"
               :key="item.id || index"
               class="group hover:bg-muted/10">
-              <td
-                class="font-medium text-foreground pr-4 white-space-normal"
-                :class="compact ? 'py-3' : 'py-5'">
-                <span class="block">{{ item.name }}</span>
-                <span
-                  v-if="item.description && !compact"
-                  class="text-xs text-muted-foreground font-normal mt-0.5 line-clamp-2"
-                  >{{ item.description }}</span
-                >
+              <td class="font-medium text-foreground pr-4" :class="compact ? 'py-3' : 'py-5'">
+                <div class="flex items-center gap-2">
+                  <div
+                    v-if="item.thumbnail"
+                    class="shrink-0 rounded-xl bg-muted overflow-hidden border border-border shadow-sm"
+                    :class="compact ? 'w-9 h-9' : 'w-11 h-11'">
+                    <img
+                      :src="item.thumbnail"
+                      :alt="item.name"
+                      class="w-full h-full object-cover" />
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <span
+                      class="block font-medium truncate"
+                      :class="compact ? 'text-sm' : 'text-base'"
+                      :title="item.name"
+                      >{{ item.name }}</span
+                    >
+                    <div
+                      v-if="item.sku"
+                      class="text-[9px] uppercase tracking-widest text-muted-foreground font-normal truncate mt-0.5"
+                      :title="item.sku">
+                      SKU: {{ item.sku }}
+                    </div>
+                    <span
+                      v-if="item.description && !compact"
+                      class="block text-xs text-muted-foreground font-normal mt-0.5 line-clamp-1 max-w-sm"
+                      >{{ item.description }}</span
+                    >
+                  </div>
+                </div>
               </td>
               <td
                 class="text-right tabular-nums text-muted-foreground"
@@ -216,8 +238,7 @@ const d = computed(() => props.data)
               :value="d.barcode"
               format="CODE128"
               :height="compact ? 28 : 45"
-              :width="compact ? 1.4 : 1.8"
-              :display-value="true" />
+              :width="compact ? 1.4 : 1.8" />
           </div>
           <p
             v-if="d.notes"
