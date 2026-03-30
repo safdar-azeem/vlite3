@@ -255,6 +255,7 @@ const serviceInvoice: InvoiceData = {
   items: [
     {
       id: 1,
+      avatar: 'https://i.pravatar.cc/300',
       name: 'UI/UX Design — Mobile App',
       description: '32 screens, full Figma source, design system & component library included.',
       quantity: 1,
