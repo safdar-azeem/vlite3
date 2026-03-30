@@ -115,6 +115,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'QRCode', to: '/qrcode', icon: 'lucide:qr-code' },
       { label: 'Export Data', to: '/export-data', icon: 'lucide:file-down' },
       { label: 'Import Data', to: '/import-data', icon: 'lucide:file-up' },
+      { label: 'Invoice', to: '/invoice', icon: 'lucide:receipt' },
     ],
   },
 ]
