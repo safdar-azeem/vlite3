@@ -78,6 +78,7 @@ import GoogleLoginDemo from '../playground/GoogleLoginDemo.vue'
 import I18nDemo from '../playground/demos/I18nDemo.vue'
 import CustomFieldsDisplayDemo from '../playground/demos/CustomFieldsDisplayDemo.vue'
 import InvoiceDemo from '../playground/demos/InvoiceDemo.vue'
+import CalendarDemo from '../playground/demos/CalendarDemo.vue'
 
 const routes = [
   {
@@ -155,6 +156,7 @@ const routes = [
       { path: 'i18n', component: I18nDemo },
       { path: 'customfieldsdisplay', component: CustomFieldsDisplayDemo },
       { path: 'invoice', component: InvoiceDemo },
+      { path: 'calendar', component: CalendarDemo },
     ],
   },
 ]
