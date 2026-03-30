@@ -391,6 +391,7 @@ function resolveEmptyValue(field: IForm, context: IFormContext): any {
   if (type === 'multiSelect') return []
   if (type === 'thumbnailSelector') return { images: [], thumbnail: null }
   if (type === 'switch' || type === 'check') return false
+  if ((type === 'fileUploader' || type === 'file' || type === 'avatarUpload') && field.props?.multiple) return []
   return null
 }
 
@@ -497,6 +498,11 @@ export async function cleanSubmitValues(
     const fieldKeyExistsInValues = Object.prototype.hasOwnProperty.call(values, topLevelKey)
 
     const fieldType = resolveFieldType(field, context)
+
+    // Ensure array file values do not contain nulls or empty strings
+    if (Array.isArray(val) && (fieldType === 'fileUploader' || fieldType === 'file' || fieldType === 'avatarUpload')) {
+      val = val.filter((item: any) => item !== null && item !== undefined && item !== '')
+    }
 
     if (isEmptyValue(val)) {
       // Only carry the explicit empty value forward when the key was already
