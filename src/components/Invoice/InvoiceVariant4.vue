@@ -145,25 +145,25 @@ const d = computed(() => props.data)
               <th
                 scope="col"
                 class="font-bold text-muted-foreground uppercase tracking-widest"
-                :class="compact ? 'py-2 text-[10px]' : 'py-4 text-xs'">
+                :class="compact ? 'py-2 text-xs' : 'py-4 text-xs'">
                 Description
               </th>
               <th
                 scope="col"
                 class="font-bold text-muted-foreground uppercase tracking-widest text-right"
-                :class="compact ? 'py-2 text-[10px]' : 'py-4 text-xs'">
+                :class="compact ? 'py-2 text-xs' : 'py-4 text-xs'">
                 Price
               </th>
               <th
                 scope="col"
                 class="font-bold text-muted-foreground uppercase tracking-widest text-right"
-                :class="compact ? 'py-2 text-[10px]' : 'py-4 text-xs'">
+                :class="compact ? 'py-2 text-xs' : 'py-4 text-xs'">
                 Qty
               </th>
               <th
                 scope="col"
                 class="font-bold text-muted-foreground uppercase tracking-widest text-right"
-                :class="compact ? 'py-2 text-[10px]' : 'py-4 text-xs'">
+                :class="compact ? 'py-2 text-xs' : 'py-4 text-xs'">
                 Total
               </th>
             </tr>
@@ -175,7 +175,7 @@ const d = computed(() => props.data)
               class="group hover:bg-muted/10">
               <td
                 class="font-medium text-foreground pr-4 white-space-normal"
-                :class="compact ? 'py-2' : 'py-5'">
+                :class="compact ? 'py-3' : 'py-5'">
                 <span class="block">{{ item.name }}</span>
                 <span
                   v-if="item.description && !compact"
@@ -185,17 +185,17 @@ const d = computed(() => props.data)
               </td>
               <td
                 class="text-right tabular-nums text-muted-foreground"
-                :class="compact ? 'py-2' : 'py-5'">
+                :class="compact ? 'py-3' : 'py-5'">
                 <Price :value="item.price" />
               </td>
               <td
                 class="text-right tabular-nums text-muted-foreground font-medium"
-                :class="compact ? 'py-2' : 'py-5'">
+                :class="compact ? 'py-3' : 'py-5'">
                 {{ item.quantity }}
               </td>
               <td
                 class="text-right tabular-nums font-bold text-foreground"
-                :class="compact ? 'py-2 text-sm' : 'py-5 text-base'">
+                :class="compact ? 'py-3 text-sm' : 'py-5 text-base'">
                 <Price :value="item.total" />
               </td>
             </tr>
@@ -245,7 +245,7 @@ const d = computed(() => props.data)
               <span
                 :class="{
                   'uppercase tracking-widest text-xs': total.isGrandTotal && !compact,
-                  'uppercase tracking-wide text-[10px]': total.isGrandTotal && compact,
+                  'uppercase tracking-wide text-xs': total.isGrandTotal && compact,
                 }"
                 >{{ total.label }}</span
               >
