@@ -70,6 +70,9 @@ const salesInvoice: InvoiceData = {
   items: [
     {
       id: 1,
+      sku: 'PR-ANN-2024',
+      thumbnail:
+        'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=100&h=100',
       name: 'Pro License — Annual',
       description: 'Full access to all premium features for 12 months.',
       quantity: 2,
@@ -78,6 +81,7 @@ const salesInvoice: InvoiceData = {
     },
     {
       id: 2,
+      sku: 'SRV-ONB',
       name: 'Onboarding & Setup',
       description: 'Dedicated support and configuration assistance.',
       quantity: 1,
@@ -86,6 +90,7 @@ const salesInvoice: InvoiceData = {
     },
     {
       id: 3,
+      sku: 'ADD-API-ENT',
       name: 'API Enterprise Add-on',
       description: 'Unlimited API calls with dedicated throughput.',
       quantity: 1,
@@ -128,10 +133,24 @@ const posInvoice: InvoiceData = {
     email: '',
   },
   items: [
-    { id: 1, name: 'Margherita Pizza (L)', quantity: 1, price: 18.5, total: 18.5 },
-    { id: 2, name: 'Pasta Carbonara', quantity: 2, price: 14.0, total: 28.0 },
-    { id: 3, name: 'Tiramisu', quantity: 2, price: 7.5, total: 15.0 },
-    { id: 4, name: 'Sparkling Water (500ml)', quantity: 4, price: 3.0, total: 12.0 },
+    {
+      id: 1,
+      sku: 'PIZ-MARG-L',
+      name: 'Margherita Pizza (L)',
+      quantity: 1,
+      price: 18.5,
+      total: 18.5,
+    },
+    { id: 2, sku: 'PST-CARB', name: 'Pasta Carbonara', quantity: 2, price: 14.0, total: 28.0 },
+    { id: 3, sku: 'DES-TIRA', name: 'Tiramisu', quantity: 2, price: 7.5, total: 15.0 },
+    {
+      id: 4,
+      sku: 'BEV-WATR-S',
+      name: 'Sparkling Water (500ml)',
+      quantity: 4,
+      price: 3.0,
+      total: 12.0,
+    },
   ],
   totals: [
     { label: 'Subtotal', value: 73.5, isSubtotal: true },
@@ -255,7 +274,9 @@ const serviceInvoice: InvoiceData = {
   items: [
     {
       id: 1,
-      avatar: 'https://i.pravatar.cc/300',
+      sku: 'DSGN-MOB-01',
+      thumbnail:
+        'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=100&h=100',
       name: 'UI/UX Design — Mobile App',
       description: '32 screens, full Figma source, design system & component library included.',
       quantity: 1,
@@ -264,6 +285,9 @@ const serviceInvoice: InvoiceData = {
     },
     {
       id: 2,
+      sku: 'DEV-VUE-FRT',
+      thumbnail:
+        'https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&q=80&w=100&h=100',
       name: 'Frontend Development (Vue 3)',
       description: '6 weeks dedicated development, responsive, accessible, i18n-ready.',
       quantity: 1,
@@ -272,6 +296,7 @@ const serviceInvoice: InvoiceData = {
     },
     {
       id: 3,
+      sku: 'TST-QA-01',
       name: 'QA & Testing',
       description: 'Cross-browser & device testing. Bug reports & fixes included.',
       quantity: 1,
@@ -280,6 +305,7 @@ const serviceInvoice: InvoiceData = {
     },
     {
       id: 4,
+      sku: 'MGT-PROJ-HR',
       name: 'Project Management',
       description: '10 hrs/week coordination, sprint planning, Jira board management.',
       quantity: 6,
@@ -410,6 +436,21 @@ const invoiceTotalFields = [
     desc: 'Semantic marker for a discount row (use negative values for deductions).',
   },
 ]
+
+const invoiceLineItemFields = [
+  { name: 'id', type: 'string | number', desc: 'Unique identifier for the line item.' },
+  { name: 'thumbnail', type: 'string?', desc: 'URL for the product thumbnail image.' },
+  { name: 'sku', type: 'string?', desc: 'Product SKU / identifier code.' },
+  { name: 'name', type: 'string', desc: 'Product or service name.' },
+  {
+    name: 'description',
+    type: 'string?',
+    desc: 'Detailed description (hidden in most compact views).',
+  },
+  { name: 'quantity', type: 'number', desc: 'Number of units.' },
+  { name: 'price', type: 'number', desc: 'Unit price.' },
+  { name: 'total', type: 'number', desc: 'Total line amount (usually quantity * price).' },
+]
 </script>
 
 <template>
@@ -479,7 +520,7 @@ const invoiceTotalFields = [
 
         <!-- Invoice Preview -->
         <div class="w-full">
-          <Invoice :data="scenarioDataMap[selectedScenario]" :variant="selectedVariant" compact />
+          <Invoice :data="scenarioDataMap[selectedScenario]" :variant="selectedVariant" />
         </div>
       </div>
     </DemoSection>
@@ -495,7 +536,7 @@ const invoiceTotalFields = [
             </span>
             <span class="text-sm text-muted-foreground">{{ v.description }}</span>
           </div>
-          <Invoice :data="salesInvoice" :variant="v.value" compact />
+          <Invoice :data="salesInvoice" :variant="v.value" />
         </div>
       </div>
     </DemoSection>
@@ -583,6 +624,32 @@ const invoiceTotalFields = [
             </thead>
             <tbody class="divide-y divide-border text-sm">
               <tr v-for="field in invoiceTotalFields" :key="field.name" class="hover:bg-muted/30">
+                <td class="px-5 py-3 font-mono text-primary">{{ field.name }}</td>
+                <td class="px-5 py-3 font-mono text-muted-foreground text-xs">{{ field.type }}</td>
+                <td class="px-5 py-3 text-muted-foreground">{{ field.desc }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- InvoiceLineItem -->
+      <div>
+        <h4 class="text-base font-semibold mb-3">InvoiceLineItem</h4>
+        <div class="overflow-x-auto rounded-xl border border-border">
+          <table class="w-full text-sm text-left">
+            <thead class="bg-muted text-muted-foreground uppercase text-xs font-semibold">
+              <tr>
+                <th class="px-5 py-3">Field</th>
+                <th class="px-5 py-3">Type</th>
+                <th class="px-5 py-3">Description</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border text-sm">
+              <tr
+                v-for="field in invoiceLineItemFields"
+                :key="field.name"
+                class="hover:bg-muted/30">
                 <td class="px-5 py-3 font-mono text-primary">{{ field.name }}</td>
                 <td class="px-5 py-3 font-mono text-muted-foreground text-xs">{{ field.type }}</td>
                 <td class="px-5 py-3 text-muted-foreground">{{ field.desc }}</td>
