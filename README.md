@@ -422,6 +422,7 @@ Follow these rules strictly to ensure visual consistency and predictable styling
 - [x] **ColorPicker**
 - [x] **FilePicker**
 - [x] **AvatarUploader**
+- [x] **ThumbnailSelector**
 - [x] **IconPicker**
 - [x] **MultiSelect**
 - [x] **Forms**
