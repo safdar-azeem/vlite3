@@ -5,12 +5,12 @@ import DemoSection from '../DemoSection.vue'
 import sourceCode from './AvatarGroupDemo.vue?raw'
 
 const users = [
-  { src: 'https://i.pravatar.cc/150?u=1', alt: 'Alice Smith' },
-  { src: 'https://i.pravatar.cc/150?u=2', alt: 'Bob Jones' },
-  { src: 'https://i.pravatar.cc/150?u=3', alt: 'Carol White' },
-  { src: 'https://i.pravatar.cc/150?u=4', alt: 'Dan Brown' },
-  { src: 'https://i.pravatar.cc/150?u=5', alt: 'Eve Davis' },
-  { src: 'https://i.pravatar.cc/150?u=6', alt: 'Frank Wilson' },
+  { src: 'https://i.pravatar.cc/150?u=1', alt: 'Alice Smith', heading: 'Alice Smith', text: 'Product Manager' },
+  { src: 'https://i.pravatar.cc/150?u=2', alt: 'Bob Jones', heading: 'Bob Jones', text: 'Software Engineer' },
+  { src: 'https://i.pravatar.cc/150?u=3', alt: 'Carol White', heading: 'Carol White', text: 'UX Designer' },
+  { src: 'https://i.pravatar.cc/150?u=4', alt: 'Dan Brown', heading: 'Dan Brown', text: 'DevOps Lead' },
+  { src: 'https://i.pravatar.cc/150?u=5', alt: 'Eve Davis', heading: 'Eve Davis', text: 'Data Analyst' },
+  { src: 'https://i.pravatar.cc/150?u=6', alt: 'Frank Wilson', heading: 'Frank Wilson', text: 'QA Engineer' },
 ]
 
 const fallbackUsers = [
@@ -31,6 +31,11 @@ const fallbackUsers = [
 
     <DemoSection title="Basic Group" :code="sourceCode">
       <AvatarGroup :items="users" />
+    </DemoSection>
+
+    <DemoSection title="With Tooltips" :code="sourceCode">
+      <p class="text-sm text-muted-foreground mb-3">Hover over each avatar to see their name and role.</p>
+      <AvatarGroup :items="users" :max="5" />
     </DemoSection>
 
     <DemoSection title="With Max Limit & Overflow" :code="sourceCode">
