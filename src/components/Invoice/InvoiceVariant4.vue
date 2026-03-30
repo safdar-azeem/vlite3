@@ -66,7 +66,7 @@ const d = computed(() => props.data)
             </p>
             <DateTime
               :value="d.issuedDate"
-              format="date"
+              type="date"
               class="font-bold"
               :class="compact ? 'text-sm' : 'text-lg'" />
           </div>
@@ -78,7 +78,7 @@ const d = computed(() => props.data)
             </p>
             <DateTime
               :value="d.dueDate"
-              format="date"
+              type="date"
               class="font-bold"
               :class="compact ? 'text-sm' : 'text-lg'" />
           </div>
