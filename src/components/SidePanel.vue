@@ -180,7 +180,7 @@ const displayDescription = computed(() =>
         <div
           v-if="displayTitle || $slots.header"
           :class="headerClass"
-          class="flex-none flex items-center justify-between px-6 py-2 border-b border-border">
+          class="flex-none flex items-center justify-between px-5 py-2 border-b border-border">
           <slot name="header">
             <div>
               <h3 class="text-lg font-bold text-foreground">
@@ -201,7 +201,9 @@ const displayDescription = computed(() =>
             class="-mr-2" />
         </div>
 
-        <div class="flex-1 overflow-y-auto px-6 py-4 scrollbar-thin scrollbar-stable" :class="bodyClass">
+        <div
+          class="flex-1 overflow-y-auto px-6 py-4 scrollbar-thin scrollbar-stable"
+          :class="bodyClass">
           <template v-if="rawBody">
             <component :is="rawBody" v-bind="{ ...bodyProps, ...$attrs }" :close="close" />
           </template>
