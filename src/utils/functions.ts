@@ -511,6 +511,25 @@ export const getPrevYear = (): string => dayjs().subtract(1, 'year').toISOString
  * @param format Optional explicit format string overriding the global config.
  * @param type The type of date/time ('date' | 'dateTime' | 'time') to determine default formats.
  */
+const TIME24_REGEX = /^([01]?\d|2[0-3]):([0-5]\d)(:([0-5]\d))?$/
+const TIME12_REGEX = /^(0?[1-9]|1[0-2]):([0-5]\d)(:([0-5]\d))?\s*(AM|PM|am|pm)$/
+
+/**
+ * Checks if a string is a standalone time (24h or 12h format) rather than a full date.
+ */
+export const isPureTimeString = (val: string): boolean => {
+  const trimmed = val.trim()
+  return TIME24_REGEX.test(trimmed) || TIME12_REGEX.test(trimmed)
+}
+
+/**
+ * Formats a given date/time value using the global VLite configuration or an explicit format.
+ * Automatically handles time-only strings (e.g., '13:00' or '01:00 PM').
+ *
+ * @param value The date/time to format
+ * @param format Optional explicit format string overriding the global config.
+ * @param type The type of date/time ('date' | 'dateTime' | 'time') to determine default formats.
+ */
 export const formatDate = (
   value: string | number | Date | Dayjs | null | undefined,
   format?: string,
@@ -520,20 +539,12 @@ export const formatDate = (
 
   const baseFormat = configState?.components?.datetime?.format || 'MM/DD/YYYY'
 
-  // 1. Auto-detect pure time strings like "13:00" or "01:10"
-  if (typeof value === 'string') {
-    const val = value.trim()
-    if (/^([01]?\d|2[0-3]):([0-5]\d)(:([0-5]\d))?$/.test(val)) {
-      const parts = val.split(':')
-      const hh = parts[0].padStart(2, '0')
-      const mm = parts[1]
-      const ss = parts[2] || '00'
-
-      const d = dayjs(`1970-01-01T${hh}:${mm}:${ss}`)
-      if (d.isValid()) {
-        const timeFormat = format || (type === 'time' ? 'hh:mm A' : 'hh:mm A')
-        return d.format(timeFormat)
-      }
+  // 1. Auto-detect pure time strings like "13:00" or "01:10 PM"
+  if (typeof value === 'string' && isPureTimeString(value)) {
+    const d = parseDateTime(value)
+    if (d.isValid()) {
+      const timeFormat = format || (type === 'time' ? 'hh:mm A' : 'hh:mm A')
+      return d.format(timeFormat)
     }
   }
 
@@ -548,11 +559,89 @@ export const formatDate = (
     }
   }
 
-  const d = dayjs(value)
+  const d = parseDateTime(value)
   if (!d.isValid()) return String(value)
 
   return d.format(resolvedFormat)
 }
+
+// ----------------------------------------------------------------------
+// Date/Time Validations
+// ----------------------------------------------------------------------
+
+/**
+ * Parses a string, number, or Date into a Dayjs object.
+ * Automatically handles pure time strings (e.g., '13:00' -> '1970-01-01T13:00:00' or '1:00 PM') for accurate time comparisons.
+ */
+export const parseDateTime = (val: string | number | Date | Dayjs | null | undefined): dayjs.Dayjs => {
+  if (typeof val === 'string') {
+    const trimmed = val.trim()
+    
+    // 24-hour time handling
+    if (TIME24_REGEX.test(trimmed)) {
+      const parts = trimmed.split(':')
+      const hh = parts[0].padStart(2, '0')
+      const mm = parts[1]
+      const ss = parts[2] || '00'
+      return dayjs(`1970-01-01T${hh}:${mm}:${ss}`)
+    }
+    
+    // 12-hour time handling
+    const ampmMatch = trimmed.match(TIME12_REGEX)
+    if (ampmMatch) {
+      let hh = parseInt(ampmMatch[1], 10)
+      const mm = ampmMatch[2]
+      const ss = ampmMatch[4] || '00'
+      const modifier = ampmMatch[5].toUpperCase()
+      
+      if (hh === 12 && modifier === 'AM') hh = 0
+      else if (hh < 12 && modifier === 'PM') hh += 12
+      
+      const hhStr = hh.toString().padStart(2, '0')
+      return dayjs(`1970-01-01T${hhStr}:${mm}:${ss}`)
+    }
+  }
+  return dayjs(val || undefined)
+}
+
+/**
+ * Validates that an end time/date is after a start time/date.
+ * By default, dates can be exactly the same day (start <= end), but pure time strings (e.g., '13:00')
+ * strictly require the end time to be greater than the start time (start < end).
+ *
+ * @param startTime The start date/time
+ * @param endTime The end date/time
+ * @param allowSame Optional. Explicitly allow or disallow start and end to be exactly the same (overrides auto-detection).
+ * @returns true if the range is valid (end >= start for dates, end > start for times)
+ */
+export const isValidTimeRange = (
+  startTime: string | number | Date | Dayjs | null | undefined,
+  endTime: string | number | Date | Dayjs | null | undefined,
+  allowSame?: boolean
+): boolean => {
+  // Prevent zero-epoch bugs by checking explicit emptiness over truthiness
+  if (startTime === null || startTime === undefined || startTime === '' ||
+      endTime === null || endTime === undefined || endTime === '') {
+    return true
+  }
+
+  let canBeSame = allowSame !== undefined ? allowSame : true
+
+  // Auto-detect pure time strings to default to strictly greater (allowSame = false)
+  if (allowSame === undefined && typeof startTime === 'string' && typeof endTime === 'string') {
+    if (isPureTimeString(startTime) && isPureTimeString(endTime)) {
+      canBeSame = false
+    }
+  }
+
+  const start = parseDateTime(startTime)
+  const end = parseDateTime(endTime)
+
+  if (!start.isValid() || !end.isValid()) return false
+
+  return canBeSame ? end.isSame(start) || end.isAfter(start) : end.isAfter(start)
+}
+
 
 
 
