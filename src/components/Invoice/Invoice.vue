@@ -7,7 +7,8 @@ import InvoiceVariant3 from './InvoiceVariant3.vue'
 import InvoiceVariant4 from './InvoiceVariant4.vue'
 
 const props = withDefaults(defineProps<InvoiceProps>(), {
-  variant: 'Variant1'
+  variant: 'Variant1',
+  compact: false,
 })
 
 const resolvedVariant = computed(() => {
@@ -26,5 +27,5 @@ const resolvedVariant = computed(() => {
 </script>
 
 <template>
-  <component :is="resolvedVariant" v-bind="$props" />
+  <component :is="resolvedVariant" v-bind="props" />
 </template>
