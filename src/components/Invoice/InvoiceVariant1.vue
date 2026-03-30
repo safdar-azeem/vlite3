@@ -17,6 +17,8 @@ const props = withDefaults(
 )
 
 const d = computed(() => props.data)
+const hasSize = computed(() => d.value.items.some((item) => !!item.size))
+const hasDiscount = computed(() => d.value.items.some((item) => item.discount !== undefined))
 </script>
 
 <template>
@@ -113,8 +115,22 @@ const d = computed(() => props.data)
               <th scope="col" class="text-right" :class="compact ? 'px-4 py-2' : 'px-6 py-3'">
                 Qty
               </th>
+              <th
+                v-if="hasSize"
+                scope="col"
+                class="text-right"
+                :class="compact ? 'px-4 py-2' : 'px-6 py-3'">
+                Size
+              </th>
               <th scope="col" class="text-right" :class="compact ? 'px-4 py-2' : 'px-6 py-3'">
                 Price
+              </th>
+              <th
+                v-if="hasDiscount"
+                scope="col"
+                class="text-right"
+                :class="compact ? 'px-4 py-2' : 'px-6 py-3'">
+                Discount
               </th>
               <th scope="col" class="text-right" :class="compact ? 'px-4 py-2' : 'px-6 py-3'">
                 Total
@@ -158,8 +174,26 @@ const d = computed(() => props.data)
               <td class="text-right tabular-nums" :class="compact ? 'px-4 py-2' : 'px-6 py-4'">
                 {{ item.quantity }}
               </td>
+              <td
+                v-if="hasSize"
+                class="text-right tabular-nums text-muted-foreground"
+                :class="compact ? 'px-4 py-2' : 'px-6 py-4'">
+                {{ item.size || '-' }}
+              </td>
               <td class="text-right tabular-nums" :class="compact ? 'px-4 py-2' : 'px-6 py-4'">
                 <Price :value="item.price" />
+              </td>
+              <td
+                v-if="hasDiscount"
+                class="text-right tabular-nums text-success/80 font-medium"
+                :class="compact ? 'px-4 py-2' : 'px-6 py-4'">
+                <div v-if="item.discount !== undefined" class="flex flex-col items-end">
+                  <Price :value="-item.discount" />
+                  <span v-if="item.discountLabel" class="text-[10px] uppercase font-bold">{{
+                    item.discountLabel
+                  }}</span>
+                </div>
+                <span v-else>-</span>
               </td>
               <td
                 class="text-right tabular-nums font-medium"
