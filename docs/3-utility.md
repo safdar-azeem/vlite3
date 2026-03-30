@@ -229,7 +229,7 @@ The utility distinguishes between "Current Period" and "Last X Period":
 
 ## Date Formatting & ISO Utilities
 
-**Import:** `import { formatDate, formatAmPm, formatSchedule, toISO, toLocalISO, getToday, getYesterday, getTomorrow, getUpcoming, getNextMonth, getPrevMonth, getYear, getNextYear, getPrevYear } from 'vlite3'`
+**Import:** `import { formatDate, formatAmPm, formatSchedule, toISO, toLocalISO, getToday, getYesterday, getTomorrow, getUpcoming, getNextMonth, getPrevMonth, getYear, getNextYear, getPrevYear, isValidTimeRange, parseDateTime } from 'vlite3'`
 
 ### `formatAmPm(time)`
 
@@ -290,4 +290,24 @@ getToday()      // e.g. '2026-03-30T00:50:00.000Z'
 getYesterday()  // e.g. '2026-03-29T00:50:00.000Z'
 getUpcoming(14) // e.g. '2026-04-13T00:50:00.000Z'
 ```
+
+### Time Range Validations
+
+These utilities safely validate timelines. Crucially, they automatically parse standard date strings AND pure time strings (e.g., `'13:00'`) safely under the hood.
+
+- **`isValidTimeRange(start, end, allowSame?)`**: Validates an end boundary constraint. By default, pure date strings can perfectly overlap (`end >= start`), but pure time strings structurally require strictly greater times (`end > start`). This auto-behavior can be overridden with `allowSame`.
+- **`parseDateTime(val)`**: A powerful helper exported to safely parse Date objects, ISO strings, or simple `"HH:mm"` time strings reliably into Dayjs objects.
+
+```ts
+// Auto-detects Time (strictly after)
+isValidTimeRange('12:00', '13:00') // true
+isValidTimeRange('13:00', '13:00') // false (times cannot be same)
+
+// Auto-detects Date (can be same)
+isValidTimeRange('2026-03-30', '2026-03-30') // true
+isValidTimeRange('2026-03-31', '2026-03-30') // false
+```
+
+
+
 
