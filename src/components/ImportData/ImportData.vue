@@ -270,7 +270,6 @@ const updatePreview = (val: any[]) => {
 const updateImportData = (val: any[]) => {
   importData.value = val
 }
-
 </script>
 
 <template>
@@ -287,7 +286,7 @@ const updateImportData = (val: any[]) => {
     </template>
 
     <template #default="{ close }">
-      <div class="px-2 sm:px-4 py-2">
+      <div class="px-2">
         <Timeline :steps="timelineSteps" :active-step="currentStep - 1" class="mb-13" />
 
         <div class="min-h-[300px]">
