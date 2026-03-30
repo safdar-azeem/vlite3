@@ -640,7 +640,7 @@ const handleCancel = () => {
         // (the modal's overflow-y-auto body), keeping it visible at all times without leaving
         // the normal document flow (unlike `fixed` which would escape the modal bounds).
         isFooterSticky
-          ? 'sticky bottom-0 bg-body pt-3 pb-3 -mx-0.5 px-0.5 border-t border-border/75'
+          ? 'sticky -bottom-6 bg-body pt-3 pb-3 -mx-0.5 px-0.5 border-t border-border/75'
           : 'mt-6',
         // Show a subtle top shadow while content is scrolling beneath the sticky footer
         isFooterSticky && isFooterStuck ? '' : '',
