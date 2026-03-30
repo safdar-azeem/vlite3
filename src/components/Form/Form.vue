@@ -414,7 +414,7 @@ const handleCancel = () => {
 
 <template>
   <form
-    :class="['form-container ', props.class]"
+    :class="['form-container ', props.class, isPage && 'pb-10']"
     @submit.prevent="handleSubmit"
     @keydown="handleKeydown"
     @keydown.meta.s.prevent="handleSaveShortcut"
@@ -423,7 +423,7 @@ const handleCancel = () => {
     <div
       v-if="isPage"
       :class="[
-        'form-page-header sticky top-0 z-30 bg-background flex items-center justify-between  pb-3.5 pt-4 -mt-4 mb-4.5',
+        'form-page-header sticky top-0 z-30 bg-background flex items-center justify-between  pb-3.5 pt-4 -mt-3.5 mb-4.5',
         pageHeaderClass,
       ]">
       <div class="flex items-center gap-3">
