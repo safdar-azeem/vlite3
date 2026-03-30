@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import type { InvoiceData } from './types'
 import { Price } from '../Price'
 import { DateTime } from '../DateTime'
+import { getStatusColorClass } from '@/utils/status'
 import { Barcode } from '../Barcode'
 import { QRCode } from '../QRCode'
 // Useful for minimal POS receipts
@@ -71,7 +72,11 @@ const d = computed(() => props.data)
       </div>
       <div v-if="d.status" class="flex justify-between">
         <span class="text-gray-500 font-medium">Status</span>
-        <span class="uppercase font-bold tracking-widest">{{ d.status }}</span>
+        <span
+          class="uppercase font-bold tracking-widest"
+          :class="getStatusColorClass(d.status)"
+          >{{ d.status }}</span
+        >
       </div>
     </div>
 
