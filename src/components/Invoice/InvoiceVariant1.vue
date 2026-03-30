@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import type { InvoiceData } from './types'
 import { Price } from '../Price'
 import { DateTime } from '../DateTime'
-import { StatusChip } from '../StatusChip'
+import { getStatusColorClass } from '@/utils/status'
 import { Barcode } from '../Barcode'
 import { QRCode } from '../QRCode'
 
@@ -64,7 +64,12 @@ const d = computed(() => props.data)
         </div>
 
         <div :class="compact ? 'space-y-1' : 'space-y-1'">
-          <StatusChip v-if="d.status" :status="d.status" class="mb-1" />
+          <div
+            v-if="d.status"
+            class="text-xs font-bold uppercase tracking-widest mb-1"
+            :class="getStatusColorClass(d.status)">
+            {{ d.status }}
+          </div>
           <div v-if="d.issuedDate" class="flex md:justify-end items-center gap-2 text-sm">
             <span class="text-muted-foreground font-medium w-24 md:w-auto">Issued:</span>
             <DateTime :value="d.issuedDate" format="date" class="font-medium" />
