@@ -19,6 +19,7 @@
 import { ref, computed, watch } from 'vue'
 import Icon from '@/components/Icon.vue'
 import FilePicker from '@/components/FilePicker/FilePicker.vue'
+import { VueDraggable } from 'vue-draggable-plus'
 import type { FilePickerValue } from '@/components/FilePicker/FilePicker.vue'
 import { $t } from '@/utils/i18n'
 
@@ -152,6 +153,12 @@ const handleUpload = (fileVal: FilePickerValue | FilePickerValue[] | null) => {
   emit('update:images', newImages)
   emit('change', { images: newImages, thumbnail: internalThumbnail.value })
 }
+
+const handleDragUpdate = (newImages: string[]) => {
+  internalImages.value = newImages
+  emit('update:images', newImages)
+  emit('change', { images: newImages, thumbnail: internalThumbnail.value })
+}
 </script>
 
 <template>
@@ -183,7 +190,14 @@ const handleUpload = (fileVal: FilePickerValue | FilePickerValue[] | null) => {
       PERFORMANCE: contain: layout style isolates repaints to this subtree
       when cards are hovered / selected, preventing full-page recomposition.
     -->
-    <div
+    <VueDraggable
+      :model-value="internalImages"
+      @update:model-value="handleDragUpdate"
+      :animation="150"
+      :disabled="disabled || loading"
+      draggable=".vl-thumbnail-selector__card"
+      filter=".vl-thumbnail-selector__filepicker-inline, .vl-thumbnail-selector__upload"
+      ghost-class="opacity-50"
       class="vl-thumbnail-selector__grid grid grid-cols-3 sm:grid-cols-4 gap-2"
       style="will-change: transform; contain: layout style">
       <!-- Uploaded image cards.
@@ -195,7 +209,7 @@ const handleUpload = (fileVal: FilePickerValue | FilePickerValue[] | null) => {
            the card being pointed at. -->
       <div
         v-for="(url, index) in internalImages"
-        :key="url + index"
+        :key="url"
         class="vl-thumbnail-selector__card relative rounded-md overflow-hidden cursor-pointer border-2 transition-all duration-150 w-full"
         style="aspect-ratio: 1/1"
         :class="[
@@ -259,7 +273,7 @@ const handleUpload = (fileVal: FilePickerValue | FilePickerValue[] | null) => {
           </button>
         </template>
       </FilePicker>
-    </div>
+    </VueDraggable>
   </div>
 </template>
 
