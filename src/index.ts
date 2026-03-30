@@ -48,6 +48,7 @@ export * from './components/CustomFieldsDisplay'
 export * from './components/Invoice'
 export * from './components/CategoryManager'
 export * from './components/ThumbnailSelector'
+export * from './components/Calendar'
 
 export { default as Icon } from './components/Icon.vue'
 export { default as Logo } from './components/Logo.vue'
