@@ -229,7 +229,7 @@ The utility distinguishes between "Current Period" and "Last X Period":
 
 ## Date Formatting & ISO Utilities
 
-**Import:** `import { formatAmPm, formatSchedule, toISO, toLocalISO, getToday, getYesterday, getTomorrow, getUpcoming, getNextMonth, getPrevMonth, getYear, getNextYear, getPrevYear } from 'vlite3'`
+**Import:** `import { formatDate, formatAmPm, formatSchedule, toISO, toLocalISO, getToday, getYesterday, getTomorrow, getUpcoming, getNextMonth, getPrevMonth, getYear, getNextYear, getPrevYear } from 'vlite3'`
 
 ### `formatAmPm(time)`
 
@@ -247,6 +247,16 @@ Formats a date with an associated start and end time into a compact string. Uses
 ```ts
 formatSchedule('2026-03-29', '12:00', '13:00') 
 // 'Mar 29, 2026 • 12:00 - 01:00 PM'
+```
+
+### `formatDate(value, format?, type?)`
+
+Formats a given date or time. It automatically detects time-only strings (e.g. `'13:00'`) and parses them with AM/PM. For dates, it falls back to the global date format from `configState` unless an explicit format or `type='dateTime'` is provided.
+
+```ts
+formatDate('13:00') // '01:00 PM'
+formatDate('2026-03-30') // '03/30/2026' (uses global config format)
+formatDate('2026-03-30', undefined, 'dateTime') // '03/30/2026 12:00 AM'
 ```
 
 ### ISO String Helpers
