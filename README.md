@@ -88,7 +88,7 @@ const vlite = createVLite({
      *
      * This function will be called automatically by:
      * - useFileUpload() composable
-     * - Form components (when using 'file', 'fileUploader', or 'avatarUpload' types)
+     * - Form components (when using 'file', 'fileUploader', 'ThumbnailSelector', or 'avatarUpload' types)
      *
      * @param file - The File object to upload
      * @param folderId - (Optional) Folder ID passed from component props
