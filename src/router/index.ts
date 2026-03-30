@@ -75,6 +75,7 @@ import ClockDemo from '../playground/demos/ClockDemo.vue'
 import EmptyDemo from '../playground/demos/EmptyDemo.vue'
 import GoogleLoginDemo from '../playground/GoogleLoginDemo.vue'
 import I18nDemo from '../playground/demos/I18nDemo.vue'
+import CustomFieldsDisplayDemo from '../playground/demos/CustomFieldsDisplayDemo.vue'
 
 const routes = [
   {
@@ -149,6 +150,7 @@ const routes = [
       { path: 'clock', component: ClockDemo },
       { path: 'empty', component: EmptyDemo },
       { path: 'i18n', component: I18nDemo },
+      { path: 'customfieldsdisplay', component: CustomFieldsDisplayDemo },
     ],
   },
 ]
