@@ -210,6 +210,8 @@ export interface IFormProps {
   rounded?: InputRounded
   /** Loading state during submit */
   loading?: boolean
+  /** Loading state for schema/initial data initialization */
+  schemaLoading?: boolean
   /** Show/hide default footer with submit button */
   footer?: boolean
   /** Grid columns (number or tailwind class) */
