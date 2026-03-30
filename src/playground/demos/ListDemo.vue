@@ -11,7 +11,7 @@ const customer = {
   email: 'olivia.bennett@example.com',
   phoneNumber: '+1 (555) 234-5678',
   mobileNumber: '+1 (555) 876-5432',
-  status: 'active',
+  status: 'yes',
   industry: 'Technology',
   createdAt: '2023-04-15T09:30:00Z',
   totalAmount: 128450.75,
@@ -68,7 +68,7 @@ const product = {
 
 const customerFields: ListField[] = [
   { key: 'name', title: 'Full Name', icon: 'lucide:user' },
-  { key: 'email', title: 'Email', icon: 'lucide:mail' },
+  { key: 'totalAmount', title: 'Email', icon: 'lucide:mail', type: 'price' },
   { key: 'phoneNumber', title: 'Phone', isSensitive: true },
   { key: 'mobileNumber', title: 'Mobile', isSensitive: true },
   { key: 'status', title: 'Status', addStatusColor: true },
