@@ -17,6 +17,7 @@ interface Props {
    * Default: false (horizontal scroll behavior)
    */
   wrap?: boolean
+  tabClass?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -181,7 +182,7 @@ const getItemClasses = (option: TabesOption) => {
 
   const disabledClasses = option.disabled ? 'opacity-50 cursor-not-allowed' : ''
 
-  return [itemBaseClasses.value, activeStateClasses, disabledClasses].join(' ')
+  return [itemBaseClasses.value, activeStateClasses, props?.tabClass, disabledClasses].join(' ')
 }
 
 const markerClasses = computed(() => {
@@ -289,7 +290,7 @@ const getComponentProps = (opt: TabesOption) => {
 */
 
 /* When the container is full-width flex (not inline-flex), distribute items equally */
-[data-tabes]:not(.inline-flex):not([class*="gap-6"]) > :where(button, a, [role="tab"]) {
+[data-tabes]:not(.inline-flex):not([class*='gap-6']) > :where(button, a, [role='tab']) {
   flex: 1 1 0%;
   min-width: 0;
 }
@@ -314,12 +315,12 @@ const getComponentProps = (opt: TabesOption) => {
   but text uses whitespace-nowrap, so we allow scroll as a last resort.
 */
 @media (max-width: 480px) {
-  [data-tabes]:not([class*="flex-wrap"]) {
+  [data-tabes]:not([class*='flex-wrap']) {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
-  [data-tabes]:not([class*="flex-wrap"])::-webkit-scrollbar {
+  [data-tabes]:not([class*='flex-wrap'])::-webkit-scrollbar {
     display: none;
   }
 }
