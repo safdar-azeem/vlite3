@@ -47,6 +47,7 @@ const handleChange = (val: string | number) => {
       class="border-b-0! border-0! pb-0 gap-3!"
       :model-value="modelValue"
       :options="tabesOptions"
+      tabClass="pb-1.5!"
       :variant="variant || 'line'"
       @change="handleChange" />
   </div>
