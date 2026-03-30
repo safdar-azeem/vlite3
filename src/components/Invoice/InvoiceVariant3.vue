@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import type { InvoiceData } from './types'
 import { Price } from '../Price'
 import { DateTime } from '../DateTime'
-import Badge from '../Badge.vue'
+import { getStatusColorClass } from '@/utils/status'
 import { QRCode } from '../QRCode'
 
 const props = withDefaults(
@@ -34,12 +34,12 @@ const d = computed(() => props.data)
         >
         <span class="opacity-80">#{{ d.invoiceNumber }}</span>
       </div>
-      <Badge
+      <span
         v-if="d.status"
-        variant="secondary"
-        class="bg-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/30 border-none font-bold">
+        class="font-bold uppercase tracking-widest text-xs"
+        :class="getStatusColorClass(d.status)">
         {{ d.status }}
-      </Badge>
+      </span>
     </div>
 
     <div :class="compact ? 'p-4 space-y-4' : 'p-6 space-y-6'">
