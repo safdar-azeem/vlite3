@@ -34,6 +34,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Chip', to: '/chip', icon: 'lucide:sticker' },
       { label: 'Avatar', to: '/avatar', icon: 'lucide:user' },
       { label: 'Avatar Uploader', to: '/avatar-uploader', icon: 'lucide:camera' },
+      { label: 'Avatar Group', to: '/avatargroup', icon: 'lucide:users' },
       { label: 'i18n Support', to: '/i18n', icon: 'lucide:globe' },
       { label: 'ProgressBar', to: '/progressbar', icon: 'lucide:bar-chart-3' },
     ],
