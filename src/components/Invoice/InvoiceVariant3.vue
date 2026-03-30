@@ -78,11 +78,11 @@ const d = computed(() => props.data)
         <div class="flex flex-col md:items-end" :class="compact ? 'space-y-1' : 'space-y-2'">
           <div v-if="d.issuedDate" class="flex gap-2">
             <span class="text-muted-foreground font-medium text-xs">Date:</span>
-            <DateTime :value="d.issuedDate" format="date" class="font-semibold text-xs" />
+            <DateTime :value="d.issuedDate" type="date" class="font-semibold text-xs" />
           </div>
           <div v-if="d.dueDate" class="flex gap-2">
             <span class="text-muted-foreground font-medium text-xs">Due:</span>
-            <DateTime :value="d.dueDate" format="date" class="font-semibold text-xs" />
+            <DateTime :value="d.dueDate" type="date" class="font-semibold text-xs" />
           </div>
           <div v-if="d.qrcode" :class="compact ? 'mt-1 text-right' : 'mt-2 text-right'">
             <QRCode :text="d.qrcode" :size="compact ? 56 : 64" />
