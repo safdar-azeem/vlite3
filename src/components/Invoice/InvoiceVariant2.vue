@@ -13,7 +13,7 @@ const props = withDefaults(
     /** Reduces padding, spacing, and font sizes for print-friendly output */
     compact?: boolean
   }>(),
-  { compact: false },
+  { compact: false }
 )
 
 const d = computed(() => props.data)
@@ -21,26 +21,28 @@ const d = computed(() => props.data)
 
 <template>
   <div
-    class="v-invoice-v2 bg-white text-gray-900 border border-gray-200 mx-auto print:max-w-[300px] shadow-sm font-sans tracking-tight"
-    :class="compact ? 'max-w-xs text-xs' : 'max-w-sm sm:max-w-md text-sm'"
-  >
-
-    <div
-      class="text-center"
-      :class="compact ? 'p-3 space-y-1.5 pb-2' : 'p-6 space-y-3 pb-4'"
-    >
+    class="v-invoice-v2 bg-body text-gray-900 border border-gray-200 mx-auto print:max-w-[300px] shadow-sm font-sans tracking-tight"
+    :class="compact ? 'max-w-xs text-xs' : 'max-w-sm sm:max-w-md text-sm'">
+    <div class="text-center" :class="compact ? 'p-3 space-y-1.5 pb-2' : 'p-6 space-y-3 pb-4'">
       <div v-if="d.brandLogo" :class="compact ? 'h-8 mx-auto mb-1' : 'h-14 mx-auto mb-2'">
-        <img :src="d.brandLogo" :alt="d.brandName" class="h-full object-contain mx-auto grayscale" />
+        <img
+          :src="d.brandLogo"
+          :alt="d.brandName"
+          class="h-full object-contain mx-auto grayscale" />
       </div>
 
       <div>
         <h2
           v-if="d.brandName"
           class="font-bold uppercase tracking-widest"
-          :class="compact ? 'text-base' : 'text-2xl'"
-        >{{ d.brandName }}</h2>
+          :class="compact ? 'text-base' : 'text-2xl'">
+          {{ d.brandName }}
+        </h2>
 
-        <div v-if="d.companyInfo" class="text-gray-500 space-y-0.5" :class="compact ? 'mt-1 text-[10px]' : 'mt-2 text-xs'">
+        <div
+          v-if="d.companyInfo"
+          class="text-gray-500 space-y-0.5"
+          :class="compact ? 'mt-1 text-[10px]' : 'mt-2 text-xs'">
           <p v-if="d.companyInfo.address">{{ d.companyInfo.address }}</p>
           <p v-if="d.companyInfo.city || d.companyInfo.state">
             {{ d.companyInfo.city }} {{ d.companyInfo.state }} {{ d.companyInfo.zip }}
@@ -79,24 +81,38 @@ const d = computed(() => props.data)
     <div :class="compact ? 'px-3 py-2' : 'px-6 py-4'">
       <div
         class="flex justify-between font-semibold text-gray-500 uppercase tracking-wider"
-        :class="compact ? 'text-xs mb-1.5' : 'text-xs mb-3'"
-      >
+        :class="compact ? 'text-xs mb-1.5' : 'text-xs mb-3'">
         <span>Item</span>
         <span>Amount</span>
       </div>
 
       <div :class="compact ? 'space-y-2' : 'space-y-4'">
-        <div
-          v-for="(item, index) in d.items"
-          :key="item.id || index"
-        >
-          <div class="flex justify-between font-medium">
-            <span class="pr-2">{{ item.name }}</span>
-            <Price :value="item.total" class="shrink-0" />
-          </div>
-          <div class="text-gray-500 flex gap-2" :class="compact ? 'text-xs' : 'text-xs'">
-            <span>{{ item.quantity }} x</span>
-            <Price :value="item.price" />
+        <div v-for="(item, index) in d.items" :key="item.id || index">
+          <div class="flex items-start gap-2">
+            <div
+              v-if="item.thumbnail"
+              class="shrink-0 w-8 h-8 rounded bg-gray-100 overflow-hidden border border-gray-200 mt-0.5">
+              <img
+                :src="item.thumbnail"
+                :alt="item.name"
+                class="w-full h-full object-cover grayscale" />
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex justify-between font-medium">
+                <span class="truncate pr-2" :title="item.name">{{ item.name }}</span>
+                <Price :value="item.total" class="shrink-0 font-bold" />
+              </div>
+              <div
+                v-if="item.sku"
+                class="text-[9px] uppercase text-gray-400 font-normal tracking-tight truncate"
+                :title="item.sku">
+                SKU: {{ item.sku }}
+              </div>
+              <div class="text-gray-500 flex gap-1.5" :class="compact ? 'text-[10px]' : 'text-xs'">
+                <span>{{ item.quantity }} x</span>
+                <Price :value="item.price" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -116,10 +132,9 @@ const d = computed(() => props.data)
               ? 'mt-1 pt-1 border-t border-gray-200 text-base font-bold'
               : 'mt-2 pt-2 border-t border-gray-200 text-lg font-bold'
             : compact
-            ? 'text-xs font-medium text-gray-600'
-            : 'text-sm font-medium text-gray-600'
-        "
-      >
+              ? 'text-xs font-medium text-gray-600'
+              : 'text-sm font-medium text-gray-600'
+        ">
         <span>{{ total.label }}</span>
         <Price :value="total.value" />
       </div>
@@ -133,29 +148,32 @@ const d = computed(() => props.data)
         <div v-if="d.qrcode" class="p-1 bg-white border border-gray-200 rounded">
           <QRCode :text="d.qrcode" :size="compact ? 64 : 96" />
         </div>
-        <div v-if="d.barcode" :class="compact ? 'inline-block overflow-hidden' : 'scale-90 inline-block overflow-hidden'">
+        <div
+          v-if="d.barcode"
+          :class="
+            compact ? 'inline-block overflow-hidden' : 'scale-90 inline-block overflow-hidden'
+          ">
           <Barcode
             :value="d.barcode"
             format="CODE128"
             :height="compact ? 28 : 40"
-            :width="compact ? 1.0 : 1.2"
-            :display-value="true"
-          />
+            :width="compact ? 1.0 : 1.2" />
         </div>
       </div>
 
-      <div v-if="d.notes" class="text-gray-600 whitespace-pre-wrap" :class="compact ? 'text-[10px]' : 'text-xs'">
+      <div
+        v-if="d.notes"
+        class="text-gray-600 whitespace-pre-wrap"
+        :class="compact ? 'text-[10px]' : 'text-xs'">
         {{ d.notes }}
       </div>
 
       <div
         v-if="d.footerText"
         class="text-gray-400 font-medium uppercase tracking-widest"
-        :class="compact ? 'text-[9px] mt-2' : 'text-[10px] mt-4'"
-      >
+        :class="compact ? 'text-[9px] mt-2' : 'text-[10px] mt-4'">
         {{ d.footerText }}
       </div>
     </div>
-
   </div>
 </template>
