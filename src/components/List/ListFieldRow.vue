@@ -2,8 +2,9 @@
 import { ref, computed } from 'vue'
 import Icon from '../Icon.vue'
 import Price from '../Price/Price.vue'
-import DateTime from '../DateTime/DateTime.vue'
 import { $t } from '@/utils/i18n'
+import { formatDate } from '@/utils/functions'
+
 import type { ListField, StackedBorderStyle } from './types'
 import { getObjectValue, getStatusColorClass, formatNumber } from './utils'
 
@@ -60,6 +61,10 @@ const resolvedValue = computed(() => {
       return formatNumber(val)
     case 'boolean':
       return val ? 'Yes' : 'No'
+    case 'date':
+    case 'dateTime':
+    case 'time':
+      return formatDate(val, undefined, props.field.type)
     default:
       return String(val)
   }
@@ -94,14 +99,6 @@ const isImageType = computed(() => props.field.type === 'image')
 const isStripedOdd = computed(() => props.variant === 'striped' && props.index % 2 !== 0)
 
 const isStacked = computed(() => props.variant === 'stacked')
-
-const isDateType = computed(() => ['date', 'dateTime', 'time'].includes(props.field.type || ''))
-
-const dateFormatType = computed(() => {
-  if (props.field.type === 'dateTime') return 'MM/DD/YYYY hh:mm A'
-  if (props.field.type === 'time') return 'hh:mm A'
-  return undefined // Fallback to global config for standard 'date'
-})
 
 /**
  * Whether this row is in lineByLine (block) mode.
@@ -158,10 +155,9 @@ const stackedCellClass = computed(() => {
               :value="rawValue"
               class="text-sm font-semibold text-foreground break-words leading-snug"
               :class="valueClass" />
-            <DateTime
-              v-else-if="isDateType"
+            <Price
+              v-if="field.type === 'price'"
               :value="rawValue"
-              :format="dateFormatType"
               class="text-sm font-semibold text-foreground break-words leading-snug"
               :class="valueClass" />
             <span
@@ -199,10 +195,9 @@ const stackedCellClass = computed(() => {
           :value="rawValue"
           class="text-sm font-semibold text-foreground break-words leading-snug"
           :class="valueClass" />
-        <DateTime
-          v-else-if="isDateType"
+        <Price
+          v-if="field.type === 'price'"
           :value="rawValue"
-          :format="dateFormatType"
           class="text-sm font-semibold text-foreground break-words leading-snug"
           :class="valueClass" />
         <span
@@ -254,10 +249,9 @@ const stackedCellClass = computed(() => {
               :value="rawValue"
               class="text-sm text-gray-600 break-words leading-snug"
               :class="valueClass" />
-            <DateTime
-              v-else-if="isDateType"
+            <Price
+              v-if="field.type === 'price'"
               :value="rawValue"
-              :format="dateFormatType"
               class="text-sm text-gray-600 break-words leading-snug"
               :class="valueClass" />
             <span
@@ -292,10 +286,9 @@ const stackedCellClass = computed(() => {
           :value="rawValue"
           class="text-sm text-gray-900 break-words leading-snug"
           :class="valueClass" />
-        <DateTime
-          v-else-if="isDateType"
+        <Price
+          v-if="field.type === 'price'"
           :value="rawValue"
-          :format="dateFormatType"
           class="text-sm text-gray-900 break-words leading-snug"
           :class="valueClass" />
         <span
@@ -341,10 +334,9 @@ const stackedCellClass = computed(() => {
             :value="rawValue"
             class="text-sm text-gray-600 text-right break-words"
             :class="valueClass" />
-          <DateTime
-            v-else-if="isDateType"
+          <Price
+            v-if="field.type === 'price'"
             :value="rawValue"
-            :format="dateFormatType"
             class="text-sm text-gray-600 text-right break-words"
             :class="valueClass" />
           <span
@@ -378,10 +370,9 @@ const stackedCellClass = computed(() => {
           :value="rawValue"
           class="text-sm text-gray-900 text-right break-words leading-snug"
           :class="valueClass" />
-        <DateTime
-          v-else-if="isDateType"
+        <Price
+          v-if="field.type === 'price'"
           :value="rawValue"
-          :format="dateFormatType"
           class="text-sm text-gray-900 text-right break-words leading-snug"
           :class="valueClass" />
         <span
