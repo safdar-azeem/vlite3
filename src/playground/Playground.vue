@@ -92,6 +92,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'List', to: '/list', icon: 'lucide:layout-list' },
       { label: 'DataTable', to: '/datatable', icon: 'lucide:table-2' },
       { label: 'DataList', to: '/datalist', icon: 'lucide:layout-grid' },
+      { label: 'Custom Fields Display', to: '/customfieldsdisplay', icon: 'lucide:list-tree' },
       { label: 'Sidebar Menu', to: '/sidebarmenu', icon: 'lucide:sidebar' },
       { label: 'Navbar', to: '/navbar', icon: 'lucide:layout-template' },
       { label: 'Command Palette', to: '/commandpalette', icon: 'lucide:command' },
