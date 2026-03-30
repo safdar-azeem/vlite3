@@ -226,3 +226,58 @@ The utility distinguishes between "Current Period" and "Last X Period":
 | **`last-month`** | Rolling  | Last 30 days including today | Feb 23 — March 24              |
 | **`last-week`**  | Rolling  | Last 7 days including today  | March 18 — March 24            |
 | **`year`**       | Rolling  | Last 12 full months          | April 1 (Prev Year) — March 31 |
+
+## Date Formatting & ISO Utilities
+
+**Import:** `import { formatAmPm, formatSchedule, toISO, toLocalISO, getToday, getYesterday, getTomorrow, getUpcoming, getNextMonth, getPrevMonth, getYear, getNextYear, getPrevYear } from 'vlite3'`
+
+### `formatAmPm(time)`
+
+Converts a 24-hour time string into a 12-hour format with AM/PM.
+
+```ts
+formatAmPm('13:00') // '01:00 PM'
+formatAmPm('09:30') // '09:30 AM'
+```
+
+### `formatSchedule(date, startTime, endTime)`
+
+Formats a date with an associated start and end time into a compact string. Uses the globally configured date format from `configState` (defaults to 'MMM DD, YYYY').
+
+```ts
+formatSchedule('2026-03-29', '12:00', '13:00') 
+// 'Mar 29, 2026 • 12:00 - 01:00 PM'
+```
+
+### ISO String Helpers
+
+Functions designed for returning dates in standard string formats (perfect for API requests or persistent state).
+
+- **`toISO(date?)`**: Converts an optional date to a standard ISO string.
+- **`toLocalISO(date?)`**: Converts an optional date to an ISO string formatted in the local timezone (e.g., `YYYY-MM-DDTHH:mm:ss.SSSZ`).
+
+```ts
+toISO() // '2026-03-30T00:50:00.000Z'
+toLocalISO('2026-03-30') // '2026-03-30T00:00:00.000+05:00'
+```
+
+### Relative ISO Date Generators
+
+A suite of utility functions that automatically calculate relative dates from the current time and return them as ISO strings.
+
+- **`getToday()`**: Returns current time as ISO string.
+- **`getYesterday()`**: Returns exactly 1 day ago.
+- **`getTomorrow()`**: Returns exactly 1 day from now.
+- **`getUpcoming(days = 7)`**: Returns exactly `days` into the future.
+- **`getNextMonth()`**: Returns exactly 1 month from now.
+- **`getPrevMonth()`**: Returns exactly 1 month ago.
+- **`getYear()`**: Returns current date as ISO string.
+- **`getNextYear()`**: Returns exactly 1 year from now.
+- **`getPrevYear()`**: Returns exactly 1 year ago.
+
+```ts
+getToday()      // e.g. '2026-03-30T00:50:00.000Z'
+getYesterday()  // e.g. '2026-03-29T00:50:00.000Z'
+getUpcoming(14) // e.g. '2026-04-13T00:50:00.000Z'
+```
+
