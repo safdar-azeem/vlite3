@@ -59,6 +59,7 @@ Check the individual Markdown files inside the docs folders for full details.
 
 ## Advanced Components
 
+* [Calendar](https://www.google.com/search?q=./2-advance-components/Calendar.md)
 * [CommandPalette](https://www.google.com/search?q=./2-advance-components/CommandPalette.md)
 * [DateRangePicker](https://www.google.com/search?q=./2-advance-components/DateRangePicker.md)
 * [ExportData](https://www.google.com/search?q=./2-advance-components/ExportData.md)
@@ -72,4 +73,3 @@ Check the individual Markdown files inside the docs folders for full details.
 * [PermissionEditor](https://www.google.com/search?q=./2-advance-components/PermissionEditor.md)
 * [PricingPlan](https://www.google.com/search?q=./2-advance-components/PricingPlan.md)
 * [Workbook](https://www.google.com/search?q=./2-advance-components/Workbook.md)
-
