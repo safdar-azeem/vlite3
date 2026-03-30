@@ -76,7 +76,7 @@ async function copyCode() {
       <div
         v-show="activeTab === 'preview'"
         class="preview-container relative min-h-[300px] flex items-center justify-center rounded-xl border border-border bg-background p-10 mt-2">
-        <div class="w-full flex items-center justify-center flex-1 preview-tab">
+        <div class="w-full flex items-center justify-center flex-1 flex-col preview-tab">
           <slot />
         </div>
       </div>
