@@ -155,11 +155,6 @@ const stackedCellClass = computed(() => {
               :value="rawValue"
               class="text-sm font-semibold text-foreground break-words leading-snug"
               :class="valueClass" />
-            <Price
-              v-if="field.type === 'price'"
-              :value="rawValue"
-              class="text-sm font-semibold text-foreground break-words leading-snug"
-              :class="valueClass" />
             <span
               v-else
               class="text-sm font-semibold text-foreground break-words leading-snug"
@@ -190,11 +185,6 @@ const stackedCellClass = computed(() => {
       </template>
 
       <template v-else>
-        <Price
-          v-if="field.type === 'price'"
-          :value="rawValue"
-          class="text-sm font-semibold text-foreground break-words leading-snug"
-          :class="valueClass" />
         <Price
           v-if="field.type === 'price'"
           :value="rawValue"
@@ -249,11 +239,6 @@ const stackedCellClass = computed(() => {
               :value="rawValue"
               class="text-sm text-gray-600 break-words leading-snug"
               :class="valueClass" />
-            <Price
-              v-if="field.type === 'price'"
-              :value="rawValue"
-              class="text-sm text-gray-600 break-words leading-snug"
-              :class="valueClass" />
             <span
               v-else
               class="text-sm text-gray-600 break-words leading-snug"
@@ -281,11 +266,6 @@ const stackedCellClass = computed(() => {
       </template>
 
       <template v-else>
-        <Price
-          v-if="field.type === 'price'"
-          :value="rawValue"
-          class="text-sm text-gray-900 break-words leading-snug"
-          :class="valueClass" />
         <Price
           v-if="field.type === 'price'"
           :value="rawValue"
@@ -334,11 +314,6 @@ const stackedCellClass = computed(() => {
             :value="rawValue"
             class="text-sm text-gray-600 text-right break-words"
             :class="valueClass" />
-          <Price
-            v-if="field.type === 'price'"
-            :value="rawValue"
-            class="text-sm text-gray-600 text-right break-words"
-            :class="valueClass" />
           <span
             v-else
             class="text-sm text-gray-600 text-right break-words"
@@ -365,11 +340,6 @@ const stackedCellClass = computed(() => {
       </template>
 
       <template v-else>
-        <Price
-          v-if="field.type === 'price'"
-          :value="rawValue"
-          class="text-sm text-gray-900 text-right break-words leading-snug"
-          :class="valueClass" />
         <Price
           v-if="field.type === 'price'"
           :value="rawValue"
