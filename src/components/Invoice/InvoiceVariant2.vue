@@ -113,9 +113,15 @@ const d = computed(() => props.data)
                 :title="item.sku">
                 SKU: {{ item.sku }}
               </div>
-              <div class="text-gray-500 flex gap-1.5" :class="compact ? 'text-[10px]' : 'text-xs'">
+              <div class="text-gray-500 flex flex-wrap gap-x-2 gap-y-0.5" :class="compact ? 'text-[10px]' : 'text-xs'">
                 <span>{{ item.quantity }} x</span>
                 <Price :value="item.price" />
+                <span v-if="item.size" class="text-gray-400 font-medium">| Size: {{ item.size }}</span>
+                <div v-if="item.discount !== undefined" class="text-success font-semibold flex items-center gap-1">
+                  <span>| Disc:</span>
+                  <Price :value="-item.discount" />
+                  <span v-if="item.discountLabel" class="text-[9px]">({{ item.discountLabel }})</span>
+                </div>
               </div>
             </div>
           </div>
