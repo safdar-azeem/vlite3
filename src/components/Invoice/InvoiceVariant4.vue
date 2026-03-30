@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import type { InvoiceData } from './types'
 import { Price } from '../Price'
 import { DateTime } from '../DateTime'
-import { StatusChip } from '../StatusChip'
+import { getStatusColorClass } from '@/utils/status'
 import { Barcode } from '../Barcode'
 
 const props = withDefaults(
@@ -83,7 +83,12 @@ const d = computed(() => props.data)
               :class="compact ? 'text-sm' : 'text-lg'" />
           </div>
         </div>
-        <StatusChip v-if="d.status" :status="d.status" size="small" />
+        <div
+          v-if="d.status"
+          class="font-extrabold uppercase tracking-widest text-xs"
+          :class="getStatusColorClass(d.status)">
+          {{ d.status }}
+        </div>
       </div>
     </div>
 
