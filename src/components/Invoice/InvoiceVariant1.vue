@@ -72,11 +72,11 @@ const d = computed(() => props.data)
           </div>
           <div v-if="d.issuedDate" class="flex md:justify-end items-center gap-2 text-sm">
             <span class="text-muted-foreground font-medium w-24 md:w-auto">Issued:</span>
-            <DateTime :value="d.issuedDate" format="date" class="font-medium" />
+            <DateTime :value="d.issuedDate" type="date" class="font-medium" />
           </div>
           <div v-if="d.dueDate" class="flex md:justify-end items-center gap-2 text-sm">
             <span class="text-muted-foreground font-medium w-24 md:w-auto">Due:</span>
-            <DateTime :value="d.dueDate" format="date" class="font-medium" />
+            <DateTime :value="d.dueDate" type="date" class="font-medium" />
           </div>
         </div>
       </div>
