@@ -144,6 +144,11 @@ const vlite = createVLite({
       })
     },
   },
+  components: {
+    price: {
+      currency: 'PKR',
+    },
+  },
 })
 
 const app = createApp(App)
@@ -152,7 +157,7 @@ const app = createApp(App)
 app.directive('scroll-reveal', vScrollReveal)
 
 // Setup plugins
-// app.use(vlite)
+app.use(vlite)
 app.use(router)
 
 app.mount('#app')
