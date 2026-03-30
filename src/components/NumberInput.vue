@@ -121,7 +121,7 @@ const wrapperClasses = computed(() => {
 const inputClasses = computed(() => {
   return [
     'flex-1 w-full bg-transparent focus:outline-none appearance-none',
-    props.variant === 'split' ? 'text-center' : 'text-left pl-3',
+    props.variant === 'split' ? 'text-center' : 'text-left pl-3 pr-2',
     'placeholder:text-muted-foreground/50',
     sizeStyles.value.text,
     props.disabled ? 'cursor-not-allowed' : '',
@@ -174,7 +174,11 @@ const stopContinuous = () => {
 }
 
 const increment = () => {
-  if (props.disabled || props.readonly || (props.max !== undefined && Number(localValue.value) >= props.max)) {
+  if (
+    props.disabled ||
+    props.readonly ||
+    (props.max !== undefined && Number(localValue.value) >= props.max)
+  ) {
     stopContinuous()
     return
   }
@@ -183,7 +187,11 @@ const increment = () => {
 }
 
 const decrement = () => {
-  if (props.disabled || props.readonly || (props.min !== undefined && Number(localValue.value) <= props.min)) {
+  if (
+    props.disabled ||
+    props.readonly ||
+    (props.min !== undefined && Number(localValue.value) <= props.min)
+  ) {
     stopContinuous()
     return
   }
@@ -291,33 +299,37 @@ onBeforeUnmount(() => {
       <Icon icon="lucide:plus" :class="sizeStyles.icon" />
     </button>
 
-    <div v-if="variant === 'stacked'" class="flex flex-col h-full border-l border-input">
-      <button
-        type="button"
-        class="flex-1 flex items-center justify-center hover:bg-muted/50 w-8 border-b border-input"
-        :disabled="disabled || (max !== undefined && Number(localValue) >= max)"
-        @pointerdown="startContinuous('inc', $event)"
-        @pointerup="stopContinuous"
-        @pointerleave="stopContinuous"
-        @pointercancel="stopContinuous"
-        @contextmenu.prevent>
-        <Icon
-          icon="fluent:chevron-up-20-filled"
-          :class="size === 'xs' || size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5'" />
-      </button>
-      <button
-        type="button"
-        class="flex-1 flex items-center justify-center hover:bg-muted/50 w-8"
-        :disabled="disabled || (min !== undefined && Number(localValue) <= min)"
-        @pointerdown="startContinuous('dec', $event)"
-        @pointerup="stopContinuous"
-        @pointerleave="stopContinuous"
-        @pointercancel="stopContinuous"
-        @contextmenu.prevent>
-        <Icon
-          icon="fluent:chevron-down-20-filled"
-          :class="size === 'xs' || size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5'" />
-      </button>
+    <div v-if="variant === 'stacked'" class="flex flex-col justify-center h-full py-[3px] pr-[3px]">
+      <div class="flex flex-col h-full w-6">
+        <button
+          type="button"
+          class="flex-1 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-muted-foreground hover:text-foreground rounded-t-[3px] border-b border-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-muted-foreground"
+          :disabled="disabled || (max !== undefined && Number(localValue) >= max)"
+          @pointerdown="startContinuous('inc', $event)"
+          @pointerup="stopContinuous"
+          @pointerleave="stopContinuous"
+          @pointercancel="stopContinuous"
+          @contextmenu.prevent>
+          <Icon
+            class="text-gray-700!"
+            icon="mynaui:chevron-up-solid"
+            :class="size === 'xs' || size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5'" />
+        </button>
+        <button
+          type="button"
+          class="flex-1 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-muted-foreground hover:text-foreground rounded-b-[3px] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-muted-foreground"
+          :disabled="disabled || (min !== undefined && Number(localValue) <= min)"
+          @pointerdown="startContinuous('dec', $event)"
+          @pointerup="stopContinuous"
+          @pointerleave="stopContinuous"
+          @pointercancel="stopContinuous"
+          @contextmenu.prevent>
+          <Icon
+            class="text-gray-700!"
+            icon="mynaui:chevron-down-solid"
+            :class="size === 'xs' || size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5'" />
+        </button>
+      </div>
     </div>
   </div>
 </template>
