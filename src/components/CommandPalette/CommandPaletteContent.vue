@@ -120,7 +120,7 @@ onMounted(() => {
 <template>
   <div class="command-palette-content flex flex-col w-full h-full max-h-[70vh]">
     <!-- Search input row -->
-    <div class="flex items-center gap-3 px-4 py-3 border-b border-border/60 shrink-0">
+    <div class="flex items-center gap-3 px-4 py-3 border-b border-border/80 shrink-0">
       <Icon icon="lucide:search" class="w-4 h-4 text-muted-foreground shrink-0" />
       <input
         ref="inputRef"
@@ -198,27 +198,27 @@ onMounted(() => {
         <!-- Divider between groups (not after the last group) -->
         <div
           v-if="group.rows.length && group.rows[group.rows.length - 1].isLastInGroup"
-          class="my-1.5 mx-3 h-px bg-border/40"
+          class="my-1.5 mx-3 h-px bg-border/80"
           aria-hidden="true" />
       </template>
     </div>
 
     <!-- Footer keyboard hints -->
     <div
-      class="px-4 py-2.5 border-t border-border/40 flex items-center gap-4 shrink-0 bg-muted/30"
+      class="px-4 py-2.5 border-t border-border/80 flex items-center gap-4 shrink-0 bg-muted/30"
       aria-hidden="true">
       <span class="flex items-center gap-1 text-[11px] text-muted-foreground/60">
-        <kbd class="px-1 rounded border border-border/60 bg-background text-[10px]"
+        <kbd class="px-1 rounded border border-border/80 bg-background text-[10px]"
           >&#8593;&#8595;</kbd
         >
         {{ txtNavigate }}
       </span>
       <span class="flex items-center gap-1 text-[11px] text-muted-foreground/60">
-        <kbd class="px-1 rounded border border-border/60 bg-background text-[10px]">&#8629;</kbd>
+        <kbd class="px-1 rounded border border-border/80 bg-background text-[10px]">&#8629;</kbd>
         {{ txtOpen }}
       </span>
       <span class="flex items-center gap-1 text-[11px] text-muted-foreground/60">
-        <kbd class="px-1 rounded border border-border/60 bg-background text-[10px]">Esc</kbd>
+        <kbd class="px-1 rounded border border-border/80 bg-background text-[10px]">Esc</kbd>
         {{ txtClose }}
       </span>
       <span class="ml-auto text-[11px] text-muted-foreground/50">
