@@ -1,5 +1,15 @@
 <script setup lang="ts">
-import { computed, ref, shallowRef, onMounted, onUnmounted, useSlots, provide, watch, nextTick } from 'vue'
+import {
+  computed,
+  ref,
+  shallowRef,
+  onMounted,
+  onUnmounted,
+  useSlots,
+  provide,
+  watch,
+  nextTick,
+} from 'vue'
 import { useRoute } from 'vue-router'
 import { useBreakpoints, breakpointsTailwind, onClickOutside, useLocalStorage } from '@vueuse/core'
 import Icon from '../Icon.vue'
@@ -136,7 +146,7 @@ const containerClasses = computed(() => {
   // Using plain semi-transparent backgrounds instead.
   const effects = [
     props.glass && (isScrolled.value || isSidebar || props.floating)
-      ? 'bg-background/95' 
+      ? 'bg-background/95'
       : 'bg-background',
     props.border && !props.floating
       ? isSidebar
@@ -245,7 +255,7 @@ watch(
       if (mainScrollRef.value) {
         mainScrollRef.value.scrollTop = 0
         if (mainScrollRef.value.firstElementChild) {
-          (mainScrollRef.value.firstElementChild as HTMLElement).scrollTop = 0
+          ;(mainScrollRef.value.firstElementChild as HTMLElement).scrollTop = 0
         }
       }
       if (layoutMainRef.value) {
@@ -297,7 +307,7 @@ const isSidebarFirst = computed(() => {
         aria-label="Sidebar">
         <div
           class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-stable"
-          style="will-change: transform; contain: layout style;"
+          style="will-change: transform; contain: layout style"
           :class="props.contentClass">
           <slot />
         </div>
@@ -325,7 +335,7 @@ const isSidebarFirst = computed(() => {
       <main
         v-if="$slots.main"
         ref="layoutMainRef"
-        class="flex-1 w-full relative flex flex-col min-h-0">
+        class="flex-1 overflow-y-auto w-full relative h-full flex flex-col min-h-0 scrollbar-thin scrollbar-stable">
         <div v-if="props.renderNestedTabs && nestedTabsItems.length > 0" class="shrink-0 w-full">
           <NavbarTabs
             v-model="activeNestedTab"
@@ -348,8 +358,8 @@ const isSidebarFirst = computed(() => {
         </div>
         <div
           ref="mainScrollRef"
-          style="will-change: transform; contain: layout style;"
-          class="flex-1 overflow-y-auto min-h-0 w-full relative scrollbar-thin scrollbar-stable">
+          style="will-change: transform; contain: layout style"
+          class="flex-1 overflow-y-auto w-full relative h-full scrollbar-thin scrollbar-stable">
           <slot name="main" />
         </div>
       </main>
@@ -481,7 +491,7 @@ const isSidebarFirst = computed(() => {
       <main
         v-if="$slots.main"
         ref="layoutMainRef"
-        class="flex-1 w-full relative flex flex-col min-h-0">
+        class="flex-1 overflow-y-auto w-full relative h-full flex flex-col scrollbar-thin scrollbar-stable">
         <div v-if="props.renderNestedTabs && nestedTabsItems.length > 0" class="shrink-0 w-full">
           <NavbarTabs
             v-model="activeNestedTab"
@@ -504,8 +514,8 @@ const isSidebarFirst = computed(() => {
         </div>
         <div
           ref="mainScrollRef"
-          style="will-change: transform; contain: layout style;"
-          class="flex-1 overflow-y-auto min-h-0 w-full relative scrollbar-thin scrollbar-stable">
+          style="will-change: transform; contain: layout style"
+          class="flex-1 overflow-y-auto w-full relative h-full scrollbar-thin scrollbar-stable">
           <slot name="main" />
         </div>
       </main>
@@ -514,9 +524,11 @@ const isSidebarFirst = computed(() => {
         <div
           v-if="isMobileMenuOpen"
           ref="mobileMenuRef"
-          class="absolute top-[calc(100%+1px)] left-0 w-full bg-body border border-border/50 shadow-xl z-50 flex flex-col transition-all duration-300 origin-top overflow-hidden will-change-transform"
+          class="absolute top-[calc(100%_+_1px)] left-0 w-full bg-body border border-border/50 shadow-xl z-50 flex flex-col transition-all duration-300 origin-top overflow-hidden will-change-transform"
           :class="props.menuClass">
-          <div class="flex flex-col max-h-[80vh] overflow-y-auto scrollbar-thin" style="will-change: transform; contain: layout style;">
+          <div
+            class="flex flex-col max-h-[80vh] overflow-y-auto scrollbar-thin"
+            style="will-change: transform; contain: layout style">
             <slot name="mobile-menu">
               <div class="space-y-1 p-2">
                 <slot name="left" />
@@ -644,9 +656,11 @@ const isSidebarFirst = computed(() => {
       <div
         v-if="isMobileMenuOpen"
         ref="mobileMenuRef"
-        class="absolute top-[calc(100%+1px)] left-0 w-full bg-body border border-border/50 shadow-xl z-50 flex flex-col transition-all duration-300 origin-top overflow-hidden will-change-transform"
+        class="absolute top-[calc(100%_+_1px)] left-0 w-full bg-body border border-border/50 shadow-xl z-50 flex flex-col transition-all duration-300 origin-top overflow-hidden will-change-transform"
         :class="props.menuClass">
-        <div class="flex flex-col max-h-[80vh] overflow-y-auto scrollbar-thin" style="will-change: transform; contain: layout style;">
+        <div
+          class="flex flex-col max-h-[80vh] overflow-y-auto scrollbar-thin"
+          style="will-change: transform; contain: layout style">
           <slot name="mobile-menu">
             <div class="space-y-1 p-2">
               <slot name="left" />
