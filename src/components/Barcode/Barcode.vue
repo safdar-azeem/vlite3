@@ -45,6 +45,7 @@ const generateBarcode = () => {
         height: props.height,
         lineColor: props.lineColor,
         background: props.background,
+        fontSize: 12,
         margin: props.margin,
       })
     } catch (e: any) {
