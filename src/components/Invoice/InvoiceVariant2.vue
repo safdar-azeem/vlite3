@@ -64,7 +64,7 @@ const d = computed(() => props.data)
       </div>
       <div v-if="d.issuedDate" class="flex justify-between">
         <span class="text-gray-500 font-medium">Date</span>
-        <DateTime :value="d.issuedDate" format="dateTime" class="font-medium" />
+        <DateTime :value="d.issuedDate" type="dateTime" class="font-medium" />
       </div>
       <div v-if="d.customerInfo?.name" class="flex justify-between mt-2">
         <span class="text-gray-500 font-medium">Customer</span>
