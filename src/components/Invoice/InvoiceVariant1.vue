@@ -23,7 +23,10 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
 
 <template>
   <div
-    class="v-invoice-v1 bg-background text-foreground rounded-xl border border-border overflow-hidden shadow-sm">
+    class="v-invoice-v1 bg-background text-foreground rounded-xl border border-border overflow-hidden shadow-sm"
+    :style="{
+      '--text-sm': compact ? '13px' : '14px',
+    }">
     <!-- Header -->
     <div
       class="flex flex-col md:flex-row justify-between items-start border-b border-border bg-muted/20"
@@ -107,7 +110,12 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
       </div>
 
       <!-- Line Items -->
-      <div v-if="d.items && d.items.length" class="overflow-x-auto rounded-lg border border-border">
+      <div
+        v-if="d.items && d.items.length"
+        class="overflow-x-auto rounded-lg border border-border"
+        :style="{
+          '--text-sm': compact ? '13px' : '14px',
+        }">
         <table class="w-full text-left whitespace-nowrap" :class="compact ? 'text-xs' : 'text-sm'">
           <thead class="bg-muted text-muted-foreground uppercase font-semibold text-xs">
             <tr>
@@ -142,7 +150,7 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
               v-for="(item, index) in d.items"
               :key="item.id || index"
               class="hover:bg-muted/50 transition-colors">
-              <td :class="compact ? 'px-4 py-2' : 'px-6 py-4'">
+              <td :class="compact ? 'px-4 py-2' : 'px-5 py-3'">
                 <div class="flex items-start gap-3">
                   <div
                     v-if="item.thumbnail"
@@ -154,12 +162,12 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
                       class="w-full h-full object-cover" />
                   </div>
                   <div class="space-y-0.5 min-w-0 flex-1">
-                    <div class="font-medium text-foreground truncate" :title="item.name">
+                    <div class="font-medium text-foreground truncate text-sm" :title="item.name">
                       {{ item.name }}
                     </div>
                     <div
                       v-if="item.sku"
-                      class="text-[10px] uppercase tracking-wider text-muted-foreground font-normal truncate"
+                      class="text-xs uppercase tracking-wider text-muted-foreground font-normal truncate"
                       :title="item.sku">
                       SKU: {{ item.sku }}
                     </div>
@@ -171,16 +179,20 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
                   </div>
                 </div>
               </td>
-              <td class="text-right tabular-nums" :class="compact ? 'px-4 py-2' : 'px-6 py-4'">
+              <td
+                class="text-right text-sm tabular-nums"
+                :class="compact ? 'px-4 py-2' : 'px-6 py-4'">
                 {{ item.quantity }}
               </td>
               <td
                 v-if="hasSize"
-                class="text-right tabular-nums text-muted-foreground"
+                class="text-right tabular-nums text-muted-foreground text-sm"
                 :class="compact ? 'px-4 py-2' : 'px-6 py-4'">
                 {{ item.size || '-' }}
               </td>
-              <td class="text-right tabular-nums" :class="compact ? 'px-4 py-2' : 'px-6 py-4'">
+              <td
+                class="text-right tabular-nums text-sm"
+                :class="compact ? 'px-4 py-2' : 'px-6 py-4'">
                 <Price :value="item.price" />
               </td>
               <td
@@ -188,8 +200,8 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
                 class="text-right tabular-nums text-success/80 font-medium"
                 :class="compact ? 'px-4 py-2' : 'px-6 py-4'">
                 <div v-if="item.discount !== undefined" class="flex flex-col items-end">
-                  <Price :value="-item.discount" />
-                  <span v-if="item.discountLabel" class="text-[10px] uppercase font-bold">{{
+                  <Price :value="-item.discount" class="text-sm" />
+                  <span v-if="item.discountLabel" class="text-xs uppercase font-bold">{{
                     item.discountLabel
                   }}</span>
                 </div>
@@ -198,7 +210,7 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
               <td
                 class="text-right tabular-nums font-medium"
                 :class="compact ? 'px-4 py-2' : 'px-6 py-4'">
-                <Price :value="item.total" />
+                <Price :value="item.total" class="text-sm" />
               </td>
             </tr>
           </tbody>
