@@ -79,7 +79,7 @@ const d = computed(() => props.data)
     <div :class="compact ? 'px-3 py-2' : 'px-6 py-4'">
       <div
         class="flex justify-between font-semibold text-gray-500 uppercase tracking-wider"
-        :class="compact ? 'text-[10px] mb-1.5' : 'text-xs mb-3'"
+        :class="compact ? 'text-xs mb-1.5' : 'text-xs mb-3'"
       >
         <span>Item</span>
         <span>Amount</span>
@@ -94,7 +94,7 @@ const d = computed(() => props.data)
             <span class="pr-2">{{ item.name }}</span>
             <Price :value="item.total" class="shrink-0" />
           </div>
-          <div class="text-gray-500 flex gap-2" :class="compact ? 'text-[10px]' : 'text-xs'">
+          <div class="text-gray-500 flex gap-2" :class="compact ? 'text-xs' : 'text-xs'">
             <span>{{ item.quantity }} x</span>
             <Price :value="item.price" />
           </div>
