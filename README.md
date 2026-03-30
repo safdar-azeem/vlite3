@@ -419,6 +419,7 @@ Follow these rules strictly to ensure visual consistency and predictable styling
 - [x] **NumberInput**
 - [x] **DatePicker**
 - [x] **DateRangePicker**
+- [x] **Calendar**
 - [x] **ColorPicker**
 - [x] **FilePicker**
 - [x] **AvatarUploader**
@@ -449,6 +450,7 @@ Follow these rules strictly to ensure visual consistency and predictable styling
 - [x] **Stats**
 - [x] **Price**
 - [x] **Date**
+- [x] **Invoice**
 
 ### Feedback & Overlays
 
