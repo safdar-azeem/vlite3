@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import Avatar from '@/components/Avatar.vue'
+import Tooltip from '@/components/Tooltip.vue'
 import type { AvatarSize, AvatarRounded } from '@/types'
 
 export interface AvatarGroupItem {
   src?: string
   alt?: string
   fallback?: string
+  heading?: string
+  text?: string
 }
 
 export interface Props {
@@ -65,13 +68,25 @@ const fontSizes: Record<AvatarSize, string> = {
       v-for="(item, index) in visibleItems"
       :key="index"
       :class="[index !== 0 ? overlapClass[overlap] : '', 'relative shrink-0']">
-      <Avatar
-        :src="item.src"
-        :alt="item.alt"
-        :fallback="item.fallback"
-        :size="size"
-        :rounded="rounded"
-        :class="ringClass" />
+      <Tooltip :disabled="!item.heading && !item.text" placement="top">
+        <Avatar
+          :src="item.src"
+          :alt="item.alt"
+          :fallback="item.fallback"
+          :size="size"
+          :rounded="rounded"
+          :class="ringClass" />
+        <template #content>
+          <div class="flex flex-col gap-0.5 text-left">
+            <span v-if="item.heading" class="font-semibold text-sm text-tooltip-foreground">
+              {{ item.heading }}
+            </span>
+            <span v-if="item.text" class="text-xs text-tooltip-foreground/70">
+              {{ item.text }}
+            </span>
+          </div>
+        </template>
+      </Tooltip>
     </div>
 
     <!-- Overflow badge -->
