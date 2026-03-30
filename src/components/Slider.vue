@@ -64,7 +64,7 @@ const zeroPercentage = computed(() => {
 const thumbWidth = computed(() => {
   switch (props.size) {
     case 'xs':
-      return 10
+      return 12
     case 'sm':
       return 12
     case 'lg':
@@ -143,26 +143,26 @@ const displayValue = computed(() => {
 const sizeClasses = computed(() => {
   const sizes = {
     xs: {
-      track: 'h-0.5',
-      thumb: 'w-2.5 h-2.5',
+      track: 'h-[2.85px] bg-gray-300',
+      thumb: 'w-[12px] h-[12px]',
       wrapper: 'h-4',
       tick: 'h-2.5',
     },
     sm: {
-      track: 'h-1',
-      thumb: 'w-3 h-3',
+      track: 'h-[4px] bg-gray-300',
+      thumb: 'w-[13px] h-[13px]',
       wrapper: 'h-4',
       tick: 'h-3',
     },
     md: {
-      track: 'h-1.5',
+      track: 'h-1.5 bg-gray-250',
       thumb: 'w-3.5 h-3.5',
       wrapper: 'h-6',
       tick: 'h-3.5',
     },
     lg: {
-      track: 'h-2',
-      thumb: 'w-4 h-4',
+      track: 'h-2 bg-gray-250',
+      thumb: 'w-4.5 h-4.5',
       wrapper: 'h-7',
       tick: 'h-4',
     },
@@ -170,7 +170,7 @@ const sizeClasses = computed(() => {
   return sizes[props.size]
 })
 
-const displayLabel = computed(() => props.labelI18n ? $t(props.labelI18n) : props.label)
+const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : props.label))
 </script>
 
 <template>
@@ -192,9 +192,7 @@ const displayLabel = computed(() => props.labelI18n ? $t(props.labelI18n) : prop
     </div>
 
     <div class="relative flex-1 flex items-center group" :class="sizeClasses.wrapper">
-      <div
-        class="absolute w-full bg-secondary rounded-full overflow-hidden"
-        :class="sizeClasses.track"></div>
+      <div class="absolute w-full rounded-full overflow-hidden" :class="sizeClasses.track"></div>
 
       <div
         v-if="isBipolar"
@@ -250,4 +248,3 @@ const displayLabel = computed(() => props.labelI18n ? $t(props.labelI18n) : prop
     </span>
   </div>
 </template>
-
