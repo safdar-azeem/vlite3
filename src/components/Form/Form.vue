@@ -419,7 +419,7 @@ const handleCancel = () => {
     <div
       v-if="isPage"
       :class="[
-        'form-page-header sticky top-0 z-30 bg-background flex items-center justify-between  pb-2 pt-4 -mt-4 mb-6.5',
+        'form-page-header sticky top-0 z-30 bg-background flex items-center justify-between  pb-3.5 pt-4 -mt-4 mb-4.5',
         pageHeaderClass,
       ]">
       <div class="flex items-center gap-3">
