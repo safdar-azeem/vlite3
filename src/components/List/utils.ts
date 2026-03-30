@@ -38,36 +38,6 @@ export function getStatusColorClass(value: any): string {
   return STATUS_COLOR_MAP[normalized] || ''
 }
 
-export function formatDate(value: any, hasTime = false): string {
-  if (!value) return '--'
-  try {
-    const d = new Date(value)
-    if (isNaN(d.getTime())) return String(value)
-    if (hasTime) {
-      return d.toLocaleString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      })
-    }
-    return d.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    })
-  } catch {
-    return String(value)
-  }
-}
-
-export function formatPrice(value: any): string {
-  const num = Number(value)
-  if (isNaN(num)) return String(value ?? '--')
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num)
-}
-
 export function formatNumber(value: any): string {
   const num = Number(value)
   if (isNaN(num)) return String(value ?? '--')
