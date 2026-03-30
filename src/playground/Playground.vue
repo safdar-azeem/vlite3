@@ -211,8 +211,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       </template>
 
       <template #main>
-        <div
-          class="flex-1 w-full flex flex-col min-h-0 bg-body dark:bg-card h-[calc(100vh-52px)] overflow-y-auto px-4 md:px-10 py-6 scrollbar-thin">
+        <div class="px-10 py-7">
           <router-view></router-view>
         </div>
       </template>
