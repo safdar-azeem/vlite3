@@ -468,9 +468,8 @@ const handleCancel = () => {
 
     <!-- ── Body ───────────────────────────────────────────────────────────── -->
     <div :class="footer && isFooterSticky ? 'pb-2' : ''">
-      
       <FormSkeleton v-if="schemaLoading" :isGrouped="isGroupedMode" />
-      
+
       <template v-else>
         <!--
           FLAT SCHEMA — single array (no groups, no steps)
@@ -486,143 +485,143 @@ const handleCancel = () => {
         -->
         <div v-if="!isGroupedMode">
           <!-- Side-panel layout when thumbnailSelector is present -->
-        <div v-if="hasThumbnailPanel" class="flex flex-col lg:flex-row gap-10 lg:gap-12">
-          <!--
+          <div v-if="hasThumbnailPanel" class="flex flex-col lg:flex-row gap-10 lg:gap-12">
+            <!--
             Thumbnail panel
             - Mobile  : order-first → renders on TOP
             - Desktop : order-last  → renders on RIGHT, min-width 350px
           -->
-          <div class="w-full order-first lg:order-last lg:min-w-100 lg:max-w-[380px] shrink-0">
-            <FormField
-              v-if="thumbnailField && isFieldVisible(thumbnailField)"
-              :field="thumbnailField"
-              :value="formValues[thumbnailField.name]"
-              :values="formValues"
-              :errors="errors"
-              :variant="resolvedVariant"
-              :size="resolvedSize"
-              :rounded="resolvedRounded"
-              :disabled="isFieldDisabled(thumbnailField)"
-              :readonly="isFieldReadonly(thumbnailField)"
-              :error="errors[thumbnailField.name] || ''"
-              :isUpdate="isUpdate"
-              :loading="fieldLoading[thumbnailField?.name]"
-              @change="(payload) => onFieldChange(thumbnailField!.name, payload)" />
+            <div class="w-full order-first lg:order-last lg:min-w-100 lg:max-w-[380px] shrink-0">
+              <FormField
+                v-if="thumbnailField && isFieldVisible(thumbnailField)"
+                :field="thumbnailField"
+                :value="formValues[thumbnailField.name]"
+                :values="formValues"
+                :errors="errors"
+                :variant="resolvedVariant"
+                :size="resolvedSize"
+                :rounded="resolvedRounded"
+                :disabled="isFieldDisabled(thumbnailField)"
+                :readonly="isFieldReadonly(thumbnailField)"
+                :error="errors[thumbnailField.name] || ''"
+                :isUpdate="isUpdate"
+                :loading="fieldLoading[thumbnailField?.name]"
+                @change="(payload) => onFieldChange(thumbnailField!.name, payload)" />
+            </div>
+
+            <!-- Regular fields (thumbnailSelector excluded) -->
+            <div class="flex-1 min-w-0 order-last lg:order-first">
+              <FormFields
+                :schema="schema as IForm[]"
+                :values="formValues"
+                :errors="errors"
+                :fieldLoading="fieldLoading"
+                :variant="resolvedVariant"
+                :size="resolvedSize"
+                :rounded="resolvedRounded"
+                :className="className"
+                :isUpdate="isUpdate"
+                :showRequiredAsterisk="resolvedShowRequiredAsterisk"
+                :isFieldVisible="isFieldVisible"
+                :isFieldDisabled="isFieldDisabled"
+                :isFieldReadonly="isFieldReadonly"
+                :excludeTypes="['thumbnailSelector']"
+                @change="onFieldChange"
+                @addonAction="(action: string) => emit('onAddonAction', action)" />
+            </div>
           </div>
 
-          <!-- Regular fields (thumbnailSelector excluded) -->
-          <div class="flex-1 min-w-0 order-last lg:order-first">
-            <FormFields
-              :schema="schema as IForm[]"
-              :values="formValues"
-              :errors="errors"
-              :fieldLoading="fieldLoading"
-              :variant="resolvedVariant"
-              :size="resolvedSize"
-              :rounded="resolvedRounded"
-              :className="className"
-              :isUpdate="isUpdate"
-              :showRequiredAsterisk="resolvedShowRequiredAsterisk"
-              :isFieldVisible="isFieldVisible"
-              :isFieldDisabled="isFieldDisabled"
-              :isFieldReadonly="isFieldReadonly"
-              :excludeTypes="['thumbnailSelector']"
-              @change="onFieldChange"
-              @addonAction="(action: string) => emit('onAddonAction', action)" />
+          <!-- Normal flat layout (no thumbnailSelector in schema) -->
+          <FormFields
+            v-else
+            :schema="schema as IForm[]"
+            :values="formValues"
+            :errors="errors"
+            :fieldLoading="fieldLoading"
+            :variant="resolvedVariant"
+            :size="resolvedSize"
+            :rounded="resolvedRounded"
+            :className="className"
+            :isUpdate="isUpdate"
+            :showRequiredAsterisk="resolvedShowRequiredAsterisk"
+            :isFieldVisible="isFieldVisible"
+            :isFieldDisabled="isFieldDisabled"
+            :isFieldReadonly="isFieldReadonly"
+            @change="onFieldChange"
+            @addonAction="(action: string) => emit('onAddonAction', action)" />
+        </div>
+
+        <!-- ── Grouped schema (no steps) ──────────────────────────────────── -->
+        <div
+          v-else-if="isGroupedMode && !isMultiStepMode"
+          class="form-groups space-y-6"
+          :class="groupContainerClass">
+          <div
+            v-for="(groupSchema, groupIndex) in groupedSchemas"
+            :key="groupIndex"
+            :class="['form-group border rounded overflow-hidden bg-body', groupClass]">
+            <div
+              v-if="groupsHeadings?.[groupIndex]"
+              :class="['form-group-header bg-muted/50 px-4 py-2.5 border-b', headerClass]">
+              <h3 class="text-base font-semibold text-foreground">
+                {{ groupsHeadings[groupIndex] }}
+              </h3>
+              <p
+                v-if="groupHeadingsDescription?.[groupIndex]"
+                class="text-sm text-muted-foreground mt-1">
+                {{ groupHeadingsDescription[groupIndex] }}
+              </p>
+            </div>
+
+            <div class="form-group-body p-4.5" :class="groupBodyClass">
+              <FormFields
+                :schema="groupSchema"
+                :values="formValues"
+                :errors="errors"
+                :fieldLoading="fieldLoading"
+                :variant="resolvedVariant"
+                :size="resolvedSize"
+                :rounded="resolvedRounded"
+                :className="className"
+                :isUpdate="isUpdate"
+                :showRequiredAsterisk="resolvedShowRequiredAsterisk"
+                :isFieldVisible="isFieldVisible"
+                :isFieldDisabled="isFieldDisabled"
+                :isFieldReadonly="isFieldReadonly"
+                @change="onFieldChange"
+                @addonAction="(action: string) => emit('onAddonAction', action)" />
+            </div>
           </div>
         </div>
 
-        <!-- Normal flat layout (no thumbnailSelector in schema) -->
-        <FormFields
-          v-else
-          :schema="schema as IForm[]"
-          :values="formValues"
-          :errors="errors"
-          :fieldLoading="fieldLoading"
-          :variant="resolvedVariant"
-          :size="resolvedSize"
-          :rounded="resolvedRounded"
-          :className="className"
-          :isUpdate="isUpdate"
-          :showRequiredAsterisk="resolvedShowRequiredAsterisk"
-          :isFieldVisible="isFieldVisible"
-          :isFieldDisabled="isFieldDisabled"
-          :isFieldReadonly="isFieldReadonly"
-          @change="onFieldChange"
-          @addonAction="(action: string) => emit('onAddonAction', action)" />
-      </div>
-
-      <!-- ── Grouped schema (no steps) ──────────────────────────────────── -->
-      <div
-        v-else-if="isGroupedMode && !isMultiStepMode"
-        class="form-groups space-y-6"
-        :class="groupContainerClass">
-        <div
-          v-for="(groupSchema, groupIndex) in groupedSchemas"
-          :key="groupIndex"
-          :class="['form-group border rounded overflow-hidden bg-body', groupClass]">
-          <div
-            v-if="groupsHeadings?.[groupIndex]"
-            :class="['form-group-header bg-muted/50 px-4 py-2.5 border-b', headerClass]">
-            <h3 class="text-base font-semibold text-foreground">
-              {{ groupsHeadings[groupIndex] }}
-            </h3>
-            <p
-              v-if="groupHeadingsDescription?.[groupIndex]"
-              class="text-sm text-muted-foreground mt-1">
-              {{ groupHeadingsDescription[groupIndex] }}
+        <!-- ── Multi-step schema ───────────────────────────────────────────── -->
+        <div v-else-if="isMultiStepMode" class="form-step">
+          <div v-if="tabs?.[currentStep]" :class="['form-step-header mb-6', headerClass]">
+            <h2 class="text-lg font-semibold text-foreground">
+              {{ tabs[currentStep].title }}
+            </h2>
+            <p v-if="tabs[currentStep].description" class="text-sm text-muted-foreground mt-1">
+              {{ tabs[currentStep].description }}
             </p>
           </div>
 
-          <div class="form-group-body p-4.5" :class="groupBodyClass">
-            <FormFields
-              :schema="groupSchema"
-              :values="formValues"
-              :errors="errors"
-              :fieldLoading="fieldLoading"
-              :variant="resolvedVariant"
-              :size="resolvedSize"
-              :rounded="resolvedRounded"
-              :className="className"
-              :isUpdate="isUpdate"
-              :showRequiredAsterisk="resolvedShowRequiredAsterisk"
-              :isFieldVisible="isFieldVisible"
-              :isFieldDisabled="isFieldDisabled"
-              :isFieldReadonly="isFieldReadonly"
-              @change="onFieldChange"
-              @addonAction="(action: string) => emit('onAddonAction', action)" />
-          </div>
+          <FormFields
+            :schema="currentStepSchema"
+            :values="formValues"
+            :errors="errors"
+            :fieldLoading="fieldLoading"
+            :variant="resolvedVariant"
+            :size="resolvedSize"
+            :rounded="resolvedRounded"
+            :className="className"
+            :isUpdate="isUpdate"
+            :showRequiredAsterisk="resolvedShowRequiredAsterisk"
+            :isFieldVisible="isFieldVisible"
+            :isFieldDisabled="isFieldDisabled"
+            :isFieldReadonly="isFieldReadonly"
+            @change="onFieldChange"
+            @addonAction="(action: string) => emit('onAddonAction', action)" />
         </div>
-      </div>
-
-      <!-- ── Multi-step schema ───────────────────────────────────────────── -->
-      <div v-else-if="isMultiStepMode" class="form-step">
-        <div v-if="tabs?.[currentStep]" :class="['form-step-header mb-6', headerClass]">
-          <h2 class="text-lg font-semibold text-foreground">
-            {{ tabs[currentStep].title }}
-          </h2>
-          <p v-if="tabs[currentStep].description" class="text-sm text-muted-foreground mt-1">
-            {{ tabs[currentStep].description }}
-          </p>
-        </div>
-
-        <FormFields
-          :schema="currentStepSchema"
-          :values="formValues"
-          :errors="errors"
-          :fieldLoading="fieldLoading"
-          :variant="resolvedVariant"
-          :size="resolvedSize"
-          :rounded="resolvedRounded"
-          :className="className"
-          :isUpdate="isUpdate"
-          :showRequiredAsterisk="resolvedShowRequiredAsterisk"
-          :isFieldVisible="isFieldVisible"
-          :isFieldDisabled="isFieldDisabled"
-          :isFieldReadonly="isFieldReadonly"
-          @change="onFieldChange"
-          @addonAction="(action: string) => emit('onAddonAction', action)" />
-      </div>
 
         <!-- Default slot — available in all modes -->
         <slot
@@ -649,12 +648,12 @@ const handleCancel = () => {
         // (the modal's overflow-y-auto body), keeping it visible at all times without leaving
         // the normal document flow (unlike `fixed` which would escape the modal bounds).
         isFooterSticky
-          ? 'sticky bottom-0 bg-body pt-3 pb-3 -mx-0.5 px-0.5 border-t border-border/75'
+          ? 'sticky bottom-0 bg-body pt-3 pb-3 -mx-0.5 px-0.5 mt-6 border-t border-border/75'
           : 'mt-6',
         // Show a subtle top shadow while content is scrolling beneath the sticky footer
         isFooterSticky && isFooterStuck ? '' : '',
         // Inside modal: extend footer flush to modal edge padding
-        isInsideModal ? '-mx-4 px-4 pb-3! mt-4.5!' : '',
+        isInsideModal ? '-mx-4 px-4 pb-3! mt-7.5!' : '',
         // Non-sticky inside modal keeps the original border styling
         !isFooterSticky && isInsideModal ? 'border-t border-border/75 mt-5' : '',
         !isFooterSticky && !isInsideModal ? 'mt-6' : '',
