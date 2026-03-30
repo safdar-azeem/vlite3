@@ -249,6 +249,7 @@ onBeforeUnmount(() => {
 <template>
   <div :class="[wrapperClasses, 'overflow-hidden']">
     <button
+      tabindex="-1"
       v-if="variant === 'split'"
       type="button"
       :class="[
@@ -283,6 +284,7 @@ onBeforeUnmount(() => {
       @keydown.down.prevent="decrement" />
 
     <button
+      tabindex="-1"
       v-if="variant === 'split'"
       type="button"
       :class="[
@@ -300,8 +302,9 @@ onBeforeUnmount(() => {
     </button>
 
     <div v-if="variant === 'stacked'" class="flex flex-col justify-center h-full py-[3px] pr-[3px]">
-      <div class="flex flex-col h-full w-6">
+      <div class="flex flex-col h-full w-6 scale-80">
         <button
+          tabindex="-1"
           type="button"
           class="flex-1 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-muted-foreground hover:text-foreground rounded-t-[3px] border-b border-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-muted-foreground"
           :disabled="disabled || (max !== undefined && Number(localValue) >= max)"
@@ -316,6 +319,7 @@ onBeforeUnmount(() => {
             :class="size === 'xs' || size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5'" />
         </button>
         <button
+          tabindex="-1"
           type="button"
           class="flex-1 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-muted-foreground hover:text-foreground rounded-b-[3px] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-muted-foreground"
           :disabled="disabled || (min !== undefined && Number(localValue) <= min)"
