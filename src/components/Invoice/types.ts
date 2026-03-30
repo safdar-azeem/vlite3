@@ -35,8 +35,14 @@ export interface InvoiceLineItem {
   sku?: string
   name: string
   description?: string
+  /** Product size or variation */
+  size?: string
   quantity: number
   price: number
+  /** Discount amount applied to this line item */
+  discount?: number
+  /** Optional label for the discount, e.g. "10% OFF" */
+  discountLabel?: string
   total: number
   [key: string]: any
 }
