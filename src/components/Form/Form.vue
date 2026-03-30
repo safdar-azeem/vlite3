@@ -78,7 +78,7 @@ const props = withDefaults(defineProps<Props>(), {
   footerClass: '',
   timelineTextPosition: 'right',
   emitFields: () => ['__typename'],
-  stickyFooter: false,
+  stickyFooter: true,
   isPage: false,
   pageTitleClass: 'text-2xl font-bold',
   pageHeaderClass: '',
@@ -426,12 +426,12 @@ const handleCancel = () => {
         <BackButton
           v-bind="backButtonProps"
           :fallback="backButtonPath"
-          class="max-sm:w-8 max-sm:h-8 max-sm:min-w-8 max-sm:min-h-8 max-sm:px-0 flex-shrink-0" />
+          class="max-sm:w-8 max-sm:h-8 max-sm:min-w-8 max-sm:min-h-8 max-sm:px-0 shrink-0" />
         <h1 :class="['text-foreground max-sm:text-lg text-fs-5 truncate', pageTitleClass]">
           {{ pageTitleI18n ? $t(pageTitleI18n) : pageTitle }}
         </h1>
       </div>
-      <div class="flex items-center gap-2 flex-shrink-0">
+      <div class="flex items-center gap-2 shrink-0">
         <slot
           name="header-actions"
           :values="formValues"
@@ -484,7 +484,7 @@ const handleCancel = () => {
             - Mobile  : order-first → renders on TOP
             - Desktop : order-last  → renders on RIGHT, min-width 350px
           -->
-          <div class="w-full order-first lg:order-last lg:min-w-[350px] lg:max-w-[380px] shrink-0">
+          <div class="w-full order-first lg:order-last lg:min-w-100 lg:max-w-[380px] shrink-0">
             <FormField
               v-if="thumbnailField && isFieldVisible(thumbnailField)"
               :field="thumbnailField"
@@ -631,7 +631,7 @@ const handleCancel = () => {
       v-if="footer"
       ref="footerRef"
       :class="[
-        'form-footer items-center gap-3 z-20 rounded-b!',
+        'form-footer items-center gap-3 z-20 rounded-b-md!',
         isPage ? 'flex sm:hidden' : 'flex',
         footerClass,
         isMultiStepMode ? 'justify-between' : 'justify-end',
@@ -650,7 +650,7 @@ const handleCancel = () => {
         !isFooterSticky && isInsideModal ? 'border-t border-border/75 mt-5' : '',
         !isFooterSticky && !isInsideModal ? 'mt-6' : '',
       ]">
-      <div class="flex items-center gap-3">
+      <div class="flex gap-3 items-center">
         <Button
           v-if="shouldShowCancel"
           type="button"
@@ -669,7 +669,7 @@ const handleCancel = () => {
           @click="handleSubmit" />
       </div>
 
-      <div class="flex items-center gap-3" :class="isMultiStepMode && 'ml-auto'">
+      <div class="flex gap-3 items-center" :class="isMultiStepMode && 'ml-auto'">
         <Button
           v-if="isMultiStepMode && canGoPrevious"
           type="button"
