@@ -77,6 +77,7 @@ const salesInvoice: InvoiceData = {
       description: 'Full access to all premium features for 12 months.',
       quantity: 2,
       price: 599,
+      discount: 100,
       total: 1098,
     },
     {
@@ -530,7 +531,7 @@ const invoiceLineItemFields = [
 
     <!-- ── Section 2: All 4 Variants side-by-side with same data ── -->
     <DemoSection title="All Variants — Sales Invoice" :code="sourceCode">
-      <div class="w-full grid grid-cols-1 xl:grid-cols-2 gap-10">
+      <div class="w-full grid grid-cols-1 gap-10">
         <div v-for="v in variants" :key="v.value" class="space-y-3">
           <div class="flex items-center gap-2">
             <span
