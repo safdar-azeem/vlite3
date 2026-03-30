@@ -84,6 +84,7 @@ const menuItems: SidebarMenuItemSchema[] = [
     label: 'Navigation & Data',
     icon: 'lucide:navigation',
     children: [
+      { label: 'Calendar', to: '/calendar', icon: 'lucide:calendar-days' },
       { label: 'Screen', to: '/screen', icon: 'lucide:monitor' },
       { label: 'Stats', to: '/stats', icon: 'lucide:bar-chart-2' },
       { label: 'StatusChip', to: '/statuschip', icon: 'lucide:badge-check' },
