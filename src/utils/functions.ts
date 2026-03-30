@@ -420,3 +420,83 @@ export const getDefaultDateRange = (
     endDate: end.format('YYYY-MM-DD'),
   }
 }
+
+/**
+ * Formats a time string into 12-hour format with AM/PM.
+ * 
+ * @param time The time string in 24-hour format (e.g., '13:00')
+ * @returns The formatted time string (e.g., '01:00 PM')
+ */
+export const formatAmPm = (time: string): string => {
+  if (!time) return ''
+  const [hours, minutes] = time.split(':')
+  if (!hours || !minutes) return time
+  
+  const parsedTime = dayjs().hour(Number(hours)).minute(Number(minutes))
+  // 'A' outputs AM/PM. If you want exactly 'Am'/'Pm', you can replace it, otherwise 'AM'/'PM' is standard.
+  return parsedTime.isValid() ? parsedTime.format('hh:mm A') : time
+}
+
+/**
+ * Formats a date with start and end times into a compact string.
+ * Example: 'MM/DD/YYYY • 12:00 - 01:00 PM'
+ * Uses the globally configured date format from `configState`.
+ * 
+ * @param date The date to format
+ * @param startTime The start time in 24-hour format (e.g., '12:00')
+ * @param endTime The end time in 24-hour format (e.g., '13:00')
+ * @returns The formatted date and time string
+ */
+export const formatSchedule = (
+  date: string | Date | Dayjs,
+  startTime: string,
+  endTime: string
+): string => {
+  const resolvedFormat = configState?.components?.datetime?.format || 'MMM DD, YYYY'
+  const formattedDate = date ? dayjs(date).format(resolvedFormat) : ''
+
+  let formattedStartTime = startTime
+  if (startTime) {
+    const [startHours, startMinutes] = startTime.split(':')
+    if (startHours && startMinutes) {
+      const parsedStart = dayjs().hour(Number(startHours)).minute(Number(startMinutes))
+      if (parsedStart.isValid()) {
+        formattedStartTime = parsedStart.format('hh:mm')
+      }
+    }
+  }
+
+  let formattedEndTime = endTime
+  if (endTime) {
+    formattedEndTime = formatAmPm(endTime)
+  }
+
+  // If no time is provided, return just the date
+  if (!startTime && !endTime) return formattedDate
+
+  // If date is empty, return just the times
+  if (!formattedDate) return `${formattedStartTime} - ${formattedEndTime}`
+
+  return `${formattedDate} • ${formattedStartTime} - ${formattedEndTime}`
+}
+
+// ----------------------------------------------------------------------
+// ISO Date Utility Functions
+// ----------------------------------------------------------------------
+
+export const toISO = (date?: string | Date | Dayjs): string => dayjs(date || undefined).toISOString()
+export const toLocalISO = (date?: string | Date | Dayjs): string => dayjs(date || undefined).format('YYYY-MM-DDTHH:mm:ss.SSSZ')
+
+export const getToday = (): string => dayjs().toISOString()
+export const getYesterday = (): string => dayjs().subtract(1, 'day').toISOString()
+export const getTomorrow = (): string => dayjs().add(1, 'day').toISOString()
+export const getUpcoming = (days = 7): string => dayjs().add(days, 'day').toISOString()
+
+export const getNextMonth = (): string => dayjs().add(1, 'month').toISOString()
+export const getPrevMonth = (): string => dayjs().subtract(1, 'month').toISOString()
+
+export const getYear = (): string => dayjs().toISOString()
+export const getNextYear = (): string => dayjs().add(1, 'year').toISOString()
+export const getPrevYear = (): string => dayjs().subtract(1, 'year').toISOString()
+
+
