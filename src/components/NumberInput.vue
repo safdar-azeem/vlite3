@@ -314,7 +314,7 @@ onBeforeUnmount(() => {
           @pointercancel="stopContinuous"
           @contextmenu.prevent>
           <Icon
-            class="text-gray-700!"
+            class="text-gray-700/85!"
             icon="mynaui:chevron-up-solid"
             :class="size === 'xs' || size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5'" />
         </button>
@@ -329,7 +329,7 @@ onBeforeUnmount(() => {
           @pointercancel="stopContinuous"
           @contextmenu.prevent>
           <Icon
-            class="text-gray-700!"
+            class="text-gray-700/85!"
             icon="mynaui:chevron-down-solid"
             :class="size === 'xs' || size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5'" />
         </button>
