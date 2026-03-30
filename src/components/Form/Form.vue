@@ -12,6 +12,7 @@ import type {
 import { useForm } from './composables/useForm'
 import FormFields from './FormFields.vue'
 import FormField from './FormField.vue'
+import FormSkeleton from './FormSkeleton.vue'
 import Button from '@/components/Button.vue'
 import BackButton from '@/components/BackButton.vue'
 import { Timeline } from '../Timeline'
@@ -27,6 +28,7 @@ interface Props {
   size?: InputSize
   rounded?: InputRounded
   loading?: boolean
+  schemaLoading?: boolean
   footer?: boolean
   groupsHeadings?: string[]
   groupHeadingsDescription?: string[]
@@ -61,6 +63,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   values: () => ({}),
   loading: false,
+  schemaLoading: false,
   footer: true,
   groupsHeadings: () => [],
   groupHeadingsDescription: () => [],
@@ -442,6 +445,7 @@ const handleCancel = () => {
           :variant="isUpdate ? 'outline' : 'primary'"
           :text="submitText"
           v-bind="submitProps"
+          :disabled="schemaLoading"
           :loading="loading || isSubmitting"
           @click="handleSubmit"
           class="max-sm:hidden" />
@@ -450,7 +454,7 @@ const handleCancel = () => {
 
     <!-- ── Multi-step timeline ─────────────────────────────────────────────── -->
     <div
-      v-if="isMultiStepMode && timelineSteps.length > 0"
+      v-if="!schemaLoading && isMultiStepMode && timelineSteps.length > 0"
       class="form-timeline"
       :class="timelineTextPosition == 'right' ? 'mb-6.5' : 'mb-13'">
       <Timeline
@@ -464,20 +468,24 @@ const handleCancel = () => {
 
     <!-- ── Body ───────────────────────────────────────────────────────────── -->
     <div :class="footer && isFooterSticky ? 'pb-2' : ''">
-      <!--
-        FLAT SCHEMA — single array (no groups, no steps)
-        When a thumbnailSelector field is detected, we split the layout into:
-          LEFT  (flex-1)         : all regular fields
-          RIGHT (min-w-[350px])  : ThumbnailSelector panel
+      
+      <FormSkeleton v-if="schemaLoading" :isGrouped="isGroupedMode" />
+      
+      <template v-else>
+        <!--
+          FLAT SCHEMA — single array (no groups, no steps)
+          When a thumbnailSelector field is detected, we split the layout into:
+            LEFT  (flex-1)         : all regular fields
+            RIGHT (min-w-[350px])  : ThumbnailSelector panel
 
-        On small screens the thumbnail panel moves to the TOP so the user sees
-        the image picker before the text fields — consistent with the task spec.
+          On small screens the thumbnail panel moves to the TOP so the user sees
+          the image picker before the text fields — consistent with the task spec.
 
-        The thumbnailSelector field is filtered OUT of the <FormFields> pass
-        via the `excludeTypes` prop so it is never rendered twice.
-      -->
-      <div v-if="!isGroupedMode">
-        <!-- Side-panel layout when thumbnailSelector is present -->
+          The thumbnailSelector field is filtered OUT of the <FormFields> pass
+          via the `excludeTypes` prop so it is never rendered twice.
+        -->
+        <div v-if="!isGroupedMode">
+          <!-- Side-panel layout when thumbnailSelector is present -->
         <div v-if="hasThumbnailPanel" class="flex flex-col lg:flex-row gap-10 lg:gap-12">
           <!--
             Thumbnail panel
@@ -616,19 +624,20 @@ const handleCancel = () => {
           @addonAction="(action: string) => emit('onAddonAction', action)" />
       </div>
 
-      <!-- Default slot — available in all modes -->
-      <slot
-        :values="formValues"
-        :errors="errors"
-        :isSubmitting="isSubmitting"
-        :handleSubmit="handleSubmit" />
+        <!-- Default slot — available in all modes -->
+        <slot
+          :values="formValues"
+          :errors="errors"
+          :isSubmitting="isSubmitting"
+          :handleSubmit="handleSubmit" />
+      </template>
 
       <div ref="sentinelRef" class="form-scroll-sentinel h-px w-full" aria-hidden="true" />
     </div>
 
     <!-- ── Footer ─────────────────────────────────────────────────────────── -->
     <div
-      v-if="footer"
+      v-if="footer && !schemaLoading"
       ref="footerRef"
       :class="[
         'form-footer items-center gap-3 z-20 rounded-b-md!',
