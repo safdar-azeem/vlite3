@@ -140,11 +140,14 @@ const txtFilter = computed(() => {
         class="shrink-0 h-9! w-9!" />
     </template>
 
-    <div class="py-4 px-3.5 min-w-[290px]" style="will-change: transform; contain: layout style">
+    <div
+      class="pt-4 pb-1.5 px-3.5 min-w-[295px]"
+      style="will-change: transform; contain: layout style">
       <Form
         :schema="schema"
         :values="modelValue"
         :submit-text="txtApplyFilters"
+        footer-class="mt-0.5! border-0!"
         :submit-props="{
           size: 'sm',
           class: 'w-full',
