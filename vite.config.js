@@ -33,6 +33,7 @@ export default defineConfig({
                     'vue',
                     'v-tooltip-lite',
                     'v-datepicker-lite',
+                    'v-event-calendar',
                     'v-notion-editor',
                     'vue-carousel-lite',
                     '@vueuse/core',
