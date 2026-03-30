@@ -3,17 +3,13 @@ import { computed } from 'vue'
 import Avatar from '@/components/Avatar.vue'
 import type { AvatarSize, AvatarRounded } from '@/types'
 
-defineOptions({
-  name: 'AvatarGroup',
-})
-
 export interface AvatarGroupItem {
   src?: string
   alt?: string
   fallback?: string
 }
 
-interface Props {
+export interface Props {
   items: AvatarGroupItem[]
   max?: number
   size?: AvatarSize
@@ -42,6 +38,25 @@ const overlapClass: Record<'sm' | 'md' | 'lg', string> = {
 
 // Ring to visually separate stacked avatars
 const ringClass = 'ring-2 ring-background'
+
+// Size pixel map mirrors Avatar.vue sizeClasses for the overflow badge
+const sizePixels: Record<AvatarSize, string> = {
+  xs: '1.5rem',
+  sm: '1.875rem',
+  md: '2.5rem',
+  lg: '3.5rem',
+  xl: '4.5rem',
+  '2xl': '5.5rem',
+}
+
+const fontSizes: Record<AvatarSize, string> = {
+  xs: '10px',
+  sm: '0.75rem',
+  md: '0.875rem',
+  lg: '1rem',
+  xl: '1.125rem',
+  '2xl': '1.25rem',
+}
 </script>
 
 <template>
@@ -67,7 +82,11 @@ const ringClass = 'ring-2 ring-background'
         'relative shrink-0 flex items-center justify-center',
         'bg-muted text-muted-foreground font-medium',
         ringClass,
-        rounded === 'full' ? 'rounded-full' : rounded === 'none' ? 'rounded-none' : `rounded-${rounded}`,
+        rounded === 'full'
+          ? 'rounded-full'
+          : rounded === 'none'
+            ? 'rounded-none'
+            : `rounded-${rounded}`,
       ]"
       :style="{
         // Match the same size as Avatar sizeClasses
@@ -80,23 +99,3 @@ const ringClass = 'ring-2 ring-background'
   </div>
 </template>
 
-<script lang="ts">
-// Size pixel map mirrors Avatar.vue sizeClasses for the overflow badge
-const sizePixels: Record<AvatarSize, string> = {
-  xs: '1.5rem',    // h-6  w-6
-  sm: '1.875rem',  // h-7.5 w-7.5
-  md: '2.5rem',    // h-10 w-10
-  lg: '3.5rem',    // h-14 w-14
-  xl: '4.5rem',    // h-18 w-18
-  '2xl': '5.5rem', // h-22 w-22
-}
-
-const fontSizes: Record<AvatarSize, string> = {
-  xs: '10px',
-  sm: '0.75rem',
-  md: '0.875rem',
-  lg: '1rem',
-  xl: '1.125rem',
-  '2xl': '1.25rem',
-}
-</script>
