@@ -4,7 +4,9 @@
 
 ### Description
 
-A versatile, full-featured invoice and receipt component for Vue 3. It supports 4 distinct visual variants ranging from enterprise-grade documents to compact POS-style thermal receipts. The component is fully typed and integrates seamlessly with `Price`, `DateTime`, `Barcode`, and `QRCode` utilities.
+A highly-sophisticated, production-grade invoice and receipt engine for Vue 3. It provides 4 distinct visual variants designed to handle everything from legal enterprise billing to thermal POS receipts and modern service invoices. 
+
+The component is strictly typed, accessible, and print-optimized with built-in support for barcodes (CODE128), QR codes, and semantic status coloring.
 
 ---
 
@@ -12,60 +14,164 @@ A versatile, full-featured invoice and receipt component for Vue 3. It supports 
 
 | Prop | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| `data` | `InvoiceData` | **Required** | The complete invoice data object (brand, customer, items, totals). |
+| `data` | `InvoiceData` | **Required** | The complete data object powering the invoice. |
 | `variant` | `InvoiceVariant` | `'Variant1'` | selects the visual style: `'Variant1'`, `'Variant2'`, `'Variant3'`, or `'Variant4'`. |
-| `compact` | `boolean` | `false` | When `true`, reduces padding, spacing, and font sizes for a print-friendly layout. |
+| `compact` | `boolean` | `false` | When true, scales down padding and typography. See **CSS Variables** for fine-tuning. |
 
 ---
 
-### Data Models
+### Data Models (API Reference)
 
-#### `InvoiceData` Shape
+#### `InvoiceData`
+The root object passed to the `:data` prop.
 
-| Property | Type | Description |
+| Field | Type | Description |
 | :--- | :--- | :--- |
-| `brandTitle` | `string?` | Display title e.g. "INVOICE", "RECEIPT", "QUOTATION". |
-| `brandName` | `string?` | Legal entity or brand name issuing the document. |
-| `brandLogo` | `string?` | URL to the brand's logo image. |
-| `companyInfo` | `InvoiceCompanyInfo?` | Issuer's address, contact, and tax details. |
-| `customerInfo` | `InvoiceCustomerInfo?` | Recipient's address, contact, and tax details. |
-| `invoiceNumber` | `string` | **Required.** Unique document identifier. |
-| `status` | `string?` | Current status (e.g., "Paid", "Pending", "Draft"). |
-| `issuedDate` | `string \| Date?` | Date of issuance (formatted via `DateTime`). |
-| `dueDate` | `string \| Date?` | Payment due date (formatted via `DateTime`). |
-| `items` | `InvoiceLineItem[]` | **Required.** List of products or services provided. |
-| `totals` | `InvoiceTotal[]` | **Required.** Financial summary rows (Subtotal, Tax, Total). |
-| `barcode` | `string?` | Content for an embedded CODE128 barcode. |
-| `qrcode` | `string?` | Content for an embedded QR code (e.g., payment link). |
-| `notes` | `string?` | Additional memo or terms for the recipient. |
-| `footerText` | `string?` | Legal footer or "Thank you" message. |
+| `invoiceNumber` | `string` | **Required.** Primary identifier (e.g., "INV-2024-001"). |
+| `items` | `InvoiceLineItem[]` | **Required.** Array of products/services. |
+| `totals` | `InvoiceTotal[]` | **Required.** Array of summary rows (Subtotal, Tax, Final). |
+| `brandTitle` | `string?` | Custom header title (e.g., "COMMERCIAL INVOICE"). Defaults to "Invoice". |
+| `brandName` | `string?` | Your company name shown in the header. |
+| `brandLogo` | `string?` | URL for the brand logo. Transparent PNG/SVG recommended. |
+| `status` | `string?` | Raw status string (e.g. "Paid"). Affects semantic coloring. |
+| `issuedDate` | `string \| Date?` | Date the invoice was generated. |
+| `dueDate` | `string \| Date?` | Deadline for payment. |
+| `companyInfo` | `InvoiceCompanyInfo?` | Nested object for issuer details (From). |
+| `customerInfo` | `InvoiceCustomerInfo?` | Nested object for recipient details (To). |
+| `barcode` | `string?` | Renders a CODE128 barcode at the bottom. |
+| `qrcode` | `string?` | Renders a QR code (ideal for payment/tracking URLs). |
+| `notes` | `string?` | Multi-line text for memos or additional terms. |
+| `footerText` | `string?` | Legal small print at the very bottom. |
 
-#### `InvoiceLineItem` Shape
+#### `InvoiceLineItem`
+Fields for individual row items in the document.
 
-| Property | Type | Description |
+| Field | Type | Description |
 | :--- | :--- | :--- |
-| `id` | `string \| number` | Unique identifier for the item. |
-| `name` | `string` | **Required.** Product or service name. |
-| `sku` | `string?` | Product SKU or code. |
-| `thumbnail` | `string?` | URL for the item's thumbnail image. |
-| `description` | `string?` | Extended details (hidden in ultra-compact views). |
-| `size` | `string?` | Variation details (e.g. "Blue", "XL", "L"). |
-| `quantity` | `number` | **Required.** Number of units. |
-| `price` | `number` | **Required.** Unit price. |
-| `discount` | `number?` | Deductible amount for this specific line item. |
-| `discountLabel` | `string?` | Label for the line discount (e.g. "10% OFF"). |
-| `total` | `number` | **Required.** Line total (usually `(qty * price) - discount`). |
+| `id` | `string \| number` | Unique item ID (used as Vue key). |
+| `name` | `string` | **Required.** Display name of the product/service. |
+| `quantity` | `number` | **Required.** Quantity of items. |
+| `price` | `number` | **Required.** Unit price (before discounts). |
+| `total` | `number` | **Required.** Final calculated total for the line. |
+| `sku` | `string?` | Stock Keeping Unit or internal part number. |
+| `thumbnail` | `string?` | URL for a small product preview image. |
+| `description` | `string?` | Detailed subtitle (hidden in compact/POS views). |
+| `size` | `string?` | Specific variant detail (e.g., "Large", "42", "Blue"). |
+| `discount` | `number?` | The amount subtracted from the subtotal for this line. |
+| `discountLabel` | `string?` | Short text for the discount (e.g., "10% OFF", "BOGO"). |
+
+#### `InvoiceCustomerInfo` & `InvoiceCompanyInfo`
+Detailed contact structures for both parties.
+
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `name` | `string` | Person or Entity name. |
+| `address` | `string?` | Street address / Suite. |
+| `city` | `string?` | City name. |
+| `state` | `string?` | State / Province / Region. |
+| `zip` | `string?` | Postal / Zip code. |
+| `country` | `string?` | Country name. |
+| `email` | `string?` | Contact email address. |
+| `phone` | `string?` | Contact phone number. |
+| `website` | `string?` | (Company Only) Corporate website URL. |
+| `taxId` | `string?` | VAT #, Tax #, or Business Registration #. |
+
+#### `InvoiceTotal`
+Defines the final summary rows.
+
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `label` | `string` | Display label (e.g., "VAT (15%)"). |
+| `value` | `number` | The numeric amount. |
+| `isSubtotal` | `boolean?` | If true, applies light emphasis styling. |
+| `isTax` | `boolean?` | If true, identifies row as a tax type. |
+| `isDiscount` | `boolean?` | If true, identifies row as a deduction. |
+| `isGrandTotal` | `boolean?` | If true, renders large, bold, and with a primary color theme. |
 
 ---
 
-### Visual Variants
+### Customization & Logic
 
-| Variant | Name | Best For |
+#### Automatic Status Colors
+The component maps specific status strings to semantic colors automatically. 
+
+| Status Category | Colors | Example Keywords |
 | :--- | :--- | :--- |
-| `Variant1` | **Enterprise** | Formal business-to-business invoices with full branding. |
-| `Variant2` | **POS Receipt** | Retail/Restaurant thermal receipts. Compact vertical layout. |
-| `Variant3` | **E-commerce** | Modern packing slips or digital order confirmations. |
-| `Variant4` | **Modern Hero** | Bold, vibrant design for creative agencies or modern SaaS billing. |
+| **Positive** | Green | Paid, Success, Completed, Delivered |
+| **Warning** | Yellow/Orange | Pending, Overdue, Expiring, Waiting |
+| **Negative** | Red/Pink | Rejected, Cancelled, Failed, Danger |
+| **Information** | Blue/Indigo | Processing, Started, In Progress |
+| **Neutral** | Gray | Draft, Archived, Disabled, Void |
+
+#### CSS Variable Hooks
+For advanced users needing to fine-tune the "Compact" or standard output (especially for print), the following CSS variables are supported on the component container:
+
+```css
+/* Example: Customizing font scale for specific printing needs */
+.v-invoice-container {
+  --text-sm: 13.5px; /* Base small text e.g. address */
+  --text-xs: 10px;   /* Extra small text e.g. SKU info */
+}
+```
+
+---
+
+### Data Contract for AI Agents (JSON Template)
+
+Use this exhaustive object to generate or validate a full-featured invoice payload.
+
+```json
+{
+  "brandTitle": "COMMERCIAL INVOICE",
+  "brandName": "Vertex Systems LLC",
+  "brandLogo": "https://cdn.example.com/logo.svg",
+  "invoiceNumber": "VXT-8842-2024",
+  "status": "Paid",
+  "issuedDate": "2024-03-30",
+  "dueDate": "2024-04-15",
+  "companyInfo": {
+    "name": "Vertex Systems LLC",
+    "address": "1200 Innovation Way",
+    "city": "Austin",
+    "state": "TX",
+    "zip": "78701",
+    "country": "USA",
+    "email": "billing@vertex.io",
+    "taxId": "VAT-TX12345678"
+  },
+  "customerInfo": {
+    "name": "Global Logistics Inc.",
+    "address": "400 Harbor Drive",
+    "city": "Miami",
+    "state": "FL",
+    "zip": "33101",
+    "email": "procurement@global.log"
+  },
+  "items": [
+    {
+      "id": "1",
+      "name": "Enterprise Shield - Annual Subscription",
+      "sku": "V-SHD-ENT",
+      "quantity": 1,
+      "price": 12000,
+      "total": 11000,
+      "discount": 1000,
+      "discountLabel": "MULTI-YEAR DISCOUNT",
+      "size": "Enterprise Tier"
+    }
+  ],
+  "totals": [
+    { "label": "Subtotal", "value": 12000, "isSubtotal": true },
+    { "label": "Customer Discount", "value": -1000, "isDiscount": true },
+    { "label": "Sales Tax (0%)", "value": 0, "isTax": true },
+    { "label": "Total Amount due", "value": 11000, "isGrandTotal": true }
+  ],
+  "barcode": "VXT-8842-2024",
+  "qrcode": "https://pay.vertex.io/VXT-8842-2024",
+  "notes": "Thank you for your business. Terms: Net 15.",
+  "footerText": "Vertex Systems LLC is a registered trademark in TX."
+}
+```
 
 ---
 
@@ -79,12 +185,12 @@ import { Invoice } from 'vlite3'
 
 const invoiceData = {
   brandName: 'Acme Corp.',
-  invoiceNumber: 'INV-001',
+  invoiceNumber: 'INV-2024-001',
   items: [
-    { name: 'SaaS Subscription', quantity: 1, price: 99, total: 99 }
+    { name: 'UI/UX Design', quantity: 1, price: 1200, total: 1200 }
   ],
   totals: [
-    { label: 'Total', value: 99, isGrandTotal: true }
+    { label: 'Total', value: 1200, isGrandTotal: true }
   ]
 }
 </script>
@@ -96,10 +202,15 @@ const invoiceData = {
 
 #### 2. POS Thermal Receipt (Variant 2)
 
+Variant 2 follows a narrow vertical layout optimized for small thermal prints and retail environments.
+
 ```vue
 <template>
-  <!-- Variant 2 follows a narrow vertical layout optimized for small thermal prints -->
-  <Invoice :data="posData" variant="Variant2" />
+  <Invoice 
+    :data="posData" 
+    variant="Variant2" 
+    :compact="true" 
+  />
 </template>
 ```
 
@@ -108,21 +219,21 @@ const invoiceData = {
 ```vue
 <script setup>
 const serviceData = {
-  brandTitle: 'Service Invoice',
+  brandTitle: 'SERVICE INVOICE',
   items: [
     { 
-      name: 'UI Design', 
-      quantity: 1, 
-      price: 1500, 
-      discount: 150, 
-      discountLabel: 'Partner Promo', 
-      total: 1350 
+      name: 'Software Development', 
+      quantity: 40, 
+      price: 150, 
+      discount: 600, 
+      discountLabel: 'Volume Discount', 
+      total: 5400 
     }
   ],
   totals: [
-    { label: 'Subtotal', value: 1500, isSubtotal: true },
-    { label: 'Discount', value: -150, isDiscount: true },
-    { label: 'Grand Total', value: 1350, isGrandTotal: true }
+    { label: 'Subtotal', value: 6000, isSubtotal: true },
+    { label: 'Discount', value: -600, isDiscount: true },
+    { label: 'Total Due', value: 5400, isGrandTotal: true }
   ]
 }
 </script>
@@ -134,22 +245,11 @@ const serviceData = {
 
 ---
 
-### Printing Best Practices
+### Senior Engineer's Implementation Notes
 
-When rendering for print or PDF generation, use the `compact` prop to ensure the document fits perfectly on a single page by reducing extraneous white space.
-
-```vue
-<template>
-  <Invoice :data="data" compact />
-</template>
-```
-
----
-
-### Senior Engineer's Notes (Best Practices)
-
-1.  **Status Colors**: The component uses `getStatusColorClass` internally. Supported statuses like "Paid", "Pending", "Overdue", and "Cancelled" will automatically receive appropriate semantic coloring (green, yellow, red, etc.).
-2.  **Explicit Totals**: The component does not calculate totals automatically to allow for backend-driven precision. Ensure your `totals` array matches your line items exactly.
-3.  **Adaptive Columns**: Columns like `Size` and `Discount` only appear in the table if at least one item in the `items` array contains that property. This keeps standard invoices clutter-free.
-4.  **Logo Strategy**: For `Variant4` (Hero), ensure high-quality, transparent logos are used as they overlay a prominent header background.
-5.  **Barcodes & QR Codes**: Use `qrcode` for "Scan to Pay" links and `barcode` for internal picking/warehouse routing references.
+1.  **Strict Math**: The component **does not** compute totals. It is a presentational layer. This is by design to prevent "floating-point drift" where the UI shows one value and the backend expects another. Always pass final, pre-calculated values.
+2.  **Adaptive Columns**: The `Size` and `Discount` columns are truly dynamic. If half your items have a size and the other half don't, the component will render empty space for the missing values to maintain alignment. If **no** items have these fields, the columns are removed from the DOM entirely.
+3.  **Variant Selection**:
+    - **Variant 2** is the only one that uses `print:max-w-[300px]`, making it dedicated to roll-based thermal printers.
+    - **Variant 4** uses `hero` header backgrounds; ensure you have a high-contrast logo (either white or dark) defined in `brandLogo`.
+4.  **Responsive Print**: Use `compact: true` specifically for email attachments or physical printing to minimize page count.
