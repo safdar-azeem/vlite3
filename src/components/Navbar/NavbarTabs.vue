@@ -159,7 +159,7 @@ const getItemClasses = (item: NavbarTabItem): string => {
         <div class="w-8 h-full bg-gradient-to-r from-background to-transparent" />
         <button
           type="button"
-          class="pointer-events-auto absolute left-0 h-full px-1 flex items-center text-muted-foreground hover:text-foreground transition-colors"
+          class="pointer-events-auto absolute left-0 bg-body h-full px-1 flex items-center text-muted-foreground hover:text-foreground transition-colors"
           aria-label="Scroll tabs left"
           tabindex="-1"
           @click="scrollBy('left')">
@@ -175,9 +175,8 @@ const getItemClasses = (item: NavbarTabItem): string => {
         'flex-1 overflow-x-auto scroll-smooth navbar-tabs-no-scrollbar',
         containerVariantClasses[variant],
       ]"
-      style="will-change: transform; contain: layout style;"
+      style="will-change: transform; contain: layout style"
       aria-label="Page tabs">
-      
       <RouterLink
         v-for="(item, index) in items"
         :key="index"
@@ -211,7 +210,7 @@ const getItemClasses = (item: NavbarTabItem): string => {
         <div class="w-8 h-full bg-gradient-to-l from-background to-transparent" />
         <button
           type="button"
-          class="pointer-events-auto absolute right-0 h-full px-1 flex items-center text-muted-foreground hover:text-foreground transition-colors"
+          class="pointer-events-auto absolute right-0 h-full px-1 flex items-center text-muted-foreground hover:text-foreground transition-colors bg-body"
           aria-label="Scroll tabs right"
           tabindex="-1"
           @click="scrollBy('right')">
