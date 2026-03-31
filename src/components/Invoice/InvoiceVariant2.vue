@@ -3,9 +3,10 @@ import { computed } from 'vue'
 import type { InvoiceData } from './types'
 import { Price } from '../Price'
 import { DateTime } from '../DateTime'
-import { getStatusColorClass } from '@/utils/status'
 import { Barcode } from '../Barcode'
 import { QRCode } from '../QRCode'
+import Avatar from '../Avatar.vue'
+import StatusChip from '../StatusChip/StatusChip.vue'
 // Useful for minimal POS receipts
 
 const props = withDefaults(
@@ -24,109 +25,111 @@ const d = computed(() => props.data)
 
 <template>
   <div
-    class="v-invoice-v2 bg-body text-gray-900 border border-gray-200 mx-auto print:max-w-[300px] shadow-sm font-sans tracking-tight"
+    class="v-invoice-v2 bg-background text-foreground border border-border mx-auto print:max-w-[300px] font-sans tracking-tight"
     :style="{
       '--text-sm': compact ? '12px' : '13.5px',
       '--text-xs': compact ? '9.5px' : '10px',
     }"
     :class="compact ? 'max-w-xs' : 'max-w-sm sm:max-w-md'">
-    <div class="text-center" :class="compact ? 'p-3 space-y-1.5 pb-2' : 'p-6 space-y-3 pb-4'">
-      <div v-if="d.brandLogo" :class="compact ? 'h-8 mx-auto mb-1' : 'h-14 mx-auto mb-2'">
-        <img
+
+    <!-- Header -->
+    <div class="text-center" :class="compact ? 'p-4 pb-3' : 'p-6 pb-4'">
+      <div v-if="d.brandLogo" class="flex justify-center mb-2">
+        <Avatar
           :src="d.brandLogo"
           :alt="d.brandName"
-          class="h-full object-contain mx-auto grayscale" />
+          :class="compact ? 'h-9 w-9' : 'h-12 w-12'"
+          rounded="md" />
       </div>
-
-      <div>
-        <h2
-          v-if="d.brandName"
-          class="font-bold uppercase tracking-widest"
-          :class="compact ? 'text-base' : 'text-2xl'">
-          {{ d.brandName }}
-        </h2>
-
-        <div
-          v-if="d.companyInfo"
-          class="text-gray-500 space-y-0.5"
-          :class="compact ? 'mt-1 text-sm' : 'mt-2 text-sm'">
-          <p v-if="d.companyInfo.address">{{ d.companyInfo.address }}</p>
-          <p v-if="d.companyInfo.city || d.companyInfo.state">
-            {{ d.companyInfo.city }} {{ d.companyInfo.state }} {{ d.companyInfo.zip }}
-          </p>
-          <p v-if="d.companyInfo.phone">{{ d.companyInfo.phone }}</p>
-          <p v-if="d.companyInfo.taxId">VAT: {{ d.companyInfo.taxId }}</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="border-t border-dashed border-gray-300" :class="compact ? 'mx-3' : 'mx-6'"></div>
-
-    <div :class="compact ? 'px-3 py-2 space-y-1 text-sm' : 'px-6 py-4 space-y-1.5 text-sm'">
-      <div class="flex justify-between">
-        <span class="text-gray-500 font-medium">Receipt #</span>
-        <span class="font-semibold">{{ d.invoiceNumber }}</span>
-      </div>
-      <div v-if="d.issuedDate" class="flex justify-between">
-        <span class="text-gray-500 font-medium">Date</span>
-        <DateTime :value="d.issuedDate" type="dateTime" class="font-medium" />
-      </div>
-      <div v-if="d.customerInfo?.name" class="flex justify-between mt-2">
-        <span class="text-gray-500 font-medium">Customer</span>
-        <span class="font-semibold">{{ d.customerInfo.name }}</span>
-      </div>
-      <div v-if="d.status" class="flex justify-between">
-        <span class="text-gray-500 font-medium">Status</span>
-        <span class="uppercase font-bold tracking-widest" :class="getStatusColorClass(d.status)">{{
-          d.status
-        }}</span>
-      </div>
-    </div>
-
-    <div class="border-t border-dashed border-gray-300" :class="compact ? 'mx-3' : 'mx-6'"></div>
-
-    <div :class="compact ? 'px-3 py-2' : 'px-6 py-4'">
+      <h2
+        v-if="d.brandName"
+        class="font-bold uppercase tracking-widest text-foreground"
+        :class="compact ? 'text-base' : 'text-xl'">
+        {{ d.brandName }}
+      </h2>
       <div
-        class="flex justify-between font-semibold text-gray-500 uppercase tracking-wider"
-        :class="compact ? 'text-xs! mb-1.5' : 'text-sm! mb-3'">
+        v-if="d.companyInfo"
+        class="text-muted-foreground space-y-0.5 mt-1"
+        :class="compact ? 'text-xs' : 'text-sm'">
+        <p v-if="d.companyInfo.address">{{ d.companyInfo.address }}</p>
+        <p v-if="d.companyInfo.city || d.companyInfo.state">
+          {{ d.companyInfo.city }} {{ d.companyInfo.state }} {{ d.companyInfo.zip }}
+        </p>
+        <p v-if="d.companyInfo.phone">{{ d.companyInfo.phone }}</p>
+        <p v-if="d.companyInfo.taxId">VAT: {{ d.companyInfo.taxId }}</p>
+      </div>
+    </div>
+
+    <div class="border-t border-dashed border-border" :class="compact ? 'mx-3' : 'mx-5'"></div>
+
+    <!-- Meta info -->
+    <div :class="compact ? 'px-4 py-2.5 space-y-1 text-xs' : 'px-5 py-3.5 space-y-1.5 text-sm'">
+      <div class="flex justify-between items-center">
+        <span class="text-muted-foreground font-medium">Receipt #</span>
+        <span class="font-semibold text-foreground">{{ d.invoiceNumber }}</span>
+      </div>
+      <div v-if="d.issuedDate" class="flex justify-between items-center">
+        <span class="text-muted-foreground font-medium">Date</span>
+        <DateTime :value="d.issuedDate" type="dateTime" class="font-medium text-foreground" />
+      </div>
+      <div v-if="d.customerInfo?.name" class="flex justify-between items-center">
+        <span class="text-muted-foreground font-medium">Customer</span>
+        <span class="font-semibold text-foreground">{{ d.customerInfo.name }}</span>
+      </div>
+      <div v-if="d.status" class="flex justify-between items-center">
+        <span class="text-muted-foreground font-medium">Status</span>
+        <StatusChip :status="d.status" hide-icon size="small" />
+      </div>
+    </div>
+
+    <div class="border-t border-dashed border-border" :class="compact ? 'mx-3' : 'mx-5'"></div>
+
+    <!-- Items -->
+    <div :class="compact ? 'px-4 py-2.5' : 'px-5 py-3.5'">
+      <div
+        class="flex justify-between font-semibold text-muted-foreground uppercase tracking-wider mb-2"
+        :class="compact ? 'text-[10px]' : 'text-xs'">
         <span>Item</span>
         <span>Amount</span>
       </div>
 
-      <div :class="compact ? 'space-y-2' : 'space-y-4'">
+      <div :class="compact ? 'space-y-2.5' : 'space-y-3.5'">
         <div v-for="(item, index) in d.items" :key="item.id || index">
-          <div class="flex items-start gap-2">
+          <div class="flex items-start gap-2.5">
             <div
               v-if="item.thumbnail"
-              class="shrink-0 w-8 h-8 rounded bg-gray-100 overflow-hidden border border-gray-200 mt-0.5">
-              <img
+              class="shrink-0 overflow-hidden border border-border mt-0.5"
+              :class="compact ? 'w-8 h-8 rounded' : 'w-9 h-9 rounded-md'">
+              <Avatar
                 :src="item.thumbnail"
                 :alt="item.name"
-                class="w-full h-full object-cover grayscale" />
+                class="w-full h-full"
+                rounded="sm" />
             </div>
             <div class="flex-1 min-w-0">
-              <div class="flex justify-between font-medium">
-                <span class="truncate pr-2 text-sm!" :title="item.name">{{ item.name }}</span>
-                <Price :value="item.total" class="shrink-0 font-bold text-xs" />
+              <div class="flex justify-between items-start gap-2">
+                <span
+                  class="font-semibold text-foreground truncate"
+                  :class="compact ? 'text-xs' : 'text-sm'"
+                  :title="item.name">{{ item.name }}</span>
+                <Price :value="item.total" class="shrink-0 font-bold text-foreground" :class="compact ? 'text-xs' : 'text-sm'" />
               </div>
               <div
                 v-if="item.sku"
-                class="text-xs uppercase text-gray-400 font-normal tracking-tight truncate"
-                :title="item.sku">
+                class="text-muted-foreground uppercase tracking-tight truncate mt-0.5"
+                :class="compact ? 'text-[9px]' : 'text-[10px]'">
                 SKU: {{ item.sku }}
               </div>
-              <div class="text-gray-500 flex flex-wrap gap-x-2 gap-y-0.5 text-xs">
+              <div class="text-muted-foreground flex flex-wrap gap-x-1.5 gap-y-0.5 mt-0.5" :class="compact ? 'text-[10px]' : 'text-xs'">
                 <span>{{ item.quantity }} x</span>
-                <Price :value="item.price" class="text-xs" />
-                <span v-if="item.size" class="text-gray-400 font-medium text-xs"
-                  >| Size: {{ item.size }}</span
-                >
+                <Price :value="item.price" />
+                <span v-if="item.size" class="text-muted-foreground">· {{ item.size }}</span>
                 <div
                   v-if="item.discount !== undefined"
-                  class="text-success font-medium flex items-center gap-1">
-                  <span class="text-xs">| Disc:</span>
-                  <Price :value="-item.discount" class="text-xs!" />
-                  <span v-if="item.discountLabel" class="text-xs!">({{ item.discountLabel }})</span>
+                  class="text-success font-medium flex items-center gap-0.5">
+                  <span>· Disc:</span>
+                  <Price :value="-item.discount" />
+                  <span v-if="item.discountLabel">({{ item.discountLabel }})</span>
                 </div>
               </div>
             </div>
@@ -135,52 +138,53 @@ const d = computed(() => props.data)
       </div>
     </div>
 
-    <div class="border-t border-dashed border-gray-300" :class="compact ? 'mx-3' : 'mx-6'"></div>
+    <div class="border-t border-dashed border-border" :class="compact ? 'mx-3' : 'mx-5'"></div>
 
-    <div :class="compact ? 'px-3 py-2 space-y-1' : 'px-6 py-4 space-y-1'">
+    <!-- Totals -->
+    <div :class="compact ? 'px-4 py-2.5 space-y-1' : 'px-5 py-3 space-y-1.5'">
       <div
         v-for="(total, idx) in d.totals"
         :key="idx"
-        class="flex justify-between"
+        class="flex justify-between items-center"
         :class="
           total.isGrandTotal
             ? compact
-              ? 'mt-1 pt-1 border-t border-gray-200 text-base font-bold'
-              : 'mt-2 pt-2 border-t border-gray-200 text-lg font-bold'
+              ? 'mt-1.5 pt-1.5 border-t border-border font-bold text-foreground text-sm'
+              : 'mt-2 pt-2 border-t border-border font-bold text-foreground text-base'
             : compact
-              ? 'font-medium text-gray-600'
-              : 'font-medium text-gray-600'
+              ? 'text-xs font-medium text-muted-foreground'
+              : 'text-sm font-medium text-muted-foreground'
         ">
-        <span class="text-sm">{{ total.label }}</span>
-        <Price :value="total.value" class="text-sm" />
+        <span>{{ total.label }}</span>
+        <Price :value="total.value" />
       </div>
     </div>
 
-    <div class="border-t border-dashed border-gray-300" :class="compact ? 'mx-3' : 'mx-6'"></div>
+    <div class="border-t border-dashed border-border" :class="compact ? 'mx-3' : 'mx-5'"></div>
 
-    <div :class="compact ? 'px-3 py-3 text-center space-y-3' : 'px-6 py-6 text-center space-y-4'">
-      
+    <!-- Footer: QR / Barcode / Notes -->
+    <div :class="compact ? 'px-4 py-3 text-center space-y-3' : 'px-5 py-4 text-center space-y-4'">
       <div class="flex flex-row flex-wrap items-center justify-center gap-3">
-        <div v-if="d.qrcode" class="p-1 bg-white border border-gray-200 rounded">
+        <div v-if="d.qrcode" class="p-1 bg-white border border-border rounded">
           <QRCode :value="d.qrcode" :size="compact ? 48 : 64" />
         </div>
         <div
           v-if="d.barcode"
-          class="bg-white p-1 rounded border border-gray-200 overflow-hidden">
+          class="bg-white p-1 rounded border border-border overflow-hidden">
           <Barcode
             :value="d.barcode"
             format="CODE128"
             :height="compact ? 24 : 32"
-            :width="compact ? 1.0 : 1.2" 
+            :width="compact ? 1.0 : 1.2"
             :display-value="displayBarcodeValue" />
         </div>
       </div>
 
-      <div v-if="d.notes" class="text-gray-600 whitespace-pre-wrap text-xs">
+      <div v-if="d.notes" class="text-muted-foreground whitespace-pre-wrap" :class="compact ? 'text-[10px]' : 'text-xs'">
         {{ d.notes }}
       </div>
 
-      <div v-if="d.footerText" class="text-gray-400 font-medium uppercase tracking-widest text-xs">
+      <div v-if="d.footerText" class="text-muted-foreground font-medium uppercase tracking-widest" :class="compact ? 'text-[9px]' : 'text-[10px]'">
         {{ d.footerText }}
       </div>
     </div>
