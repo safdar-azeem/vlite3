@@ -27,7 +27,7 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
 
 <template>
   <div
-    class="v-invoice-v1 bg-background text-foreground border border-border"
+    class="v-invoice-v1 bg-background text-foreground border border-border rounded-sm"
     :style="{
       '--text-sm': compact ? '12.5px' : '13.5px',
       '--invoice-cell-px': compact ? '0.875rem' : '1.25rem',
