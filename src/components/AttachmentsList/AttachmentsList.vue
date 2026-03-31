@@ -10,8 +10,12 @@ import { FilePreview } from '../FilePreview'
 import { getFileTypeIcon } from './fileTypeIcon'
 import type { AttachmentsListProps, AttachmentItem } from './'
 
-const props = defineProps<AttachmentsListProps>()
-
+const props = withDefaults(defineProps<AttachmentsListProps>(), {
+  canView: undefined,
+  canDownload: undefined,
+  clickToPreview: undefined,
+  showDownloadInList: undefined,
+})
 const globalConfig = getComponentConfig('attachmentsList') || {}
 
 // Replaced withDefaults with computed fallback values referencing globalConfig
@@ -81,7 +85,11 @@ const hasFileName = (file: AttachmentItem) => {
 }
 
 const hasFileSize = (file: AttachmentItem) => {
-  return file.fileSize !== undefined && file.fileSize !== null && file.fileSize !== ''
+  return (
+    file.fileSize !== undefined &&
+    file.fileSize !== null &&
+    String(file.fileSize).trim() !== ''
+  )
 }
 
 const openPreview = (index: number) => {
