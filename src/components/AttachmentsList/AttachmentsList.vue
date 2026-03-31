@@ -5,31 +5,36 @@ import Icon from '../Icon.vue'
 import Button from '../Button.vue'
 import { $t } from '@/utils/i18n'
 import { downloadFile } from '@/utils/functions'
+import { getComponentConfig } from '@/utils/configUtils'
 import { FilePreview } from '../FilePreview'
 import { getFileTypeIcon } from './fileTypeIcon'
 import type { AttachmentsListProps, AttachmentItem } from './'
 
-const props = withDefaults(defineProps<AttachmentsListProps>(), {
-  canView: true,
-  canDownload: true,
-  variant: 'default',
-  size: 'md',
-  clickToPreview: false,
-  showDownloadInList: true,
-  rootClass: '',
-  gridClass: '',
-  cardClass: '',
-  cardThumbnailClass: '',
-  cardInfoClass: '',
-  cardActionsClass: '',
-  listClass: '',
-  itemClass: '',
-  itemIconBoxClass: '',
-  itemNameClass: '',
-  itemSizeClass: '',
-  itemActionsClass: '',
-  emptyClass: '',
-})
+const props = defineProps<AttachmentsListProps>()
+
+const globalConfig = getComponentConfig('attachmentsList') || {}
+
+// Replaced withDefaults with computed fallback values referencing globalConfig
+const canView = computed(() => props.canView ?? globalConfig.canView ?? true)
+const canDownload = computed(() => props.canDownload ?? globalConfig.canDownload ?? true)
+const variant = computed(() => props.variant ?? globalConfig.variant ?? 'default')
+const size = computed(() => props.size ?? globalConfig.size ?? 'md')
+const clickToPreview = computed(() => props.clickToPreview ?? globalConfig.clickToPreview ?? false)
+const showDownloadInList = computed(() => props.showDownloadInList ?? globalConfig.showDownloadInList ?? true)
+
+const _rootClass = computed(() => props.rootClass ?? globalConfig.rootClass ?? '')
+const _gridClass = computed(() => props.gridClass ?? globalConfig.gridClass ?? '')
+const _cardClass = computed(() => props.cardClass ?? globalConfig.cardClass ?? '')
+const _cardThumbnailClass = computed(() => props.cardThumbnailClass ?? globalConfig.cardThumbnailClass ?? '')
+const _cardInfoClass = computed(() => props.cardInfoClass ?? globalConfig.cardInfoClass ?? '')
+const _cardActionsClass = computed(() => props.cardActionsClass ?? globalConfig.cardActionsClass ?? '')
+const _listClass = computed(() => props.listClass ?? globalConfig.listClass ?? '')
+const _itemClass = computed(() => props.itemClass ?? globalConfig.itemClass ?? '')
+const _itemIconBoxClass = computed(() => props.itemIconBoxClass ?? globalConfig.itemIconBoxClass ?? '')
+const _itemNameClass = computed(() => props.itemNameClass ?? globalConfig.itemNameClass ?? '')
+const _itemSizeClass = computed(() => props.itemSizeClass ?? globalConfig.itemSizeClass ?? '')
+const _itemActionsClass = computed(() => props.itemActionsClass ?? globalConfig.itemActionsClass ?? '')
+const _emptyClass = computed(() => props.emptyClass ?? globalConfig.emptyClass ?? '')
 
 // Tracks which file index has its preview modal open (for programmatic open via clickToPreview)
 const activePreviewIndex = ref<number | null>(null)
@@ -59,9 +64,8 @@ const isImage = (file: AttachmentItem) => {
   return /\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?.*)?$/i.test(file.fileUrl || '')
 }
 
-// Opens the preview for a given index when clickToPreview is enabled
 const openPreview = (index: number) => {
-  if (props.clickToPreview && props.canView) {
+  if (clickToPreview.value && canView.value) {
     activePreviewIndex.value = index
   }
 }
@@ -72,7 +76,7 @@ const closePreview = () => {
 
 // Compute sizing classes for list/inline views
 const sizeClasses = computed(() => {
-  switch (props.size) {
+  switch (size.value) {
     case 'sm':
       return {
         item: 'pl-2 pr-2.5 py-1.5 gap-1.5',
@@ -108,10 +112,10 @@ const sizeClasses = computed(() => {
 })
 
 // Whether the eye/view action button should be shown in list rows
-const showViewAction = computed(() => props.canView && !props.clickToPreview)
+const showViewAction = computed(() => canView.value && !clickToPreview.value)
 
 // Whether the download action button should be shown in list rows
-const showDownloadAction = computed(() => props.canDownload && props.showDownloadInList)
+const showDownloadAction = computed(() => canDownload.value && showDownloadInList.value)
 
 // Whether the actions column has any buttons to show at all
 const hasListActions = computed(() => showViewAction.value || showDownloadAction.value)
@@ -119,25 +123,25 @@ const hasListActions = computed(() => showViewAction.value || showDownloadAction
 
 <template>
   <!-- vl-attachments-list: root wrapper -->
-  <div class="vl-attachments-list w-full" :class="rootClass">
+  <div class="vl-attachments-list w-full" :class="_rootClass">
     <template v-if="normalizedAttachments.length > 0">
       <!-- ────────────────────────────────────────────────── CARD VARIANT ── -->
       <!-- vl-attachments-list__grid: card grid container -->
       <div
         v-if="variant === 'card'"
         class="vl-attachments-list__grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-        :class="gridClass">
+        :class="_gridClass">
         <!-- vl-attachments-list__card: individual card item -->
         <div
           v-for="(file, index) in normalizedAttachments"
           :key="index"
           class="vl-attachments-list__card relative group rounded-xl border border-border bg-body overflow-hidden hover:shadow-md transition-all flex flex-col"
-          :class="[{ 'cursor-pointer': clickToPreview && canView }, cardClass]"
+          :class="[{ 'cursor-pointer': clickToPreview && canView }, _cardClass]"
           @click="openPreview(index)">
           <!-- vl-attachments-list__card-thumbnail: card preview/image area -->
           <div
             class="vl-attachments-list__card-thumbnail h-40 w-full bg-muted/30 flex items-center justify-center overflow-hidden relative border-b border-border"
-            :class="cardThumbnailClass">
+            :class="_cardThumbnailClass">
             <img
               v-if="isImage(file)"
               :src="file.thumbnailUrl || file.fileUrl"
@@ -151,7 +155,7 @@ const hasListActions = computed(() => showViewAction.value || showDownloadAction
             <div
               v-if="!clickToPreview"
               class="vl-attachments-list__card-actions absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
-              :class="cardActionsClass">
+              :class="_cardActionsClass">
               <Modal
                 v-if="canView"
                 :title="file.fileName || $t('common.words.preview', 'Preview')"
@@ -179,7 +183,7 @@ const hasListActions = computed(() => showViewAction.value || showDownloadAction
           <!-- vl-attachments-list__card-info: card footer with name/size -->
           <div
             class="vl-attachments-list__card-info p-3 flex flex-col min-w-0"
-            :class="cardInfoClass">
+            :class="_cardInfoClass">
             <!-- vl-attachments-list__item-name: file name text -->
             <span
               class="vl-attachments-list__item-name text-sm font-medium truncate"
@@ -206,7 +210,7 @@ const hasListActions = computed(() => showViewAction.value || showDownloadAction
 
       <!-- ───────────────────────────── DEFAULT / LIST / INLINE VARIANTS ── -->
       <!-- vl-attachments-list__list: vertical list container -->
-      <div v-else class="vl-attachments-list__list flex flex-col gap-1.5" :class="listClass">
+      <div v-else class="vl-attachments-list__list flex flex-col gap-1.5" :class="_listClass">
         <!-- vl-attachments-list__item: individual list row -->
         <div
           v-for="(file, index) in normalizedAttachments"
@@ -218,7 +222,7 @@ const hasListActions = computed(() => showViewAction.value || showDownloadAction
               : 'border border-border bg-muted/20 hover:bg-muted/40',
             sizeClasses.item,
             clickToPreview && canView ? 'cursor-pointer select-none' : '',
-            itemClass,
+            _itemClass,
           ]"
           @click="openPreview(index)">
           <!--
@@ -233,7 +237,7 @@ const hasListActions = computed(() => showViewAction.value || showDownloadAction
               :class="[
                 sizeClasses.iconBox,
                 variant === 'inline' ? 'bg-[#79797924] hover:bg-[#7979793f]' : 'bg-primary/10',
-                itemIconBoxClass,
+                _itemIconBoxClass,
               ]">
               <img
                 v-if="isImage(file)"
@@ -258,7 +262,7 @@ const hasListActions = computed(() => showViewAction.value || showDownloadAction
                 :class="[
                   sizeClasses.text,
                   variant === 'inline' ? '' : 'text-foreground',
-                  itemNameClass,
+                  _itemNameClass,
                 ]"
                 :title="file.fileName">
                 {{ file.fileName || 'Unnamed File' }}
@@ -269,7 +273,7 @@ const hasListActions = computed(() => showViewAction.value || showDownloadAction
                 :class="[
                   sizeClasses.subtext,
                   variant === 'inline' ? 'opacity-50' : 'text-muted-foreground',
-                  itemSizeClass,
+                  _itemSizeClass,
                 ]">
                 {{ formatSize(file.fileSize) }}
               </span>
@@ -281,7 +285,7 @@ const hasListActions = computed(() => showViewAction.value || showDownloadAction
           <div
             v-if="hasListActions"
             class="vl-attachments-list__item-actions flex items-center shrink-0 ml-2"
-            :class="[size !== 'lg' ? 'gap-0.5' : 'gap-0', itemActionsClass]"
+            :class="[size !== 'lg' ? 'gap-0.5' : 'gap-0', _itemActionsClass]"
             @click.stop>
             <template v-if="variant === 'inline'">
               <Modal
@@ -356,7 +360,7 @@ const hasListActions = computed(() => showViewAction.value || showDownloadAction
     <div
       v-else
       class="vl-attachments-list__empty text-sm text-muted-foreground italic bg-muted/10 p-4 rounded-lg border border-dashed border-border text-center"
-      :class="emptyClass">
+      :class="_emptyClass">
       {{ $t('common.words.noAttachments', 'No attachments found.') }}
     </div>
   </div>
