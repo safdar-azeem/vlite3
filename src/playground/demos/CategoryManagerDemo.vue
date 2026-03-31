@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { CategoryManager, type CategoryItem } from '@/components/CategoryManager'
+import { CategoryManager, type CategoryItem, type RawCategoryItem } from '@/components/CategoryManager'
 import type { IForm } from '@/components/Form'
 import DemoSection from '../DemoSection.vue'
 import Icon from '@/components/Icon.vue'
@@ -34,6 +34,15 @@ const categoryData = ref<CategoryItem[]>([
     ],
   },
 ])
+
+// Flat API array simulation
+const flatApiData = ref<RawCategoryItem[]>([
+  { id: '1', name: 'Vehicles', position: 0 },
+  { id: '2', name: 'Cars', parentId: '1', position: 0, icon: 'lucide:car' },
+  { id: '3', name: 'Motorcycles', parentId: '1', position: 1, icon: 'lucide:bike' },
+  { id: '4', name: 'Sedans', parentId: '2', position: 0 },
+])
+const parsedFlatTree = ref<CategoryItem[]>([])
 
 // Custom form schema for the Advanced Edit modal
 const customFormSchema: IForm[] = [
@@ -134,6 +143,37 @@ const logEvent = (type: string, payload: any) => {
             <div class="flex-1 overflow-y-auto bg-body p-2 rounded">
               <pre class="text-xs text-muted-foreground">{{
                 JSON.stringify(categoryData, null, 2)
+              }}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </DemoSection>
+
+    <DemoSection title="Auto-parsing Flat API Data" :code="sourceCode">
+      <div class="flex flex-col xl:flex-row gap-6">
+        <div class="flex-1 w-full max-w-2xl">
+          <p class="text-sm text-gray-500 mb-4">
+            Pass a flat array using the <code>:rawData</code> prop. The component will automatically compute and 
+            nest the structure based on <code>parentId</code> and <code>position</code> fields.
+            Any modifications inside will emit the normalized nested tree via <code>@update:modelValue</code>.
+          </p>
+          <CategoryManager
+            size="md"
+            :rawData="flatApiData"
+            @update:modelValue="(val) => parsedFlatTree = val" />
+        </div>
+        <div class="w-full xl:w-80! flex flex-col gap-4">
+          <div
+            class="bg-card border border-border rounded-lg p-4 flex-1 flex flex-col min-h-[300px]">
+            <h4
+              class="font-medium text-sm flex items-center gap-2 mb-3 border-b border-border pb-2">
+              <Icon icon="lucide:code" class="w-4 h-4 text-primary" />
+              Computed Output Tree
+            </h4>
+            <div class="flex-1 overflow-y-auto bg-body p-2 rounded">
+              <pre class="text-xs text-muted-foreground">{{
+                JSON.stringify(parsedFlatTree, null, 2)
               }}</pre>
             </div>
           </div>
