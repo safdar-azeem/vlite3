@@ -38,6 +38,18 @@ export const STATUS_MAP: Record<string, StatusConfig> = {
   instock: { variant: 'success', icon: 'lucide:package-check' },
   fulfilled: { variant: 'success', icon: 'lucide:package-check' },
 
+  // ── CRM / Sales / Leads ───────────────────────────────────────────────────
+  prospecting: { variant: 'indigo', icon: 'lucide:search' },
+  qualification: { variant: 'purple', icon: 'lucide:filter' },
+  proposal: { variant: 'cyan', icon: 'lucide:file-text' },
+  negotiation: { variant: 'orange', icon: 'lucide:handshake' },
+  won: { variant: 'success', icon: 'lucide:trophy' },
+  closedwon: { variant: 'success', icon: 'lucide:trophy', label: 'Closed Won' },
+  lost: { variant: 'danger', icon: 'lucide:frown' },
+  closedlost: { variant: 'danger', icon: 'lucide:frown', label: 'Closed Lost' },
+  contacted: { variant: 'blue', icon: 'lucide:message-square' },
+  qualified: { variant: 'success', icon: 'lucide:user-check' },
+
   // ── In Progress / Processing / Transit ─────────────────────────────────────
   inprogress: { variant: 'info', icon: 'lucide:loader-2' },
   processing: { variant: 'info', icon: 'lucide:loader-2' },
@@ -70,7 +82,7 @@ export const STATUS_MAP: Record<string, StatusConfig> = {
   overdue: { variant: 'orange', icon: 'lucide:alarm-clock' },
   expiring: { variant: 'orange', icon: 'lucide:timer' },
   expiringsoon: { variant: 'orange', icon: 'lucide:timer' },
-  low: { variant: 'orange', icon: 'lucide:arrow-down' },
+  low: { variant: 'secondary', icon: 'lucide:arrow-down' },
   lowstock: { variant: 'orange', icon: 'lucide:package' },
   warning: { variant: 'warning', icon: 'lucide:alert-triangle' },
   late: { variant: 'orange', icon: 'lucide:alarm-clock' },
@@ -98,12 +110,17 @@ export const STATUS_MAP: Record<string, StatusConfig> = {
   void: { variant: 'secondary', icon: 'lucide:ban' },
   refunded: { variant: 'pink', icon: 'lucide:corner-up-left' },
   outofstock: { variant: 'danger', icon: 'lucide:package-x' },
-  lost: { variant: 'danger', icon: 'lucide:x-circle' },
   absent: { variant: 'danger', icon: 'lucide:user-x' },
   offline: { variant: 'secondary', icon: 'lucide:wifi-off' },
   danger: { variant: 'danger', icon: 'lucide:alert-circle' },
   declined: { variant: 'danger', icon: 'lucide:thumbs-down' },
   laidoff: { variant: 'danger', icon: 'lucide:user-minus' },
+
+  // ── Communication & Presence ──────────────────────────────────────────────
+  incoming: { variant: 'blue', icon: 'lucide:arrow-down-left' },
+  outgoing: { variant: 'indigo', icon: 'lucide:arrow-up-right' },
+  missed: { variant: 'danger', icon: 'lucide:phone-missed' },
+  inperson: { variant: 'indigo', icon: 'lucide:users', label: 'In Person' },
 
   // ── Priority / Severity ────────────────────────────────────────────────────
   critical: { variant: 'danger', icon: 'lucide:alert-octagon' },
@@ -134,6 +151,12 @@ export const STATUS_MAP: Record<string, StatusConfig> = {
   unposted: { variant: 'secondary', icon: 'lucide:file-x' },
   settled: { variant: 'success', icon: 'lucide:handshake' },
   voided: { variant: 'secondary', icon: 'lucide:ban' },
+
+  // ── Payment Methods ────────────────────────────────────────────────────────
+  cash: { variant: 'success', icon: 'lucide:banknote' },
+  check: { variant: 'blue', icon: 'lucide:receipt' },
+  card: { variant: 'purple', icon: 'lucide:credit-card' },
+  transfer: { variant: 'cyan', icon: 'lucide:arrow-right-left' },
 
   // ── HR / Recruiting ────────────────────────────────────────────────────────
   hired: { variant: 'success', icon: 'lucide:user-check' },
