@@ -37,10 +37,10 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
       '--invoice-td-valign': 'top'
     }">
     
-    <div class="bg-primary/5" :class="compact ? 'p-6' : 'p-8 sm:p-12'">
-      <div class="flex flex-col md:flex-row justify-between items-start gap-8">
+    <div class="bg-primary/5" :class="compact ? 'p-4' : 'p-6 sm:p-8'">
+      <div class="flex flex-col md:flex-row justify-between items-start gap-6">
         
-        <div class="flex flex-col gap-6 w-full md:w-auto">
+        <div class="flex flex-col gap-4 w-full md:w-auto">
           <div>
             <h1
               class="font-black tracking-tighter uppercase text-primary"
@@ -60,7 +60,7 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
             </div>
           </div>
 
-          <div class="flex flex-wrap gap-8 pt-2">
+          <div class="flex flex-wrap gap-6 pt-2">
             <div v-if="d.issuedDate">
               <p
                 class="font-bold uppercase tracking-widest text-muted-foreground"
@@ -105,13 +105,13 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
       </div>
     </div>
 
-    <div :class="compact ? 'p-6' : 'p-8 sm:p-12'">
+    <div :class="compact ? 'p-4' : 'p-6 sm:p-8'">
       
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div v-if="d.companyInfo">
           <p
             class="font-bold text-primary uppercase tracking-widest border-b-2 border-primary/20 inline-block"
-            :class="compact ? 'text-[10px] mb-2.5 pb-1' : 'text-[11px] mb-3 pb-1'">
+            :class="compact ? 'text-[10px] mb-2 pb-1' : 'text-[11px] mb-2 pb-1'">
             From
           </p>
           <div
@@ -140,7 +140,7 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
         <div v-if="d.customerInfo">
           <p
             class="font-bold text-primary uppercase tracking-widest border-b-2 border-primary/20 inline-block"
-            :class="compact ? 'text-[10px] mb-2.5 pb-1' : 'text-[11px] mb-3 pb-1'">
+            :class="compact ? 'text-[10px] mb-2 pb-1' : 'text-[11px] mb-2 pb-1'">
             Billed To
           </p>
           <div
@@ -166,36 +166,36 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
         </div>
       </div>
 
-      <div :class="compact ? 'mb-8 overflow-x-auto' : 'mb-10 overflow-x-auto'">
+      <div :class="compact ? 'mb-6 overflow-x-auto' : 'mb-8 overflow-x-auto'">
         <table class="invoice-table" :class="compact ? 'text-xs' : 'text-sm'">
           <thead class="invoice-thead tracking-widest" :class="compact ? 'text-[9px]' : 'text-[11px]'">
             <tr>
-              <th scope="col" class="invoice-th">
+              <th scope="col" class="invoice-th font-bold">
                 Product
               </th>
-              <th scope="col" class="invoice-th invoice-text-right">
+              <th scope="col" class="invoice-th invoice-text-right font-bold">
                 Qty
               </th>
               <th
                 v-if="hasSize"
                 scope="col"
-                class="invoice-th invoice-text-right">
+                class="invoice-th invoice-text-right font-bold">
                 Size
               </th>
               <th
                 scope="col"
-                class="invoice-th invoice-text-right">
+                class="invoice-th invoice-text-right font-bold">
                 Price
               </th>
               <th
                 v-if="hasDiscount"
                 scope="col"
-                class="invoice-th invoice-text-right">
+                class="invoice-th invoice-text-right font-bold">
                 Discount
               </th>
               <th
                 scope="col"
-                class="invoice-th invoice-text-right text-primary">
+                class="invoice-th invoice-text-right text-primary font-bold">
                 Total
               </th>
             </tr>
@@ -218,7 +218,8 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
                   </div>
                   <div class="min-w-0 flex-1 space-y-1">
                     <span
-                      class="block font-bold truncate text-foreground"
+                      class="block truncate text-foreground"
+                      :class="compact ? 'font-bold' : 'font-normal text-[13px]'"
                       :title="item.name"
                       >{{ item.name }}</span>
                     <div
@@ -229,27 +230,31 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
                     </div>
                     <span
                       v-if="item.description && !compact"
-                      class="block text-[11px] text-muted-foreground font-medium line-clamp-2 max-w-md whitespace-normal mt-1 leading-relaxed"
+                      class="block text-[10px] text-muted-foreground font-medium line-clamp-2 max-w-md whitespace-normal mt-1 leading-relaxed"
                       >{{ item.description }}</span>
                   </div>
                 </div>
               </td>
               <td
-                class="invoice-td invoice-text-right tabular-nums text-muted-foreground font-semibold">
+                class="invoice-td invoice-text-right tabular-nums text-muted-foreground font-semibold"
+                :class="compact ? '' : 'text-xs'">
                 {{ item.quantity }}
               </td>
               <td
                 v-if="hasSize"
-                class="invoice-td invoice-text-right tabular-nums text-muted-foreground">
+                class="invoice-td invoice-text-right tabular-nums text-muted-foreground"
+                :class="compact ? '' : 'text-xs'">
                 {{ item.size || '-' }}
               </td>
               <td
-                class="invoice-td invoice-text-right tabular-nums text-muted-foreground font-semibold">
+                class="invoice-td invoice-text-right tabular-nums text-muted-foreground font-semibold"
+                :class="compact ? '' : 'text-xs'">
                 <Price :value="item.price" />
               </td>
               <td
                 v-if="hasDiscount"
-                class="invoice-td invoice-text-right tabular-nums text-success font-bold">
+                class="invoice-td invoice-text-right tabular-nums text-success font-bold"
+                :class="compact ? '' : 'text-xs'">
                 <div v-if="item.discount !== undefined" class="flex flex-col items-end">
                   <Price :value="-item.discount" />
                   <span v-if="item.discountLabel" class="text-[9px] uppercase tracking-wider font-extrabold opacity-80 mt-1">{{
@@ -259,7 +264,8 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
                 <span v-else class="text-muted-foreground font-normal">-</span>
               </td>
               <td
-                class="invoice-td invoice-text-right tabular-nums font-bold text-foreground">
+                class="invoice-td invoice-text-right tabular-nums font-bold text-foreground"
+                :class="compact ? '' : 'text-xs'">
                 <Price :value="item.total" />
               </td>
             </tr>
@@ -269,9 +275,9 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
 
       <div
         class="flex flex-col-reverse md:flex-row justify-between items-start"
-        :class="compact ? 'gap-8' : 'gap-12'">
+        :class="compact ? 'gap-6' : 'gap-8'">
         
-        <div class="w-full md:w-1/2 flex flex-col" :class="compact ? 'gap-5' : 'gap-6'">
+        <div class="w-full md:w-1/2 flex flex-col" :class="compact ? 'gap-4' : 'gap-5'">
           
           <div class="flex flex-row flex-wrap gap-4 items-center">
             <div
@@ -297,14 +303,14 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
             </h4>
             <div
               class="text-muted-foreground leading-relaxed max-w-md whitespace-pre-wrap p-4 bg-muted/20 rounded-xl border border-border/50"
-              :class="compact ? 'text-[13px]' : 'text-sm'">
+              :class="compact ? 'text-[13px]' : 'text-xs'">
               {{ d.notes }}
             </div>
           </div>
         </div>
 
         <div class="w-full md:w-[45%] min-w-[280px]">
-          <div class="bg-muted/10 rounded-2xl border border-border/60 shadow-sm" :class="compact ? 'p-5 space-y-3' : 'p-7 space-y-4'">
+          <div class="bg-muted/10 rounded-2xl border border-border/60 shadow-sm" :class="compact ? 'p-4 space-y-2' : 'p-5 space-y-3'">
             <div
               v-for="(total, idx) in d.totals"
               :key="idx"
@@ -333,7 +339,7 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
 
     <div
       class="bg-primary text-primary-foreground flex justify-center font-bold uppercase tracking-widest"
-      :class="compact ? 'py-3 px-6 text-[9px]' : 'py-4 px-8 text-[11px]'">
+      :class="compact ? 'py-2 px-4 text-[9px]' : 'py-3 px-6 text-[11px]'">
       <span v-if="d.footerText">{{ d.footerText }}</span>
       <span v-else>Thank you for your business</span>
     </div>
