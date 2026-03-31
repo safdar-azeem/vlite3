@@ -7,12 +7,27 @@ export interface CategoryItem {
   icon?: string
   description?: string
   children?: CategoryItem[]
+  parentId?: string | number | null
+  position?: number
+  [key: string]: any
+}
+
+export interface RawCategoryItem {
+  id: string | number
+  name?: string
+  title?: string
+  icon?: string
+  position?: number
+  parentId?: string | number | null
+  fullPath?: string
   [key: string]: any
 }
 
 export interface CategoryManagerProps {
   /** The nested array of category items */
   modelValue?: CategoryItem[]
+  /** Optional flat list of items to be auto-converted to a nested tree */
+  rawData?: RawCategoryItem[]
   /** Optional custom form schema for add/edit operations */
   formSchema?: IForm[]
   /** Disable drag-and-drop and mutation actions */
