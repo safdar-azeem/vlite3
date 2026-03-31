@@ -41,7 +41,8 @@ const variants: { value: InvoiceVariant; label: string; description: string }[] 
 const salesInvoice: InvoiceData = {
   brandTitle: 'Invoice',
   brandName: 'Acme Corp.',
-  brandLogo: '',
+  brandLogo:
+    'https://ph-files.imgix.net/0ecf8d00-b87b-4fdb-a497-5c98fcaa4064.avif?auto=compress&codec=mozjpeg&cs=strip&auto=format&w=56&h=56&fit=crop&frame=1&dpr=2',
   companyInfo: {
     name: 'Acme Corp.',
     address: '742 Evergreen Terrace',
@@ -176,6 +177,8 @@ const posInvoice: InvoiceData = {
 const ecomInvoice: InvoiceData = {
   brandTitle: 'Purchase Order',
   brandName: 'TechHub Store',
+  brandLogo:
+    'https://ph-files.imgix.net/0ecf8d00-b87b-4fdb-a497-5c98fcaa4064.avif?auto=compress&codec=mozjpeg&cs=strip&auto=format&w=56&h=56&fit=crop&frame=1&dpr=2',
   companyInfo: {
     name: 'TechHub Online Retail',
     address: 'PO Box 4040',
