@@ -26,7 +26,14 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
 <template>
   <div
     class="v-invoice-v3 bg-body text-foreground border border-border shadow-sm rounded-md overflow-hidden"
-    :class="compact ? 'text-xs' : 'text-sm'">
+    :class="compact ? 'text-xs' : 'text-sm'"
+    :style="{
+      '--invoice-cell-px': compact ? '0.75rem' : '1rem',
+      '--invoice-cell-py': compact ? '0.375rem' : '0.5rem',
+      '--invoice-thead-bg': 'var(--color-muted)',
+      '--invoice-tr-border': '1px solid var(--color-border)',
+      '--invoice-tr-hover-bg': 'color-mix(in oklab, var(--color-muted) 30%, transparent)'
+    }">
     <div
       class="bg-primary flex justify-between items-center text-primary-foreground"
       :class="compact ? 'px-6 py-3' : 'px-6 py-4'">
@@ -102,49 +109,48 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
         </div>
       </div>
 
-      <div class="border border-border rounded">
-        <table class="w-full text-left whitespace-nowrap">
-          <thead
-            class="bg-muted text-muted-foreground uppercase font-semibold border-b border-border text-xs">
+      <div class="border border-border rounded overflow-x-auto">
+        <table class="invoice-table">
+          <thead class="invoice-thead">
             <tr>
-              <th scope="col" :class="compact ? 'px-3 py-1.5' : 'px-4 py-2'">Product</th>
+              <th scope="col" class="invoice-th">Product</th>
               <th
                 scope="col"
-                class="w-16 text-right"
-                :class="compact ? 'px-3 py-1.5' : 'px-4 py-2 w-24'">
+                class="invoice-th invoice-text-right w-16"
+                :class="compact ? 'w-16' : 'w-24'">
                 Qty
               </th>
               <th
                 v-if="hasSize"
                 scope="col"
-                class="text-right w-16"
-                :class="compact ? 'px-3 py-1.5' : 'px-4 py-2 w-20'">
+                class="invoice-th invoice-text-right w-16"
+                :class="compact ? 'w-16' : 'w-20'">
                 Size
               </th>
               <th
                 scope="col"
-                class="text-right"
-                :class="compact ? 'px-3 py-1.5 w-24' : 'px-4 py-2 w-32'">
+                class="invoice-th invoice-text-right"
+                :class="compact ? 'w-24' : 'w-32'">
                 Price
               </th>
               <th
                 v-if="hasDiscount"
                 scope="col"
-                class="text-right"
-                :class="compact ? 'px-3 py-1.5 w-24' : 'px-4 py-2 w-32'">
+                class="invoice-th invoice-text-right"
+                :class="compact ? 'w-24' : 'w-32'">
                 Discount
               </th>
               <th
                 scope="col"
-                class="text-right"
-                :class="compact ? 'px-3 py-1.5 w-24' : 'px-4 py-2 w-32'">
+                class="invoice-th invoice-text-right"
+                :class="compact ? 'w-24' : 'w-32'">
                 Total
               </th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-border text-xs">
-            <tr v-for="(item, index) in d.items" :key="item.id || index" class="hover:bg-muted/30">
-              <td :class="compact ? 'px-3 py-1.5' : 'px-4 py-2'">
+          <tbody class="invoice-tbody text-xs">
+            <tr v-for="(item, index) in d.items" :key="item.id || index" class="invoice-tr group">
+              <td class="invoice-td">
                 <div class="flex items-center gap-2">
                   <div
                     v-if="item.thumbnail"
@@ -171,22 +177,20 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
                   </div>
                 </div>
               </td>
-              <td class="text-right tabular-nums" :class="compact ? 'px-3 py-1.5' : 'px-4 py-2'">
+              <td class="invoice-td invoice-text-right tabular-nums">
                 {{ item.quantity }}
               </td>
               <td
                 v-if="hasSize"
-                class="text-right tabular-nums text-muted-foreground"
-                :class="compact ? 'px-3 py-1.5' : 'px-4 py-2'">
+                class="invoice-td invoice-text-right tabular-nums text-muted-foreground">
                 {{ item.size || '-' }}
               </td>
-              <td class="text-right tabular-nums" :class="compact ? 'px-3 py-1.5' : 'px-4 py-2'">
+              <td class="invoice-td invoice-text-right tabular-nums">
                 <Price :value="item.price" />
               </td>
               <td
                 v-if="hasDiscount"
-                class="text-right tabular-nums text-success/80 font-medium"
-                :class="compact ? 'px-3 py-1.5' : 'px-4 py-2'">
+                class="invoice-td invoice-text-right tabular-nums text-success/80 font-medium">
                 <div v-if="item.discount !== undefined" class="flex flex-col items-end">
                   <Price :value="-item.discount" />
                   <span v-if="item.discountLabel" class="text-[8px] uppercase font-bold">{{
@@ -196,8 +200,7 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
                 <span v-else>-</span>
               </td>
               <td
-                class="text-right tabular-nums font-semibold"
-                :class="compact ? 'px-3 py-1.5' : 'px-4 py-2'">
+                class="invoice-td invoice-text-right tabular-nums font-semibold">
                 <Price :value="item.total" />
               </td>
             </tr>
