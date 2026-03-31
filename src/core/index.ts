@@ -51,6 +51,14 @@ export function createVLite(options: VLiteConfig = {}) {
               ...(configState.components?.attachmentsList || {}),
               ...(options.components.attachmentsList || {}),
             },
+            list: {
+              ...(configState.components?.list || {}),
+              ...(options.components.list || {}),
+            },
+            invoice: {
+              ...(configState.components?.invoice || {}),
+              ...(options.components.invoice || {}),
+            },
           }
         }
       }
