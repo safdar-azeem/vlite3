@@ -105,7 +105,8 @@ const salesInvoice: InvoiceData = {
     { label: 'Tax (GST 10%)', value: 161.12, isTax: true },
     { label: 'Grand Total', value: 1772.32, isGrandTotal: true },
   ],
-  qrcode: 'https://acmecorp.com/invoice/INV-2024-00143',
+  qrcode:
+    'https://the-qrcode-generator.com/wp-content/themes/tqrcg/new_widget/assets/templates-with-watermark/watermark-template-1.svg',
   barcode: 'INV-2024-00143',
   notes:
     'Payment received. Thank you for choosing Acme Corp.!\nFor questions, contact billing@acmecorp.com.',
@@ -162,7 +163,8 @@ const posInvoice: InvoiceData = {
     { label: 'Service Charge (10%)', value: 7.35, isTax: true },
     { label: 'Total', value: 80.85, isGrandTotal: true },
   ],
-  qrcode: 'https://bellavistacafe.com/receipt/RCP-000892',
+  qrcode:
+    'https://the-qrcode-generator.com/wp-content/themes/tqrcg/new_widget/assets/templates-with-watermark/watermark-template-1.svg',
   barcode: 'RCP000892',
   notes: 'Thank you for dining with us! ♡',
   footerText: 'bellavistacafe.com · Open 7 days · 10am – 11pm',
@@ -188,6 +190,7 @@ const ecomInvoice: InvoiceData = {
   status: 'Processing',
   issuedDate: new Date('2024-07-15'),
   dueDate: new Date('2024-07-22'),
+
   customerInfo: {
     name: 'Sarah L. Kim',
     address: '88 Tech Street, Apt 4B',
@@ -239,7 +242,8 @@ const ecomInvoice: InvoiceData = {
     { label: 'Total Due', value: 2690.62, isGrandTotal: true },
   ],
   barcode: 'PO20240715-0028',
-  qrcode: 'https://techhub.store/orders/PO-20240715-0028',
+  qrcode:
+    'https://the-qrcode-generator.com/wp-content/themes/tqrcg/new_widget/assets/templates-with-watermark/watermark-template-1.svg',
   notes: 'Expected delivery: 3–5 business days. Track your order at techhub.store/track',
   footerText: 'Returns accepted within 30 days · support@techhub.store · 1-800-TECHHUB',
 }
@@ -324,7 +328,8 @@ const serviceInvoice: InvoiceData = {
     { label: 'Tax (NY State 8.875%)', value: 1235.49, isTax: true },
     { label: 'Outstanding Balance', value: 11155.49, isGrandTotal: true },
   ],
-  qrcode: 'https://pixelcode.studio/invoices/SVC-2024-0088',
+  qrcode:
+    'https://the-qrcode-generator.com/wp-content/themes/tqrcg/new_widget/assets/templates-with-watermark/watermark-template-1.svg',
   barcode: 'SVC2024-0088',
   notes:
     'Payment due within 30 days of invoice date. Wire transfer or Stripe accepted.\nBank: Chase · Account: 4001-2234-56 · Routing: 021000021',
@@ -368,6 +373,18 @@ const invoicePropsFields = [
     type: "'Variant1' | 'Variant2' | 'Variant3' | 'Variant4'",
     default: "'Variant1'",
     desc: 'Selects the visual layout of the invoice.',
+  },
+  {
+    name: 'compact',
+    type: 'boolean',
+    default: 'false',
+    desc: 'Reduces padding and typography scale for print output.',
+  },
+  {
+    name: 'displayBarcodeValue',
+    type: 'boolean',
+    default: 'false',
+    desc: 'Toggles whether to show the textual value beneath the barcode.',
   },
 ]
 
@@ -459,7 +476,6 @@ const invoiceLineItemFields = [
 
 <template>
   <div class="space-y-12 pb-20">
-    <!-- Page Heading -->
     <div class="space-y-4 pb-8 border-b border-border/50">
       <h2 class="text-3xl font-extrabold tracking-tight lg:text-4xl text-foreground">Invoice</h2>
       <p class="text-lg text-muted-foreground w-full max-w-[80%]">
@@ -470,13 +486,10 @@ const invoiceLineItemFields = [
       </p>
     </div>
 
-    <!-- ── Section 1: All Variants interactive preview ── -->
     <DemoSection title="Variants" :code="sourceCode">
       <div class="w-full space-y-8">
-        <!-- Controls Row -->
         <div
           class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between border border-border rounded-xl bg-muted/30 px-5 py-4">
-          <!-- Variant Switcher -->
           <div class="flex flex-col gap-1.5">
             <label class="text-xs font-semibold text-muted-foreground uppercase tracking-wider"
               >Variant</label
@@ -500,7 +513,6 @@ const invoiceLineItemFields = [
             </p>
           </div>
 
-          <!-- Scenario Switcher -->
           <div class="flex flex-col gap-1.5">
             <label class="text-xs font-semibold text-muted-foreground uppercase tracking-wider"
               >Scenario</label
@@ -522,14 +534,12 @@ const invoiceLineItemFields = [
           </div>
         </div>
 
-        <!-- Invoice Preview -->
         <div class="w-full">
           <Invoice :data="scenarioDataMap[selectedScenario]" :variant="selectedVariant" />
         </div>
       </div>
     </DemoSection>
 
-    <!-- ── Section 2: All 4 Variants side-by-side with same data ── -->
     <DemoSection title="All Variants — Sales Invoice" :code="sourceCode">
       <div class="w-full grid grid-cols-1 gap-10">
         <div v-for="v in variants" :key="v.value" class="space-y-3">
@@ -545,28 +555,23 @@ const invoiceLineItemFields = [
       </div>
     </DemoSection>
 
-    <!-- ── Section 3: POS / Receipt ── -->
     <DemoSection title="POS &amp; Restaurant Receipt (Variant 2)" :code="sourceCode">
       <div class="flex justify-center w-full">
         <Invoice :data="posInvoice" variant="Variant2" />
       </div>
     </DemoSection>
 
-    <!-- ── Section 4: E-commerce — Compact Table ── -->
     <DemoSection title="E-commerce / Purchase Order (Variant 3)" :code="sourceCode">
       <Invoice :data="ecomInvoice" variant="Variant3" />
     </DemoSection>
 
-    <!-- ── Section 5: Service / Freelance — Bold Brand ── -->
     <DemoSection title="Service / Freelance Invoice (Variant 4)" :code="sourceCode">
       <Invoice :data="serviceInvoice" variant="Variant4" compact />
     </DemoSection>
 
-    <!-- ── Section 6: API Reference ── -->
     <section class="space-y-6 pt-4">
       <h3 class="text-xl font-bold">API Reference</h3>
 
-      <!-- InvoiceProps -->
       <div>
         <h4 class="text-base font-semibold mb-3">InvoiceProps</h4>
         <div class="overflow-x-auto rounded-xl border border-border">
@@ -591,7 +596,6 @@ const invoiceLineItemFields = [
         </div>
       </div>
 
-      <!-- InvoiceData -->
       <div>
         <h4 class="text-base font-semibold mb-3">InvoiceData</h4>
         <div class="overflow-x-auto rounded-xl border border-border">
@@ -614,7 +618,6 @@ const invoiceLineItemFields = [
         </div>
       </div>
 
-      <!-- InvoiceTotal -->
       <div>
         <h4 class="text-base font-semibold mb-3">InvoiceTotal</h4>
         <div class="overflow-x-auto rounded-xl border border-border">
@@ -637,7 +640,6 @@ const invoiceLineItemFields = [
         </div>
       </div>
 
-      <!-- InvoiceLineItem -->
       <div>
         <h4 class="text-base font-semibold mb-3">InvoiceLineItem</h4>
         <div class="overflow-x-auto rounded-xl border border-border">
