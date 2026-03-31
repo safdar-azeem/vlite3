@@ -52,6 +52,21 @@ The `status` value is normalized before lookup: lowercased, and all `-`, `_`, an
 | `authorized`       | `success` |
 | `unauthorized`     | `danger`  |
 
+**CRM & Sales**
+
+| Status value   | Variant    |
+| :------------- | :--------- |
+| `prospecting`  | `indigo`   |
+| `qualification`| `purple`   |
+| `proposal`     | `cyan`     |
+| `negotiation`  | `orange`   |
+| `contacted`    | `blue`     |
+| `qualified`    | `success`  |
+| `won`          | `success`  |
+| `lost`          | `danger`   |
+| `closed_won`   | `success`  |
+| `closed_lost`  | `danger`   |
+
 **Orders & Fulfillment**
 
 | Status value    | Variant   |
@@ -86,6 +101,17 @@ The `status` value is normalized before lookup: lowercased, and all `-`, `_`, an
 | `promoted`     | `success`  |
 | `relocated`    | `cyan`     |
 
+**Communication & Presence**
+
+| Status value   | Variant    |
+| :------------- | :--------- |
+| `incoming`     | `blue`     |
+| `outgoing`     | `indigo`   |
+| `missed`       | `danger`   |
+| `online`       | `success`  |
+| `offline`      | `secondary`|
+| `in_person`    | `indigo`   |
+
 **Inventory & Stock**
 
 | Status value    | Variant   |
@@ -96,6 +122,15 @@ The `status` value is normalized before lookup: lowercased, and all `-`, `_`, an
 | `available`     | `success` |
 | `fulfilled`     | `success` |
 | `archived`      | `secondary`|
+
+**Payment Methods**
+
+| Status value   | Variant    |
+| :------------- | :--------- |
+| `cash`         | `success`  |
+| `check`        | `blue`     |
+| `card`         | `purple`   |
+| `transfer`     | `cyan`     |
 
 **Tasks & Approvals**
 
@@ -119,7 +154,7 @@ The `status` value is normalized before lookup: lowercased, and all `-`, `_`, an
 | `normal`             | `secondary`|
 | `minor`              | `secondary`|
 | `trivial`            | `secondary`|
-| `low`                | `orange` / `secondary` | 
+| `low`                | `secondary`|
 
 **Boolean & Logic**
 
