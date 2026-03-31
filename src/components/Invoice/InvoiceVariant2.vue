@@ -13,8 +13,10 @@ const props = withDefaults(
     data: InvoiceData
     /** Reduces padding, spacing, and font sizes for print-friendly output */
     compact?: boolean
+    /** Toggles the display of the barcode text value underneath the bars */
+    displayBarcodeValue?: boolean
   }>(),
-  { compact: false }
+  { compact: false, displayBarcodeValue: false }
 )
 
 const d = computed(() => props.data)
@@ -60,7 +62,6 @@ const d = computed(() => props.data)
 
     <div class="border-t border-dashed border-gray-300" :class="compact ? 'mx-3' : 'mx-6'"></div>
 
-    <!-- Receipt metadata -->
     <div :class="compact ? 'px-3 py-2 space-y-1 text-sm' : 'px-6 py-4 space-y-1.5 text-sm'">
       <div class="flex justify-between">
         <span class="text-gray-500 font-medium">Receipt #</span>
@@ -84,7 +85,6 @@ const d = computed(() => props.data)
 
     <div class="border-t border-dashed border-gray-300" :class="compact ? 'mx-3' : 'mx-6'"></div>
 
-    <!-- Items List -->
     <div :class="compact ? 'px-3 py-2' : 'px-6 py-4'">
       <div
         class="flex justify-between font-semibold text-gray-500 uppercase tracking-wider"
@@ -137,7 +137,6 @@ const d = computed(() => props.data)
 
     <div class="border-t border-dashed border-gray-300" :class="compact ? 'mx-3' : 'mx-6'"></div>
 
-    <!-- Totals -->
     <div :class="compact ? 'px-3 py-2 space-y-1' : 'px-6 py-4 space-y-1'">
       <div
         v-for="(total, idx) in d.totals"
@@ -159,22 +158,21 @@ const d = computed(() => props.data)
 
     <div class="border-t border-dashed border-gray-300" :class="compact ? 'mx-3' : 'mx-6'"></div>
 
-    <!-- Footer Content -->
     <div :class="compact ? 'px-3 py-3 text-center space-y-3' : 'px-6 py-6 text-center space-y-4'">
-      <div class="flex flex-col items-center justify-center" :class="compact ? 'gap-1' : 'gap-2'">
+      
+      <div class="flex flex-row flex-wrap items-center justify-center gap-3">
         <div v-if="d.qrcode" class="p-1 bg-white border border-gray-200 rounded">
-          <QRCode :text="d.qrcode" :size="compact ? 64 : 96" />
+          <QRCode :value="d.qrcode" :size="compact ? 48 : 64" />
         </div>
         <div
           v-if="d.barcode"
-          :class="
-            compact ? 'inline-block overflow-hidden' : 'scale-90 inline-block overflow-hidden'
-          ">
+          class="bg-white p-1 rounded border border-gray-200 overflow-hidden">
           <Barcode
             :value="d.barcode"
             format="CODE128"
-            :height="compact ? 28 : 40"
-            :width="compact ? 1.0 : 1.2" />
+            :height="compact ? 24 : 32"
+            :width="compact ? 1.0 : 1.2" 
+            :display-value="displayBarcodeValue" />
         </div>
       </div>
 
