@@ -1,6 +1,7 @@
 import { EmptyVariant } from '@/components/Empty'
 import type { InputVariant, InputSize, InputRounded } from './form.type'
 import type { ChipVariant } from '@/components/Chip/types'
+import type { AttachmentsListProps } from '@/components/AttachmentsList/types'
 
 /**
  * Interface for the file upload handler function.
@@ -105,5 +106,6 @@ export interface VLiteConfig {
       hideIcon?: boolean
       customStatuses?: Record<string, CustomStatusConfig>
     }
+    attachmentsList?: Omit<AttachmentsListProps, 'attachments'>
   }
 }
