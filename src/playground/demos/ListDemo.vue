@@ -198,6 +198,31 @@ const isLoading = ref(true)
 setTimeout(() => {
   isLoading.value = false
 }, 2500)
+
+// ── Line by line layout demo ───────────────────────────────────────────────
+const lineByLineDemoFields: ListField[] = [
+  { key: 'name', title: 'Full Name', icon: 'lucide:user' },
+  { key: 'email', title: 'Email', icon: 'lucide:mail' },
+  {
+    key: 'objective',
+    title: 'Objective (lineByLine: true)',
+    lineByLine: true,
+    icon: 'lucide:target',
+  },
+  {
+    key: 'location.address',
+    title: 'Address (lineByLine: true, lineByLineLayout: "inline")',
+    lineByLine: true,
+    lineByLineLayout: 'inline',
+    icon: 'lucide:map-pin',
+  },
+  {
+    key: 'industry',
+    title: 'Industry (lineByLineLayout: "block")',
+    lineByLineLayout: 'block',
+    icon: 'lucide:building',
+  },
+]
 </script>
 
 <template>
@@ -410,6 +435,21 @@ setTimeout(() => {
           :columns="1"
           :show-colon="false"
           variant="minimal" />
+      </div>
+    </DemoSection>
+
+    <!-- ── Line by Line Layout ─────────────────────────────────── -->
+    <DemoSection title="Line-by-Line Layout Control" :code="sourceCode">
+      <div class="max-w-2xl space-y-4">
+        <p class="text-xs text-muted-foreground italic">
+          Demonstrates how <code>lineByLineLayout</code> can force full-width items to be inline or
+          column items to be stacked.
+        </p>
+        <List
+          :fields="lineByLineDemoFields"
+          :data="customer"
+          title="Layout Customization"
+          :columns="2" />
       </div>
     </DemoSection>
   </div>
