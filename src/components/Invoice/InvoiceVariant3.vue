@@ -5,14 +5,17 @@ import { Price } from '../Price'
 import { DateTime } from '../DateTime'
 import { getStatusColorClass } from '@/utils/status'
 import { QRCode } from '../QRCode'
+import { Barcode } from '../Barcode'
 
 const props = withDefaults(
   defineProps<{
     data: InvoiceData
     /** Reduces padding, spacing, and font sizes for print-friendly output */
     compact?: boolean
+    /** Toggles the display of the barcode text value underneath the bars */
+    displayBarcodeValue?: boolean
   }>(),
-  { compact: false }
+  { compact: false, displayBarcodeValue: false }
 )
 
 const d = computed(() => props.data)
@@ -24,7 +27,6 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
   <div
     class="v-invoice-v3 bg-body text-foreground border border-border shadow-sm rounded-md overflow-hidden"
     :class="compact ? 'text-xs' : 'text-sm'">
-    <!-- Top Bar -->
     <div
       class="bg-primary flex justify-between items-center text-primary-foreground"
       :class="compact ? 'px-6 py-3' : 'px-6 py-4'">
@@ -46,7 +48,6 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
 
     <div :class="compact ? 'p-4 space-y-4' : 'p-6 space-y-6'">
       <div class="grid grid-cols-1 md:grid-cols-3" :class="compact ? 'gap-4' : 'gap-6'">
-        <!-- Brand Info -->
         <div>
           <div v-if="d.brandLogo" :class="compact ? 'h-7 mb-2' : 'h-8 mb-3'">
             <img :src="d.brandLogo" :alt="d.brandName" class="h-full object-contain" />
@@ -61,7 +62,6 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
           </div>
         </div>
 
-        <!-- Billed To -->
         <div v-if="d.customerInfo">
           <h4 class="font-semibold text-muted-foreground uppercase tracking-wider text-xs mb-1">
             Billed To
@@ -76,7 +76,6 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
           </div>
         </div>
 
-        <!-- Dates & Codes -->
         <div class="flex flex-col md:items-end" :class="compact ? 'space-y-1' : 'space-y-2'">
           <div v-if="d.issuedDate" class="flex gap-2">
             <span class="text-muted-foreground font-medium text-xs">Date:</span>
@@ -86,13 +85,23 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
             <span class="text-muted-foreground font-medium text-xs">Due:</span>
             <DateTime :value="d.dueDate" type="date" class="font-semibold text-xs" />
           </div>
-          <div v-if="d.qrcode" :class="compact ? 'mt-1 text-right' : 'mt-2 text-right'">
-            <QRCode :text="d.qrcode" :size="compact ? 56 : 64" />
+          
+          <div v-if="d.qrcode || d.barcode" class="flex items-center justify-end gap-2" :class="compact ? 'mt-1' : 'mt-2'">
+            <div v-if="d.qrcode" class="p-1 bg-white border border-border/50 rounded shadow-sm">
+              <QRCode :value="d.qrcode" :size="compact ? 40 : 48" />
+            </div>
+            <div v-if="d.barcode" class="p-1 bg-white border border-border/50 rounded shadow-sm">
+              <Barcode
+                :value="d.barcode"
+                format="CODE128"
+                :height="compact ? 20 : 26"
+                :width="compact ? 1 : 1.2"
+                :display-value="displayBarcodeValue" />
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Compact Table -->
       <div class="border border-border rounded">
         <table class="w-full text-left whitespace-nowrap">
           <thead
@@ -195,7 +204,6 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
           </tbody>
         </table>
 
-        <!-- Compact Totals -->
         <div
           class="bg-muted/30 border-t border-border flex justify-end"
           :class="compact ? 'p-3' : 'p-4'">
