@@ -6,11 +6,12 @@ import { Form, type IForm } from '@/components/Form'
 import Button from '@/components/Button.vue'
 import Icon from '@/components/Icon.vue'
 import IconPicker from '@/components/IconPicker.vue'
-import type { CategoryItem, CategoryManagerProps, CategoryManagerContext, InlineState } from './types'
+import type { CategoryItem, RawCategoryItem, CategoryManagerProps, CategoryManagerContext, InlineState } from './types'
 import { getUniqueId } from '@/utils'
 
 const props = withDefaults(defineProps<CategoryManagerProps>(), {
   modelValue: () => [],
+  rawData: undefined,
   readonly: false,
   emptyTitle: 'No Categories Found',
   emptyDescription: 'Get started by creating your first category.',
@@ -31,12 +32,75 @@ const expandedIds = ref<Set<string | number>>(new Set())
 
 const clone = (obj: any) => JSON.parse(JSON.stringify(obj))
 
-const ensureChildren = (list: CategoryItem[]) => {
-  list.forEach((item) => {
+// Recursively populates parentId, position, and ensures children array exists
+const ensureMeta = (list: CategoryItem[], parentId: string | number | null = null) => {
+  list.forEach((item, index) => {
+    item.parentId = parentId
+    item.position = index
     if (!item.children) item.children = []
-    ensureChildren(item.children)
+    ensureMeta(item.children, item.id)
   })
 }
+
+// Helper to auto-build tree from a flat API array
+const buildTreeFromRaw = (items: RawCategoryItem[]): CategoryItem[] => {
+  const itemMap = new Map<string | number, CategoryItem>()
+  const rootItems: CategoryItem[] = []
+
+  // First pass: initialize all items and normalize name to title
+  items.forEach((item) => {
+    itemMap.set(item.id, {
+      ...item,
+      id: item.id,
+      title: item.name || item.title || 'Untitled',
+      icon: item.icon,
+      parentId: item.parentId || null,
+      position: item.position ?? 0,
+      children: [],
+    })
+  })
+
+  // Second pass: attach to parents
+  items.forEach((item) => {
+    const currentItem = itemMap.get(item.id)
+    if (!currentItem) return
+
+    if (item.parentId && itemMap.has(item.parentId)) {
+      itemMap.get(item.parentId)!.children!.push(currentItem)
+    } else {
+      rootItems.push(currentItem)
+    }
+  })
+
+  // Third pass: sort by original explicit positions
+  const sortRecursive = (nodes: CategoryItem[]) => {
+    nodes.sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+    nodes.forEach((node) => {
+      if (node.children) sortRecursive(node.children)
+    })
+  }
+  sortRecursive(rootItems)
+
+  return rootItems
+}
+
+watch(
+  () => props.rawData,
+  (newRaw) => {
+    if (newRaw && newRaw.length > 0) {
+      const newTree = buildTreeFromRaw(newRaw)
+      ensureMeta(newTree)
+      const newString = JSON.stringify(newTree)
+      const oldString = JSON.stringify(internalData.value)
+      if (newString !== oldString) {
+        const cloned = clone(newTree)
+        internalData.value = cloned
+        emit('update:modelValue', cloned)
+      }
+    }
+  },
+  { immediate: true, deep: true }
+)
 
 watch(
   () => props.modelValue,
@@ -44,9 +108,9 @@ watch(
     // Stringify check prevents re-cloning if the parent just emitted what we already have.
     const newString = JSON.stringify(newVal)
     const oldString = JSON.stringify(internalData.value)
-    if (newString !== oldString) {
+    if (newString !== oldString && newVal.length > 0) {
       const cloned = clone(newVal)
-      ensureChildren(cloned)
+      ensureMeta(cloned)
       internalData.value = cloned
     }
   },
@@ -54,6 +118,7 @@ watch(
 )
 
 const emitUpdate = (isReorder = false) => {
+  ensureMeta(internalData.value)
   const cloned = clone(internalData.value)
   emit('update:modelValue', cloned)
   if (isReorder) {
@@ -102,18 +167,18 @@ const saveInline = () => {
   if (!title.trim()) return
 
   const currentData = [...internalData.value]
+  let newItem: CategoryItem | null = null
 
   if (mode === 'add-root') {
-    const newItem: CategoryItem = { id: getUniqueId(), title, icon, children: [] }
+    newItem = { id: getUniqueId(), title, icon, children: [] }
     currentData.push(newItem)
-    emit('onAdd', newItem)
   } else if (mode === 'add-child') {
-    const newItem: CategoryItem = { id: getUniqueId(), title, icon, children: [] }
+    newItem = { id: getUniqueId(), title, icon, children: [] }
     const addRecursive = (list: CategoryItem[]) => {
       for (const i of list) {
         if (i.id === targetId) {
           if (!i.children) i.children = []
-          i.children.push(newItem)
+          i.children.push(newItem!)
           return true
         }
         if (i.children && addRecursive(i.children)) return true
@@ -121,7 +186,11 @@ const saveInline = () => {
       return false
     }
     addRecursive(currentData)
-    emit('onAdd', newItem)
+  }
+
+  if (newItem) {
+    ensureMeta(currentData) // Populates parentId and position
+    emit('onAdd', clone(newItem))
   }
 
   internalData.value = currentData
@@ -167,11 +236,14 @@ const openModalForm = (
 const handleFormSubmit = async (payload: any) => {
   const values = payload?.values || payload
   const currentData = [...internalData.value]
+  let emittedItem: CategoryItem | null = null
+  let eventName: 'onAdd' | 'onEdit' | null = null
 
   if (modalMode.value === 'add') {
     const newItem: CategoryItem = { id: getUniqueId(), children: [], ...values }
     currentData.push(newItem)
-    emit('onAdd', newItem)
+    emittedItem = newItem
+    eventName = 'onAdd'
   } else if (modalMode.value === 'add-child') {
     const newItem: CategoryItem = { id: getUniqueId(), children: [], ...values }
     const addRecursive = (list: CategoryItem[]) => {
@@ -187,13 +259,15 @@ const handleFormSubmit = async (payload: any) => {
       return false
     }
     addRecursive(currentData)
-    emit('onAdd', newItem)
+    emittedItem = newItem
+    eventName = 'onAdd'
   } else if (modalMode.value === 'edit' && activeItem.value) {
     const id = activeItem.value.id
     const updateRecursive = (list: CategoryItem[]) => {
       const index = list.findIndex((i) => i.id === id)
       if (index > -1) {
         list[index] = { ...list[index], ...values }
+        emittedItem = list[index]
         return true
       }
       for (const i of list) {
@@ -202,7 +276,17 @@ const handleFormSubmit = async (payload: any) => {
       return false
     }
     updateRecursive(currentData)
-    emit('onEdit', { ...activeItem.value, ...values })
+    eventName = 'onEdit'
+  }
+
+  ensureMeta(currentData) // Populates parentId and position
+  
+  if (emittedItem) {
+    if (eventName === 'onAdd') {
+      emit('onAdd', clone(emittedItem))
+    } else if (eventName === 'onEdit') {
+      emit('onEdit', clone(emittedItem))
+    }
   }
 
   internalData.value = currentData
@@ -230,8 +314,11 @@ const handleDelete = (item: CategoryItem) => {
   
   const currentData = [...internalData.value]
   deleteRecursive(currentData)
+  ensureMeta(currentData) // Re-calculate tree positions post-deletion
   internalData.value = currentData
-  emit('onDelete', item)
+  
+  // Emit the clone of the deleted item (still retains its original parentId and position)
+  emit('onDelete', clone(item))
   emitUpdate()
 }
 
