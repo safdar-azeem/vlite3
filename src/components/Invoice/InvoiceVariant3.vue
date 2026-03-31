@@ -3,9 +3,10 @@ import { computed } from 'vue'
 import type { InvoiceData } from './types'
 import { Price } from '../Price'
 import { DateTime } from '../DateTime'
-import { getStatusColorClass } from '@/utils/status'
 import { QRCode } from '../QRCode'
 import { Barcode } from '../Barcode'
+import Avatar from '../Avatar.vue'
+import StatusChip from '../StatusChip/StatusChip.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -25,7 +26,7 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
 
 <template>
   <div
-    class="v-invoice-v3 bg-body text-foreground border border-border shadow-sm rounded-md overflow-hidden"
+    class="v-invoice-v3 bg-background text-foreground border border-border rounded-lg overflow-hidden"
     :class="compact ? 'text-xs' : 'text-sm'"
     :style="{
       '--invoice-cell-px': compact ? '0.75rem' : '1rem',
@@ -34,47 +35,67 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
       '--invoice-tr-border': '1px solid var(--color-border)',
       '--invoice-tr-hover-bg': 'color-mix(in oklab, var(--color-muted) 30%, transparent)'
     }">
+
+    <!-- Top bar: brand header -->
     <div
       class="bg-primary flex justify-between items-center text-primary-foreground"
-      :class="compact ? 'px-6 py-3' : 'px-6 py-4'">
-      <div class="flex items-center gap-2">
-        <span
-          class="font-bold uppercase tracking-wider"
-          :class="compact ? 'text-base' : 'text-lg'"
-          >{{ d.brandTitle || 'Invoice' }}</span
-        >
-        <span class="opacity-80">#{{ d.invoiceNumber }}</span>
+      :class="compact ? 'px-5 py-2.5' : 'px-6 py-3.5'">
+      <div class="flex items-center gap-3">
+        <!-- Brand logo + name inline -->
+        <div v-if="d.brandLogo" class="shrink-0">
+          <Avatar
+            :src="d.brandLogo"
+            :alt="d.brandName"
+            :class="compact ? 'h-7 w-7' : 'h-8 w-8'"
+            rounded="sm" />
+        </div>
+        <div class="flex flex-col leading-tight">
+          <span
+            v-if="d.brandName"
+            class="font-bold text-primary-foreground leading-tight"
+            :class="compact ? 'text-sm' : 'text-base'">
+            {{ d.brandName }}
+          </span>
+          <span
+            v-if="d.brandTitle"
+            class="opacity-75 font-medium"
+            :class="compact ? 'text-[10px]' : 'text-xs'">
+            {{ d.brandTitle }}
+          </span>
+        </div>
       </div>
-      <span
-        v-if="d.status"
-        class="font-bold uppercase tracking-widest text-xs"
-        :class="getStatusColorClass(d.status)">
-        {{ d.status }}
-      </span>
+      <div class="flex items-center gap-3">
+        <span class="opacity-80 font-medium" :class="compact ? 'text-xs' : 'text-sm'">#{{ d.invoiceNumber }}</span>
+        <StatusChip v-if="d.status" :status="d.status" hide-icon size="small" />
+      </div>
     </div>
 
-    <div :class="compact ? 'p-4 space-y-4' : 'p-6 space-y-6'">
-      <div class="grid grid-cols-1 md:grid-cols-3" :class="compact ? 'gap-4' : 'gap-6'">
-        <div>
-          <div v-if="d.brandLogo" :class="compact ? 'h-7 mb-2' : 'h-8 mb-3'">
-            <img :src="d.brandLogo" :alt="d.brandName" class="h-full object-contain" />
-          </div>
-          <h3 class="font-bold text-sm">{{ d.brandName }}</h3>
-          <div v-if="d.companyInfo" class="mt-1 text-muted-foreground space-y-0.5 text-xs">
+    <div :class="compact ? 'p-4 space-y-4' : 'p-5 space-y-5'">
+      <!-- Party info + dates row -->
+      <div class="grid grid-cols-1 md:grid-cols-3" :class="compact ? 'gap-3' : 'gap-5'">
+        <!-- Company info -->
+        <div v-if="d.companyInfo">
+          <p class="text-muted-foreground uppercase tracking-widest font-semibold mb-1.5" :class="compact ? 'text-[9px]' : 'text-[10px]'">
+            From
+          </p>
+          <p class="font-bold text-foreground" :class="compact ? 'text-xs' : 'text-sm'">{{ d.companyInfo.name || d.brandName }}</p>
+          <div class="mt-0.5 text-muted-foreground space-y-0.5 text-xs">
             <p v-if="d.companyInfo.address">{{ d.companyInfo.address }}</p>
             <p v-if="d.companyInfo.city">
               {{ d.companyInfo.city }}, {{ d.companyInfo.state }} {{ d.companyInfo.zip }}
             </p>
             <p v-if="d.companyInfo.country">{{ d.companyInfo.country }}</p>
+            <p v-if="d.companyInfo.email" class="pt-0.5">{{ d.companyInfo.email }}</p>
           </div>
         </div>
 
+        <!-- Customer info -->
         <div v-if="d.customerInfo">
-          <h4 class="font-semibold text-muted-foreground uppercase tracking-wider text-xs mb-1">
+          <p class="text-muted-foreground uppercase tracking-widest font-semibold mb-1.5" :class="compact ? 'text-[9px]' : 'text-[10px]'">
             Billed To
-          </h4>
-          <p class="font-semibold text-sm">{{ d.customerInfo.name }}</p>
-          <div class="mt-1 text-muted-foreground space-y-0.5 text-xs">
+          </p>
+          <p class="font-bold text-foreground" :class="compact ? 'text-xs' : 'text-sm'">{{ d.customerInfo.name }}</p>
+          <div class="mt-0.5 text-muted-foreground space-y-0.5 text-xs">
             <p v-if="d.customerInfo.address">{{ d.customerInfo.address }}</p>
             <p v-if="d.customerInfo.city">
               {{ d.customerInfo.city }}, {{ d.customerInfo.state }} {{ d.customerInfo.zip }}
@@ -83,21 +104,21 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
           </div>
         </div>
 
-        <div class="flex flex-col md:items-end" :class="compact ? 'space-y-1' : 'space-y-2'">
-          <div v-if="d.issuedDate" class="flex gap-2">
-            <span class="text-muted-foreground font-medium text-xs">Date:</span>
-            <DateTime :value="d.issuedDate" type="date" class="font-semibold text-xs" />
+        <!-- Dates + codes -->
+        <div class="flex flex-col md:items-end gap-2">
+          <div v-if="d.issuedDate" class="flex gap-2 items-center">
+            <span class="text-muted-foreground font-medium text-xs">Issued:</span>
+            <DateTime :value="d.issuedDate" type="date" class="font-semibold text-xs text-foreground" />
           </div>
-          <div v-if="d.dueDate" class="flex gap-2">
+          <div v-if="d.dueDate" class="flex gap-2 items-center">
             <span class="text-muted-foreground font-medium text-xs">Due:</span>
-            <DateTime :value="d.dueDate" type="date" class="font-semibold text-xs" />
+            <DateTime :value="d.dueDate" type="date" class="font-semibold text-xs text-foreground" />
           </div>
-          
-          <div v-if="d.qrcode || d.barcode" class="flex items-center justify-end gap-2" :class="compact ? 'mt-1' : 'mt-2'">
-            <div v-if="d.qrcode" class="p-1 bg-white border border-border/50 rounded shadow-sm">
+          <div v-if="d.qrcode || d.barcode" class="flex items-center justify-end gap-2 mt-1">
+            <div v-if="d.qrcode" class="p-1 bg-white border border-border rounded shadow-sm">
               <QRCode :value="d.qrcode" :size="compact ? 40 : 48" />
             </div>
-            <div v-if="d.barcode" class="p-1 bg-white border border-border/50 rounded shadow-sm">
+            <div v-if="d.barcode" class="p-1 bg-white border border-border rounded shadow-sm overflow-hidden">
               <Barcode
                 :value="d.barcode"
                 format="CODE128"
@@ -109,57 +130,32 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
         </div>
       </div>
 
-      <div class="border border-border rounded overflow-x-auto">
+      <!-- Items table -->
+      <div class="border border-border rounded-md overflow-x-auto">
         <table class="invoice-table">
           <thead class="invoice-thead">
             <tr>
               <th scope="col" class="invoice-th">Product</th>
-              <th
-                scope="col"
-                class="invoice-th invoice-text-right w-16"
-                :class="compact ? 'w-16' : 'w-24'">
-                Qty
-              </th>
-              <th
-                v-if="hasSize"
-                scope="col"
-                class="invoice-th invoice-text-right w-16"
-                :class="compact ? 'w-16' : 'w-20'">
-                Size
-              </th>
-              <th
-                scope="col"
-                class="invoice-th invoice-text-right"
-                :class="compact ? 'w-24' : 'w-32'">
-                Price
-              </th>
-              <th
-                v-if="hasDiscount"
-                scope="col"
-                class="invoice-th invoice-text-right"
-                :class="compact ? 'w-24' : 'w-32'">
-                Discount
-              </th>
-              <th
-                scope="col"
-                class="invoice-th invoice-text-right"
-                :class="compact ? 'w-24' : 'w-32'">
-                Total
-              </th>
+              <th scope="col" class="invoice-th invoice-text-right" :class="compact ? 'w-14' : 'w-20'">Qty</th>
+              <th v-if="hasSize" scope="col" class="invoice-th invoice-text-right" :class="compact ? 'w-14' : 'w-20'">Size</th>
+              <th scope="col" class="invoice-th invoice-text-right" :class="compact ? 'w-20' : 'w-28'">Price</th>
+              <th v-if="hasDiscount" scope="col" class="invoice-th invoice-text-right" :class="compact ? 'w-20' : 'w-28'">Discount</th>
+              <th scope="col" class="invoice-th invoice-text-right" :class="compact ? 'w-20' : 'w-28'">Total</th>
             </tr>
           </thead>
           <tbody class="invoice-tbody text-xs">
             <tr v-for="(item, index) in d.items" :key="item.id || index" class="invoice-tr group">
               <td class="invoice-td">
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2.5">
                   <div
                     v-if="item.thumbnail"
-                    class="shrink-0 rounded bg-muted overflow-hidden border border-border"
-                    :class="compact ? 'w-8 h-8' : 'w-9 h-9'">
-                    <img
+                    class="shrink-0 overflow-hidden border border-border"
+                    :class="compact ? 'w-8 h-8 rounded' : 'w-9 h-9 rounded-md'">
+                    <Avatar
                       :src="item.thumbnail"
                       :alt="item.name"
-                      class="w-full h-full object-cover" />
+                      class="w-full h-full"
+                      rounded="sm" />
                   </div>
                   <div class="min-w-0 flex-1">
                     <div
@@ -177,45 +173,32 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
                   </div>
                 </div>
               </td>
-              <td class="invoice-td invoice-text-right tabular-nums">
+              <td class="invoice-td invoice-text-right tabular-nums text-muted-foreground font-medium">
                 {{ item.quantity }}
               </td>
-              <td
-                v-if="hasSize"
-                class="invoice-td invoice-text-right tabular-nums text-muted-foreground">
+              <td v-if="hasSize" class="invoice-td invoice-text-right tabular-nums text-muted-foreground">
                 {{ item.size || '-' }}
               </td>
-              <td class="invoice-td invoice-text-right tabular-nums">
+              <td class="invoice-td invoice-text-right tabular-nums text-muted-foreground">
                 <Price :value="item.price" />
               </td>
-              <td
-                v-if="hasDiscount"
-                class="invoice-td invoice-text-right tabular-nums text-success/80 font-medium">
+              <td v-if="hasDiscount" class="invoice-td invoice-text-right tabular-nums text-success/80 font-medium">
                 <div v-if="item.discount !== undefined" class="flex flex-col items-end">
                   <Price :value="-item.discount" />
-                  <span v-if="item.discountLabel" class="text-[8px] uppercase font-bold">{{
-                    item.discountLabel
-                  }}</span>
+                  <span v-if="item.discountLabel" class="text-[8px] uppercase font-bold">{{ item.discountLabel }}</span>
                 </div>
-                <span v-else>-</span>
+                <span v-else class="text-muted-foreground">-</span>
               </td>
-              <td
-                class="invoice-td invoice-text-right tabular-nums font-semibold">
+              <td class="invoice-td invoice-text-right tabular-nums font-semibold text-foreground">
                 <Price :value="item.total" />
               </td>
             </tr>
           </tbody>
         </table>
 
-        <div
-          class="bg-muted/30 border-t border-border flex justify-end"
-          :class="compact ? 'p-3' : 'p-4'">
-          <div
-            :class="
-              compact
-                ? 'w-full max-w-[200px] space-y-1 text-xs'
-                : 'w-full max-w-[240px] space-y-1 text-xs'
-            ">
+        <!-- Totals inside table border -->
+        <div class="bg-muted/30 border-t border-border flex justify-end" :class="compact ? 'p-3' : 'p-4'">
+          <div :class="compact ? 'w-full max-w-[200px] space-y-1 text-xs' : 'w-full max-w-[240px] space-y-1.5 text-xs'">
             <div
               v-for="(total, idx) in d.totals"
               :key="idx"
@@ -223,7 +206,7 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
               :class="
                 total.isGrandTotal
                   ? compact
-                    ? 'pt-1.5 mt-1.5 border-t border-border font-bold text-xs text-foreground'
+                    ? 'pt-1.5 mt-1.5 border-t border-border font-bold text-sm text-foreground'
                     : 'pt-2 mt-2 border-t border-border font-bold text-sm text-foreground'
                   : 'text-muted-foreground font-medium'
               ">
@@ -234,11 +217,9 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
         </div>
       </div>
 
-      <div
-        v-if="d.notes"
-        class="text-muted-foreground border-t border-border text-xs"
-        :class="compact ? 'pt-2' : 'pt-2'">
-        <strong>Notes:</strong> <span class="whitespace-pre-wrap">{{ d.notes }}</span>
+      <!-- Notes + footer -->
+      <div v-if="d.notes" class="text-muted-foreground text-xs border-t border-border pt-3">
+        <strong class="text-foreground">Notes:</strong> <span class="whitespace-pre-wrap">{{ d.notes }}</span>
       </div>
       <div v-if="d.footerText" class="text-center text-muted-foreground opacity-70 text-xs">
         {{ d.footerText }}
