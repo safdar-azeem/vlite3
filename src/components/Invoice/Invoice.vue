@@ -9,6 +9,7 @@ import InvoiceVariant4 from './InvoiceVariant4.vue'
 const props = withDefaults(defineProps<InvoiceProps>(), {
   variant: 'Variant1',
   compact: false,
+  displayBarcodeValue: false,
 })
 
 const resolvedVariant = computed(() => {
