@@ -102,4 +102,8 @@ export interface InvoiceProps {
    * for a more compact, print-friendly layout that uses less paper.
    */
   compact?: boolean
+  /**
+   * Whether to display the text value underneath the barcode
+   */
+  displayBarcodeValue?: boolean
 }
