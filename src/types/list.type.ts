@@ -39,6 +39,12 @@ export interface ListField {
   icon?: string
   /** Force item to span full-width row */
   lineByLine?: boolean
+  /**
+   * Layout mode for the field when it is in block/full-width mode.
+   * - `'block'`  — Label on top, value below (default for lineByLine: true or long text).
+   * - `'inline'` — Label and value on the same line (standard horizontal row).
+   */
+  lineByLineLayout?: 'block' | 'inline'
   /** Only render when value is truthy */
   whenTrue?: boolean
   /** Conditional render: receives resolved value and full data, returns boolean */
