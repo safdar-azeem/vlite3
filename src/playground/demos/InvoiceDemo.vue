@@ -538,7 +538,7 @@ const invoiceLineItemFields = [
         </div>
 
         <div class="w-full">
-          <Invoice :data="scenarioDataMap[selectedScenario]" :variant="selectedVariant" compact />
+          <Invoice :data="scenarioDataMap[selectedScenario]" :variant="selectedVariant" />
         </div>
       </div>
     </DemoSection>
