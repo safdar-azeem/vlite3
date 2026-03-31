@@ -3,18 +3,20 @@ import { computed, useSlots } from 'vue'
 import Icon from '../Icon.vue'
 import ListFieldRow from './ListFieldRow.vue'
 import { $t } from '@/utils/i18n'
+import { getComponentConfig } from '@/utils/configUtils'
 import type { ListField, ListProps } from './types'
 import { getObjectValue } from './utils'
 
-const props = withDefaults(defineProps<ListProps>(), {
-  columns: 2,
-  variant: 'default',
-  class: '',
-  showColon: true,
-  loading: false,
-  skeletonRows: 6,
-  stackedBorderStyle: 'none',
-})
+const props = defineProps<ListProps>()
+
+const globalConfig = getComponentConfig('list') || {}
+
+const columns = computed(() => props.columns ?? globalConfig.columns ?? 2)
+const variant = computed(() => props.variant ?? globalConfig.variant ?? 'default')
+const listClass = computed(() => props.class ?? globalConfig.class ?? '')
+const showColon = computed(() => props.showColon ?? globalConfig.showColon ?? true)
+const skeletonRows = computed(() => props.skeletonRows ?? globalConfig.skeletonRows ?? 6)
+const stackedBorderStyle = computed(() => props.stackedBorderStyle ?? globalConfig.stackedBorderStyle ?? 'none')
 
 const slots = useSlots()
 
@@ -41,7 +43,7 @@ interface ColumnLayout {
 }
 
 const columnLayout = computed<ColumnLayout>(() => {
-  if (props.columns === 1) {
+  if (columns.value === 1) {
     return { left: [], right: [], full: visibleFields.value }
   }
 
@@ -75,7 +77,7 @@ const columnLayout = computed<ColumnLayout>(() => {
   // That last lone item would render as a half-width orphan in the left column.
   // We promote it to full-width so it spans the entire row, giving a clean,
   // balanced layout for counts like 3, 5, 7, 9, 11…
-  if (props.columns === 2 && left.length === right.length + 1) {
+  if (columns.value === 2 && left.length === right.length + 1) {
     const lastItem = left.pop()!
     full.unshift(lastItem)
   }
@@ -95,7 +97,7 @@ const displayTitle = computed(() => {
 })
 
 // ── Container class ───────────────────────────────────
-const isStacked = computed(() => props.variant === 'stacked')
+const isStacked = computed(() => variant.value === 'stacked')
 
 const containerClass = computed(() => {
   const variantMap: Record<string, string> = {
@@ -109,46 +111,46 @@ const containerClass = computed(() => {
   }
   return [
     'list-component w-full overflow-hidden',
-    variantMap[props.variant] ?? variantMap.default,
-    props.class,
+    variantMap[variant.value] ?? variantMap.default,
+    listClass.value,
   ].join(' ')
 })
 
 const gridClass = computed(() => {
-  if (props.columns === 1) return 'grid grid-cols-1'
-  if (props.columns === 3) return 'grid grid-cols-1 md:grid-cols-3'
+  if (columns.value === 1) return 'grid grid-cols-1'
+  if (columns.value === 3) return 'grid grid-cols-1 md:grid-cols-3'
   return 'grid grid-cols-1 md:grid-cols-2'
 })
 
 const leftDividerClass = computed(() => {
-  if (props.columns === 1) return ''
+  if (columns.value === 1) return ''
   return 'border-r border-border/70'
 })
 
 // ── Stacked grid ─────────────────────────────────────
 const stackedColCount = computed(() => {
-  if (props.columns === 1) return 1
-  if (props.columns === 3) return 3
+  if (columns.value === 1) return 1
+  if (columns.value === 3) return 3
   return 2
 })
 
 const stackedGridClass = computed(() => {
-  if (props.columns === 1) return 'grid grid-cols-1 pb-2.5 pt-1 px-1'
-  if (props.columns === 3) return 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 pb-2.5 pt-1 px-1'
+  if (columns.value === 1) return 'grid grid-cols-1 pb-2.5 pt-1 px-1'
+  if (columns.value === 3) return 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 pb-2.5 pt-1 px-1'
   return 'grid grid-cols-1 sm:grid-cols-2 pb-2.5 pt-1 px-1'
 })
 
-// Collect passthrough slot names (everything except structural ones)
+// collect passthrough slot names (everything except structural ones)
 const fieldSlotNames = computed(() =>
   Object.keys(slots).filter((k) => !['title', 'header', 'footer'].includes(k))
 )
 
 // ── Skeleton ──────────────────────────────────────────
-const skeletonItems = computed(() => Array.from({ length: props.skeletonRows }))
+const skeletonItems = computed(() => Array.from({ length: skeletonRows.value }))
 
 // ── Stacked skeleton cell class ───────────────────────
 function stackedSkeletonCellClass(i: number): string {
-  if (props.stackedBorderStyle === 'divider' && i % stackedColCount.value !== 0) {
+  if (stackedBorderStyle.value === 'divider' && i % stackedColCount.value !== 0) {
     return 'flex flex-col gap-1.5 py-2 border-l border-border pl-4 pr-3.5'
   }
   return 'flex flex-col gap-1.5 px-3.5 py-2'
