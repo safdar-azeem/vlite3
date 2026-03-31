@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import VEventCalendar from 'v-event-calendar'
 import Button from '@/components/Button.vue'
 import ButtonGroup from '@/components/ButtonGroup.vue'
@@ -8,29 +8,52 @@ import 'v-event-calendar/style.css'
 import CalendarEventItem from './CalendarEventItem.vue'
 
 const props = defineProps<{
-	events: any[]
-	loading?: boolean
-	canAdd?: boolean
-	canEdit?: boolean
-	canDelete?: boolean
+  events: any[]
+  loading?: boolean
+  canAdd?: boolean
+  canEdit?: boolean
+  canDelete?: boolean
 }>()
 
 const emit = defineEmits([
-	'eventClick',
-	'eventCreate',
-	'eventUpdate',
-	'eventEdit',
-	'eventDelete',
-	'dateChange',
-	'dayClick',
+  'eventClick',
+  'eventCreate',
+  'eventUpdate',
+  'eventEdit',
+  'eventDelete',
+  'dateChange',
+  'dayClick',
 ])
 
 const calendarRef = ref()
 const currentView = ref<any>('month')
+const isSmallScreen = ref(false)
+
+const checkScreenSize = () => {
+  const small = window.innerWidth < 1200
+  if (small !== isSmallScreen.value) {
+    isSmallScreen.value = small
+    if (small) {
+      // Lock to day view on small screens
+      currentView.value = 'date'
+      calendarRef.value?.setView('date')
+    }
+  }
+}
+
+onMounted(() => {
+  checkScreenSize()
+  window.addEventListener('resize', checkScreenSize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', checkScreenSize)
+})
 
 const setView = (view: string) => {
-	currentView.value = view
-	calendarRef.value?.setView(view)
+  if (isSmallScreen.value) return // locked on small screens
+  currentView.value = view
+  calendarRef.value?.setView(view)
 }
 
 const goToToday = () => calendarRef.value?.goToToday()
@@ -38,8 +61,8 @@ const goToPrev = () => calendarRef.value?.goToPrevious()
 const goToNext = () => calendarRef.value?.goToNext()
 
 const t = (key: string, fallback: string, args?: Record<string, any>) => {
-	const res = args ? $t(key, args) : $t(key)
-	return res !== key ? res : fallback
+  const res = args ? $t(key, args) : $t(key)
+  return res !== key ? res : fallback
 }
 
 const txtMonth = computed(() => t('vlite.calendar.month', 'Month'))
@@ -49,109 +72,109 @@ const txtToday = computed(() => t('vlite.calendar.today', 'Today'))
 </script>
 
 <template>
-	<div
-		class="h-[calc(100vh-1px)] v-calendar mt-2 bg-body border border-border rounded-xl shadow-sm overflow-hidden flex flex-col">
-		<VEventCalendar
-			ref="calendarRef"
-			:events="events"
-			:initial-view="currentView"
-			:allow-event-creation="canAdd"
-			:allow-event-editing="canEdit"
-			@event-click="($event: any) => emit('eventClick', $event)"
-			@event-create="
-				(d: any, s: any, e: any) => emit('eventCreate', { date: d, start: s, end: e })
-			"
-			@event-update="
-				(id: any, s: any, e: any) =>
-					emit('eventUpdate', { eventId: id, start: s, end: e })
-			"
-			@date-change="(val: any) => emit('dateChange', val)"
-			@day-click="(val: any) => emit('dayClick', val)"
-			class="flex-1 min-h-0">
-			<template #header="{ currentTitle }">
-				<div
-					class="flex items-center justify-between p-4 border-b border-border bg-white dark:bg-background">
-					<div class="flex items-center gap-2">
-						<ButtonGroup>
-							<Button
-								:variant="
-									currentView === 'month'
-										? 'primary'
-										: 'outline'
-								"
-								size="sm"
-								@click="setView('month')"
-								>{{ txtMonth }}</Button
-							>
-							<Button
-								:variant="
-									currentView === 'week'
-										? 'primary'
-										: 'outline'
-								"
-								size="sm"
-								@click="setView('week')"
-								>{{ txtWeek }}</Button
-							>
-							<Button
-								:variant="
-									currentView === 'date'
-										? 'primary'
-										: 'outline'
-								"
-								size="sm"
-								@click="setView('date')"
-								>{{ txtDay }}</Button
-							>
-						</ButtonGroup>
-					</div>
-					<h2 class="text-lg font-bold text-foreground">
-						{{ currentTitle }}
-					</h2>
-					<div class="flex items-center gap-2">
-						<ButtonGroup>
-							<Button
-								variant="outline"
-								size="sm"
-								icon="lucide:chevron-left"
-								@click="goToPrev" />
-							<Button
-								variant="outline"
-								size="sm"
-								@click="goToToday"
-								>{{ txtToday }}</Button
-							>
-							<Button
-								variant="outline"
-								size="sm"
-								icon="lucide:chevron-right"
-								@click="goToNext" />
-						</ButtonGroup>
-					</div>
-				</div>
-			</template>
-			<template #event="{ event, view, displayTime }">
-				<CalendarEventItem
-					:event="event"
-					:view="view"
-					:displayTime="displayTime"
-					:can-edit="canEdit"
-					:can-delete="canDelete"
-					@view="emit('eventClick', $event)"
-					@edit="emit('eventEdit', $event)"
-					@delete="emit('eventDelete', $event)" />
-			</template>
-		</VEventCalendar>
-	</div>
+  <div
+    class="h-[calc(100vh-1px)] v-calendar lg:mt-2 bg-body border border-border rounded-xl shadow-sm overflow-hidden flex flex-col">
+    <VEventCalendar
+      ref="calendarRef"
+      :events="events"
+      :initial-view="currentView"
+      :allow-event-creation="canAdd"
+      :allow-event-editing="canEdit"
+      @event-click="($event: any) => emit('eventClick', $event)"
+      @event-create="(d: any, s: any, e: any) => emit('eventCreate', { date: d, start: s, end: e })"
+      @event-update="
+        (id: any, s: any, e: any) => emit('eventUpdate', { eventId: id, start: s, end: e })
+      "
+      @date-change="(val: any) => emit('dateChange', val)"
+      @day-click="(val: any) => emit('dayClick', val)"
+      class="flex-1 min-h-0">
+      <template #header="{ currentTitle }">
+        <!-- md and above: single-row layout -->
+        <div
+          v-if="!isSmallScreen"
+          class="flex items-center justify-between p-4 border-b border-border bg-body">
+          <div class="flex items-center gap-2">
+            <ButtonGroup>
+              <Button
+                :variant="currentView === 'month' ? 'primary' : 'outline'"
+                size="sm"
+                icon="lucide:calendar-days"
+                @click="setView('month')"
+                >{{ txtMonth }}</Button
+              >
+              <Button
+                :variant="currentView === 'week' ? 'primary' : 'outline'"
+                size="sm"
+                icon="lucide:calendar-range"
+                @click="setView('week')"
+                >{{ txtWeek }}</Button
+              >
+              <Button
+                :variant="currentView === 'date' ? 'primary' : 'outline'"
+                size="sm"
+                icon="lucide:calendar"
+                @click="setView('date')"
+                >{{ txtDay }}</Button
+              >
+            </ButtonGroup>
+          </div>
+          <h2 class="text-lg font-bold text-foreground truncate mx-2">
+            {{ currentTitle }}
+          </h2>
+          <div class="flex items-center gap-2">
+            <ButtonGroup>
+              <Button variant="outline" size="sm" icon="lucide:chevron-left" @click="goToPrev" />
+              <Button variant="outline" size="sm" @click="goToToday">{{ txtToday }}</Button>
+              <Button variant="outline" size="sm" icon="lucide:chevron-right" @click="goToNext" />
+            </ButtonGroup>
+          </div>
+        </div>
+
+        <!-- Below md: two-row layout, view buttons hidden -->
+        <div
+          v-else
+          class="flex max-sm:flex-col sm:justify-between gap-2 sm:px-4 py-4 border-b border-border bg-body">
+          <!-- Row 1: title centered -->
+          <h2 class="text-base font-bold text-foreground text-center">
+            {{ currentTitle }}
+          </h2>
+          <!-- Row 2: nav group full-width, Today stretches to fill -->
+          <ButtonGroup class="max-sm:w-full">
+            <Button variant="outline" size="sm" icon="lucide:chevron-left" @click="goToPrev" />
+            <Button variant="outline" size="sm" class="flex-1" @click="goToToday">{{
+              txtToday
+            }}</Button>
+            <Button variant="outline" size="sm" icon="lucide:chevron-right" @click="goToNext" />
+          </ButtonGroup>
+        </div>
+      </template>
+      <template #event="{ event, view, displayTime }">
+        <CalendarEventItem
+          :event="event"
+          :view="view"
+          :displayTime="displayTime"
+          :can-edit="canEdit"
+          :can-delete="canDelete"
+          @view="emit('eventClick', $event)"
+          @edit="emit('eventEdit', $event)"
+          @delete="emit('eventDelete', $event)" />
+      </template>
+    </VEventCalendar>
+  </div>
 </template>
 
 <style scoped>
 /* Override v-event-calendar theme properties to match vlite3 design system */
 :deep(.calendar-view) {
-	--calendar-primary-color: var(--color-primary);
-	--calendar-bg-color: transparent !important;
-	--calendar-border-color: var(--color-border);
-	--calendar-text-color: var(--color-foreground);
-	--calendar-hover-color: var(--color-accent);
+  --calendar-primary-color: var(--color-primary);
+  --calendar-bg-color: transparent !important;
+  --calendar-border-color: var(--color-border);
+  --calendar-text-color: var(--color-foreground);
+  --calendar-hover-color: var(--color-accent);
+}
+
+:deep(.v-event-calendar .add-event-icon),
+:deep(.v-event-calendar .add-event-icon svg) {
+  color: var(--color-primary-fg) !important;
 }
 </style>
