@@ -29,6 +29,15 @@ import sourceCode from './StatusChipDemo.vue?raw'
       </div>
     </DemoSection>
 
+    <DemoSection title="Payment Methods" :code="sourceCode">
+      <div class="flex flex-wrap gap-2">
+        <StatusChip status="cash" />
+        <StatusChip status="check" />
+        <StatusChip status="card" />
+        <StatusChip status="transfer" />
+      </div>
+    </DemoSection>
+
     <DemoSection title="Orders & Fulfillment" :code="sourceCode">
       <div class="flex flex-wrap gap-2">
         <StatusChip status="confirmed" />
@@ -41,6 +50,23 @@ import sourceCode from './StatusChipDemo.vue?raw'
         <StatusChip status="completed" />
         <StatusChip status="cancelled" />
         <StatusChip status="rejected" />
+        <StatusChip status="scheduled" />
+      </div>
+    </DemoSection>
+
+    <DemoSection title="CRM & Sales" :code="sourceCode">
+      <div class="flex flex-wrap gap-2">
+        <StatusChip status="prospecting" />
+        <StatusChip status="qualification" />
+        <StatusChip status="proposal" />
+        <StatusChip status="negotiation" />
+        <StatusChip status="contacted" />
+        <StatusChip status="qualified" />
+        <StatusChip status="won" />
+        <StatusChip status="lost" />
+        <StatusChip status="closed_won" />
+        <StatusChip status="closed_lost" />
+        <StatusChip status="new" />
       </div>
     </DemoSection>
 
@@ -54,6 +80,17 @@ import sourceCode from './StatusChipDemo.vue?raw'
         <StatusChip status="terminated" />
         <StatusChip status="suspended" />
         <StatusChip status="pending" />
+      </div>
+    </DemoSection>
+
+    <DemoSection title="Communication & Presence" :code="sourceCode">
+      <div class="flex flex-wrap gap-2">
+        <StatusChip status="incoming" />
+        <StatusChip status="outgoing" />
+        <StatusChip status="missed" />
+        <StatusChip status="online" />
+        <StatusChip status="offline" />
+        <StatusChip status="in_person" />
       </div>
     </DemoSection>
 
@@ -78,6 +115,19 @@ import sourceCode from './StatusChipDemo.vue?raw'
         <StatusChip status="done" />
         <StatusChip status="awaiting_approval" />
         <StatusChip status="partially_approved" />
+      </div>
+    </DemoSection>
+
+    <DemoSection title="Priority & Severity" :code="sourceCode">
+      <div class="flex flex-wrap gap-2">
+        <StatusChip status="critical" />
+        <StatusChip status="urgent" />
+        <StatusChip status="high" />
+        <StatusChip status="medium" />
+        <StatusChip status="low" />
+        <StatusChip status="normal" />
+        <StatusChip status="minor" />
+        <StatusChip status="trivial" />
       </div>
     </DemoSection>
 
