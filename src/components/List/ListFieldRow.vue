@@ -114,6 +114,9 @@ const isStacked = computed(() => props.variant === 'stacked')
  * value string length exceeds autoLineByLineThreshold.
  */
 const isLineByLine = computed(() => {
+  if (props.field.lineByLineLayout === 'inline') return false
+  if (props.field.lineByLineLayout === 'block') return true
+
   if (props.field.lineByLine) return true
   if (props.autoLineByLineThreshold > 0) {
     const len = String(resolvedValue.value ?? '').length
@@ -168,11 +171,11 @@ const stackedCellClass = computed(() => {
             <Price
               v-if="field.type === 'price'"
               :value="rawValue"
-              class="text-sm font-semibold text-foreground break-words leading-snug"
+              class="text-sm font-semibold text-foreground wrap-break-word leading-snug"
               :class="valueClass" />
             <span
               v-else
-              class="text-sm font-semibold text-foreground break-words leading-snug"
+              class="text-sm font-semibold text-foreground wrap-break-word leading-snug"
               :class="valueClass"
               v-html="resolvedValue" />
           </template>
@@ -203,11 +206,11 @@ const stackedCellClass = computed(() => {
         <Price
           v-if="field.type === 'price'"
           :value="rawValue"
-          class="text-sm font-semibold text-foreground break-words leading-snug"
+          class="text-sm font-semibold text-foreground wrap-break-word leading-snug"
           :class="valueClass" />
         <span
           v-else
-          class="text-sm font-semibold text-foreground break-words leading-snug"
+          class="text-sm font-semibold text-foreground wrap-break-word leading-snug"
           :class="valueClass"
           v-html="resolvedValue" />
       </template>
@@ -253,11 +256,11 @@ const stackedCellClass = computed(() => {
             <Price
               v-if="field.type === 'price'"
               :value="rawValue"
-              class="text-sm text-gray-600 break-words leading-snug"
+              class="text-sm text-gray-600 wrap-break-word leading-snug"
               :class="valueClass" />
             <span
               v-else
-              class="text-sm text-gray-600 break-words leading-snug"
+              class="text-sm text-gray-600 wrap-break-word leading-snug"
               :class="valueClass"
               v-html="resolvedValue" />
           </template>
@@ -285,11 +288,11 @@ const stackedCellClass = computed(() => {
         <Price
           v-if="field.type === 'price'"
           :value="rawValue"
-          class="text-sm text-gray-900 break-words leading-snug"
+          class="text-sm text-gray-900 wrap-break-word leading-snug"
           :class="valueClass" />
         <span
           v-else
-          class="text-sm text-gray-900 break-words leading-snug"
+          class="text-sm text-gray-900 wrap-break-word leading-snug"
           :class="valueClass"
           v-html="resolvedValue" />
       </template>
@@ -328,11 +331,11 @@ const stackedCellClass = computed(() => {
           <Price
             v-if="field.type === 'price'"
             :value="rawValue"
-            class="text-sm text-gray-600 text-right break-words"
+            class="text-sm text-gray-600 text-right wrap-break-word"
             :class="valueClass" />
           <span
             v-else
-            class="text-sm text-gray-600 text-right break-words"
+            class="text-sm text-gray-600 text-right wrap-break-word"
             :class="valueClass"
             v-html="resolvedValue" />
         </template>
@@ -359,11 +362,11 @@ const stackedCellClass = computed(() => {
         <Price
           v-if="field.type === 'price'"
           :value="rawValue"
-          class="text-sm text-gray-900 text-right break-words leading-snug"
+          class="text-sm text-gray-900 text-right wrap-break-word leading-snug"
           :class="valueClass" />
         <span
           v-else
-          class="text-sm text-gray-900 text-right break-words leading-snug"
+          class="text-sm text-gray-900 text-right wrap-break-word leading-snug"
           :class="valueClass"
           v-html="resolvedValue" />
       </template>
