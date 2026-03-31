@@ -47,6 +47,10 @@ export function createVLite(options: VLiteConfig = {}) {
                 ...(options.components.statusChip?.customStatuses || {}),
               },
             },
+            attachmentsList: {
+              ...(configState.components?.attachmentsList || {}),
+              ...(options.components.attachmentsList || {}),
+            },
           }
         }
       }
