@@ -202,21 +202,23 @@ const onFormSubmit = async (payload: any) => {
         </div>
       </div>
       <template #footer="{ close }">
-        <Button variant="outline" @click="close">Close</Button>
-        <Button variant="danger" icon="lucide:trash-2" @click="handleEventDelete(selectedEvent)"
-          >Delete</Button
-        >
-        <Button
-          variant="primary"
-          icon="lucide:edit"
-          @click="
-            () => {
-              isViewModalOpen = false
-              handleEventEdit(selectedEvent)
-            }
-          "
-          >Edit Event</Button
-        >
+        <div class="w-full flex gap-4 flex-1">
+          <Button variant="outline" @click="close">Close</Button>
+          <Button variant="danger" icon="lucide:trash-2" @click="handleEventDelete(selectedEvent)"
+            >Delete</Button
+          >
+          <Button
+            variant="primary"
+            icon="lucide:edit"
+            @click="
+              () => {
+                isViewModalOpen = false
+                handleEventEdit(selectedEvent)
+              }
+            "
+            >Edit Event</Button
+          >
+        </div>
       </template>
     </Modal>
 
