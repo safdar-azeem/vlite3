@@ -59,6 +59,7 @@ Each object in the `fields` array describes one row.
 | `titleI18n`      | `string`                              | i18n key for the label — takes priority over `title`.                                |
 | `icon`           | `string`                              | Iconify icon ID displayed beside the label.                                          |
 | `lineByLine`     | `boolean`                             | When `true`, the field spans the full component width (below the column grid).       |
+| `lineByLineLayout` | `'block' \| 'inline'`                 | Controls layout for full-width items. `'block'` (default) is stacked, `'inline'` is same line. |
 | `whenTrue`       | `boolean`                             | Only render this row when the resolved value is truthy.                              |
 | `when`           | `(value: any, data: any) => boolean`  | Custom visibility predicate — receives the resolved value and the full data object.  |
 | `format`         | `(value: any, data: any) => string`   | Custom formatter. Return a plain string or an HTML string.                           |
@@ -160,9 +161,19 @@ sections — **no double borders**.
 const fields: ListField[] = [
   { key: 'name', title: 'Name' }, // goes into column grid
   { key: 'email', title: 'Email' }, // goes into column grid
-  { key: 'notes', title: 'Notes', lineByLine: true }, // full-width below
+  { key: 'notes', title: 'Notes', lineByLine: true }, // full-width below (stacked)
+  { key: 'terms', title: 'Terms', lineByLine: true, lineByLineLayout: 'inline' }, // full-width below (single line)
 ]
 ```
+
+### lineByLineLayout
+
+Use `lineByLineLayout: 'inline'` to force a full-width item to display its label and value on the same line.
+
+| Value      | Description                                                                 |
+| :--------- | :-------------------------------------------------------------------------- |
+| `'block'`  | **Default.** Label on top, value below.                                     |
+| `'inline'` | Label on left, value on right (standard row style but spanning full width). |
 
 > **Border rule:** The last row in each column suppresses its own `border-b`
 > when `lineByLine` items are present. The full-width wrapper's `border-t`
