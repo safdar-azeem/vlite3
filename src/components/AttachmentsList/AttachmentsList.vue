@@ -20,20 +20,30 @@ const canDownload = computed(() => props.canDownload ?? globalConfig.canDownload
 const variant = computed(() => props.variant ?? globalConfig.variant ?? 'default')
 const size = computed(() => props.size ?? globalConfig.size ?? 'md')
 const clickToPreview = computed(() => props.clickToPreview ?? globalConfig.clickToPreview ?? false)
-const showDownloadInList = computed(() => props.showDownloadInList ?? globalConfig.showDownloadInList ?? true)
+const showDownloadInList = computed(
+  () => props.showDownloadInList ?? globalConfig.showDownloadInList ?? true
+)
 
 const _rootClass = computed(() => props.rootClass ?? globalConfig.rootClass ?? '')
 const _gridClass = computed(() => props.gridClass ?? globalConfig.gridClass ?? '')
 const _cardClass = computed(() => props.cardClass ?? globalConfig.cardClass ?? '')
-const _cardThumbnailClass = computed(() => props.cardThumbnailClass ?? globalConfig.cardThumbnailClass ?? '')
+const _cardThumbnailClass = computed(
+  () => props.cardThumbnailClass ?? globalConfig.cardThumbnailClass ?? ''
+)
 const _cardInfoClass = computed(() => props.cardInfoClass ?? globalConfig.cardInfoClass ?? '')
-const _cardActionsClass = computed(() => props.cardActionsClass ?? globalConfig.cardActionsClass ?? '')
+const _cardActionsClass = computed(
+  () => props.cardActionsClass ?? globalConfig.cardActionsClass ?? ''
+)
 const _listClass = computed(() => props.listClass ?? globalConfig.listClass ?? '')
 const _itemClass = computed(() => props.itemClass ?? globalConfig.itemClass ?? '')
-const _itemIconBoxClass = computed(() => props.itemIconBoxClass ?? globalConfig.itemIconBoxClass ?? '')
+const _itemIconBoxClass = computed(
+  () => props.itemIconBoxClass ?? globalConfig.itemIconBoxClass ?? ''
+)
 const _itemNameClass = computed(() => props.itemNameClass ?? globalConfig.itemNameClass ?? '')
 const _itemSizeClass = computed(() => props.itemSizeClass ?? globalConfig.itemSizeClass ?? '')
-const _itemActionsClass = computed(() => props.itemActionsClass ?? globalConfig.itemActionsClass ?? '')
+const _itemActionsClass = computed(
+  () => props.itemActionsClass ?? globalConfig.itemActionsClass ?? ''
+)
 const _emptyClass = computed(() => props.emptyClass ?? globalConfig.emptyClass ?? '')
 
 // Tracks which file index has its preview modal open (for programmatic open via clickToPreview)
@@ -62,6 +72,16 @@ const handleDownload = async (file: AttachmentItem) => {
 const isImage = (file: AttachmentItem) => {
   if (file.fileType && file.fileType.startsWith('image/')) return true
   return /\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?.*)?$/i.test(file.fileUrl || '')
+}
+
+const hasFileName = (file: AttachmentItem) => {
+  return (
+    file.fileName !== undefined && file.fileName !== null && String(file.fileName).trim() !== ''
+  )
+}
+
+const hasFileSize = (file: AttachmentItem) => {
+  return file.fileSize !== undefined && file.fileSize !== null && file.fileSize !== ''
 }
 
 const openPreview = (index: number) => {
@@ -140,8 +160,11 @@ const hasListActions = computed(() => showViewAction.value || showDownloadAction
           @click="openPreview(index)">
           <!-- vl-attachments-list__card-thumbnail: card preview/image area -->
           <div
-            class="vl-attachments-list__card-thumbnail h-40 w-full bg-muted/30 flex items-center justify-center overflow-hidden relative border-b border-border"
-            :class="_cardThumbnailClass">
+            class="vl-attachments-list__card-thumbnail h-40 w-full bg-muted/30 flex items-center justify-center overflow-hidden relative"
+            :class="[
+              _cardThumbnailClass,
+              hasFileName(file) || hasFileSize(file) ? 'border-b border-border' : '',
+            ]">
             <img
               v-if="isImage(file)"
               :src="file.thumbnailUrl || file.fileUrl"
@@ -182,16 +205,20 @@ const hasListActions = computed(() => showViewAction.value || showDownloadAction
 
           <!-- vl-attachments-list__card-info: card footer with name/size -->
           <div
+            v-if="hasFileName(file) || hasFileSize(file)"
             class="vl-attachments-list__card-info p-3 flex flex-col min-w-0"
             :class="_cardInfoClass">
             <!-- vl-attachments-list__item-name: file name text -->
             <span
+              v-if="hasFileName(file)"
               class="vl-attachments-list__item-name text-sm font-medium truncate"
               :title="file.fileName">
-              {{ file.fileName || 'Unnamed File' }}
+              {{ file.fileName }}
             </span>
             <!-- vl-attachments-list__item-size: file size text -->
-            <span class="vl-attachments-list__item-size text-xs text-muted-foreground mt-0.5">
+            <span
+              v-if="hasFileSize(file)"
+              class="vl-attachments-list__item-size text-xs text-muted-foreground mt-0.5">
               {{ formatSize(file.fileSize) }}
             </span>
           </div>
@@ -255,9 +282,12 @@ const hasListActions = computed(() => showViewAction.value || showDownloadAction
               on the child span has no room to work. With min-w-0 the column
               can shrink freely and truncation happens correctly.
             -->
-            <div class="flex flex-col overflow-hidden leading-tight min-w-0">
+            <div
+              v-if="hasFileName(file) || hasFileSize(file)"
+              class="flex flex-col overflow-hidden leading-tight min-w-0">
               <!-- vl-attachments-list__item-name: file name text -->
               <span
+                v-if="hasFileName(file)"
                 class="vl-attachments-list__item-name font-medium truncate block"
                 :class="[
                   sizeClasses.text,
@@ -265,10 +295,11 @@ const hasListActions = computed(() => showViewAction.value || showDownloadAction
                   _itemNameClass,
                 ]"
                 :title="file.fileName">
-                {{ file.fileName || 'Unnamed File' }}
+                {{ file.fileName }}
               </span>
               <!-- vl-attachments-list__item-size: file size subtext -->
               <span
+                v-if="hasFileSize(file)"
                 class="vl-attachments-list__item-size mt-0.5"
                 :class="[
                   sizeClasses.subtext,
