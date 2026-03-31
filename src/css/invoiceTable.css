@@ -17,7 +17,7 @@
 
 .invoice-th {
   padding: var(--invoice-cell-py, 1rem) var(--invoice-cell-px, 1.5rem);
-  font-weight: 600;
+  font-weight: 700;
   text-align: left;
 }
 
