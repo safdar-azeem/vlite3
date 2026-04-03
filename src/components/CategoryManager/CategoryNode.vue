@@ -18,6 +18,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   (e: 'update:modelValue', value: CategoryItem[]): void
   (e: 'change'): void
+  (e: 'dragEnd', id: string | number): void
 }>()
 
 const ctx = inject<CategoryManagerContext>('categoryManager')
@@ -36,6 +37,14 @@ const handleUpdate = (val: CategoryItem[], item: CategoryItem) => {
 }
 
 const onChange = () => emit('change')
+
+const onDragEnd = (event: any) => {
+  // Extract the ID of the moved element via the data-id attribute to guarantee we know what was moved
+  const movedId = event.item?.dataset?.id
+  if (movedId) {
+    emit('dragEnd', movedId)
+  }
+}
 
 const isReadonly = computed(() => ctx?.readonly.value || false)
 const size = computed(() => ctx?.size.value || 'md')
@@ -77,10 +86,11 @@ const vFocus = {
     ghost-class="opacity-50"
     :disabled="isReadonly"
     class="min-h-[2px]"
-    @change="onChange">
+    @end="onDragEnd">
     <div
       v-for="item in internalList"
       :key="item.id"
+      :data-id="item.id"
       class="mb-1.5 flex flex-col"
       v-memo="[
         item.id,
@@ -199,7 +209,8 @@ const vFocus = {
           :modelValue="item.children"
           @update:modelValue="(val) => handleUpdate(val, item)"
           :level="level + 1"
-          @change="onChange" />
+          @change="onChange"
+          @dragEnd="(id) => emit('dragEnd', id)" />
 
         <div
           v-if="
