@@ -96,7 +96,9 @@ export interface IFormUpdateContext {
   updateError?: (name: string, error: string) => void
 }
 
-export type IFormUpdateValues = (context: IFormUpdateContext) => Record<string, any> | void | Promise<Record<string, any> | void>
+export type IFormUpdateValues = (
+  context: IFormUpdateContext
+) => Record<string, any> | void | Promise<Record<string, any> | void>
 
 /**
  * When condition - controls field visibility
