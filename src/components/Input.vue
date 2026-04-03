@@ -323,7 +323,6 @@ onMounted(() => {
       </div>
 
       <div class="relative w-full" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
-        <!-- Floating Label internally for standalone inputs -->
         <label
           v-if="displayLabel && variant === 'floating'"
           :for="displayLabel"
@@ -352,7 +351,8 @@ onMounted(() => {
           :class="inputBaseClass"
           @update:model-value="emit('update:modelValue', $event)"
           @blur="handleBlur"
-          @focus="handleFocus" />
+          @focus="handleFocus"
+          :data-testid="$attrs['data-testid'] || ($attrs.name ? `input-${$attrs.name}` : (displayLabel ? `input-${displayLabel.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : 'textarea'))" />
 
         <input
           v-else
@@ -373,7 +373,8 @@ onMounted(() => {
           @change="handleChange"
           @blur="handleBlur"
           @focus="handleFocus"
-          @animationstart="handleAnimationStart" />
+          @animationstart="handleAnimationStart"
+          :data-testid="$attrs['data-testid'] || ($attrs.name ? `input-${$attrs.name}` : (displayLabel ? `input-${displayLabel.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : 'input'))" />
 
         <div
           v-if="icon"
