@@ -29,7 +29,9 @@ const internalList = computed({
 
 const handleUpdate = (val: CategoryItem[], item: CategoryItem) => {
   item.children = val
-  // Fix nested dropping bug by emitting a local change event up the tree instead of aggressively emitting stale state.
+  // Fix nested dropping bug: Propagate the change event up the tree so CategoryManager 
+  // can save the state. We do NOT forcefully emit update:modelValue here, 
+  // as it would overwrite the parent's array state and destroy cross-level drops.
   emit('change')
 }
 
@@ -84,7 +86,7 @@ const vFocus = {
         item.id,
         item.title,
         item.icon,
-        item.children?.length,
+        item.children?.map(c => c.id).join(','),
         ctx?.expandedIds.value.has(item.id),
         ctx?.inlineState.value.targetId === item.id,
         ctx?.inlineState.value.mode,
