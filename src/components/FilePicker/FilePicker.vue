@@ -414,6 +414,7 @@ const inputBaseClass = computed(() => {
       :multiple="multiSelect"
       :accept="acceptAttribute"
       class="hidden"
+      :data-testid="$attrs['data-testid'] ? `${$attrs['data-testid']}-input` : ($attrs.name ? `filepicker-input-${$attrs.name}` : 'filepicker-input')"
       @change="handleInputChange" />
 
     <slot
@@ -422,7 +423,7 @@ const inputBaseClass = computed(() => {
       :is-dragging="isDragging"
       :is-loading="loading || isProcessing"
       :files="displayFiles">
-      <div v-if="variant === 'input'" class="relative" @click="triggerInput">
+      <div v-if="variant === 'input'" class="relative" @click="triggerInput" :data-testid="$attrs['data-testid'] || ($attrs.name ? `filepicker-${$attrs.name}` : 'filepicker')">
         <input
           type="text"
           :value="inputDisplayValue"
@@ -455,7 +456,8 @@ const inputBaseClass = computed(() => {
         class="relative"
         @dragover="handleDragOver"
         @dragleave="handleDragLeave"
-        @drop="handleDrop">
+        @drop="handleDrop"
+        :data-testid="$attrs['data-testid'] || ($attrs.name ? `filepicker-${$attrs.name}` : 'filepicker')">
         <div
           v-if="!hasValue"
           class="border-2 bg-body border-dashed border-border rounded-lg p-6 transition-all duration-200 ease-in-out cursor-pointer flex flex-col items-center justify-center text-center gap-2"
