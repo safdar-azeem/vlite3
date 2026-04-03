@@ -223,7 +223,8 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
         :class="triggerClasses"
         :tabindex="disabled ? -1 : 0"
         @keydown.enter.prevent="!disabled && (isOpen = !isOpen)"
-        @keydown.space.prevent="!disabled && (isOpen = !isOpen)">
+        @keydown.space.prevent="!disabled && (isOpen = !isOpen)"
+        :data-testid="$attrs['data-testid'] || ($attrs.name ? `multiselect-${$attrs.name}` : 'multiselect')">
         <div
           class="flex gap-1.5 items-center flex-1 min-w-0"
           :class="[wrap ? 'flex-wrap py-0.5' : 'flex-nowrap overflow-hidden py-1']">
