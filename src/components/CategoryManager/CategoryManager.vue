@@ -23,7 +23,7 @@ const emit = defineEmits<{
   (e: 'onAdd', item: CategoryItem): void
   (e: 'onEdit', item: CategoryItem): void
   (e: 'onDelete', item: CategoryItem): void
-  (e: 'onReorder', val: CategoryItem[]): void
+  (e: 'onReorder', val: { id: string | number; parentId: string | number | null; position: number }): void
 }>()
 
 // Use a deeply reactive ref so inline changes trigger reactivity cleanly
@@ -117,13 +117,10 @@ watch(
   { immediate: true, deep: true }
 )
 
-const emitUpdate = (isReorder = false) => {
+const emitUpdate = () => {
   ensureMeta(internalData.value)
   const cloned = clone(internalData.value)
   emit('update:modelValue', cloned)
-  if (isReorder) {
-    emit('onReorder', cloned)
-  }
 }
 
 // -------------------------------------------------------------
@@ -333,11 +330,40 @@ const saveItem = (item: CategoryItem) => {
 // -------------------------------------------------------------
 const handleRootUpdate = (val: CategoryItem[]) => {
   internalData.value = [...val]
-  emitUpdate(true)
+  emitUpdate()
 }
 
 const handleTreeChange = () => {
-  emitUpdate(true)
+  emitUpdate()
+}
+
+const handleDragEnd = (movedId: string | number) => {
+  // Lock in new positions
+  ensureMeta(internalData.value)
+  const cloned = clone(internalData.value)
+  emit('update:modelValue', cloned)
+
+  // Find the exact node that was moved to emit minimal payload
+  let movedItem: CategoryItem | null = null
+  const findItem = (list: CategoryItem[]) => {
+    for (const item of list) {
+      if (String(item.id) === String(movedId)) {
+        movedItem = item
+        return true
+      }
+      if (item.children && findItem(item.children)) return true
+    }
+    return false
+  }
+  findItem(cloned)
+
+  if (movedItem) {
+    emit('onReorder', {
+      id: movedItem.id,
+      parentId: movedItem.parentId ?? null,
+      position: movedItem.position ?? 0,
+    })
+  }
 }
 
 provide<CategoryManagerContext>('categoryManager', {
@@ -404,7 +430,8 @@ const vFocus = {
       <CategoryNode
         :modelValue="internalData"
         @update:modelValue="handleRootUpdate"
-        @change="handleTreeChange" />
+        @change="handleTreeChange"
+        @dragEnd="handleDragEnd" />
 
       <div
         v-if="inlineState.mode === 'add-root'"
