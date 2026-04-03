@@ -121,6 +121,7 @@ const iconClasses = computed(() => {
     :type="type"
     :class="classes"
     :disabled="disabled || loading"
+    :data-testid="$attrs['data-testid'] || (displayText ? `btn-${displayText.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : (icon ? `btn-${icon.replace(/[^a-zA-Z0-9]+/g, '-')}` : 'button'))"
     class="cursor-pointer">
     <Icon
       v-if="loading"
