@@ -389,6 +389,12 @@ const invoicePropsFields = [
     default: 'false',
     desc: 'Toggles whether to show the textual value beneath the barcode.',
   },
+  {
+    name: 'labels',
+    type: 'InvoiceLabels?',
+    default: '—',
+    desc: 'Custom static text overrides (e.g. replacing "Invoice" with "Tax Invoice").',
+  },
 ]
 
 const invoiceDataFields = [
