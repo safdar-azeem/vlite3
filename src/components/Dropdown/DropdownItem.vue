@@ -42,6 +42,7 @@ const displayDescription = computed(() =>
       option.class || '',
     ]"
     :data-disabled="option.disabled ? true : undefined"
+    :data-testid="$attrs['data-testid'] || (option.value ? `dropdown-item-${option.value}` : `dropdown-item-${option.label}`).toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')"
     @click="emit('click', option)"
     @keydown.enter.prevent="emit('click', option)"
     @mouseenter="$emit('mouseenter', index ?? -1)">
