@@ -372,7 +372,8 @@ const getRowErrorsHash = (rowIndex: number) => {
 .custom-fields-table :deep(textarea),
 .custom-fields-table :deep(select),
 .custom-fields-table :deep(.input-wrapper),
-.custom-fields-table :deep(.tooltip-trigger button) {
+.custom-fields-table :deep(.tooltip-trigger button),
+.custom-fields-table :deep(.tooltip-trigger > div) {
   border: none !important;
   background: transparent !important;
   box-shadow: none !important;
@@ -381,7 +382,8 @@ const getRowErrorsHash = (rowIndex: number) => {
   min-height: 40px;
 }
 
-.custom-fields-table :deep(.tooltip-trigger button) {
+.custom-fields-table :deep(.tooltip-trigger button),
+.custom-fields-table :deep(.tooltip-trigger > div) {
   justify-content: space-between !important;
 }
 
@@ -389,7 +391,10 @@ const getRowErrorsHash = (rowIndex: number) => {
 .custom-fields-table :deep(input):focus,
 .custom-fields-table :deep(textarea):focus,
 .custom-fields-table :deep(select):focus,
-.custom-fields-table :deep(.input-wrapper):focus-within {
+.custom-fields-table :deep(.input-wrapper):focus-within,
+.custom-fields-table :deep(.tooltip-trigger button):focus,
+.custom-fields-table :deep(.tooltip-trigger > div):focus,
+.custom-fields-table :deep(.tooltip-trigger > div):focus-within {
   background-color: hsla(var(--primary) / 0.03) !important;
   box-shadow: inset 0 0 0 2px hsla(var(--primary) / 0.1) !important;
 }
