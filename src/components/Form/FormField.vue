@@ -256,11 +256,18 @@ const fieldProps = computed(() => {
 
   // Switch
   if (type === 'switch') {
+    // Destructure to prevent form-level props (variant, size, rounded, error) from
+    // leaking into the Switch component which does not accept them.
+    const { variant: _v, size: _s, rounded: _r, error: _e, switchVariant: _sv, ...safeSwitchProps } = baseProps
     return {
-      ...baseProps,
+      ...safeSwitchProps,
       modelValue: !!props.value,
-      size: 'sm',
-      label: '', // Label handled externally
+      label: props.field.label as string | undefined,
+      labelI18n: props.field.labelI18n,
+      description: props.field.props?.description,
+      descriptionI18n: props.field.props?.descriptionI18n,
+      // Default to 'card' inside forms unless explicitly overridden via field.props.switchVariant
+      variant: (props.field.props?.switchVariant as 'basic' | 'card') ?? 'card',
     }
   }
 
@@ -675,7 +682,7 @@ const handleAddonAction = (addon: IFormAddon) => {
   <component
     v-else
     :is="fieldComponent"
-    :class="['switch', 'check'].includes(resolvedType as string) ? '' : 'w-full'"
+    :class="(resolvedType === 'check' || (resolvedType === 'switch' && field.props?.switchVariant === 'basic')) ? '' : 'w-full'"
     v-bind="{
       ...fieldProps,
       ...(field?.props || {}),
