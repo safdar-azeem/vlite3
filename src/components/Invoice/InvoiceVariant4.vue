@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { InvoiceData } from './types'
+import type { InvoiceData, InvoiceLabels } from './types'
 import { Price } from '../Price'
 import { DateTime } from '../DateTime'
 import { Barcode } from '../Barcode'
@@ -15,11 +15,14 @@ const props = withDefaults(
     compact?: boolean
     /** Toggles the display of the barcode text value underneath the bars */
     displayBarcodeValue?: boolean
+    /** Custom text labels for static UI strings */
+    labels?: InvoiceLabels
   }>(),
   { compact: false, displayBarcodeValue: false }
 )
 
 const d = computed(() => props.data)
+const l = computed(() => props.labels || {})
 const hasSize = computed(() => d.value.items.some((item) => !!item.size))
 const hasDiscount = computed(() => d.value.items.some((item) => item.discount !== undefined))
 </script>
@@ -37,16 +40,14 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
       '--invoice-tr-hover-bg': 'color-mix(in oklab, var(--color-muted) 40%, transparent)',
       '--invoice-td-valign': 'middle',
     }">
-    <!-- Hero header -->
     <div class="bg-primary text-primary-fg" :class="compact ? 'px-5 py-4' : 'px-6 py-5 sm:px-8'">
       <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
-        <!-- Left: title + invoice number + dates -->
         <div class="flex flex-col gap-3">
           <div>
             <h1
               class="font-black tracking-tighter uppercase leading-none text-primary-fg"
               :class="compact ? 'text-3xl' : 'text-4xl'">
-              {{ d.brandTitle || 'INVOICE' }}
+              {{ d.brandTitle || l.invoice || 'INVOICE' }}
             </h1>
             <div class="flex items-center gap-2.5 mt-1.5 flex-wrap">
               <span class="font-semibold opacity-80" :class="compact ? 'text-sm' : 'text-base'">
@@ -61,7 +62,7 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
               <p
                 class="font-semibold uppercase tracking-widest opacity-60"
                 :class="compact ? 'text-[9px] mb-0.5' : 'text-[10px] mb-1'">
-                Issue Date
+                {{ l.issued || 'Issue Date' }}
               </p>
               <DateTime
                 :value="d.issuedDate"
@@ -73,7 +74,7 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
               <p
                 class="font-semibold uppercase tracking-widest opacity-60"
                 :class="compact ? 'text-[9px] mb-0.5' : 'text-[10px] mb-1'">
-                Due Date
+                {{ l.due || 'Due Date' }}
               </p>
               <DateTime
                 :value="d.dueDate"
@@ -84,7 +85,6 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
           </div>
         </div>
 
-        <!-- Right: logo + brand name -->
         <div class="flex flex-col items-start sm:items-end gap-2 shrink-0">
           <div
             v-if="d.brandLogo"
@@ -106,15 +106,13 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
       </div>
     </div>
 
-    <!-- Body -->
     <div :class="compact ? 'p-5' : 'px-7 py-4.5'">
-      <!-- From / Billed To -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
         <div v-if="d.companyInfo">
           <p
             class="font-bold text-primary uppercase tracking-widest border-b border-primary/20 pb-1 inline-block mb-2"
             :class="compact ? 'text-[10px]' : 'text-[11px]'">
-            From
+            {{ l.from || 'From' }}
           </p>
           <div
             class="text-muted-foreground leading-relaxed"
@@ -139,7 +137,7 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
                 {{ d.companyInfo.website }}
               </p>
             </div>
-            <p v-if="d.companyInfo.taxId">Tax ID: {{ d.companyInfo.taxId }}</p>
+            <p v-if="d.companyInfo.taxId">{{ l.taxId || 'Tax ID' }}: {{ d.companyInfo.taxId }}</p>
           </div>
         </div>
 
@@ -147,7 +145,7 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
           <p
             class="font-bold text-primary uppercase tracking-widest border-b border-primary/20 pb-1 inline-block mb-2"
             :class="compact ? 'text-[10px]' : 'text-[11px]'">
-            Billed To
+            {{ l.billedTo || 'Billed To' }}
           </p>
           <div
             class="text-muted-foreground leading-relaxed"
@@ -170,30 +168,29 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
               <p v-if="d.customerInfo.phone">{{ d.customerInfo.phone }}</p>
             </div>
             <p v-if="d.customerInfo.taxId" class="text-xs font-semibold">
-              Tax ID: {{ d.customerInfo.taxId }}
+              {{ l.taxId || 'Tax ID' }}: {{ d.customerInfo.taxId }}
             </p>
           </div>
         </div>
       </div>
 
-      <!-- Items table -->
       <div
         class="border border-border rounded-lg overflow-x-auto"
         :class="compact ? 'mb-5' : 'mb-6'">
         <table class="invoice-table" :class="compact ? 'text-xs' : 'text-sm'">
           <thead class="invoice-thead uppercase" :class="compact ? 'text-[9px]' : 'text-[10px]'">
             <tr>
-              <th scope="col" class="invoice-th font-bold">Product</th>
-              <th scope="col" class="invoice-th invoice-text-right font-bold">Qty</th>
+              <th scope="col" class="invoice-th font-bold">{{ l.item || 'Product' }}</th>
+              <th scope="col" class="invoice-th invoice-text-right font-bold">{{ l.qty || 'Qty' }}</th>
               <th v-if="hasSize" scope="col" class="invoice-th invoice-text-right font-bold">
-                Size
+                {{ l.size || 'Size' }}
               </th>
-              <th scope="col" class="invoice-th invoice-text-right font-bold">Price</th>
+              <th scope="col" class="invoice-th invoice-text-right font-bold">{{ l.price || 'Price' }}</th>
               <th v-if="hasDiscount" scope="col" class="invoice-th invoice-text-right font-bold">
-                Discount
+                {{ l.discount || 'Discount' }}
               </th>
               <th scope="col" class="invoice-th invoice-text-right font-bold text-primary">
-                Total
+                {{ l.total || 'Total' }}
               </th>
             </tr>
           </thead>
@@ -221,7 +218,7 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
                       v-if="item.sku"
                       class="text-xs uppercase tracking-widest text-muted-foreground font-medium truncate mt-0.5"
                       :title="item.sku">
-                      SKU: {{ item.sku }}
+                      {{ l.sku || 'SKU' }}: {{ item.sku }}
                     </div>
                     <span
                       v-if="item.description && !compact"
@@ -265,11 +262,9 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
         </table>
       </div>
 
-      <!-- Bottom: notes/codes left, totals right -->
       <div
         class="flex flex-col-reverse md:flex-row justify-between items-start"
         :class="compact ? 'gap-5' : 'gap-6'">
-        <!-- Left: QR/Barcode + Notes -->
         <div class="w-full md:w-1/2 flex flex-col" :class="compact ? 'gap-3' : 'gap-4'">
           <div class="flex flex-row flex-wrap gap-3 items-center">
             <div
@@ -293,7 +288,7 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
             <h4
               class="font-bold text-muted-foreground uppercase tracking-widest mb-1.5"
               :class="compact ? 'text-[9px]' : 'text-[10px]'">
-              Notes &amp; Terms
+              {{ l.notes || 'Notes & Terms' }}
             </h4>
             <div
               class="text-muted-foreground leading-relaxed whitespace-pre-wrap p-3 bg-muted/30 rounded-lg border border-border"
@@ -303,7 +298,6 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
           </div>
         </div>
 
-        <!-- Right: Totals box -->
         <div class="w-full md:w-[42%] min-w-[260px]">
           <div
             class="border border-border rounded-lg"
@@ -331,7 +325,6 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
       </div>
     </div>
 
-    <!-- Footer bar -->
     <div
       class="bg-primary text-primary-foreground flex justify-center font-bold uppercase tracking-widest"
       :class="compact ? 'py-2 px-4 text-[9px]' : 'py-2.5 px-6 text-[10px]'">
