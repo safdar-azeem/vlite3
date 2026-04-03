@@ -34,7 +34,6 @@ const l = computed(() => props.labels || {})
       '--text-xs': compact ? '9.5px' : '10px',
     }"
     :class="compact ? 'max-w-xs' : 'max-w-sm sm:max-w-md'">
-
     <div class="text-center" :class="compact ? 'p-4 pb-3' : 'p-6 pb-4'">
       <div v-if="d.brandLogo" class="flex justify-center mb-2">
         <Avatar
@@ -100,19 +99,20 @@ const l = computed(() => props.labels || {})
               v-if="item.thumbnail"
               class="shrink-0 overflow-hidden border border-border mt-0.5"
               :class="compact ? 'w-8 h-8 rounded' : 'w-9 h-9 rounded-md'">
-              <Avatar
-                :src="item.thumbnail"
-                :alt="item.name"
-                class="w-full h-full"
-                rounded="sm" />
+              <Avatar :src="item.thumbnail" :alt="item.name" class="w-full h-full" rounded="sm" />
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex justify-between items-start gap-2">
                 <span
                   class="font-semibold text-foreground truncate"
                   :class="compact ? 'text-xs' : 'text-sm'"
-                  :title="item.name">{{ item.name }}</span>
-                <Price :value="item.total" class="shrink-0 font-bold text-foreground" :class="compact ? 'text-xs' : 'text-sm'" />
+                  :title="item.name"
+                  >{{ item.name }}</span
+                >
+                <Price
+                  :value="item.total"
+                  class="shrink-0 font-bold text-foreground"
+                  :class="compact ? 'text-xs' : 'text-sm'" />
               </div>
               <div
                 v-if="item.sku"
@@ -120,7 +120,9 @@ const l = computed(() => props.labels || {})
                 :class="compact ? 'text-[9px]' : 'text-[10px]'">
                 {{ l.sku || 'SKU' }}: {{ item.sku }}
               </div>
-              <div class="text-muted-foreground flex flex-wrap gap-x-1.5 gap-y-0.5 mt-0.5" :class="compact ? 'text-[10px]' : 'text-xs'">
+              <div
+                class="text-muted-foreground flex flex-wrap gap-x-1.5 gap-y-0.5 mt-0.5"
+                :class="compact ? 'text-[10px]' : 'text-xs'">
                 <span>{{ item.quantity }} x</span>
                 <Price :value="item.price" />
                 <span v-if="item.size" class="text-muted-foreground">· {{ item.size }}</span>
@@ -163,12 +165,10 @@ const l = computed(() => props.labels || {})
 
     <div :class="compact ? 'px-4 py-3 text-center space-y-3' : 'px-5 py-4 text-center space-y-4'">
       <div class="flex flex-row flex-wrap items-center justify-center gap-3">
-        <div v-if="d.qrcode" class="p-1 bg-white border border-border rounded">
+        <div v-if="d.qrcode" class="bg-white">
           <QRCode :value="d.qrcode" :size="compact ? 48 : 64" />
         </div>
-        <div
-          v-if="d.barcode"
-          class="bg-white p-1 rounded border border-border overflow-hidden">
+        <div v-if="d.barcode" class="bg-white overflow-hidden">
           <Barcode
             :value="d.barcode"
             format="CODE128"
@@ -178,11 +178,17 @@ const l = computed(() => props.labels || {})
         </div>
       </div>
 
-      <div v-if="d.notes" class="text-muted-foreground whitespace-pre-wrap" :class="compact ? 'text-[10px]' : 'text-xs'">
+      <div
+        v-if="d.notes"
+        class="text-muted-foreground whitespace-pre-wrap"
+        :class="compact ? 'text-[10px]' : 'text-xs'">
         {{ d.notes }}
       </div>
 
-      <div v-if="d.footerText" class="text-muted-foreground font-medium uppercase tracking-widest" :class="compact ? 'text-[9px]' : 'text-[10px]'">
+      <div
+        v-if="d.footerText"
+        class="text-muted-foreground font-medium uppercase tracking-widest"
+        :class="compact ? 'text-[9px]' : 'text-[10px]'">
         {{ d.footerText }}
       </div>
     </div>
