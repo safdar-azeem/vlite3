@@ -85,14 +85,18 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
         <div
           v-if="d.issuedDate"
           class="flex items-center gap-3 border-r-[1.5px] pr-3 border-gray-300">
-          <span class="text-muted-foreground uppercase tracking-wider font-medium"> {{ l.issued || 'Issued' }} </span>
+          <span class="text-muted-foreground uppercase tracking-wider font-medium">
+            {{ l.issued || 'Issued' }}
+          </span>
           <DateTime
             :value="d.issuedDate"
             type="date"
             class="font-semibold text-foreground tabular-nums" />
         </div>
         <div v-if="d.dueDate" class="flex items-center gap-3 border-r-[1.5px] pr-3 border-gray-250">
-          <span class="text-muted-foreground uppercase tracking-wider font-medium"> {{ l.due || 'Due' }} </span>
+          <span class="text-muted-foreground uppercase tracking-wider font-medium">
+            {{ l.due || 'Due' }}
+          </span>
           <DateTime
             :value="d.dueDate"
             type="date"
@@ -131,7 +135,9 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
             <p v-if="d.companyInfo.country">{{ d.companyInfo.country }}</p>
             <p v-if="d.companyInfo.email" class="pt-0.5">{{ d.companyInfo.email }}</p>
             <p v-if="d.companyInfo.phone">{{ d.companyInfo.phone }}</p>
-            <p v-if="d.companyInfo.taxId" class="pt-0.5">{{ l.taxId || 'Tax ID' }}: {{ d.companyInfo.taxId }}</p>
+            <p v-if="d.companyInfo.taxId" class="pt-0.5">
+              {{ l.taxId || 'Tax ID' }}: {{ d.companyInfo.taxId }}
+            </p>
           </div>
         </div>
 
@@ -156,7 +162,9 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
             <p v-if="d.customerInfo.country">{{ d.customerInfo.country }}</p>
             <p v-if="d.customerInfo.email" class="pt-0.5">{{ d.customerInfo.email }}</p>
             <p v-if="d.customerInfo.phone">{{ d.customerInfo.phone }}</p>
-            <p v-if="d.customerInfo.taxId" class="pt-0.5">{{ l.taxId || 'Tax ID' }}: {{ d.customerInfo.taxId }}</p>
+            <p v-if="d.customerInfo.taxId" class="pt-0.5">
+              {{ l.taxId || 'Tax ID' }}: {{ d.customerInfo.taxId }}
+            </p>
           </div>
         </div>
       </div>
@@ -168,9 +176,13 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
           <tr>
             <th scope="col" class="invoice-th">{{ l.item || 'Description' }}</th>
             <th scope="col" class="invoice-th invoice-text-right">{{ l.qty || 'Qty' }}</th>
-            <th v-if="hasSize" scope="col" class="invoice-th invoice-text-right">{{ l.size || 'Size' }}</th>
+            <th v-if="hasSize" scope="col" class="invoice-th invoice-text-right">
+              {{ l.size || 'Size' }}
+            </th>
             <th scope="col" class="invoice-th invoice-text-right">{{ l.price || 'Unit Price' }}</th>
-            <th v-if="hasDiscount" scope="col" class="invoice-th invoice-text-right">{{ l.discount || 'Discount' }}</th>
+            <th v-if="hasDiscount" scope="col" class="invoice-th invoice-text-right">
+              {{ l.discount || 'Discount' }}
+            </th>
             <th scope="col" class="invoice-th invoice-text-right">{{ l.total || 'Total' }}</th>
           </tr>
         </thead>
@@ -259,10 +271,10 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
           </div>
 
           <div v-if="d.qrcode || d.barcode" class="flex flex-row flex-wrap gap-3 items-center">
-            <div v-if="d.qrcode" class="shrink-0 p-1 bg-white border border-border">
+            <div v-if="d.qrcode" class="shrink-0">
               <QRCode :value="d.qrcode" :size="compact ? 48 : 56" />
             </div>
-            <div v-if="d.barcode" class="shrink-0 p-1.5 bg-white border border-border">
+            <div v-if="d.barcode" class="shrink-0">
               <Barcode
                 :value="d.barcode"
                 format="CODE128"
