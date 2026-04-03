@@ -37,5 +37,6 @@ const resolvedVariant = computed(() => {
     :variant="variant"
     :compact="compact"
     :display-barcode-value="displayBarcodeValue"
+    :labels="props.labels"
   />
 </template>
