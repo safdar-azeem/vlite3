@@ -29,8 +29,13 @@ const loginSchema: IForm[] = [
     required: true,
   },
   {
+    label: 'Remember Me',
+
     name: 'rememberMe',
     type: 'switch',
+    props: {
+      variant: 'basic',
+    },
   },
 ]
 
