@@ -29,5 +29,6 @@ const props = withDefaults(defineProps<Props>(), {
     :dir="direction"
     v-bind="triggerProps"
     class="w-full justify-between! font-normal px-2.5!"
-    :class="className" />
+    :class="className"
+    :data-testid="$attrs['data-testid'] || 'dropdown-trigger'" />
 </template>
