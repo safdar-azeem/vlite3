@@ -276,7 +276,7 @@ const getSafeLabel = (field: IForm) => {
 
         <div
           class="relative"
-          :class="['switch', 'check'].includes(getResolvedType(field) as string) ? 'w-auto' : 'w-full'"
+          :class="(getResolvedType(field) === 'check' || (getResolvedType(field) === 'switch' && field.props?.switchVariant === 'basic')) ? 'w-auto' : 'w-full'"
           @focusin="handleFocusIn(field.name)"
           @focusout="handleFocusOut(field.name)">
           <label
@@ -336,8 +336,12 @@ const getSafeLabel = (field: IForm) => {
             @addonAction="handleAddonAction" />
         </div>
 
+        <!-- For 'check' always show external label. For 'switch', only show external label when switchVariant is 'basic' (card variant renders label internally). -->
         <Label
-          v-if="getFieldLabel(field) && (getResolvedType(field) === 'switch' || getResolvedType(field) === 'check')"
+          v-if="
+            (getResolvedType(field) === 'check') ||
+            (getResolvedType(field) === 'switch' && field.props?.switchVariant === 'basic')
+          "
           :for="field.name"
           class="ml-2 text-sm font-medium cursor-pointer">
           {{ getFieldLabel(field) }}
@@ -358,8 +362,7 @@ const getSafeLabel = (field: IForm) => {
   flex-direction: column;
 }
 
-/* Handle switch/checkbox inline layout */
-.form-field-item:has([role='switch']),
+/* Handle checkbox inline layout */
 .form-field-item:has([role='checkbox']) {
   flex-direction: row;
   align-items: center;
