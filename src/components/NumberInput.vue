@@ -262,7 +262,8 @@ onBeforeUnmount(() => {
       @pointerup="stopContinuous"
       @pointerleave="stopContinuous"
       @pointercancel="stopContinuous"
-      @contextmenu.prevent>
+      @contextmenu.prevent
+      :data-testid="$attrs['data-testid'] ? `${$attrs['data-testid']}-dec` : (name ? `number-${name}-dec` : (id ? `number-${id}-dec` : 'number-input-dec'))">
       <Icon icon="lucide:minus" :class="sizeStyles.icon" />
     </button>
 
@@ -281,7 +282,8 @@ onBeforeUnmount(() => {
       @focus="emit('focus', $event)"
       @blur="handleBlur"
       @keydown.up.prevent="increment"
-      @keydown.down.prevent="decrement" />
+      @keydown.down.prevent="decrement"
+      :data-testid="$attrs['data-testid'] || (name ? `number-${name}` : (id ? `number-${id}` : 'number-input'))" />
 
     <button
       tabindex="-1"
@@ -297,7 +299,8 @@ onBeforeUnmount(() => {
       @pointerup="stopContinuous"
       @pointerleave="stopContinuous"
       @pointercancel="stopContinuous"
-      @contextmenu.prevent>
+      @contextmenu.prevent
+      :data-testid="$attrs['data-testid'] ? `${$attrs['data-testid']}-inc` : (name ? `number-${name}-inc` : (id ? `number-${id}-inc` : 'number-input-inc'))">
       <Icon icon="lucide:plus" :class="sizeStyles.icon" />
     </button>
 
@@ -312,7 +315,8 @@ onBeforeUnmount(() => {
           @pointerup="stopContinuous"
           @pointerleave="stopContinuous"
           @pointercancel="stopContinuous"
-          @contextmenu.prevent>
+          @contextmenu.prevent
+          :data-testid="$attrs['data-testid'] ? `${$attrs['data-testid']}-inc` : (name ? `number-${name}-inc` : (id ? `number-${id}-inc` : 'number-input-inc'))">
           <Icon
             class="text-gray-700/85!"
             icon="mynaui:chevron-up-solid"
@@ -327,7 +331,8 @@ onBeforeUnmount(() => {
           @pointerup="stopContinuous"
           @pointerleave="stopContinuous"
           @pointercancel="stopContinuous"
-          @contextmenu.prevent>
+          @contextmenu.prevent
+          :data-testid="$attrs['data-testid'] ? `${$attrs['data-testid']}-dec` : (name ? `number-${name}-dec` : (id ? `number-${id}-dec` : 'number-input-dec'))">
           <Icon
             class="text-gray-700/85!"
             icon="mynaui:chevron-down-solid"
