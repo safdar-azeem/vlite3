@@ -3,14 +3,14 @@
  * ThumbnailSelector
  *
  * Standalone + form-integrated image picker that lets users:
- *  - Upload multiple images (via the global VLite upload service, same as AvatarUploader / FilePicker)
- *  - Pick one image as the "thumbnail"
- *  - Remove individual images
+ * - Upload multiple images (via the global VLite upload service, same as AvatarUploader / FilePicker)
+ * - Pick one image as the "thumbnail"
+ * - Remove individual images
  *
  * Emits:
- *  - update:images   → string[]        (all image URLs)
- *  - update:thumbnail → string | null  (selected thumbnail URL)
- *  - change          → { images, thumbnail }
+ * - update:images   → string[]        (all image URLs)
+ * - update:thumbnail → string | null  (selected thumbnail URL)
+ * - change          → { images, thumbnail }
  *
  * When used inside <Form />, FormField wires these through `useForm` and the
  * upload service processes File/base64 values before submission — identical to
@@ -163,11 +163,9 @@ const handleDragUpdate = (newImages: string[]) => {
 </script>
 
 <template>
-  <div class="vl-thumbnail-selector flex flex-col gap-3">
-    <!-- Optional label -->
+  <div class="vl-thumbnail-selector flex flex-col gap-3" :data-testid="$attrs['data-testid'] || ($attrs.name ? `thumbnail-${$attrs.name}` : 'thumbnail-selector')">
     <p v-if="label" class="text-sm font-medium text-foreground">{{ label }}</p>
 
-    <!-- ── Large preview — 1:1 square, height auto-sizes to width ────────── -->
     <div
       class="vl-thumbnail-selector__preview w-full rounded-lg border border-border bg-muted/30 overflow-hidden flex items-center justify-center"
       style="aspect-ratio: 1/1">
@@ -182,15 +180,6 @@ const handleDragUpdate = (newImages: string[]) => {
       </div>
     </div>
 
-    <!-- ── Image grid + upload trigger ───────────────────────────────────── -->
-    <!--
-      LAYOUT: flex-wrap so cards tile into rows and never overflow the container.
-      The upload button is always the last DOM child so it sits immediately after
-      the last image card on whichever row it falls.
-
-      PERFORMANCE: contain: layout style isolates repaints to this subtree
-      when cards are hovered / selected, preventing full-page recomposition.
-    -->
     <VueDraggable
       :model-value="internalImages"
       @update:model-value="handleDragUpdate"
@@ -202,13 +191,6 @@ const handleDragUpdate = (newImages: string[]) => {
       ghost-class="opacity-50"
       class="vl-thumbnail-selector__grid grid grid-cols-3 sm:grid-cols-4 gap-2"
       style="will-change: transform; contain: layout style">
-      <!-- Uploaded image cards.
-           HOVER FIX: We intentionally do NOT use Tailwind's `group` /
-           `group-hover` pattern here. `group` placed on the flex container
-           causes ALL group-hover children to activate when anything inside
-           the container is hovered. Instead, delete button visibility is
-           controlled by a scoped CSS rule so hover is strictly isolated to
-           the card being pointed at. -->
       <div
         v-for="(url, index) in internalImages"
         :key="url"
@@ -221,10 +203,8 @@ const handleDragUpdate = (newImages: string[]) => {
           disabled || loading ? 'pointer-events-none opacity-60' : '',
         ]"
         @click="selectThumbnail(url)">
-        <!-- Image preview -->
         <img :src="url" class="w-full h-full object-cover" :alt="`${txtImage} ${index + 1}`" />
 
-        <!-- Drag handle -->
         <div
           v-if="!disabled"
           class="drag-handle vl-thumbnail-selector__drag-handle absolute top-1 left-1 z-10 w-6 h-6 flex items-center justify-center rounded bg-background/60 backdrop-blur-sm border border-border text-muted-foreground shadow-sm cursor-grab active:cursor-grabbing hover:bg-background/90 hover:text-foreground opacity-0 transition-opacity duration-150"
@@ -233,13 +213,6 @@ const handleDragUpdate = (newImages: string[]) => {
           <Icon icon="lucide:grip-horizontal" class="w-3.5 h-3.5" />
         </div>
 
-        <!--
-          Delete button — visibility is driven purely by the scoped CSS rule
-          `.vl-thumbnail-selector__card:hover .vl-thumbnail-selector__delete`
-          below, so it only appears when THIS card is directly hovered.
-          The `opacity-0` base class hides it by default; the scoped rule
-          overrides it on card hover only.
-        -->
         <button
           v-if="!disabled"
           type="button"
@@ -249,7 +222,6 @@ const handleDragUpdate = (newImages: string[]) => {
           <Icon icon="lucide:x" class="w-3 h-3" />
         </button>
 
-        <!-- Selected / thumbnail indicator badge -->
         <div
           v-if="internalThumbnail === url"
           class="absolute bottom-0.5 left-0.5 z-10 w-4 h-4 flex items-center justify-center rounded-full bg-primary pointer-events-none">
@@ -257,11 +229,6 @@ const handleDragUpdate = (newImages: string[]) => {
         </div>
       </div>
 
-      <!-- Upload trigger — `display: contents` on the FilePicker wrapper makes
-           the component's root element "transparent" to the flex layout so the
-           inner <button> participates directly as a flex item, sitting flush
-           after the last image card on the same row and wrapping naturally
-           with the rest of the grid when the row is full. -->
       <FilePicker
         v-if="!disabled"
         :disabled="disabled || loading"
