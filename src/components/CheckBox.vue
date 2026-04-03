@@ -107,6 +107,7 @@ const iconClass = computed(() => {
       :disabled="disabled"
       :class="buttonClass"
       :id="id"
+      :data-testid="$attrs['data-testid'] || ($attrs.name ? `checkbox-${$attrs.name}` : (id ? `checkbox-${id}` : (displayLabel ? `checkbox-${displayLabel.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : 'checkbox')))"
       @click="toggle">
       <div
         v-if="state === 'checked' || state === 'indeterminate'"
