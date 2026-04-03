@@ -61,7 +61,7 @@ const initials = computed(() => {
 const sizeClasses: Record<AvatarSize, string> = {
   xs: 'h-6 w-6 text-[10px]',
   sm: 'h-7.5 w-7.5 text-xs',
-  md: 'h-10 w-10 text-sm',
+  md: 'h-9.5 w-9.5 text-sm',
   lg: 'h-14 w-14 text-base',
   xl: 'h-18 w-18 text-lg',
   '2xl': 'h-22 w-22 text-xl',
