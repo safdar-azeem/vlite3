@@ -241,7 +241,8 @@ const innerPickerValue = computed(() => {
           :icon="icon || 'lucide:calendar'"
           :disabled="disabled"
           v-bind="btnProps"
-          class="w-full justify-start text-left font-normal" />
+          class="w-full justify-start text-left font-normal"
+          :data-testid="$attrs['data-testid'] || ($attrs.name ? `datepicker-${$attrs.name}` : 'datepicker')" />
       </slot>
     </template>
 
@@ -280,6 +281,7 @@ const innerPickerValue = computed(() => {
       :icon="icon || (mode === 'time' ? 'lucide:clock' : 'lucide:calendar')"
       :disabled="disabled"
       v-bind="btnProps"
-      class="w-full justify-start text-left font-normal" />
+      class="w-full justify-start text-left font-normal"
+      :data-testid="$attrs['data-testid'] || ($attrs.name ? `timepicker-${$attrs.name}` : 'timepicker')" />
   </TimePicker>
 </template>
