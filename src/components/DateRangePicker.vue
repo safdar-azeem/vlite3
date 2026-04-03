@@ -243,7 +243,8 @@ const handleQuickRangeSelect = (option: IDropdownOption) => {
         :size="size || 'md'"
         :disabled="disabled"
         class="w-full justify-between text-left font-normal"
-        :class="[triggerClass, { 'ring-1 ring-ring ring-offset-[1]': isOpen }]">
+        :class="[triggerClass, { 'ring-1 ring-ring ring-offset-[1]': isOpen }]"
+        :data-testid="$attrs['data-testid'] || ($attrs.name ? `daterange-${$attrs.name}` : 'daterange')">
         <div class="flex items-center justify-start gap-2 w-full">
           <span :class="{ 'text-muted-foreground': !range.startDate }">
             {{ range.startDate ? formatDate(range.startDate) : placeholderStart }}
