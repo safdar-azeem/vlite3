@@ -94,6 +94,25 @@ export interface InvoiceData {
   footerText?: string
 }
 
+export interface InvoiceLabels {
+  invoice?: string
+  invoiceNumber?: string
+  issued?: string
+  due?: string
+  from?: string
+  billedTo?: string
+  status?: string
+  item?: string
+  price?: string
+  qty?: string
+  size?: string
+  discount?: string
+  total?: string
+  notes?: string
+  sku?: string
+  taxId?: string
+}
+
 export interface InvoiceProps {
   data: InvoiceData
   variant?: InvoiceVariant
@@ -106,4 +125,8 @@ export interface InvoiceProps {
    * Whether to display the text value underneath the barcode
    */
   displayBarcodeValue?: boolean
+  /**
+   * Custom text labels for static UI strings (e.g. overriding "Invoice", "Issued")
+   */
+  labels?: InvoiceLabels
 }
