@@ -111,9 +111,11 @@ const logEvent = (type: string, payload: any) => {
             @onEdit="(item) => logEvent('Edited', item)"
             @onDelete="(item) => logEvent('Deleted', item)"
             @onReorder="
-              (x) => {
-                console.log('x', x)
-              }
+              (payload) =>
+                logEvent(
+                  'Reordered',
+                  `ID: ${payload.id} -> Parent: ${payload.parentId ?? 'Root'} (Pos: ${payload.position})`
+                )
             " />
         </div>
 
