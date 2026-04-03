@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { InvoiceData } from './types'
+import type { InvoiceData, InvoiceLabels } from './types'
 import { Price } from '../Price'
 import { DateTime } from '../DateTime'
 import { Barcode } from '../Barcode'
@@ -16,11 +16,14 @@ const props = withDefaults(
     compact?: boolean
     /** Toggles the display of the barcode text value underneath the bars */
     displayBarcodeValue?: boolean
+    /** Custom text labels for static UI strings */
+    labels?: InvoiceLabels
   }>(),
   { compact: false, displayBarcodeValue: false }
 )
 
 const d = computed(() => props.data)
+const l = computed(() => props.labels || {})
 </script>
 
 <template>
@@ -32,7 +35,6 @@ const d = computed(() => props.data)
     }"
     :class="compact ? 'max-w-xs' : 'max-w-sm sm:max-w-md'">
 
-    <!-- Header -->
     <div class="text-center" :class="compact ? 'p-4 pb-3' : 'p-6 pb-4'">
       <div v-if="d.brandLogo" class="flex justify-center mb-2">
         <Avatar
@@ -56,41 +58,39 @@ const d = computed(() => props.data)
           {{ d.companyInfo.city }} {{ d.companyInfo.state }} {{ d.companyInfo.zip }}
         </p>
         <p v-if="d.companyInfo.phone">{{ d.companyInfo.phone }}</p>
-        <p v-if="d.companyInfo.taxId">VAT: {{ d.companyInfo.taxId }}</p>
+        <p v-if="d.companyInfo.taxId">{{ l.taxId || 'VAT' }}: {{ d.companyInfo.taxId }}</p>
       </div>
     </div>
 
     <div class="border-t border-dashed border-border" :class="compact ? 'mx-3' : 'mx-5'"></div>
 
-    <!-- Meta info -->
     <div :class="compact ? 'px-4 py-2.5 space-y-1 text-xs' : 'px-5 py-3.5 space-y-1.5 text-sm'">
       <div class="flex justify-between items-center">
-        <span class="text-muted-foreground font-medium">Receipt #</span>
+        <span class="text-muted-foreground font-medium">{{ l.invoiceNumber || 'Receipt #' }}</span>
         <span class="font-semibold text-foreground">{{ d.invoiceNumber }}</span>
       </div>
       <div v-if="d.issuedDate" class="flex justify-between items-center">
-        <span class="text-muted-foreground font-medium">Date</span>
+        <span class="text-muted-foreground font-medium">{{ l.issued || 'Date' }}</span>
         <DateTime :value="d.issuedDate" type="dateTime" class="font-medium text-foreground" />
       </div>
       <div v-if="d.customerInfo?.name" class="flex justify-between items-center">
-        <span class="text-muted-foreground font-medium">Customer</span>
+        <span class="text-muted-foreground font-medium">{{ l.billedTo || 'Customer' }}</span>
         <span class="font-semibold text-foreground">{{ d.customerInfo.name }}</span>
       </div>
       <div v-if="d.status" class="flex justify-between items-center">
-        <span class="text-muted-foreground font-medium">Status</span>
+        <span class="text-muted-foreground font-medium">{{ l.status || 'Status' }}</span>
         <StatusChip :status="d.status" hide-icon size="small" />
       </div>
     </div>
 
     <div class="border-t border-dashed border-border" :class="compact ? 'mx-3' : 'mx-5'"></div>
 
-    <!-- Items -->
     <div :class="compact ? 'px-4 py-2.5' : 'px-5 py-3.5'">
       <div
         class="flex justify-between font-semibold text-muted-foreground uppercase tracking-wider mb-2"
         :class="compact ? 'text-[10px]' : 'text-xs'">
-        <span>Item</span>
-        <span>Amount</span>
+        <span>{{ l.item || 'Item' }}</span>
+        <span>{{ l.total || 'Amount' }}</span>
       </div>
 
       <div :class="compact ? 'space-y-2.5' : 'space-y-3.5'">
@@ -118,7 +118,7 @@ const d = computed(() => props.data)
                 v-if="item.sku"
                 class="text-muted-foreground uppercase tracking-tight truncate mt-0.5"
                 :class="compact ? 'text-[9px]' : 'text-[10px]'">
-                SKU: {{ item.sku }}
+                {{ l.sku || 'SKU' }}: {{ item.sku }}
               </div>
               <div class="text-muted-foreground flex flex-wrap gap-x-1.5 gap-y-0.5 mt-0.5" :class="compact ? 'text-[10px]' : 'text-xs'">
                 <span>{{ item.quantity }} x</span>
@@ -140,7 +140,6 @@ const d = computed(() => props.data)
 
     <div class="border-t border-dashed border-border" :class="compact ? 'mx-3' : 'mx-5'"></div>
 
-    <!-- Totals -->
     <div :class="compact ? 'px-4 py-2.5 space-y-1' : 'px-5 py-3 space-y-1.5'">
       <div
         v-for="(total, idx) in d.totals"
@@ -162,7 +161,6 @@ const d = computed(() => props.data)
 
     <div class="border-t border-dashed border-border" :class="compact ? 'mx-3' : 'mx-5'"></div>
 
-    <!-- Footer: QR / Barcode / Notes -->
     <div :class="compact ? 'px-4 py-3 text-center space-y-3' : 'px-5 py-4 text-center space-y-4'">
       <div class="flex flex-row flex-wrap items-center justify-center gap-3">
         <div v-if="d.qrcode" class="p-1 bg-white border border-border rounded">
