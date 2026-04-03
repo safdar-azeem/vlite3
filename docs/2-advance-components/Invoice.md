@@ -4,7 +4,7 @@
 
 ### Description
 
-A highly-sophisticated, production-grade invoice and receipt engine for Vue 3. It provides 4 distinct visual variants designed to handle everything from legal enterprise billing to thermal POS receipts and modern service invoices. 
+A highly-sophisticated, production-grade invoice and receipt engine for Vue 3. It provides 4 distinct visual variants designed to handle everything from legal enterprise billing to thermal POS receipts and modern service invoices.
 
 The component is strictly typed, accessible, and print-optimized with built-in support for barcodes (CODE128), QR codes, and semantic status coloring.
 
@@ -12,105 +12,131 @@ The component is strictly typed, accessible, and print-optimized with built-in s
 
 ### Props
 
-| Prop | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `data` | `InvoiceData` | **Required** | The complete data object powering the invoice. |
-| `variant` | `InvoiceVariant` | `'Variant1'` | selects the visual style: `'Variant1'`, `'Variant2'`, `'Variant3'`, or `'Variant4'`. |
-| `compact` | `boolean` | `false` | When true, scales down padding and typography. See **CSS Variables** for fine-tuning. |
+| Prop      | Type             | Default      | Description                                                                           |
+| :-------- | :--------------- | :----------- | :------------------------------------------------------------------------------------ |
+| `data`    | `InvoiceData`    | **Required** | The complete data object powering the invoice.                                        |
+| `variant` | `InvoiceVariant` | `'Variant1'` | selects the visual style: `'Variant1'`, `'Variant2'`, `'Variant3'`, or `'Variant4'`.  |
+| `compact` | `boolean`        | `false`      | When true, scales down padding and typography. See **CSS Variables** for fine-tuning. |
+| `labels`  | `InvoiceLabels`  | `{}`         | Custom static text labels (e.g. overriding "Invoice", "Issued").                      |
 
 ---
 
 ### Data Models (API Reference)
 
 #### `InvoiceData`
+
 The root object passed to the `:data` prop.
 
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `invoiceNumber` | `string` | **Required.** Primary identifier (e.g., "INV-2024-001"). |
-| `items` | `InvoiceLineItem[]` | **Required.** Array of products/services. |
-| `totals` | `InvoiceTotal[]` | **Required.** Array of summary rows (Subtotal, Tax, Final). |
-| `brandTitle` | `string?` | Custom header title (e.g., "COMMERCIAL INVOICE"). Defaults to "Invoice". |
-| `brandName` | `string?` | Your company name shown in the header. |
-| `brandLogo` | `string?` | URL for the brand logo. Transparent PNG/SVG recommended. |
-| `status` | `string?` | Raw status string (e.g. "Paid"). Affects semantic coloring. |
-| `issuedDate` | `string \| Date?` | Date the invoice was generated. |
-| `dueDate` | `string \| Date?` | Deadline for payment. |
-| `companyInfo` | `InvoiceCompanyInfo?` | Nested object for issuer details (From). |
-| `customerInfo` | `InvoiceCustomerInfo?` | Nested object for recipient details (To). |
-| `barcode` | `string?` | Renders a CODE128 barcode at the bottom. |
-| `qrcode` | `string?` | Renders a QR code (ideal for payment/tracking URLs). |
-| `notes` | `string?` | Multi-line text for memos or additional terms. |
-| `footerText` | `string?` | Legal small print at the very bottom. |
+| Field           | Type                   | Description                                                              |
+| :-------------- | :--------------------- | :----------------------------------------------------------------------- |
+| `invoiceNumber` | `string`               | **Required.** Primary identifier (e.g., "INV-2024-001").                 |
+| `items`         | `InvoiceLineItem[]`    | **Required.** Array of products/services.                                |
+| `totals`        | `InvoiceTotal[]`       | **Required.** Array of summary rows (Subtotal, Tax, Final).              |
+| `brandTitle`    | `string?`              | Custom header title (e.g., "COMMERCIAL INVOICE"). Defaults to "Invoice". |
+| `brandName`     | `string?`              | Your company name shown in the header.                                   |
+| `brandLogo`     | `string?`              | URL for the brand logo. Transparent PNG/SVG recommended.                 |
+| `status`        | `string?`              | Raw status string (e.g. "Paid"). Affects semantic coloring.              |
+| `issuedDate`    | `string \| Date?`      | Date the invoice was generated.                                          |
+| `dueDate`       | `string \| Date?`      | Deadline for payment.                                                    |
+| `companyInfo`   | `InvoiceCompanyInfo?`  | Nested object for issuer details (From).                                 |
+| `customerInfo`  | `InvoiceCustomerInfo?` | Nested object for recipient details (To).                                |
+| `barcode`       | `string?`              | Renders a CODE128 barcode at the bottom.                                 |
+| `qrcode`        | `string?`              | Renders a QR code (ideal for payment/tracking URLs).                     |
+| `notes`         | `string?`              | Multi-line text for memos or additional terms.                           |
+| `footerText`    | `string?`              | Legal small print at the very bottom.                                    |
 
 #### `InvoiceLineItem`
+
 Fields for individual row items in the document.
 
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `id` | `string \| number` | Unique item ID (used as Vue key). |
-| `name` | `string` | **Required.** Display name of the product/service. |
-| `quantity` | `number` | **Required.** Quantity of items. |
-| `price` | `number` | **Required.** Unit price (before discounts). |
-| `total` | `number` | **Required.** Final calculated total for the line. |
-| `sku` | `string?` | Stock Keeping Unit or internal part number. |
-| `thumbnail` | `string?` | URL for a small product preview image. |
-| `description` | `string?` | Detailed subtitle (hidden in compact/POS views). |
-| `size` | `string?` | Specific variant detail (e.g., "Large", "42", "Blue"). |
-| `discount` | `number?` | The amount subtracted from the subtotal for this line. |
-| `discountLabel` | `string?` | Short text for the discount (e.g., "10% OFF", "BOGO"). |
+| Field           | Type               | Description                                            |
+| :-------------- | :----------------- | :----------------------------------------------------- |
+| `id`            | `string \| number` | Unique item ID (used as Vue key).                      |
+| `name`          | `string`           | **Required.** Display name of the product/service.     |
+| `quantity`      | `number`           | **Required.** Quantity of items.                       |
+| `price`         | `number`           | **Required.** Unit price (before discounts).           |
+| `total`         | `number`           | **Required.** Final calculated total for the line.     |
+| `sku`           | `string?`          | Stock Keeping Unit or internal part number.            |
+| `thumbnail`     | `string?`          | URL for a small product preview image.                 |
+| `description`   | `string?`          | Detailed subtitle (hidden in compact/POS views).       |
+| `size`          | `string?`          | Specific variant detail (e.g., "Large", "42", "Blue"). |
+| `discount`      | `number?`          | The amount subtracted from the subtotal for this line. |
+| `discountLabel` | `string?`          | Short text for the discount (e.g., "10% OFF", "BOGO"). |
 
 #### `InvoiceCustomerInfo` & `InvoiceCompanyInfo`
+
 Detailed contact structures for both parties.
 
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `name` | `string` | Person or Entity name. |
-| `address` | `string?` | Street address / Suite. |
-| `city` | `string?` | City name. |
-| `state` | `string?` | State / Province / Region. |
-| `zip` | `string?` | Postal / Zip code. |
-| `country` | `string?` | Country name. |
-| `email` | `string?` | Contact email address. |
-| `phone` | `string?` | Contact phone number. |
-| `website` | `string?` | (Company Only) Corporate website URL. |
-| `taxId` | `string?` | VAT #, Tax #, or Business Registration #. |
+| Field     | Type      | Description                               |
+| :-------- | :-------- | :---------------------------------------- |
+| `name`    | `string`  | Person or Entity name.                    |
+| `address` | `string?` | Street address / Suite.                   |
+| `city`    | `string?` | City name.                                |
+| `state`   | `string?` | State / Province / Region.                |
+| `zip`     | `string?` | Postal / Zip code.                        |
+| `country` | `string?` | Country name.                             |
+| `email`   | `string?` | Contact email address.                    |
+| `phone`   | `string?` | Contact phone number.                     |
+| `website` | `string?` | (Company Only) Corporate website URL.     |
+| `taxId`   | `string?` | VAT #, Tax #, or Business Registration #. |
 
 #### `InvoiceTotal`
+
 Defines the final summary rows.
 
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `label` | `string` | Display label (e.g., "VAT (15%)"). |
-| `value` | `number` | The numeric amount. |
-| `isSubtotal` | `boolean?` | If true, applies light emphasis styling. |
-| `isTax` | `boolean?` | If true, identifies row as a tax type. |
-| `isDiscount` | `boolean?` | If true, identifies row as a deduction. |
+| Field          | Type       | Description                                                   |
+| :------------- | :--------- | :------------------------------------------------------------ |
+| `label`        | `string`   | Display label (e.g., "VAT (15%)").                            |
+| `value`        | `number`   | The numeric amount.                                           |
+| `isSubtotal`   | `boolean?` | If true, applies light emphasis styling.                      |
+| `isTax`        | `boolean?` | If true, identifies row as a tax type.                        |
+| `isDiscount`   | `boolean?` | If true, identifies row as a deduction.                       |
 | `isGrandTotal` | `boolean?` | If true, renders large, bold, and with a primary color theme. |
+
+#### `InvoiceLabels`
+
+Dictionary used to override static English text inside the component via the `labels` prop.
+
+| Field      | Type      | Description                         |
+| :--------- | :-------- | :---------------------------------- |
+| `invoice`  | `string?` | Replaces "Invoice".                 |
+| `issued`   | `string?` | Replaces "Issued" or "Issue Date".  |
+| `due`      | `string?` | Replaces "Due" or "Due Date".       |
+| `from`     | `string?` | Replaces "From".                    |
+| `billedTo` | `string?` | Replaces "Billed To" or "Customer". |
+| `item`     | `string?` | Replaces "Description" or "Item".   |
+| `price`    | `string?` | Replaces "Unit Price" or "Price".   |
+| `qty`      | `string?` | Replaces "Qty".                     |
+| `total`    | `string?` | Replaces "Total" or "Amount".       |
+| `notes`    | `string?` | Replaces "Notes".                   |
+| `taxId`    | `string?` | Replaces "Tax ID" or "VAT".         |
+| `sku`      | `string?` | Replaces "SKU".                     |
 
 ---
 
 ### Customization & Logic
 
 #### Automatic Status Colors
-The component maps specific status strings to semantic colors automatically. 
 
-| Status Category | Colors | Example Keywords |
-| :--- | :--- | :--- |
-| **Positive** | Green | Paid, Success, Completed, Delivered |
-| **Warning** | Yellow/Orange | Pending, Overdue, Expiring, Waiting |
-| **Negative** | Red/Pink | Rejected, Cancelled, Failed, Danger |
-| **Information** | Blue/Indigo | Processing, Started, In Progress |
-| **Neutral** | Gray | Draft, Archived, Disabled, Void |
+The component maps specific status strings to semantic colors automatically.
+
+| Status Category | Colors        | Example Keywords                    |
+| :-------------- | :------------ | :---------------------------------- |
+| **Positive**    | Green         | Paid, Success, Completed, Delivered |
+| **Warning**     | Yellow/Orange | Pending, Overdue, Expiring, Waiting |
+| **Negative**    | Red/Pink      | Rejected, Cancelled, Failed, Danger |
+| **Information** | Blue/Indigo   | Processing, Started, In Progress    |
+| **Neutral**     | Gray          | Draft, Archived, Disabled, Void     |
 
 #### CSS Variable Hooks
+
 For advanced users needing to fine-tune the "Compact" or standard output (especially for print), the following CSS variables are supported on the component container:
 
 ```css
 /* Example: Customizing font scale for specific printing needs */
 .v-invoice-container {
   --text-sm: 13.5px; /* Base small text e.g. address */
-  --text-xs: 10px;   /* Extra small text e.g. SKU info */
+  --text-xs: 10px; /* Extra small text e.g. SKU info */
 }
 ```
 
@@ -186,12 +212,8 @@ import { Invoice } from 'vlite3'
 const invoiceData = {
   brandName: 'Acme Corp.',
   invoiceNumber: 'INV-2024-001',
-  items: [
-    { name: 'UI/UX Design', quantity: 1, price: 1200, total: 1200 }
-  ],
-  totals: [
-    { label: 'Total', value: 1200, isGrandTotal: true }
-  ]
+  items: [{ name: 'UI/UX Design', quantity: 1, price: 1200, total: 1200 }],
+  totals: [{ label: 'Total', value: 1200, isGrandTotal: true }],
 }
 </script>
 
@@ -206,11 +228,7 @@ Variant 2 follows a narrow vertical layout optimized for small thermal prints an
 
 ```vue
 <template>
-  <Invoice 
-    :data="posData" 
-    variant="Variant2" 
-    :compact="true" 
-  />
+  <Invoice :data="posData" variant="Variant2" :compact="true" />
 </template>
 ```
 
@@ -221,20 +239,20 @@ Variant 2 follows a narrow vertical layout optimized for small thermal prints an
 const serviceData = {
   brandTitle: 'SERVICE INVOICE',
   items: [
-    { 
-      name: 'Software Development', 
-      quantity: 40, 
-      price: 150, 
-      discount: 600, 
-      discountLabel: 'Volume Discount', 
-      total: 5400 
-    }
+    {
+      name: 'Software Development',
+      quantity: 40,
+      price: 150,
+      discount: 600,
+      discountLabel: 'Volume Discount',
+      total: 5400,
+    },
   ],
   totals: [
     { label: 'Subtotal', value: 6000, isSubtotal: true },
     { label: 'Discount', value: -600, isDiscount: true },
-    { label: 'Total Due', value: 5400, isGrandTotal: true }
-  ]
+    { label: 'Total Due', value: 5400, isGrandTotal: true },
+  ],
 }
 </script>
 
