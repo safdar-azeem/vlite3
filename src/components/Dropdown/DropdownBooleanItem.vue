@@ -34,6 +34,7 @@ const handleToggle = (newValue: boolean) => {
     :class="[
       focused ? 'bg-accent text-accent-foreground' : 'hover:bg-accent hover:text-accent-foreground',
     ]"
+    :data-testid="$attrs['data-testid'] || `dropdown-item-bool-${option.key || option.label}`.toLowerCase().replace(/[^a-z0-9]+/g, '-')"
     @click.stop="handleToggle(!value)">
     <div class="flex items-center gap-2 flex-1 min-w-0">
       <Icon
