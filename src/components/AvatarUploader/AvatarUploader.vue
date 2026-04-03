@@ -87,7 +87,7 @@ const handleRemove = () => {
 </script>
 
 <template>
-  <div class="inline-block">
+  <div class="inline-block" :data-testid="$attrs['data-testid'] || ($attrs.name ? `avatar-${$attrs.name}` : 'avatar-uploader')">
     <div
       class="relative inline-block group"
       :class="rounded === 'full' ? 'rounded-full' : 'rounded-md'">
