@@ -272,7 +272,8 @@ const shouldShowChevron = (option: IDropdownOption): boolean => {
         input-class="-ml-1"
         variant="transparent"
         icon-class="h-3.5! w-3.5!"
-        :show-clear-button="false" />
+        :show-clear-button="false"
+        data-testid="dropdown-search-input" />
     </div>
 
     <div v-if="$slots.header" class="shrink-0">
