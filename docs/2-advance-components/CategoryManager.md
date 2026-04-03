@@ -12,12 +12,12 @@ Built-in features include drag-and-drop reordering at every tree level, accordio
 
 ### Props
 
-| Prop               | Type            | Default                                    | Description                                                                             |
+| Prop               | Type              | Default                                    | Description                                                                             |
 | :----------------- | :-------------- | :----------------------------------------- | :-------------------------------------------------------------------------------------- |
 | `modelValue`       | `CategoryItem[]`| `[]`                                       | The nested category tree. Bind with `v-model`.                                          |
 | `formSchema`       | `IForm[]?`      | Default schema (icon, title, description)  | Custom Form schema used in the Add/Edit modal. Overrides the default 3-field form.      |
 | `readonly`         | `boolean`       | `false`                                    | Disables all mutations (add, edit, delete, drag). Renders the tree as a read-only view. |
-| `size`             | `'sm' \| 'md' \| 'lg'` | `'md'`                            | Size modifier applied to each tree node row.                                            |
+| `size`             | `'sm' \| 'md' \| 'lg'` | `'md'`                             | Size modifier applied to each tree node row.                                            |
 | `emptyTitle`       | `string`        | `'No Categories Found'`                    | Heading shown in the empty state.                                                       |
 | `emptyDescription` | `string`        | `'Get started by creating your first category.'` | Body text shown in the empty state.                                               |
 
@@ -31,7 +31,7 @@ Built-in features include drag-and-drop reordering at every tree level, accordio
 | `@onAdd`         | `CategoryItem`   | Emitted when a new category or sub-category is created.                  |
 | `@onEdit`        | `CategoryItem`   | Emitted when an existing category is edited.                             |
 | `@onDelete`      | `CategoryItem`   | Emitted when a category is deleted (the deleted item is passed).         |
-| `@onReorder`     | `CategoryItem[]` | Emitted when the tree is reordered by drag-and-drop.                     |
+| `@onReorder`     | `{ id, parentId, position }` | Emitted once after a drag-and-drop completes, providing the moved node's new placement details. |
 
 ---
 
@@ -93,7 +93,7 @@ const categories = ref<CategoryItem[]>([
     @onAdd="(item) => console.log('Added:', item)"
     @onEdit="(item) => console.log('Edited:', item)"
     @onDelete="(item) => console.log('Deleted:', item)"
-    @onReorder="(tree) => console.log('Reordered:', tree)"
+    @onReorder="(payload) => console.log('Reordered:', payload)"
   />
 </template>
 ```
@@ -132,8 +132,7 @@ const customFormSchema = [
   <CategoryManager v-model="categories">
     <template #header>
       <h2 class="text-xl font-bold">Product Taxonomy</h2>
-      <!-- You control the add button here -->
-    </template>
+      </template>
   </CategoryManager>
 </template>
 ```
@@ -172,5 +171,5 @@ const customFormSchema = [
 2.  **Unlimited depth**: The tree is rendered recursively via an internal `CategoryNode` component. There is no hard depth limit, though deep nesting (~5+) should be carefully considered from a UX perspective.
 3.  **`children` auto-normalization**: If your API returns nodes without a `children` key, the component silently initializes it to `[]` during the deep clone on `watch`. This prevents undefined references in the recursive renderer and reorder logic.
 4.  **Extra data fields are safe**: The `CategoryItem` interface uses `[key: string]: any` — your backend-specific fields (`slug`, `meta`, etc.) pass through undisturbed on all emit payloads.
-5.  **Drag-and-drop reordering is cross-level**: Items can be reordered within their parent group. When reordering fires, the entire updated tree is emitted via both `update:modelValue` and `@onReorder`, making it easy to debounce and sync to your API.
+5.  **Optimized Drag-and-Drop Syncing**: Items can be freely reordered within their parent group or extracted seamlessly to the root. Upon releasing a dragged node, the component emits the completely updated tree via `update:modelValue`. Simultaneously, `@onReorder` triggers exactly once per drop with a minimal payload (`id`, `parentId`, `position`), eliminating continuous mid-drag emissions and allowing for extremely efficient network updates to your API.
 6.  **Self-contained state**: The component deep-clones your `modelValue` internally on initialization. All edits operate on this internal clone and emit the final state up. This prevents accidental mutation of your parent state.
