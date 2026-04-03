@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { CategoryManager, type CategoryItem, type RawCategoryItem } from '@/components/CategoryManager'
+import {
+  CategoryManager,
+  type CategoryItem,
+  type RawCategoryItem,
+} from '@/components/CategoryManager'
 import type { IForm } from '@/components/Form'
 import DemoSection from '../DemoSection.vue'
 import Icon from '@/components/Icon.vue'
@@ -106,7 +110,11 @@ const logEvent = (type: string, payload: any) => {
             @onAdd="(item) => logEvent('Added', item)"
             @onEdit="(item) => logEvent('Edited', item)"
             @onDelete="(item) => logEvent('Deleted', item)"
-            @onReorder="() => logEvent('Reordered', 'Tree hierarchy updated')" />
+            @onReorder="
+              (x) => {
+                console.log('x', x)
+              }
+            " />
         </div>
 
         <div class="w-full xl:w-80! flex flex-col gap-4">
@@ -154,14 +162,15 @@ const logEvent = (type: string, payload: any) => {
       <div class="flex flex-col xl:flex-row gap-6">
         <div class="flex-1 w-full max-w-2xl">
           <p class="text-sm text-gray-500 mb-4">
-            Pass a flat array using the <code>:rawData</code> prop. The component will automatically compute and 
-            nest the structure based on <code>parentId</code> and <code>position</code> fields.
-            Any modifications inside will emit the normalized nested tree via <code>@update:modelValue</code>.
+            Pass a flat array using the <code>:rawData</code> prop. The component will automatically
+            compute and nest the structure based on <code>parentId</code> and
+            <code>position</code> fields. Any modifications inside will emit the normalized nested
+            tree via <code>@update:modelValue</code>.
           </p>
           <CategoryManager
             size="md"
             :rawData="flatApiData"
-            @update:modelValue="(val) => parsedFlatTree = val" />
+            @update:modelValue="(val) => (parsedFlatTree = val)" />
         </div>
         <div class="w-full xl:w-80! flex flex-col gap-4">
           <div
