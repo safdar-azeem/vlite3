@@ -250,7 +250,7 @@ onBeforeUnmount(() => {
   <div :class="[wrapperClasses, 'overflow-hidden']">
     <button
       tabindex="-1"
-      v-if="variant === 'split'"
+      v-if="variant === 'split' && !disabled && !readonly"
       type="button"
       :class="[
         buttonClasses,
@@ -285,7 +285,7 @@ onBeforeUnmount(() => {
 
     <button
       tabindex="-1"
-      v-if="variant === 'split'"
+      v-if="variant === 'split' && !disabled && !readonly"
       type="button"
       :class="[
         buttonClasses,
@@ -301,7 +301,7 @@ onBeforeUnmount(() => {
       <Icon icon="lucide:plus" :class="sizeStyles.icon" />
     </button>
 
-    <div v-if="variant === 'stacked'" class="flex flex-col justify-center h-full py-[3px] pr-[3px]">
+    <div v-if="variant === 'stacked' && !disabled && !readonly" class="flex flex-col justify-center h-full py-[3px] pr-[3px]">
       <div class="flex flex-col h-full w-6 scale-80">
         <button
           tabindex="-1"
