@@ -50,5 +50,6 @@ const displayPlaceholder = computed(() =>
     :class="classes"
     @input="handleInput"
     @focus="emit('focus', $event)"
-    @blur="emit('blur', $event)" />
+    @blur="emit('blur', $event)"
+    :data-testid="$attrs['data-testid'] || ($attrs.name ? `textarea-${$attrs.name}` : 'textarea')" />
 </template>
