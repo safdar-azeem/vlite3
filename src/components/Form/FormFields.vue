@@ -212,6 +212,7 @@ const shouldHideExternalLabel = (field: IForm) => {
     'avatarUpload',
     'fileUploader',
     'file',
+    'choiceBox',
   ]
   return !unfloatingTypes.includes(type as string)
 }
@@ -226,12 +227,6 @@ const getSafeLabel = (field: IForm) => {
 <template>
   <div :class="['grid', variant === 'floating' ? 'gap-5 mt-1' : 'gap-4', className]">
     <template v-for="field in schema" :key="field.name">
-      <!--
-        Render the field only when:
-        1. It passes the visibility check (when condition)
-        2. Its resolved type is NOT in the excludeTypes list
-           (thumbnailSelector fields are rendered by Form.vue in the side panel)
-      -->
       <div
         v-if="checkFieldVisible(field) && isNotExcluded(field)"
         v-memo="[
@@ -259,6 +254,7 @@ const getSafeLabel = (field: IForm) => {
             getResolvedType(field) !== 'switch' &&
             getResolvedType(field) !== 'check' &&
             getResolvedType(field) !== 'customFields' &&
+            getResolvedType(field) !== 'choiceBox' &&
             !shouldHideExternalLabel(field)
           "
           :for="field.name"
@@ -336,7 +332,6 @@ const getSafeLabel = (field: IForm) => {
             @addonAction="handleAddonAction" />
         </div>
 
-        <!-- For 'check' always show external label. For 'switch', only show external label when switchVariant is 'basic' (card variant renders label internally). -->
         <Label
           v-if="
             (getResolvedType(field) === 'check') ||
