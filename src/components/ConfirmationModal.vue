@@ -56,6 +56,8 @@ const displayCancelText = computed(() => {
 <template>
   <Modal
     :show="show"
+    v-bind="$attrs"
+    :data-testid="$attrs['data-testid'] || (displayTitle ? `confirm-modal-${displayTitle.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : 'confirm-modal')"
     footerClass="border-t-0! pt-0! pb-3.5!"
     max-width="max-w-[400px]"
     @close="cancel"
@@ -80,6 +82,7 @@ const displayCancelText = computed(() => {
           :text="displayCancelText"
           :disabled="loading"
           size="sm2"
+          data-testid="confirm-modal-cancel"
           @click="
             () => {
               close?.()
@@ -91,6 +94,7 @@ const displayCancelText = computed(() => {
           :variant="variant"
           :text="displayConfirmText"
           :loading="loading"
+          data-testid="confirm-modal-confirm"
           @click="emit('confirm')" />
       </div>
     </template>
