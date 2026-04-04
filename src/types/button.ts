@@ -18,6 +18,7 @@ export type ButtonVariant =
   | 'outline-info'
   | 'outline-success'
   | 'ghost'
+  | 'transparent'
   | 'link'
 
 export type ButtonSize = 'xs' | 'sm' | 'sm2' | 'md' | 'lg' | 'xl'
