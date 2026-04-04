@@ -4,6 +4,7 @@ import { ButtonProps } from '@/types'
 
 interface Props {
   selectedLabel?: string
+  selectedIcon?: string
   placeholder?: string
   isOpen?: boolean
   disabled?: boolean
@@ -14,6 +15,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   selectedLabel: '',
+  selectedIcon: '',
   placeholder: 'Select an option',
   disabled: false,
   direction: 'ltr',
@@ -28,7 +30,9 @@ const props = withDefaults(defineProps<Props>(), {
     :disabled="disabled"
     :dir="direction"
     v-bind="triggerProps"
+    :icon="selectedIcon || triggerProps?.icon"
     class="w-full justify-between! font-normal px-2.5!"
     :class="className"
+    icon-right-class="ml-auto!"
     :data-testid="$attrs['data-testid'] || 'dropdown-trigger'" />
 </template>
