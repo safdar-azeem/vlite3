@@ -147,7 +147,11 @@ const displayDescription = computed(() =>
 </script>
 
 <template>
-  <span @click.stop="handleOpen" :class="`${triggerClass}`" v-bind="$attrs">
+  <span
+    @click.stop="handleOpen"
+    :class="`${triggerClass}`"
+    v-bind="$attrs"
+    :data-testid="$attrs['data-testid'] ? `${$attrs['data-testid']}-trigger` : (displayTitle ? `sidepanel-trigger-${displayTitle.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : 'sidepanel-trigger')">
     <slot name="trigger">
       <template v-if="body">
         <slot />
@@ -175,8 +179,11 @@ const displayDescription = computed(() =>
       @after-leave="$emit('onAfterClose')">
       <div
         v-if="visible"
+        role="dialog"
+        aria-modal="true"
         class="sidepanel-body fixed inset-y-0 z-50 flex flex-col bg-body shadow-sm border transition-transform duration-300 ease-in-out w-full"
-        :class="[sizeClasses[size], positionClasses, props.class]">
+        :class="[sizeClasses[size], positionClasses, props.class]"
+        :data-testid="$attrs['data-testid'] || (displayTitle ? `sidepanel-${displayTitle.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : 'sidepanel')">
         <div
           v-if="displayTitle || $slots.header"
           :class="headerClass"
@@ -198,7 +205,8 @@ const displayDescription = computed(() =>
             variant="ghost"
             icon="lucide:x"
             @click="close"
-            class="-mr-2" />
+            class="-mr-2"
+            data-testid="sidepanel-close-btn" />
         </div>
 
         <div
