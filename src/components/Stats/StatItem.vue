@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { $t } from '@/utils/i18n'
-import type {
-  StatItemSchema,
-  StatsVariant,
-  StatsLayout,
-  IconBoxShape,
-  IconBoxStyle,
-} from './types'
+import { formatCurrency } from '@/utils/functions'
+import type { StatItemSchema, StatsVariant, StatsLayout, IconBoxShape, IconBoxStyle } from './types'
 import StatTrend from './components/StatTrend.vue'
 import StatIconBox from './components/StatIconBox.vue'
 
@@ -35,8 +30,19 @@ const props = withDefaults(
     iconSize: '',
     iconBoxShape: 'rounded',
     iconBoxStyle: 'filled',
-  },
+  }
 )
+
+/**
+ * Returns the display value for a stat item.
+ * When item.isPrice is true, formats the value as a currency string
+ * using the globally configured currency (via formatCurrency).
+ * Otherwise returns the raw value as-is.
+ */
+function displayValue(item: StatItemSchema): string | number {
+  if (item.isPrice) return formatCurrency(Number(item.value))
+  return item.value
+}
 
 const itemClass = computed(() => {
   const base = props.layout === 'inline-label-value' ? 'flex px-3.5 py-3' : 'flex p-3'
@@ -58,9 +64,11 @@ const itemClass = computed(() => {
 
   if (props.attached) {
     if (props.variant === 'transparent') {
-      variantClasses = 'border-b border-r border-transparent bg-transparent hover:bg-muted/30 transition-colors'
+      variantClasses =
+        'border-b border-r border-transparent bg-transparent hover:bg-muted/30 transition-colors'
     } else if (props.variant === 'outline') {
-      variantClasses = 'border-b border-r border-border bg-transparent hover:bg-muted/30 transition-colors'
+      variantClasses =
+        'border-b border-r border-border bg-transparent hover:bg-muted/30 transition-colors'
     } else {
       variantClasses = 'border-b border-r border-border bg-card hover:bg-muted/30 transition-colors'
     }
@@ -131,7 +139,7 @@ const itemStyle = computed(() => {
         <div>
           <div v-if="loading" class="h-8 w-24 bg-gray-50 animate-pulse rounded-md"></div>
           <p v-else :class="valueSize || 'text-2xl font-bold text-foreground truncate'">
-            {{ item.value }}
+            {{ displayValue(item) }}
           </p>
           <StatTrend v-if="item.trend && !loading" :trend="item.trend" :layout="layout" />
         </div>
@@ -143,15 +151,14 @@ const itemStyle = computed(() => {
           :attached="attached"
           :icon-box-shape="iconBoxShape"
           :icon-box-style="iconBoxStyle"
-          :icon-size="iconSize"
-        />
+          :icon-size="iconSize" />
       </div>
     </template>
 
     <template v-else-if="layout === 'centered-value-title'">
       <div v-if="loading" class="h-9 w-24 bg-gray-50 animate-pulse rounded-md"></div>
       <p v-else :class="valueSize || 'text-3xl font-bold text-foreground'">
-        {{ item.value }}
+        {{ displayValue(item) }}
       </p>
       <h3 :class="titleSize || 'text-sm font-medium text-muted-foreground'">
         {{ item.titleI18n ? $t(item.titleI18n) : item.title }}
@@ -169,14 +176,13 @@ const itemStyle = computed(() => {
         :icon-box-shape="iconBoxShape"
         :icon-box-style="iconBoxStyle"
         :icon-size="iconSize"
-        class="absolute top-4 right-4"
-      />
+        class="absolute top-4 right-4" />
       <h3 :class="titleSize || 'text-sm font-medium text-muted-foreground truncate pr-12'">
         {{ item.titleI18n ? $t(item.titleI18n) : item.title }}
       </h3>
       <div v-if="loading" class="h-8 w-20 bg-gray-50 animate-pulse rounded-md mt-1"></div>
       <p v-else :class="valueSize || 'text-2xl font-bold text-foreground truncate mt-1'">
-        {{ item.value }}
+        {{ displayValue(item) }}
       </p>
       <StatTrend v-if="item.trend && !loading" :trend="item.trend" :layout="layout" />
     </template>
@@ -192,7 +198,7 @@ const itemStyle = computed(() => {
         </h3>
         <div v-if="loading" class="h-9 w-24 bg-gray-50 animate-pulse rounded-md mt-0.5"></div>
         <p v-else :class="valueSize || 'text-3xl font-black text-foreground truncate mt-0.5'">
-          {{ item.value }}
+          {{ displayValue(item) }}
         </p>
         <StatTrend v-if="item.trend && !loading" :trend="item.trend" :layout="layout" />
       </div>
@@ -207,8 +213,7 @@ const itemStyle = computed(() => {
         :attached="attached"
         :icon-box-shape="iconBoxShape"
         :icon-box-style="iconBoxStyle"
-        :icon-size="iconSize"
-      />
+        :icon-size="iconSize" />
       <span
         :class="titleSize || '-text-fs-2 font-medium text-muted-foreground truncate'"
         class="flex-1 min-w-0">
@@ -218,7 +223,7 @@ const itemStyle = computed(() => {
       <span
         v-else
         :class="valueSize || '-text-fs-1 font-semibold text-foreground tabular-nums shrink-0'">
-        {{ item.value }}
+        {{ displayValue(item) }}
       </span>
       <StatTrend v-if="item.trend && !loading" :trend="item.trend" :layout="layout" />
     </template>
@@ -232,8 +237,7 @@ const itemStyle = computed(() => {
         :attached="attached"
         :icon-box-shape="iconBoxShape"
         :icon-box-style="iconBoxStyle"
-        :icon-size="iconSize"
-      />
+        :icon-size="iconSize" />
 
       <div class="flex-1 flex flex-col justify-center min-w-0">
         <h3 :class="titleSize || 'text-sm font-medium text-muted-foreground truncate'">
@@ -242,7 +246,7 @@ const itemStyle = computed(() => {
         <div class="flex items-baseline gap-2 mt-1">
           <div v-if="loading" class="h-8 w-24 bg-gray-50 animate-pulse rounded-md"></div>
           <p v-else :class="valueSize || 'text-2xl font-bold text-foreground truncate'">
-            {{ item.value }}
+            {{ displayValue(item) }}
           </p>
         </div>
         <StatTrend v-if="item.trend && !loading" :trend="item.trend" :layout="layout" />
@@ -256,8 +260,7 @@ const itemStyle = computed(() => {
         :attached="attached"
         :icon-box-shape="iconBoxShape"
         :icon-box-style="iconBoxStyle"
-        :icon-size="iconSize"
-      />
+        :icon-size="iconSize" />
     </template>
   </div>
 </template>
