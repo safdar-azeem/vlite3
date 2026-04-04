@@ -23,6 +23,7 @@ import DateRangePicker from '@/components/DateRangePicker.vue'
 import ColorPicker from '@/components/ColorPicker/ColorPicker.vue'
 import IconPicker from '@/components/IconPicker.vue'
 import CustomFieldsComponent from './CustomFields.vue'
+import { ChoiceBox } from '@/components/ChoiceBox'
 
 interface Props {
   field: IForm
@@ -124,6 +125,9 @@ const fieldComponent = computed(() => {
 
     case 'multiSelect':
       return MultiSelect
+
+    case 'choiceBox':
+      return ChoiceBox
 
     case 'date':
     case 'time':
@@ -310,6 +314,34 @@ const fieldProps = computed(() => {
     }
   }
 
+  // ChoiceBox
+  if (type === 'choiceBox') {
+    return {
+      ...baseProps,
+      modelValue: props.value,
+      title: props.label,
+      titleI18n: props.field.labelI18n,
+      description: props.field.props?.description,
+      descriptionI18n: props.field.props?.descriptionI18n,
+      options: (props.field.options || []).map((opt: any) => ({
+        id: opt.value ?? opt.label,
+        title: opt.label,
+        titleI18n: opt.labelI18n,
+        description: opt.description || opt.subtitle,
+        descriptionI18n: opt.descriptionI18n || opt.subtitleI18n,
+        icon: opt.icon,
+        disabled: opt.disabled,
+        badge: opt.badge || opt.data?.badge,
+        badgeI18n: opt.badgeI18n || opt.data?.badgeI18n,
+        data: opt.data,
+      })),
+      multiple: props.field.props?.multiple || false,
+      grid: props.field.props?.grid || 1,
+      gap: props.field.props?.gap || 4,
+      class: props.field.className,
+    }
+  }
+
   // DatePicker / TimePicker
   if (type === 'date' || type === 'time') {
     return {
@@ -491,6 +523,24 @@ const fieldEvents = computed(() => {
     }
   }
 
+  // ChoiceBox emits change
+  if (type === 'choiceBox') {
+    return {
+      change: (value: any) => {
+        const isMultiple = props.field.props?.multiple
+        let emitData: any = null
+
+        if (isMultiple && Array.isArray(value)) {
+          emitData = value.map((v: any) => props.field.options?.find((o: any) => (o.value ?? o.label) === v)?.data)
+        } else {
+          emitData = props.field.options?.find((o: any) => (o.value ?? o.label) === value)?.data
+        }
+
+        handleChange(value, emitData)
+      }
+    }
+  }
+
   // DatePicker / DateRangePicker emits onChange
   if (type === 'date' || type === 'time' || type === 'dateRangePicker') {
     return {
@@ -550,9 +600,9 @@ const fieldEvents = computed(() => {
 
   /**
    * ThumbnailSelector emits:
-   *  - change          → { images, thumbnail }  (primary; used by form)
-   *  - update:images   → string[]
-   *  - update:thumbnail → string | null
+   * - change          → { images, thumbnail }  (primary; used by form)
+   * - update:images   → string[]
+   * - update:thumbnail → string | null
    *
    * We merge all three into a single form value: { images, thumbnail }
    * so useForm stores the complete object under the field name.
