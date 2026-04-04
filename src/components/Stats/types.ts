@@ -23,6 +23,7 @@ export interface StatItemSchema {
   title: string
   titleI18n?: string
   value: string | number
+  isPrice?: boolean
   icon?: string
   color?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | string
   trend?: StatTrend
