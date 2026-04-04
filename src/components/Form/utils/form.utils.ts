@@ -380,6 +380,7 @@ export function getFieldKey(name: string): string {
  * Rules:
  * - multiSelect       → []    (empty array, required by array columns)
  * - thumbnailSelector → { images: [], thumbnail: null }
+ * - tags              → []
  * - select            → null  (foreign key / enum column)
  * - switch/check      → false
  * - number            → null
@@ -388,7 +389,7 @@ export function getFieldKey(name: string): string {
 function resolveEmptyValue(field: IForm, context: IFormContext): any {
   const type = resolveFieldType(field, context) as string | undefined
 
-  if (type === 'multiSelect' || (type === 'choiceBox' && field.props?.multiple)) return []
+  if (type === 'multiSelect' || type === 'tags' || (type === 'choiceBox' && field.props?.multiple)) return []
   if (type === 'thumbnailSelector') return { images: [], thumbnail: null }
   if (type === 'switch' || type === 'check') return false
   if ((type === 'fileUploader' || type === 'file' || type === 'avatarUpload') && field.props?.multiple) return []
