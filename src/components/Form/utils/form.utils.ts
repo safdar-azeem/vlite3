@@ -245,9 +245,9 @@ function isBase64DataUri(val: any): boolean {
  * Collect file fields from schema that need upload processing.
  *
  * Extended to handle `thumbnailSelector` fields:
- *   - The field value is { images: string[], thumbnail: string | null }
- *   - Each image URL that is a base64 data URI is collected for upload
- *   - After upload the images array and thumbnail are updated with resolved URLs
+ * - The field value is { images: string[], thumbnail: string | null }
+ * - Each image URL that is a base64 data URI is collected for upload
+ * - After upload the images array and thumbnail are updated with resolved URLs
  */
 export function collectFileFields(
   schema: IForm[] | IForm[][],
@@ -388,7 +388,7 @@ export function getFieldKey(name: string): string {
 function resolveEmptyValue(field: IForm, context: IFormContext): any {
   const type = resolveFieldType(field, context) as string | undefined
 
-  if (type === 'multiSelect') return []
+  if (type === 'multiSelect' || (type === 'choiceBox' && field.props?.multiple)) return []
   if (type === 'thumbnailSelector') return { images: [], thumbnail: null }
   if (type === 'switch' || type === 'check') return false
   if ((type === 'fileUploader' || type === 'file' || type === 'avatarUpload') && field.props?.multiple) return []
