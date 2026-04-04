@@ -38,6 +38,8 @@ const dummyDictionary: Record<string, string> = {
   'vlite.chat.placeholder': 'Escribe un mensaje... (Translated)',
   'vlite.chat.today': 'Hoy (Translated)',
   'vlite.chat.yesterday': 'Ayer (Translated)',
+  'vlite.copyButton.copy': 'Copiar (Translated)',
+  'vlite.copyButton.copied': '¡Copiado! (Translated)',
 
   // DataList / Empty
   'vlite.empty.title': 'No se encontraron datos (Translated)',
