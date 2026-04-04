@@ -7,6 +7,7 @@ import { Barcode } from '../Barcode'
 import { QRCode } from '../QRCode'
 import Avatar from '../Avatar.vue'
 import StatusChip from '../StatusChip/StatusChip.vue'
+import InvoiceTotals from './InvoiceTotals.vue'
 // Useful for minimal POS receipts
 
 const props = withDefaults(
@@ -142,24 +143,7 @@ const l = computed(() => props.labels || {})
 
     <div class="border-t border-dashed border-border" :class="compact ? 'mx-3' : 'mx-5'"></div>
 
-    <div :class="compact ? 'px-4 py-2.5 space-y-1' : 'px-5 py-3 space-y-1.5'">
-      <div
-        v-for="(total, idx) in d.totals"
-        :key="idx"
-        class="flex justify-between items-center"
-        :class="
-          total.isGrandTotal
-            ? compact
-              ? 'mt-1.5 pt-1.5 border-t border-border font-bold text-foreground text-sm'
-              : 'mt-2 pt-2 border-t border-border font-bold text-foreground text-base'
-            : compact
-              ? 'text-xs font-medium text-muted-foreground'
-              : 'text-sm font-medium text-muted-foreground'
-        ">
-        <span>{{ total.label }}</span>
-        <Price :value="total.value" />
-      </div>
-    </div>
+    <InvoiceTotals :totals="d.totals" :compact="compact" variant="Variant2" />
 
     <div class="border-t border-dashed border-border" :class="compact ? 'mx-3' : 'mx-5'"></div>
 
