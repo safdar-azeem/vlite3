@@ -259,13 +259,14 @@ export const formatCurrency = (
   locale: string = 'en-US',
   currency?: string
 ): string => {
+  console.log('amount', amount)
   if (!Number.isFinite(amount)) return ''
 
   // Lazily import configState to avoid circular dependency issues at module load time.
   // configState is a singleton reactive object set up in core/config.ts.
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const resolvedCurrency = currency || configState?.components?.price?.currency || 'USD'
-
+  console.log('resolvedCurrency', resolvedCurrency)
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency: resolvedCurrency,
@@ -423,7 +424,7 @@ export const getDefaultDateRange = (
 
 /**
  * Formats a time string into 12-hour format with AM/PM.
- * 
+ *
  * @param time The time string in 24-hour format (e.g., '13:00')
  * @returns The formatted time string (e.g., '01:00 PM')
  */
@@ -431,7 +432,7 @@ export const formatAmPm = (time: string): string => {
   if (!time) return ''
   const [hours, minutes] = time.split(':')
   if (!hours || !minutes) return time
-  
+
   const parsedTime = dayjs().hour(Number(hours)).minute(Number(minutes))
   // 'A' outputs AM/PM. If you want exactly 'Am'/'Pm', you can replace it, otherwise 'AM'/'PM' is standard.
   return parsedTime.isValid() ? parsedTime.format('hh:mm A') : time
@@ -441,7 +442,7 @@ export const formatAmPm = (time: string): string => {
  * Formats a date with start and end times into a compact string.
  * Example: 'MM/DD/YYYY • 12:00 - 01:00 PM'
  * Uses the globally configured date format from `configState`.
- * 
+ *
  * @param date The date to format
  * @param startTime The start time in 24-hour format (e.g., '12:00')
  * @param endTime The end time in 24-hour format (e.g., '13:00')
@@ -484,8 +485,10 @@ export const formatSchedule = (
 // ISO Date Utility Functions
 // ----------------------------------------------------------------------
 
-export const toISO = (date?: string | Date | Dayjs): string => dayjs(date || undefined).toISOString()
-export const toLocalISO = (date?: string | Date | Dayjs): string => dayjs(date || undefined).format('YYYY-MM-DDTHH:mm:ss.SSSZ')
+export const toISO = (date?: string | Date | Dayjs): string =>
+  dayjs(date || undefined).toISOString()
+export const toLocalISO = (date?: string | Date | Dayjs): string =>
+  dayjs(date || undefined).format('YYYY-MM-DDTHH:mm:ss.SSSZ')
 
 export const getToday = (): string => dayjs().toISOString()
 export const getYesterday = (): string => dayjs().subtract(1, 'day').toISOString()
@@ -573,10 +576,12 @@ export const formatDate = (
  * Parses a string, number, or Date into a Dayjs object.
  * Automatically handles pure time strings (e.g., '13:00' -> '1970-01-01T13:00:00' or '1:00 PM') for accurate time comparisons.
  */
-export const parseDateTime = (val: string | number | Date | Dayjs | null | undefined): dayjs.Dayjs => {
+export const parseDateTime = (
+  val: string | number | Date | Dayjs | null | undefined
+): dayjs.Dayjs => {
   if (typeof val === 'string') {
     const trimmed = val.trim()
-    
+
     // 24-hour time handling
     if (TIME24_REGEX.test(trimmed)) {
       const parts = trimmed.split(':')
@@ -585,7 +590,7 @@ export const parseDateTime = (val: string | number | Date | Dayjs | null | undef
       const ss = parts[2] || '00'
       return dayjs(`1970-01-01T${hh}:${mm}:${ss}`)
     }
-    
+
     // 12-hour time handling
     const ampmMatch = trimmed.match(TIME12_REGEX)
     if (ampmMatch) {
@@ -593,10 +598,10 @@ export const parseDateTime = (val: string | number | Date | Dayjs | null | undef
       const mm = ampmMatch[2]
       const ss = ampmMatch[4] || '00'
       const modifier = ampmMatch[5].toUpperCase()
-      
+
       if (hh === 12 && modifier === 'AM') hh = 0
       else if (hh < 12 && modifier === 'PM') hh += 12
-      
+
       const hhStr = hh.toString().padStart(2, '0')
       return dayjs(`1970-01-01T${hhStr}:${mm}:${ss}`)
     }
@@ -620,8 +625,14 @@ export const isValidTimeRange = (
   allowSame?: boolean
 ): boolean => {
   // Prevent zero-epoch bugs by checking explicit emptiness over truthiness
-  if (startTime === null || startTime === undefined || startTime === '' ||
-      endTime === null || endTime === undefined || endTime === '') {
+  if (
+    startTime === null ||
+    startTime === undefined ||
+    startTime === '' ||
+    endTime === null ||
+    endTime === undefined ||
+    endTime === ''
+  ) {
     return true
   }
 
@@ -641,7 +652,3 @@ export const isValidTimeRange = (
 
   return canBeSame ? end.isSame(start) || end.isAfter(start) : end.isAfter(start)
 }
-
-
-
-
