@@ -15,6 +15,7 @@ import Textarea from '@/components/Textarea.vue'
 import FilePicker from '@/components/FilePicker/FilePicker.vue'
 import AvatarUploader from '@/components/AvatarUploader/AvatarUploader.vue'
 import ThumbnailSelectorComponent from '@/components/ThumbnailSelector/ThumbnailSelector.vue'
+import TagInputComponent from '@/components/TagInput/TagInput.vue'
 import Dropdown from '@/components/Dropdown/Dropdown.vue'
 
 import MultiSelect from '@/components/MultiSelect/MultiSelect.vue'
@@ -154,6 +155,9 @@ const fieldComponent = computed(() => {
 
     case 'thumbnailSelector':
       return ThumbnailSelectorComponent
+
+    case 'tags':
+      return TagInputComponent
 
     default:
       return Input
@@ -399,6 +403,20 @@ const fieldProps = computed(() => {
     }
   }
 
+  // Tags
+  if (type === 'tags') {
+    return {
+      ...baseProps,
+      modelValue: Array.isArray(props.value) ? props.value : [],
+      placeholder: safePlaceholder,
+      variant: props.variant,
+      size: props.size,
+      rounded: props.rounded,
+      maxTags: props.field.props?.maxTags,
+      class: props.field.className,
+    }
+  }
+
   // ColorPicker
   if (type === 'color') {
     return {
@@ -574,6 +592,14 @@ const fieldEvents = computed(() => {
         // During remove, both are null, so it's safe.
         handleChange(value)
       },
+    }
+  }
+
+  // Tags emits change and update:modelValue
+  if (type === 'tags') {
+    return {
+      'update:modelValue': handleInput,
+      change: (value: any) => handleChange(value),
     }
   }
 
