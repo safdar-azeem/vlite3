@@ -43,11 +43,39 @@ export function useDropdownSelection(props: UseDropdownSelectionProps, emit: Emi
     return ''
   }
 
+  // Icon Resolution
+  const getIconFromValue = (options: IDropdownOptions = [], value: any): string | undefined => {
+    for (const opt of options) {
+      // Exact match
+      if (opt.value === value) return opt.icon
+
+      // Key/Object match
+      if (opt.key && typeof value === 'object' && value !== null && opt.key in value) {
+        if (opt.children) {
+          const childIcon = getIconFromValue(opt.children, value[opt.key])
+          if (childIcon) return childIcon
+        }
+        // If no children but key matched (top level leaf with key)
+        if (opt.value === value[opt.key]) return opt.icon
+
+        return opt.icon
+      }
+    }
+    return undefined
+  }
+
   const selectedLabel = computed(() => {
     if (!props.showSelectedLabel) return ''
     if (!props.selectable) return ''
     if (!props.options?.length) return ''
     return getLabelFromValue(props.options, currentValue.value)
+  })
+
+  const selectedIcon = computed(() => {
+    if (!props.showSelectedLabel) return undefined
+    if (!props.selectable) return undefined
+    if (!props.options?.length) return undefined
+    return getIconFromValue(props.options, currentValue.value)
   })
 
   // Selection Logic
@@ -111,7 +139,7 @@ export function useDropdownSelection(props: UseDropdownSelectionProps, emit: Emi
   return {
     currentValue,
     selectedLabel,
+    selectedIcon,
     selectOption,
   }
 }
-
