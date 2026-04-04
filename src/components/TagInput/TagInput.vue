@@ -35,9 +35,19 @@ const emit = defineEmits<{
 const inputValue = ref('')
 const inputRef = ref<any>(null)
 
+const t = (key: string, fallback: string, args?: Record<string, any>) => {
+  const res = args ? $t(key, args) : $t(key)
+  return res !== key ? res : fallback
+}
+
 const displayPlaceholder = computed(() => {
-  if (props.maxTags && props.modelValue.length >= props.maxTags) return 'Max tags reached'
-  return props.placeholderI18n ? $t(props.placeholderI18n) : props.placeholder
+  if (props.maxTags && props.modelValue.length >= props.maxTags) {
+    return t('vlite.tagInput.maxTagsReached', 'Max tags reached')
+  }
+  if (props.placeholderI18n) {
+    return t(props.placeholderI18n, props.placeholder)
+  }
+  return props.placeholder
 })
 
 const focusInput = () => {
