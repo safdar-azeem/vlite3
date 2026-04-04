@@ -166,6 +166,7 @@ const displayDescription = computed(() =>
     @click.stop="handleOpen"
     :class="`${triggerClass}`"
     v-bind="$attrs"
+    :data-testid="$attrs['data-testid'] ? `${$attrs['data-testid']}-trigger` : (displayTitle ? `modal-trigger-${displayTitle.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : 'modal-trigger')"
     v-if="$slots?.trigger || $slots?.default">
     <slot name="trigger">
       <template v-if="body">
@@ -182,8 +183,11 @@ const displayDescription = computed(() =>
       <div
         ref="modalRef"
         tabindex="-1"
+        role="dialog"
+        aria-modal="true"
         class="modal-body relative w-full rounded border border-border/60 bg-body shadow-lg text-foreground flex flex-col max-h-[85vh] sm:max-h-[90vh] focus:outline-none"
         :class="[maxWidth]"
+        :data-testid="$attrs['data-testid'] || (displayTitle ? `modal-${displayTitle.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : 'modal')"
         @click.stop>
         <div
           v-if="displayTitle"
@@ -201,6 +205,7 @@ const displayDescription = computed(() =>
               variant="ghost"
               class="hover:bg-gray-250/25!"
               :class="{ 'blink-bg': showBlink }"
+              data-testid="modal-close-btn"
               @click="close" />
           </div>
         </div>
