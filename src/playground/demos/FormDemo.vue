@@ -14,6 +14,7 @@ import FormUploads from './forms/FormUploads.vue'
 import FormNumber from './forms/FormNumber.vue'
 import FormAddons from './forms/FormAddons.vue'
 import FormDataMapping from './forms/FormDataMapping.vue'
+import FormChoiceBox from './forms/FormChoiceBox.vue'
 
 const activeTab = ref('basic')
 
@@ -44,6 +45,7 @@ const tabs = [
     icon: 'lucide:database',
     component: FormDataMapping,
   },
+  { id: 'choicebox', label: 'Choice Box', icon: 'lucide:check-square', component: FormChoiceBox },
   { id: 'pagemode', label: 'Page Mode', icon: 'lucide:layout-template', component: FormPageMode },
 ]
 </script>
