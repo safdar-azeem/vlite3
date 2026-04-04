@@ -7,6 +7,7 @@ import { QRCode } from '../QRCode'
 import { Barcode } from '../Barcode'
 import Avatar from '../Avatar.vue'
 import StatusChip from '../StatusChip/StatusChip.vue'
+import InvoiceTotals from './InvoiceTotals.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -246,27 +247,7 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
         <div
           class="bg-muted/30 border-t border-border flex justify-end"
           :class="compact ? 'p-3' : 'p-4'">
-          <div
-            :class="
-              compact
-                ? 'w-full max-w-[200px] space-y-1 text-xs'
-                : 'w-full max-w-[240px] space-y-1.5 text-xs'
-            ">
-            <div
-              v-for="(total, idx) in d.totals"
-              :key="idx"
-              class="flex justify-between items-center"
-              :class="
-                total.isGrandTotal
-                  ? compact
-                    ? 'pt-1.5 mt-1.5 border-t border-gray-300 font-bold text-sm text-gray-900'
-                    : 'pt-2 mt-2 border-t border-gray-300 font-bold text-sm text-gray-900'
-                  : 'text-muted-foreground font-medium'
-              ">
-              <span>{{ total.label }}</span>
-              <Price :value="total.value" />
-            </div>
-          </div>
+          <InvoiceTotals :totals="d.totals" :compact="compact" variant="Variant3" />
         </div>
       </div>
 
