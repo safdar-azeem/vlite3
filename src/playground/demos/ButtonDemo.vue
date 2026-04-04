@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Button from '@/components/Button.vue'
 import BackButton from '@/components/BackButton.vue'
+import CopyButton from '@/components/CopyButton.vue'
 import DemoSection from '../DemoSection.vue'
 import sourceCode from './ButtonDemo.vue?raw'
 </script>
@@ -14,7 +15,6 @@ import sourceCode from './ButtonDemo.vue?raw'
       </p>
     </div>
 
-    <!-- Variants -->
     <DemoSection title="Variants" :code="sourceCode">
       <div class="flex flex-wrap gap-2">
         <Button>Primary</Button>
@@ -25,7 +25,6 @@ import sourceCode from './ButtonDemo.vue?raw'
       </div>
     </DemoSection>
 
-    <!-- Semantic Variants -->
     <DemoSection title="Semantic / Colors" :code="sourceCode">
       <div class="space-y-4">
         <div class="flex flex-wrap gap-2">
@@ -49,7 +48,6 @@ import sourceCode from './ButtonDemo.vue?raw'
       </div>
     </DemoSection>
 
-    <!-- Sizes -->
     <DemoSection title="Sizes" :code="sourceCode">
       <div class="flex flex-wrap items-center gap-4">
         <Button size="sm">Small</Button>
@@ -58,7 +56,6 @@ import sourceCode from './ButtonDemo.vue?raw'
       </div>
     </DemoSection>
 
-    <!-- States & Shapes -->
     <DemoSection title="States & Shapes" :code="sourceCode">
       <div class="flex flex-wrap items-center gap-4">
         <Button loading>Loading</Button>
@@ -68,7 +65,6 @@ import sourceCode from './ButtonDemo.vue?raw'
       </div>
     </DemoSection>
 
-    <!-- Icons -->
     <DemoSection title="With Icons" :code="sourceCode">
       <div class="flex flex-wrap gap-4">
         <Button icon="lucide:plus">Add New</Button>
@@ -85,7 +81,6 @@ import sourceCode from './ButtonDemo.vue?raw'
       </div>
     </DemoSection>
 
-    <!-- Back Button -->
     <DemoSection title="Back Button" :code="sourceCode">
       <p class="text-sm text-muted-foreground mb-4">
         A ghost, rounded icon button that navigates to the previous page. Falls back to
@@ -98,6 +93,22 @@ import sourceCode from './ButtonDemo.vue?raw'
         <BackButton size="lg" />
         <BackButton icon="lucide:chevron-left" size="md" />
         <BackButton icon="lucide:undo-2" size="md" />
+      </div>
+    </DemoSection>
+
+    <DemoSection title="Copy Button" :code="sourceCode">
+      <p class="text-sm text-muted-foreground mb-4">
+        A button that copies text to the clipboard and provides visual feedback.
+      </p>
+      <div class="flex flex-wrap items-center gap-4">
+        <CopyButton text-to-copy="npm install vlite3" />
+        <CopyButton text-to-copy="Hello World" variant="secondary" />
+        <CopyButton text-to-copy="Icon only copy" as-icon rounded="full" variant="ghost" />
+        <CopyButton
+          text-to-copy="Custom text"
+          default-text="Copy Link"
+          copied-text="Link Copied!"
+          variant="outline-primary" />
       </div>
     </DemoSection>
   </div>
