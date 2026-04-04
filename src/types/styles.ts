@@ -19,6 +19,7 @@ export type IDropdownOption = {
   description?: string
   descriptionI18n?: string
   icon?: string
+  badge?: string
   emoji?: string
   disabled?: Boolean
   iconClass?: string
@@ -27,8 +28,8 @@ export type IDropdownOption = {
   values?: any
   data?: any
   // Per-item class customization
-  class?: string         // Applied to the option row (DropdownItem / nested trigger div)
-  triggerClass?: string  // Applied to the nested trigger wrapper div (only for items with children)
+  class?: string // Applied to the option row (DropdownItem / nested trigger div)
+  triggerClass?: string // Applied to the nested trigger wrapper div (only for items with children)
   // Schema support for nested menus
   children?: IDropdownOption[]
   key?: string // Property name for nested value objects
@@ -44,10 +45,14 @@ export type IDropdownOption = {
         cancelText?: string
         variant?: 'danger' | 'primary' | 'warning' | 'success' | 'info'
       }
-  onSelect?: (payload: { value: any; option: IDropdownOption; data: IDropdownOption[]; values?: any }) => void
+  onSelect?: (payload: {
+    value: any
+    option: IDropdownOption
+    data: IDropdownOption[]
+    values?: any
+  }) => void
   _originalOption?: IDropdownOption // Internal reference to the deepest leaf option selected
-  _path?: IDropdownOption[]         // Internal array keeping track of the parent-child traversal path
+  _path?: IDropdownOption[] // Internal array keeping track of the parent-child traversal path
 }
 
 export type IDropdownOptions = IDropdownOption[]
-
