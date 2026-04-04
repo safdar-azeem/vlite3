@@ -238,11 +238,7 @@ const handleSort = (field: string) => {
   const key = header ? resolveSortKey(header) : field
 
   if (sortConfig.value.field === key) {
-    if (sortConfig.value.order === 'asc') sortConfig.value.order = 'desc'
-    else if (sortConfig.value.order === 'desc') {
-      sortConfig.value.order = ''
-      sortConfig.value.field = ''
-    } else sortConfig.value.order = 'asc'
+    sortConfig.value.order = sortConfig.value.order === 'asc' ? 'desc' : 'asc'
   } else {
     sortConfig.value.field = key
     sortConfig.value.order = 'asc'
