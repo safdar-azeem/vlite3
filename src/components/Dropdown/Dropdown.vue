@@ -44,6 +44,7 @@ const props = withDefaults(
     nestedPosition?: TooltTipPlacement
     nestedOffset?: [number, number]
     showSelectedLabel?: boolean
+    showSelectedIcon?: boolean
     selectable?: boolean
     doubleConfirmation?: boolean
     layout?: 'default' | 'grouped'
@@ -72,6 +73,7 @@ const props = withDefaults(
     selectedIndex: null,
     maxHeight: '300px',
     showSelectedLabel: true,
+    showSelectedIcon: false,
     selectable: true,
     doubleConfirmation: false,
     layout: 'default',
@@ -285,7 +287,7 @@ const selectionProps = reactive({
   options: combinedOptions,
 })
 
-const { currentValue, selectedLabel, selectOption } = useDropdownSelection(
+const { currentValue, selectedLabel, selectedIcon, selectOption } = useDropdownSelection(
   selectionProps as any,
   emit
 )
@@ -400,9 +402,10 @@ const cancelSelection = () => {
       triggerClass="w-full"
       :styles="{ padding: '0' }">
       <template #trigger="{ isOpen }">
-        <slot name="trigger" v-bind="{ selectedLabel, isOpen }">
+        <slot name="trigger" v-bind="{ selectedLabel, selectedIcon: showSelectedIcon ? selectedIcon : undefined, isOpen }">
           <DropdownTrigger
             :selected-label="selectedLabel"
+            :selected-icon="showSelectedIcon ? selectedIcon : undefined"
             :is-open="isOpen"
             :direction="direction"
             :disabled="disabled"
