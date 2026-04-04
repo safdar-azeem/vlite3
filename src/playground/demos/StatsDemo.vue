@@ -7,9 +7,10 @@ const standardItems = [
   {
     id: 1,
     title: 'Total Revenue',
-    value: '$45,231.89',
+    value: '45231.89',
     icon: 'lucide:dollar-sign',
     color: 'success',
+    isPrice: true,
     trend: { value: '+20.1%', isPositive: true, label: 'from last month' },
   },
   {
