@@ -1,6 +1,6 @@
 # Invoice Component
 
-**Import:** `import { Invoice } from 'vlite3'`
+**Import:** `import { Invoice, InvoiceTotals } from 'vlite3'`
 
 ### Description
 
@@ -122,11 +122,11 @@ The component maps specific status strings to semantic colors automatically.
 
 | Status Category | Colors        | Example Keywords                    |
 | :-------------- | :------------ | :---------------------------------- |
-| **Positive**    | Green         | Paid, Success, Completed, Delivered |
-| **Warning**     | Yellow/Orange | Pending, Overdue, Expiring, Waiting |
-| **Negative**    | Red/Pink      | Rejected, Cancelled, Failed, Danger |
+| **Positive** | Green         | Paid, Success, Completed, Delivered |
+| **Warning** | Yellow/Orange | Pending, Overdue, Expiring, Waiting |
+| **Negative** | Red/Pink      | Rejected, Cancelled, Failed, Danger |
 | **Information** | Blue/Indigo   | Processing, Started, In Progress    |
-| **Neutral**     | Gray          | Draft, Archived, Disabled, Void     |
+| **Neutral** | Gray          | Draft, Archived, Disabled, Void     |
 
 #### CSS Variable Hooks
 
@@ -150,7 +150,7 @@ Use this exhaustive object to generate or validate a full-featured invoice paylo
 {
   "brandTitle": "COMMERCIAL INVOICE",
   "brandName": "Vertex Systems LLC",
-  "brandLogo": "https://cdn.example.com/logo.svg",
+  "brandLogo": "[https://cdn.example.com/logo.svg](https://cdn.example.com/logo.svg)",
   "invoiceNumber": "VXT-8842-2024",
   "status": "Paid",
   "issuedDate": "2024-03-30",
@@ -193,10 +193,48 @@ Use this exhaustive object to generate or validate a full-featured invoice paylo
     { "label": "Total Amount due", "value": 11000, "isGrandTotal": true }
   ],
   "barcode": "VXT-8842-2024",
-  "qrcode": "https://pay.vertex.io/VXT-8842-2024",
+  "qrcode": "[https://pay.vertex.io/VXT-8842-2024](https://pay.vertex.io/VXT-8842-2024)",
   "notes": "Thank you for your business. Terms: Net 15.",
   "footerText": "Vertex Systems LLC is a registered trademark in TX."
 }
+```
+
+---
+
+### Standalone Components
+
+#### `InvoiceTotals`
+
+The totals section of the invoice can be used completely independently of the main `Invoice` component. This is useful for custom checkout pages, standalone receipt modals, or custom layouts that need to display standard invoice calculations natively.
+
+**Props:**
+
+| Prop             | Type                                           | Default     | Description                                                          |
+| :--------------- | :--------------------------------------------- | :---------- | :------------------------------------------------------------------- |
+| `totals`         | `InvoiceTotal[]`                               | **Required**| Array of summary rows (Subtotal, Tax, Final).                        |
+| `compact`        | `boolean`                                      | `false`     | When true, scales down padding and typography.                       |
+| `variant`        | `InvoiceVariant \| 'default'`                  | `'default'` | Matches the visual style to a specific invoice variant.              |
+| `containerClass` | `string \| any[] \| Record<string, boolean>`   | `undefined` | Custom class to override the wrapper container styles.               |
+
+**Example:**
+
+```vue
+<script setup>
+import { InvoiceTotals } from 'vlite3'
+
+const checkoutTotals = [
+  { label: 'Subtotal', value: 250, isSubtotal: true },
+  { label: 'Promo Code (SAVE20)', value: -50, isDiscount: true },
+  { label: 'Estimated Tax', value: 15, isTax: true },
+  { label: 'Total Due', value: 215, isGrandTotal: true }
+]
+</script>
+
+<template>
+  <div class="max-w-sm p-5 border rounded-xl bg-card">
+    <InvoiceTotals :totals="checkoutTotals" variant="Variant4" />
+  </div>
+</template>
 ```
 
 ---
