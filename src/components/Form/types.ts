@@ -50,6 +50,7 @@ export type IFormFieldType =
   | 'choiceBox'
   | 'avatarUpload'
   | 'thumbnailSelector'
+  | 'tags'
   | Component
 
 /**
