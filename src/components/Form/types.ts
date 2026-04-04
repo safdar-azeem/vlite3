@@ -47,6 +47,7 @@ export type IFormFieldType =
   | 'customFields'
   | 'select'
   | 'multiSelect'
+  | 'choiceBox'
   | 'avatarUpload'
   | 'thumbnailSelector'
   | Component
@@ -164,7 +165,7 @@ export interface IForm {
   addonLeft?: string | IFormAddon
   /** Right addon — plain text or an addon config object (select/button) */
   addonRight?: string | IFormAddon
-  /** Options for select/multiSelect/dropdown fields */
+  /** Options for select/multiSelect/dropdown fields/choiceBox */
   options?: IDropdownOptions
   /** Validation function - returns error message or empty string */
   validation?: IFormValidation
