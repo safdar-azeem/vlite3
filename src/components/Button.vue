@@ -50,6 +50,7 @@ const classes = computed(() => {
 
     ghost: 'hover:bg-accent hover:text-accent-foreground text-foreground',
     link: 'text-primary underline-offset-4 hover:underline',
+    transparent: '',
   }
 
   const sizes: Record<ButtonSize, string> = {
@@ -121,7 +122,17 @@ const iconClasses = computed(() => {
     :type="type"
     :class="classes"
     :disabled="disabled || loading"
-    :data-testid="$attrs['data-testid'] || (displayText ? `btn-${displayText.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : (icon ? `btn-${icon.replace(/[^a-zA-Z0-9]+/g, '-')}` : 'button'))"
+    :data-testid="
+      $attrs['data-testid'] ||
+      (displayText
+        ? `btn-${displayText
+            .toString()
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')}`
+        : icon
+          ? `btn-${icon.replace(/[^a-zA-Z0-9]+/g, '-')}`
+          : 'button')
+    "
     class="cursor-pointer">
     <Icon
       v-if="loading"
