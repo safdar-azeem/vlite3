@@ -53,6 +53,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'ChoiceBox', to: '/choicebox', icon: 'lucide:layout-grid' },
       { label: 'FilePicker', to: '/filepicker', icon: 'lucide:upload-cloud' },
       { label: 'ThumbnailSelector', to: '/thumbnailselector', icon: 'lucide:image' },
+      { label: 'TagInput', to: '/taginput', icon: 'lucide:tags' },
       { label: 'Form', to: '/form', icon: 'lucide:file-input' },
       { label: 'Google Login', to: '/googlelogin', icon: 'lucide:chrome' },
       { label: 'Permission Matrix', to: '/permissionmatrix', icon: 'lucide:shield-check' },
