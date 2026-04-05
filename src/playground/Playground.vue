@@ -48,7 +48,11 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'ColorPicker', to: '/components/colorpicker', icon: 'lucide:palette' },
       { label: 'IconPicker', to: '/components/iconpicker', icon: 'lucide:smile' },
       { label: 'DatePicker', to: '/components/datepicker', icon: 'lucide:calendar' },
-      { label: 'DateRangePicker', to: '/components/daterangepicker', icon: 'lucide:calendar-range' },
+      {
+        label: 'DateRangePicker',
+        to: '/components/daterangepicker',
+        icon: 'lucide:calendar-range',
+      },
       { label: 'MultiSelect', to: '/components/multiselect', icon: 'lucide:list-checks' },
       { label: 'ChoiceBox', to: '/components/choicebox', icon: 'lucide:layout-grid' },
       { label: 'FilePicker', to: '/components/filepicker', icon: 'lucide:upload-cloud' },
@@ -56,7 +60,11 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'TagInput', to: '/components/taginput', icon: 'lucide:tags' },
       { label: 'Form', to: '/components/form', icon: 'lucide:file-input' },
       { label: 'Google Login', to: '/components/googlelogin', icon: 'lucide:chrome' },
-      { label: 'Permission Matrix', to: '/components/permissionmatrix', icon: 'lucide:shield-check' },
+      {
+        label: 'Permission Matrix',
+        to: '/components/permissionmatrix',
+        icon: 'lucide:shield-check',
+      },
     ],
   },
   {
@@ -77,7 +85,11 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Price', to: '/components/price', icon: 'lucide:circle-dollar-sign' },
       { label: 'Date', to: '/components/datetime', icon: 'lucide:calendar-days' },
       { label: 'Clock', to: '/components/clock', icon: 'lucide:clock-3' },
-      { label: 'Custom Fields Display', to: '/components/customfieldsdisplay', icon: 'lucide:list-tree' },
+      {
+        label: 'Custom Fields Display',
+        to: '/components/customfieldsdisplay',
+        icon: 'lucide:list-tree',
+      },
       { label: 'Timeline', to: '/components/timeline', icon: 'lucide:clock' },
     ],
   },
@@ -142,17 +154,19 @@ const menuItems: SidebarMenuItemSchema[] = [
       layout-mode="classic"
       mobileBreakpoint="md"
       breadcrumb
+      :contentClass="isSidebarCompact ? 'px-0!' : 'px-2.5'"
       :render-nested-tabs="isSidebarCompact"
       class="border-r border-border"
       :class="isSidebarCompact ? 'w-28' : 'w-64'">
       <template #default>
-        <div class="py-3" :class="isSidebarCompact ? 'px-1' : 'px-2'">
+        <div :class="isSidebarCompact ? '' : 'py-3'">
           <SidebarMenu
             class="hidden md:flex"
             :show-tooltip="isSidebarCompact"
             :items="menuItems"
             :allow-multiple="true"
             :compact="isSidebarCompact"
+            :item-class="isSidebarCompact && 'rounded-none!'"
             :render-mode="isSidebarCompact ? 'popover' : 'tree'"
             show-compact-labels
             :default-expanded="[
@@ -231,7 +245,7 @@ const menuItems: SidebarMenuItemSchema[] = [
 
       <template #main>
         <!-- Adding much better space inside the page layout -->
-        <div class="px-10 md:px-16 lg:px-24 py-12 lg:py-20 max-w-[1200px] mx-auto w-full">
+        <div class="px-10 md:px-14 lg:px-16 py-8 lg:py-10 max-w-[1500px] mx-auto w-full">
           <router-view></router-view>
         </div>
       </template>
