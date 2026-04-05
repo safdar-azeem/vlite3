@@ -69,7 +69,7 @@ export function highlightVue(code: string): string {
 }
 
 // Internal helper to transform script imports
-function transformScript(scriptBlock: string): string {
+function transformScript(scriptBlock: string, snippetContent: string = ''): string {
   if (!scriptBlock) return ''
 
   const openTagMatch = scriptBlock.match(/<script[^>]*>/)
@@ -124,8 +124,14 @@ function transformScript(scriptBlock: string): string {
     }
   })
 
+  // Filter components based on usage in snippetContent
+  const sortedComponents = Array.from(componentImports).filter((comp) => {
+    if (!snippetContent) return true
+    // Check if component name is found in the template (either <Component or Component)
+    return snippetContent.includes(comp) || snippetContent.includes(comp.toLowerCase())
+  }).sort()
+
   // Build new imports
-  const sortedComponents = Array.from(componentImports).sort()
   let newImportBlock = ''
   if (sortedComponents.length > 0) {
     newImportBlock = `import { ${sortedComponents.join(', ')} } from 'vlite3'`
@@ -138,9 +144,12 @@ function transformScript(scriptBlock: string): string {
 
   let newInner = newImportBlock
   if (otherLines.length > 0) {
-    if (newInner) newInner += '\n'
+    if (newInner) newInner += '\n\n'
     newInner += otherLines.join('\n')
   }
+
+  // Only return a script block if there's actually content inside
+  if (!newInner.trim()) return ''
 
   return `${openTag}\n${newInner}\n${closeTag}`
 }
@@ -149,11 +158,6 @@ export function extractSnippet(code: string, sectionTitle: string): string {
   // Extract script block (if any)
   const scriptMatch = code.match(/<script[\s\S]*?<\/script>/)
   let scriptContent = scriptMatch ? scriptMatch[0] : ''
-
-  // Transform script imports if found
-  if (scriptContent) {
-    scriptContent = transformScript(scriptContent)
-  }
 
   // Escape regex chars in title
   const safeTitle = sectionTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -190,24 +194,20 @@ export function extractSnippet(code: string, sectionTitle: string): string {
       content = ''
     }
 
+    // Transform script imports if found, providing the extracted content for filtering
+    if (scriptContent) {
+      scriptContent = transformScript(scriptContent, content)
+    }
+
     let result = ''
     if (scriptContent) result += scriptContent + '\n\n'
     result += '<template>\n' + content + '\n</template>'
     return result
   }
 
-  // If no specific section found (or title mismatch), just return transformed script + whatever code?
-  // Or just whole file transformed?
-  // Let's transform the whole file's script if snippet extraction fails?
-  // Yes, helpful fallback.
-
   if (scriptContent && code.includes('<script')) {
-    // Replace original script with transformed script in code?
-    // This is complex string replacement.
-    // Let's keep it simple: return code as is if snippet extraction fails,
-    // but maybe try to transform script there too?
-    // Ideally yes.
-    return code.replace(/<script[\s\S]*?<\/script>/, scriptContent)
+    // Replace original script with transformed script
+    return code.replace(/<script[\s\S]*?<\/script>/, transformScript(scriptContent))
   }
 
   return code
