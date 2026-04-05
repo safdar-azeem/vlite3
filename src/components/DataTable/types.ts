@@ -14,7 +14,6 @@ export interface SortConfig {
 export interface TableState {
   pagination: PaginationConfig
   sort: SortConfig
-  search: string
   filter: Record<string, any>
 }
 
@@ -24,7 +23,6 @@ export interface FilterConfig {
 
 export interface TableFilter {
   pagination: PaginationConfig
-  search: string
   sort: SortConfig
   filter: FilterConfig
 }
@@ -55,12 +53,6 @@ export interface TableHeader {
 export interface DataTableProps {
   rows: any[]
   selectedRows?: any[]
-  search?: string
-  showSearch?: boolean
-  searchPlaceholder?: string
-  searchPlaceholderI18n?: string
-  toolbarClass?: string
-  toolbarSearchClass?: string
   headers: TableHeader[]
   /**
    * Unique row identifier field.
@@ -108,7 +100,6 @@ export interface RowClickPayload {
  *                      Undefined when DataTable is used standalone (outside Screen).
  */
 export interface ScreenContext {
-  disableSearch: boolean
   forceSelectable: boolean
   onTableChange?: (state: TableState) => void
 }
