@@ -96,7 +96,13 @@ const createEmptyRow = (): Record<string, any> & { _id: string } => {
   const row: Record<string, any> = {}
   for (const field of props.schema) {
     const defaultValue = typeof field.value === 'function' ? field.value() : field.value
-    row[field.name] = defaultValue ?? null
+    
+    let fallback: any = null
+    if (field.props?.multiple || field.type === 'multiSelect' || field.type === 'tags') {
+      fallback = []
+    }
+    
+    row[field.name] = defaultValue ?? fallback
   }
   return { ...row, _id: generateId() }
 }
