@@ -477,7 +477,7 @@ const fieldProps = computed(() => {
   if (isComponent(type)) {
     return {
       ...baseProps,
-      value: props.value,
+      value: (props.field.props?.multiple && (props.value === null || props.value === undefined)) ? [] : props.value,
       values: props.values,
     }
   }
