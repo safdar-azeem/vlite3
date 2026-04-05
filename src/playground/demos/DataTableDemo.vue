@@ -5,11 +5,7 @@ import Button from '@/components/Button.vue'
 import Badge from '@/components/Badge.vue'
 import Avatar from '@/components/Avatar.vue'
 import CheckBox from '@/components/CheckBox.vue'
-import type {
-  TableHeader,
-  TableFilter,
-  TableState,
-} from '@/components/DataTable/types'
+import type { TableHeader, TableFilter, TableState } from '@/components/DataTable/types'
 import { useGetUsers, type User } from '../composables/useGetUsers'
 import DemoSection from '../DemoSection.vue'
 import sourceCode from './DataTableDemo.vue?raw'
@@ -132,14 +128,18 @@ const handleDelete = (rows: User[]) => {
     <!-- Header & Controls -->
     <div class="space-y-6 pb-8 border-b border-border/50">
       <div class="space-y-2">
-        <h2 class="text-3xl font-extrabold tracking-tight lg:text-4xl text-foreground">DataTable</h2>
+        <h2 class="text-3xl font-extrabold tracking-tight lg:text-4xl text-foreground">
+          DataTable
+        </h2>
         <p class="text-lg text-muted-foreground w-full max-w-[80%]">
-          A powerful data table component with sorting, pagination, and endless configuration options.
+          A powerful data table component with sorting, pagination, and endless configuration
+          options.
         </p>
       </div>
 
       <!-- Config Checkboxes -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-muted/30 p-6 rounded-2xl border border-border/40">
+      <div
+        class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-muted/30 p-6 rounded-2xl border border-border/40">
         <CheckBox v-model="isTableSortable" label="Sortable Columns" />
         <CheckBox v-model="isBordered" label="Show Borders" />
         <CheckBox v-model="isStriped" label="Zebra Stripes" />
@@ -153,10 +153,12 @@ const handleDelete = (rows: User[]) => {
     <!-- Demo Section -->
     <DemoSection title="Playground" :code="sourceCode">
       <h2 class="text-lg font-semibold max-sm:px-2">User Management</h2>
-      <p class="text-sm text-muted-foreground mb-6 max-sm:px-2">Manage team members and their roles across your organization.</p>
+      <p class="text-sm text-muted-foreground mb-6 max-sm:px-2">
+        Manage team members and their roles across your organization.
+      </p>
 
       <DataTable
-        :rows="users"
+        :rows="[]"
         :headers="columns"
         :page-info="pageInfo"
         :loading="loading"
@@ -172,7 +174,6 @@ const handleDelete = (rows: User[]) => {
         empty-description="We couldn't find any users matching your criteria."
         @change="handleTableChange"
         @delete="handleDelete">
-        
         <template #name="{ value, row }">
           <div class="flex items-center gap-3">
             <Avatar :src="row.avatar" :alt="value" size="sm" />
@@ -203,4 +204,3 @@ const handleDelete = (rows: User[]) => {
     </DemoSection>
   </div>
 </template>
-
