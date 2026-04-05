@@ -442,7 +442,8 @@ const txtCancelBtn = computed(() => {
                     :title="txtEmptyTitle"
                     :description="txtEmptyDesc"
                     :icon="emptyIcon"
-                    class="border-none! bg-transparent! py-16!">
+                    variant="variant12"
+                    class="bg-transparent! py-8!">
                     <template #action v-if="$slots['empty-action']">
                       <slot name="empty-action" />
                     </template>
