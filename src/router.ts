@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import Playground from './playground/Playground.vue'
+import Landing from './playground/Landing.vue'
+
 const demoModules = import.meta.glob('./playground/demos/*Demo.vue')
 
 const children: RouteRecordRaw[] = Object.entries(demoModules).map(([path, component]) => {
@@ -7,8 +9,8 @@ const children: RouteRecordRaw[] = Object.entries(demoModules).map(([path, compo
   const rawName = path.split('/').pop()?.replace('Demo.vue', '') || ''
 
   // Format the route path. Examples:
-  // "AvatarUploader" -> "/avatar-uploader"
-  // "ButtonGroup" -> "/buttongroup" (keeping consistent with existing playground paths)
+  // "AvatarUploader" -> "avatar-uploader"
+  // "ButtonGroup" -> "buttongroup" (keeping consistent with existing playground paths)
   let routePath = rawName.toLowerCase()
   if (rawName === 'AvatarUploader') routePath = 'avatar-uploader'
   if (rawName === 'DateRangePicker') routePath = 'daterangepicker'
@@ -20,7 +22,7 @@ const children: RouteRecordRaw[] = Object.entries(demoModules).map(([path, compo
   if (rawName === 'PricingPlan') routePath = 'pricing'
 
   return {
-    path: `/${routePath}`,
+    path: routePath,
     name: rawName,
     component,
   }
@@ -30,7 +32,7 @@ const children: RouteRecordRaw[] = Object.entries(demoModules).map(([path, compo
 children.push({
   path: '',
   name: 'Default',
-  redirect: '/button',
+  redirect: '/components/button',
 })
 
 const router = createRouter({
@@ -38,6 +40,11 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'Landing',
+      component: Landing,
+    },
+    {
+      path: '/components',
       component: Playground,
       children,
     },
