@@ -77,8 +77,7 @@ async function copyCode() {
       <!-- Preview Tab -->
       <div
         v-show="activeTab === 'preview'"
-        class="preview-container relative min-h-[350px] flex items-center justify-center rounded-2xl border border-border/40 bg-background shadow-sm hover:shadow-md transition-shadow duration-300 p-12 overflow-hidden">
-        <div class="absolute inset-0 bg-grid-black/[0.02] dark:bg-grid-white/[0.02] pointer-events-none"></div>
+        class="preview-container relative min-h-100 flex items-center justify-center rounded-2xl border border-border/40 bg-background shadow-sm hover:shadow-md transition-shadow duration-300 p-12 overflow-hidden">
         <div class="w-full flex items-center justify-center flex-1 flex-col preview-tab relative z-10">
           <slot />
         </div>
@@ -176,15 +175,7 @@ async function copyCode() {
   background: #52525b;
 }
 
-.bg-grid-black {
-  background-size: 20px 20px;
-  background-image: linear-gradient(to right, #000 1px, transparent 1px), linear-gradient(to bottom, #000 1px, transparent 1px);
-}
 
-.bg-grid-white {
-  background-size: 20px 20px;
-  background-image: linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px);
-}
 </style>
 
 <!-- Global syntax highlight styles (unscoped) -->
