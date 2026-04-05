@@ -158,7 +158,7 @@ const handleDelete = (rows: User[]) => {
       </p>
 
       <DataTable
-        :rows="[]"
+        :rows="users"
         :headers="columns"
         :page-info="pageInfo"
         :loading="loading"
