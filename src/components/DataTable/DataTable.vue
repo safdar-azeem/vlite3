@@ -7,7 +7,6 @@ import { Pagination } from '../Pagination'
 import { Empty } from '../Empty'
 import DataTableHeader from './DataTableHeader.vue'
 import DataTableRow from './DataTableRow.vue'
-import DataTableToolbar from './DataTableToolbar.vue'
 import { $t } from '@/utils/i18n'
 import type {
   SortConfig,
@@ -48,8 +47,6 @@ const resolveSortKey = (header: TableHeader): string => header.sortKey || header
 const props = withDefaults(defineProps<DataTableProps>(), {
   rows: () => [],
   selectedRows: () => [],
-  search: '',
-  showSearch: false,
   headers: () => [],
   keyField: 'auto',
   loading: false,
@@ -84,11 +81,6 @@ const emit = defineEmits<{
 
 const screenContext = inject<ScreenContext | null>(SCREEN_CONTEXT_KEY, null)
 
-const effectiveShowSearch = computed(() => {
-  if (screenContext?.disableSearch) return false
-  return props.showSearch
-})
-
 const effectiveSelectable = computed(() => {
   // If hideSelectable is explicitly set to true on DataTable, always respect it —
   // even when inside a Screen context. This allows per-table override.
@@ -108,28 +100,9 @@ const internalItemsPerPage = ref(
   props.pageInfo?.itemsPerPage || props.paginationProps?.itemsPerPage || 10
 )
 const currentPage = ref(props.pageInfo?.currentPage || 1)
-const internalSearch = ref(props.search || '')
 const showDeleteConfirmation = ref(false)
 
 const shouldShowSkeleton = computed(() => props.loading)
-
-watch(
-  () => props.search,
-  (newVal) => {
-    if (newVal !== undefined && newVal !== internalSearch.value) {
-      internalSearch.value = newVal
-    }
-  }
-)
-
-let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null
-watch(internalSearch, () => {
-  if (searchDebounceTimer) clearTimeout(searchDebounceTimer)
-  searchDebounceTimer = setTimeout(() => {
-    currentPage.value = 1
-    emitChange()
-  }, 300)
-})
 
 watch(
   () => props.pageInfo?.itemsPerPage,
@@ -277,7 +250,6 @@ const emitChange = () => {
     const state: TableState = {
       pagination: { page: currentPage.value, limit: internalItemsPerPage.value },
       sort: { ...sortConfig.value },
-      search: internalSearch.value,
       filter: {},
     }
     emit('change', state)
@@ -362,29 +334,6 @@ const txtCancelBtn = computed(() => {
 
 <template>
   <div class="space-y-6.5">
-    <DataTableToolbar
-      v-if="effectiveShowSearch || $slots?.['toolbar-left'] || $slots?.['toolbar-right']"
-      v-model="internalSearch"
-      :show-search="effectiveShowSearch"
-      :placeholder="searchPlaceholder"
-      :placeholderI18n="searchPlaceholderI18n"
-      :class="toolbarClass"
-      :search-class="toolbarSearchClass">
-      <template #left v-if="$slots?.['toolbar-left']">
-        <slot name="toolbar-left" />
-      </template>
-      <template #delete v-if="selectedIds.size > 0">
-        <Button
-          rounded="full"
-          variant="outline"
-          size="lg"
-          icon="lucide:trash-2"
-          @click="showDeleteConfirmation = true" />
-      </template>
-      <template #right v-if="$slots?.['toolbar-right']">
-        <slot name="toolbar-right" />
-      </template>
-    </DataTableToolbar>
 
     <div :class="containerClass">
       <div class="overflow-x-auto w-full">
