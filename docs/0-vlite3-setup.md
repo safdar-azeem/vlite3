@@ -1,19 +1,26 @@
-## Installation
+# 🚀 Setup & Global Configuration
+
+Welcome! We are thrilled to have you here. Setting up **vlite3** is designed to be as frictionless and clean as our components. Let’s get you up and running so you can focus on building wonderful, minimalist interfaces.
+
+---
+
+## 1. Installation
+
+First, pull the package into your project using your favorite package manager:
 
 ```bash
 npm install vlite3
-
 ```
-
+*or*
 ```bash
 yarn add vlite3
-
 ```
 
 ## 2. Tailwind CSS Setup (Tailwind v4)
 
-`vite.config.ts`
+In order to adopt the beautiful, minimalistic **Clean** aesthetics, register the Tailwind plugin.
 
+**`vite.config.ts`**
 ```ts
 import tailwindcss from '@tailwindcss/vite'
 
@@ -22,19 +29,21 @@ export default defineConfig({
 })
 ```
 
-`style.css`
-
+**`style.css`**
 ```css
 @import 'tailwindcss';
 @layer theme, base, components, utilities;
 
+/* Import the core vlite3 styles */
 @import 'vlite3/style.css';
 @source "../node_modules/vlite3";
 ```
 
-## 3. Usage
+## 3. Basic Usage
 
-Import components directly in your Vue files:
+Now for the fun part! You can start dropping gorgeous components directly into your Vue templates. 
+
+Notice how easily everything fits together, relying on ample whitespace by default:
 
 ```vue
 <script setup>
@@ -42,20 +51,27 @@ import { Button, Input } from 'vlite3'
 </script>
 
 <template>
-  <div class="p-4 space-y-4">
-    <Button>Click Me</Button>
-    <Input placeholder="Type here..." />
+  <!-- Notice the generous p-8 padding for a clean layout -->
+  <div class="p-8 space-y-6 max-w-sm mx-auto">
+    <h2 class="text-xl font-semibold tracking-tight text-foreground">Welcome Back</h2>
+    
+    <div class="space-y-4">
+      <Input placeholder="Enter your email..." />
+      <Button class="w-full">Sign In</Button>
+    </div>
   </div>
 </template>
 ```
 
-## Global Configuration (Registry System)
+---
 
-vlite3 features a plugin-based architecture that allows you to register global services and set global component configurations. This ensures consistency and prevents repetition across your application.
+## 🌎 Global Configuration (The Registry System)
+
+To maintain a perfectly pristine codebase (free of repetitive code clutter!), vlite3 features a plugin-based architecture. You define your global behavior *once*, and the entire library intelligently reacts to it.
 
 ### Setting up the Plugin
 
-In your `main.ts` or `main.js`, import `createVLite` and `vScrollReveal` and register your services and component configurations:
+Jump into your `main.ts` or `main.js` and set up the `vlite` plugin:
 
 ```typescript
 import { createApp } from 'vue'
@@ -64,60 +80,51 @@ import { createVLite, vScrollReveal, GoogleSignInPlugin } from 'vlite3'
 
 const app = createApp(App)
 
-// Register global directives
+// Add delightful scroll animations
 app.directive('scroll-reveal', vScrollReveal)
 
+// Optionally add Google Auth
 app.use(GoogleSignInPlugin, {
-  clientId: env.VITE_GOOGLE_CLIENT_ID,
+  clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
 })
 
-// Initialize VLite with custom configuration
+// Initialize VLite with your Custom Configuration
 const vlite = createVLite({
-  // Global Service Registry
+  // 1. Global Service Registry
   services: {
     /**
-     * Global File Upload Handler
-     *
-     * This function will be called automatically by:
-     * - useFileUpload() composable
-     * - Form components (when using 'file', 'fileUploader', or 'avatarUpload' types)
-     *
-     * @param file - The File object to upload
-     * @param folderId - (Optional) Folder ID passed from component props
-     * @returns Promise<string> - The public URL of the uploaded file
+     * Upload Once, Use Everywhere!
+     * 
+     * Simply define your upload logic here. Any Form component using 
+     * 'file', 'fileUploader', or 'avatarUpload' types will automatically 
+     * use this function. Pure magic! ✨
      */
     upload: async (file, folderId) => {
-      // Example: Upload to your own backend
       const formData = new FormData()
       formData.append('file', file)
       if (folderId) formData.append('folder_id', folderId)
 
-      // Replace with your actual API call (e.g., Axios, Fetch)
-      const response = await fetch(
-        '[https://api.yourdomain.com/v1/upload](https://api.yourdomain.com/v1/upload)',
-        {
-          method: 'POST',
-          body: formData,
-          headers: {
-            Authorization: 'Bearer ...',
-          },
-        }
-      )
+      const response = await fetch('https://api.yourdomain.com/v1/upload', {
+        method: 'POST',
+        body: formData,
+        headers: { Authorization: 'Bearer ...' },
+      })
 
       if (!response.ok) throw new Error('Upload failed')
-
       const data = await response.json()
-      return data.url // MUST return the file URL string
+      
+      return data.url // MUST return the secure file URL string
     },
   },
 
-  // Global UI Components Configuration
+  // 2. Global UI Component Configurations
   components: {
     form: {
-      variant: 'outline', // Applies 'outline' globally to all Form inputs ('solid' | 'outline' | 'floating' | etc.)
-      size: 'md', // Global size for form inputs ('sm' | 'md' | 'lg')
-      rounded: 'md', // Global border radius for forms
-      showRequiredAsterisk: true, // Globally toggle the visibility of the required asterisk
+      // Define a system-wide form aesthetic to ensure UI consistency
+      variant: 'outline', // Choose 'solid' | 'outline' | 'floating'
+      size: 'md', 
+      rounded: 'md', 
+      showRequiredAsterisk: true, 
     },
   },
 })
@@ -126,58 +133,42 @@ app.use(vlite)
 app.mount('#app')
 ```
 
-### How it works
+### Beautiful Side-Effects 🌸
 
-#### Global Services (e.g., Uploads)
+By adopting this structure, you achieve incredible things:
 
-Once registered, you don't need to pass upload handlers to individual components.
+1.  **Automatic Form Uploads**: The `Form` component automatically processes and uploads all your files in *parallel* the moment a user submits, replacing the raw files with the secure URLs from your service before invoking your final `@onSubmit` hook.
+2.  **Unshakeable Consistency**: Every single form field gracefully adopts your global `variant` and `rounded` properties, eliminating UI fragmentation across pages.
 
-1. **Automatic Injection**: The `Form` component detects input types like `file`, `avatarUpload`, or `fileUploader`.
-2. **Parallel Processing**: When the form is submitted, it automatically uploads all files in **parallel** using your registered `upload` service.
-3. **URL Replacement**: The File objects in your form data are replaced with the returned URLs before the final `onSubmit` event is triggered.
+### Advanced Form Override Example
 
-#### Global Component Configuration (e.g., Forms)
-
-By setting `components.form` in the global configuration, you establish app-wide defaults.
-
-1. **Consistency**: Every `<Form />` rendered in your application will automatically inherit the global `variant`, `size`, `rounded`, and `showRequiredAsterisk` configurations.
-2. **Local Overrides**: If you need a specific form to behave differently, simply pass the prop locally on the component (e.g., `<Form variant="floating" ... />`). Local props will always override the global configuration fallback.
-
-## 4. Advanced Usage
-
-Import components directly in your Vue files and leverage the global configuration:
+Need a specific form to look slightly different? You can easily override the global fallbacks right on the specific component:
 
 ```vue
 <script setup>
-import { Button, Input, Form } from 'vlite3'
+import { Form } from 'vlite3'
 
-// The form will automatically use the global upload service AND the global style configurations
 const schema = [
-  {
-    name: 'avatar',
-    label: 'Profile Picture',
-    type: 'avatarUpload',
-  },
-  {
-    name: 'documents',
-    label: 'Attachments',
-    type: 'fileUploader',
-    props: { multiple: true },
-  },
+  { name: 'avatar', label: 'Profile Picture', type: 'avatarUpload' },
+  { name: 'resume', label: 'Resume', type: 'fileUploader', props: { multiple: true } },
 ]
 
 const handleSubmit = (payload) => {
-  // payload.values.avatar will be a URL string (e.g., "https://api...")
-  // payload.values.documents will be an array of URL strings
-  console.log(payload.values)
+  // Relax! The payload already has the URLs, not the raw files 😊
+  console.log('Avatar URL:', payload.values.avatar)
+  console.log('Resume URLs:', payload.values.resume)
 }
 </script>
 
 <template>
-  <div class="">
+  <div class="max-w-2xl mx-auto py-10">
+    <!-- Inherits standard global aesthetics -->
     <Form :schema="schema" @onSubmit="handleSubmit" />
 
-    <Form :schema="schema" variant="solid" size="lg" @onSubmit="handleSubmit" />
+    <!-- Overriding globally defined styles for this specific block -->
+    <Form :schema="schema" variant="floating" size="lg" @onSubmit="handleSubmit" />
   </div>
 </template>
 ```
+
+You are now fully set up. Have fun shaping digital beauty!
