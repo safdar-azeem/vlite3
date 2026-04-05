@@ -1,15 +1,13 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { DataTable } from '@/components/DataTable'
-import Input from '@/components/Input.vue'
 import Button from '@/components/Button.vue'
 import Badge from '@/components/Badge.vue'
 import Avatar from '@/components/Avatar.vue'
+import CheckBox from '@/components/CheckBox.vue'
 import type {
   TableHeader,
   TableFilter,
-  SortConfig,
-  SelectionState,
   TableState,
 } from '@/components/DataTable/types'
 import { useGetUsers, type User } from '../composables/useGetUsers'
@@ -17,10 +15,14 @@ import DemoSection from '../DemoSection.vue'
 import sourceCode from './DataTableDemo.vue?raw'
 import { PageInfo } from '@/components/Pagination'
 
-const searchQuery = ref('')
+// Controls mapping
 const isTableSortable = ref(true)
+const isBordered = ref(true)
+const isStriped = ref(false)
+const isCompact = ref(false)
+const isHoverable = ref(true)
+const isSelectable = ref(true)
 const isRaised = ref(false)
-const paginationPosition = ref<'start' | 'center' | 'end' | 'between'>('between')
 
 const { result, loading, refetch } = useGetUsers()
 
@@ -81,18 +83,10 @@ const currentTableState = ref<TableState>({
     field: '',
     order: '',
   },
-  search: '',
   filter: {},
 })
 
-const paginationProps = computed(() => ({
-  alignment: paginationPosition.value,
-  showItemsPerPage: true,
-  itemsPerPageOptions: [10, 25, 50, 100],
-}))
-
 const handleTableChange = async (state: TableState) => {
-  console.log('handleTableChange', state)
   currentTableState.value = state
   await refreshData()
 }
@@ -100,11 +94,9 @@ const handleTableChange = async (state: TableState) => {
 const refreshData = async () => {
   const filter: TableFilter = {
     pagination: currentTableState.value.pagination,
-    search: currentTableState.value.search,
     sort: currentTableState.value.sort,
     filter: currentTableState.value.filter,
   }
-  console.log('Fetching data with:', filter)
   await refetch(filter)
 }
 
@@ -114,13 +106,11 @@ onMounted(() => {
 })
 
 const handleEdit = (user: User) => {
-  console.log('Edit user:', user)
-  alert(`Edit user: ${user.name}`)
+  alert(`Editing user: ${user.name}`)
 }
 
 const handleView = (user: User) => {
-  console.log('View user:', user)
-  alert(`View user: ${user.name}`)
+  alert(`Viewing user: ${user.name}`)
 }
 
 const getStatusVariant = (status: string) => {
@@ -132,83 +122,57 @@ const getStatusVariant = (status: string) => {
   return map[status] || 'secondary'
 }
 
-const handleAddUser = () => {
-  alert('Add User Clicked')
-}
-
 const handleDelete = (rows: User[]) => {
-  console.log('Delete rows:', rows)
   alert(`Deleting ${rows.length} users:\n` + rows.map((u) => u.name).join(', '))
 }
 </script>
 
 <template>
-  <div class="space-y-8">
-    <div class="space-y-2">
-      <div class="flex items-center justify-between flex-wrap gap-4">
-        <h1 class="text-2xl font-bold">DataTable</h1>
-        <div class="flex items-center gap-4">
-          <label class="flex items-center gap-2 text-sm font-medium">
-            Pagination:
-            <select
-              v-model="paginationPosition"
-              class="bg-background border border-border rounded px-2 py-1">
-              <option value="start">Left</option>
-              <option value="center">Center</option>
-              <option value="end">Right</option>
-              <option value="between">Between</option>
-            </select>
-          </label>
-          <label class="flex items-center gap-2 text-sm font-medium">
-            <input type="checkbox" v-model="isTableSortable" class="rounded" />
-            Global Sortable
-          </label>
-          <label class="flex items-center gap-2 text-sm font-medium">
-            <input type="checkbox" v-model="isRaised" class="rounded" />
-            Raised Variant
-          </label>
-        </div>
+  <div class="space-y-12">
+    <!-- Header & Controls -->
+    <div class="space-y-6 pb-8 border-b border-border/50">
+      <div class="space-y-2">
+        <h2 class="text-3xl font-extrabold tracking-tight lg:text-4xl text-foreground">DataTable</h2>
+        <p class="text-lg text-muted-foreground w-full max-w-[80%]">
+          A powerful data table component with sorting, pagination, and endless configuration options.
+        </p>
       </div>
-      <p class="text-muted-foreground">
-        Refactored DataTable with external controls (Search, Actions) and built-in pagination.
-      </p>
+
+      <!-- Config Checkboxes -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-muted/30 p-6 rounded-2xl border border-border/40">
+        <CheckBox v-model="isTableSortable" label="Sortable Columns" />
+        <CheckBox v-model="isBordered" label="Show Borders" />
+        <CheckBox v-model="isStriped" label="Zebra Stripes" />
+        <CheckBox v-model="isCompact" label="Compact Padding" />
+        <CheckBox v-model="isHoverable" label="Row Hover Effect" />
+        <CheckBox v-model="isSelectable" label="Selectable Rows" />
+        <CheckBox v-model="isRaised" label="Raised Variant" />
+      </div>
     </div>
 
-    <DemoSection title="User Management" :code="sourceCode">
-      <h2 class="text-lg font-semibold">User Management</h2>
+    <!-- Demo Section -->
+    <DemoSection title="Playground" :code="sourceCode">
+      <h2 class="text-lg font-semibold max-sm:px-2">User Management</h2>
+      <p class="text-sm text-muted-foreground mb-6 max-sm:px-2">Manage team members and their roles across your organization.</p>
 
       <DataTable
         :rows="users"
         :headers="columns"
         :page-info="pageInfo"
         :loading="loading"
-        :search="searchQuery"
         :sortable="isTableSortable"
+        :bordered="isBordered"
+        :striped="isStriped"
+        :compact="isCompact"
+        :hoverable="isHoverable"
+        :hide-selectable="!isSelectable"
         :variant="isRaised ? 'raised' : 'default'"
-        :pagination-props="paginationProps"
         key-field="_id"
-        hoverable
-        bordered
         empty-title="No users found"
-        empty-description="We couldn't find any users matching your search criteria."
+        empty-description="We couldn't find any users matching your criteria."
         @change="handleTableChange"
         @delete="handleDelete">
-        <template #toolbar-left>
-          <div class="w-max flex-1 mr-auto">
-            <div>
-              <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Products & Services</h1>
-              <p class="text-gray-500 mt-1">
-                Manage your catalog to quickly add items to your invoices.
-              </p>
-            </div>
-          </div>
-        </template>
-        <template #toolbar-right>
-          <div class="">
-            <Button variant="primary" icon="lucide:plus"> Add Product </Button>
-          </div>
-        </template>
-
+        
         <template #name="{ value, row }">
           <div class="flex items-center gap-3">
             <Avatar :src="row.avatar" :alt="value" size="sm" />
@@ -239,3 +203,4 @@ const handleDelete = (rows: User[]) => {
     </DemoSection>
   </div>
 </template>
+
