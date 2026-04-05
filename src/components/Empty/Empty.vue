@@ -15,6 +15,7 @@ import Variant8 from './variants/Variant8.vue'
 import Variant9 from './variants/Variant9.vue'
 import Variant10 from './variants/Variant10.vue'
 import Variant11 from './variants/Variant11.vue'
+import Variant12 from './variants/Variant12.vue'
 
 interface Props {
   title?: string
@@ -62,6 +63,7 @@ const variantComponents: Record<string, any> = {
   variant9: markRaw(Variant9),
   variant10: markRaw(Variant10),
   variant11: markRaw(Variant11),
+  variant12: markRaw(Variant12),
 }
 
 const SelectedVariant = computed(
@@ -70,7 +72,7 @@ const SelectedVariant = computed(
 </script>
 
 <template>
-  <div class="flex items-center justify-center min-h-[300px] w-full py-2">
+  <div class="flex items-center justify-center w-full py-2">
     <component
       :is="SelectedVariant"
       :title="displayTitle"
