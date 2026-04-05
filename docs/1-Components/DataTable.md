@@ -9,10 +9,6 @@
 | `rows`                  | `any[]`                    | `[]`                | Data array to display           |
 | `headers`               | `TableHeader[]`            | `[]`                | Column definitions              |
 | `keyField`              | `string`                   | `'auto'`            | Unique row identifier. `'auto'` picks `id` or `_id` from the first row. |
-| `search`                | `string`                   | `''`                | External search query string    |
-| `showSearch`            | `boolean`                  | `true`              | Show built-in search input. Automatically `false` when inside `Screen`. |
-| `searchPlaceholder`     | `string`                   | `'Search...'`       | Placeholder for search input    |
-| `searchPlaceholderI18n` | `string`                   | —                   | i18n key for search placeholder |
 | `loading`               | `boolean`                  | `false`             | Show loading skeleton           |
 | `hideSelectable`        | `boolean`                  | `false`             | Disable row selection. Automatically disabled when `hideSelectable: true`. |
 | `sortable`              | `boolean`                  | `false`             | Enable column sorting           |
@@ -36,7 +32,7 @@
 
 | Event                  | Payload           | Description |
 | :--------------------- | :---------------- | :---------- |
-| `@change`              | `TableState`      | Emitted on sort, pagination, or search change. See `TableState` below. |
+| `@change`              | `TableState`      | Emitted on sort, pagination, or filter change. See `TableState` below. |
 | `@select`              | `SelectionState`  | Emitted when row selection changes. |
 | `@rowClick`            | `RowClickPayload` | Emitted when a row is clicked. |
 | `@delete`              | `any[]`           | Emitted after delete confirmation with selected rows. |
@@ -50,7 +46,6 @@
 {
   pagination: { page: number; limit: number }
   sort:       { field: string; order: 'asc' | 'desc' | '' }
-  search:     string
   filter:     Record<string, any>
 }
 ```
@@ -89,13 +84,11 @@ export interface TableHeader {
 export interface TableState {
   pagination: { page: number; limit: number }
   sort:       { field: string; order: 'asc' | 'desc' | '' }
-  search:     string
   filter:     Record<string, any>
 }
 
 export interface TableFilter {
   pagination: { page: number; limit: number }
-  search:     string
   sort:       { field: string; order: 'asc' | 'desc' | '' }
   filter:     Record<string, any>
 }
@@ -108,8 +101,6 @@ export interface TableFilter {
 | Slot             | Props                          | Description |
 | :--------------- | :----------------------------- | :---------- |
 | `[header.field]` | `{ value, row, index, field }` | Custom cell content. E.g. `#name="{ value, row }"` |
-| `toolbar-left`   | —                              | Left side of the toolbar |
-| `toolbar-right`  | —                              | Right side of the toolbar |
 | `empty`          | —                              | Replaces the entire empty state |
 | `empty-action`   | —                              | Action button inside the default empty state |
 
@@ -149,9 +140,8 @@ When the user clicks the **Employee** column header, the emitted `sort` will be 
 
 When `DataTable` is rendered as a child of `Screen` (via `:table` prop or `#table` slot), it automatically detects the `Screen` context via Vue's `provide/inject` and:
 
-- **Hides its own search toolbar** — Screen owns the search input.
 - **Enables row selection** — required for Screen's bulk-delete feature.
-- **Forwards sort, pagination, and search state** to Screen's `refetch` — no extra wiring needed. Sort payloads respect `sortKey` when set.
+- **Forwards sort and pagination state** to Screen's `refetch` — no extra wiring needed. Sort payloads respect `sortKey` when set.
 
 ---
 
