@@ -12,3 +12,4 @@ export type EmptyVariant =
   | 'variant9'
   | 'variant10'
   | 'variant11'
+  | 'variant12'
