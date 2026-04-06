@@ -154,8 +154,11 @@ export function niceYTicks(min: number, max: number, count = 5): number[] {
   const start = Math.floor(min / step) * step
 
   const ticks: number[] = []
-  for (let t = start; t <= max + step * 0.01; t += step) {
+  let t = start
+  while (true) {
     ticks.push(parseFloat(t.toFixed(10)))
+    if (t >= max) break
+    t += step
   }
   return ticks
 }
