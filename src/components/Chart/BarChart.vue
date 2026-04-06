@@ -24,9 +24,26 @@ const props = withDefaults(defineProps<BarChartProps>(), {
 // ─── Dimensions ───────────────────────────────
 const containerRef = ref<HTMLElement>()
 const svgWidth = ref(600)
-const PAD = { top: 20, right: 20, bottom: 48, left: 56 }
-const chartW = computed(() => svgWidth.value - PAD.left - PAD.right)
-const chartH = computed(() => props.height - PAD.top - PAD.bottom)
+
+const actualPadding = computed(() => {
+  if (props.orientation === 'horizontal') {
+    return {
+      top: 28,
+      right: props.showValues ? 40 : 20,
+      bottom: 0, // No bottom gap for horizontal chart
+      left: 85
+    }
+  }
+  return {
+    top: 28, 
+    right: 20,
+    bottom: 36,
+    left: 48
+  }
+})
+
+const chartW = computed(() => Math.max(0, svgWidth.value - actualPadding.value.left - actualPadding.value.right))
+const chartH = computed(() => Math.max(0, props.height - actualPadding.value.top - actualPadding.value.bottom))
 
 // ─── Normalise data ────────────────────────────
 const allSeries = computed(() => {
@@ -132,7 +149,7 @@ const hBarGeometry = computed(() => {
   const rowInner = rowH - pad * 2
   const bh = isMulti.value ? rowInner / seriesCount : rowInner
 
-  // For horizontal we swap axes; PAD.left becomes the bar start
+  // For horizontal we swap axes
   const valueMax = yMax.value
 
   return xLabels.value.map((lbl, xi) => {
@@ -155,8 +172,8 @@ const activeGroup = ref<number | null>(null)
 function onMouseMove(e: MouseEvent) {
   if (!props.showTooltip) return
   const rect = (e.currentTarget as SVGElement).getBoundingClientRect()
-  const mx = e.clientX - rect.left - PAD.left
-  const my = e.clientY - rect.top - PAD.top
+  const mx = e.clientX - rect.left - actualPadding.value.left
+  const my = e.clientY - rect.top - actualPadding.value.top
   const n = xLabels.value.length
   if (n === 0) return
 
@@ -246,7 +263,7 @@ const uid = Math.random().toString(36).slice(2, 7)
       </defs>
 
       <!-- Vertical orientation -->
-      <g v-if="orientation === 'vertical'" :transform="`translate(${PAD.left},${PAD.top})`">
+      <g v-if="orientation === 'vertical'" :transform="`translate(${actualPadding.left},${actualPadding.top})`">
         <!-- Grid -->
         <template v-if="showGrid">
           <line
@@ -303,20 +320,20 @@ const uid = Math.random().toString(36).slice(2, 7)
       </g>
 
       <!-- Horizontal orientation -->
-      <g v-else :transform="`translate(${PAD.left + 60},${PAD.top})`">
+      <g v-else :transform="`translate(${actualPadding.left},${actualPadding.top})`">
         <!-- Grid -->
         <template v-if="showGrid">
           <line
             v-for="tick in yTicks" :key="tick"
-            :x1="(tick / yMax) * (chartW - 60)" :y1="0"
-            :x2="(tick / yMax) * (chartW - 60)" :y2="chartH"
+            :x1="(tick / yMax) * chartW" :y1="0"
+            :x2="(tick / yMax) * chartW" :y2="chartH"
             stroke="currentColor" stroke-opacity="0.07" stroke-width="1" />
         </template>
 
         <!-- X ticks (top) -->
         <text
           v-for="tick in yTicks" :key="`xt-${tick}`"
-          :x="(tick / yMax) * (chartW - 60)" :y="-8"
+          :x="(tick / yMax) * chartW" :y="-8"
           text-anchor="middle"
           font-size="11" class="fill-muted-foreground">
           {{ formatValue ? formatValue(tick) : formatNumber(tick) }}
@@ -325,7 +342,7 @@ const uid = Math.random().toString(36).slice(2, 7)
         <!-- Y labels (left) -->
         <text
           v-for="(lbl, i) in xLabels" :key="`yl-${i}`"
-          :x="-8"
+          :x="-12"
           :y="(i + 0.5) * (chartH / xLabels.length)"
           text-anchor="end" dominant-baseline="middle"
           font-size="11" class="fill-muted-foreground">
@@ -355,7 +372,7 @@ const uid = Math.random().toString(36).slice(2, 7)
 
         <!-- Axis lines -->
         <line :x1="0" :y1="0" :x2="0" :y2="chartH" stroke="currentColor" stroke-opacity="0.1" />
-        <line :x1="0" :y1="chartH" :x2="chartW - 60" :y2="chartH" stroke="currentColor" stroke-opacity="0.1" />
+        <line :x1="0" :y1="chartH" :x2="chartW" :y2="chartH" stroke="currentColor" stroke-opacity="0.1" />
       </g>
     </svg>
 
