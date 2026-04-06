@@ -58,6 +58,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'FilePicker', to: '/components/filepicker', icon: 'lucide:upload-cloud' },
       { label: 'ThumbnailSelector', to: '/components/thumbnailselector', icon: 'lucide:image' },
       { label: 'TagInput', to: '/components/taginput', icon: 'lucide:tags' },
+      { label: 'Rich Text Editor', to: '/components/richtexteditor', icon: 'lucide:type' },
       { label: 'Form', to: '/components/form', icon: 'lucide:file-input' },
       { label: 'Google Login', to: '/components/googlelogin', icon: 'lucide:chrome' },
       {
