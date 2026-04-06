@@ -9,6 +9,7 @@ import {
   nextTick,
 } from 'vue'
 import Icon from '../Icon.vue'
+import { useFileUpload } from '@/components/Form/composables/useFileUpload'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Props & Emits
@@ -47,12 +48,16 @@ const editorRef = ref<HTMLDivElement | null>(null)
 const rootRef   = ref<HTMLDivElement | null>(null)
 const linkPopoverElRef = ref<HTMLDivElement | null>(null)
 const linkInputRef     = ref<HTMLInputElement | null>(null)
+const imageInputRef    = ref<HTMLInputElement | null>(null)
 
 // ─────────────────────────────────────────────────────────────────────────────
 // UI state — use shallowRef for flat objects (perf directive §3)
 // ─────────────────────────────────────────────────────────────────────────────
 const isFocused = ref(false)
 const isEmpty   = ref(true)
+const isUploadingImage = ref(false)
+
+const { handleUploadFile } = useFileUpload()
 
 // shallowRef: 9 booleans — Vue won't deep-proxy mutate each one
 const toolbarState = shallowRef({
@@ -164,6 +169,87 @@ function updateEmpty(): void {
 function onInput(): void {
   updateEmpty()
   emit('update:modelValue', editorRef.value?.innerHTML ?? '')
+  scheduleRefresh()
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// File / Image Upload
+// ─────────────────────────────────────────────────────────────────────────────
+function triggerImageUpload(): void {
+  if (props.disabled || props.readonly || isUploadingImage.value) return
+  saveSelection()
+  imageInputRef.value?.click()
+}
+
+async function handleFile(file: File): Promise<void> {
+  if (!file) return
+  isUploadingImage.value = true
+  try {
+    const url = await handleUploadFile(file)
+    if (url) {
+      restoreSelection()
+      editorRef.value?.focus()
+      document.execCommand('insertImage', false, url)
+      
+      const newImg = editorRef.value?.querySelector(`img[src="${url}"]`) as HTMLImageElement | null
+      if (newImg) newImg.loading = 'lazy'
+      
+      onInput()
+    }
+  } catch (error) {
+    console.error('[RichTextEditor] Image upload error:', error)
+  } finally {
+    isUploadingImage.value = false
+  }
+}
+
+async function onImageFileChange(e: Event): Promise<void> {
+  const target = e.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (file) await handleFile(file)
+  target.value = '' // Reset input
+}
+
+async function onPaste(e: ClipboardEvent): Promise<void> {
+  const items = e.clipboardData?.items
+  if (!items) return
+  // Fallback to text pasting if no image is found
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i]
+    if (item.type.startsWith('image/')) {
+      e.preventDefault()
+      const file = item.getAsFile()
+      if (file) {
+        saveSelection()
+        await handleFile(file)
+      }
+      return
+    }
+  }
+}
+
+async function onDrop(e: DragEvent): Promise<void> {
+  const files = e.dataTransfer?.files
+  if (!files || files.length === 0) return
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i]
+    if (file.type.startsWith('image/')) {
+      e.preventDefault()
+      
+      if (document.caretRangeFromPoint) {
+        const range = document.caretRangeFromPoint(e.clientX, e.clientY)
+        if (range) {
+          const sel = window.getSelection()
+          sel?.removeAllRanges()
+          sel?.addRange(range)
+        }
+      }
+      
+      saveSelection()
+      await handleFile(file)
+      return
+    }
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -699,6 +785,16 @@ const editorId = computed(() => props.id ?? `rte-${Math.random().toString(36).sl
           @mousedown.prevent="exec('insertHorizontalRule')">
           <Icon icon="lucide:minus" class="rte-icon" aria-hidden="true" />
         </button>
+        <button
+          type="button"
+          class="rte-btn"
+          title="Insert Image"
+          aria-label="Insert image"
+          :disabled="disabled || readonly || isUploadingImage"
+          @mousedown.prevent="triggerImageUpload">
+          <Icon v-if="isUploadingImage" icon="lucide:loader-2" class="rte-icon animate-spin" aria-hidden="true" />
+          <Icon v-else icon="lucide:image" class="rte-icon" aria-hidden="true" />
+        </button>
 
         <div v-once class="rte-sep" aria-hidden="true" />
 
@@ -781,7 +877,19 @@ const editorId = computed(() => props.id ?? `rte-${Math.random().toString(36).sl
           @blur="(e) => { isFocused = false; emit('blur', e) }"
           @keydown="onEditorKeydown"
           @keyup.passive="saveSelection"
-          @mouseup.passive="saveSelection" />
+          @mouseup.passive="saveSelection"
+          @paste="onPaste"
+          @drop="onDrop" />
+
+        <input
+          ref="imageInputRef"
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+          class="rte-hidden-input"
+          style="display: none"
+          aria-hidden="true"
+          tabindex="-1"
+          @change="onImageFileChange" />
 
         <!-- Placeholder -->
         <div
@@ -1145,6 +1253,16 @@ const editorId = computed(() => props.id ?? `rte-${Math.random().toString(36).sl
   padding: 0.2em 0.4em;
   border-radius: var(--radius-sm);
   border: none;
+}
+
+/* ── Images ── */
+.rte-editor :deep(img) {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+  margin: 1em 0;
+  display: block;
+  box-shadow: 0 0 0 1px var(--color-border);
 }
 
 /* ── Inline formatting ── */
