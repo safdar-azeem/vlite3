@@ -36,11 +36,18 @@ const hasChildren = computed(() => !!props.item.children?.length)
 const computedRenderMode = computed(() => {
   if (isHorizontal.value && hasChildren.value) return 'popover'
   if (context.compact && hasChildren.value) return 'popover'
-  return props.item.renderMode || context.renderMode || 'tree'
+  const mode = props.item.renderMode || context.renderMode || 'tree'
+  return mode
+})
+
+const useDrilldown = computed(() => {
+  if (context.renderNestedTabs && props.depth === 0) return false
+  return computedRenderMode.value === 'drilldown' && hasChildren.value
 })
 
 const usePopover = computed(() => {
   if (context.renderNestedTabs && props.depth === 0) return false
+  if (useDrilldown.value) return false
   return computedRenderMode.value === 'popover' && hasChildren.value
 })
 
@@ -52,14 +59,20 @@ const itemId = computed(() => {
 
 const isExpanded = computed(() => {
   if (usePopover.value) return false
+  if (useDrilldown.value) return false
   if (context.renderNestedTabs && props.depth === 0) return false
   return context.expandedItems.includes(itemId.value)
 })
 
 const showChevron = computed(() => {
   if (!hasChildren.value) return false
+  if (useDrilldown.value) return false // drilldown shows its own chevron
   if (context.renderNestedTabs && props.depth === 0) return false
   return true
+})
+
+const showDrilldownChevron = computed(() => {
+  return useDrilldown.value && hasChildren.value
 })
 
 /**
@@ -111,6 +124,14 @@ const isActive = computed(() => {
 
 const handleClick = (e: MouseEvent) => {
   if (props.item.disabled) return
+
+  // Drilldown mode: clicking a parent with children drills into them
+  // — no navigation, just replace sidebar content with children
+  if (useDrilldown.value) {
+    if (props.item.action) props.item.action(props.item)
+    context.drillInto(props.item)
+    return
+  }
 
   if (context.renderNestedTabs && props.depth === 0) {
     if (props.item.action) props.item.action(props.item)
@@ -482,6 +503,16 @@ const componentProps = computed(() => {
               icon="lucide:chevron-down"
               class="h-3 w-3 transition-transform duration-200"
               :class="{ 'rotate-180': isExpanded && !isHorizontal }" />
+          </div>
+
+          <!-- Drilldown chevron (right arrow, not expandable) -->
+          <div
+            v-if="showDrilldownChevron"
+            class="ml-1.5 flex shrink-0 items-center justify-center text-muted-foreground"
+            :class="{ 'md:hidden': context.compact && !isHorizontal }">
+            <Icon
+              icon="lucide:chevron-right"
+              class="h-3.5 w-3.5 opacity-50 transition-opacity group-hover:opacity-80" />
           </div>
         </component>
       </Tooltip>
