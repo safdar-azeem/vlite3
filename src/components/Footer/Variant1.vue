@@ -49,7 +49,7 @@ function handleLinkClick(url: string, event: MouseEvent) {
       <div
         class="mx-auto w-full max-w-7xl px-6 lg:px-8"
         :class="hasLinkGroups ? 'py-12 lg:py-16' : 'py-8 lg:py-10'">
-        <div class="flex flex-col lg:flex-row gap-12 lg:gap-16">
+        <div class="flex flex-col lg:flex-row gap-12 lg:gap-16 lg:justify-between">
           <!-- Brand Column -->
           <div
             v-if="hasBrand || hasSocialLinks || hasNewsletter"
@@ -132,7 +132,7 @@ function handleLinkClick(url: string, event: MouseEvent) {
           <!-- Link Groups -->
           <div
             v-if="hasLinkGroups"
-            class="flex-1 grid gap-8 sm:gap-6"
+            class="grid gap-10 sm:gap-12 lg:gap-16"
             :style="{
               gridTemplateColumns: `repeat(${Math.min(d.linkGroups!.length, 4)}, minmax(0, 1fr))`
             }">
