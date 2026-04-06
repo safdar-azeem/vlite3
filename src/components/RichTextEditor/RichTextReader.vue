@@ -123,6 +123,16 @@ withDefaults(defineProps<Props>(), {
   border: none;
 }
 
+/* ── Images ── */
+.rte-reader :deep(img) {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+  margin: 1em 0;
+  display: block;
+  box-shadow: 0 0 0 1px var(--color-border);
+}
+
 /* ── Inline formatting ── */
 .rte-reader :deep(strong) { font-weight: 700 !important; }
 .rte-reader :deep(b)      { font-weight: 700 !important; }
