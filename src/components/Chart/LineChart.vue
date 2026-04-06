@@ -29,6 +29,21 @@ export interface LineChartProps {
   formatValue?: (v: number) => string
   yMin?: number
   yMax?: number
+  // ─── Axis & grid visual control ───────────────
+  /** Show the bottom X-axis border line */
+  showXAxis?: boolean
+  /** Show the left Y-axis border line */
+  showYAxis?: boolean
+  /** Show X-axis tick labels */
+  showXLabels?: boolean
+  /** Show Y-axis tick labels */
+  showYLabels?: boolean
+  /** Opacity of gridlines (0–1) */
+  gridOpacity?: number
+  /** Opacity of axis border lines (0–1) */
+  axisOpacity?: number
+  /** Stroke width of the chart lines */
+  lineWidth?: number
 }
 
 const props = withDefaults(defineProps<LineChartProps>(), {
@@ -41,6 +56,13 @@ const props = withDefaults(defineProps<LineChartProps>(), {
   showTooltip: true,
   animate: true,
   colors: () => CHART_COLORS,
+  showXAxis: true,
+  showYAxis: true,
+  showXLabels: true,
+  showYLabels: true,
+  gridOpacity: 0.07,
+  axisOpacity: 0.1,
+  lineWidth: 2.5,
 })
 
 // ─── Dimensions ───────────────────────────────
@@ -257,37 +279,48 @@ const uid = Math.random().toString(36).slice(2, 7)
             :x1="0" :y1="toY(tick)"
             :x2="chartW" :y2="toY(tick)"
             stroke="currentColor"
-            stroke-opacity="0.07"
+            :stroke-opacity="gridOpacity"
             stroke-width="1" />
         </template>
 
-        <!-- Y Axis ticks -->
-        <text
-          v-for="tick in yTicks"
-          :key="`yt-${tick}`"
-          :x="-10" :y="toY(tick)"
-          text-anchor="end"
-          dominant-baseline="middle"
-          class="fill-muted-foreground text-[10px]"
-          font-size="11">
-          {{ formatValue ? formatValue(tick) : formatNumber(tick) }}
-        </text>
+        <!-- Y Axis tick labels -->
+        <template v-if="showYLabels">
+          <text
+            v-for="tick in yTicks"
+            :key="`yt-${tick}`"
+            :x="-10" :y="toY(tick)"
+            text-anchor="end"
+            dominant-baseline="middle"
+            class="fill-muted-foreground text-[10px]"
+            font-size="11">
+            {{ formatValue ? formatValue(tick) : formatNumber(tick) }}
+          </text>
+        </template>
 
-        <!-- X Axis labels -->
-        <text
-          v-for="(lbl, i) in xLabels"
-          :key="`xl-${i}`"
-          :x="toX(i)"
-          :y="chartH + 16"
-          text-anchor="middle"
-          class="fill-muted-foreground"
-          font-size="11">
-          {{ lbl }}
-        </text>
+        <!-- X Axis tick labels -->
+        <template v-if="showXLabels">
+          <text
+            v-for="(lbl, i) in xLabels"
+            :key="`xl-${i}`"
+            :x="toX(i)"
+            :y="chartH + 16"
+            text-anchor="middle"
+            class="fill-muted-foreground"
+            font-size="11">
+            {{ lbl }}
+          </text>
+        </template>
 
-        <!-- X/Y axis lines -->
-        <line :x1="0" :y1="chartH" :x2="chartW" :y2="chartH" stroke="currentColor" stroke-opacity="0.1" />
-        <line :x1="0" :y1="0" :x2="0" :y2="chartH" stroke="currentColor" stroke-opacity="0.1" />
+        <!-- X axis border (bottom) -->
+        <line
+          v-if="showXAxis"
+          :x1="0" :y1="chartH" :x2="chartW" :y2="chartH"
+          stroke="currentColor" :stroke-opacity="axisOpacity" />
+        <!-- Y axis border (left) -->
+        <line
+          v-if="showYAxis"
+          :x1="0" :y1="0" :x2="0" :y2="chartH"
+          stroke="currentColor" :stroke-opacity="axisOpacity" />
 
         <!-- Active crosshair -->
         <line
@@ -313,7 +346,7 @@ const uid = Math.random().toString(36).slice(2, 7)
             :d="s.line"
             fill="none"
             :stroke="s.color"
-            stroke-width="2.5"
+            :stroke-width="lineWidth"
             stroke-linejoin="round"
             stroke-linecap="round"
             :clip-path="`url(#clip-${uid})`" />
