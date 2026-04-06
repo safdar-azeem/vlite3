@@ -10,7 +10,7 @@ import sourceCode from './SidebarMenuDemo.vue?raw'
 // Demo Configuration
 const allowMultiple = ref(true)
 const variant = ref<'default' | 'ghost'>('default')
-const renderMode = ref<'tree' | 'popover' | 'drilldown'>('drilldown')
+const renderMode = ref<'tree' | 'popover' | 'drilldown'>('tree')
 const compact = ref(false)
 const showCompactLabels = ref(false)
 const showTooltip = ref(true)
