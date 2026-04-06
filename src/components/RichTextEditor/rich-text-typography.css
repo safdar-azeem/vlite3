@@ -1,0 +1,131 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Rich-content typography (Shared between Editor and Reader)
+   Using :where(.rte-editor, .rte-reader) to apply globally without huge specificity
+───────────────────────────────────────────────────────────────────────────── */
+
+:where(.rte-editor, .rte-reader) h1 {
+  display: block;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  margin: 0.5em 0 0.2em !important;
+  line-height: 1.3;
+}
+:where(.rte-editor, .rte-reader) h2 {
+  display: block;
+  font-size: 1.2rem !important;
+  font-weight: 600 !important;
+  margin: 0.45em 0 0.2em !important;
+  line-height: 1.35;
+}
+:where(.rte-editor, .rte-reader) p {
+  display: block;
+  margin: 0.2em 0 !important;
+}
+:where(.rte-editor, .rte-reader) div {
+  margin: 0.1em 0;
+}
+
+:where(.rte-editor, .rte-reader) blockquote {
+  display: block;
+  border-left: 3px solid var(--color-primary);
+  margin: 0.6em 0 !important;
+  padding: 0.35em 1em !important;
+  color: var(--color-muted-foreground);
+  font-style: italic;
+  background: color-mix(in oklab, var(--color-primary) 6%, transparent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+/* ── Lists ── */
+:where(.rte-editor, .rte-reader) ul {
+  display: block !important;
+  list-style-type: disc !important;
+  list-style-position: inside !important;
+  padding-left: 1.6em !important;
+  margin: 0.35em 0 !important;
+}
+:where(.rte-editor, .rte-reader) ol {
+  display: block !important;
+  list-style-type: decimal !important;
+  list-style-position: inside !important;
+  padding-left: 1.6em !important;
+  margin: 0.35em 0 !important;
+}
+:where(.rte-editor, .rte-reader) li {
+  display: list-item !important;
+  margin: 0.15em 0 !important;
+  padding-left: 0.15em;
+}
+
+/* Nested list styles */
+:where(.rte-editor, .rte-reader) ul ul,
+:where(.rte-editor, .rte-reader) ol ul       { list-style-type: circle !important; }
+:where(.rte-editor, .rte-reader) ul ul ul,
+:where(.rte-editor, .rte-reader) ol ol ul    { list-style-type: square !important; }
+:where(.rte-editor, .rte-reader) ol ol       { list-style-type: lower-alpha !important; }
+:where(.rte-editor, .rte-reader) ol ol ol    { list-style-type: lower-roman !important; }
+
+/* ── Horizontal Rule ── */
+:where(.rte-editor, .rte-reader) hr {
+  display: block !important;
+  border: 0 !important;
+  border-top: 1px solid var(--color-border) !important;
+  margin: 1.5em 0 !important;
+}
+
+/* ── Links ── */
+:where(.rte-editor, .rte-reader) a {
+  color: var(--color-info);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  transition: color 0.12s ease;
+}
+:where(.rte-editor, .rte-reader) a:hover {
+  color: var(--color-info-dark, var(--color-info));
+  text-decoration-thickness: 2px;
+}
+
+/* ── Code ── */
+:where(.rte-editor, .rte-reader) code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.85em;
+  background: var(--color-muted);
+  color: var(--color-foreground);
+  padding: 0.2em 0.4em;
+  border-radius: var(--radius-sm);
+  border: none;
+}
+
+/* ── Images ── */
+:where(.rte-editor, .rte-reader) img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+  margin: 1em 0;
+  display: block;
+  box-shadow: 0 0 0 1px var(--color-border);
+  transition: filter 0.2s, opacity 0.2s;
+}
+
+.rte-editor img.rte-image-uploading {
+  opacity: 0.6;
+  filter: grayscale(100%) blur(2px);
+  cursor: wait;
+}
+
+/* ── Inline formatting ── */
+:where(.rte-editor, .rte-reader) strong, :where(.rte-editor, .rte-reader) b { font-weight: 700 !important; }
+:where(.rte-editor, .rte-reader) em, :where(.rte-editor, .rte-reader) i     { font-style: italic !important; }
+:where(.rte-editor, .rte-reader) u {
+  text-decoration: underline !important;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 2px;
+}
+:where(.rte-editor, .rte-reader) s,
+:where(.rte-editor, .rte-reader) strike { text-decoration: line-through !important; }
+
+/* ── Selection highlight ── */
+.rte-editor ::selection {
+  background: color-mix(in oklab, var(--color-primary) 22%, transparent);
+}
