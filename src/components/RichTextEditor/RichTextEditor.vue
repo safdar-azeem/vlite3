@@ -683,6 +683,15 @@ const editorId = computed(() => props.id ?? `rte-${Math.random().toString(36).sl
           @mousedown.prevent="setBlock('blockquote')">
           <Icon icon="lucide:quote" class="rte-icon" aria-hidden="true" />
         </button>
+        <button
+          type="button"
+          class="rte-btn"
+          title="Horizontal Rule"
+          aria-label="Insert horizontal rule"
+          :disabled="disabled || readonly"
+          @mousedown.prevent="exec('insertHorizontalRule')">
+          <Icon icon="lucide:minus" class="rte-icon" aria-hidden="true" />
+        </button>
 
         <div v-once class="rte-sep" aria-hidden="true" />
 
@@ -1098,6 +1107,14 @@ const editorId = computed(() => props.id ?? `rte-${Math.random().toString(36).sl
 .rte-editor :deep(ol ol ul)    { list-style-type: square  !important; }
 .rte-editor :deep(ol ol)       { list-style-type: lower-alpha !important; }
 .rte-editor :deep(ol ol ol)    { list-style-type: lower-roman !important; }
+
+/* ── Horizontal Rule ── */
+.rte-editor :deep(hr) {
+  display: block !important;
+  border: 0 !important;
+  border-top: 1px solid var(--color-border) !important;
+  margin: 1.5em 0 !important;
+}
 
 /* ── Links ── */
 .rte-editor :deep(a) {
