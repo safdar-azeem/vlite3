@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
-import type { BarChartProps } from './types'
+import type { ChartDataPoint, ChartDataset } from './types'
 import {
   CHART_COLORS,
   getColor,
@@ -8,6 +8,22 @@ import {
   niceYTicks,
   animateProgress,
 } from './utils'
+
+export interface BarChartProps {
+  data?: ChartDataPoint[]
+  datasets?: ChartDataset[]
+  labels?: string[]
+  height?: number
+  orientation?: 'vertical' | 'horizontal'
+  barRadius?: number
+  showGrid?: boolean
+  showLegend?: boolean
+  showTooltip?: boolean
+  showValues?: boolean
+  colors?: string[]
+  animate?: boolean
+  formatValue?: (v: number) => string
+}
 
 const props = withDefaults(defineProps<BarChartProps>(), {
   height: 300,
