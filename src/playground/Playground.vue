@@ -125,6 +125,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Scroll Reveal', to: '/components/scroll-reveal', icon: 'lucide:move-down' },
       { label: 'Empty State', to: '/components/empty', icon: 'lucide:inbox' },
       { label: 'Chat Interface', to: '/components/chat', icon: 'lucide:message-circle' },
+      { label: 'Comment Thread', to: '/components/comment', icon: 'lucide:message-square-dashed' },
       { label: 'Attachments', to: '/components/attachments', icon: 'lucide:paperclip' },
     ],
   },
