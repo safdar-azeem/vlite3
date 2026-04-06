@@ -1,7 +1,25 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
-import type { CircleChartProps } from './types'
 import { resolveColor, animateProgress } from './utils'
+
+export type StrokeLineCap = 'round' | 'square' | 'butt'
+export type ChartColor = string
+
+export interface CircleChartProps {
+  value: number
+  max?: number
+  size?: number
+  strokeWidth?: number
+  color?: ChartColor
+  gradient?: boolean
+  label?: string
+  sublabel?: string
+  showValue?: boolean
+  formatValue?: (v: number, pct: number) => string
+  animate?: boolean
+  trackColor?: string
+  lineCap?: StrokeLineCap
+}
 
 const props = withDefaults(defineProps<CircleChartProps>(), {
   max: 100,
