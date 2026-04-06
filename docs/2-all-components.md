@@ -47,6 +47,7 @@ Check the individual Markdown files inside the docs folders for full details.
 * [SidebarMenu](https://www.google.com/search?q=./1-Components/SidebarMenu.md)
 * [Slider](https://www.google.com/search?q=./1-Components/Slider.md)
 * [Spinner](https://www.google.com/search?q=./1-Components/Spinner.md)
+* [Splitter](https://www.google.com/search?q=./1-Components/Splitter.md)
 * [Stats](https://www.google.com/search?q=./1-Components/Stats.md)
 * [StatusChip](https://www.google.com/search?q=./1-Components/StatusChip.md)
 * [Switch](https://www.google.com/search?q=./1-Components/Switch.md)
