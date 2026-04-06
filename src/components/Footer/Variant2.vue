@@ -2,6 +2,8 @@
 import { computed } from 'vue'
 import type { FooterData, FooterLabels } from './types'
 import Icon from '../Icon.vue'
+import Input from '../Input.vue'
+import Button from '../Button.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -88,22 +90,23 @@ function handleLinkClick(url: string, event: MouseEvent) {
           class="text-xs text-muted-foreground leading-relaxed mb-3">
           {{ d.newsletter.description }}
         </p>
-        <form class="flex gap-2" @submit.prevent="handleSubscribe">
-          <input
+        <form class="flex gap-2 w-full" @submit.prevent="handleSubscribe">
+          <Input
             v-model="newsletterEmail"
             type="email"
             :placeholder="d.newsletter?.placeholder || 'Enter your email'"
-            class="flex-1 min-w-0 px-3 py-2 text-sm bg-muted border border-border rounded-lg
-                   text-foreground placeholder:text-muted-foreground
-                   focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50
-                   transition-all" />
-          <button
+            class="flex-1 min-w-0"
+            input-class="bg-muted border-border focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all"
+            rounded="lg"
+          />
+          <Button
             type="submit"
-            class="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground
-                   rounded-lg hover:opacity-90 transition-opacity whitespace-nowrap
-                   focus:outline-none focus:ring-2 focus:ring-primary/30">
+            variant="primary"
+            rounded="lg"
+            class="whitespace-nowrap"
+          >
             {{ d.newsletter?.buttonText || l.subscribe || 'Subscribe' }}
-          </button>
+          </Button>
         </form>
       </div>
 
