@@ -199,15 +199,15 @@ const trafficSources = [
     ════════════════════════════════════════════════ -->
     <DemoSection title="Pie Chart" :code="sourceCode">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div class="bg-card rounded-xl border border-border p-6 flex justify-center">
-          <div>
-            <p class="text-xs font-medium text-muted-foreground mb-4">Market Share — Slice Labels</p>
+        <div class="bg-card rounded-xl border border-border p-6 flex flex-col">
+          <p class="text-xs font-medium text-muted-foreground mb-4 text-center">Market Share — Slice Labels</p>
+          <div class="flex-1 flex justify-center items-center">
             <PieChart :data="marketShareData" :size="260" label-mode="percent" />
           </div>
         </div>
-        <div class="bg-card rounded-xl border border-border p-6 flex justify-center">
-          <div>
-            <p class="text-xs font-medium text-muted-foreground mb-4">Traffic Sources — Legend Bottom</p>
+        <div class="bg-card rounded-xl border border-border p-6 flex flex-col">
+          <p class="text-xs font-medium text-muted-foreground mb-4 text-center">Traffic Sources — Legend Bottom</p>
+          <div class="flex-1 flex justify-center items-center">
             <PieChart
               :data="trafficSources"
               :size="240"
@@ -220,9 +220,9 @@ const trafficSources = [
 
     <DemoSection title="Donut Chart" :code="sourceCode">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div class="bg-card rounded-xl border border-border p-6 flex justify-center">
-          <div>
-            <p class="text-xs font-medium text-muted-foreground mb-4">Revenue Breakdown — Center Label</p>
+        <div class="bg-card rounded-xl border border-border p-6 flex flex-col">
+          <p class="text-xs font-medium text-muted-foreground mb-4 text-center">Revenue Breakdown — Center Label</p>
+          <div class="flex-1 flex justify-center items-center">
             <PieChart
               :data="revenueBreakdown"
               :size="280"
@@ -233,9 +233,9 @@ const trafficSources = [
               label-mode="percent" />
           </div>
         </div>
-        <div class="bg-card rounded-xl border border-border p-6 flex justify-center">
-          <div>
-            <p class="text-xs font-medium text-muted-foreground mb-4">Market Share — Custom Slot Center</p>
+        <div class="bg-card rounded-xl border border-border p-6 flex flex-col">
+          <p class="text-xs font-medium text-muted-foreground mb-4 text-center">Market Share — Custom Slot Center</p>
+          <div class="flex-1 flex justify-center items-center">
             <PieChart
               :data="marketShareData"
               :size="280"
