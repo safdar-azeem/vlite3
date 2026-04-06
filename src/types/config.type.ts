@@ -4,6 +4,7 @@ import type { ChipVariant } from '@/components/Chip/types'
 import type { AttachmentsListProps } from '@/components/AttachmentsList/types'
 import type { ListProps } from '@/types/list.type'
 import type { InvoiceProps } from '@/components/Invoice/types'
+import type { FooterProps } from '@/components/Footer/types'
 
 /**
  * Interface for the file upload handler function.
@@ -111,5 +112,6 @@ export interface VLiteConfig {
     attachmentsList?: Omit<AttachmentsListProps, 'attachments'>
     list?: Omit<ListProps, 'fields' | 'data'>
     invoice?: Omit<InvoiceProps, 'data'>
+    footer?: Omit<FooterProps, 'data'>
   }
 }
