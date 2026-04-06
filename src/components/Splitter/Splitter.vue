@@ -24,6 +24,7 @@ const emit = defineEmits<{
 const containerRef = ref<HTMLElement | null>(null)
 const isDragging = ref(false)
 const currentSplit = ref(props.modelValue)
+let rafId: number | null = null
 
 const startPaneStyle = computed(() => {
   return props.layout === 'horizontal'
@@ -37,50 +38,78 @@ const endPaneStyle = computed(() => {
     : { height: `${100 - currentSplit.value}%` }
 })
 
-const handleMouseDown = (e: MouseEvent) => {
-  e.preventDefault()
+const handleInteractionStart = (e: MouseEvent | TouchEvent) => {
+  // Prevent actual multi-touch scrolling if touch
+  if (e.cancelable && e.type !== 'touchstart') {
+    e.preventDefault()
+  }
   isDragging.value = true
   document.body.style.cursor = props.layout === 'horizontal' ? 'col-resize' : 'row-resize'
   document.body.style.userSelect = 'none'
-  
-  window.addEventListener('mousemove', handleMouseMove)
-  window.addEventListener('mouseup', handleMouseUp)
+
+  window.addEventListener('mousemove', handleInteractionMove, { passive: false })
+  window.addEventListener('mouseup', handleInteractionEnd)
+  window.addEventListener('touchmove', handleInteractionMove, { passive: false })
+  window.addEventListener('touchend', handleInteractionEnd)
 }
 
-const handleMouseMove = (e: MouseEvent) => {
+const handleInteractionMove = (e: MouseEvent | TouchEvent) => {
   if (!isDragging.value || !containerRef.value) return
-
-  const rect = containerRef.value.getBoundingClientRect()
   
-  let newSplit = 0
-  if (props.layout === 'horizontal') {
-    const x = e.clientX - rect.left
-    newSplit = (x / rect.width) * 100
-  } else {
-    const y = e.clientY - rect.top
-    newSplit = (y / rect.height) * 100
+  if (e.cancelable) {
+    e.preventDefault() // prevent scrolling while dragging
   }
 
-  // Constrain based on min/max
-  if (newSplit < props.min) newSplit = props.min
-  if (newSplit > props.max) newSplit = props.max
+  if (rafId) cancelAnimationFrame(rafId)
 
-  currentSplit.value = newSplit
-  emit('update:modelValue', newSplit)
+  rafId = requestAnimationFrame(() => {
+    const rect = containerRef.value!.getBoundingClientRect()
+    
+    let clientX, clientY;
+    if (window.TouchEvent && e instanceof TouchEvent) {
+      clientX = e.touches[0].clientX
+      clientY = e.touches[0].clientY
+    } else {
+      clientX = (e as MouseEvent).clientX
+      clientY = (e as MouseEvent).clientY
+    }
+  
+    let newSplit = 0
+    if (props.layout === 'horizontal') {
+      const x = clientX - rect.left
+      newSplit = (x / rect.width) * 100
+    } else {
+      const y = clientY - rect.top
+      newSplit = (y / rect.height) * 100
+    }
+  
+    // Constrain based on min/max
+    if (newSplit < props.min) newSplit = props.min
+    if (newSplit > props.max) newSplit = props.max
+  
+    currentSplit.value = newSplit
+    emit('update:modelValue', newSplit)
+  })
 }
 
-const handleMouseUp = () => {
+const handleInteractionEnd = () => {
   isDragging.value = false
   document.body.style.cursor = ''
   document.body.style.userSelect = ''
   
-  window.removeEventListener('mousemove', handleMouseMove)
-  window.removeEventListener('mouseup', handleMouseUp)
+  if (rafId) {
+    cancelAnimationFrame(rafId)
+    rafId = null
+  }
+  
+  window.removeEventListener('mousemove', handleInteractionMove)
+  window.removeEventListener('mouseup', handleInteractionEnd)
+  window.removeEventListener('touchmove', handleInteractionMove)
+  window.removeEventListener('touchend', handleInteractionEnd)
 }
 
 onUnmounted(() => {
-  window.removeEventListener('mousemove', handleMouseMove)
-  window.removeEventListener('mouseup', handleMouseUp)
+  handleInteractionEnd()
 })
 </script>
 
@@ -91,20 +120,21 @@ onUnmounted(() => {
     :class="[props.layout === 'vertical' ? 'flex-col' : 'flex-row', props.class]">
     
     <!-- Start Pane -->
-    <div class="relative overflow-hidden" :style="startPaneStyle">
+    <div class="relative overflow-hidden" style="will-change: transform; contain: layout style;" :style="startPaneStyle">
       <slot name="start" />
     </div>
 
     <!-- Resizer Handle -->
     <div
-      class="flex items-center justify-center bg-border/40 hover:bg-primary/50 transition-colors z-10 shrink-0"
+      class="flex items-center justify-center bg-border/40 hover:bg-primary/50 transition-colors z-10 shrink-0 touch-none"
       :class="[
         props.layout === 'horizontal' 
           ? 'w-1.5 cursor-col-resize h-full mx-px' 
           : 'h-1.5 cursor-row-resize w-full my-px',
         isDragging ? 'bg-primary/80!' : ''
       ]"
-      @mousedown="handleMouseDown">
+      @mousedown="handleInteractionStart"
+      @touchstart="handleInteractionStart">
       <!-- Optional drag visual indicator -->
       <div 
         class="bg-muted-foreground/30 rounded-full"
@@ -113,7 +143,7 @@ onUnmounted(() => {
     </div>
 
     <!-- End Pane -->
-    <div class="relative overflow-hidden flex-1" :style="endPaneStyle">
+    <div class="relative overflow-hidden flex-1" style="will-change: transform; contain: layout style;" :style="endPaneStyle">
       <slot name="end" />
     </div>
 
