@@ -107,17 +107,12 @@ function handleLinkClick(url: string, event: MouseEvent) {
         </form>
       </div>
 
-      <!-- ── Link Groups (horizontal, left-aligned columns) ── -->
+      <!-- ── Link Groups (horizontal, centered cluster) ── -->
       <div
         v-if="hasLinkGroups"
-        class="grid gap-10 sm:gap-8 mb-12 max-w-5xl mx-auto w-full"
-        :class="[
-          d.linkGroups?.length === 1 ? 'grid-cols-1 max-w-sm' :
-          d.linkGroups?.length === 2 ? 'grid-cols-2 max-w-2xl' :
-          d.linkGroups?.length === 3 ? 'grid-cols-2 md:grid-cols-3 max-w-4xl' :
-          'grid-cols-2 md:grid-cols-4'
-        ]">
-        <div v-for="(group, gIdx) in d.linkGroups" :key="gIdx" class="flex flex-col items-start text-left w-full">
+        class="flex flex-wrap justify-center gap-10 sm:gap-16 md:gap-20 lg:gap-24 mb-12 w-full mx-auto"
+      >
+        <div v-for="(group, gIdx) in d.linkGroups" :key="gIdx" class="flex flex-col items-center sm:items-start text-center sm:text-left min-w-[140px]">
           <h3 class="text-sm font-semibold text-foreground mb-4 tracking-wide">
             {{ group.title }}
           </h3>
