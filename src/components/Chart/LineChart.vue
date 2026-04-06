@@ -70,12 +70,17 @@ const containerRef = ref<HTMLElement>()
 const svgWidth = ref(600)
 const actualPadding = computed(() => {
   const getLen = (val: string | number) => String(val).length
-  const maxAxisW = Math.max(2, ...yTicks.value.map(t => getLen(props.formatValue ? props.formatValue(t) : formatNumber(t)))) * 6.5
+  // Only measure text width when labels are actually visible
+  const maxAxisW = props.showYLabels
+    ? Math.max(2, ...yTicks.value.map(t => getLen(props.formatValue ? props.formatValue(t) : formatNumber(t)))) * 6.5
+    : 0
+  const leftBase = props.showYLabels ? Math.max(24, maxAxisW + 12) : 8
   return {
     top: 16,
     right: 16,
-    bottom: 24,
-    left: Math.max(24, maxAxisW + 12) + (props.yLabel ? 20 : 0)
+    // Collapse bottom padding when X labels are hidden
+    bottom: props.showXLabels ? 24 : 6,
+    left: leftBase + (props.yLabel ? 20 : 0)
   }
 })
 
