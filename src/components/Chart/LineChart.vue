@@ -33,7 +33,7 @@ const actualPadding = computed(() => {
     top: 16,
     right: 16,
     bottom: 24,
-    left: Math.max(24, maxAxisW + 12)
+    left: Math.max(24, maxAxisW + 12) + (props.yLabel ? 20 : 0)
   }
 })
 
@@ -317,11 +317,11 @@ const uid = Math.random().toString(36).slice(2, 7)
         <text
           v-if="yLabel"
           :x="-(chartH / 2)"
-          :y="-42"
+          :y="-(actualPadding.left - 10)"
           text-anchor="middle"
           transform="rotate(-90)"
           font-size="11"
-          class="fill-muted-foreground">
+          class="fill-muted-foreground font-medium">
           {{ yLabel }}
         </text>
 
