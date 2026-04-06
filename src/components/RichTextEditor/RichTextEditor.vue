@@ -39,6 +39,7 @@ const emit = defineEmits<{
   'update:modelValue': [value: string]
   focus: [e: FocusEvent]
   blur: [e: FocusEvent]
+  'image-removed': [url: string]
 }>()
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -130,9 +131,31 @@ watch(
     if (el.innerHTML !== next) {
       el.innerHTML = next
       updateEmpty()
+      updateKnownImages()
     }
   },
 )
+
+let knownImages = new Set<string>()
+
+function updateKnownImages(): void {
+  const el = editorRef.value
+  if (!el) return
+  
+  const currentImages = new Set(
+    Array.from(el.querySelectorAll('img'))
+      .map(img => img.getAttribute('src') || '')
+      .filter(src => src && !src.startsWith('blob:'))
+  )
+  
+  for (const oldSrc of knownImages) {
+    if (!currentImages.has(oldSrc)) {
+      emit('image-removed', oldSrc)
+    }
+  }
+  
+  knownImages = currentImages
+}
 
 onMounted(() => {
   const el = editorRef.value
@@ -140,6 +163,7 @@ onMounted(() => {
     el.innerHTML = props.modelValue
   }
   updateEmpty()
+  updateKnownImages()
 
   // Use capture:false so normal bubbling events work
   document.addEventListener('selectionchange', onSelectionChange)
@@ -170,6 +194,7 @@ function updateEmpty(): void {
 function onInput(): void {
   updateEmpty()
   emit('update:modelValue', editorRef.value?.innerHTML ?? '')
+  updateKnownImages()
   scheduleRefresh()
 }
 
