@@ -271,9 +271,6 @@ onBeforeUnmount(() => {
       ref="inputRef"
       type="number"
       :value="localValue"
-      :min="min"
-      :max="max"
-      :step="step"
       :placeholder="placeholder"
       :disabled="disabled"
       :readonly="readonly"
@@ -283,6 +280,8 @@ onBeforeUnmount(() => {
       @blur="handleBlur"
       @keydown.up.prevent="increment"
       @keydown.down.prevent="decrement"
+      @wheel.prevent
+      @invalid.prevent
       :data-testid="$attrs['data-testid'] || (name ? `number-${name}` : (id ? `number-${id}` : 'number-input'))" />
 
     <button
