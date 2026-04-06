@@ -451,6 +451,7 @@ Follow these rules strictly to ensure visual consistency and predictable styling
 - [x] **Price**
 - [x] **Date**
 - [x] **Invoice**
+- [x] **Footer**
 
 ### Feedback & Overlays
 
