@@ -155,9 +155,9 @@ function sliceTransform(i: number, startA: number, endA: number): string {
           <slot name="center" :total="total" :data="data">
             <text
               v-if="centerValue"
-              :x="cx" :y="cy - 8"
+              :x="cx" :y="centerLabel ? cy - 8 : cy"
               text-anchor="middle"
-              dominant-baseline="middle"
+              dominant-baseline="central"
               font-size="22"
               font-weight="700"
               class="fill-foreground">
