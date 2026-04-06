@@ -64,8 +64,12 @@ const actualPadding = computed(() => {
   const getLen = (val: string | number) => String(val).length
 
   if (props.orientation === 'horizontal') {
-    const maxLblW = Math.max(2, ...xLabels.value.map(l => getLen(l))) * 6.5
-    
+    // left = space for Y bar-name labels; collapse when hidden
+    const maxLblW = props.showYLabels
+      ? Math.max(2, ...xLabels.value.map(l => getLen(l))) * 6.5
+      : 0
+    const leftPad = props.showYLabels ? Math.max(24, maxLblW + 12) : 8
+
     let rightPad = 16
     if (props.showValues) {
       const allVals = allSeries.value.flatMap(s => s.values)
@@ -74,20 +78,26 @@ const actualPadding = computed(() => {
     }
 
     return {
-      top: 16,
+      // top holds the value-tick labels that float above; collapse when hidden
+      top: props.showXLabels ? 16 : 4,
       right: rightPad,
       bottom: 0,
-      left: Math.max(24, maxLblW + 12)
+      left: leftPad
     }
   }
 
   // Vertical
-  const maxAxisW = Math.max(2, ...yTicks.value.map(t => getLen(props.formatValue ? props.formatValue(t) : formatNumber(t)))) * 6.5
+  // left = space for Y value-tick labels; collapse when hidden
+  const maxAxisW = props.showYLabels
+    ? Math.max(2, ...yTicks.value.map(t => getLen(props.formatValue ? props.formatValue(t) : formatNumber(t)))) * 6.5
+    : 0
+  const leftPad = props.showYLabels ? Math.max(24, maxAxisW + 12) : 8
   return {
-    top: 24, 
+    top: 24,
     right: 0,
-    bottom: 24,
-    left: Math.max(24, maxAxisW + 12)
+    // Collapse bottom padding when X labels are hidden
+    bottom: props.showXLabels ? 24 : 6,
+    left: leftPad
   }
 })
 
