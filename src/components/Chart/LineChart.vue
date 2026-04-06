@@ -30,10 +30,10 @@ const actualPadding = computed(() => {
   const getLen = (val: string | number) => String(val).length
   const maxAxisW = Math.max(2, ...yTicks.value.map(t => getLen(props.formatValue ? props.formatValue(t) : formatNumber(t)))) * 6.5
   return {
-    top: 20,
-    right: 24,
-    bottom: 48,
-    left: Math.max(30, maxAxisW + 16)
+    top: 16,
+    right: 16,
+    bottom: 24,
+    left: Math.max(24, maxAxisW + 12)
   }
 })
 
@@ -258,7 +258,7 @@ const uid = Math.random().toString(36).slice(2, 7)
           v-for="(lbl, i) in xLabels"
           :key="`xl-${i}`"
           :x="toX(i)"
-          :y="chartH + 18"
+          :y="chartH + 16"
           text-anchor="middle"
           class="fill-muted-foreground"
           font-size="11">
