@@ -6,19 +6,28 @@ import type { CommentNode, CommentActionPayload } from './types'
 
 export interface CommentThreadProps {
   comments: CommentNode[]
+  /** ID of currently logged-in user — controls edit/delete visibility */
+  currentUserId?: string | number | null
   threaded?: boolean
   allowDelete?: boolean
   allowEdit?: boolean
   allowReply?: boolean
+  /** Admin override — show delete on all comments */
+  allowDeleteAll?: boolean
+  /** Admin override — show edit on all comments */
+  allowEditAll?: boolean
   confirmDelete?: boolean
   class?: string
 }
 
 const props = withDefaults(defineProps<CommentThreadProps>(), {
+  currentUserId: null,
   threaded: true,
   allowDelete: true,
   allowEdit: true,
   allowReply: true,
+  allowDeleteAll: false,
+  allowEditAll: false,
   confirmDelete: true,
   class: '',
 })
@@ -72,10 +81,13 @@ defineExpose({
         v-for="comment in comments" 
         :key="comment.id"
         :comment="comment"
+        :currentUserId="currentUserId"
         :threaded="threaded"
         :allowDelete="allowDelete"
         :allowEdit="allowEdit"
         :allowReply="allowReply"
+        :allowDeleteAll="allowDeleteAll"
+        :allowEditAll="allowEditAll"
         :confirmDelete="confirmDelete"
         :activeReplyId="activeReplyId"
         @reply="handleReply"
