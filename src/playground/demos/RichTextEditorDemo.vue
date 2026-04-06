@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { RichTextEditor } from '@/components/RichTextEditor'
+import { RichTextEditor, RichTextReader } from '@/components/RichTextEditor'
 import DemoSection from '../DemoSection.vue'
 import sourceCode from './RichTextEditorDemo.vue?raw'
 
@@ -44,11 +44,29 @@ const value3 = ref('<p>This content is <em>read-only</em> and <strong>cannot</st
       </div>
     </DemoSection>
 
+    <DemoSection title="Read-Only Output (RichTextReader)" :code="sourceCode">
+      <div class="w-full max-w-2xl space-y-6">
+        <p class="text-sm text-muted-foreground">
+          Use the <code>RichTextReader</code> to render the HTML produced by the editor exactly the same way it looks when editing. This is ideal for product landing pages, blog posts, or comments.
+        </p>
+        <div class="space-y-2">
+          <label class="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Editor</label>
+          <RichTextEditor v-model="value1" placeholder="Start typing…" />
+        </div>
+        <div class="space-y-3">
+          <label class="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Reader Output</label>
+          <div class="p-6 border border-border rounded-lg bg-card">
+            <RichTextReader :content="value1" />
+          </div>
+        </div>
+      </div>
+    </DemoSection>
+
     <DemoSection title="Disabled State" :code="sourceCode">
       <div class="w-full max-w-2xl">
         <RichTextEditor
           v-model="value3"
-          label="Read-only Content"
+          label="Disabled Editor"
           :disabled="true"
           placeholder="Disabled editor" />
       </div>
