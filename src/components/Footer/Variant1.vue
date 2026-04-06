@@ -135,12 +135,12 @@ function handleLinkClick(url: string, event: MouseEvent) {
           <!-- Link Groups -->
           <div
             v-if="hasLinkGroups"
-            class="grid gap-10 sm:gap-12 lg:gap-16"
+            class="grid gap-10 sm:gap-12 lg:gap-16 ml-auto"
             :class="[
               d.linkGroups?.length === 1 ? 'grid-cols-1' :
-              d.linkGroups?.length === 2 ? 'grid-cols-1 sm:grid-cols-2' :
-              d.linkGroups?.length === 3 ? 'grid-cols-2 md:grid-cols-3' :
-              'grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
+              d.linkGroups?.length === 2 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-[auto_auto]' :
+              d.linkGroups?.length === 3 ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-[auto_auto_auto]' :
+              'grid-cols-2 md:grid-cols-3 lg:grid-cols-[auto_auto_auto_auto]'
             ]">
             <div v-for="(group, gIdx) in d.linkGroups" :key="gIdx">
               <h3 class="text-sm font-semibold text-foreground mb-4 tracking-wide">
