@@ -219,6 +219,13 @@
   --tooltip-z-index: 50;
   --tooltip-font-size: unset !important;
 
+  /* Chart Color Palette (Light Mode) */
+  --color-chart-1: #6366f1;
+  --color-chart-2: #22c55e;
+  --color-chart-3: #f59e0b;
+  --color-chart-4: #ef4444;
+  --color-chart-5: #3b82f6;
+  --color-chart-6: #ec4899;
 
   --shadow-sm: rgba(95, 97, 100, 0.07) 0px 15px 90px 0px, rgba(0, 0, 0, 0.02) 0.2px 0.2px 1px 0px;
   --shadow-DEFAULT: rgba(55, 59, 74, 0.074) 0px 10px 55px 3px;
@@ -429,11 +436,12 @@
   --color-destructive-foreground: #fafafa;
 
   /* Charts (Dark) */
-  --color-chart-1: #22c55e;
-  --color-chart-2: #2a9d8f;
-  --color-chart-3: #264653;
-  --color-chart-4: #e9c46a;
-  --color-chart-5: #f4a261;
+  --color-chart-1: #818cf8;
+  --color-chart-2: #34d399;
+  --color-chart-3: #fbbf24;
+  --color-chart-4: #fb7185;
+  --color-chart-5: #60a5fa;
+  --color-chart-6: #f472b6;
 
   /* Variants (vlite3 custom) */
   --color-primary-light: #212121;
