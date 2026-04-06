@@ -77,6 +77,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Calendar', to: '/components/calendar', icon: 'lucide:calendar-days' },
       { label: 'Stats', to: '/components/stats', icon: 'lucide:bar-chart-2' },
       { label: 'Heatmap', to: '/components/heatmap', icon: 'lucide:activity' },
+      { label: 'Charts', to: '/components/chart', icon: 'lucide:chart-line' },
       { label: 'Avatar', to: '/components/avatar', icon: 'lucide:user' },
       { label: 'Avatar Group', to: '/components/avatargroup', icon: 'lucide:users' },
       { label: 'Avatar Uploader', to: '/components/avatar-uploader', icon: 'lucide:camera' },
