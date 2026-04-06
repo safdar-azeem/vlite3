@@ -111,6 +111,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Masonry Grid', to: '/components/masonry', icon: 'lucide:layout-dashboard' },
       { label: 'File Tree', to: '/components/filetree', icon: 'lucide:folder-tree' },
       { label: 'Carousel', to: '/components/carousel', icon: 'lucide:gallery-horizontal' },
+      { label: 'Footer', to: '/components/footer', icon: 'lucide:panel-bottom' },
     ],
   },
   {
