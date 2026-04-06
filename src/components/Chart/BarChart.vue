@@ -23,6 +23,19 @@ export interface BarChartProps {
   colors?: string[]
   animate?: boolean
   formatValue?: (v: number) => string
+  // ─── Axis & grid visual control ───────────────
+  /** Show the bottom X-axis border line */
+  showXAxis?: boolean
+  /** Show the left Y-axis border line */
+  showYAxis?: boolean
+  /** Show X-axis tick labels */
+  showXLabels?: boolean
+  /** Show Y-axis tick labels */
+  showYLabels?: boolean
+  /** Opacity of gridlines (0–1) */
+  gridOpacity?: number
+  /** Opacity of axis border lines (0–1) */
+  axisOpacity?: number
 }
 
 const props = withDefaults(defineProps<BarChartProps>(), {
@@ -35,6 +48,12 @@ const props = withDefaults(defineProps<BarChartProps>(), {
   showValues: false,
   animate: true,
   colors: () => CHART_COLORS,
+  showXAxis: true,
+  showYAxis: true,
+  showXLabels: true,
+  showYLabels: true,
+  gridOpacity: 0.07,
+  axisOpacity: 0.1,
 })
 
 // ─── Dimensions ───────────────────────────────
@@ -300,17 +319,19 @@ const uid = Math.random().toString(36).slice(2, 7)
             v-for="tick in yTicks" :key="tick"
             :x1="0" :y1="chartH - (tick / yMax) * chartH"
             :x2="chartW" :y2="chartH - (tick / yMax) * chartH"
-            stroke="currentColor" stroke-opacity="0.07" stroke-width="1" />
+            stroke="currentColor" :stroke-opacity="gridOpacity" stroke-width="1" />
         </template>
 
-        <!-- Y ticks -->
-        <text
-          v-for="tick in yTicks" :key="`yt-${tick}`"
-          :x="-10" :y="chartH - (tick / yMax) * chartH"
-          text-anchor="end" dominant-baseline="middle"
-          font-size="11" class="fill-muted-foreground">
-          {{ formatValue ? formatValue(tick) : formatNumber(tick) }}
-        </text>
+        <!-- Y tick labels -->
+        <template v-if="showYLabels">
+          <text
+            v-for="tick in yTicks" :key="`yt-${tick}`"
+            :x="-10" :y="chartH - (tick / yMax) * chartH"
+            text-anchor="end" dominant-baseline="middle"
+            font-size="11" class="fill-muted-foreground">
+            {{ formatValue ? formatValue(tick) : formatNumber(tick) }}
+          </text>
+        </template>
 
         <!-- Bars -->
         <g v-for="(group, gi) in barGeometry" :key="gi">
@@ -335,18 +356,20 @@ const uid = Math.random().toString(36).slice(2, 7)
         </g>
 
         <!-- X axis labels -->
-        <text
-          v-for="(lbl, i) in xLabels" :key="`xl-${i}`"
-          :x="(i + 0.5) * (chartW / xLabels.length)"
-          :y="chartH + 16"
-          text-anchor="middle" font-size="11"
-          class="fill-muted-foreground">
-          {{ lbl }}
-        </text>
+        <template v-if="showXLabels">
+          <text
+            v-for="(lbl, i) in xLabels" :key="`xl-${i}`"
+            :x="(i + 0.5) * (chartW / xLabels.length)"
+            :y="chartH + 16"
+            text-anchor="middle" font-size="11"
+            class="fill-muted-foreground">
+            {{ lbl }}
+          </text>
+        </template>
 
         <!-- Axis lines -->
-        <line :x1="0" :y1="chartH" :x2="chartW" :y2="chartH" stroke="currentColor" stroke-opacity="0.1" />
-        <line :x1="0" :y1="0" :x2="0" :y2="chartH" stroke="currentColor" stroke-opacity="0.1" />
+        <line v-if="showXAxis" :x1="0" :y1="chartH" :x2="chartW" :y2="chartH" stroke="currentColor" :stroke-opacity="axisOpacity" />
+        <line v-if="showYAxis" :x1="0" :y1="0" :x2="0" :y2="chartH" stroke="currentColor" :stroke-opacity="axisOpacity" />
       </g>
 
       <!-- Horizontal orientation -->
@@ -357,27 +380,31 @@ const uid = Math.random().toString(36).slice(2, 7)
             v-for="tick in yTicks" :key="tick"
             :x1="(tick / yMax) * chartW" :y1="0"
             :x2="(tick / yMax) * chartW" :y2="chartH"
-            stroke="currentColor" stroke-opacity="0.07" stroke-width="1" />
+            stroke="currentColor" :stroke-opacity="gridOpacity" stroke-width="1" />
         </template>
 
         <!-- X ticks (top) -->
-        <text
-          v-for="tick in yTicks" :key="`xt-${tick}`"
-          :x="(tick / yMax) * chartW" :y="-8"
-          text-anchor="middle"
-          font-size="11" class="fill-muted-foreground">
-          {{ formatValue ? formatValue(tick) : formatNumber(tick) }}
-        </text>
+        <template v-if="showXLabels">
+          <text
+            v-for="tick in yTicks" :key="`xt-${tick}`"
+            :x="(tick / yMax) * chartW" :y="-8"
+            text-anchor="middle"
+            font-size="11" class="fill-muted-foreground">
+            {{ formatValue ? formatValue(tick) : formatNumber(tick) }}
+          </text>
+        </template>
 
         <!-- Y labels (left) -->
-        <text
-          v-for="(lbl, i) in xLabels" :key="`yl-${i}`"
-          :x="-12"
-          :y="(i + 0.5) * (chartH / xLabels.length)"
-          text-anchor="end" dominant-baseline="middle"
-          font-size="11" class="fill-muted-foreground">
-          {{ lbl }}
-        </text>
+        <template v-if="showYLabels">
+          <text
+            v-for="(lbl, i) in xLabels" :key="`yl-${i}`"
+            :x="-12"
+            :y="(i + 0.5) * (chartH / xLabels.length)"
+            text-anchor="end" dominant-baseline="middle"
+            font-size="11" class="fill-muted-foreground">
+            {{ lbl }}
+          </text>
+        </template>
 
         <!-- Bars -->
         <g v-for="(group, gi) in hBarGeometry" :key="gi">
@@ -401,8 +428,8 @@ const uid = Math.random().toString(36).slice(2, 7)
         </g>
 
         <!-- Axis lines -->
-        <line :x1="0" :y1="0" :x2="0" :y2="chartH" stroke="currentColor" stroke-opacity="0.1" />
-        <line :x1="0" :y1="chartH" :x2="chartW" :y2="chartH" stroke="currentColor" stroke-opacity="0.1" />
+        <line v-if="showYAxis" :x1="0" :y1="0" :x2="0" :y2="chartH" stroke="currentColor" :stroke-opacity="axisOpacity" />
+        <line v-if="showXAxis" :x1="0" :y1="chartH" :x2="chartW" :y2="chartH" stroke="currentColor" :stroke-opacity="axisOpacity" />
       </g>
     </svg>
 
