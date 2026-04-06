@@ -31,28 +31,28 @@ const actualPadding = computed(() => {
   if (props.orientation === 'horizontal') {
     const maxLblW = Math.max(2, ...xLabels.value.map(l => getLen(l))) * 6.5
     
-    let rightPad = 24
+    let rightPad = 16
     if (props.showValues) {
       const allVals = allSeries.value.flatMap(s => s.values)
       const maxValW = Math.max(2, ...allVals.map(v => getLen(props.formatValue ? props.formatValue(v) : formatNumber(v)))) * 6.5
-      rightPad = Math.max(24, maxValW + 16)
+      rightPad = Math.max(16, maxValW + 8)
     }
 
     return {
-      top: 28,
+      top: 16,
       right: rightPad,
       bottom: 0,
-      left: Math.max(24, maxLblW + 16)
+      left: Math.max(24, maxLblW + 12)
     }
   }
 
   // Vertical
   const maxAxisW = Math.max(2, ...yTicks.value.map(t => getLen(props.formatValue ? props.formatValue(t) : formatNumber(t)))) * 6.5
   return {
-    top: 28, 
-    right: 20,
-    bottom: 36,
-    left: Math.max(24, maxAxisW + 16)
+    top: 24, 
+    right: 0,
+    bottom: 24,
+    left: Math.max(24, maxAxisW + 12)
   }
 })
 
@@ -322,7 +322,7 @@ const uid = Math.random().toString(36).slice(2, 7)
         <text
           v-for="(lbl, i) in xLabels" :key="`xl-${i}`"
           :x="(i + 0.5) * (chartW / xLabels.length)"
-          :y="chartH + 18"
+          :y="chartH + 16"
           text-anchor="middle" font-size="11"
           class="fill-muted-foreground">
           {{ lbl }}
