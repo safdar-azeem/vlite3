@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
-import type { LineChartProps } from './types'
+import type { ChartDataPoint, ChartDataset } from './types'
 import {
   CHART_COLORS,
   getColor,
@@ -10,6 +10,26 @@ import {
   niceYTicks,
   animateProgress,
 } from './utils'
+
+export interface LineChartProps {
+  data?: ChartDataPoint[]
+  datasets?: ChartDataset[]
+  labels?: string[]
+  height?: number
+  smooth?: boolean
+  fill?: boolean
+  showDots?: boolean
+  showGrid?: boolean
+  showLegend?: boolean
+  showTooltip?: boolean
+  colors?: string[]
+  animate?: boolean
+  xLabel?: string
+  yLabel?: string
+  formatValue?: (v: number) => string
+  yMin?: number
+  yMax?: number
+}
 
 const props = withDefaults(defineProps<LineChartProps>(), {
   height: 300,
