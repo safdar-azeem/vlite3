@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { provide, ref, watch, reactive, computed, inject } from 'vue'
-import { useRoute } from 'vue-router'
+import { provide, ref, watch, reactive, computed, inject, nextTick } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core'
 import type { SidebarMenuProps, SidebarMenuItemSchema, SidebarMenuContext } from './types'
 import SidebarMenuItem from './SidebarMenuItem.vue'
+import Icon from '../Icon.vue'
+import { $t } from '@/utils/i18n'
 
 // Inject Navbar context if it exists
 const navbarCtx = inject<any>('navbar-context', null)
@@ -33,11 +35,46 @@ const props = withDefaults(defineProps<SidebarMenuProps>(), {
 })
 
 const route = useRoute()
+const router = useRouter()
 const breakpoints = useBreakpoints(breakpointsTailwind)
 
 // Internal State
 const expandedItems = ref<string[]>([...props.defaultExpanded])
 const activeItem = ref<string | null>(null)
+
+// Drilldown State
+type DrilldownLevel = { items: SidebarMenuItemSchema[]; label: string; icon?: string }
+const drilldownStack = ref<DrilldownLevel[]>([])
+const drillDirection = ref<'forward' | 'backward'>('forward')
+
+const isDrilldown = computed(() => drilldownStack.value.length > 0)
+const drilldownItems = computed(() => {
+  if (drilldownStack.value.length === 0) return props.items
+  return drilldownStack.value[drilldownStack.value.length - 1].items
+})
+const drilldownCurrentLabel = computed(() => {
+  if (drilldownStack.value.length === 0) return ''
+  return drilldownStack.value[drilldownStack.value.length - 1].label
+})
+const drilldownCurrentIcon = computed(() => {
+  if (drilldownStack.value.length === 0) return undefined
+  return drilldownStack.value[drilldownStack.value.length - 1].icon
+})
+
+const drillInto = (item: SidebarMenuItemSchema) => {
+  if (!item.children?.length) return
+  drillDirection.value = 'forward'
+  drilldownStack.value = [
+    ...drilldownStack.value,
+    { items: item.children, label: item.label, icon: item.icon },
+  ]
+}
+
+const drillBack = () => {
+  if (drilldownStack.value.length === 0) return
+  drillDirection.value = 'backward'
+  drilldownStack.value = drilldownStack.value.slice(0, -1)
+}
 
 // Handle Responsiveness
 const isDesktop = computed(() => {
@@ -230,6 +267,81 @@ const setActive = (id: string | null) => {
   }
 }
 
+// Auto-drill on route change when renderMode is drilldown
+const findDrillPath = (
+  items: SidebarMenuItemSchema[],
+  path: string,
+  trail: DrilldownLevel[] = []
+): DrilldownLevel[] | null => {
+  for (const item of items) {
+    // Check if a root-level item itself matches (no drill needed)
+    if (trail.length === 0 && isPathMatch(item, path)) return null
+
+    if (item.children?.length) {
+      const newTrail = [
+        ...trail,
+        { items: item.children, label: item.label, icon: item.icon } as DrilldownLevel,
+      ]
+      // Check if any direct child matches the path
+      for (const child of item.children) {
+        if (isPathMatch(child, path)) return newTrail
+      }
+      // Recurse deeper
+      const deeper = findDrillPath(item.children, path, newTrail)
+      if (deeper) return deeper
+    }
+  }
+  return null
+}
+
+/**
+ * Recursively check if any item (or its descendants) in the given list
+ * matches the current path — so we know whether the path is "visible"
+ * from the current drill level.
+ */
+const isPathVisibleInItems = (
+  items: SidebarMenuItemSchema[],
+  path: string
+): boolean => {
+  for (const item of items) {
+    if (isPathMatch(item, path)) return true
+    // Do NOT recurse into children here — we only care about direct items at this level
+  }
+  return false
+}
+
+// Sync drilldown stack when route changes (only when in drilldown mode)
+// This handles: initial page load, browser back/forward, programmatic navigation
+watch(
+  () => route?.path,
+  (path) => {
+    if (!path) return
+    const globalMode = props.renderMode || 'tree'
+    if (globalMode !== 'drilldown') return
+
+    // If the current drill level already shows this route, do nothing
+    const currentItems = drilldownItems.value
+    if (isPathVisibleInItems(currentItems, path)) return
+
+    // Check if the path belongs to a root-level item (no drill needed)
+    if (isPathVisibleInItems(props.items, path)) {
+      // Reset to root
+      if (drilldownStack.value.length > 0) {
+        drillDirection.value = 'backward'
+        drilldownStack.value = []
+      }
+      return
+    }
+
+    // Find the correct drill path from root
+    const drillPath = findDrillPath(props.items, path)
+    if (drillPath && drillPath.length > 0) {
+      drillDirection.value = 'forward'
+      drilldownStack.value = drillPath
+    }
+  }
+)
+
 const context = reactive({
   activeItem,
   expandedItems,
@@ -252,6 +364,11 @@ const context = reactive({
   nestedMenuMaxHeight: computed(() => props.nestedMenuMaxHeight),
   currentOrientation,
   showTooltip: computed(() => props.showTooltip),
+  drilldownStack,
+  drillInto,
+  drillBack,
+  drilldownItems,
+  isDrilldown,
 }) as unknown as SidebarMenuContext
 
 provide('sidebar-menu-ctx', context)
@@ -266,11 +383,121 @@ provide('sidebar-menu-ctx', context)
     ]"
     role="tree"
     aria-label="Sidebar Menu">
-    <SidebarMenuItem
-      v-for="item in items"
-      :key="item.id || item.label"
-      :item="item"
-      :itemClass="itemClass"
-      :menuOffset="menuOffset" />
+    <!-- Drilldown Mode -->
+    <template v-if="(props.renderMode || 'tree') === 'drilldown' && currentOrientation === 'vertical'">
+      <div class="w-full sidebar-drilldown-container relative overflow-hidden">
+        <TransitionGroup
+          :name="drillDirection === 'forward' ? 'drill-forward' : 'drill-backward'"
+          tag="div"
+          class="relative w-full">
+          <div
+            :key="drilldownStack.length"
+            class="w-full">
+            <!-- Back Button -->
+            <button
+              v-if="isDrilldown"
+              type="button"
+              class="flex items-center gap-2 w-full px-2 py-2.5 mb-1 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/60 rounded-md transition-all duration-150 group cursor-pointer"
+              @click="drillBack">
+              <Icon
+                icon="lucide:chevron-left"
+                class="w-4 h-4 shrink-0 transition-transform duration-200 group-hover:-translate-x-0.5" />
+              <Icon
+                v-if="drilldownCurrentIcon"
+                :icon="drilldownCurrentIcon"
+                class="w-4 h-4 shrink-0 opacity-70" />
+              <span class="truncate font-semibold text-foreground">
+                {{ drilldownCurrentLabel }}
+              </span>
+            </button>
+            <div
+              v-if="isDrilldown"
+              class="h-px bg-border/60 mx-1 mb-1.5" />
+
+            <!-- Items at current drill level -->
+            <div :class="isDrilldown ? 'space-y-0.5' : 'space-y-1'">
+              <SidebarMenuItem
+                v-for="item in drilldownItems"
+                :key="item.id || item.label"
+                :item="item"
+                :itemClass="itemClass"
+                :menuOffset="menuOffset" />
+            </div>
+          </div>
+        </TransitionGroup>
+      </div>
+    </template>
+
+    <!-- Default (tree / popover) Mode -->
+    <template v-else>
+      <SidebarMenuItem
+        v-for="item in items"
+        :key="item.id || item.label"
+        :item="item"
+        :itemClass="itemClass"
+        :menuOffset="menuOffset" />
+    </template>
   </nav>
 </template>
+
+<style>
+/* Drilldown forward transition (drill INTO children) */
+.drill-forward-enter-active,
+.drill-forward-leave-active {
+  transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.drill-forward-enter-from {
+  opacity: 0;
+  transform: translateX(40%);
+}
+.drill-forward-enter-to {
+  opacity: 1;
+  transform: translateX(0);
+}
+.drill-forward-leave-from {
+  opacity: 1;
+  transform: translateX(0);
+}
+.drill-forward-leave-to {
+  opacity: 0;
+  transform: translateX(-40%);
+}
+.drill-forward-leave-active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+/* Drilldown backward transition (drill BACK to parent) */
+.drill-backward-enter-active,
+.drill-backward-leave-active {
+  transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.drill-backward-enter-from {
+  opacity: 0;
+  transform: translateX(-40%);
+}
+.drill-backward-enter-to {
+  opacity: 1;
+  transform: translateX(0);
+}
+.drill-backward-leave-from {
+  opacity: 1;
+  transform: translateX(0);
+}
+.drill-backward-leave-to {
+  opacity: 0;
+  transform: translateX(40%);
+}
+.drill-backward-leave-active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.sidebar-drilldown-container {
+  min-height: 0;
+}
+</style>
