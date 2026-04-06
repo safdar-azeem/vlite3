@@ -39,9 +39,22 @@ const emit = defineEmits<{
 const displayTime = computed(() => {
   if (!props.comment.timestamp) return ''
   const d = new Date(props.comment.timestamp)
-  return new Intl.DateTimeFormat(undefined, { 
+  return new Intl.DateTimeFormat(undefined, {
     month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric'
   }).format(d)
+})
+
+// --- i18n helpers with proper Chat-style fallback ---
+// If $t returns back the exact key it was given, a translation is not registered.
+// In that case, fall through to the hardcoded default text.
+const txtEdited = computed(() => {
+  const res = $t('vlite.comment.edited')
+  return res !== 'vlite.comment.edited' ? res : 'edited'
+})
+
+const txtReply = computed(() => {
+  const res = $t('vlite.comment.replyAction')
+  return res !== 'vlite.comment.replyAction' ? res : 'Reply'
 })
 
 // --- Double Confirm Delete Logic ---
@@ -62,7 +75,7 @@ const handleDeleteClick = () => {
     pendingDelete.value = true
     confirmTimer = setTimeout(() => {
       pendingDelete.value = false
-    }, 4000) // Revert after 4s
+    }, 4000)
   }
 }
 
@@ -77,7 +90,7 @@ const cancelPendingDelete = () => {
 
 <template>
   <div class="vl-comment flex w-full relative">
-    
+
     <!-- Left Avatar & Threading Line -->
     <div class="flex flex-col items-center mr-4 shrink-0">
       <Avatar
@@ -87,51 +100,51 @@ const cancelPendingDelete = () => {
         size="md"
         class="border-2 border-background/50 shadow-sm"
       />
-      <!-- Drawing connecting line for threaded replies natively -->
-      <div 
-        v-if="threaded && comment.replies?.length" 
+      <!-- Connecting line for threaded replies -->
+      <div
+        v-if="threaded && comment.replies?.length"
         class="w-px h-full bg-border/60 my-1 rounded-full">
       </div>
     </div>
 
     <!-- Main Content Block -->
-    <div class="flex flex-col flex-1 min-w-0 mb-6 group/comment">
-      
-      <!-- Header -->
-      <div class="flex items-center gap-2 mb-1">
+    <div class="flex flex-col flex-1 min-w-0 mb-6">
+
+      <!-- Header Row — group/row scoped STRICTLY to this one row only -->
+      <div class="group/row flex items-center gap-2 mb-1">
         <span class="text-sm font-semibold text-foreground tracking-tight">
           {{ comment.author.name }}
         </span>
         <Badge v-if="comment.author.role" variant="secondary" size="sm">
           {{ comment.author.role }}
         </Badge>
-        <span 
-          v-if="displayTime" 
+        <span
+          v-if="displayTime"
           class="text-xs text-muted-foreground ml-1">
           {{ displayTime }}
         </span>
-        <span 
-          v-if="comment.isEdited" 
+        <span
+          v-if="comment.isEdited"
           class="text-xs text-muted-foreground/60 italic">
-          ({{ $t('vlite.comment.edited', 'edited') }})
+          ({{ txtEdited }})
         </span>
 
-        <!-- Hover Actions -->
-        <div class="flex items-center gap-0.5 opacity-0 group-hover/comment:opacity-100 focus-within:opacity-100 transition-opacity ml-auto pl-4">
-          <Button 
+        <!-- Actions: only visible when hovering THIS header row -->
+        <div class="flex items-center gap-0.5 opacity-0 group-hover/row:opacity-100 focus-within:opacity-100 transition-opacity ml-auto pl-4">
+          <Button
             v-if="allowReply"
-            variant="ghost" 
-            size="xs" 
+            variant="ghost"
+            size="xs"
             icon="lucide:reply"
             class="text-muted-foreground hover:text-foreground h-7 px-2"
             @click="emit('reply', { commentId: comment.id, comment })">
-            {{ $t('vlite.comment.replyAction', 'Reply') }}
+            {{ txtReply }}
           </Button>
 
-          <Button 
+          <Button
             v-if="allowEdit"
-            variant="ghost" 
-            size="xs" 
+            variant="ghost"
+            size="xs"
             icon="lucide:pencil"
             class="text-muted-foreground hover:text-foreground h-7 w-7 px-0"
             @click="emit('edit', { commentId: comment.id, comment })"
@@ -166,7 +179,7 @@ const cancelPendingDelete = () => {
 
       <!-- Attachments -->
       <div v-if="comment.attachments?.length" class="mt-3.5">
-        <AttachmentsList 
+        <AttachmentsList
           :attachments="comment.attachments"
           variant="inline"
           size="sm"
@@ -174,15 +187,15 @@ const cancelPendingDelete = () => {
         />
       </div>
 
-      <!-- Inline Reply Injection Slot (Controlled by parent Thread via activeReplyId) -->
+      <!-- Inline Reply Injection Slot -->
       <div v-if="activeReplyId === comment.id" class="mt-4 pb-2">
         <slot name="inline-reply" :comment="comment" />
       </div>
 
       <!-- Recursive Thread Replies -->
       <div v-if="comment.replies?.length" class="mt-5 flex flex-col w-full">
-        <CommentItem 
-          v-for="reply in comment.replies" 
+        <CommentItem
+          v-for="reply in comment.replies"
           :key="reply.id"
           :comment="reply"
           :threaded="threaded"
@@ -195,13 +208,12 @@ const cancelPendingDelete = () => {
           @edit="(p) => emit('edit', p)"
           @delete="(id) => emit('delete', id)"
         >
-          <!-- Recursively pass the same inline-reply slot -->
           <template #inline-reply="slotProps">
             <slot name="inline-reply" v-bind="slotProps" />
           </template>
         </CommentItem>
       </div>
-      
+
     </div>
   </div>
 </template>
