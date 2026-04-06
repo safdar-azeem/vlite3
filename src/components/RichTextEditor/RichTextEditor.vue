@@ -86,6 +86,7 @@ let savedRange: Range | null = null
 let pendingLinkRange: Range | null = null
 let rafId: number | null = null   // for debounced state refresh
 let isUnmounted = false
+let skipLinkAutoOpen = false
 
 function saveSelection(): void {
   if (isUnmounted) return
@@ -310,28 +311,29 @@ function getAnchorAtSelection(sel?: Selection | null): HTMLAnchorElement | null 
 }
 
 function resolvePopoverPos(rect: DOMRect): { x: number; y: number } {
-  const root = rootRef.value
-  if (!root) return { x: 0, y: 0 }
-  const rootRect = root.getBoundingClientRect()
+  const wrap = editorRef.value?.parentElement
+  if (!wrap) return { x: 0, y: 0 }
+  const wrapRect = wrap.getBoundingClientRect()
   const POPOVER_W = 300
   const POPOVER_H = 90 // approximate
-  const rawX = rect.left - rootRect.left
-  const rawY = rect.bottom - rootRect.top + 6
+  const rawX = rect.left - wrapRect.left
+  const rawY = rect.bottom - wrapRect.top + 6
 
   // Clamp X so popover never overflows the right edge of the wrapper
-  const maxX = rootRect.width - POPOVER_W - 4
+  const maxX = wrapRect.width - POPOVER_W - 4
   const x = Math.max(0, Math.min(rawX, maxX))
 
   // If not enough room below, flip above the selection
   const spaceBelow = window.innerHeight - rect.bottom
   const y = spaceBelow < POPOVER_H + 16
-    ? rect.top - rootRect.top - POPOVER_H - 6
+    ? rect.top - wrapRect.top - POPOVER_H - 6
     : rawY
 
   return { x, y }
 }
 
 function checkLinkAtCursor(): void {
+  if (skipLinkAutoOpen) return
   const sel = window.getSelection()
   if (!sel || sel.rangeCount === 0) {
     if (linkPopover.value.isOnLink) closeLinkPopover()
@@ -430,7 +432,12 @@ function applyLink(): void {
     onInput()
   }
 
+  const sel = window.getSelection()
+  sel?.collapseToEnd()
+
+  skipLinkAutoOpen = true
   closeLinkPopover()
+  setTimeout(() => { skipLinkAutoOpen = false }, 200)
 }
 
 function unlinkCurrent(): void {
@@ -1131,13 +1138,13 @@ const editorId = computed(() => props.id ?? `rte-${Math.random().toString(36).sl
 
 /* ── Code ── */
 .rte-editor :deep(code) {
-  font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 0.85em;
-  background: color-mix(in oklab, var(--color-primary) 8%, transparent);
-  color: var(--color-primary);
-  padding: 0.1em 0.35em;
-  border-radius: 4px;
-  border: 1px solid color-mix(in oklab, var(--color-primary) 20%, transparent);
+  background: var(--color-muted);
+  color: var(--color-foreground);
+  padding: 0.2em 0.4em;
+  border-radius: var(--radius-sm);
+  border: none;
 }
 
 /* ── Inline formatting ── */
