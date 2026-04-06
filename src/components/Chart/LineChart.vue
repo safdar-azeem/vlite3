@@ -26,9 +26,19 @@ const props = withDefaults(defineProps<LineChartProps>(), {
 // ─── Dimensions ───────────────────────────────
 const containerRef = ref<HTMLElement>()
 const svgWidth = ref(600)
-const PAD = { top: 20, right: 24, bottom: 48, left: 56 }
-const chartW = computed(() => svgWidth.value - PAD.left - PAD.right)
-const chartH = computed(() => props.height - PAD.top - PAD.bottom)
+const actualPadding = computed(() => {
+  const getLen = (val: string | number) => String(val).length
+  const maxAxisW = Math.max(2, ...yTicks.value.map(t => getLen(props.formatValue ? props.formatValue(t) : formatNumber(t)))) * 6.5
+  return {
+    top: 20,
+    right: 24,
+    bottom: 48,
+    left: Math.max(30, maxAxisW + 16)
+  }
+})
+
+const chartW = computed(() => Math.max(0, svgWidth.value - actualPadding.value.left - actualPadding.value.right))
+const chartH = computed(() => Math.max(0, props.height - actualPadding.value.top - actualPadding.value.bottom))
 
 // ─── Normalise data into series ────────────────
 const allSeries = computed(() => {
@@ -143,7 +153,7 @@ const activeIndex = ref<number | null>(null)
 function onMouseMove(e: MouseEvent) {
   if (!props.showTooltip) return
   const rect = (e.currentTarget as SVGElement).getBoundingClientRect()
-  const mx = e.clientX - rect.left - PAD.left
+  const mx = e.clientX - rect.left - actualPadding.value.left
   const n = xLabels.value.length
   if (n === 0) return
 
@@ -158,8 +168,8 @@ function onMouseMove(e: MouseEvent) {
     value: props.formatValue ? props.formatValue(s.values[clamped]) : formatNumber(s.values[clamped]),
   }))
 
-  const ttX = toX(clamped) + PAD.left
-  const ttY = toY(allSeries.value[0].values[clamped]) + PAD.top
+  const ttX = toX(clamped) + actualPadding.value.left
+  const ttY = toY(allSeries.value[0].values[clamped]) + actualPadding.value.top
 
   tooltip.value = {
     x: ttX,
@@ -217,7 +227,7 @@ const uid = Math.random().toString(36).slice(2, 7)
         </linearGradient>
       </defs>
 
-      <g :transform="`translate(${PAD.left},${PAD.top})`">
+      <g :transform="`translate(${actualPadding.left},${actualPadding.top})`">
 
         <!-- Grid lines -->
         <template v-if="showGrid">
