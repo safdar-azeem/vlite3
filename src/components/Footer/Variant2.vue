@@ -107,14 +107,17 @@ function handleLinkClick(url: string, event: MouseEvent) {
         </form>
       </div>
 
-      <!-- ── Link Groups (horizontal, centered) ── -->
+      <!-- ── Link Groups (horizontal, left-aligned columns) ── -->
       <div
         v-if="hasLinkGroups"
-        class="grid gap-8 sm:gap-6 text-center sm:text-left mb-10"
-        :style="{
-          gridTemplateColumns: `repeat(${Math.min(d.linkGroups!.length, 4)}, minmax(0, 1fr))`
-        }">
-        <div v-for="(group, gIdx) in d.linkGroups" :key="gIdx" class="flex flex-col items-center sm:items-start">
+        class="grid gap-10 sm:gap-8 mb-12 max-w-5xl mx-auto w-full"
+        :class="[
+          d.linkGroups?.length === 1 ? 'grid-cols-1 max-w-sm' :
+          d.linkGroups?.length === 2 ? 'grid-cols-2 max-w-2xl' :
+          d.linkGroups?.length === 3 ? 'grid-cols-2 md:grid-cols-3 max-w-4xl' :
+          'grid-cols-2 md:grid-cols-4'
+        ]">
+        <div v-for="(group, gIdx) in d.linkGroups" :key="gIdx" class="flex flex-col items-start text-left w-full">
           <h3 class="text-sm font-semibold text-foreground mb-4 tracking-wide">
             {{ group.title }}
           </h3>
@@ -154,17 +157,17 @@ function handleLinkClick(url: string, event: MouseEvent) {
     </div>
 
     <!-- ── Bottom Bar ── -->
-    <div v-if="hasBottomBar" class="v-footer-bottom border-t border-border">
+    <div v-if="hasBottomBar" class="v-footer-bottom border-t border-border/50">
       <div
-        class="mx-auto w-full max-w-7xl px-6 lg:px-8 py-5
-               flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
+        class="mx-auto w-full max-w-7xl px-6 lg:px-8 py-6
+               flex flex-col sm:flex-row flex-wrap items-center justify-center gap-x-6 gap-y-4 text-center">
         <p v-if="d.copyright" class="text-sm text-muted-foreground">
           {{ d.copyright }}
         </p>
         <span
           v-if="d.copyright && hasLegalLinks"
-          class="hidden sm:inline text-border">·</span>
-        <div v-if="hasLegalLinks" class="flex items-center gap-x-5">
+          class="hidden sm:inline text-muted/30">|</span>
+        <div v-if="hasLegalLinks" class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
           <a
             v-for="(link, idx) in d.legalLinks"
             :key="idx"
