@@ -10,7 +10,7 @@ import sourceCode from './SidebarMenuDemo.vue?raw'
 // Demo Configuration
 const allowMultiple = ref(true)
 const variant = ref<'default' | 'ghost'>('default')
-const renderMode = ref<'tree' | 'popover'>('tree')
+const renderMode = ref<'tree' | 'popover' | 'drilldown'>('drilldown')
 const compact = ref(false)
 const showCompactLabels = ref(false)
 const showTooltip = ref(true)
@@ -21,7 +21,9 @@ const toggleVariant = () => {
   variant.value = variant.value === 'default' ? 'ghost' : 'default'
 }
 const toggleMode = () => {
-  renderMode.value = renderMode.value === 'tree' ? 'popover' : 'tree'
+  const modes: ('tree' | 'popover' | 'drilldown')[] = ['tree', 'popover', 'drilldown']
+  const idx = modes.indexOf(renderMode.value)
+  renderMode.value = modes[(idx + 1) % modes.length]
 }
 const toggleCompact = () => {
   compact.value = !compact.value
