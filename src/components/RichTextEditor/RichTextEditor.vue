@@ -55,7 +55,8 @@ const imageInputRef    = ref<HTMLInputElement | null>(null)
 // ─────────────────────────────────────────────────────────────────────────────
 const isFocused = ref(false)
 const isEmpty   = ref(true)
-const isUploadingImage = ref(false)
+const activeUploads = ref(0)
+const isUploadingImage = computed(() => activeUploads.value > 0)
 
 const { handleUploadFile } = useFileUpload()
 
@@ -176,30 +177,56 @@ function onInput(): void {
 // File / Image Upload
 // ─────────────────────────────────────────────────────────────────────────────
 function triggerImageUpload(): void {
-  if (props.disabled || props.readonly || isUploadingImage.value) return
+  if (props.disabled || props.readonly) return
   saveSelection()
   imageInputRef.value?.click()
 }
 
 async function handleFile(file: File): Promise<void> {
   if (!file) return
-  isUploadingImage.value = true
+
+  // 1. Instantly generate a temporary local URL for the UI
+  const objectUrl = URL.createObjectURL(file)
+  
+  // 2. Insert the placeholder image perfectly formatted into the editor at cursor
+  restoreSelection()
+  editorRef.value?.focus()
+  document.execCommand('insertImage', false, objectUrl)
+  
+  // 3. Flag it for lazy loading and active styling
+  const newImg = editorRef.value?.querySelector(`img[src="${objectUrl}"]`) as HTMLImageElement | null
+  if (newImg) {
+    newImg.classList.add('rte-image-uploading')
+  }
+  
+  // Initial sync so V-Model reflects the blob momentarily
+  onInput()
+
+  activeUploads.value++
   try {
-    const url = await handleUploadFile(file)
-    if (url) {
-      restoreSelection()
-      editorRef.value?.focus()
-      document.execCommand('insertImage', false, url)
-      
-      const newImg = editorRef.value?.querySelector(`img[src="${url}"]`) as HTMLImageElement | null
-      if (newImg) newImg.loading = 'lazy'
-      
-      onInput()
+    const finalUrl = await handleUploadFile(file)
+    if (finalUrl) {
+      // Find again (user could have typed text around it in the meantime)
+      const pendingImg = editorRef.value?.querySelector(`img[src="${objectUrl}"]`) as HTMLImageElement | null
+      if (pendingImg) {
+        pendingImg.src = finalUrl
+        pendingImg.classList.remove('rte-image-uploading')
+        pendingImg.loading = 'lazy'
+      }
+    } else {
+      // API rejected or failed to return URL — remove placeholder
+      const pendingImg = editorRef.value?.querySelector(`img[src="${objectUrl}"]`) as HTMLImageElement | null
+      if (pendingImg) pendingImg.remove()
     }
   } catch (error) {
     console.error('[RichTextEditor] Image upload error:', error)
+    // Revert on error
+    const pendingImg = editorRef.value?.querySelector(`img[src="${objectUrl}"]`) as HTMLImageElement | null
+    if (pendingImg) pendingImg.remove()
   } finally {
-    isUploadingImage.value = false
+    activeUploads.value--
+    URL.revokeObjectURL(objectUrl)
+    onInput() // Final sync state to finalize output
   }
 }
 
@@ -1263,6 +1290,13 @@ const editorId = computed(() => props.id ?? `rte-${Math.random().toString(36).sl
   margin: 1em 0;
   display: block;
   box-shadow: 0 0 0 1px var(--color-border);
+  transition: filter 0.2s, opacity 0.2s;
+}
+
+.rte-editor :deep(img.rte-image-uploading) {
+  opacity: 0.6;
+  filter: grayscale(100%) blur(2px);
+  cursor: wait;
 }
 
 /* ── Inline formatting ── */
