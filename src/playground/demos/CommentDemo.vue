@@ -155,6 +155,7 @@ const handleEdit = (payload: CommentActionPayload) => {
         
         <CommentThread
           :comments="comments"
+          :currentUserId="currentUser.id"
           @delete="handleDelete"
           @edit="handleEdit"
         >
