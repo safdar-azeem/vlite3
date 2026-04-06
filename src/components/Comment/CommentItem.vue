@@ -9,22 +9,34 @@ import type { CommentNode, CommentActionPayload } from './types'
 
 export interface CommentItemProps {
   comment: CommentNode
-  /** Enable nested visual threading */
+  /** The ID of the currently logged-in user. Used to decide edit/delete visibility. */
+  currentUserId?: string | number | null
+  /** Allow threaded visual line between nested replies */
   threaded?: boolean
+  /** Globally allow delete. Only shows for author unless allowDeleteAll=true */
   allowDelete?: boolean
+  /** Globally allow edit. Only shows for author unless allowEditAll=true */
   allowEdit?: boolean
+  /** Globally allow reply (visible to all users) */
   allowReply?: boolean
-  /** Requires two clicks to delete (confirmation) */
+  /** Admin override: show delete button on ALL comments regardless of author */
+  allowDeleteAll?: boolean
+  /** Admin override: show edit button on ALL comments regardless of author */
+  allowEditAll?: boolean
+  /** Requires two clicks to delete (confirmation safety) */
   confirmDelete?: boolean
-  /** Whether this comment is currently being replied to, so we can reveal a slot */
+  /** Controlled by parent CommentThread to reveal the reply slot */
   activeReplyId?: string | number | null
 }
 
 const props = withDefaults(defineProps<CommentItemProps>(), {
+  currentUserId: null,
   threaded: true,
   allowDelete: true,
   allowEdit: true,
   allowReply: true,
+  allowDeleteAll: false,
+  allowEditAll: false,
   confirmDelete: true,
   activeReplyId: null,
 })
@@ -35,6 +47,29 @@ const emit = defineEmits<{
   (e: 'delete', id: string | number): void
 }>()
 
+// --- Permission guards ---
+// Edge cases handled:
+//   1. No currentUserId passed → no auth check, show all actions (backward compat)
+//   2. currentUserId matches author → show edit + delete
+//   3. currentUserId does NOT match → hide edit + delete (unless admin override)
+//   4. allowDeleteAll/allowEditAll → admin bypass, show regardless
+//   5. allowEdit/allowDelete globally false → never show regardless of author
+const isAuthor = computed(() => {
+  if (props.currentUserId === null || props.currentUserId === undefined) return true // no auth = show all
+  return String(props.currentUserId) === String(props.comment.author.id)
+})
+
+const canEdit = computed(() =>
+  props.allowEdit && (isAuthor.value || props.allowEditAll)
+)
+
+const canDelete = computed(() =>
+  props.allowDelete && (isAuthor.value || props.allowDeleteAll)
+)
+
+// Reply is always shown to everyone (you can always reply to any comment)
+const canReply = computed(() => props.allowReply)
+
 // --- Formatted Time ---
 const displayTime = computed(() => {
   if (!props.comment.timestamp) return ''
@@ -44,9 +79,7 @@ const displayTime = computed(() => {
   }).format(d)
 })
 
-// --- i18n helpers with proper Chat-style fallback ---
-// If $t returns back the exact key it was given, a translation is not registered.
-// In that case, fall through to the hardcoded default text.
+// --- i18n helpers — Chat-style fallback: if key echoes back, use default ---
 const txtEdited = computed(() => {
   const res = $t('vlite.comment.edited')
   return res !== 'vlite.comment.edited' ? res : 'edited'
@@ -57,7 +90,7 @@ const txtReply = computed(() => {
   return res !== 'vlite.comment.replyAction' ? res : 'Reply'
 })
 
-// --- Double Confirm Delete Logic ---
+// --- Double Confirm Delete Logic (same as ChatBubble) ---
 const pendingDelete = ref(false)
 let confirmTimer: ReturnType<typeof setTimeout> | null = null
 
@@ -66,25 +99,19 @@ const handleDeleteClick = () => {
     emit('delete', props.comment.id)
     return
   }
-
   if (pendingDelete.value) {
     pendingDelete.value = false
     if (confirmTimer) clearTimeout(confirmTimer)
     emit('delete', props.comment.id)
   } else {
     pendingDelete.value = true
-    confirmTimer = setTimeout(() => {
-      pendingDelete.value = false
-    }, 4000)
+    confirmTimer = setTimeout(() => { pendingDelete.value = false }, 4000)
   }
 }
 
 const cancelPendingDelete = () => {
   pendingDelete.value = false
-  if (confirmTimer) {
-    clearTimeout(confirmTimer)
-    confirmTimer = null
-  }
+  if (confirmTimer) { clearTimeout(confirmTimer); confirmTimer = null }
 }
 </script>
 
@@ -100,7 +127,6 @@ const cancelPendingDelete = () => {
         size="md"
         class="border-2 border-background/50 shadow-sm"
       />
-      <!-- Connecting line for threaded replies -->
       <div
         v-if="threaded && comment.replies?.length"
         class="w-px h-full bg-border/60 my-1 rounded-full">
@@ -110,29 +136,25 @@ const cancelPendingDelete = () => {
     <!-- Main Content Block -->
     <div class="flex flex-col flex-1 min-w-0 mb-6">
 
-      <!-- Header Row — group/row scoped STRICTLY to this one row only -->
-      <div class="group/row flex items-center gap-2 mb-1">
+      <!-- Header Row -->
+      <div class="vl-comment-header flex items-center gap-2 mb-1">
         <span class="text-sm font-semibold text-foreground tracking-tight">
           {{ comment.author.name }}
         </span>
         <Badge v-if="comment.author.role" variant="secondary" size="sm">
           {{ comment.author.role }}
         </Badge>
-        <span
-          v-if="displayTime"
-          class="text-xs text-muted-foreground ml-1">
+        <span v-if="displayTime" class="text-xs text-muted-foreground ml-1">
           {{ displayTime }}
         </span>
-        <span
-          v-if="comment.isEdited"
-          class="text-xs text-muted-foreground/60 italic">
+        <span v-if="comment.isEdited" class="text-xs text-muted-foreground/60 italic">
           ({{ txtEdited }})
         </span>
 
-        <!-- Actions: only visible when hovering THIS header row -->
-        <div class="flex items-center gap-0.5 opacity-0 group-hover/row:opacity-100 focus-within:opacity-100 transition-opacity ml-auto pl-4">
+        <!-- Action Buttons — visibility handled by scoped CSS below -->
+        <div class="vl-comment-actions flex items-center gap-0.5 ml-auto pl-4">
           <Button
-            v-if="allowReply"
+            v-if="canReply"
             variant="ghost"
             size="xs"
             icon="lucide:reply"
@@ -142,7 +164,7 @@ const cancelPendingDelete = () => {
           </Button>
 
           <Button
-            v-if="allowEdit"
+            v-if="canEdit"
             variant="ghost"
             size="xs"
             icon="lucide:pencil"
@@ -150,13 +172,15 @@ const cancelPendingDelete = () => {
             @click="emit('edit', { commentId: comment.id, comment })"
           />
 
-          <div v-if="allowDelete" class="relative flex items-center">
+          <div v-if="canDelete" class="relative flex items-center">
             <Button
               variant="ghost"
               size="xs"
               :icon="pendingDelete ? 'lucide:check' : 'lucide:trash-2'"
               class="h-7 w-7 px-0 transition-colors"
-              :class="pendingDelete ? 'text-destructive bg-destructive/10 hover:bg-destructive/20 hover:text-destructive' : 'text-muted-foreground hover:text-foreground hover:bg-muted'"
+              :class="pendingDelete
+                ? 'text-destructive bg-destructive/10 hover:bg-destructive/20 hover:text-destructive'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted'"
               @click="handleDeleteClick"
             />
             <button
@@ -187,21 +211,24 @@ const cancelPendingDelete = () => {
         />
       </div>
 
-      <!-- Inline Reply Injection Slot -->
+      <!-- Inline Reply Slot -->
       <div v-if="activeReplyId === comment.id" class="mt-4 pb-2">
         <slot name="inline-reply" :comment="comment" />
       </div>
 
-      <!-- Recursive Thread Replies -->
+      <!-- Recursive Replies -->
       <div v-if="comment.replies?.length" class="mt-5 flex flex-col w-full">
         <CommentItem
           v-for="reply in comment.replies"
           :key="reply.id"
           :comment="reply"
+          :currentUserId="currentUserId"
           :threaded="threaded"
           :allowDelete="allowDelete"
           :allowEdit="allowEdit"
           :allowReply="allowReply"
+          :allowDeleteAll="allowDeleteAll"
+          :allowEditAll="allowEditAll"
           :confirmDelete="confirmDelete"
           :activeReplyId="activeReplyId"
           @reply="(p) => emit('reply', p)"
@@ -217,3 +244,36 @@ const cancelPendingDelete = () => {
     </div>
   </div>
 </template>
+
+<style scoped>
+/*
+  Custom CSS hover strategy using :has() for clean nested isolation.
+
+  Problem: CSS :hover bubbles up through ancestors.
+  When hovering a nested child .vl-comment, all parent .vl-comment elements
+  are also technically "hovered" — causing all ancestors' actions to show.
+
+  Solution: Only show actions when THIS .vl-comment is hovered AND
+  none of its descendant .vl-comment elements is also hovered.
+  :not(:has(.vl-comment:hover)) = "I am hovered but no child comment is"
+*/
+.vl-comment-actions {
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+/* Show actions when THIS specific comment is the direct hover target */
+.vl-comment:hover:not(:has(.vl-comment:hover)) > div > .vl-comment-header > .vl-comment-actions {
+  opacity: 1;
+}
+
+/* Keep actions visible when the actions themselves are focused (keyboard a11y) */
+.vl-comment-actions:focus-within {
+  opacity: 1;
+}
+
+/* Keep actions visible while the pending-delete confirmation is active */
+.vl-comment:has(.vl-comment-actions button[aria-label="Confirm delete"]) .vl-comment-actions {
+  opacity: 1;
+}
+</style>
