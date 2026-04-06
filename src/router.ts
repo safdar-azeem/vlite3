@@ -20,6 +20,7 @@ const children: RouteRecordRaw[] = Object.entries(demoModules).map(([path, compo
   if (rawName === 'ExportData') routePath = 'export-data'
   if (rawName === 'ImportData') routePath = 'import-data'
   if (rawName === 'PricingPlan') routePath = 'pricing'
+  if (rawName === 'RichTextEditor') routePath = 'richtexteditor'
 
   return {
     path: routePath,
