@@ -9,7 +9,7 @@ export interface SidebarMenuItemSchema {
   badge?: string | number
   badgeClass?: string
   disabled?: boolean
-  renderMode?: 'tree' | 'popover'
+  renderMode?: 'tree' | 'popover' | 'drilldown'
   action?: (item: SidebarMenuItemSchema) => void
   class?: string
 }
@@ -22,7 +22,7 @@ export interface SidebarMenuProps {
   defaultExpanded?: string[]
   compact?: boolean
   showCompactLabels?: boolean
-  renderMode?: 'tree' | 'popover'
+  renderMode?: 'tree' | 'popover' | 'drilldown'
   iconSize?: string
   compactIconSize?: string
   labelClass?: string
@@ -50,7 +50,7 @@ export interface SidebarMenuContext {
   setActive: (id: string | null) => void
   indentSize: number
   variant: 'default' | 'ghost'
-  renderMode: 'tree' | 'popover'
+  renderMode: 'tree' | 'popover' | 'drilldown'
   renderNestedTabs: boolean
   compact: boolean
   showCompactLabels: boolean
@@ -64,4 +64,9 @@ export interface SidebarMenuContext {
   nestedMenuMaxHeight: string
   currentOrientation: 'vertical' | 'horizontal'
   showTooltip: boolean
+  drilldownStack: { items: SidebarMenuItemSchema[]; label: string; icon?: string }[]
+  drillInto: (item: SidebarMenuItemSchema) => void
+  drillBack: () => void
+  drilldownItems: SidebarMenuItemSchema[]
+  isDrilldown: boolean
 }
