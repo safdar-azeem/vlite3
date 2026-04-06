@@ -1,7 +1,26 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
-import type { PieChartProps } from './types'
+import type { ChartDataPoint } from './types'
 import { CHART_COLORS, getColor, formatNumber, arcPath, animateProgress } from './utils'
+
+export type PieLabelMode = 'percent' | 'value' | 'label' | 'none'
+export type LegendPosition = 'right' | 'bottom'
+
+export interface PieChartProps {
+  data: ChartDataPoint[]
+  donut?: boolean
+  innerRadius?: number
+  size?: number
+  startAngle?: number
+  showLegend?: boolean
+  legendPosition?: LegendPosition
+  labelMode?: PieLabelMode
+  colors?: string[]
+  animate?: boolean
+  showTooltip?: boolean
+  centerLabel?: string
+  centerValue?: string
+}
 
 const props = withDefaults(defineProps<PieChartProps>(), {
   donut: false,
@@ -26,7 +45,7 @@ function runAnimation() {
   cancelAnim = animateProgress(1000, (t) => (progress.value = t))
 }
 
-onMounted(() => { if (props.animate) runAnimation() })
+onMounted(() => { console.log("PieChart Mounted - donut:", props.donut, "innerR:", innerR.value); if (props.animate) runAnimation() })
 watch(() => props.data, () => { if (props.animate) runAnimation() }, { deep: true })
 onUnmounted(() => cancelAnim?.())
 
