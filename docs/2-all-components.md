@@ -66,6 +66,7 @@ Check the individual Markdown files inside the docs folders for full details.
 * [DateRangePicker](https://www.google.com/search?q=./2-advance-components/DateRangePicker.md)
 * [ExportData](https://www.google.com/search?q=./2-advance-components/ExportData.md)
 * [FileTree](https://www.google.com/search?q=./2-advance-components/FileTree.md)
+* [Footer](https://www.google.com/search?q=./2-advance-components/Footer.md)
 * [GoogleLogin](https://www.google.com/search?q=./2-advance-components/GoogleLogin.md)
 * [Heatmap](https://www.google.com/search?q=./2-advance-components/Heatmap.md)
 * [ImportData](https://www.google.com/search?q=./2-advance-components/ImportData.md)
