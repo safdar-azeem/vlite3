@@ -114,13 +114,13 @@ withDefaults(defineProps<Props>(), {
 
 /* ── Code ── */
 .rte-reader :deep(code) {
-  font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 0.85em;
-  background: color-mix(in oklab, var(--color-primary) 8%, transparent);
-  color: var(--color-primary);
-  padding: 0.1em 0.35em;
-  border-radius: 4px;
-  border: 1px solid color-mix(in oklab, var(--color-primary) 20%, transparent);
+  background: var(--color-muted);
+  color: var(--color-foreground);
+  padding: 0.2em 0.4em;
+  border-radius: var(--radius-sm);
+  border: none;
 }
 
 /* ── Inline formatting ── */
