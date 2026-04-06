@@ -10,10 +10,19 @@ import { monthlyBarData, groupedBarLabels, groupedBarDatasets, hBarData } from '
 const barOpts = ref({
   orientation: 'vertical',
   barRadius: 8,
+  // Axes & grid
   showGrid: true,
+  showXAxis: true,
+  showYAxis: true,
+  showXLabels: true,
+  showYLabels: true,
+  gridOpacity: 0.07,
+  axisOpacity: 0.1,
+  // Interaction
   showTooltip: true,
   showValues: true,
   animate: true,
+  // Size
   height: 280,
 })
 
@@ -27,10 +36,18 @@ const barControls = [
       { label: 'Horizontal', value: 'horizontal' },
     ],
   },
-  { key: 'showGrid',    label: 'Grid Lines',   type: 'toggle' as const },
-  { key: 'showTooltip', label: 'Tooltip',      type: 'toggle' as const },
+  // ─ Axes & grid
+  { key: 'showXAxis',    label: 'X Axis Line', type: 'toggle' as const },
+  { key: 'showYAxis',    label: 'Y Axis Line', type: 'toggle' as const },
+  { key: 'showXLabels',  label: 'X Labels',    type: 'toggle' as const },
+  { key: 'showYLabels',  label: 'Y Labels',    type: 'toggle' as const },
+  { key: 'showGrid',     label: 'Grid',        type: 'toggle' as const },
+  { key: 'gridOpacity',  label: 'Grid Opacity',type: 'slider' as const, min: 0, max: 0.3, step: 0.01 },
+  { key: 'axisOpacity',  label: 'Axis Opacity',type: 'slider' as const, min: 0, max: 0.5, step: 0.01 },
+  // ─ Bar style
   { key: 'showValues',  label: 'Value Labels', type: 'toggle' as const },
   { key: 'animate',     label: 'Animate',      type: 'toggle' as const },
+  { key: 'showTooltip', label: 'Tooltip',      type: 'toggle' as const },
   { key: 'barRadius',   label: 'Bar Radius',   type: 'slider' as const, min: 0, max: 20, step: 1 },
   { key: 'height',      label: 'Height',       type: 'slider' as const, min: 150, max: 450, step: 10 },
 ]
@@ -58,7 +75,13 @@ const barControls = [
             :show-grid="barOpts.showGrid as boolean"
             :show-tooltip="barOpts.showTooltip as boolean"
             :show-values="barOpts.showValues as boolean"
-            :animate="barOpts.animate as boolean" />
+            :animate="barOpts.animate as boolean"
+            :show-x-axis="barOpts.showXAxis as boolean"
+            :show-y-axis="barOpts.showYAxis as boolean"
+            :show-x-labels="barOpts.showXLabels as boolean"
+            :show-y-labels="barOpts.showYLabels as boolean"
+            :grid-opacity="barOpts.gridOpacity as number"
+            :axis-opacity="barOpts.axisOpacity as number" />
         </div>
       </div>
     </DemoSection>
