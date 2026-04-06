@@ -26,19 +26,33 @@ const containerRef = ref<HTMLElement>()
 const svgWidth = ref(600)
 
 const actualPadding = computed(() => {
+  const getLen = (val: string | number) => String(val).length
+
   if (props.orientation === 'horizontal') {
+    const maxLblW = Math.max(2, ...xLabels.value.map(l => getLen(l))) * 6.5
+    
+    let rightPad = 24
+    if (props.showValues) {
+      const allVals = allSeries.value.flatMap(s => s.values)
+      const maxValW = Math.max(2, ...allVals.map(v => getLen(props.formatValue ? props.formatValue(v) : formatNumber(v)))) * 6.5
+      rightPad = Math.max(24, maxValW + 16)
+    }
+
     return {
       top: 28,
-      right: props.showValues ? 40 : 20,
-      bottom: 0, // No bottom gap for horizontal chart
-      left: 85
+      right: rightPad,
+      bottom: 0,
+      left: Math.max(24, maxLblW + 16)
     }
   }
+
+  // Vertical
+  const maxAxisW = Math.max(2, ...yTicks.value.map(t => getLen(props.formatValue ? props.formatValue(t) : formatNumber(t)))) * 6.5
   return {
     top: 28, 
     right: 20,
     bottom: 36,
-    left: 48
+    left: Math.max(24, maxAxisW + 16)
   }
 })
 
