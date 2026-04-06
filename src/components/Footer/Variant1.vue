@@ -132,10 +132,13 @@ function handleLinkClick(url: string, event: MouseEvent) {
           <!-- Link Groups -->
           <div
             v-if="hasLinkGroups"
-            class="grid gap-10 sm:gap-12 lg:gap-16"
-            :style="{
-              gridTemplateColumns: `repeat(${Math.min(d.linkGroups!.length, 4)}, minmax(0, 1fr))`
-            }">
+            class="grid gap-10 sm:gap-12 lg:gap-16 w-full"
+            :class="[
+              d.linkGroups?.length === 1 ? 'grid-cols-1' :
+              d.linkGroups?.length === 2 ? 'grid-cols-1 sm:grid-cols-2' :
+              d.linkGroups?.length === 3 ? 'grid-cols-2 md:grid-cols-3' :
+              'grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
+            ]">
             <div v-for="(group, gIdx) in d.linkGroups" :key="gIdx">
               <h3 class="text-sm font-semibold text-foreground mb-4 tracking-wide">
                 {{ group.title }}
@@ -161,14 +164,14 @@ function handleLinkClick(url: string, event: MouseEvent) {
     </div>
 
     <!-- ── Bottom Bar ── -->
-    <div v-if="hasBottomBar" class="v-footer-bottom border-t border-border">
+    <div v-if="hasBottomBar" class="v-footer-bottom border-t border-border/50">
       <div
-        class="mx-auto w-full max-w-7xl px-6 lg:px-8 py-5
-               flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p v-if="d.copyright" class="text-sm text-muted-foreground">
+        class="mx-auto w-full max-w-7xl px-6 lg:px-8 py-6
+               flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+        <p v-if="d.copyright" class="text-sm text-muted-foreground w-full md:w-auto">
           {{ d.copyright }}
         </p>
-        <div v-if="hasLegalLinks" class="flex items-center gap-x-5">
+        <div v-if="hasLegalLinks" class="flex flex-wrap items-center justify-center md:justify-end gap-x-6 gap-y-2 w-full md:w-auto mt-2 md:mt-0">
           <a
             v-for="(link, idx) in d.legalLinks"
             :key="idx"
