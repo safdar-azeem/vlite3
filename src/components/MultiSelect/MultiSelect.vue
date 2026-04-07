@@ -14,6 +14,7 @@ interface Props {
   placeholder?: string
   placeholderI18n?: string
   disabled?: boolean
+  readonly?: boolean
   searchable?: boolean
 
   variant?: 'default' | 'outline' | 'solid' | 'floating' | string
@@ -34,6 +35,7 @@ const props = withDefaults(defineProps<Props>(), {
   modelValue: () => [],
   options: () => [],
   disabled: false,
+  readonly: false,
   searchable: true,
   variant: 'outline',
   size: 'md',
@@ -146,7 +148,7 @@ const hiddenCount = computed(() => {
 })
 
 const handleSelect = (option: IDropdownOption) => {
-  if (props.disabled) return // Security check
+  if (props.disabled || props.readonly) return // Security check
 
   const val = option.value ?? option.label
 
@@ -169,7 +171,7 @@ const handleSelect = (option: IDropdownOption) => {
 }
 
 const removeOption = (value: any) => {
-  if (props.disabled) return // Security check
+  if (props.disabled || props.readonly) return // Security check
 
   const newValue = props.modelValue.filter((v) => v !== value)
   emit('update:modelValue', newValue)
@@ -177,7 +179,7 @@ const removeOption = (value: any) => {
 }
 
 const clearAll = () => {
-  if (props.disabled) return // Security check
+  if (props.disabled || props.readonly) return // Security check
 
   emit('update:modelValue', [])
   emit('change', [])
@@ -190,14 +192,18 @@ const triggerClasses = computed(() => {
   const heightClass = props.variant === 'transparent' ? 'h-full min-h-[40px]' : 'min-h-[40px]'
 
   return [
-    `flex items-center justify-between w-full ${spacingClass} ${heightClass} ${roundedClass} border text-sm transition-colors cursor-pointer outline-none`,
+    `flex items-center justify-between w-full ${spacingClass} ${heightClass} ${roundedClass} border text-sm transition-colors outline-none`,
     props.disabled
       ? 'opacity-50 cursor-not-allowed bg-muted'
-      : props.variant === 'floating'
-        ? 'bg-transparent text-foreground'
-        : props.variant === 'transparent'
-          ? 'bg-transparent text-foreground'
-          : 'bg-background hover:bg-gray-50/70',
+      : props.readonly
+        ? `cursor-default ${props.variant === 'transparent' || props.variant === 'floating' ? 'bg-transparent text-foreground' : 'bg-background'}`
+        : `cursor-pointer ${
+            props.variant === 'floating'
+              ? 'bg-transparent text-foreground'
+              : props.variant === 'transparent'
+                ? 'bg-transparent text-foreground'
+                : 'bg-background hover:bg-gray-50/70'
+          }`,
     props.variant === 'outline' || props.variant === 'floating'
       ? 'border-input focus-visible:ring-1 focus-visible:ring-primary'
       : props.variant === 'transparent'
@@ -217,13 +223,13 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
     v-model:isOpen="isOpen"
     :close-on-select="false"
     :selectable="true"
-    :disabled="disabled">
+    :disabled="disabled || readonly">
     <template #trigger>
       <div
         :class="triggerClasses"
-        :tabindex="disabled ? -1 : 0"
-        @keydown.enter.prevent="!disabled && (isOpen = !isOpen)"
-        @keydown.space.prevent="!disabled && (isOpen = !isOpen)"
+        :tabindex="disabled || readonly ? -1 : 0"
+        @keydown.enter.prevent="!(disabled || readonly) && (isOpen = !isOpen)"
+        @keydown.space.prevent="!(disabled || readonly) && (isOpen = !isOpen)"
         :data-testid="$attrs['data-testid'] || ($attrs.name ? `multiselect-${$attrs.name}` : 'multiselect')">
         <div
           class="flex gap-1.5 items-center flex-1 min-w-0"
@@ -250,7 +256,7 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
                 opt.labelI18n ? $t(opt.labelI18n) : opt.label
               }}</span>
               <button
-                v-if="!disabled"
+                v-if="!(disabled || readonly)"
                 type="button"
                 @click.stop="removeOption(opt.value)"
                 class="rounded transition-colors shrink-0 flex items-center justify-center p-px"
@@ -280,10 +286,10 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
         </div>
 
         <div
-          v-if="showControls"
+          v-if="showControls && !(disabled || readonly)"
           class="flex items-center gap-2 pl-2 shrink-0 text-muted-foreground">
           <Icon
-            v-if="selectedOptions.length > 0 && !disabled"
+            v-if="selectedOptions.length > 0 && !(disabled || readonly)"
             icon="lucide:x"
             class="w-4 h-4 hover:text-foreground transition-colors"
             @click.stop="clearAll" />
@@ -298,7 +304,7 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
 
     <template #default>
       <DropdownMenu
-        v-if="!disabled"
+        v-if="!(disabled || readonly)"
         :options="normalizedOptions"
         :cachedOptions="combinedOptions"
         :selected="modelValue"
