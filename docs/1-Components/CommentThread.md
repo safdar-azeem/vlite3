@@ -74,17 +74,18 @@ const handleDelete = (id) => { /* logic to remove comment deep */ }
 
 ### Translation Props (i18n)
 
-Every bit of text relies on robust translation `$t` fallbacks, making it effortlessly customizable. Pass `*I18n` keys to route them through `$t`, or directly pass the raw static string format.
+Every bit of text relies on robust global translation `$t` fallbacks, making it effortlessly customizable locally if you don't provide anything. 
+If you want to use your own localized dictionaries, you can simply pass the keys to your localization tool directly in the vue bindings like `:empty-text="$t('my.custom.key')"`.
 
-- `emptyText` / `emptyTextI18n`
-- `placeholder` / `placeholderI18n`
-- `replyPlaceholder` / `replyPlaceholderI18n`
-- `editPlaceholder` / `editPlaceholderI18n`
-- `replyText` / `replyTextI18n`
-- `editedText` / `editedTextI18n`
-- `editingText` / `editingTextI18n`
-- `cancelText` / `cancelTextI18n`
-- `cancelEditText` / `cancelEditTextI18n`
+- `emptyText`
+- `placeholder`
+- `replyPlaceholder`
+- `editPlaceholder`
+- `replyText`
+- `editedText`
+- `editingText`
+- `cancelText`
+- `cancelEditText`
 
 ## Payload (`CommentNode` interface)
 
