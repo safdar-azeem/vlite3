@@ -32,11 +32,10 @@ const variants: { value: FooterVariant; label: string; description: string }[] =
 // Sample data — SaaS / Product Website
 // ──────────────────────────────────────────────────────────────────────────────
 const saasFooter: FooterData = {
-  brandName: 'Shadcnblocks.com',
+  brandName: 'Builto.com',
   brandLogo:
     'https://ph-files.imgix.net/0ecf8d00-b87b-4fdb-a497-5c98fcaa4064.avif?auto=compress&codec=mozjpeg&cs=strip&auto=format&w=56&h=56&fit=crop&frame=1&dpr=2',
-  brandDescription:
-    'A collection of components for your startup business or side project.',
+  brandDescription: 'A collection of components for your startup business or side project.',
   socialLinks: [
     { icon: 'lucide:instagram', url: 'https://instagram.com', label: 'Instagram' },
     { icon: 'lucide:facebook', url: 'https://facebook.com', label: 'Facebook' },
@@ -72,7 +71,7 @@ const saasFooter: FooterData = {
       ],
     },
   ],
-  copyright: '© 2024 Shadcnblocks.com. All rights reserved.',
+  copyright: '© 2024 Builto.com. All rights reserved.',
   legalLinks: [
     { label: 'Terms and Conditions', url: '#' },
     { label: 'Privacy Policy', url: '#' },
@@ -86,8 +85,7 @@ const devToolsFooter: FooterData = {
   brandName: 'DevStack',
   brandLogo:
     'https://ph-files.imgix.net/0ecf8d00-b87b-4fdb-a497-5c98fcaa4064.avif?auto=compress&codec=mozjpeg&cs=strip&auto=format&w=56&h=56&fit=crop&frame=1&dpr=2',
-  brandDescription:
-    'Open source developer tools for building modern web applications.',
+  brandDescription: 'Open source developer tools for building modern web applications.',
   badge: 'v2.1.0',
   socialLinks: [
     { icon: 'lucide:github', url: 'https://github.com', label: 'GitHub' },
@@ -323,7 +321,7 @@ const footerLinkFields = [
 const footerSocialLinkFields = [
   { name: 'icon', type: 'string', desc: "Iconify icon name (e.g., 'lucide:instagram')." },
   { name: 'url', type: 'string', desc: 'Full URL for the social link.' },
-  { name: 'label', type: 'string?', desc: "Accessible label for screen readers." },
+  { name: 'label', type: 'string?', desc: 'Accessible label for screen readers.' },
 ]
 
 function handleSubscribe(email: string) {
@@ -336,9 +334,9 @@ function handleSubscribe(email: string) {
     <div class="space-y-4 pb-8 border-b border-border/50">
       <h2 class="text-3xl font-extrabold tracking-tight lg:text-4xl text-foreground">Footer</h2>
       <p class="text-lg text-muted-foreground w-full max-w-[80%]">
-        A flexible, API-driven footer component with 3 visual variants. Pass a JSON data object
-        and the component auto-generates brand sections, link columns, social icons, newsletters,
-        and legal links. Fully customizable through props, with complete dark mode support.
+        A flexible, API-driven footer component with 3 visual variants. Pass a JSON data object and
+        the component auto-generates brand sections, link columns, social icons, newsletters, and
+        legal links. Fully customizable through props, with complete dark mode support.
       </p>
     </div>
 
