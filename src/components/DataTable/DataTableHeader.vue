@@ -8,11 +8,13 @@ interface Props {
   header: TableHeader
   sortConfig?: SortConfig
   compact?: boolean
+  size?: 'xs' | 'sm' | 'md' | 'lg'
   tableSortable?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   compact: false,
+  size: 'md',
   tableSortable: true,
 })
 
@@ -58,6 +60,13 @@ const alignClass = computed(() => {
 const displayTitle = computed(() =>
   props.header.titleI18n ? $t(props.header.titleI18n) : props.header.title
 )
+
+const sizeClass = computed(() => {
+  if (props.size === 'xs' || props.compact) return 'py-1.5!'
+  if (props.size === 'sm') return 'py-2!'
+  if (props.size === 'lg') return 'py-4!'
+  return 'py-3!'
+})
 </script>
 
 <template>
@@ -65,7 +74,7 @@ const displayTitle = computed(() =>
     scope="col"
     class="group/th px-3 text-left align-middle font-medium text-muted-foreground transition-colors [&:has([role=checkbox])]:pr-0 overflow-hidden max-w-[400px]"
     :class="[
-      compact ? 'py-2.5!' : 'py-3!',
+      sizeClass,
       header.sortable !== false && tableSortable ? 'cursor-pointer hover:bg-muted/50' : '',
       header.hideOnMobile ? 'hidden md:table-cell' : '',
     ]"
