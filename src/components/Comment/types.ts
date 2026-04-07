@@ -27,5 +27,6 @@ export interface CommentActionPayload {
 
 export interface CommentSubmitPayload {
   text: string
+  attachments?: AttachmentItem[]
   parentId?: string | number
 }
