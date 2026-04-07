@@ -20,13 +20,9 @@ const props = withDefaults(defineProps<{
    */
   variant?: 'root' | 'reply' | 'edit'
   placeholder?: string
-  placeholderI18n?: string
   editingText?: string
-  editingTextI18n?: string
   cancelEditText?: string
-  cancelEditTextI18n?: string
   cancelText?: string
-  cancelTextI18n?: string
   /** The currently logged in user to display their avatar */
   currentUser?: CommentAuthor | null
   /** Controls visibility of the file attachment button */
@@ -51,40 +47,24 @@ const emit = defineEmits<{
 
 // --- Computed Texts (i18n support) ---
 const displayPlaceholder = computed(() => {
-  if (props.placeholderI18n) {
-    const res = $t(props.placeholderI18n)
-    if (res !== props.placeholderI18n) return res
-  }
   if (props.placeholder) return props.placeholder
   const globalRes = $t('vlite.comment.placeholder')
   return globalRes !== 'vlite.comment.placeholder' ? globalRes : 'Leave a comment...'
 })
 
 const displayEditingText = computed(() => {
-  if (props.editingTextI18n) {
-    const res = $t(props.editingTextI18n)
-    if (res !== props.editingTextI18n) return res
-  }
   if (props.editingText) return props.editingText
   const globalRes = $t('vlite.comment.editing')
   return globalRes !== 'vlite.comment.editing' ? globalRes : 'Editing Comment'
 })
 
 const displayCancelEditText = computed(() => {
-  if (props.cancelEditTextI18n) {
-    const res = $t(props.cancelEditTextI18n)
-    if (res !== props.cancelEditTextI18n) return res
-  }
   if (props.cancelEditText) return props.cancelEditText
   const globalRes = $t('vlite.comment.cancelEdit')
   return globalRes !== 'vlite.comment.cancelEdit' ? globalRes : 'Press Esc to cancel'
 })
 
 const displayCancelText = computed(() => {
-  if (props.cancelTextI18n) {
-    const res = $t(props.cancelTextI18n)
-    if (res !== props.cancelTextI18n) return res
-  }
   if (props.cancelText) return props.cancelText
   const globalRes = $t('vlite.comment.cancel')
   return globalRes !== 'vlite.comment.cancel' ? globalRes : 'Cancel'
