@@ -19,6 +19,7 @@ interface Props {
   size?: InputSize
   rounded?: InputRounded
   disabled?: boolean
+  readonly?: boolean
   draggable?: boolean
   minRows?: number
   maxRows?: number
@@ -42,6 +43,7 @@ const props = withDefaults(defineProps<Props>(), {
   size: 'md',
   rounded: 'md',
   disabled: false,
+  readonly: false,
   draggable: false,
   minRows: 0,
   addButtonText: 'Add Row',
@@ -108,7 +110,7 @@ const createEmptyRow = (): Record<string, any> & { _id: string } => {
 }
 
 const addRow = () => {
-  if (props.disabled) return
+  if (props.disabled || props.readonly) return
   if (props.maxRows && rows.value.length >= props.maxRows) return
   const newRows = [...rows.value, createEmptyRow()]
   rows.value = newRows
@@ -116,7 +118,7 @@ const addRow = () => {
 }
 
 const removeRow = (index: number) => {
-  if (props.disabled) return
+  if (props.disabled || props.readonly) return
   if (rows.value.length <= props.minRows) return
   const newRows = [...rows.value]
   newRows.splice(index, 1)
@@ -183,13 +185,13 @@ const getFieldValue = (rowIndex: number, fieldName: string): any => {
 }
 
 const canAddRow = computed(() => {
-  if (props.disabled) return false
+  if (props.disabled || props.readonly) return false
   if (props.maxRows && rows.value.length >= props.maxRows) return false
   return true
 })
 
 const canRemoveRow = computed(() => {
-  if (props.disabled) return false
+  if (props.disabled || props.readonly) return false
   return rows.value.length > props.minRows
 })
 
@@ -222,6 +224,7 @@ const isFieldDisabled = (rowIndex: number, field: IForm): boolean => {
 }
 
 const isFieldReadonly = (rowIndex: number, field: IForm): boolean => {
+  if (props.readonly) return true
   return evaluateConditional(field.readonly, getRowContext(rowIndex))
 }
 
@@ -247,6 +250,7 @@ const getRowErrorsHash = (rowIndex: number) => {
         {{ displayLabel }}
       </Label>
       <Button
+        v-if="!readonly"
         type="button"
         variant="outline"
         size="xs"
@@ -260,7 +264,7 @@ const getRowErrorsHash = (rowIndex: number) => {
       <div
         v-if="columnHeaders.length > 0"
         class="flex border-b border-border bg-muted/50 text-gray-800 text-xs font-semibold uppercase tracking-wider">
-        <div v-if="draggable" class="w-10 flex-none p-3 border-r border-border"></div>
+        <div v-if="draggable && !disabled && !readonly" class="w-10 flex-none p-3 border-r border-border"></div>
         <div v-if="showRowNumbers" class="w-10 flex-none p-3 text-center border-r border-border">
           #
         </div>
@@ -277,7 +281,7 @@ const getRowErrorsHash = (rowIndex: number) => {
       <VueDraggable
         :model-value="rows"
         @update:model-value="handleDragUpdate"
-        :disabled="!draggable || disabled"
+        :disabled="!draggable || disabled || readonly"
         :animation="150"
         handle=".drag-handle"
         ghost-class="opacity-50"
@@ -286,11 +290,11 @@ const getRowErrorsHash = (rowIndex: number) => {
         <div
           v-for="(row, rowIndex) in rows"
           :key="row._id"
-          v-memo="[row, disabled, isUpdate, showRowNumbers, canRemoveRow, draggable, rowIndex, getRowErrorsHash(rowIndex)]"
+          v-memo="[row, disabled, readonly, isUpdate, showRowNumbers, canRemoveRow, draggable, rowIndex, getRowErrorsHash(rowIndex)]"
           class="flex group bg-white transition-colors">
           
           <div
-            v-if="draggable"
+            v-if="draggable && !disabled && !readonly"
             class="w-10 flex-none flex items-center justify-center border-r border-border bg-muted/5 drag-handle transition-colors"
             :class="disabled ? 'cursor-not-allowed opacity-50' : 'cursor-grab active:cursor-grabbing hover:bg-muted/10 text-muted-foreground hover:text-foreground'">
             <Icon icon="lucide:grip-vertical" class="w-4 h-4" />
@@ -339,7 +343,7 @@ const getRowErrorsHash = (rowIndex: number) => {
               variant="ghost"
               size="xs"
               icon="lucide:trash-2"
-              :disabled="disabled"
+              :disabled="disabled || readonly"
               @click="removeRow(rowIndex)" />
           </div>
         </div>
