@@ -83,6 +83,7 @@ const comments = ref<CommentNode[]>([
 // --- Internal State ---
 const rootInput = ref('')
 const inlineReplyInput = ref('')
+const editInput = ref('')
 
 // --- Handlers ---
 const submitRootComment = () => {
@@ -135,9 +136,29 @@ const handleDelete = (id: string | number) => {
   deleteCommentDeep(comments.value, id)
 }
 
+const editCommentDeep = (nodes: CommentNode[], targetId: string | number, newText: string) => {
+  for (let i = 0; i < nodes.length; i++) {
+    if (nodes[i].id === targetId) {
+      nodes[i].text = newText
+      nodes[i].isEdited = true
+      return true
+    }
+    if (nodes[i].replies && nodes[i].replies.length > 0) {
+      if (editCommentDeep(nodes[i].replies, targetId, newText)) return true
+    }
+  }
+  return false
+}
+
 const handleEdit = (payload: CommentActionPayload) => {
-  console.log('Edit triggered:', payload)
-  // Bring up an edit modal or swap to edit mode in custom implementation
+  editInput.value = payload.comment.text
+}
+
+const submitInlineEdit = (comment: CommentNode, closeFn: () => void) => {
+  if (!editInput.value.trim()) return
+  editCommentDeep(comments.value, comment.id, editInput.value.trim())
+  editInput.value = ''
+  closeFn()
 }
 </script>
 
@@ -191,6 +212,41 @@ const handleEdit = (payload: CommentActionPayload) => {
                 <div class="flex justify-end gap-2 mt-1">
                   <Button variant="ghost" size="sm" @click="close">Cancel</Button>
                   <Button size="sm" @click="submitInlineReply(comment, close)">Reply</Button>
+                </div>
+              </div>
+            </div>
+          </template>
+
+          <!-- Inline Edit Slot: Displayed as an inline editor when user clicks the pencil icon! -->
+          <template #inline-edit="{ comment, close }">
+            <div class="flex flex-col w-full gap-2 mt-1">
+              <div class="flex items-center justify-between px-3 py-1.5 bg-muted/40 rounded-lg text-xs text-muted-foreground border border-border animate-in fade-in slide-in-from-bottom-2">
+                <div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                  </svg>
+                  <span>Editing Comment</span>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  <span class="text-[10px] hidden sm:inline-block opacity-60 mr-1">Press Esc to cancel</span>
+                  <button @click="close" class="hover:text-foreground p-0.5 rounded-full hover:bg-background transition-colors" aria-label="Cancel editing">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="flex gap-3 items-start w-full border border-border rounded-lg bg-background p-3 focus-within:border-primary transition-all shadow-sm">
+                <textarea 
+                  v-model="editInput"
+                  placeholder="Edit your comment..." 
+                  :rows="2"
+                  class="w-full bg-transparent text-sm text-foreground outline-none resize-none placeholder:text-muted-foreground"
+                  @keydown.escape="close"
+                />
+                <div class="flex flex-col gap-2 mt-1">
+                  <Button variant="primary" size="sm" icon="lucide:check" rounded="full" class="h-8 w-8 px-0" @click="submitInlineEdit(comment, close)" />
                 </div>
               </div>
             </div>
