@@ -1,14 +1,15 @@
 # Comment Thread
 
-An interactive, deeply nested discussion interface perfectly suited for Github PRs, Jira tickets, documentation platforms, or complex collaborative SaaS environments.
+An interactive, completely abstracted discussion interface perfectly suited for GitHub PRs, Jira tickets, documentation platforms, or complex collaborative SaaS environments.
 
 ## Architecture
 
-Unlike the traditional `Chat` feature (which handles real-time, flat sequential messages), the `CommentThread` specializes in deep contextual nesting (trees of replies). It natively understands the nested payload and recursively builds its own DOM structures visually linking discussions with vertical line indenting.
+Unlike the traditional `Chat` feature (which handles real-time, flat sequential messages), the `CommentThread` specializes in deep contextual nesting (infinite trees of replies). It natively understands the nested payload and recursively builds its own DOM structures visually linking discussions with vertical line indenting.
 
 It includes out-of-the-box integration with:
-- Nested Replies
-- Inline Attachment Previews
+- Nested Inline Replies
+- Nested Inline Edits
+- Rich File Attachment Previews
 - Double-confirm "Delete" logic (Click to prep, click again to confirm).
 
 ## Usage
@@ -18,11 +19,16 @@ It includes out-of-the-box integration with:
 import { ref } from 'vue'
 import { CommentThread, type CommentNode } from 'vlite3'
 
+const currentUser = { id: 'me_1', name: 'Admin', avatar: 'https://i.pravatar.cc/150' }
+
 const myThreads = ref<CommentNode[]>([
   {
     id: 1,
-    text: "Parent Comment",
+    text: "Parent Comment with a file",
     author: { id: 'u1', name: 'John Doe' },
+    attachments: [
+      { fileName: 'spec.pdf', fileUrl: 'https://...', fileSize: 1024 }
+    ],
     replies: [
       {
         id: 2,
@@ -33,28 +39,52 @@ const myThreads = ref<CommentNode[]>([
     ]
   }
 ])
+
+const handleAdd = (payload) => { /* logic to unshift/push comment based on payload.parentId */ }
+const handleEdit = (updatedComment) => { /* logic to update comment tree deep */ }
+const handleDelete = (id) => { /* logic to remove comment deep */ }
 </script>
 
 <template>
   <CommentThread 
     :comments="myThreads" 
-    @reply="handleReply" 
-    @delete="handleDelete" 
+    :current-user="currentUser"
+    @add="handleAdd"
     @edit="handleEdit" 
+    @delete="handleDelete" 
   />
 </template>
 ```
 
 ## Props (`CommentThread.vue`)
 
-| Prop         | Type               | Default | Description                                              |
-|:-------------|:-------------------|:--------|:---------------------------------------------------------|
-| `comments`   | `CommentNode[]`    | `[]`    | A recursive tree payload mapping the threaded discussion. |
-| `threaded`   | `boolean`          | `true`  | Visually draws the vertical joining line between deep replies. |
-| `allowDelete`| `boolean`          | `true`  | Show the Trash action icon.                             |
-| `allowEdit`  | `boolean`          | `true`  | Show the Pencil action icon.                            |
-| `allowReply` | `boolean`          | `true`  | Show the Reply action icon.                             |
-| `confirmDelete` | `boolean`       | `true`  | Requires the user to double click the trash can to prevent accidental drops! |
+| Prop | Type | Default | Description |
+|:-----|:-----|:--------|:------------|
+| `comments` | `CommentNode[]` | `[]` | A recursive tree payload mapping the threaded discussion. |
+| `currentUser` | `CommentAuthor \| null` | `null` | Crucial context! Determines permission views, edit/delete abilities, and your own Avatar display picture. |
+| `inputPosition` | `'top' \| 'bottom' \| 'hidden'` | `'top'` | Where to automatically attach the `<CommentEditor>`. |
+| `threaded` | `boolean` | `true` | Visually draws the vertical joining line between deep replies. |
+| `allowDelete` | `boolean` | `true` | Show the Trash action icon. |
+| `allowEdit` | `boolean` | `true` | Show the Pencil action icon. |
+| `allowReply` | `boolean` | `true` | Show the Reply action icon. |
+| `allowFileUpload` | `boolean` | `true` | Show the Attachment picker context. |
+| `confirmDelete` | `boolean` | `true` | Requires the user to double click the trash can to prevent accidental drops! |
+| `folderId` | `string` | `undefined` | Target upload folder for server connections. |
+| `maxFileSize` | `number` | `undefined` | Upload size limit in bytes. |
+
+### Translation Props (i18n)
+
+Every bit of text relies on robust translation `$t` fallbacks, making it effortlessly customizable. Pass `*I18n` keys to route them through `$t`, or directly pass the raw static string format.
+
+- `emptyText` / `emptyTextI18n`
+- `placeholder` / `placeholderI18n`
+- `replyPlaceholder` / `replyPlaceholderI18n`
+- `editPlaceholder` / `editPlaceholderI18n`
+- `replyText` / `replyTextI18n`
+- `editedText` / `editedTextI18n`
+- `editingText` / `editingTextI18n`
+- `cancelText` / `cancelTextI18n`
+- `cancelEditText` / `cancelEditTextI18n`
 
 ## Payload (`CommentNode` interface)
 
@@ -72,52 +102,41 @@ export interface CommentNode {
   }
   timestamp?: string | number | Date
   isEdited?: boolean
-  attachments?: AttachmentItem[]
+  attachments?: any[]
   replies?: CommentNode[]
 }
 ```
 
-## Slots
-
-The `CommentThread` handles layout heavily but relies entirely on you to supply the actual `<textarea>` elements you want to use via its powerful slots!
-
-### `#root-input`
-Displays content permanently right at the top of the comment thread. Use this for the primary "Start a new conversation" textarea.
-
-### `#inline-reply`
-A scoped slot that automatically injects exactly beneath whichever child comment a user currently hits "Reply" on. It receives two powerful arguments:
-- `comment` The literal node the user is replying to.
-- `close` A function you must call after the user clicks "Submit" to tell the library to re-hide the slot.
-
-```vue
-<CommentThread :comments="data">
-  <!-- Inline replying logic -->
-  <template #inline-reply="{ comment, close }">
-    <textarea v-model="draft" />
-    <button @click="submit(comment.id); close()">Submit</button>
-  </template>
-</CommentThread>
-```
-
-### `#inline-edit`
-A scoped slot that automatically injects exactly where a user clicks "Edit", temporarily hiding the original comment text body. It receives two arguments:
-- `comment` The literal node the user is editing.
-- `close` A function you must call after the user clicks "Save" to tell the library to re-hide the slot.
-
-```vue
-<CommentThread :comments="data">
-  <!-- Inline editing logic -->
-  <template #inline-edit="{ comment, close }">
-    <textarea v-model="editDraft" />
-    <button @click="save(comment.id); close()">Save</button>
-  </template>
-</CommentThread>
-```
-
 ## Events
 
-| Event    | Payload | Description |
-|:---------|:--------|:------------|
-| `delete` | `id`    | Fired when the trash button is double-clicked. |
-| `edit`   | `{ commentId, comment }` | Fired when pencil is clicked. |
-| `reply`  | `{ commentId, comment }` | Fired when reply is clicked. You don't necessarily have to act on this if you're using the `#inline-reply` slots. |
+The Comment component does *not* mutate your source array; it tells your application what users intended to do natively.
+
+| Event | Payload | Description |
+|:------|:--------|:------------|
+| `add` | `{ text, attachments, parentId? }` | Fired when a submittal occurs. If `parentId` is provided, user clicked inline-reply; if omitted, they clicked the root thread box. |
+| `edit` | `CommentNode` | Returns the entirety of the updated object with the new `.text` applied. |
+| `delete` | `string \| number` | Fired when the trash button is confirmed. |
+
+## External Editor Abstraction
+
+Did you want to render the text Editor on a sticky footer out-of-context, but render the thread comments elsewhere?
+
+You don't need a custom interface for it. Simply load `CommentThread` with `inputPosition="hidden"`, then anywhere else simply instantiate the native `CommentEditor` component:
+
+```vue
+<script setup>
+import { CommentThread, CommentEditor } from 'vlite3'
+</script>
+
+<template>
+  <!-- Renders Comments ONLY (handles nested replies internally still!) -->
+  <CommentThread input-position="hidden" :comments="data" />
+  
+  <!-- Load the standalone CommentEditor elsewhere -->
+  <CommentEditor 
+    variant="root" 
+    :current-user="currentUser" 
+    @submit="(text, attts) => handleAdd({ text, attachments: attts })" 
+  />
+</template>
+```
