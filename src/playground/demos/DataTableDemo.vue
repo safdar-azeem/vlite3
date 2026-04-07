@@ -15,10 +15,12 @@ import { PageInfo } from '@/components/Pagination'
 const isTableSortable = ref(true)
 const isBordered = ref(true)
 const isStriped = ref(false)
-const isCompact = ref(false)
 const isHoverable = ref(true)
 const isSelectable = ref(true)
 const isRaised = ref(false)
+
+const size = ref<'xs' | 'sm' | 'md' | 'lg'>('md')
+const headerVariant = ref<'default' | 'minimal'>('default')
 
 const { result, loading, refetch } = useGetUsers()
 
@@ -137,16 +139,37 @@ const handleDelete = (rows: User[]) => {
         </p>
       </div>
 
-      <!-- Config Checkboxes -->
-      <div
-        class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-muted/30 p-6 rounded-2xl border border-border/40">
-        <CheckBox v-model="isTableSortable" label="Sortable Columns" />
-        <CheckBox v-model="isBordered" label="Show Borders" />
-        <CheckBox v-model="isStriped" label="Zebra Stripes" />
-        <CheckBox v-model="isCompact" label="Compact Padding" />
-        <CheckBox v-model="isHoverable" label="Row Hover Effect" />
-        <CheckBox v-model="isSelectable" label="Selectable Rows" />
-        <CheckBox v-model="isRaised" label="Raised Variant" />
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Config Checkboxes -->
+        <div
+          class="grid grid-cols-2 lg:grid-cols-3 gap-4 bg-muted/30 p-6 rounded-2xl border border-border/40 content-start">
+          <CheckBox v-model="isTableSortable" label="Sortable" />
+          <CheckBox v-model="isBordered" label="Borders" />
+          <CheckBox v-model="isStriped" label="Striped" />
+          <CheckBox v-model="isHoverable" label="Hoverable" />
+          <CheckBox v-model="isSelectable" label="Selectable" />
+          <CheckBox v-model="isRaised" label="Raised" />
+        </div>
+
+        <!-- Sizing & Variants -->
+        <div class="flex flex-col gap-5 bg-muted/30 p-6 rounded-2xl border border-border/40">
+          <div>
+            <span class="text-sm font-medium mb-3 block text-foreground">Table Size</span>
+            <div class="flex items-center gap-2">
+              <Button size="sm" :variant="size === 'xs' ? 'primary' : 'outline'" @click="size = 'xs'">XS</Button>
+              <Button size="sm" :variant="size === 'sm' ? 'primary' : 'outline'" @click="size = 'sm'">SM</Button>
+              <Button size="sm" :variant="size === 'md' ? 'primary' : 'outline'" @click="size = 'md'">MD</Button>
+              <Button size="sm" :variant="size === 'lg' ? 'primary' : 'outline'" @click="size = 'lg'">LG</Button>
+            </div>
+          </div>
+          <div>
+            <span class="text-sm font-medium mb-3 block text-foreground">Header Variant</span>
+            <div class="flex items-center gap-2">
+              <Button size="sm" :variant="headerVariant === 'default' ? 'primary' : 'outline'" @click="headerVariant = 'default'">Default</Button>
+              <Button size="sm" :variant="headerVariant === 'minimal' ? 'primary' : 'outline'" @click="headerVariant = 'minimal'">Minimal</Button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -165,7 +188,8 @@ const handleDelete = (rows: User[]) => {
         :sortable="isTableSortable"
         :bordered="isBordered"
         :striped="isStriped"
-        :compact="isCompact"
+        :size="size"
+        :header-variant="headerVariant"
         :hoverable="isHoverable"
         :hide-selectable="!isSelectable"
         :variant="isRaised ? 'raised' : 'default'"
