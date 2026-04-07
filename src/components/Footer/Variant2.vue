@@ -43,24 +43,18 @@ function handleLinkClick(url: string, event: MouseEvent) {
 </script>
 
 <template>
-  <footer
-    class="v-footer v-footer-v2 w-full bg-background text-foreground"
-    :class="containerClass">
+  <footer class="v-footer v-footer-v2 w-full bg-background text-foreground" :class="containerClass">
     <div class="mx-auto w-full max-w-7xl px-6 lg:px-8 py-12 lg:py-16">
       <!-- ── Centered Brand Section ── -->
       <div v-if="hasBrand" class="text-center mb-10">
         <!-- Logo + Name -->
-        <div
-          v-if="d.brandLogo || d.brandName"
-          class="flex items-center justify-center gap-3 mb-3">
+        <div v-if="d.brandLogo || d.brandName" class="flex items-center justify-center gap-3 mb-3">
           <img
             v-if="d.brandLogo"
             :src="d.brandLogo"
             :alt="d.brandName || 'Brand logo'"
             class="h-10 w-10 object-contain rounded" />
-          <span
-            v-if="d.brandName"
-            class="text-xl font-bold text-foreground tracking-tight">
+          <span v-if="d.brandName" class="text-xl font-bold text-foreground tracking-tight">
             {{ d.brandName }}
           </span>
           <span
@@ -80,9 +74,7 @@ function handleLinkClick(url: string, event: MouseEvent) {
 
       <!-- ── Newsletter (centered) ── -->
       <div v-if="hasNewsletter" class="max-w-md mx-auto text-center mb-10">
-        <p
-          v-if="d.newsletter?.title"
-          class="text-sm font-semibold text-foreground mb-1">
+        <p v-if="d.newsletter?.title" class="text-sm font-semibold text-foreground mb-1">
           {{ d.newsletter.title }}
         </p>
         <p
@@ -97,14 +89,8 @@ function handleLinkClick(url: string, event: MouseEvent) {
             :placeholder="d.newsletter?.placeholder || 'Enter your email'"
             class="flex-1 min-w-0"
             input-class="bg-muted border-border focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all"
-            rounded="lg"
-          />
-          <Button
-            type="submit"
-            variant="primary"
-            rounded="lg"
-            class="whitespace-nowrap"
-          >
+            rounded="lg" />
+          <Button type="submit" variant="primary" rounded="lg" class="whitespace-nowrap">
             {{ d.newsletter?.buttonText || l.subscribe || 'Subscribe' }}
           </Button>
         </form>
@@ -113,9 +99,11 @@ function handleLinkClick(url: string, event: MouseEvent) {
       <!-- ── Link Groups (horizontal, centered cluster) ── -->
       <div
         v-if="hasLinkGroups"
-        class="flex flex-wrap justify-center gap-10 sm:gap-16 md:gap-20 lg:gap-24 mb-12 w-full mx-auto"
-      >
-        <div v-for="(group, gIdx) in d.linkGroups" :key="gIdx" class="flex flex-col items-center sm:items-start text-center sm:text-left min-w-[140px]">
+        class="flex flex-wrap justify-center gap-10 sm:gap-16 md:gap-20 lg:gap-24 mb-12 w-full mx-auto">
+        <div
+          v-for="(group, gIdx) in d.linkGroups"
+          :key="gIdx"
+          class="flex flex-col items-center sm:items-start text-center sm:text-left min-w-[100px]">
           <h3 class="text-sm font-semibold text-foreground mb-4 tracking-wide">
             {{ group.title }}
           </h3>
@@ -125,8 +113,7 @@ function handleLinkClick(url: string, event: MouseEvent) {
                 :href="link.url"
                 :target="link.external ? '_blank' : undefined"
                 :rel="link.external ? 'noopener noreferrer' : undefined"
-                class="inline-flex items-center gap-2 text-sm text-muted-foreground
-                       hover:text-foreground transition-colors duration-200"
+                class="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
                 @click="handleLinkClick(link.url, $event)">
                 <Icon v-if="link.icon" :icon="link.icon" class="w-3.5 h-3.5 shrink-0" />
                 <span>{{ link.label }}</span>
@@ -137,7 +124,7 @@ function handleLinkClick(url: string, event: MouseEvent) {
       </div>
 
       <!-- ── Social Links (centered) ── -->
-      <div v-if="hasSocialLinks" class="flex items-center justify-center gap-1 mb-8">
+      <div v-if="hasSocialLinks" class="flex items-center justify-center gap-1 mb-0">
         <a
           v-for="(social, idx) in d.socialLinks"
           :key="idx"
@@ -145,9 +132,7 @@ function handleLinkClick(url: string, event: MouseEvent) {
           :aria-label="social.label || 'Social link'"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center justify-center w-9 h-9 rounded-lg
-                 text-muted-foreground hover:text-foreground hover:bg-muted
-                 transition-all duration-200"
+          class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
           @click="handleLinkClick(social.url, $event)">
           <Icon :icon="social.icon" class="w-[18px] h-[18px]" />
         </a>
@@ -157,15 +142,14 @@ function handleLinkClick(url: string, event: MouseEvent) {
     <!-- ── Bottom Bar ── -->
     <div v-if="hasBottomBar" class="v-footer-bottom border-t border-border/50">
       <div
-        class="mx-auto w-full max-w-7xl px-6 lg:px-8 py-6
-               flex flex-col sm:flex-row flex-wrap items-center justify-center gap-x-6 gap-y-4 text-center">
+        class="mx-auto w-full max-w-7xl px-6 lg:px-8 py-6 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-x-6 gap-y-4 text-center">
         <p v-if="d.copyright" class="text-sm text-muted-foreground">
           {{ d.copyright }}
         </p>
-        <span
-          v-if="d.copyright && hasLegalLinks"
-          class="hidden sm:inline text-muted/30">|</span>
-        <div v-if="hasLegalLinks" class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+        <span v-if="d.copyright && hasLegalLinks" class="hidden sm:inline text-muted/30">|</span>
+        <div
+          v-if="hasLegalLinks"
+          class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
           <a
             v-for="(link, idx) in d.legalLinks"
             :key="idx"
