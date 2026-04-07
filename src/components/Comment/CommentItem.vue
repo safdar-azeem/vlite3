@@ -43,6 +43,7 @@ export interface CommentItemProps {
   editingText?: string
   cancelText?: string
   cancelEditText?: string
+  loadMoreRepliesText?: string
 }
 
 const props = withDefaults(defineProps<CommentItemProps>(), {
@@ -67,6 +68,7 @@ const emit = defineEmits<{
   (e: 'submit-edit', text: string, attachments: any[] | undefined, comment: CommentNode): void
   (e: 'cancel-reply'): void
   (e: 'cancel-edit'): void
+  (e: 'load-more-replies', commentId: string | number): void
 }>()
 
 // --- Permission guards ---
@@ -111,6 +113,15 @@ const txtReply = computed(() => {
   if (props.replyText) return props.replyText
   const res = $t('vlite.comment.replyAction')
   return res !== 'vlite.comment.replyAction' ? res : 'Reply'
+})
+
+const displayLoadMoreReplies = computed(() => {
+  if (props.loadMoreRepliesText) return props.loadMoreRepliesText
+  if (props.comment.replyCount && props.comment.replyCount > 0) {
+    return `View ${props.comment.replyCount} more replies`
+  }
+  const res = $t('vlite.comment.loadMoreReplies')
+  return res !== 'vlite.comment.loadMoreReplies' ? res : 'View more replies'
 })
 
 // --- Double Confirm Delete Logic (same as ChatBubble) ---
@@ -281,9 +292,15 @@ const cancelPendingDelete = () => {
       </div>
 
       <!-- Recursive Replies -->
-      <div v-if="comment.replies?.length" class="mt-5 flex flex-col w-full">
-        <CommentItem
-          v-for="reply in comment.replies"
+      <div v-if="comment.replies?.length || comment.hasMoreReplies" class="mt-5 flex flex-col w-full relative">
+        <TransitionGroup 
+          enter-active-class="transition-all duration-300 ease-out"
+          enter-from-class="opacity-0 translate-y-2 translate-x-2"
+          enter-to-class="opacity-100 translate-y-0 translate-x-0"
+          leave-active-class="transition-none"
+        >
+          <CommentItem
+            v-for="reply in (comment.replies || [])"
           :key="reply.id"
           :comment="reply"
           :current-user="currentUser"
@@ -313,7 +330,28 @@ const cancelPendingDelete = () => {
           @submit-edit="(text, atts, c) => emit('submit-edit', text, atts, c)"
           @cancel-reply="emit('cancel-reply')"
           @cancel-edit="emit('cancel-edit')"
+          @load-more-replies="(id) => emit('load-more-replies', id)"
         />
+        </TransitionGroup>
+
+        <!-- Nested Load More (Facebook/Instagram Style) -->
+        <div v-if="comment.hasMoreReplies" class="mt-3 mb-2 w-full flex items-center">
+          <button 
+            class="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground font-medium transition-colors p-1 rounded-md hover:bg-muted/30 group"
+            @click="emit('load-more-replies', comment.id)"
+            :disabled="comment.loadingMoreReplies"
+            aria-label="Load more replies"
+          >
+            <!-- Signature Horizontal Line for Instagram styling -->
+            <div class="w-8 h-px bg-border group-hover:bg-muted-foreground/40 transition-colors"></div>
+            
+            <span v-if="!comment.loadingMoreReplies">{{ displayLoadMoreReplies }}</span>
+            <span v-else class="flex items-center gap-2">
+              <svg class="animate-spin h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+              Loading...
+            </span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
