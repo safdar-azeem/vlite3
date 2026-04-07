@@ -2,12 +2,7 @@
 import { ref } from 'vue'
 import DemoSection from '../DemoSection.vue'
 import sourceCode from './CommentDemo.vue?raw'
-import {
-  CommentThread,
-  CommentEditor,
-  type CommentNode,
-  type CommentSubmitPayload,
-} from '@/components/Comment'
+import { CommentThread, type CommentNode, type CommentSubmitPayload } from '@/components/Comment'
 import { CheckBox } from '@/index'
 
 // --- Mock Data ---
