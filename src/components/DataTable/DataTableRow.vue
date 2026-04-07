@@ -15,6 +15,7 @@ interface Props {
   hoverable?: boolean
   striped?: boolean
   compact?: boolean
+  size?: 'xs' | 'sm' | 'md' | 'lg'
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -24,6 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
   hoverable: true,
   striped: false,
   compact: false,
+  size: 'md',
 })
 
 const emit = defineEmits<{
@@ -117,6 +119,13 @@ const alignClass = (header: TableHeader): string => {
 
 const rowId = computed(() => getNestedValue(props.row, props.keyField))
 
+const getSizeClass = () => {
+  if (props.size === 'xs' || props.compact) return 'py-1.5! -text-fs-1.5! pr-3 max-sm:pr-10!'
+  if (props.size === 'sm') return 'py-2! -text-fs-1.5! pr-4 max-sm:pr-10!'
+  if (props.size === 'lg') return 'py-4! text-base pr-6 max-sm:pr-12!'
+  return 'py-3! pr-5! max-sm:pr-10! -text-fs-1.5!'
+}
+
 const handleRowClick = () => {
   emit('rowClick', { row: props.row, index: props.index })
 }
@@ -146,13 +155,13 @@ const handleSelect = () => {
     <td
       v-for="header in headers"
       :key="header.field"
-      class="align-middle overflow-hidden max-w-[400px] whitespace-normal break-words"
+      class="align-middle overflow-hidden max-w-[400px] whitespace-normal wrap-break-word"
       :style="{
         ...(header.width && !/(?:^|\s|:)w-/.test(header.width) ? { width: header.width } : {}),
         ...(header.minWidth && !/(?:^|\s|:)min-w-/.test(header.minWidth) ? { minWidth: header.minWidth } : {}),
       }"
       :class="[
-        compact ? 'py-1! -text-fs-1.5! max-sm:pr-10!' : 'py-3! pr-5! max-sm:pr-10! -text-fs-1.5!',
+        getSizeClass(),
         alignClass(header),
         header.hideOnMobile ? 'hidden md:table-cell' : '',
         getCellClass(header, getNestedValue(row, header.field), row),
