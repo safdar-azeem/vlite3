@@ -5,12 +5,13 @@ import Avatar from '../Avatar.vue'
 import Button from '../Button.vue'
 import Badge from '../Badge.vue'
 import { AttachmentsList } from '../AttachmentsList'
-import type { CommentNode, CommentActionPayload } from './types'
+import type { CommentNode, CommentActionPayload, CommentAuthor } from './types'
+import CommentEditor from './CommentEditor.vue'
 
 export interface CommentItemProps {
   comment: CommentNode
   /** The ID of the currently logged-in user. Used to decide edit/delete visibility. */
-  currentUserId?: string | number | null
+  currentUser?: CommentAuthor | null
   /** Allow threaded visual line between nested replies */
   threaded?: boolean
   /** Globally allow delete. Only shows for author unless allowDeleteAll=true */
@@ -29,10 +30,16 @@ export interface CommentItemProps {
   activeReplyId?: string | number | null
   /** Controlled by parent CommentThread to reveal the edit slot */
   activeEditId?: string | number | null
+  /** Folder ID for uploads */
+  folderId?: string
+  /** Max file size */
+  maxFileSize?: number
+  /** Allow file uploads */
+  allowFileUpload?: boolean
 }
 
 const props = withDefaults(defineProps<CommentItemProps>(), {
-  currentUserId: null,
+  currentUser: null,
   threaded: true,
   allowDelete: true,
   allowEdit: true,
@@ -42,24 +49,29 @@ const props = withDefaults(defineProps<CommentItemProps>(), {
   confirmDelete: true,
   activeReplyId: null,
   activeEditId: null,
+  allowFileUpload: true,
 })
 
 const emit = defineEmits<{
   (e: 'reply', payload: CommentActionPayload): void
   (e: 'edit', payload: CommentActionPayload): void
   (e: 'delete', id: string | number): void
+  (e: 'submit-reply', text: string, attachments: any[] | undefined, parentId: string | number): void
+  (e: 'submit-edit', text: string, attachments: any[] | undefined, comment: CommentNode): void
+  (e: 'cancel-reply'): void
+  (e: 'cancel-edit'): void
 }>()
 
 // --- Permission guards ---
 // Edge cases handled:
-//   1. No currentUserId passed → no auth check, show all actions (backward compat)
-//   2. currentUserId matches author → show edit + delete
-//   3. currentUserId does NOT match → hide edit + delete (unless admin override)
+//   1. No currentUser passed → no auth check, show all actions (backward compat)
+//   2. currentUser matches author → show edit + delete
+//   3. currentUser does NOT match → hide edit + delete (unless admin override)
 //   4. allowDeleteAll/allowEditAll → admin bypass, show regardless
 //   5. allowEdit/allowDelete globally false → never show regardless of author
 const isAuthor = computed(() => {
-  if (props.currentUserId === null || props.currentUserId === undefined) return true // no auth = show all
-  return String(props.currentUserId) === String(props.comment.author.id)
+  if (props.currentUser === null || props.currentUser === undefined || props.currentUser.id === undefined) return true // no auth = show all
+  return String(props.currentUser.id) === String(props.comment.author.id)
 })
 
 const canEdit = computed(() => props.allowEdit && (isAuthor.value || props.allowEditAll))
@@ -214,9 +226,19 @@ const cancelPendingDelete = () => {
         {{ comment.text }}
       </div>
 
-      <!-- Inline Edit Slot -->
+      <!-- Inline Edit Area -->
       <div v-if="activeEditId === comment.id" class="mt-2 pb-2 mr-4">
-        <slot name="inline-edit" :comment="comment" />
+        <CommentEditor
+          variant="edit"
+          :initial-text="comment.text"
+          :current-user="currentUser"
+          :folder-id="folderId"
+          :max-file-size="maxFileSize"
+          :allow-file-upload="allowFileUpload"
+          autofocus
+          @submit="(text, atts) => emit('submit-edit', text, atts, comment)"
+          @cancel="emit('cancel-edit')"
+        />
       </div>
 
       <!-- Attachments -->
@@ -228,9 +250,20 @@ const cancelPendingDelete = () => {
           :clickToPreview="true" />
       </div>
 
-      <!-- Inline Reply Slot -->
+      <!-- Inline Reply Area -->
       <div v-if="activeReplyId === comment.id" class="mt-4 pb-2">
-        <slot name="inline-reply" :comment="comment" />
+        <CommentEditor
+          variant="reply"
+          placeholder="Replying to discussion..."
+          show-cancel
+          :current-user="currentUser"
+          :folder-id="folderId"
+          :max-file-size="maxFileSize"
+          :allow-file-upload="allowFileUpload"
+          autofocus
+          @submit="(text, atts) => emit('submit-reply', text, atts, comment.id)"
+          @cancel="emit('cancel-reply')"
+        />
       </div>
 
       <!-- Recursive Replies -->
@@ -239,26 +272,27 @@ const cancelPendingDelete = () => {
           v-for="reply in comment.replies"
           :key="reply.id"
           :comment="reply"
-          :currentUserId="currentUserId"
+          :current-user="currentUser"
           :threaded="threaded"
-          :allowDelete="allowDelete"
-          :allowEdit="allowEdit"
-          :allowReply="allowReply"
-          :allowDeleteAll="allowDeleteAll"
-          :allowEditAll="allowEditAll"
-          :confirmDelete="confirmDelete"
-          :activeReplyId="activeReplyId"
-          :activeEditId="activeEditId"
+          :allow-delete="allowDelete"
+          :allow-edit="allowEdit"
+          :allow-reply="allowReply"
+          :allow-delete-all="allowDeleteAll"
+          :allow-edit-all="allowEditAll"
+          :confirm-delete="confirmDelete"
+          :active-reply-id="activeReplyId"
+          :active-edit-id="activeEditId"
+          :folder-id="folderId"
+          :max-file-size="maxFileSize"
+          :allow-file-upload="allowFileUpload"
           @reply="(p) => emit('reply', p)"
           @edit="(p) => emit('edit', p)"
-          @delete="(id) => emit('delete', id)">
-          <template #inline-reply="slotProps">
-            <slot name="inline-reply" v-bind="slotProps" />
-          </template>
-          <template #inline-edit="slotProps">
-            <slot name="inline-edit" v-bind="slotProps" />
-          </template>
-        </CommentItem>
+          @delete="(id) => emit('delete', id)"
+          @submit-reply="(text, atts, pId) => emit('submit-reply', text, atts, pId)"
+          @submit-edit="(text, atts, c) => emit('submit-edit', text, atts, c)"
+          @cancel-reply="emit('cancel-reply')"
+          @cancel-edit="emit('cancel-edit')"
+        />
       </div>
     </div>
   </div>
