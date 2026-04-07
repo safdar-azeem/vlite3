@@ -66,6 +66,8 @@ const props = withDefaults(defineProps<DataTableProps>(), {
   compact: false,
   sortable: false,
   variant: 'default',
+  headerVariant: 'default',
+  size: 'md',
 })
 
 const emit = defineEmits<{
@@ -340,7 +342,8 @@ const txtCancelBtn = computed(() => {
         <table :class="tableClass" class="data-table">
           <thead
             :class="[
-              '[&_tr]:border-b [&_tr]:border-border bg-muted',
+              '[&_tr]:border-b [&_tr]:border-border',
+              headerVariant === 'minimal' ? 'bg-transparent' : 'bg-muted',
               variant === 'raised'
                 ? '[&_th:first-child]:rounded-tl-lg [&_th:last-child]:rounded-tr-lg'
                 : '',
@@ -365,6 +368,7 @@ const txtCancelBtn = computed(() => {
                 :header="header"
                 :sort-config="sortConfig"
                 :compact="compact"
+                :size="size"
                 :table-sortable="sortable"
                 @sort="handleSort"
                 class="last:pr-5!"
@@ -409,6 +413,7 @@ const txtCancelBtn = computed(() => {
                   selectedIds.has(getRowId(row, effectiveKeyField)),
                   effectiveSelectable,
                   compact,
+                  size,
                   striped,
                   hoverable,
                 ]"
@@ -421,6 +426,7 @@ const txtCancelBtn = computed(() => {
                 :hoverable="hoverable"
                 :striped="striped"
                 :compact="compact"
+                :size="size"
                 @select="toggleRowSelection"
                 @row-click="handleRowClick"
                 class="[&_td:last-child]:pr-3.5!">
