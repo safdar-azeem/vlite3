@@ -18,6 +18,12 @@ export interface CommentNode {
   replies?: CommentNode[]
   /** Any custom metadata such as 'status' or logic blocks */
   meta?: Record<string, any>
+  /** Pagination: flag indicating there are more replies to load natively */
+  hasMoreReplies?: boolean
+  /** Pagination: flag used by parents to set a loading spinner on the expando */
+  loadingMoreReplies?: boolean
+  /** Pagination: absolute count of replies if needed for UI text e.g. "View 4 more replies" */
+  replyCount?: number
 }
 
 export interface CommentActionPayload {
