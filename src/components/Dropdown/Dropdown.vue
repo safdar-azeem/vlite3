@@ -60,6 +60,7 @@ const props = withDefaults(
     direction?: 'ltr' | 'rtl'
     isNested?: boolean // Used internally to identify child vs root dropdowns
     disabled?: boolean // Prevents opening and selecting options
+    readonly?: boolean // Prevents opening and hides interaction visual cues
   }>(),
   {
     options: () => [],
@@ -86,6 +87,7 @@ const props = withDefaults(
     direction: 'ltr',
     isNested: false,
     disabled: false,
+    readonly: false,
   }
 )
 const emit = defineEmits<{
@@ -166,14 +168,14 @@ watch(
   () => props.isOpen,
   (val) => {
     if (val !== undefined) {
-      if (props.disabled && val) return
+      if ((props.disabled || props.readonly) && val) return
       internalIsOpen.value = val
     }
   }
 )
 
 const handleVisibilityChange = (val: boolean) => {
-  if (props.disabled) {
+  if (props.disabled || props.readonly) {
     internalIsOpen.value = false
     emit('update:isOpen', false)
     return
@@ -309,7 +311,7 @@ watch(
 )
 
 const handleOptionSelect = (option: import('@/types').IDropdownOption) => {
-  if (props.disabled || option.disabled) return // Security check against disabled overrides
+  if (props.disabled || props.readonly || option.disabled) return // Security check against disabled/readonly overrides
 
   const needsConfirmation = props.doubleConfirmation || !!option.confirmation
   if (needsConfirmation) {
@@ -343,7 +345,7 @@ const handleOptionSelect = (option: import('@/types').IDropdownOption) => {
 }
 
 const performSelection = (option: import('@/types').IDropdownOption) => {
-  if (props.disabled || option.disabled) return
+  if (props.disabled || props.readonly || option.disabled) return
 
   const val = option.value ?? option.label
   if (!selectedBuffer.value.has(val)) {
@@ -409,6 +411,7 @@ const cancelSelection = () => {
             :is-open="isOpen"
             :direction="direction"
             :disabled="disabled"
+            :readonly="readonly"
             :triggerProps="triggerProps"
             class="w-full" />
         </slot>
@@ -420,7 +423,7 @@ const cancelSelection = () => {
         </span>
         <DropdownMenu
           v-if="
-            disabled
+            (disabled || readonly)
               ? false
               : normalizedPropsOptions.length ||
                 combinedOptions.length ||
