@@ -4,7 +4,9 @@ import DemoSection from '../DemoSection.vue'
 import sourceCode from './CommentDemo.vue?raw'
 import { CommentThread } from '@/components/Comment'
 import type { CommentNode, CommentActionPayload } from '@/components/Comment'
-import { Button, Textarea, Avatar } from '@/index'
+import { Button, Textarea, Avatar, CheckBox, Icon, FilePicker } from '@/index'
+import type { FilePickerValue } from '@/components/FilePicker/FilePicker.vue'
+import { useFileUpload } from '@/components/Form/composables/useFileUpload'
 
 // --- Mock Data ---
 const currentUser = {
@@ -85,17 +87,50 @@ const rootInput = ref('')
 const inlineReplyInput = ref('')
 const editInput = ref('')
 
+const allowReply = ref(true)
+const allowEdit = ref(true)
+const allowDelete = ref(true)
+
+const rootSelectedFiles = ref<FilePickerValue[]>([])
+const { handleUploadFiles, loading: isUploading } = useFileUpload()
+
+const removeRootFile = (index: number) => {
+  if (isUploading.value) return
+  rootSelectedFiles.value.splice(index, 1)
+}
+
 // --- Handlers ---
-const submitRootComment = () => {
-  if (!rootInput.value.trim()) return
+const submitRootComment = async () => {
+  const text = rootInput.value.trim()
+  const hasFiles = rootSelectedFiles.value.length > 0
+  
+  if (!text && !hasFiles) return
+
+  let newAttachments = []
+  
+  if (hasFiles) {
+    const filesToUpload = rootSelectedFiles.value.map(f => f.file).filter(Boolean) as File[]
+    if (filesToUpload.length > 0) {
+      const urls = await handleUploadFiles(filesToUpload)
+      newAttachments = rootSelectedFiles.value.map((f, i) => ({
+        fileName: f.fileName,
+        fileSize: f.fileSize || 0,
+        fileUrl: urls[i] || ''
+      })).filter(a => a.fileUrl)
+    }
+  }
+
   comments.value.unshift({
     id: generateId(),
-    text: rootInput.value.trim(),
+    text: text,
     author: currentUser,
     timestamp: new Date().getTime(),
+    attachments: newAttachments,
     replies: []
   })
+  
   rootInput.value = ''
+  rootSelectedFiles.value = []
 }
 
 const submitInlineReply = (parentComment: CommentNode, closeFn: () => void) => {
@@ -172,27 +207,53 @@ const submitInlineEdit = (comment: CommentNode, closeFn: () => void) => {
     </div>
 
     <DemoSection title="Standard Usage" :code="sourceCode">
+      <div class="flex gap-4 mb-4 items-center">
+        <CheckBox v-model="allowReply" label="Allow Reply" />
+        <CheckBox v-model="allowEdit" label="Allow Edit" />
+        <CheckBox v-model="allowDelete" label="Allow Delete" />
+      </div>
+
       <div class="w-full max-w-4xl mx-auto rounded-xl border border-border bg-background p-6 lg:p-10">
         
         <CommentThread
           :comments="comments"
           :currentUserId="currentUser.id"
+          :allow-reply="allowReply"
+          :allow-edit="allowEdit"
+          :allow-delete="allowDelete"
           @delete="handleDelete"
           @edit="handleEdit"
         >
-          <!-- Root Form Slot: Displayed cleanly at the top of the thread list! -->
           <template #root-input>
             <div class="flex gap-4 items-start w-full bg-muted/10 p-4 rounded-xl border border-border/60">
               <Avatar :src="currentUser.avatar" size="md" />
               <div class="flex flex-col flex-1 gap-3">
+                
+                <!-- Selected file previews -->
+                <div v-if="rootSelectedFiles.length > 0" class="flex flex-wrap gap-2">
+                  <div v-for="(file, index) in rootSelectedFiles" :key="index" class="relative flex items-center gap-2 bg-background border border-border rounded-md p-1.5 pr-8 max-w-[200px] shadow-sm">
+                    <Icon icon="lucide:file-text" class="w-4 h-4 text-primary shrink-0" />
+                    <span class="text-xs truncate font-medium" :title="file.fileName">{{ file.fileName }}</span>
+                    <button @click="removeRootFile(index)" :disabled="isUploading" class="absolute right-1 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-destructive rounded-full hover:bg-muted/50 transition-colors disabled:opacity-50 xl:cursor-pointer">
+                      <Icon icon="lucide:x" class="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+
                 <Textarea 
                   v-model="rootInput"
                   placeholder="Leave a new comment..." 
-                  :rows="3"
+                  :rows="rootSelectedFiles.length > 0 ? 2 : 3"
                   class="bg-background!"
+                  :disabled="isUploading"
                 />
-                <div class="flex justify-end">
-                  <Button @click="submitRootComment">Comment</Button>
+                <div class="flex justify-between items-center">
+                  <FilePicker v-model="rootSelectedFiles" :multi-select="true" return-format="file">
+                    <template #trigger="{ trigger }">
+                      <Button variant="ghost" size="sm" icon="lucide:paperclip" rounded="full" class="px-0 text-muted-foreground hover:text-foreground h-8 w-8 transition-colors" @click="trigger" :disabled="isUploading" aria-label="Attach files" />
+                    </template>
+                  </FilePicker>
+                  <Button @click="submitRootComment" :loading="isUploading">Comment</Button>
                 </div>
               </div>
             </div>
