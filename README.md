@@ -406,6 +406,7 @@ Follow these rules strictly to ensure visual consistency and predictable styling
 - [x] **ThemeToggle**
 - [x] **Screen**
 - [x] **ChatInterface**
+- [x] **CommentThread**
 
 ### Inputs & Forms
 
@@ -430,6 +431,7 @@ Follow these rules strictly to ensure visual consistency and predictable styling
 - [x] **CustomFields**
 - [x] **GoogleLogin**
 - [x] **PermissionEditor**
+- [x] **RichTextEditor**
 
 ### Data Display
 
@@ -452,6 +454,7 @@ Follow these rules strictly to ensure visual consistency and predictable styling
 - [x] **Date**
 - [x] **Invoice**
 - [x] **Footer**
+- [x] **Charts**
 
 ### Feedback & Overlays
 
@@ -466,6 +469,7 @@ Follow these rules strictly to ensure visual consistency and predictable styling
 - [x] **Spinner**
 - [x] **CommandPalette**
 - [x] **SidePanel**
+- [x] **Splitter**
 
 ### Utilities & Tools
 
