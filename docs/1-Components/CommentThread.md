@@ -10,6 +10,7 @@ It includes out-of-the-box integration with:
 - Nested Inline Replies
 - Nested Inline Edits
 - Rich File Attachment Previews
+- Native Internal Pagination (Facebook / Instagram style deep nested load-more)
 - Double-confirm "Delete" logic (Click to prep, click again to confirm).
 
 ## Usage
@@ -71,6 +72,8 @@ const handleDelete = (id) => { /* logic to remove comment deep */ }
 | `confirmDelete` | `boolean` | `true` | Requires the user to double click the trash can to prevent accidental drops! |
 | `folderId` | `string` | `undefined` | Target upload folder for server connections. |
 | `maxFileSize` | `number` | `undefined` | Upload size limit in bytes. |
+| `hasMore` | `boolean` | `false` | Display the root thread "View more comments" pagination pattern. |
+| `loadingMore` | `boolean` | `false` | Enables spinner on the root thread pagination button. |
 
 ### Translation Props (i18n)
 
@@ -86,6 +89,8 @@ If you want to use your own localized dictionaries, you can simply pass the keys
 - `editingText`
 - `cancelText`
 - `cancelEditText`
+- `loadMoreText`
+- `loadMoreRepliesText`
 
 ## Payload (`CommentNode` interface)
 
@@ -105,6 +110,11 @@ export interface CommentNode {
   isEdited?: boolean
   attachments?: any[]
   replies?: CommentNode[]
+  
+  // -- Pagination fields --
+  hasMoreReplies?: boolean
+  loadingMoreReplies?: boolean
+  replyCount?: number
 }
 ```
 
@@ -117,6 +127,24 @@ The Comment component does *not* mutate your source array; it tells your applica
 | `add` | `{ text, attachments, parentId? }` | Fired when a submittal occurs. If `parentId` is provided, user clicked inline-reply; if omitted, they clicked the root thread box. |
 | `edit` | `CommentNode` | Returns the entirety of the updated object with the new `.text` applied. |
 | `delete` | `string \| number` | Fired when the trash button is confirmed. |
+| `load-more` | `void` | Fired when root thread pagination is clicked. |
+| `load-more-replies`| `string \| number` | Returns ID of the comment node that user wants to expand deep nested pagination replies for! |
+
+## Pagination (Facebook / Instagram Style)
+
+The `CommentThread` interface seamlessly supports deep infinite nested pagination out-of-the-box, leveraging standard industry patterns seen on Facebook/Instagram. 
+
+When a payload includes a deeply nested item that you don't want to over-fetch, simply mock its parent using metadata:
+```ts
+{
+  id: 'c1',
+  text: "Parent Comment",
+  hasMoreReplies: true,
+  replyCount: 5,
+  replies: []
+}
+```
+This signals the interface to render an inline, horizontal dashed action button: `—— View 5 more replies`. When clicked it emits `@load-more-replies`. Set `.loadingMoreReplies = true`, fetch your data, and use standard Vue reactivity `parent.replies.push(...)` and it smoothly animates them into the inline tree!
 
 ## External Editor Abstraction
 
