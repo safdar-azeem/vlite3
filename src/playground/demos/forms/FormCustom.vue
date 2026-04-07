@@ -5,6 +5,8 @@ import Icon from '@/components/Icon.vue'
 import DemoSection from '../../DemoSection.vue'
 import sourceCode from './FormCustom.vue?raw'
 
+const showEmailField = ref(false)
+
 const customFieldsSchema: IForm[] = [
   {
     name: 'projectName',
@@ -57,6 +59,9 @@ const customFieldsSchema: IForm[] = [
           label: 'URL',
           type: 'url',
           placeholder: 'https://',
+          when: ({ values }) => {
+            return values.platform === 'website'
+          },
         },
       ],
       headers: ['Platform', 'URL'],
@@ -69,6 +74,7 @@ const customFieldsSchema: IForm[] = [
     type: 'customFields',
     itemClass: 'col-span-2',
     props: {
+      headers: ['Name', 'Role'],
       schema: [
         {
           name: 'name',
@@ -92,9 +98,11 @@ const customFieldsSchema: IForm[] = [
           label: 'Email',
           type: 'email',
           placeholder: 'email@example.com',
+          when: ({ values }) => {
+            return values?.role?.includes('developer')
+          },
         },
       ],
-      headers: ['Name', 'Role', 'Email'],
     },
     value: [],
   },
