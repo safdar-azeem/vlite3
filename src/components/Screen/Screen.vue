@@ -241,7 +241,6 @@ const screenState = computed(() => ({
 
 // ── Screen context provided to all descendants ────────────────────────────────
 const screenContext: ScreenContext = {
-  disableSearch: true,
   forceSelectable: !props.hideSelectable,
   onTableChange: (state: TableState) => {
     activeSort.value = { field: state.sort.field, order: state.sort.order }
@@ -482,10 +481,7 @@ const handleBackendExport = async (format: string) => {
             :title="txtDeleteSelected"
             @click="requestDelete(selectedRows)" />
 
-          <ScreenViewToggle
-            v-if="hasMultipleViews"
-            v-model="activeView"
-            :views="resolvedViews" />
+          <ScreenViewToggle v-if="hasMultipleViews" v-model="activeView" :views="resolvedViews" />
 
           <slot name="before-search" v-bind="screenState" />
 
@@ -544,7 +540,7 @@ const handleBackendExport = async (format: string) => {
     <slot name="sub-header" v-bind="screenState" />
     <div
       v-if="hasQuickFilters"
-      class="-mt-1.5 max-sm:hidden!"
+      class="-mt-1 max-sm:hidden!"
       :class="quickFilterVariant == 'line' ? 'mb-1.5 sm:mb-3' : 'mb-3.5'">
       <ScreenQuickFilters
         v-model="activeQuickFilter"
