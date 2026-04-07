@@ -32,7 +32,7 @@ export const STATUS_MAP: Record<string, StatusConfig> = {
   present: { variant: 'success', icon: 'lucide:user-check' },
   shipped: { variant: 'teal', icon: 'lucide:truck' },
   published: { variant: 'success', icon: 'lucide:globe' },
-  online: { variant: 'success', icon: 'lucide:wifi' },
+  online: { variant: 'indigo', icon: 'lucide:globe' },
   success: { variant: 'success', icon: 'lucide:check-circle-2' },
   passed: { variant: 'success', icon: 'lucide:check-circle-2' },
   instock: { variant: 'success', icon: 'lucide:package-check' },
@@ -182,6 +182,45 @@ export const STATUS_MAP: Record<string, StatusConfig> = {
   resigned: { variant: 'secondary', icon: 'lucide:user-minus' },
   default: { variant: 'secondary' },
   none: { variant: 'secondary' },
+
+  // ── Customer Type ──────────────────────────────────────────────────────────
+  receiving: { variant: 'info', icon: 'lucide:arrow-down-circle' },
+  giving: { variant: 'orange', icon: 'lucide:arrow-up-circle' },
+  dual: { variant: 'purple', icon: 'lucide:arrow-left-right' },
+
+  // ── Invoice Status ─────────────────────────────────────────────────────────
+  // pending  → already mapped above (warning / clock)
+  // sent     → already mapped above (cyan / send)
+  // approved → already mapped above (success / check-circle-2)
+  // rejected → already mapped above (danger / x-circle)
+  // canceled → already mapped above (pink / ban)
+  // completed → already mapped above (success / check-circle-2)
+  partialreceive: { variant: 'cyan', icon: 'lucide:git-commit', label: 'Partial Receive' },
+  returned: { variant: 'pink', icon: 'lucide:corner-up-left' },
+
+  // ── Invoice Type ───────────────────────────────────────────────────────────
+  sale: { variant: 'success', icon: 'lucide:shopping-cart' },
+  expense: { variant: 'warning', icon: 'lucide:receipt' },
+
+  // ── Payment Type ───────────────────────────────────────────────────────────
+  debit: { variant: 'danger', icon: 'lucide:arrow-up-right' },
+  credit: { variant: 'success', icon: 'lucide:arrow-down-left' },
+
+  // ── Payment Method ─────────────────────────────────────────────────────────
+  // cash     → already mapped above (success / banknote)
+  // card     → already mapped above (purple / credit-card)
+  // transfer → already mapped above (cyan / arrow-right-left)
+  // online   → already mapped above (indigo / globe)
+
+  // ── Tax Type ───────────────────────────────────────────────────────────────
+  percentage: { variant: 'purple', icon: 'lucide:percent' },
+  fixed: { variant: 'cyan', icon: 'lucide:hash' },
+
+  // ── Product Type ───────────────────────────────────────────────────────────
+  digital: { variant: 'indigo', icon: 'lucide:monitor' },
+  physical: { variant: 'teal', icon: 'lucide:package' },
+  service: { variant: 'blue', icon: 'lucide:briefcase' },
+  other: { variant: 'secondary', icon: 'lucide:more-horizontal' },
 }
 
 /**
