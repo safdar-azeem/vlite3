@@ -36,30 +36,53 @@ const emit = defineEmits<{
   (e: 'reply', payload: CommentActionPayload): void
   (e: 'edit', payload: CommentActionPayload): void
   (e: 'delete', id: string | number): void
-  // Optional internal tracking if someone clicks "Cancel Reply"
+  // Optional internal tracking if someone clicks "Cancel Reply" or "Cancel Edit"
   (e: 'reply-cancel'): void
+  (e: 'edit-cancel'): void
 }>()
 
 const activeReplyId = ref<string | number | null>(null)
+const activeEditId = ref<string | number | null>(null)
 
 const handleReply = (payload: CommentActionPayload) => {
-  // Toggle off if clicking the same reply button twice
   if (activeReplyId.value === payload.commentId) {
     activeReplyId.value = null
     emit('reply-cancel')
     return
   }
   activeReplyId.value = payload.commentId
+  if (activeEditId.value !== null) {
+    activeEditId.value = null
+  }
   emit('reply', payload)
+}
+
+const handleEdit = (payload: CommentActionPayload) => {
+  if (activeEditId.value === payload.commentId) {
+    activeEditId.value = null
+    emit('edit-cancel')
+    return
+  }
+  activeEditId.value = payload.commentId
+  if (activeReplyId.value !== null) {
+    activeReplyId.value = null
+  }
+  emit('edit', payload)
 }
 
 const clearActiveReply = () => {
   activeReplyId.value = null
 }
 
+const clearActiveEdit = () => {
+  activeEditId.value = null
+}
+
 defineExpose({
   clearActiveReply,
-  activeReplyId
+  clearActiveEdit,
+  activeReplyId,
+  activeEditId
 })
 </script>
 
@@ -90,13 +113,17 @@ defineExpose({
         :allowEditAll="allowEditAll"
         :confirmDelete="confirmDelete"
         :activeReplyId="activeReplyId"
+        :activeEditId="activeEditId"
         @reply="handleReply"
-        @edit="(p) => emit('edit', p)"
+        @edit="handleEdit"
         @delete="(id) => emit('delete', id)"
       >
         <!-- Proxy the slot into the recursive item tree -->
         <template #inline-reply="{ comment }">
           <slot name="inline-reply" :comment="comment" :close="clearActiveReply" />
+        </template>
+        <template #inline-edit="{ comment }">
+          <slot name="inline-edit" :comment="comment" :close="clearActiveEdit" />
         </template>
       </CommentItem>
     </div>
