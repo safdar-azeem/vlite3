@@ -99,6 +99,21 @@ A scoped slot that automatically injects exactly beneath whichever child comment
 </CommentThread>
 ```
 
+### `#inline-edit`
+A scoped slot that automatically injects exactly where a user clicks "Edit", temporarily hiding the original comment text body. It receives two arguments:
+- `comment` The literal node the user is editing.
+- `close` A function you must call after the user clicks "Save" to tell the library to re-hide the slot.
+
+```vue
+<CommentThread :comments="data">
+  <!-- Inline editing logic -->
+  <template #inline-edit="{ comment, close }">
+    <textarea v-model="editDraft" />
+    <button @click="save(comment.id); close()">Save</button>
+  </template>
+</CommentThread>
+```
+
 ## Events
 
 | Event    | Payload | Description |
