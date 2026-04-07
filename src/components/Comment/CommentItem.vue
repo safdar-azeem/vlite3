@@ -27,6 +27,8 @@ export interface CommentItemProps {
   confirmDelete?: boolean
   /** Controlled by parent CommentThread to reveal the reply slot */
   activeReplyId?: string | number | null
+  /** Controlled by parent CommentThread to reveal the edit slot */
+  activeEditId?: string | number | null
 }
 
 const props = withDefaults(defineProps<CommentItemProps>(), {
@@ -39,6 +41,7 @@ const props = withDefaults(defineProps<CommentItemProps>(), {
   allowEditAll: false,
   confirmDelete: true,
   activeReplyId: null,
+  activeEditId: null,
 })
 
 const emit = defineEmits<{
@@ -204,10 +207,16 @@ const cancelPendingDelete = () => {
         </div>
       </div>
 
-      <!-- Text Body -->
+      <!-- Text Body (hidden during edit) -->
       <div
+        v-show="activeEditId !== comment.id"
         class="text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed py-0.5 wrap-break-word max-w-[95%]">
         {{ comment.text }}
+      </div>
+
+      <!-- Inline Edit Slot -->
+      <div v-if="activeEditId === comment.id" class="mt-2 pb-2 mr-4">
+        <slot name="inline-edit" :comment="comment" />
       </div>
 
       <!-- Attachments -->
@@ -239,11 +248,15 @@ const cancelPendingDelete = () => {
           :allowEditAll="allowEditAll"
           :confirmDelete="confirmDelete"
           :activeReplyId="activeReplyId"
+          :activeEditId="activeEditId"
           @reply="(p) => emit('reply', p)"
           @edit="(p) => emit('edit', p)"
           @delete="(id) => emit('delete', id)">
           <template #inline-reply="slotProps">
             <slot name="inline-reply" v-bind="slotProps" />
+          </template>
+          <template #inline-edit="slotProps">
+            <slot name="inline-edit" v-bind="slotProps" />
           </template>
         </CommentItem>
       </div>
