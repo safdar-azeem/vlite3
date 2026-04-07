@@ -59,13 +59,9 @@ const isAuthor = computed(() => {
   return String(props.currentUserId) === String(props.comment.author.id)
 })
 
-const canEdit = computed(() =>
-  props.allowEdit && (isAuthor.value || props.allowEditAll)
-)
+const canEdit = computed(() => props.allowEdit && (isAuthor.value || props.allowEditAll))
 
-const canDelete = computed(() =>
-  props.allowDelete && (isAuthor.value || props.allowDeleteAll)
-)
+const canDelete = computed(() => props.allowDelete && (isAuthor.value || props.allowDeleteAll))
 
 // Reply is always shown to everyone (you can always reply to any comment)
 const canReply = computed(() => props.allowReply)
@@ -75,7 +71,10 @@ const displayTime = computed(() => {
   if (!props.comment.timestamp) return ''
   const d = new Date(props.comment.timestamp)
   return new Intl.DateTimeFormat(undefined, {
-    month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric'
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
   }).format(d)
 })
 
@@ -105,19 +104,23 @@ const handleDeleteClick = () => {
     emit('delete', props.comment.id)
   } else {
     pendingDelete.value = true
-    confirmTimer = setTimeout(() => { pendingDelete.value = false }, 4000)
+    confirmTimer = setTimeout(() => {
+      pendingDelete.value = false
+    }, 4000)
   }
 }
 
 const cancelPendingDelete = () => {
   pendingDelete.value = false
-  if (confirmTimer) { clearTimeout(confirmTimer); confirmTimer = null }
+  if (confirmTimer) {
+    clearTimeout(confirmTimer)
+    confirmTimer = null
+  }
 }
 </script>
 
 <template>
   <div class="vl-comment flex w-full relative">
-
     <!-- Left Avatar & Threading Line -->
     <div class="flex flex-col items-center mr-4 shrink-0">
       <Avatar
@@ -125,17 +128,14 @@ const cancelPendingDelete = () => {
         :alt="comment.author.name"
         :fallback="comment.author.name?.charAt(0)"
         size="md"
-        class="border-2 border-background/50 shadow-sm"
-      />
+        class="border-2 border-background/50 shadow-sm" />
       <div
         v-if="threaded && comment.replies?.length"
-        class="w-px h-full bg-border/60 my-1 rounded-full">
-      </div>
+        class="w-px h-full bg-border/60 my-1 rounded-full"></div>
     </div>
 
     <!-- Main Content Block -->
-    <div class="flex flex-col flex-1 min-w-0 mb-6">
-
+    <div class="flex flex-col flex-1 min-w-0 mb-4">
       <!-- Header Row -->
       <div class="vl-comment-header flex items-center gap-2 mb-1">
         <span class="text-sm font-semibold text-foreground tracking-tight">
@@ -169,8 +169,7 @@ const cancelPendingDelete = () => {
             size="xs"
             icon="lucide:pencil"
             class="text-muted-foreground hover:text-foreground h-7 w-7 px-0"
-            @click="emit('edit', { commentId: comment.id, comment })"
-          />
+            @click="emit('edit', { commentId: comment.id, comment })" />
 
           <div v-if="canDelete" class="relative flex items-center">
             <Button
@@ -178,16 +177,25 @@ const cancelPendingDelete = () => {
               size="xs"
               :icon="pendingDelete ? 'lucide:check' : 'lucide:trash-2'"
               class="h-7 w-7 px-0 transition-colors"
-              :class="pendingDelete
-                ? 'text-destructive bg-destructive/10 hover:bg-destructive/20 hover:text-destructive'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted'"
-              @click="handleDeleteClick"
-            />
+              :class="
+                pendingDelete
+                  ? 'text-destructive bg-destructive/10 hover:bg-destructive/20 hover:text-destructive'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+              "
+              @click="handleDeleteClick" />
             <button
               v-if="pendingDelete"
               class="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 rounded-full bg-muted border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
               @click.stop="cancelPendingDelete">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="w-2 h-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="w-2 h-2">
                 <line x1="18" y1="6" x2="6" y2="18" />
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
@@ -197,7 +205,8 @@ const cancelPendingDelete = () => {
       </div>
 
       <!-- Text Body -->
-      <div class="text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed py-0.5 wrap-break-word max-w-[95%]">
+      <div
+        class="text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed py-0.5 wrap-break-word max-w-[95%]">
         {{ comment.text }}
       </div>
 
@@ -207,8 +216,7 @@ const cancelPendingDelete = () => {
           :attachments="comment.attachments"
           variant="inline"
           size="sm"
-          :clickToPreview="true"
-        />
+          :clickToPreview="true" />
       </div>
 
       <!-- Inline Reply Slot -->
@@ -233,14 +241,12 @@ const cancelPendingDelete = () => {
           :activeReplyId="activeReplyId"
           @reply="(p) => emit('reply', p)"
           @edit="(p) => emit('edit', p)"
-          @delete="(id) => emit('delete', id)"
-        >
+          @delete="(id) => emit('delete', id)">
           <template #inline-reply="slotProps">
             <slot name="inline-reply" v-bind="slotProps" />
           </template>
         </CommentItem>
       </div>
-
     </div>
   </div>
 </template>
@@ -273,7 +279,7 @@ const cancelPendingDelete = () => {
 }
 
 /* Keep actions visible while the pending-delete confirmation is active */
-.vl-comment:has(.vl-comment-actions button[aria-label="Confirm delete"]) .vl-comment-actions {
+.vl-comment:has(.vl-comment-actions button[aria-label='Confirm delete']) .vl-comment-actions {
   opacity: 1;
 }
 </style>
