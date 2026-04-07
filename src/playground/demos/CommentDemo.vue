@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import DemoSection from '../DemoSection.vue'
 import sourceCode from './CommentDemo.vue?raw'
-import { CommentThread, type CommentNode, type CommentSubmitPayload } from '@/components/Comment'
+import { CommentThread, CommentEditor, type CommentNode, type CommentSubmitPayload } from '@/components/Comment'
 import { CheckBox } from '@/index'
 
 // --- Mock Data ---
@@ -124,6 +124,38 @@ const handleDelete = (id: string | number) => {
           @add="handleAdd"
           @edit="handleEdit"
           @delete="handleDelete" />
+      </div>
+    </DemoSection>
+
+    <DemoSection title="External Editor Usage" :code="''">
+      <div class="flex flex-col gap-8 w-full max-w-4xl mx-auto rounded-xl border border-border bg-background p-6 lg:p-10 shadow-sm">
+        
+        <p class="text-sm text-foreground mb-2">
+          If you want to render the editor somewhere completely separated from the comment thread (for example, pinned to the bottom of the screen, or in a sidebar), you can hide the integrated input and use the <code>&lt;CommentEditor /&gt;</code> natively.
+        </p>
+
+        <!-- Hide the native input built-into the thread -->
+        <CommentThread
+          :comments="comments"
+          :current-user="currentUser"
+          input-position="hidden"
+          :allow-reply="allowReply"
+          :allow-edit="allowEdit"
+          :allow-delete="allowDelete"
+          @add="handleAdd"
+          @edit="handleEdit"
+          @delete="handleDelete" 
+        />
+
+        <div class="w-full flex flex-col gap-2 p-6 bg-muted/10 border border-dashed border-border rounded-xl mt-8">
+          <p class="text-sm font-medium text-center text-muted-foreground mb-2">Completely External Editor</p>
+          <CommentEditor
+            variant="root"
+            placeholder="This editor is decoupled from the thread above..."
+            :current-user="currentUser"
+            @submit="(text, atts) => handleAdd({ text, attachments: atts })"
+          />
+        </div>
       </div>
     </DemoSection>
   </div>
