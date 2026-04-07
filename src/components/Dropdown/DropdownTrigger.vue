@@ -8,6 +8,7 @@ interface Props {
   placeholder?: string
   isOpen?: boolean
   disabled?: boolean
+  readonly?: boolean
   className?: string
   direction?: 'ltr' | 'rtl'
   triggerProps?: ButtonProps
@@ -18,6 +19,7 @@ const props = withDefaults(defineProps<Props>(), {
   selectedIcon: '',
   placeholder: 'Select an option',
   disabled: false,
+  readonly: false,
   direction: 'ltr',
 })
 </script>
@@ -25,14 +27,14 @@ const props = withDefaults(defineProps<Props>(), {
 <template>
   <Button
     :text="selectedLabel || placeholder"
-    iconRight="iconamoon:arrow-down-2"
+    :iconRight="(disabled || readonly) ? undefined : 'iconamoon:arrow-down-2'"
     variant="outline"
     :disabled="disabled"
     :dir="direction"
     v-bind="triggerProps"
     :icon="selectedIcon || triggerProps?.icon"
     class="w-full justify-between! font-normal px-2.5!"
-    :class="className"
+    :class="[className, readonly && !disabled ? 'pointer-events-none' : '']"
     icon-right-class="ml-auto!"
     :data-testid="$attrs['data-testid'] || 'dropdown-trigger'" />
 </template>
