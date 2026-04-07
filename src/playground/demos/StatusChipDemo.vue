@@ -35,6 +35,7 @@ import sourceCode from './StatusChipDemo.vue?raw'
         <StatusChip status="check" />
         <StatusChip status="card" />
         <StatusChip status="transfer" />
+        <StatusChip status="online" />
       </div>
     </DemoSection>
 
@@ -128,6 +129,57 @@ import sourceCode from './StatusChipDemo.vue?raw'
         <StatusChip status="normal" />
         <StatusChip status="minor" />
         <StatusChip status="trivial" />
+      </div>
+    </DemoSection>
+
+    <DemoSection title="Customer Type" :code="sourceCode">
+      <div class="flex flex-wrap gap-2">
+        <StatusChip status="receiving" />
+        <StatusChip status="giving" />
+        <StatusChip status="dual" />
+      </div>
+    </DemoSection>
+
+    <DemoSection title="Invoice Status" :code="sourceCode">
+      <div class="flex flex-wrap gap-2">
+        <StatusChip status="pending" />
+        <StatusChip status="sent" />
+        <StatusChip status="approved" />
+        <StatusChip status="partial_receive" />
+        <StatusChip status="rejected" />
+        <StatusChip status="canceled" />
+        <StatusChip status="completed" />
+        <StatusChip status="returned" />
+      </div>
+    </DemoSection>
+
+    <DemoSection title="Invoice Type" :code="sourceCode">
+      <div class="flex flex-wrap gap-2">
+        <StatusChip status="sale" />
+        <StatusChip status="expense" />
+      </div>
+    </DemoSection>
+
+    <DemoSection title="Payment Type" :code="sourceCode">
+      <div class="flex flex-wrap gap-2">
+        <StatusChip status="debit" />
+        <StatusChip status="credit" />
+      </div>
+    </DemoSection>
+
+    <DemoSection title="Tax Type" :code="sourceCode">
+      <div class="flex flex-wrap gap-2">
+        <StatusChip status="percentage" />
+        <StatusChip status="fixed" />
+      </div>
+    </DemoSection>
+
+    <DemoSection title="Product Type" :code="sourceCode">
+      <div class="flex flex-wrap gap-2">
+        <StatusChip status="digital" />
+        <StatusChip status="physical" />
+        <StatusChip status="service" />
+        <StatusChip status="other" />
       </div>
     </DemoSection>
 
