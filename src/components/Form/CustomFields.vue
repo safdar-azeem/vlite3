@@ -202,6 +202,10 @@ const columnHeaders = computed(() => {
   })
 })
 
+const visibleSchemaFields = computed(() => {
+  return props.schema.slice(0, columnHeaders.value.length)
+})
+
 const getRowContext = (rowIndex: number) => {
   let contextValues = { ...(props.values || {}) }
   if (props.name) {
@@ -307,7 +311,7 @@ const getRowErrorsHash = (rowIndex: number) => {
           </div>
 
           <div
-            v-for="(field, fIdx) in schema"
+            v-for="(field, fIdx) in visibleSchemaFields"
             :key="field.name"
             class="flex-1 min-w-0 relative"
             :class="{ 'border-l border-border': fIdx > 0 }">
