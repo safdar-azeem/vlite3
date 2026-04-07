@@ -87,7 +87,20 @@ const comments = ref<CommentNode[]>([
       name: 'Diana Prince',
       role: 'Lead',
     },
-    replies: [],
+    hasMoreReplies: true,
+    replyCount: 4,
+    replies: [
+      {
+        id: '2-1',
+        text: 'Not yet, tests are still running. Jenkins has been acting up all morning with the runners.',
+        timestamp: new Date().getTime() - 1000 * 60 * 25,
+        author: {
+          id: 'usr_5',
+          name: 'Evan QA',
+        },
+        replies: []
+      }
+    ],
   },
 ])
 
@@ -161,6 +174,56 @@ const deleteCommentDeep = (nodes: CommentNode[], targetId: string | number): boo
 const handleDelete = (id: string | number) => {
   deleteCommentDeep(comments.value, id)
 }
+
+// --- Pagination Mock Handlers ---
+const hasMoreRoots = ref(true)
+const loadingRoots = ref(false)
+
+const handleLoadMore = async () => {
+  loadingRoots.value = true
+  await new Promise((r) => setTimeout(r, 1200)) // simulate network delay
+  
+  comments.value.push({
+    id: `root-old-${generateId()}`,
+    text: "Can someone check the metrics for last week's conversion drop? It seems localized to iOS Safari.",
+    timestamp: new Date().getTime() - 1000 * 60 * 60 * 48, // 2 days ago
+    author: { id: 'usr_9', name: 'Gary Marketing' },
+    hasMoreReplies: true,
+    replyCount: 12,
+    replies: []
+  })
+  
+  loadingRoots.value = false
+  hasMoreRoots.value = false // exhaust demo load
+}
+
+const handleLoadMoreReplies = async (id: string | number) => {
+  const comment = findCommentDeep(comments.value, id)
+  if (!comment) return
+  
+  comment.loadingMoreReplies = true
+  await new Promise((r) => setTimeout(r, 1000))
+  
+  if (!comment.replies) comment.replies = []
+  
+  comment.replies.push(
+    {
+      id: `reply-${generateId()}`,
+      text: 'Ah I see, they finally passed just now.',
+      timestamp: new Date().getTime() - 1000 * 60 * 5,
+      author: { id: 'usr_4', name: 'Diana Prince', role: 'Lead' },
+    },
+    {
+      id: `reply-${generateId()}`,
+      text: 'Merging now thanks Evan.',
+      timestamp: new Date().getTime() - 1000 * 60 * 1,
+      author: { id: 'usr_1', name: 'Alice Johnson' },
+    }
+  )
+  
+  comment.loadingMoreReplies = false
+  comment.hasMoreReplies = false // exhaust demo load
+}
 </script>
 
 <template>
@@ -195,9 +258,13 @@ const handleDelete = (id: string | number) => {
           :allow-delete-all="allowDeleteAll"
           :folder-id="folderId"
           :max-file-size="10 * 1024 * 1024"
+          :has-more="hasMoreRoots"
+          :loading-more="loadingRoots"
           @add="handleAdd"
           @edit="handleEdit"
-          @delete="handleDelete" />
+          @delete="handleDelete"
+          @load-more="handleLoadMore"
+          @load-more-replies="handleLoadMoreReplies" />
       </div>
     </DemoSection>
 
