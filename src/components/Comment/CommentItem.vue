@@ -36,6 +36,20 @@ export interface CommentItemProps {
   maxFileSize?: number
   /** Allow file uploads */
   allowFileUpload?: boolean
+  replyPlaceholder?: string
+  replyPlaceholderI18n?: string
+  editPlaceholder?: string
+  editPlaceholderI18n?: string
+  replyText?: string
+  replyTextI18n?: string
+  editedText?: string
+  editedTextI18n?: string
+  editingText?: string
+  editingTextI18n?: string
+  cancelText?: string
+  cancelTextI18n?: string
+  cancelEditText?: string
+  cancelEditTextI18n?: string
 }
 
 const props = withDefaults(defineProps<CommentItemProps>(), {
@@ -95,11 +109,21 @@ const displayTime = computed(() => {
 
 // --- i18n helpers — Chat-style fallback: if key echoes back, use default ---
 const txtEdited = computed(() => {
+  if (props.editedTextI18n) {
+    const res = $t(props.editedTextI18n)
+    if (res !== props.editedTextI18n) return res
+  }
+  if (props.editedText) return props.editedText
   const res = $t('vlite.comment.edited')
   return res !== 'vlite.comment.edited' ? res : 'edited'
 })
 
 const txtReply = computed(() => {
+  if (props.replyTextI18n) {
+    const res = $t(props.replyTextI18n)
+    if (res !== props.replyTextI18n) return res
+  }
+  if (props.replyText) return props.replyText
   const res = $t('vlite.comment.replyAction')
   return res !== 'vlite.comment.replyAction' ? res : 'Reply'
 })
@@ -235,6 +259,14 @@ const cancelPendingDelete = () => {
           :folder-id="folderId"
           :max-file-size="maxFileSize"
           :allow-file-upload="allowFileUpload"
+          :placeholder="editPlaceholder"
+          :placeholder-i18n="editPlaceholderI18n"
+          :editing-text="editingText"
+          :editing-text-i18n="editingTextI18n"
+          :cancel-edit-text="cancelEditText"
+          :cancel-edit-text-i18n="cancelEditTextI18n"
+          :cancel-text="cancelText"
+          :cancel-text-i18n="cancelTextI18n"
           autofocus
           @submit="(text, atts) => emit('submit-edit', text, atts, comment)"
           @cancel="emit('cancel-edit')"
@@ -254,12 +286,15 @@ const cancelPendingDelete = () => {
       <div v-if="activeReplyId === comment.id" class="mt-4 pb-2">
         <CommentEditor
           variant="reply"
-          placeholder="Replying to discussion..."
           show-cancel
           :current-user="currentUser"
           :folder-id="folderId"
           :max-file-size="maxFileSize"
           :allow-file-upload="allowFileUpload"
+          :placeholder="replyPlaceholder || 'Replying to discussion...'"
+          :placeholder-i18n="replyPlaceholderI18n"
+          :cancel-text="cancelText"
+          :cancel-text-i18n="cancelTextI18n"
           autofocus
           @submit="(text, atts) => emit('submit-reply', text, atts, comment.id)"
           @cancel="emit('cancel-reply')"
@@ -285,6 +320,20 @@ const cancelPendingDelete = () => {
           :folder-id="folderId"
           :max-file-size="maxFileSize"
           :allow-file-upload="allowFileUpload"
+          :reply-placeholder="replyPlaceholder"
+          :reply-placeholder-i18n="replyPlaceholderI18n"
+          :edit-placeholder="editPlaceholder"
+          :edit-placeholder-i18n="editPlaceholderI18n"
+          :reply-text="replyText"
+          :reply-text-i18n="replyTextI18n"
+          :edited-text="editedText"
+          :edited-text-i18n="editedTextI18n"
+          :editing-text="editingText"
+          :editing-text-i18n="editingTextI18n"
+          :cancel-text="cancelText"
+          :cancel-text-i18n="cancelTextI18n"
+          :cancel-edit-text="cancelEditText"
+          :cancel-edit-text-i18n="cancelEditTextI18n"
           @reply="(p) => emit('reply', p)"
           @edit="(p) => emit('edit', p)"
           @delete="(id) => emit('delete', id)"
