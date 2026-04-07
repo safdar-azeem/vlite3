@@ -77,6 +77,8 @@ export interface DataTableProps {
   class?: string
   sortable?: boolean
   variant?: 'default' | 'raised'
+  headerVariant?: 'default' | 'minimal'
+  size?: 'xs' | 'sm' | 'md' | 'lg'
 }
 
 export interface SelectionState {
