@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, nextTick } from 'vue'
+import { $t } from '@/utils/i18n'
 import Button from '../Button.vue'
 import Icon from '../Icon.vue'
 import Avatar from '../Avatar.vue'
@@ -19,6 +20,13 @@ const props = withDefaults(defineProps<{
    */
   variant?: 'root' | 'reply' | 'edit'
   placeholder?: string
+  placeholderI18n?: string
+  editingText?: string
+  editingTextI18n?: string
+  cancelEditText?: string
+  cancelEditTextI18n?: string
+  cancelText?: string
+  cancelTextI18n?: string
   /** The currently logged in user to display their avatar */
   currentUser?: CommentAuthor | null
   /** Controls visibility of the file attachment button */
@@ -32,7 +40,6 @@ const props = withDefaults(defineProps<{
 }>(), {
   initialText: '',
   variant: 'root',
-  placeholder: 'Leave a comment...',
   currentUser: null,
   allowFileUpload: true
 })
@@ -41,6 +48,47 @@ const emit = defineEmits<{
   (e: 'submit', text: string, attachments?: ChatAttachment[]): void
   (e: 'cancel'): void
 }>()
+
+// --- Computed Texts (i18n support) ---
+const displayPlaceholder = computed(() => {
+  if (props.placeholderI18n) {
+    const res = $t(props.placeholderI18n)
+    if (res !== props.placeholderI18n) return res
+  }
+  if (props.placeholder) return props.placeholder
+  const globalRes = $t('vlite.comment.placeholder')
+  return globalRes !== 'vlite.comment.placeholder' ? globalRes : 'Leave a comment...'
+})
+
+const displayEditingText = computed(() => {
+  if (props.editingTextI18n) {
+    const res = $t(props.editingTextI18n)
+    if (res !== props.editingTextI18n) return res
+  }
+  if (props.editingText) return props.editingText
+  const globalRes = $t('vlite.comment.editing')
+  return globalRes !== 'vlite.comment.editing' ? globalRes : 'Editing Comment'
+})
+
+const displayCancelEditText = computed(() => {
+  if (props.cancelEditTextI18n) {
+    const res = $t(props.cancelEditTextI18n)
+    if (res !== props.cancelEditTextI18n) return res
+  }
+  if (props.cancelEditText) return props.cancelEditText
+  const globalRes = $t('vlite.comment.cancelEdit')
+  return globalRes !== 'vlite.comment.cancelEdit' ? globalRes : 'Press Esc to cancel'
+})
+
+const displayCancelText = computed(() => {
+  if (props.cancelTextI18n) {
+    const res = $t(props.cancelTextI18n)
+    if (res !== props.cancelTextI18n) return res
+  }
+  if (props.cancelText) return props.cancelText
+  const globalRes = $t('vlite.comment.cancel')
+  return globalRes !== 'vlite.comment.cancel' ? globalRes : 'Cancel'
+})
 
 const inputText = ref(props.initialText)
 const textareaRef = ref<HTMLTextAreaElement | null>(null)
@@ -149,10 +197,10 @@ const submit = async () => {
       <div v-if="variant === 'edit'" class="flex items-center justify-between px-3 py-1.5 bg-muted/40 rounded-lg text-xs text-muted-foreground border border-border animate-in fade-in slide-in-from-bottom-2">
         <div class="flex items-center gap-2">
           <Icon icon="lucide:pencil" class="w-3.5 h-3.5 text-primary shrink-0" />
-          <span>Editing Comment</span>
+          <span>{{ displayEditingText }}</span>
         </div>
         <div class="flex items-center gap-2 shrink-0">
-          <span class="text-[10px] hidden sm:inline-block opacity-60 mr-1">Press Esc to cancel</span>
+          <span class="text-[10px] hidden sm:inline-block opacity-60 mr-1">{{ displayCancelEditText }}</span>
           <button @click="emit('cancel')" class="hover:text-foreground p-0.5 rounded-full hover:bg-background transition-colors" aria-label="Cancel editing">
             <Icon icon="lucide:x" class="w-3.5 h-3.5" />
           </button>
@@ -188,7 +236,7 @@ const submit = async () => {
           <textarea
             ref="textareaRef"
             v-model="inputText"
-            :placeholder="placeholder"
+            :placeholder="displayPlaceholder"
             :disabled="isUploading"
             class="flex-1 max-h-[120px] min-h-[20px] w-full resize-none bg-transparent px-2 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground scrollbar-thin disabled:opacity-50"
             rows="1"
@@ -206,7 +254,7 @@ const submit = async () => {
               class="h-8 text-muted-foreground hover:text-foreground"
               @click="emit('cancel')"
               :disabled="isUploading"
-            >Cancel</Button>
+            >{{ displayCancelText }}</Button>
             
             <Button
               variant="primary"
