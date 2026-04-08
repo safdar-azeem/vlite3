@@ -41,6 +41,7 @@ import ToastDemo from '../playground/demos/ToastDemo.vue'
 import SpinnerDemo from '../playground/demos/SpinnerDemo.vue'
 import ScrollRevealDemo from '../playground/demos/ScrollRevealDemo.vue'
 import AttachmentsDemo from '../playground/demos/AttachmentsDemo.vue'
+import SkeletonDemo from '../playground/demos/SkeletonDemo.vue'
 
 // Navigation / Data
 import AccordionDemo from '../playground/demos/AccordionDemo.vue'
@@ -123,6 +124,7 @@ const routes = [
       { path: 'spinner', component: SpinnerDemo },
       { path: 'scroll-reveal', component: ScrollRevealDemo },
       { path: 'attachments', component: AttachmentsDemo },
+      { path: 'skeleton', component: SkeletonDemo },
       { path: 'accordion', component: AccordionDemo },
       { path: 'navbar', component: NavbarDemo },
       { path: 'commandpalette', component: CommandPaletteDemo },
