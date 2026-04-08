@@ -10,6 +10,7 @@ interface Props {
   compact?: boolean
   size?: 'xs' | 'sm' | 'md' | 'lg'
   tableSortable?: boolean
+  cellBordered?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -62,10 +63,10 @@ const displayTitle = computed(() =>
 )
 
 const sizeClass = computed(() => {
-  if (props.size === 'xs' || props.compact) return 'py-1.5!'
-  if (props.size === 'sm') return 'py-2!'
-  if (props.size === 'lg') return 'py-4!'
-  return 'py-3!'
+  if (props.size === 'xs' || props.compact) return `py-1.5! ${props.cellBordered ? 'px-3!' : ''}`
+  if (props.size === 'sm') return `py-2! ${props.cellBordered ? 'px-4!' : ''}`
+  if (props.size === 'lg') return `py-4! ${props.cellBordered ? 'px-6!' : ''}`
+  return `py-3! ${props.cellBordered ? 'px-5!' : ''}`
 })
 </script>
 
