@@ -44,27 +44,5 @@ export function resolveResponsive(
   return bones.breakpoints[match] ?? null
 }
 
-const RGBA_REGEX = /rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*(?:,\s*([\d.]+))?\s*\)/
-
-export function adjustColor(color: string, amount: number): string {
-  const rgbaMatch = color.match(RGBA_REGEX)
-  if (rgbaMatch) {
-    const [, r, g, b, a = '1'] = rgbaMatch
-    const newAlpha = Math.min(1, parseFloat(a) + amount * 0.5)
-    return `rgba(${r},${g},${b},${newAlpha.toFixed(3)})`
-  }
-
-  if (color.startsWith('#') && color.length >= 7) {
-    const r = parseInt(color.slice(1, 3), 16)
-    const g = parseInt(color.slice(3, 5), 16)
-    const b = parseInt(color.slice(5, 7), 16)
-    if (!isNaN(r) && !isNaN(g) && !isNaN(b)) {
-      const nr = Math.round(r + (255 - r) * amount)
-      const ng = Math.round(g + (255 - g) * amount)
-      const nb = Math.round(b + (255 - b) * amount)
-      return `#${nr.toString(16).padStart(2, '0')}${ng.toString(16).padStart(2, '0')}${nb.toString(16).padStart(2, '0')}`
-    }
-  }
-
-  return color
-}
+// Note: The overly complex `adjustColor` function has been completely removed! 
+// We now rely on pure, easily-debuggable CSS opacities inside Skeleton.vue.
