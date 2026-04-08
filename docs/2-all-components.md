@@ -46,6 +46,7 @@ Check the individual Markdown files inside the docs folders for full details.
 - [Screen](./1-Components/Screen.md)
 - [SidePanel](./1-Components/SidePanel.md)
 - [SidebarMenu](./1-Components/SidebarMenu.md)
+- [Skeleton](./1-Components/Skeleton.md)
 - [Slider](./1-Components/Slider.md)
 - [Spinner](./1-Components/Spinner.md)
 - [Splitter](./1-Components/Splitter.md)
