@@ -124,6 +124,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Tooltip', to: '/components/tooltip', icon: 'lucide:message-square' },
       { label: 'Toast', to: '/components/toast', icon: 'lucide:bell' },
       { label: 'Alert', to: '/components/alert', icon: 'lucide:alert-circle' },
+      { label: 'Skeleton', to: '/components/skeleton', icon: 'lucide:layout-template' },
       { label: 'Spinner', to: '/components/spinner', icon: 'lucide:loader-2' },
       { label: 'Scroll Reveal', to: '/components/scroll-reveal', icon: 'lucide:move-down' },
       { label: 'Empty State', to: '/components/empty', icon: 'lucide:inbox' },
@@ -248,7 +249,6 @@ const menuItems: SidebarMenuItemSchema[] = [
       </template>
 
       <template #main>
-        <!-- Adding much better space inside the page layout -->
         <div class="px-10 md:px-14 lg:px-16 py-8 lg:py-10 max-w-[1500px] mx-auto w-full">
           <router-view></router-view>
         </div>
