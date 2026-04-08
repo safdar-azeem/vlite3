@@ -16,6 +16,7 @@ interface Props {
   striped?: boolean
   compact?: boolean
   size?: 'xs' | 'sm' | 'md' | 'lg'
+  cellBordered?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -120,10 +121,11 @@ const alignClass = (header: TableHeader): string => {
 const rowId = computed(() => getNestedValue(props.row, props.keyField))
 
 const getSizeClass = () => {
-  if (props.size === 'xs' || props.compact) return 'py-1.5! -text-fs-1.5! pr-3 max-sm:pr-10!'
-  if (props.size === 'sm') return 'py-2! -text-fs-1.5! pr-4 max-sm:pr-10!'
-  if (props.size === 'lg') return 'py-4! text-base pr-6 max-sm:pr-12!'
-  return 'py-3! pr-5! max-sm:pr-10! -text-fs-1.5!'
+  const { size, compact, cellBordered } = props
+  if (size === 'xs' || compact) return `py-1.5! -text-fs-1.5! ${cellBordered ? 'px-3!' : 'pr-3 max-sm:pr-10!'}`
+  if (size === 'sm') return `py-2! -text-fs-1.5! ${cellBordered ? 'px-4!' : 'pr-4 max-sm:pr-10!'}`
+  if (size === 'lg') return `py-4! text-base ${cellBordered ? 'px-6!' : 'pr-6 max-sm:pr-12!'}`
+  return `py-3! -text-fs-1.5! ${cellBordered ? 'px-5!' : 'pr-5! max-sm:pr-10!'}`
 }
 
 const handleRowClick = () => {
