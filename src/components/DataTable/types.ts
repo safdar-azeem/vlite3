@@ -72,6 +72,7 @@ export interface DataTableProps {
   striped?: boolean
   hoverable?: boolean
   bordered?: boolean
+  cellBordered?: boolean
   compact?: boolean
   tableClass?: string
   class?: string
