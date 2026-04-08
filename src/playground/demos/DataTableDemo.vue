@@ -14,6 +14,7 @@ import { PageInfo } from '@/components/Pagination'
 // Controls mapping
 const isTableSortable = ref(true)
 const isBordered = ref(true)
+const isCellBordered = ref(false)
 const isStriped = ref(false)
 const isHoverable = ref(true)
 const isSelectable = ref(true)
@@ -144,7 +145,8 @@ const handleDelete = (rows: User[]) => {
         <div
           class="grid grid-cols-2 lg:grid-cols-3 gap-4 bg-muted/30 p-6 rounded-2xl border border-border/40 content-start">
           <CheckBox v-model="isTableSortable" label="Sortable" />
-          <CheckBox v-model="isBordered" label="Borders" />
+          <CheckBox v-model="isBordered" label="Outer Borders" />
+          <CheckBox v-model="isCellBordered" label="Cell Borders" />
           <CheckBox v-model="isStriped" label="Striped" />
           <CheckBox v-model="isHoverable" label="Hoverable" />
           <CheckBox v-model="isSelectable" label="Selectable" />
@@ -187,6 +189,7 @@ const handleDelete = (rows: User[]) => {
         :loading="loading"
         :sortable="isTableSortable"
         :bordered="isBordered"
+        :cell-bordered="isCellBordered"
         :striped="isStriped"
         :size="size"
         :header-variant="headerVariant"
