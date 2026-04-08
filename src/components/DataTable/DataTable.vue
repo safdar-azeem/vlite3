@@ -63,6 +63,7 @@ const props = withDefaults(defineProps<DataTableProps>(), {
   striped: false,
   hoverable: true,
   bordered: true,
+  cellBordered: false,
   compact: false,
   sortable: false,
   variant: 'default',
@@ -282,7 +283,14 @@ const containerClass = computed(() => {
   ].join(' ')
 })
 
-const tableClass = computed(() => ['w-full caption-bottom -text-fs-1', props.tableClass].join(' '))
+const tableClass = computed(() => {
+  const cellBorders = props.cellBordered
+    ? '[&>thead>tr>th:not(:last-child)]:border-r [&>thead>tr>th]:border-border ' +
+      '[&>tbody>tr>td:not(:last-child)]:border-r [&>tbody>tr>td]:border-border ' +
+      '[&>tbody>tr>th:not(:last-child)]:border-r [&>tbody>tr>th]:border-border'
+    : ''
+  return ['w-full caption-bottom -text-fs-1', cellBorders, props.tableClass].join(' ')
+})
 
 const getColumnStyle = (header: TableHeader) => {
   const style: Record<string, string> = {}
@@ -370,9 +378,12 @@ const txtCancelBtn = computed(() => {
                 :compact="compact"
                 :size="size"
                 :table-sortable="sortable"
+                :cell-bordered="cellBordered"
                 @sort="handleSort"
-                class="last:pr-5!"
-                :class="getColumnClass(header)"
+                :class="[
+                  cellBordered ? '' : 'last:pr-5!',
+                  getColumnClass(header)
+                ]"
                 :style="getColumnStyle(header)" />
             </tr>
           </thead>
@@ -395,8 +406,11 @@ const txtCancelBtn = computed(() => {
                 <td
                   v-for="header in headers"
                   :key="header.field"
-                  class="p-5! align-middle last:pr-6!"
-                  :class="[header.hideOnMobile ? 'hidden md:table-cell' : '']">
+                  class="align-middle"
+                  :class="[
+                    header.hideOnMobile ? 'hidden md:table-cell' : '',
+                    cellBordered ? 'px-5! py-3!' : 'p-5! last:pr-6!'
+                  ]">
                   <div
                     class="rounded-md bg-muted/50 animate-pulse h-4"
                     :style="{ width: `${50 + Math.random() * 40}%` }" />
@@ -427,9 +441,10 @@ const txtCancelBtn = computed(() => {
                 :striped="striped"
                 :compact="compact"
                 :size="size"
+                :cell-bordered="cellBordered"
                 @select="toggleRowSelection"
                 @row-click="handleRowClick"
-                class="[&_td:last-child]:pr-3.5!">
+                :class="cellBordered ? '' : '[&_td:last-child]:pr-3.5!'">
                 <template
                   v-for="header in headers"
                   :key="'slot-' + header.field"
