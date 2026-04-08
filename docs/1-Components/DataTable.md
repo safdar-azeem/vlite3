@@ -18,6 +18,7 @@
 | `striped`               | `boolean`                  | `false`             | Zebra striping                  |
 | `hoverable`             | `boolean`                  | `true`              | Highlight row on hover          |
 | `bordered`              | `boolean`                  | `true`              | Outer border                    |
+| `cellBordered`          | `boolean`                  | `false`             | Internal cell borders           |
 | `compact`               | `boolean`                  | `false`             | Reduced padding                 |
 | `variant`               | `'default' \| 'raised'`    | `'default'`         | Table style variant             |
 | `emptyTitle`            | `string`                   | `'No data available'` | Empty state title             |
