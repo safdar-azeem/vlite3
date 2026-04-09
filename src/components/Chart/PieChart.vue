@@ -45,14 +45,16 @@ function runAnimation() {
   cancelAnim = animateProgress(1000, (t) => (progress.value = t))
 }
 
-onMounted(() => { console.log("PieChart Mounted - donut:", props.donut, "innerR:", innerR.value); if (props.animate) runAnimation() })
+onMounted(() => { if (props.animate) runAnimation() })
 watch(() => props.data, () => { if (props.animate) runAnimation() }, { deep: true })
 onUnmounted(() => cancelAnim?.())
 
 // ─── Computed geometry ────────────────────────
+const isOutside = computed(() => props.labelMode === 'outside')
 const cx = computed(() => props.size / 2)
 const cy = computed(() => props.size / 2)
-const outerR = computed(() => props.size / 2 - (props.labelMode === 'outside' ? 44 : 4))
+// Shrink the pie a bit when in outside mode to leave room for leader lines
+const outerR = computed(() => props.size / 2 - (isOutside.value ? 36 : 4))
 const innerR = computed(() => props.donut ? outerR.value * (props.innerRadius / 100) : 0)
 const total = computed(() => props.data.reduce((a, b) => a + b.value, 0) || 1)
 
@@ -66,40 +68,54 @@ const slices = computed(() => {
     const endA = angle + sweep
     angle += pct * 360
 
-    // Mid-angle for label placement
-    const mid = ((startA + endA) / 2) * (Math.PI / 180)
-    const labelR = outerR.value * 0.65 + (innerR.value * 0.35)
-    
-    let lx = cx.value + labelR * Math.cos(mid)
-    let ly = cy.value + labelR * Math.sin(mid)
+    // Mid-angle (radians) for label/line placement
+    const midDeg = (startA + endA) / 2
+    const mid = midDeg * (Math.PI / 180)
+    const cosM = Math.cos(mid)
+    const sinM = Math.sin(mid)
+    const isRight = cosM >= 0
 
-    let px1 = 0, py1 = 0, px2 = 0, py2 = 0, px3 = 0, py3 = 0
+    // ── Inside label position ──────────────────
+    const labelR = outerR.value * 0.65 + innerR.value * 0.35
+    let lx = cx.value + labelR * cosM
+    let ly = cy.value + labelR * sinM
     let textAnchor = 'middle'
 
-    if (props.labelMode === 'outside') {
-      const isRight = Math.cos(mid) >= 0
-      px1 = cx.value + outerR.value * Math.cos(mid)
-      py1 = cy.value + outerR.value * Math.sin(mid)
-      const breakR = outerR.value + 15
-      px2 = cx.value + breakR * Math.cos(mid)
-      py2 = cy.value + breakR * Math.sin(mid)
-      px3 = px2 + 10 * (isRight ? 1 : -1)
-      py3 = py2
-      
-      lx = px3 + 6 * (isRight ? 1 : -1)
-      ly = py3
+    // ── Leader-line geometry (outside mode) ────
+    // p1 — start: on the outer arc edge
+    // p2 — knee: diagonal end, several px further out
+    // p3 — end: horizontal tick (same y as p2)
+    let p1x = 0, p1y = 0, p2x = 0, p2y = 0, p3x = 0, p3y = 0
+    let leaderPath = ''
+
+    if (isOutside.value) {
+      const kneeR   = outerR.value + 20   // how far out the diagonal goes
+      const tickLen = 14                  // length of the horizontal tick
+
+      p1x = cx.value + outerR.value * cosM
+      p1y = cy.value + outerR.value * sinM
+      p2x = cx.value + kneeR * cosM
+      p2y = cy.value + kneeR * sinM
+      p3x = p2x + tickLen * (isRight ? 1 : -1)
+      p3y = p2y
+
+      leaderPath = `M ${p1x},${p1y} L ${p2x},${p2y} L ${p3x},${p3y}`
+
+      // Text sits just past the tick, vertically centred on it
+      lx = p3x + 5 * (isRight ? 1 : -1)
+      ly = p3y
       textAnchor = isRight ? 'start' : 'end'
     }
 
     const path = arcPath(cx.value, cy.value, outerR.value, startA, endA, innerR.value)
 
     let label = ''
-    if (props.labelMode === 'percent') label = `${Math.round(pct * 100)}%`
-    else if (props.labelMode === 'value') label = formatNumber(d.value)
-    else if (props.labelMode === 'label') label = d.label
+    if (props.labelMode === 'percent')  label = `${Math.round(pct * 100)}%`
+    else if (props.labelMode === 'value')   label = formatNumber(d.value)
+    else if (props.labelMode === 'label')   label = d.label
     else if (props.labelMode === 'outside') label = `${formatNumber(d.value)} (${Math.round(pct * 100)}%)`
 
-    return { d, path, color, lx, ly, label, pct, startA, endA, px1, py1, px2, py2, px3, py3, textAnchor }
+    return { d, path, color, lx, ly, label, pct, startA, endA, leaderPath, textAnchor }
   })
 })
 
@@ -172,16 +188,18 @@ function sliceTransform(i: number, startA: number, endA: number): string {
             @mouseleave="onSliceLeave" />
         </g>
 
-        <!-- Outside Labels Lines -->
-        <g v-if="labelMode === 'outside'">
-          <polyline
+        <!-- Outside leader lines -->
+        <g v-if="labelMode === 'outside'" style="pointer-events:none">
+          <path
             v-for="(s, i) in slices"
-            :key="`line-${i}`"
-            :points="`${s.px1},${s.py1} ${s.px2},${s.py2} ${s.px3},${s.py3}`"
+            :key="`leader-${i}`"
+            :d="s.leaderPath"
             fill="none"
-            stroke="var(--color-border)"
-            stroke-width="1.5"
-            :opacity="s.pct > 0.02 ? Math.min(1, progress * 1.5) : 0" />
+            stroke="var(--color-muted-foreground)"
+            stroke-width="1"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            :opacity="s.pct > 0.02 ? 0.5 : 0" />
         </g>
 
         <!-- Slice labels -->
@@ -193,10 +211,10 @@ function sliceTransform(i: number, startA: number, endA: number): string {
             :y="s.ly"
             :text-anchor="labelMode === 'outside' ? s.textAnchor : 'middle'"
             dominant-baseline="middle"
-            :font-size="labelMode === 'outside' ? 12 : 11"
-            :font-weight="labelMode === 'outside' ? 500 : 600"
+            :font-size="labelMode === 'outside' ? 11.5 : 11"
+            :font-weight="labelMode === 'outside' ? '500' : '600'"
             :fill="labelMode === 'outside' ? 'var(--color-foreground)' : 'white'"
-            :opacity="s.pct > 0.05 ? 1 : 0">
+            :opacity="s.pct > 0.04 ? 1 : 0">
             {{ s.label }}
           </text>
         </template>
