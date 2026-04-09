@@ -310,8 +310,8 @@ const subLabelFontSize = computed(() => Math.max(9,  props.size * 0.055))
 // ─────────────────────────────────────────────
 const textCy = computed(() => {
   if (props.showNeedle) {
-    // Push below the hub — the hub is at cy, so we go below
-    return cy.value + hubR.value + r.value * 0.18
+    // Push further down into the needle-free safe zone (the gap at the bottom)
+    return cy.value + r.value * 0.45
   }
   // Default: slight downward nudge toward arc's visual center
   return cy.value + r.value * 0.08
@@ -401,9 +401,9 @@ const ballRadius = computed(() => props.ballRadius ?? props.strokeWidth * 0.65)
         <!-- Center text — always rendered last (on top of needle) -->
         <foreignObject
           :x="cx - size * 0.38"
-          :y="textCy - (showNeedle ? size * 0.13 : size * 0.2)"
+          :y="textCy - size * 0.1"
           :width="size * 0.76"
-          :height="showNeedle ? size * 0.26 : size * 0.4"
+          :height="size * 0.22"
         >
           <div xmlns="http://www.w3.org/1999/xhtml"
             class="w-full h-full flex flex-col items-center justify-center text-center">
@@ -479,9 +479,9 @@ const ballRadius = computed(() => props.ballRadius ?? props.strokeWidth * 0.65)
         <!-- Center text — on top of needle -->
         <foreignObject
           :x="cx - size * 0.38"
-          :y="textCy - (showNeedle ? size * 0.13 : size * 0.18)"
+          :y="textCy - size * 0.1"
           :width="size * 0.76"
-          :height="showNeedle ? size * 0.26 : size * 0.36"
+          :height="size * 0.22"
         >
           <div xmlns="http://www.w3.org/1999/xhtml"
             class="w-full h-full flex flex-col items-center justify-center text-center">
