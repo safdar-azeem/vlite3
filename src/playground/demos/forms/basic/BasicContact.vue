@@ -18,11 +18,16 @@ const contactSchema: IForm[] = [
     type: 'select',
     required: true,
     value: 'RECEIVING',
+    props: {
+      showSelectedIcon: true,
+    },
+    disabled: true,
     options: [
       {
         label: 'Receiving (Income)',
         value: 'RECEIVING',
         description: 'Incoming revenue / sales',
+        icon: 'lucide:receipt',
       },
       {
         label: 'Giving (Expense)',
