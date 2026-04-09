@@ -226,6 +226,8 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
     v-model:isOpen="isOpen"
     :close-on-select="false"
     :selectable="true"
+    :searchable="false"
+    :remote="false"
     :disabled="disabled || readonly">
     <template #trigger>
       <div
@@ -323,7 +325,21 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
         @select="handleSelect"
         @close="isOpen = false"
         @load-more="$emit('load-more')"
-        @search="(q) => $emit('search', q)" />
+        @search="(q) => $emit('search', q)">
+        
+        <template #menu v-if="$slots.menu">
+          <slot name="menu" />
+        </template>
+        <template #item="slotProps" v-if="$slots.item">
+          <slot name="item" v-bind="slotProps" />
+        </template>
+        <template #header v-if="$slots.header">
+          <slot name="header" />
+        </template>
+        <template #footer v-if="$slots.footer">
+          <slot name="footer" />
+        </template>
+      </DropdownMenu>
     </template>
   </Dropdown>
 </template>
