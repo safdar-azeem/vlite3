@@ -30,6 +30,8 @@ interface Props {
   remote?: boolean
   debounceTime?: number
   direction?: 'ltr' | 'rtl'
+  emptyMessage?: string
+  searchEmptyMessage?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -49,6 +51,7 @@ const props = withDefaults(defineProps<Props>(), {
   remote: false,
   debounceTime: 300,
   direction: 'ltr',
+  emptyMessage: 'No options found',
 })
 
 const emit = defineEmits<{
@@ -63,8 +66,13 @@ const searchQuery = ref('')
 const { getMenuId, getAllRecursiveIds } = useDropdownIds()
 
 const tEmpty = computed(() => {
+  if (searchQuery.value && searchQuery.value.trim() !== '') {
+    if (props.searchEmptyMessage) return props.searchEmptyMessage
+    return `No results found for "${searchQuery.value}"`
+  }
   const res = $t('vlite.dropdown.empty')
-  return res !== 'vlite.dropdown.empty' ? res : 'No options found'
+  if (res !== 'vlite.dropdown.empty') return res
+  return props.emptyMessage
 })
 
 const tSearch = computed(() => {
@@ -84,8 +92,7 @@ const normalizedOptions = computed<IDropdownOption[]>(() => {
 })
 
 const showSearch = computed(() => {
-  if (props.remote) return props.searchable
-  return props.searchable && (normalizedOptions.value.length || 0) > 9
+  return props.searchable && (normalizedOptions.value.length || 0) > 5
 })
 
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
@@ -284,7 +291,7 @@ const shouldShowChevron = (option: IDropdownOption): boolean => {
       ref="containerRef"
       :tabindex="showSearch ? -1 : 0"
       role="menu"
-      v-if="normalizedOptions.length > 0 || $slots.menu"
+      v-if="normalizedOptions.length > 0 || $slots.menu || filteredOptions.length === 0"
       :class="[
         'w-full p-1 space-y-0.5 overflow-y-auto overflow-x-hidden focus:outline-none flex-1 scrollbar-thin',
         props.class,
@@ -293,7 +300,7 @@ const shouldShowChevron = (option: IDropdownOption): boolean => {
       @mousemove="handleMouseMove"
       @scroll="handleScroll">
       <div
-        v-if="filteredOptions.length === 0 && normalizedOptions.length > 0 && !loading"
+        v-if="filteredOptions.length === 0 && !loading"
         class="px-2 py-6 text-center text-sm text-muted-foreground">
         {{ tEmpty }}
       </div>
