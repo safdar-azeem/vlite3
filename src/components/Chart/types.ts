@@ -172,3 +172,86 @@ export interface CircleChartProps {
   /** Stroke cap style */
   lineCap?: StrokeLineCap
 }
+
+// ─────────────────────────────────────────────
+// GaugeChart
+// ─────────────────────────────────────────────
+
+/** Visual rendering mode for GaugeChart */
+export type GaugeVariant = 'arc' | 'ticks' | 'slim'
+
+/** A colored zone segment on the gauge arc */
+export interface GaugeZone {
+  /** Start of zone (absolute value, not percent) */
+  from: number
+  /** End of zone (absolute value, not percent) */
+  to: number
+  /** CSS color for this zone */
+  color: string
+}
+
+export interface GaugeChartProps {
+  // ── Core data ──────────────────────────────────
+  /** Current value */
+  value: number
+  /** Minimum value on the scale */
+  min?: number
+  /** Maximum value on the scale */
+  max?: number
+
+  // ── Visual variant ────────────────────────────
+  /** arc: thick gradient arc. ticks: segmented dash ring. slim: thin minimal arc. */
+  variant?: GaugeVariant
+
+  // ── Dimensions ───────────────────────────────
+  /** SVG bounding diameter in px */
+  size?: number
+  /** Stroke width for the arc (arc & slim variants) */
+  strokeWidth?: number
+  /** Opening gap at the bottom of the gauge, in degrees (default 60) */
+  gapAngle?: number
+
+  // ── Colors ───────────────────────────────────
+  /** Semantic color name ('primary', 'success', etc.) or any CSS color */
+  color?: ChartColor
+  /** Background track color */
+  trackColor?: string
+  /** Apply a gradient to the progress arc */
+  gradient?: boolean
+
+  // ── Ticks variant ────────────────────────────
+  /** Total number of tick marks (ticks variant) */
+  tickCount?: number
+  /** Gap between tick marks in degrees (ticks variant) */
+  tickGap?: number
+  /** Thickness of each individual tick mark in px */
+  tickWidth?: number
+
+  // ── Labels ───────────────────────────────────
+  /** Show the current value in the center */
+  showValue?: boolean
+  /** Custom formatter — receives (value, pct) */
+  formatValue?: (v: number, pct: number) => string
+  /** Primary label below the value */
+  label?: string
+  /** Secondary sublabel */
+  sublabel?: string
+
+  // ── Needle ───────────────────────────────────
+  /** Show a pointer needle (arc and slim variants) */
+  showNeedle?: boolean
+  /** CSS color for the needle */
+  needleColor?: string
+
+  // ── Zones ────────────────────────────────────
+  /** Color zones rendered as arc segments beneath the progress arc */
+  zones?: GaugeZone[]
+
+  // ── Line cap ─────────────────────────────────
+  /** Cap style for the progress arc */
+  lineCap?: StrokeLineCap
+
+  // ── Animation ────────────────────────────────
+  /** Play an entry animation on mount and value change */
+  animate?: boolean
+}
