@@ -33,7 +33,6 @@ const gaugeControls = [
       { label: 'Ticks', value: 'ticks' },
       { label: 'Slim',  value: 'slim' },
       { label: 'Ball',  value: 'ball' },
-      { label: 'Dual',  value: 'dual' },
     ],
   },
   {
@@ -85,14 +84,14 @@ const zoneValue = ref(76)
         <ChartControlPanel :controls="gaugeControls" v-model="gaugeOpts" />
 
         <p class="text-sm text-muted-foreground">
-          Single component, three variants. Switch between <strong>Arc</strong>, <strong>Ticks</strong>,
-          and <strong>Slim</strong> modes — all props update live. Use the slot for full center customization.
+          Single component, four variants. Switch between <strong>Arc</strong>, <strong>Ticks</strong>,
+          <strong>Slim</strong>, and <strong>Ball</strong> modes — all props update live.
         </p>
 
         <div class="bg-card rounded-xl border border-border p-8 flex justify-center">
           <GaugeChart
             :value="gaugeOpts.value as number"
-            :variant="gaugeOpts.variant as 'arc' | 'ticks' | 'slim' | 'ball' | 'dual'"
+            :variant="gaugeOpts.variant as 'arc' | 'ticks' | 'slim' | 'ball'"
             :color="gaugeOpts.color as string"
             :gradient="gaugeOpts.gradient as boolean"
             :show-value="gaugeOpts.showValue as boolean"
@@ -112,12 +111,12 @@ const zoneValue = ref(76)
     </DemoSection>
 
     <!-- ═══════════════════════════════════════════════
-         ALL FIVE VARIANTS SIDE BY SIDE
+         ALL FOUR VARIANTS SIDE BY SIDE
     ════════════════════════════════════════════════ -->
-    <DemoSection title="Gauge Chart — All Five Variants" :code="sourceCode">
+    <DemoSection title="Gauge Chart — All Four Variants" :code="sourceCode">
       <div class="space-y-3">
         <p class="text-sm text-muted-foreground">
-          One component, five variants — all share the same API. Pick the one that fits your design context.
+          One component, four variants — all share the same API. Pick the one that fits your design context.
         </p>
         <div class="bg-card rounded-xl border border-border p-8">
           <div class="flex flex-wrap gap-12 justify-center items-end">
@@ -128,10 +127,6 @@ const zoneValue = ref(76)
             <div class="flex flex-col items-center gap-3">
               <span class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Ball</span>
               <GaugeChart :value="87" variant="ball" color="success" :size="180" :stroke-width="18" label="Budget" sublabel="of $1,200" />
-            </div>
-            <div class="flex flex-col items-center gap-3">
-              <span class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Dual</span>
-              <GaugeChart :value="58" variant="dual" color="primary" compare-color="#4b5563" :compare-value="100" :size="180" :stroke-width="18" label="Percentage" value-label="Current" compare-label="Month goal" />
             </div>
             <div class="flex flex-col items-center gap-3">
               <span class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Ticks</span>
@@ -286,70 +281,7 @@ const zoneValue = ref(76)
       </div>
     </DemoSection>
 
-    <!-- ═══════════════════════════════════════════════
-         DUAL VARIANT — SHOWCASE
-    ════════════════════════════════════════════════ -->
-    <DemoSection title="Gauge Chart — Dual Variant" :code="sourceCode">
-      <div class="space-y-3">
-        <p class="text-sm text-muted-foreground">
-          The <code>dual</code> variant stacks <strong>two arcs</strong> at the same radius — the current value
-          in your accent color, and the goal/target in a muted secondary color. A built-in legend row labels them.
-        </p>
-        <div class="bg-card rounded-xl border border-border p-8">
-          <div class="flex flex-wrap gap-12 justify-center items-end">
-            <!-- Exact replica from image 2 -->
-            <GaugeChart
-              :value="58"
-              variant="dual"
-              color="primary"
-              compare-color="#4b5563"
-              :compare-value="100"
-              :size="240"
-              :stroke-width="22"
-              :gap-angle="58"
-              label="Percentage"
-              value-label="Current"
-              compare-label="Month goal"
-            />
 
-            <!-- Revenue vs target -->
-            <GaugeChart
-              :value="8400"
-              :min="0"
-              :max="15000"
-              variant="dual"
-              color="success"
-              compare-color="#374151"
-              :compare-value="12000"
-              :size="220"
-              :stroke-width="20"
-              :gap-angle="60"
-              :format-value="(v) => `$${(v / 1000).toFixed(1)}k`"
-              label="Revenue"
-              value-label="Actual"
-              compare-label="Q3 Target"
-            />
-
-            <!-- Storage usage -->
-            <GaugeChart
-              :value="73"
-              :min="0"
-              :max="100"
-              variant="dual"
-              color="warning"
-              compare-color="#374151"
-              :compare-value="90"
-              :size="200"
-              :stroke-width="18"
-              :gap-angle="60"
-              label="Storage"
-              value-label="Used"
-              compare-label="Limit"
-            />
-          </div>
-        </div>
-      </div>
-    </DemoSection>
 
     <!-- ═══════════════════════════════════════════════
          ZONES
