@@ -178,7 +178,7 @@ export interface CircleChartProps {
 // ─────────────────────────────────────────────
 
 /** Visual rendering mode for GaugeChart */
-export type GaugeVariant = 'arc' | 'ticks' | 'slim'
+export type GaugeVariant = 'arc' | 'ticks' | 'slim' | 'ball' | 'dual'
 
 /** A colored zone segment on the gauge arc */
 export interface GaugeZone {
@@ -226,6 +226,22 @@ export interface GaugeChartProps {
   tickGap?: number
   /** Thickness of each individual tick mark in px */
   tickWidth?: number
+
+  // ── Ball variant ─────────────────────────────
+  /** Radius of the glowing orb at the arc tip. Defaults to strokeWidth * 0.65 */
+  ballRadius?: number
+
+  // ── Dual variant ─────────────────────────────
+  /** Target/goal value to compare against (dual variant) */
+  compareValue?: number
+  /** Color of the comparison/goal arc (dual). Defaults to muted. */
+  compareColor?: string
+  /** Legend label for the main value arc (dual) */
+  valueLabel?: string
+  /** Legend label for the comparison arc (dual) */
+  compareLabel?: string
+  /** Show the legend row below the gauge (dual) */
+  showLegend?: boolean
 
   // ── Labels ───────────────────────────────────
   /** Show the current value in the center */
