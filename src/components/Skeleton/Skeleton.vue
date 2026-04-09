@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { ref, shallowRef, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { normalizeBone } from './types'
 import type { AnyBone, SkeletonResult, ResponsiveBones, SkeletonProps } from './types'
 import { getRegisteredBones, resolveResponsive, getGlobalConfig } from './shared'
@@ -42,7 +42,8 @@ const containerWidth = ref(0)
 const containerHeight = ref(0)
 const isDark = ref(false)
 const uid = Math.random().toString(36).slice(2, 8)
-const dynamicBones = ref<SkeletonResult | null>(null)
+
+const dynamicBones = shallowRef<SkeletonResult | null>(null)
 
 const globalConfig = getGlobalConfig()
 
@@ -284,11 +285,12 @@ onUnmounted(() => {
     <div
       v-if="showSkeleton && activeBones"
       data-boneyard-overlay="true"
-      :style="`position:absolute;inset:0;overflow:hidden;opacity:${transitioning ? 0 : 1};${transitionMs > 0 ? `transition:opacity ${transitionMs}ms ease-out;` : ''}`">
+      :style="`position:absolute;inset:0;overflow:hidden;opacity:${transitioning ? 0 : 1};${transitionMs > 0 ? `transition:opacity ${transitionMs}ms ease-out;` : ''}pointer-events:none;will-change:opacity;contain:strict;`">
       <div style="position: relative; width: 100%; height: 100%">
         <div
           v-for="(bone, i) in activeBones.bones"
           :key="`${i}-${(bone as any).x ?? (bone as any)[0]}`"
+          v-memo="[bone, scaleY, resolvedColor, animationStyle, isDark, staggerMs]"
           data-boneyard-bone="true"
           :style="getOuterWrapperStyle(bone, scaleY, i)">
           <div :style="getInnerBoneStyle(bone, resolvedColor)">
@@ -298,17 +300,17 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <component v-if="animationStyle === 'pulse'" :is="'style'">
+        <component v-if="animationStyle === 'pulse'" :is="'style'" v-once>
           @keyframes bp-{{ uid }} { 0%, 100% { opacity: {{ PULSE_END_OPACITY }}; } 50% { opacity:
           {{ PULSE_PEAK_OPACITY }}; } }
         </component>
 
-        <component v-if="animationStyle === 'shimmer'" :is="'style'">
+        <component v-if="animationStyle === 'shimmer'" :is="'style'" v-once>
           @keyframes bs-{{ uid }} { 0% { transform: translateX(-100%); } 100% { transform:
           translateX(100%); } }
         </component>
 
-        <component v-if="staggerMs > 0" :is="'style'">
+        <component v-if="staggerMs > 0" :is="'style'" v-once>
           @keyframes by-{{ uid }} { from { opacity: 0; } to { opacity: 1; } }
         </component>
       </div>
