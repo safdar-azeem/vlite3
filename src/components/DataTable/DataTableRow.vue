@@ -122,10 +122,11 @@ const rowId = computed(() => getNestedValue(props.row, props.keyField))
 
 const getSizeClass = () => {
   const { size, compact, cellBordered } = props
-  if (size === 'xs' || compact) return `py-1.5! -text-fs-1.5! ${cellBordered ? 'px-3!' : 'pr-3 max-sm:pr-10!'}`
-  if (size === 'sm') return `py-2! -text-fs-1.5! ${cellBordered ? 'px-4!' : 'pr-4 max-sm:pr-10!'}`
-  if (size === 'lg') return `py-4! text-base ${cellBordered ? 'px-6!' : 'pr-6 max-sm:pr-12!'}`
-  return `py-3! -text-fs-1.5! ${cellBordered ? 'px-5!' : 'pr-5! max-sm:pr-10!'}`
+  if (size === 'xs' || compact)
+    return `py-1.5! -text-fs-1.5! ${cellBordered ? 'px-3!' : 'pr-3 max-sm:pr-10!'}`
+  if (size === 'sm') return `py-2! -text-fs-1.5! ${cellBordered ? 'px-3!' : 'pr-4 max-sm:pr-10!'}`
+  if (size === 'lg') return `py-4! text-base ${cellBordered ? 'px-4!' : 'pr-6 max-sm:pr-12!'}`
+  return `py-3! -text-fs-1.5! ${cellBordered ? 'px-3.5!' : 'pr-5! max-sm:pr-10!'}`
 }
 
 const handleRowClick = () => {
@@ -160,7 +161,9 @@ const handleSelect = () => {
       class="align-middle overflow-hidden max-w-[400px] whitespace-normal wrap-break-word"
       :style="{
         ...(header.width && !/(?:^|\s|:)w-/.test(header.width) ? { width: header.width } : {}),
-        ...(header.minWidth && !/(?:^|\s|:)min-w-/.test(header.minWidth) ? { minWidth: header.minWidth } : {}),
+        ...(header.minWidth && !/(?:^|\s|:)min-w-/.test(header.minWidth)
+          ? { minWidth: header.minWidth }
+          : {}),
       }"
       :class="[
         getSizeClass(),
