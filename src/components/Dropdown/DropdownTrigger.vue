@@ -27,14 +27,18 @@ const props = withDefaults(defineProps<Props>(), {
 <template>
   <Button
     :text="selectedLabel || placeholder"
-    :iconRight="(disabled || readonly) ? undefined : 'iconamoon:arrow-down-2'"
+    :iconRight="disabled || readonly ? undefined : 'iconamoon:arrow-down-2'"
     variant="outline"
     :disabled="disabled"
     :dir="direction"
     v-bind="triggerProps"
     :icon="selectedIcon || triggerProps?.icon"
-    class="w-full justify-between! font-normal px-2.5!"
-    :class="[className, readonly && !disabled ? 'pointer-events-none' : '']"
+    class="w-full font-normal px-2.5!"
+    :class="[
+      className,
+      readonly && !disabled ? 'pointer-events-none justify-start!' : '',
+      disabled || readonly ? 'justify-start!' : 'justify-between!',
+    ]"
     icon-right-class="ml-auto!"
     :data-testid="$attrs['data-testid'] || 'dropdown-trigger'" />
 </template>
