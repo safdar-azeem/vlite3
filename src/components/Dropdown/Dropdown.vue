@@ -27,6 +27,7 @@ const props = withDefaults(
     modelValue?: any
     className?: string
     emptyMessage?: string
+    searchEmptyMessage?: string
     position?: TooltTipPlacement
     closeOnSelect?: boolean
     toggleSelection?: boolean
@@ -422,19 +423,12 @@ const cancelSelection = () => {
           <slot />
         </span>
         <DropdownMenu
-          v-if="
-            (disabled || readonly)
-              ? false
-              : normalizedPropsOptions.length ||
-                combinedOptions.length ||
-                $slots.menu ||
-                $slots.item ||
-                remote ||
-                searchable
-          "
+          v-if="!(disabled || readonly)"
           :options="normalizedPropsOptions"
           :cachedOptions="combinedOptions"
           :class="className"
+          :emptyMessage="emptyMessage"
+          :searchEmptyMessage="searchEmptyMessage"
           :selected="currentValue"
           :selectedIndex="selectedIndex"
           :maxHeight="maxHeight"
