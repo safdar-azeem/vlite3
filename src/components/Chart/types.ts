@@ -106,7 +106,7 @@ export interface BarChartProps {
 // PieChart
 // ─────────────────────────────────────────────
 
-export type PieLabelMode = 'percent' | 'value' | 'label' | 'none'
+export type PieLabelMode = 'percent' | 'value' | 'label' | 'none' | 'outside'
 export type LegendPosition = 'right' | 'bottom'
 
 export interface PieChartProps {
