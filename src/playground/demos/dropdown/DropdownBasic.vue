@@ -14,30 +14,9 @@ const val1 = ref('1')
     <div class="flex items-center gap-4">
       <Dropdown
         closeOnSelect
-        :options="[
-          {
-            value: '1',
-            label: 'Dashboard',
-            icon: 'https://cdn.prod.website-files.com/666ad77562dfabab1eb27f63/6747850440da96e6bc2d78b3_friso_ai3.webp',
-            confirmation: true,
-          },
-          {
-            value: '2',
-            label: 'Settings',
-            icon: 'lucide:settings',
-          },
-          {
-            value: '3',
-            label: 'Profile',
-            emoji: '🚀',
-          },
-          {
-            value: '4',
-            label: 'Logout',
-            icon: 'lucide:log-out',
-            disabled: true,
-          },
-        ]"
+        empty-message="Data not found."
+        :options="[]"
+        :searchable="true"
         :selected="val1"
         @on-select="(opt) => (val1 = opt.value)">
         <template #trigger>
