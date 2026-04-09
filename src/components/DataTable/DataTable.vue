@@ -430,6 +430,7 @@ const txtCancelBtn = computed(() => {
                   size,
                   striped,
                   hoverable,
+                  cellBordered,
                 ]"
                 :row="row"
                 :headers="headers"
