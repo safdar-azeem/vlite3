@@ -32,6 +32,8 @@ const gaugeControls = [
       { label: 'Arc',   value: 'arc' },
       { label: 'Ticks', value: 'ticks' },
       { label: 'Slim',  value: 'slim' },
+      { label: 'Ball',  value: 'ball' },
+      { label: 'Dual',  value: 'dual' },
     ],
   },
   {
@@ -90,7 +92,7 @@ const zoneValue = ref(76)
         <div class="bg-card rounded-xl border border-border p-8 flex justify-center">
           <GaugeChart
             :value="gaugeOpts.value as number"
-            :variant="gaugeOpts.variant as 'arc' | 'ticks' | 'slim'"
+            :variant="gaugeOpts.variant as 'arc' | 'ticks' | 'slim' | 'ball' | 'dual'"
             :color="gaugeOpts.color as string"
             :gradient="gaugeOpts.gradient as boolean"
             :show-value="gaugeOpts.showValue as boolean"
@@ -110,66 +112,44 @@ const zoneValue = ref(76)
     </DemoSection>
 
     <!-- ═══════════════════════════════════════════════
-         ALL THREE VARIANTS SIDE BY SIDE
+         ALL FIVE VARIANTS SIDE BY SIDE
     ════════════════════════════════════════════════ -->
-    <DemoSection title="Gauge Chart — Three Variants" :code="sourceCode">
+    <DemoSection title="Gauge Chart — All Five Variants" :code="sourceCode">
       <div class="space-y-3">
         <p class="text-sm text-muted-foreground">
-          All three variants share the same API. Pick the one that fits your context.
+          One component, five variants — all share the same API. Pick the one that fits your design context.
         </p>
         <div class="bg-card rounded-xl border border-border p-8">
           <div class="flex flex-wrap gap-12 justify-center items-end">
-            <!-- Arc variant -->
             <div class="flex flex-col items-center gap-3">
               <span class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Arc</span>
-              <GaugeChart
-                :value="86"
-                variant="arc"
-                color="primary"
-                :size="200"
-                :stroke-width="22"
-                label="Speed Score"
-                sublabel="Last audit"
-              />
+              <GaugeChart :value="86" variant="arc" color="primary" :size="180" :stroke-width="20" label="Speed Score" sublabel="Last audit" />
             </div>
-
-            <!-- Ticks variant -->
+            <div class="flex flex-col items-center gap-3">
+              <span class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Ball</span>
+              <GaugeChart :value="87" variant="ball" color="success" :size="180" :stroke-width="18" label="Budget" sublabel="of $1,200" />
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <span class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Dual</span>
+              <GaugeChart :value="58" variant="dual" color="primary" compare-color="#4b5563" :compare-value="100" :size="180" :stroke-width="18" label="Percentage" value-label="Current" compare-label="Month goal" />
+            </div>
             <div class="flex flex-col items-center gap-3">
               <span class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Ticks</span>
-              <GaugeChart
-                :value="68"
-                variant="ticks"
-                color="success"
-                :size="200"
-                :stroke-width="14"
-                sublabel="On track for 80% target"
-              >
+              <GaugeChart :value="68" variant="ticks" color="success" :size="180" :stroke-width="14" sublabel="On track for 80%">
                 <template #footer>
-                  <button
-                    class="mt-2 px-4 py-1.5 rounded-lg border border-border text-xs font-semibold text-foreground hover:bg-muted transition-colors"
-                  >
-                    Show details
-                  </button>
+                  <button class="mt-2 px-4 py-1.5 rounded-lg border border-border text-xs font-semibold text-foreground hover:bg-muted transition-colors">Show details</button>
                 </template>
               </GaugeChart>
             </div>
-
-            <!-- Slim variant -->
             <div class="flex flex-col items-center gap-3">
               <span class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Slim</span>
-              <GaugeChart
-                :value="57"
-                variant="slim"
-                color="teal"
-                :size="200"
-                :stroke-width="10"
-                label="Completion"
-              />
+              <GaugeChart :value="57" variant="slim" color="teal" :size="180" :stroke-width="10" label="Completion" />
             </div>
           </div>
         </div>
       </div>
     </DemoSection>
+
 
     <!-- ═══════════════════════════════════════════════
          COLORS & THEMES
@@ -243,6 +223,128 @@ const zoneValue = ref(76)
               :tick-count="60"
               :tick-width="2.5"
               sublabel="Excellent performance"
+            />
+          </div>
+        </div>
+      </div>
+    </DemoSection>
+
+    <!-- ═══════════════════════════════════════════════
+         BALL VARIANT — SHOWCASE
+    ════════════════════════════════════════════════ -->
+    <DemoSection title="Gauge Chart — Ball Variant" :code="sourceCode">
+      <div class="space-y-3">
+        <p class="text-sm text-muted-foreground">
+          The <code>ball</code> variant renders a thick arc with a <strong>glowing orb at the progress tip</strong>.
+          Perfect for budgets, savings progress, and goal tracking widgets.
+        </p>
+        <div class="bg-card rounded-xl border border-border p-8">
+          <div class="flex flex-wrap gap-12 justify-center items-end">
+            <!-- Budget tracker from image -->
+            <GaugeChart
+              :value="1052.98"
+              :min="0"
+              :max="1200"
+              variant="ball"
+              color="success"
+              :size="240"
+              :stroke-width="22"
+              :gap-angle="55"
+              :format-value="(v) => `$${v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`"
+              sublabel="of $1,200"
+            />
+
+            <!-- Savings goal -->
+            <GaugeChart
+              :value="7400"
+              :min="0"
+              :max="10000"
+              variant="ball"
+              color="primary"
+              :size="220"
+              :stroke-width="20"
+              :gap-angle="60"
+              :format-value="(v) => `$${(v / 1000).toFixed(1)}k`"
+              sublabel="of $10k saved"
+            />
+
+            <!-- Fitness calories -->
+            <GaugeChart
+              :value="1840"
+              :min="0"
+              :max="2500"
+              variant="ball"
+              color="orange"
+              :size="200"
+              :stroke-width="18"
+              :gap-angle="65"
+              :format-value="(v) => `${Math.round(v)}`"
+              sublabel="kcal of 2,500 goal"
+            />
+          </div>
+        </div>
+      </div>
+    </DemoSection>
+
+    <!-- ═══════════════════════════════════════════════
+         DUAL VARIANT — SHOWCASE
+    ════════════════════════════════════════════════ -->
+    <DemoSection title="Gauge Chart — Dual Variant" :code="sourceCode">
+      <div class="space-y-3">
+        <p class="text-sm text-muted-foreground">
+          The <code>dual</code> variant stacks <strong>two arcs</strong> at the same radius — the current value
+          in your accent color, and the goal/target in a muted secondary color. A built-in legend row labels them.
+        </p>
+        <div class="bg-card rounded-xl border border-border p-8">
+          <div class="flex flex-wrap gap-12 justify-center items-end">
+            <!-- Exact replica from image 2 -->
+            <GaugeChart
+              :value="58"
+              variant="dual"
+              color="primary"
+              compare-color="#4b5563"
+              :compare-value="100"
+              :size="240"
+              :stroke-width="22"
+              :gap-angle="58"
+              label="Percentage"
+              value-label="Current"
+              compare-label="Month goal"
+            />
+
+            <!-- Revenue vs target -->
+            <GaugeChart
+              :value="8400"
+              :min="0"
+              :max="15000"
+              variant="dual"
+              color="success"
+              compare-color="#374151"
+              :compare-value="12000"
+              :size="220"
+              :stroke-width="20"
+              :gap-angle="60"
+              :format-value="(v) => `$${(v / 1000).toFixed(1)}k`"
+              label="Revenue"
+              value-label="Actual"
+              compare-label="Q3 Target"
+            />
+
+            <!-- Storage usage -->
+            <GaugeChart
+              :value="73"
+              :min="0"
+              :max="100"
+              variant="dual"
+              color="warning"
+              compare-color="#374151"
+              :compare-value="90"
+              :size="200"
+              :stroke-width="18"
+              :gap-angle="60"
+              label="Storage"
+              value-label="Used"
+              compare-label="Limit"
             />
           </div>
         </div>
