@@ -13,6 +13,8 @@ interface Props {
   options?: (IDropdownOption | string | number)[]
   placeholder?: string
   placeholderI18n?: string
+  emptyMessage?: string
+  searchEmptyMessage?: string
   disabled?: boolean
   readonly?: boolean
   searchable?: boolean
@@ -37,6 +39,7 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   readonly: false,
   searchable: true,
+  emptyMessage: 'No options found',
   variant: 'outline',
   size: 'md',
   maxVisible: 3,
@@ -308,6 +311,8 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
         :options="normalizedOptions"
         :cachedOptions="combinedOptions"
         :selected="modelValue"
+        :emptyMessage="emptyMessage"
+        :searchEmptyMessage="searchEmptyMessage"
         class="min-w-[300px]"
         :loading="loading || hydration.isHydrating.value"
         :hasMore="hasMore"
