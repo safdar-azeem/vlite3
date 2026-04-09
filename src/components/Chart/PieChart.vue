@@ -3,7 +3,7 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import type { ChartDataPoint } from './types'
 import { CHART_COLORS, getColor, formatNumber, arcPath, animateProgress } from './utils'
 
-export type PieLabelMode = 'percent' | 'value' | 'label' | 'none'
+export type PieLabelMode = 'percent' | 'value' | 'label' | 'none' | 'outside'
 export type LegendPosition = 'right' | 'bottom'
 
 export interface PieChartProps {
@@ -52,7 +52,7 @@ onUnmounted(() => cancelAnim?.())
 // ─── Computed geometry ────────────────────────
 const cx = computed(() => props.size / 2)
 const cy = computed(() => props.size / 2)
-const outerR = computed(() => props.size / 2 - 4)
+const outerR = computed(() => props.size / 2 - (props.labelMode === 'outside' ? 44 : 4))
 const innerR = computed(() => props.donut ? outerR.value * (props.innerRadius / 100) : 0)
 const total = computed(() => props.data.reduce((a, b) => a + b.value, 0) || 1)
 
@@ -69,8 +69,27 @@ const slices = computed(() => {
     // Mid-angle for label placement
     const mid = ((startA + endA) / 2) * (Math.PI / 180)
     const labelR = outerR.value * 0.65 + (innerR.value * 0.35)
-    const lx = cx.value + labelR * Math.cos(mid)
-    const ly = cy.value + labelR * Math.sin(mid)
+    
+    let lx = cx.value + labelR * Math.cos(mid)
+    let ly = cy.value + labelR * Math.sin(mid)
+
+    let px1 = 0, py1 = 0, px2 = 0, py2 = 0, px3 = 0, py3 = 0
+    let textAnchor = 'middle'
+
+    if (props.labelMode === 'outside') {
+      const isRight = Math.cos(mid) >= 0
+      px1 = cx.value + outerR.value * Math.cos(mid)
+      py1 = cy.value + outerR.value * Math.sin(mid)
+      const breakR = outerR.value + 15
+      px2 = cx.value + breakR * Math.cos(mid)
+      py2 = cy.value + breakR * Math.sin(mid)
+      px3 = px2 + 10 * (isRight ? 1 : -1)
+      py3 = py2
+      
+      lx = px3 + 6 * (isRight ? 1 : -1)
+      ly = py3
+      textAnchor = isRight ? 'start' : 'end'
+    }
 
     const path = arcPath(cx.value, cy.value, outerR.value, startA, endA, innerR.value)
 
@@ -78,8 +97,9 @@ const slices = computed(() => {
     if (props.labelMode === 'percent') label = `${Math.round(pct * 100)}%`
     else if (props.labelMode === 'value') label = formatNumber(d.value)
     else if (props.labelMode === 'label') label = d.label
+    else if (props.labelMode === 'outside') label = `${formatNumber(d.value)} (${Math.round(pct * 100)}%)`
 
-    return { d, path, color, lx, ly, label, pct, startA, endA }
+    return { d, path, color, lx, ly, label, pct, startA, endA, px1, py1, px2, py2, px3, py3, textAnchor }
   })
 })
 
@@ -152,6 +172,18 @@ function sliceTransform(i: number, startA: number, endA: number): string {
             @mouseleave="onSliceLeave" />
         </g>
 
+        <!-- Outside Labels Lines -->
+        <g v-if="labelMode === 'outside'">
+          <polyline
+            v-for="(s, i) in slices"
+            :key="`line-${i}`"
+            :points="`${s.px1},${s.py1} ${s.px2},${s.py2} ${s.px3},${s.py3}`"
+            fill="none"
+            stroke="var(--color-border)"
+            stroke-width="1.5"
+            :opacity="s.pct > 0.02 ? Math.min(1, progress * 1.5) : 0" />
+        </g>
+
         <!-- Slice labels -->
         <template v-if="labelMode !== 'none'">
           <text
@@ -159,12 +191,12 @@ function sliceTransform(i: number, startA: number, endA: number): string {
             :key="`lbl-${i}`"
             :x="s.lx"
             :y="s.ly"
-            text-anchor="middle"
+            :text-anchor="labelMode === 'outside' ? s.textAnchor : 'middle'"
             dominant-baseline="middle"
-            font-size="11"
-            font-weight="600"
-            fill="white"
-            :opacity="s.pct > 0.06 ? 1 : 0">
+            :font-size="labelMode === 'outside' ? 12 : 11"
+            :font-weight="labelMode === 'outside' ? 500 : 600"
+            :fill="labelMode === 'outside' ? 'var(--color-foreground)' : 'white'"
+            :opacity="s.pct > 0.05 ? 1 : 0">
             {{ s.label }}
           </text>
         </template>
