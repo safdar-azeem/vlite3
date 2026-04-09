@@ -423,7 +423,16 @@ const cancelSelection = () => {
           <slot />
         </span>
         <DropdownMenu
-          v-if="!(disabled || readonly)"
+          v-if="
+            (disabled || readonly)
+              ? false
+              : normalizedPropsOptions.length ||
+                combinedOptions.length ||
+                $slots.menu ||
+                $slots.item ||
+                remote ||
+                searchable
+          "
           :options="normalizedPropsOptions"
           :cachedOptions="combinedOptions"
           :class="className"
