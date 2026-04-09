@@ -6,7 +6,7 @@ import { resolveColor, animateProgress, clamp } from './utils'
 // Types
 // ─────────────────────────────────────────────
 
-export type GaugeVariant = 'arc' | 'ticks' | 'slim' | 'ball' | 'dual'
+export type GaugeVariant = 'arc' | 'ticks' | 'slim' | 'ball'
 export type GaugeLineCap = 'round' | 'butt' | 'square'
 
 export interface GaugeZone {
@@ -31,16 +31,15 @@ export interface GaugeChartProps {
   /**
    * arc  — Thick gradient arc (speedometer style)
    * ticks — Segmented radial dash ring
-   * slim  — Thin minimal dual-arc
+   * slim  — Thin minimal arc
    * ball  — Arc with a glowing orb at the progress tip
-   * dual  — Two arcs: current value vs goal/target
    */
   variant?: GaugeVariant
 
   // ── Dimensions ───────────────────────────────
   /** SVG bounding diameter in px */
   size?: number
-  /** Stroke width for the arc (arc, slim, ball, dual) */
+  /** Stroke width for the arc */
   strokeWidth?: number
   /** Opening gap at the bottom of the gauge, in degrees (default 60) */
   gapAngle?: number
@@ -62,23 +61,8 @@ export interface GaugeChartProps {
   tickWidth?: number
 
   // ── Ball variant ─────────────────────────────
-  /** Radius of the glowing orb at the arc tip (ball variant). Defaults to strokeWidth * 0.65 */
+  /** Radius of the glowing orb at the arc tip. Defaults to strokeWidth * 0.65 */
   ballRadius?: number
-
-  // ── Dual variant ─────────────────────────────
-  /**
-   * Target / goal value to compare against (dual variant).
-   * Rendered as a separate arc segment in `compareColor`.
-   */
-  compareValue?: number
-  /** Color of the comparison/goal arc (dual). Defaults to muted gray. */
-  compareColor?: string
-  /** Legend label for the main value arc (dual) */
-  valueLabel?: string
-  /** Legend label for the comparison arc (dual) */
-  compareLabel?: string
-  /** Show the legend row below the gauge (dual) */
-  showLegend?: boolean
 
   // ── Labels ───────────────────────────────────
   /** Show the current value in the center */
@@ -129,9 +113,6 @@ const props = withDefaults(defineProps<GaugeChartProps>(), {
   animate: true,
   lineCap: 'round',
   showNeedle: false,
-  showLegend: true,
-  valueLabel: 'Current',
-  compareLabel: 'Goal',
 })
 
 const uid = Math.random().toString(36).slice(2, 8)
@@ -149,10 +130,7 @@ const startDeg = computed(() => 90 + props.gapAngle / 2)
 const cx = computed(() => props.size / 2)
 const cy = computed(() => props.size / 2)
 
-/**
- * Main arc radius — inset by half-strokeWidth + small margin so the
- * stroke stays within the viewBox on all variants.
- */
+/** Main arc radius — inset so the stroke stays within the viewBox */
 const r = computed(() => {
   const margin = props.variant === 'ticks' ? 8 : props.variant === 'ball' ? props.strokeWidth * 0.65 + 2 : 4
   return (props.size - props.strokeWidth) / 2 - margin
@@ -183,15 +161,9 @@ function arcPathStr(fromDeg: number, toDeg: number, radius: number): string {
 // Animation
 // ─────────────────────────────────────────────
 
-const percentage  = computed(() => toPercent(props.value))
-const animPct     = ref(props.animate ? 0 : percentage.value)
-
-// Secondary animPct for compare arc (dual variant)
-const comparePct     = computed(() => props.compareValue != null ? toPercent(props.compareValue) : 1)
-const animComparePct = ref(props.animate ? 0 : comparePct.value)
-
+const percentage = computed(() => toPercent(props.value))
+const animPct    = ref(props.animate ? 0 : percentage.value)
 let cancelAnim: (() => void) | null = null
-let cancelCompareAnim: (() => void) | null = null
 
 function runAnimation(to: number) {
   cancelAnim?.()
@@ -199,28 +171,9 @@ function runAnimation(to: number) {
   cancelAnim = animateProgress(1000, (t) => { animPct.value = start + (to - start) * t })
 }
 
-function runCompareAnimation(to: number) {
-  cancelCompareAnim?.()
-  const start = animComparePct.value
-  cancelCompareAnim = animateProgress(1000, (t) => { animComparePct.value = start + (to - start) * t })
-}
-
-onMounted(() => {
-  if (props.animate) {
-    runAnimation(percentage.value)
-    runCompareAnimation(comparePct.value)
-  }
-})
-
-watch(percentage, (to) => {
-  if (props.animate) runAnimation(to); else animPct.value = to
-})
-
-watch(comparePct, (to) => {
-  if (props.animate) runCompareAnimation(to); else animComparePct.value = to
-})
-
-onUnmounted(() => { cancelAnim?.(); cancelCompareAnim?.() })
+onMounted(() => { if (props.animate) runAnimation(percentage.value) })
+watch(percentage, (to) => { if (props.animate) runAnimation(to); else animPct.value = to })
+onUnmounted(() => cancelAnim?.())
 
 // ─────────────────────────────────────────────
 // Colors
@@ -237,11 +190,10 @@ const gradientStart = computed(() => {
   return map[props.color ?? 'primary'] ?? resolvedColor.value
 })
 
-const trackColor     = computed(() => props.trackColor ?? 'var(--color-muted)')
-const compareColor   = computed(() => props.compareColor ?? 'var(--color-muted)')
+const trackColor = computed(() => props.trackColor ?? 'var(--color-muted)')
 
 // ─────────────────────────────────────────────
-// Arc paths (shared by arc / ball / slim / dual)
+// Arc paths
 // ─────────────────────────────────────────────
 
 const trackArcPath = computed(() =>
@@ -250,13 +202,6 @@ const trackArcPath = computed(() =>
 
 const progressArcPath = computed(() => {
   const span = sweepDeg.value * animPct.value
-  if (span < 0.01) return ''
-  return arcPathStr(startDeg.value, startDeg.value + span, r.value)
-})
-
-// Compare arc for dual variant (goal/target arc)
-const compareArcPath = computed(() => {
-  const span = sweepDeg.value * animComparePct.value
   if (span < 0.01) return ''
   return arcPathStr(startDeg.value, startDeg.value + span, r.value)
 })
@@ -281,30 +226,36 @@ const zoneArcPaths = computed(() => {
 const needleAngle = computed(() => startDeg.value + sweepDeg.value * animPct.value)
 
 const needlePath = computed(() => {
-  const nLen    = r.value * 0.72
-  const nBase   = props.strokeWidth * 0.7
+  // Needle: tip points toward arc, base is near the center hub
+  // nLen: how far the tip extends (toward the arc)
+  // nTail: how far the tail extends backward (short counterbalance)
+  // The pivot/hub is at cx, cy — needle extends nLen forward, nTail back
+  const nLen    = r.value * 0.76
+  const nTail   = r.value * 0.12     // short tail behind pivot
+  const nBase   = props.strokeWidth * 0.55  // half-width at pivot
+
   const angle   = needleAngle.value
   const rad     = (angle * Math.PI) / 180
   const perpRad = rad + Math.PI / 2
-  const tx  = cx.value + nLen * Math.cos(rad)
-  const ty  = cy.value + nLen * Math.sin(rad)
-  const b1x = cx.value + nBase * Math.cos(perpRad)
-  const b1y = cy.value + nBase * Math.sin(perpRad)
-  const b2x = cx.value - nBase * Math.cos(perpRad)
-  const b2y = cy.value - nBase * Math.sin(perpRad)
-  return `M ${tx},${ty} L ${b1x},${b1y} L ${b2x},${b2y} Z`
+
+  // Tip (forward direction)
+  const tx = cx.value + nLen * Math.cos(rad)
+  const ty = cy.value + nLen * Math.sin(rad)
+  // Tail (backward direction)
+  const bx = cx.value - nTail * Math.cos(rad)
+  const by = cy.value - nTail * Math.sin(rad)
+  // Side base width at pivot
+  const b1x = bx + nBase * Math.cos(perpRad)
+  const b1y = by + nBase * Math.sin(perpRad)
+  const b2x = bx - nBase * Math.cos(perpRad)
+  const b2y = by - nBase * Math.sin(perpRad)
+
+  // Diamond-like: tip → right-base → tail-point → left-base
+  return `M ${tx},${ty} L ${b1x},${b1y} L ${bx},${by} L ${b2x},${b2y} Z`
 })
 
-// ─────────────────────────────────────────────
-// Ball variant — glowing orb at arc tip
-// ─────────────────────────────────────────────
-
-const ballTipAngle = computed(() => startDeg.value + sweepDeg.value * animPct.value)
-const ballTipPos   = computed(() => {
-  const [x, y] = polarToCart(ballTipAngle.value, r.value)
-  return { x, y }
-})
-const ballRadius = computed(() => props.ballRadius ?? props.strokeWidth * 0.65)
+// Hub circle radius
+const hubR = computed(() => props.strokeWidth * 0.42)
 
 // ─────────────────────────────────────────────
 // Ticks variant
@@ -352,8 +303,30 @@ const valueFontSize    = computed(() => Math.max(14, props.size * 0.155))
 const labelFontSize    = computed(() => Math.max(10, props.size * 0.065))
 const subLabelFontSize = computed(() => Math.max(9,  props.size * 0.055))
 
-// Vertical nudge: for semicircles the arc's visual focus sits above center
-const textCy = computed(() => cy.value + r.value * 0.08)
+// ─────────────────────────────────────────────
+// Center text position
+// When needle is shown, shift text DOWN below the needle hub so they
+// don't conflict. When needle is hidden, center text normally.
+// ─────────────────────────────────────────────
+const textCy = computed(() => {
+  if (props.showNeedle) {
+    // Push below the hub — the hub is at cy, so we go below
+    return cy.value + hubR.value + r.value * 0.18
+  }
+  // Default: slight downward nudge toward arc's visual center
+  return cy.value + r.value * 0.08
+})
+
+// ─────────────────────────────────────────────
+// Ball variant — glowing orb at arc tip
+// ─────────────────────────────────────────────
+
+const ballTipPos = computed(() => {
+  const angle = startDeg.value + sweepDeg.value * animPct.value
+  const [x, y] = polarToCart(angle, r.value)
+  return { x, y }
+})
+const ballRadius = computed(() => props.ballRadius ?? props.strokeWidth * 0.65)
 </script>
 
 <template>
@@ -380,34 +353,15 @@ const textCy = computed(() => cy.value + r.value * 0.08)
           <stop offset="100%" :stop-color="resolvedColor"  />
         </linearGradient>
 
-        <!-- Needle hub radial -->
+        <!-- Needle hub radial gradient -->
         <radialGradient :id="`nh-${uid}`">
           <stop offset="0%"   stop-color="var(--color-background)" />
           <stop offset="100%" :stop-color="resolvedColor" />
         </radialGradient>
 
-        <!-- Glow filter for ball tip -->
-        <filter :id="`glow-${uid}`" x="-80%" y="-80%" width="260%" height="260%">
-          <feGaussianBlur stdDeviation="4" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-
-        <!-- Drop shadow for arc variant -->
+        <!-- Drop shadow for arc -->
         <filter :id="`gs-${uid}`" x="-20%" y="-20%" width="140%" height="140%">
           <feDropShadow dx="0" dy="2" stdDeviation="4" flood-opacity="0.18" />
-        </filter>
-
-        <!-- Soft glow for dual arc -->
-        <filter :id="`dg-${uid}`" x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur stdDeviation="6" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
         </filter>
       </defs>
 
@@ -430,16 +384,27 @@ const textCy = computed(() => cy.value + r.value * 0.08)
           :stroke-width="strokeWidth" :stroke-linecap="lineCap"
           :filter="`url(#gs-${uid})`" />
 
-        <!-- Needle -->
+        <!-- Needle (rendered before text so text stays on top) -->
         <g v-if="showNeedle">
-          <path :d="needlePath" :fill="needleColor ?? resolvedColor" opacity="0.9" />
-          <circle :cx="cx" :cy="cy" :r="strokeWidth * 0.45"
-            :fill="`url(#nh-${uid})`" stroke="var(--color-background)" stroke-width="2" />
+          <path :d="needlePath"
+            :fill="needleColor ?? resolvedColor"
+            :fill-opacity="0.88"
+          />
+          <!-- Hub circle -->
+          <circle :cx="cx" :cy="cy" :r="hubR"
+            :fill="`url(#nh-${uid})`"
+            stroke="var(--color-background)"
+            stroke-width="2.5"
+          />
         </g>
 
-        <!-- Center text -->
-        <foreignObject :x="cx - size * 0.38" :y="textCy - size * 0.2"
-          :width="size * 0.76" :height="size * 0.4">
+        <!-- Center text — always rendered last (on top of needle) -->
+        <foreignObject
+          :x="cx - size * 0.38"
+          :y="textCy - (showNeedle ? size * 0.13 : size * 0.2)"
+          :width="size * 0.76"
+          :height="showNeedle ? size * 0.26 : size * 0.4"
+        >
           <div xmlns="http://www.w3.org/1999/xhtml"
             class="w-full h-full flex flex-col items-center justify-center text-center">
             <slot name="center" :value="value" :percentage="percentage" :displayValue="displayValue">
@@ -462,7 +427,6 @@ const textCy = computed(() => cy.value + r.value * 0.08)
           :stroke-width="tickWidth" stroke-linecap="round"
           :opacity="tk.filled ? 1 : 0.45" />
 
-        <!-- Center text -->
         <foreignObject :x="cx - size * 0.38" :y="textCy - size * 0.22"
           :width="size * 0.76" :height="size * 0.44">
           <div xmlns="http://www.w3.org/1999/xhtml"
@@ -499,16 +463,26 @@ const textCy = computed(() => cy.value + r.value * 0.08)
           :stroke="gradient ? `url(#gg-${uid})` : resolvedColor"
           :stroke-width="strokeWidth" :stroke-linecap="lineCap" />
 
-        <!-- Needle -->
+        <!-- Needle (before text) -->
         <g v-if="showNeedle">
-          <path :d="needlePath" :fill="needleColor ?? resolvedColor" opacity="0.85" />
-          <circle :cx="cx" :cy="cy" :r="strokeWidth * 0.4"
-            fill="var(--color-background)" :stroke="resolvedColor" stroke-width="2" />
+          <path :d="needlePath"
+            :fill="needleColor ?? resolvedColor"
+            :fill-opacity="0.88"
+          />
+          <circle :cx="cx" :cy="cy" :r="hubR"
+            fill="var(--color-background)"
+            :stroke="resolvedColor"
+            stroke-width="2.5"
+          />
         </g>
 
-        <!-- Center text -->
-        <foreignObject :x="cx - size * 0.38" :y="textCy - size * 0.18"
-          :width="size * 0.76" :height="size * 0.36">
+        <!-- Center text — on top of needle -->
+        <foreignObject
+          :x="cx - size * 0.38"
+          :y="textCy - (showNeedle ? size * 0.13 : size * 0.18)"
+          :width="size * 0.76"
+          :height="showNeedle ? size * 0.26 : size * 0.36"
+        >
           <div xmlns="http://www.w3.org/1999/xhtml"
             class="w-full h-full flex flex-col items-center justify-center text-center">
             <slot name="center" :value="value" :percentage="percentage" :displayValue="displayValue">
@@ -526,11 +500,11 @@ const textCy = computed(() => cy.value + r.value * 0.08)
            Thick arc with a glowing orb at the tip
       ══════════════════════════════════════ -->
       <g v-else-if="variant === 'ball'">
-        <!-- Track (faded, rounded caps) -->
+        <!-- Track (faded) -->
         <path :d="trackArcPath" fill="none" :stroke="trackColor"
           :stroke-width="strokeWidth" stroke-linecap="round" opacity="0.35" />
 
-        <!-- Progress arc (round start, butt end — ball is the cap) -->
+        <!-- Progress arc -->
         <path v-if="progressArcPath" :d="progressArcPath" fill="none"
           :stroke="gradient ? `url(#gg-${uid})` : resolvedColor"
           :stroke-width="strokeWidth" stroke-linecap="round" />
@@ -543,22 +517,13 @@ const textCy = computed(() => cy.value + r.value * 0.08)
         <!-- Glowing orb at tip -->
         <g v-if="animPct > 0.005">
           <!-- Outer glow ring -->
-          <circle
-            :cx="ballTipPos.x" :cy="ballTipPos.y"
-            :r="ballRadius * 1.9"
-            :fill="resolvedColor"
-            opacity="0.18"
-          />
+          <circle :cx="ballTipPos.x" :cy="ballTipPos.y"
+            :r="ballRadius * 1.9" :fill="resolvedColor" opacity="0.18" />
           <!-- Mid glow ring -->
-          <circle
-            :cx="ballTipPos.x" :cy="ballTipPos.y"
-            :r="ballRadius * 1.35"
-            :fill="resolvedColor"
-            opacity="0.22"
-          />
-          <!-- Main orb: white center, colored border -->
-          <circle
-            :cx="ballTipPos.x" :cy="ballTipPos.y"
+          <circle :cx="ballTipPos.x" :cy="ballTipPos.y"
+            :r="ballRadius * 1.35" :fill="resolvedColor" opacity="0.22" />
+          <!-- Main orb: white center with colored border -->
+          <circle :cx="ballTipPos.x" :cy="ballTipPos.y"
             :r="ballRadius"
             fill="var(--color-background)"
             :stroke="resolvedColor"
@@ -584,51 +549,11 @@ const textCy = computed(() => cy.value + r.value * 0.08)
           </div>
         </foreignObject>
       </g>
-
-      <!-- ══════════════════════════════════════
-           DUAL VARIANT
-           Two stacked arcs: current value vs goal/target
-      ══════════════════════════════════════ -->
-      <g v-else-if="variant === 'dual'">
-        <!-- Base track (full arc, very subtle) -->
-        <path :d="trackArcPath" fill="none" :stroke="trackColor"
-          :stroke-width="strokeWidth" stroke-linecap="round" opacity="0.15" />
-
-        <!-- Compare/goal arc (behind, muted) -->
-        <path v-if="compareArcPath" :d="compareArcPath" fill="none"
-          :stroke="compareColor"
-          :stroke-width="strokeWidth" stroke-linecap="round"
-          opacity="0.85" />
-
-        <!-- Current value arc (foreground, colored + glow) -->
-        <path v-if="progressArcPath" :d="progressArcPath" fill="none"
-          :stroke="gradient ? `url(#gg-${uid})` : resolvedColor"
-          :stroke-width="strokeWidth" stroke-linecap="round"
-          :filter="`url(#dg-${uid})`" />
-
-        <!-- Center text -->
-        <foreignObject :x="cx - size * 0.4" :y="textCy - size * 0.22"
-          :width="size * 0.8" :height="size * 0.44">
-          <div xmlns="http://www.w3.org/1999/xhtml"
-            class="w-full h-full flex flex-col items-center justify-center text-center">
-            <slot name="center" :value="value" :percentage="percentage" :displayValue="displayValue">
-              <span v-if="label" class="font-medium"
-                :style="{ fontSize: `${subLabelFontSize * 1.1}px`, color: 'var(--color-muted-foreground)' }">
-                {{ label }}
-              </span>
-              <span v-if="showValue" class="font-black tabular-nums leading-none"
-                :style="{ fontSize: `${valueFontSize}px`, color: 'var(--color-foreground)' }">
-                {{ displayValue }}
-              </span>
-            </slot>
-          </div>
-        </foreignObject>
-      </g>
     </svg>
 
-    <!-- ── Labels below SVG (non-ticks, non-dual) ── -->
+    <!-- ── Labels below SVG ── -->
     <div
-      v-if="(label || sublabel) && variant !== 'ticks' && variant !== 'dual' && variant !== 'ball'"
+      v-if="(label || sublabel) && variant !== 'ticks' && variant !== 'ball'"
       class="text-center -mt-1"
     >
       <p v-if="label" class="font-semibold text-foreground"
@@ -641,23 +566,7 @@ const textCy = computed(() => cy.value + r.value * 0.08)
       </p>
     </div>
 
-    <!-- ── Dual variant legend row ─────────────────── -->
-    <div v-if="variant === 'dual' && showLegend" class="flex items-center justify-center gap-5 -mt-1">
-      <div class="flex items-center gap-1.5">
-        <span class="inline-block w-2 h-2 rounded-full" :style="{ background: resolvedColor }" />
-        <span class="font-medium" :style="{ fontSize: `${subLabelFontSize}px`, color: 'var(--color-muted-foreground)' }">
-          {{ valueLabel }}
-        </span>
-      </div>
-      <div class="flex items-center gap-1.5">
-        <span class="inline-block w-2 h-2 rounded-full" :style="{ background: compareColor }" />
-        <span class="font-medium" :style="{ fontSize: `${subLabelFontSize}px`, color: 'var(--color-muted-foreground)' }">
-          {{ compareLabel }}
-        </span>
-      </div>
-    </div>
-
-    <!-- ── Footer slot (ticks CTA, etc.) ──────────── -->
+    <!-- ── Footer slot (ticks CTA, etc.) ── -->
     <slot name="footer" :value="value" :percentage="percentage" :displayValue="displayValue" />
   </div>
 </template>
