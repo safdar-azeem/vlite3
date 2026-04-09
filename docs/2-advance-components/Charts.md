@@ -412,7 +412,7 @@ A pie or donut chart with animated arc draw, explode-on-hover effect, optional c
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `labelMode` | `'percent' \| 'value' \| 'label' \| 'none'` | `'percent'` | What to display inside each slice. Use `'none'` to suppress slice labels entirely. |
+| `labelMode` | `'percent' \| 'value' \| 'label' \| 'outside' \| 'none'` | `'percent'` | What to display on each slice. `'outside'` draws labels and spider lines outside the chart. Use `'none'` to suppress. |
 | `showLegend` | `boolean` | `true` | Show the item legend. |
 | `legendPosition` | `'right' \| 'bottom'` | `'right'` | Where the legend sits relative to the chart. |
 
