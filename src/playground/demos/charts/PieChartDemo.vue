@@ -31,6 +31,7 @@ const pieControls = [
       { label: 'Percent', value: 'percent' },
       { label: 'Value',   value: 'value' },
       { label: 'Label',   value: 'label' },
+      { label: 'Outside', value: 'outside' },
       { label: 'None',    value: 'none' },
     ],
   },
@@ -67,7 +68,7 @@ const pieControls = [
             :size="pieOpts.size as number"
             :donut="pieOpts.donut as boolean"
             :inner-radius="pieOpts.innerRadius as number"
-            :label-mode="pieOpts.labelMode as 'percent' | 'value' | 'label' | 'none'"
+            :label-mode="pieOpts.labelMode as 'percent' | 'value' | 'label' | 'outside' | 'none'"
             :legend-position="pieOpts.legendPosition as 'right' | 'bottom'"
             :show-legend="pieOpts.showLegend as boolean"
             :show-tooltip="pieOpts.showTooltip as boolean"
