@@ -301,11 +301,9 @@ const shouldShowChevron = (option: IDropdownOption): boolean => {
       @scroll="handleScroll">
       <div
         v-if="filteredOptions.length === 0 && !loading"
-        class="px-2 py-6 text-center text-sm text-muted-foreground whitespace-pre-line break-words flex flex-col items-center justify-center gap-2">
-        <Icon icon="lucide:inbox" class="w-7.5 h-7.5 text-muted-foreground/65" />
-        <span class="-text-fs-1 font-medium">
-          {{ tEmpty }}
-        </span>
+        class="flex flex-col items-center justify-center px-4 py-8 text-center text-sm text-muted-foreground whitespace-pre-line break-words">
+        <Icon icon="lucide:inbox" class="w-8 h-8 mb-2 opacity-70" />
+        <span>{{ tEmpty }}</span>
       </div>
 
       <template v-if="layout === 'grouped'">
