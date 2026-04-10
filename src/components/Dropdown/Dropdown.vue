@@ -425,9 +425,6 @@ const cancelSelection = () => {
       </template>
 
       <template #default>
-        <span tabindex="0" v-if="$slots?.default">
-          <slot />
-        </span>
         <DropdownMenu
           v-if="
             disabled || readonly
@@ -463,8 +460,9 @@ const cancelSelection = () => {
           @close="handleClose"
           @load-more="$emit('load-more')"
           @search="(q) => $emit('search', q)">
-          <template #menu v-if="$slots.menu">
+          <template #menu v-if="$slots.menu || $slots?.default">
             <slot name="menu" />
+            <slot />
           </template>
           <template #item="slotProps" v-if="$slots.item">
             <slot name="item" v-bind="slotProps" />
