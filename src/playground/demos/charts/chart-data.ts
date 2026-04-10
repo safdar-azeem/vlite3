@@ -81,3 +81,54 @@ export const trafficSources = [
   { label: 'Referral', value: 10 },
   { label: 'Email', value: 6 },
 ]
+
+// ─── Dynamic Generators (For live density controls) ───────────────────────────
+
+export function generateTimeSeriesData(days: number) {
+  const data = [];
+  const date = new Date();
+  date.setDate(date.getDate() - days);
+  let val = 5000 + Math.random() * 2000;
+  const colors = ['var(--color-chart-1)', 'var(--color-chart-5)', 'var(--color-chart-2)', 'var(--color-chart-3)', 'var(--color-chart-4)', 'var(--color-chart-6)'];
+  
+  for (let i = 0; i < days; i++) {
+    date.setDate(date.getDate() + 1);
+    val += (Math.random() - 0.5) * 800;
+    if (val < 1000) val = 1000 + Math.random() * 500;
+    data.push({
+      label: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      value: Math.round(val),
+      color: colors[i % colors.length]
+    });
+  }
+  return data;
+}
+
+export function generateMultiSeriesData(days: number) {
+  const labels = [];
+  const ds1 = [];
+  const ds2 = [];
+  const ds3 = [];
+  const date = new Date();
+  date.setDate(date.getDate() - days);
+  let v1 = 4000, v2 = 3000, v3 = 1500;
+  
+  for (let i = 0; i < days; i++) {
+    date.setDate(date.getDate() + 1);
+    labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+    v1 += (Math.random() - 0.45) * 500; if (v1 < 500) v1 = 500;
+    v2 += (Math.random() - 0.45) * 400; if (v2 < 500) v2 = 500;
+    v3 += (Math.random() - 0.45) * 300; if (v3 < 500) v3 = 500;
+    ds1.push(Math.round(v1));
+    ds2.push(Math.round(v2));
+    ds3.push(Math.round(v3));
+  }
+  return {
+    labels,
+    datasets: [
+      { label: 'Revenue', data: ds1, color: 'var(--color-chart-1)' },
+      { label: 'Expenses', data: ds2, color: 'var(--color-chart-4)' },
+      { label: 'Profit', data: ds3, color: 'var(--color-chart-2)' },
+    ]
+  };
+}
