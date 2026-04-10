@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import LineChart from '@/components/Chart/LineChart.vue'
 import DemoSection from '../../DemoSection.vue'
 import ChartControlPanel from './ChartControlPanel.vue'
 import sourceCode from './LineChartDemo.vue?raw'
-import { revenueData, multiLineLabels, multiLineDatasets, sparkData } from './chart-data'
+import { revenueData, multiLineLabels, multiLineDatasets, sparkData, generateTimeSeriesData, generateMultiSeriesData } from './chart-data'
 
 // ─── Interactive Controls ──────────────────────
 const lineOpts = ref({
+  datasetSize: '30',
   // Line behavior
   smooth: true,
   fill: true,
@@ -29,6 +30,17 @@ const lineOpts = ref({
 })
 
 const lineControls = [
+  {
+    key: 'datasetSize',
+    label: 'Data Range',
+    type: 'select' as const,
+    options: [
+      { label: '7 Days', value: '7' },
+      { label: '30 Days', value: '30' },
+      { label: '6 Months', value: '180' },
+      { label: '1 Year', value: '365' },
+    ],
+  },
   // ─ Line style
   { key: 'smooth',       label: 'Smooth',      type: 'toggle' as const },
   { key: 'fill',         label: 'Fill Area',   type: 'toggle' as const },
@@ -47,22 +59,23 @@ const lineControls = [
   { key: 'showTooltip',  label: 'Tooltip',     type: 'toggle' as const },
   { key: 'height',       label: 'Height',      type: 'slider' as const, min: 150, max: 450, step: 10 },
 ]
+
+// ─── Dynamic Data ──────────────────────────────
+const dynamicSingleData = computed(() => generateTimeSeriesData(Number(lineOpts.value.datasetSize)))
+const dynamicMultiData = computed(() => generateMultiSeriesData(Number(lineOpts.value.datasetSize)))
+
 </script>
 
 <template>
   <div class="space-y-12">
-    <!-- ═══════════════════════════════════════════════
-         LINE CHART
-    ════════════════════════════════════════════════ -->
     <DemoSection title="Line Chart — Single Series" :code="sourceCode">
       <div class="space-y-4 w-full">
-        <!-- Interactive Controls -->
         <ChartControlPanel :controls="lineControls" v-model="lineOpts" />
 
-        <p class="text-sm text-muted-foreground">Smooth bezier curve with gradient fill. Monthly revenue data.</p>
+        <p class="text-sm text-muted-foreground">Smooth bezier curve with gradient fill. Automatic label skipping and slanting when dense.</p>
         <div class="bg-card rounded-xl border border-border p-6">
           <LineChart
-            :data="revenueData"
+            :data="dynamicSingleData"
             :height="lineOpts.height as number"
             :smooth="lineOpts.smooth as boolean"
             :fill="lineOpts.fill as boolean"
@@ -88,8 +101,8 @@ const lineControls = [
         <p class="text-sm text-muted-foreground">Multiple datasets with legend, hover crosshair, and tooltip.</p>
         <div class="bg-card rounded-xl border border-border p-6">
           <LineChart
-            :datasets="multiLineDatasets"
-            :labels="multiLineLabels"
+            :datasets="dynamicMultiData.datasets"
+            :labels="dynamicMultiData.labels"
             :height="280"
             :fill="false"
             :show-dots="true"
