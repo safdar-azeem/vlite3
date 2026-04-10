@@ -44,7 +44,7 @@ When the `#header` and `#main` slots are both provided, it automatically enters 
 | `breadcrumbLabels`   | `Record<string, string>`                           | `—`           | Override auto-generated route labels by path, e.g. `{ '/settings': 'Preferences' }`.                                                                                                                      |
 | `breadcrumbHomeIcon` | `string`                                           | `'lucide:home'`| Icon for the home breadcrumb segment.                                                                                                                                                                      |
 | `breadcrumbClass`    | `string`                                           | `''`          | Extra CSS classes applied to the breadcrumb wrapper element.                                                                                                                                               |
-| `layoutMode`         | `'classic' \| 'sidebar-first' \| 'dashboard'`      | `'sidebar-first'`| Controls the layout structure when both `#header` and `#main` are used. `dashboard` renders a floating interface with inset rounded content areas and automatically zeroed-padding on mobile.              |
+| `layoutMode`         | `'classic' \| 'sidebar-first' \| 'dashboard' \| 'dock'` | `'sidebar-first'`| Controls the layout structure when both `#header` and `#main` are used. `dashboard` renders a floating interface. `dock` renders a minimal floating sidebar that auto-sizes to its content height. |
 
 ---
 
@@ -319,6 +319,43 @@ Use `layout-mode="dashboard"` to create a floating content area interface while 
         <Icon icon="lucide:menu" />
       </button>
       <span class="font-semibold">{{ pageTitle || 'Overview' }}</span>
+    </div>
+  </template>
+
+  <template #main>
+    <div class="p-6">
+      <RouterView />
+    </div>
+  </template>
+</Navbar>
+```
+
+### Dock Layout (Minimal Floating Sidebar)
+
+Use `layout-mode="dock"` to render a compact, vertically centered sidebar that only takes the height of its content — like a macOS-style dock.
+
+```vue
+<Navbar variant="sidebar" layout-mode="dock" :compact="true" class="w-16">
+  <template #logo>
+    <div class="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center text-sm font-bold">
+      V
+    </div>
+  </template>
+
+  <template #default>
+    <SidebarMenu :items="menuItems" :compact="true" :show-tooltip="true" render-mode="popover" />
+  </template>
+
+  <template #right>
+    <Avatar size="xs" fallback="JD" />
+  </template>
+
+  <template #header="{ toggle, pageTitle }">
+    <div class="h-12 border-b bg-white flex items-center px-4 w-full">
+      <button class="md:hidden mr-4" @click="toggle">
+        <Icon icon="lucide:menu" />
+      </button>
+      <span class="font-semibold">{{ pageTitle || 'Dashboard' }}</span>
     </div>
   </template>
 
