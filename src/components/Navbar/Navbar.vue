@@ -70,6 +70,12 @@ const layoutComponent = computed(() => {
 })
 </script>
 
+<script lang="ts">
+export default {
+  inheritAttrs: false,
+}
+</script>
+
 <template>
   <component :is="layoutComponent">
     <!-- Forward every slot from the consumer to the resolved layout component -->
