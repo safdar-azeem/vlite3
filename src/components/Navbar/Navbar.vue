@@ -426,17 +426,17 @@ const pageTitle = computed(() => {
           <slot />
         </div>
 
-        <div
-          v-if="$slots.right"
-          class="shrink-0 bg-transparent pt-2"
-          :class="props.rightClass">
+        <div v-if="$slots.right" class="shrink-0 bg-transparent pt-2" :class="props.rightClass">
           <slot name="right" />
         </div>
       </nav>
     </Transition>
 
-    <div class="flex flex-col flex-1 min-w-0 h-full overflow-hidden bg-background rounded-xl border border-border/70 shadow-sm">
-      <header v-if="$slots.header" class="w-full shrink-0 z-20 bg-background border-b border-border/50">
+    <div
+      class="flex flex-col flex-1 min-w-0 h-full overflow-hidden bg-background rounded-xl border border-border/70 shadow-sm">
+      <header
+        v-if="$slots.header"
+        class="w-full shrink-0 z-20 bg-background border-b border-border/50">
         <slot
           name="header"
           :is-open="isMobileMenuOpen"
@@ -451,7 +451,9 @@ const pageTitle = computed(() => {
         v-if="$slots.main"
         ref="layoutMainRef"
         class="flex-1 overflow-y-auto w-full relative h-full flex flex-col min-h-0 scrollbar-thin scrollbar-stable">
-        <div v-if="props.renderNestedTabs && nestedTabsItems.length > 0" class="shrink-0 w-full px-6 border-b border-border/50">
+        <div
+          v-if="props.renderNestedTabs && nestedTabsItems.length > 0"
+          class="shrink-0 w-full border-b border-border/50">
           <NavbarTabs
             v-model="activeNestedTab"
             @change="handleNestedTabClick"
