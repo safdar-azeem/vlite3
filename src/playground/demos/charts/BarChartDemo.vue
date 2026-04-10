@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import BarChart from '@/components/Chart/BarChart.vue'
 import DemoSection from '../../DemoSection.vue'
 import ChartControlPanel from './ChartControlPanel.vue'
 import sourceCode from './BarChartDemo.vue?raw'
-import { monthlyBarData, groupedBarLabels, groupedBarDatasets, hBarData } from './chart-data'
+import { monthlyBarData, groupedBarLabels, groupedBarDatasets, hBarData, generateTimeSeriesData, generateMultiSeriesData } from './chart-data'
 
 // ─── Interactive Controls ──────────────────────
 const barOpts = ref({
+  datasetSize: '30',
   orientation: 'vertical',
   barRadius: 8,
   // Axes & grid
@@ -20,13 +21,24 @@ const barOpts = ref({
   axisOpacity: 0.1,
   // Interaction
   showTooltip: true,
-  showValues: true,
+  showValues: false,
   animate: true,
   // Size
   height: 280,
 })
 
 const barControls = [
+  {
+    key: 'datasetSize',
+    label: 'Data Range',
+    type: 'select' as const,
+    options: [
+      { label: '7 Days', value: '7' },
+      { label: '30 Days', value: '30' },
+      { label: '6 Months', value: '180' },
+      { label: '1 Year', value: '365' },
+    ],
+  },
   {
     key: 'orientation',
     label: 'Orientation',
@@ -51,24 +63,25 @@ const barControls = [
   { key: 'barRadius',   label: 'Bar Radius',   type: 'slider' as const, min: 0, max: 20, step: 1 },
   { key: 'height',      label: 'Height',       type: 'slider' as const, min: 150, max: 450, step: 10 },
 ]
+
+// ─── Dynamic Data ──────────────────────────────
+const dynamicSingleData = computed(() => generateTimeSeriesData(Number(barOpts.value.datasetSize)))
+const dynamicMultiData = computed(() => generateMultiSeriesData(Number(barOpts.value.datasetSize)))
+
 </script>
 
 <template>
   <div class="space-y-12">
-    <!-- ═══════════════════════════════════════════════
-         BAR CHART
-    ════════════════════════════════════════════════ -->
     <DemoSection title="Bar Chart — Vertical" :code="sourceCode">
       <div class="space-y-4 w-full">
-        <!-- Interactive Controls -->
         <ChartControlPanel :controls="barControls" v-model="barOpts" />
 
         <p class="text-sm text-muted-foreground">
-          Animated bars with per-bar colors, tooltips, and value labels. Toggle orientation to switch between vertical and horizontal.
+          Animated bars with per-bar colors, tooltips, and value labels. Automatic label skipping and slanting when dense. Toggle orientation to switch between vertical and horizontal.
         </p>
         <div class="bg-card rounded-xl border border-border p-6">
           <BarChart
-            :data="monthlyBarData"
+            :data="dynamicSingleData"
             :height="barOpts.height as number"
             :bar-radius="barOpts.barRadius as number"
             :orientation="barOpts.orientation as 'vertical' | 'horizontal'"
@@ -91,8 +104,8 @@ const barControls = [
         <p class="text-sm text-muted-foreground">Grouped bars across multiple product lines with legend.</p>
         <div class="bg-card rounded-xl border border-border p-6">
           <BarChart
-            :datasets="groupedBarDatasets"
-            :labels="groupedBarLabels"
+            :datasets="dynamicMultiData.datasets"
+            :labels="dynamicMultiData.labels"
             :height="280"
             :bar-radius="6"
             :format-value="(v) => '$' + v.toLocaleString()" />
