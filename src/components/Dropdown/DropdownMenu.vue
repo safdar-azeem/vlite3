@@ -22,6 +22,7 @@ interface Props {
   nestedPosition?: any
   nestedOffset?: [number, number]
   selectable?: boolean
+  showEmptyState?: boolean
   layout?: 'default' | 'grouped'
   columns?: number | string
   loading?: boolean
@@ -48,6 +49,7 @@ const props = withDefaults(defineProps<Props>(), {
   loading: false,
   hasMore: false,
   searchable: true,
+  showEmptyState: true,
   remote: false,
   debounceTime: 300,
   direction: 'ltr',
@@ -291,7 +293,11 @@ const shouldShowChevron = (option: IDropdownOption): boolean => {
       ref="containerRef"
       :tabindex="showSearch ? -1 : 0"
       role="menu"
-      v-if="normalizedOptions.length > 0 || $slots.menu || filteredOptions.length === 0"
+      v-if="
+        $slots.menu || !showEmptyState
+          ? false
+          : normalizedOptions.length > 0 || filteredOptions.length === 0
+      "
       :class="[
         'w-full p-1 space-y-0.5 overflow-y-auto overflow-x-hidden focus:outline-none flex-1 scrollbar-thin',
         props.class,
@@ -300,7 +306,11 @@ const shouldShowChevron = (option: IDropdownOption): boolean => {
       @mousemove="handleMouseMove"
       @scroll="handleScroll">
       <div
-        v-if="filteredOptions.length === 0 && !loading"
+        v-if="
+          filteredOptions.length === 0 &&
+          !loading &&
+          !(normalizedOptions.length === 0 && $slots.menu)
+        "
         class="flex flex-col items-center justify-center px-4 py-8 text-center text-sm text-muted-foreground whitespace-pre-line break-words">
         <Icon icon="lucide:inbox" class="w-8 h-8 mb-2 opacity-70" />
         <span>{{ tEmpty }}</span>
