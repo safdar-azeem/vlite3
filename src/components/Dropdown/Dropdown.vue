@@ -405,7 +405,13 @@ const cancelSelection = () => {
       triggerClass="w-full"
       :styles="{ padding: '0' }">
       <template #trigger="{ isOpen }">
-        <slot name="trigger" v-bind="{ selectedLabel, selectedIcon: showSelectedIcon ? selectedIcon : undefined, isOpen }">
+        <slot
+          name="trigger"
+          v-bind="{
+            selectedLabel,
+            selectedIcon: showSelectedIcon ? selectedIcon : undefined,
+            isOpen,
+          }">
           <DropdownTrigger
             :selected-label="selectedLabel"
             :selected-icon="showSelectedIcon ? selectedIcon : undefined"
@@ -424,7 +430,7 @@ const cancelSelection = () => {
         </span>
         <DropdownMenu
           v-if="
-            (disabled || readonly)
+            disabled || readonly
               ? false
               : normalizedPropsOptions.length ||
                 combinedOptions.length ||
@@ -446,6 +452,7 @@ const cancelSelection = () => {
           :selectable="selectable"
           :direction="direction"
           :layout="layout"
+          :show-empty-state="!$slots?.default"
           :columns="columns"
           :loading="loading || isHydrating"
           :hasMore="hasMore"
@@ -456,9 +463,6 @@ const cancelSelection = () => {
           @close="handleClose"
           @load-more="$emit('load-more')"
           @search="(q) => $emit('search', q)">
-          <template #menu v-if="$slots.menu">
-            <slot name="menu" />
-          </template>
           <template #item="slotProps" v-if="$slots.item">
             <slot name="item" v-bind="slotProps" />
           </template>
