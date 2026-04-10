@@ -156,7 +156,7 @@ const menuItems: SidebarMenuItemSchema[] = [
   <div class="h-screen w-full overflow-hidden">
     <Navbar
       variant="sidebar"
-      layout-mode="classic"
+      layout-mode="dashboard"
       mobileBreakpoint="md"
       breadcrumb
       :contentClass="isSidebarCompact ? 'px-0!' : 'px-2.5'"
@@ -209,7 +209,7 @@ const menuItems: SidebarMenuItemSchema[] = [
         </div>
       </template>
 
-      <template #header="{ toggleSidebar, toggle, breadcrumbItems }">
+      <template #header="{ toggleSidebar, toggle, breadcrumbItems, pageTitle }">
         <div
           class="h-13 border-b bg-background flex items-center justify-between px-4 w-full shadow-sm">
           <div class="flex items-center gap-2 min-w-0 flex-1">
@@ -218,13 +218,10 @@ const menuItems: SidebarMenuItemSchema[] = [
               variant="ghost"
               :icon="isSidebarCompact ? 'lucide:panel-left-open' : 'lucide:panel-left-close'"
               @click="toggleCompact"
-              class="max-md:hidden shrink-0" />
+              class="max-md:hidden shrink-0 text-muted-foreground mr-2" />
 
-            <div class="font-bold text-lg flex items-center gap-2 mr-6">
-              <div class="w-7 h-7 rounded bg-primary text-white flex items-center justify-center">
-                V
-              </div>
-              Vlite3
+            <div v-if="pageTitle" class="font-semibold text-base hidden md:flex items-center mr-4 whitespace-nowrap">
+              {{ pageTitle }}
             </div>
 
             <NavbarCommandPalette
@@ -236,7 +233,7 @@ const menuItems: SidebarMenuItemSchema[] = [
 
             <div
               v-if="breadcrumbItems?.length > 1"
-              class="hidden md:flex items-center pl-3 border-l border-border ml-1">
+              class="hidden lg:flex items-center pl-3 border-l border-border ml-2">
               <Breadcrumb :items="breadcrumbItems" separator="slash" size="sm" />
             </div>
           </div>

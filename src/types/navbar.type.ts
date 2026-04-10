@@ -1,7 +1,7 @@
 export type NavbarVariant = 'header' | 'sidebar'
 export type NavbarPosition = 'fixed' | 'sticky' | 'relative' | 'absolute'
 export type NavbarCenterPosition = 'center' | 'left' | 'right'
-export type NavbarLayoutMode = 'classic' | 'sidebar-first'
+export type NavbarLayoutMode = 'classic' | 'sidebar-first' | 'dashboard'
 
 export interface NavbarItemProps {
   to?: string

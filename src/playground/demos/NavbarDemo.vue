@@ -144,6 +144,78 @@ const menuItems: SidebarMenuItemSchema[] = [
       </div>
     </DemoSection>
 
+    <DemoSection title="Modern Dashboard Layout" :code="sourceCode">
+      <p class="text-sm text-gray-500 mb-4">
+        A floating dashboard style layout with a transparent sidebar and a rounded main content area. We use <code>layout-mode="dashboard"</code>. The current route title is accessible dynamically via <code>page-title</code> in the <code>header</code> slot.
+      </p>
+      <div class="h-[600px] relative z-0 flex flex-col w-full bg-body rounded-lg overflow-hidden border">
+        <Navbar variant="sidebar" layout-mode="dashboard" class="w-64">
+          <template #logo>
+            <div class="font-bold text-xl flex items-center gap-2 px-6 pt-4 pb-2">
+              <div class="w-8 h-8 rounded-lg bg-black text-white flex items-center justify-center">
+                V
+              </div>
+              Vlite3
+            </div>
+          </template>
+
+          <template #default>
+            <SidebarMenu :items="menuItems" class="px-2" />
+          </template>
+
+          <template #header="{ toggle, pageTitle }">
+            <div
+              class="h-16 flex items-center justify-between px-6 w-full gap-4">
+              <div class="flex items-center gap-4">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  icon="lucide:sidebar"
+                  class="-ml-2 text-muted-foreground hover:text-foreground"
+                  @click="toggle" />
+                <div class="font-semibold text-lg flex items-center gap-2">
+                  <Icon icon="lucide:layout" class="w-5 h-5 text-gray-400" />
+                  {{ pageTitle || 'Overview Defaults' }}
+                </div>
+                <div class="hidden md:flex text-sm text-gray-400 gap-2 items-center ml-4">
+                  <Icon icon="lucide:home" class="w-3.5 h-3.5" /> 
+                  <span>/</span> Dashboard <span>/</span> <span class="text-foreground font-medium">Overview</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <Input
+                  placeholder="Search here..."
+                  icon="lucide:search"
+                  size="sm"
+                  class="bg-muted hidden lg:flex w-64 border-none shadow-none focus-visible:ring-1 focus-visible:ring-border" />
+                <Button variant="outline" size="sm" icon="lucide:bell" />
+                <Button variant="outline" size="sm" icon="lucide:settings" />
+                <Avatar size="sm" fallback="SA" class="bg-primary/10 text-primary ml-2 cursor-pointer border border-primary/20" />
+              </div>
+            </div>
+          </template>
+
+          <template #main>
+            <div class="p-6 h-full flex flex-col gap-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div v-for="i in 4" :key="i" class="bg-muted/30 p-6 rounded-xl border border-border/50 flex flex-col gap-2">
+                  <div class="text-xs text-muted-foreground font-medium uppercase tracking-wider">Metrics {{ i }}</div>
+                  <div class="text-2xl font-bold font-mono">1,024</div>
+                </div>
+              </div>
+              
+              <div class="flex-1 bg-muted/20 border border-border/50 rounded-xl flex items-center justify-center min-h-[200px]">
+                <div class="text-center text-muted-foreground flex flex-col items-center gap-3">
+                  <Icon icon="lucide:bar-chart-2" class="w-10 h-10 opacity-20" />
+                  <span>Main content area</span>
+                </div>
+              </div>
+            </div>
+          </template>
+        </Navbar>
+      </div>
+    </DemoSection>
+
     <DemoSection title="Nested Menus as Layout Tabs" :code="sourceCode">
       <p class="text-sm text-gray-500 mb-4">
         When using <code>renderNestedTabs="true"</code>, clicking a primary Sidebar navigation item
