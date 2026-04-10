@@ -159,19 +159,19 @@ const menuItems: SidebarMenuItemSchema[] = [
       layout-mode="dashboard"
       mobileBreakpoint="md"
       breadcrumb
-      :contentClass="isSidebarCompact ? 'px-0!' : 'px-2.5'"
+      :contentClass="isSidebarCompact ? 'px-2!' : 'px-2.5'"
       :render-nested-tabs="isSidebarCompact"
       class="border-r border-border"
       :class="isSidebarCompact ? 'w-28' : 'w-64'">
       <template #default>
-        <div :class="isSidebarCompact ? '' : 'py-3'">
+        <div>
           <SidebarMenu
             class="hidden md:flex"
             :show-tooltip="isSidebarCompact"
             :items="menuItems"
             :allow-multiple="true"
             :compact="isSidebarCompact"
-            :item-class="isSidebarCompact && 'rounded-none!'"
+            :item-class="isSidebarCompact && 'rounded-md!'"
             :render-mode="isSidebarCompact ? 'popover' : 'tree'"
             show-compact-labels
             :default-expanded="[
@@ -201,7 +201,9 @@ const menuItems: SidebarMenuItemSchema[] = [
       </template>
 
       <template #logo>
-        <div class="font-bold text-lg flex items-center gap-2 mr-6">
+        <div
+          class="font-bold text-lg flex items-center gap-2 w-full"
+          :class="isSidebarCompact ? 'flex-col justify-center' : 'flex-row'">
           <div class="w-7 h-7 rounded bg-primary text-white flex items-center justify-center">
             V
           </div>
