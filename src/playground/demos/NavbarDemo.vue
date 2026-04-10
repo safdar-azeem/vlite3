@@ -482,6 +482,60 @@ const menuItems: SidebarMenuItemSchema[] = [
       </div>
     </DemoSection>
 
+    <DemoSection title="Dock Layout (Minimal Floating Sidebar)" :code="sourceCode">
+      <p class="text-sm text-gray-500">
+        Using <code>layout-mode="dock"</code> to render a compact floating sidebar that only
+        takes the height of its content. The sidebar appears as a vertically centered
+        icon dock — perfect for minimal dashboards.
+      </p>
+      <div class="border rounded-lg overflow-hidden bg-gray-50 flex flex-col h-[500px]">
+        <Navbar
+          variant="sidebar"
+          layout-mode="dock"
+          :compact="true"
+          class="w-16"
+          mobileBreakpoint="md">
+          <template #logo>
+            <div
+              class="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center text-sm font-bold">
+              V
+            </div>
+          </template>
+
+          <template #default>
+            <SidebarMenu
+              :items="menuItems.slice(0, 4)"
+              :compact="true"
+              :show-tooltip="true"
+              render-mode="popover" />
+          </template>
+
+          <template #right>
+            <Avatar size="xs" fallback="JD" class="bg-primary/20 text-primary" />
+          </template>
+
+          <template #header="{ toggle, pageTitle }">
+            <div class="h-12 border-b bg-white flex items-center px-4 w-full">
+              <button class="md:hidden mr-4" @click="toggle">
+                <Icon icon="lucide:menu" class="w-5 h-5" />
+              </button>
+              <span class="font-semibold text-sm">{{ pageTitle || 'Dashboard' }}</span>
+            </div>
+          </template>
+
+          <template #main>
+            <div class="p-6">
+              <h2 class="text-lg font-bold mb-2">Dock Layout Preview</h2>
+              <p class="text-gray-500 text-sm">
+                The sidebar is a floating card that sizes itself to its content — not
+                full height. It's vertically centered and uses minimal space.
+              </p>
+            </div>
+          </template>
+        </Navbar>
+      </div>
+    </DemoSection>
+
     ```
   </div>
 </template>
