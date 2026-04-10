@@ -220,7 +220,9 @@ const menuItems: SidebarMenuItemSchema[] = [
               @click="toggleCompact"
               class="max-md:hidden shrink-0 text-muted-foreground mr-2" />
 
-            <div v-if="pageTitle" class="font-semibold text-base hidden md:flex items-center mr-4 whitespace-nowrap">
+            <div
+              v-if="pageTitle"
+              class="font-semibold text-base hidden md:flex items-center mr-4 whitespace-nowrap">
               {{ pageTitle }}
             </div>
 
