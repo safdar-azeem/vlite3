@@ -399,7 +399,7 @@ const pageTitle = computed(() => {
 
   <div
     v-else-if="isDashboard"
-    class="vlite-app-layout flex flex-row w-full h-full bg-muted/20 p-1.5 sm:p-2 gap-1.5 sm:gap-2 overflow-hidden">
+    class="vlite-app-layout flex flex-row w-full h-full bg-muted/20 p-0 sm:p-2 gap-0 sm:gap-2 overflow-hidden">
     <Transition
       enter-active-class="transition-all duration-300 ease-in-out"
       leave-active-class="transition-all duration-300 ease-in-out"
@@ -410,7 +410,7 @@ const pageTitle = computed(() => {
       <nav
         v-show="!sidebarHidden"
         :class="[
-          'shrink-0 h-full flex flex-col bg-background rounded-xl border border-border/70 shadow-sm overflow-hidden z-30',
+          'shrink-0 h-full flex flex-col bg-background rounded-xl max-sm:rounded-none border border-border/70 max-sm:border-0 shadow-sm overflow-hidden z-30',
           breakpointClasses.mobileTrigger === 'md:hidden' ? 'max-md:hidden' : '',
           props.class,
         ]"
@@ -433,7 +433,7 @@ const pageTitle = computed(() => {
     </Transition>
 
     <div
-      class="flex flex-col flex-1 min-w-0 h-full overflow-hidden bg-background rounded-xl border border-border/70 shadow-sm">
+      class="flex flex-col flex-1 min-w-0 h-full overflow-hidden bg-background rounded-xl max-sm:rounded-none border border-border/70 max-sm:border-0 shadow-sm">
       <header
         v-if="$slots.header"
         class="w-full shrink-0 z-20 bg-background border-b border-border/50">
