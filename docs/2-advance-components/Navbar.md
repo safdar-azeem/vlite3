@@ -44,6 +44,7 @@ When the `#header` and `#main` slots are both provided, it automatically enters 
 | `breadcrumbLabels`   | `Record<string, string>`                           | `—`           | Override auto-generated route labels by path, e.g. `{ '/settings': 'Preferences' }`.                                                                                                                      |
 | `breadcrumbHomeIcon` | `string`                                           | `'lucide:home'`| Icon for the home breadcrumb segment.                                                                                                                                                                      |
 | `breadcrumbClass`    | `string`                                           | `''`          | Extra CSS classes applied to the breadcrumb wrapper element.                                                                                                                                               |
+| `layoutMode`         | `'classic' \| 'sidebar-first' \| 'dashboard'`      | `'sidebar-first'`| Controls the layout structure when both `#header` and `#main` are used. `dashboard` renders a floating interface with inset rounded content areas and automatically zeroed-padding on mobile.              |
 
 ---
 
@@ -70,6 +71,7 @@ When the `#header` and `#main` slots are both provided, it automatically enters 
 | `sidebarVisible` | `boolean`    | Whether the desktop sidebar is currently visible (`sidebarToggle`). |
 | `toggleSidebar`  | `() => void` | Show/hide the desktop sidebar. Persisted in localStorage.           |
 | `breadcrumbItems`| `BreadcrumbItem[]` | Auto-generated breadcrumb items from the current route.       |
+| `pageTitle`      | `string`     | The page title inferred automatically from `route.meta.title` or `route.name`. |
 
 ---
 
@@ -293,6 +295,37 @@ Clicking a top-level item with children surfaces those children as tabs in the m
 
   <template #main>
     <RouterView />
+  </template>
+</Navbar>
+```
+
+### Modern Dashboard Layout
+
+Use `layout-mode="dashboard"` to create a floating content area interface while the sidebar remains fixed, typically flush to the edges on mobile.
+
+```vue
+<Navbar variant="sidebar" layout-mode="dashboard">
+  <template #logo>
+    <span class="font-bold p-4 block">Dashboard</span>
+  </template>
+
+  <template #default>
+    <SidebarMenu :items="menuItems" />
+  </template>
+
+  <template #header="{ toggle, pageTitle }">
+    <div class="h-14 border-b bg-white flex items-center px-4 w-full">
+      <button class="md:hidden mr-4" @click="toggle">
+        <Icon icon="lucide:menu" />
+      </button>
+      <span class="font-semibold">{{ pageTitle || 'Overview' }}</span>
+    </div>
+  </template>
+
+  <template #main>
+    <div class="p-6">
+      <RouterView />
+    </div>
   </template>
 </Navbar>
 ```
