@@ -44,7 +44,7 @@ When the `#header` and `#main` slots are both provided, it automatically enters 
 | `breadcrumbLabels`   | `Record<string, string>`                           | `—`           | Override auto-generated route labels by path, e.g. `{ '/settings': 'Preferences' }`.                                                                                                                      |
 | `breadcrumbHomeIcon` | `string`                                           | `'lucide:home'`| Icon for the home breadcrumb segment.                                                                                                                                                                      |
 | `breadcrumbClass`    | `string`                                           | `''`          | Extra CSS classes applied to the breadcrumb wrapper element.                                                                                                                                               |
-| `layoutMode`         | `'classic' \| 'sidebar-first' \| 'dashboard' \| 'dock'` | `'sidebar-first'`| Controls the layout structure when both `#header` and `#main` are used. `dashboard` renders a floating interface. `dock` renders a minimal floating sidebar that auto-sizes to its content height. |
+| `layoutMode`         | `'classic' \| 'sidebar-first' \| 'dashboard' \| 'dock'` | `'sidebar-first'`| Controls the layout structure when both `#header` and `#main` are used. <br>• `classic`: Header on top, Sidebar+Main below. <br>• `sidebar-first`: Sidebar spans full height, Header+Main content to the right. <br>• `dashboard`: Floating rounded containers with a muted background. <br>• `dock`: Minimalist floating sidebar that auto-sizes to its content height, vertically centered on the left. |
 
 ---
 
@@ -730,3 +730,28 @@ export interface NavbarProps {
 - When using `mobileMenuVariant="dropdown"`, the parent must be a positioned container for correct stacking.
 - The mobile `SidePanel` and `dropdown` menus mirror `#left`, `#center`, and `#right` content. Using `#mobile-menu` overrides them entirely.
 - `sidebarToggle` is only functional in Layout Mode. It has no effect in standalone `variant="header"` or `variant="sidebar"` usage.
+
+---
+
+## Premium Dashboard Aesthetics
+
+To achieve a "wow" factor with the `Navbar` component, consider these design strategies:
+
+### 1. The "Floating Dock" Aesthetic
+Use `layout-mode="dock"` with a narrow, compact sidebar. This creates a highly focused, modern workspace feel.
+- **Tip:** Use `:compact="true"` and `class="w-16"` on the `Navbar`.
+- **Tip:** Set the `#main` area background to `bg-background` and the parent container (or `Navbar` prop) to a slightly muted background like `bg-muted/30`.
+
+### 2. The "Modern Glass" Look
+Combine `layout-mode="dashboard"` with `glass` and soft borders.
+- **Tip:** Use `bg-background/80 backdrop-blur-md` for the header.
+- **Tip:** Add a very subtle shadow to the main content container using `contentClass="shadow-xl"`.
+
+### 3. Responsive Edge-to-Edge
+The `dashboard` and `dock` modes are designed to be "flush" on mobile.
+- **Design Logic:** On small screens (`max-sm`), borders and outer padding are automatically removed to maximize screen real estate, while on desktop, the rounded "card" aesthetic provides a premium feel.
+
+### 4. Dynamic Typography
+The `#header` slot receives `pageTitle` as a scoped prop. Using this instead of a hardcoded title ensures your UI feels alive and responsive to navigation.
+- **Tip:** Combine `pageTitle` with `breadcrumbItems` in the header for a professional navigation trail.
+
