@@ -116,6 +116,12 @@ export function arcPath(
   endAngle: number,
   innerR = 0
 ): string {
+  // FIX: SVG arc commands (A) fail to render if the start and end points are identical.
+  // If the slice represents 100% (360 degrees), we subtract a microscopic amount to ensure it draws properly.
+  if (Math.abs(endAngle - startAngle) >= 360) {
+    endAngle -= 0.01;
+  }
+
   const toRad = (deg: number) => (deg * Math.PI) / 180
   const s = toRad(startAngle)
   const e = toRad(endAngle)
