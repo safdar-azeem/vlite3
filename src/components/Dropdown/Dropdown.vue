@@ -451,8 +451,8 @@ const cancelSelection = () => {
           :nestedOffset="nestedOffset"
           :selectable="selectable"
           :direction="direction"
+          :isCustomSlotMenu="!!$slots?.default || !!$slots?.menu"
           :layout="layout"
-          :show-empty-state="!$slots?.default"
           :columns="columns"
           :loading="loading || isHydrating"
           :hasMore="hasMore"
@@ -463,6 +463,9 @@ const cancelSelection = () => {
           @close="handleClose"
           @load-more="$emit('load-more')"
           @search="(q) => $emit('search', q)">
+          <template #menu v-if="$slots.menu">
+            <slot name="menu" />
+          </template>
           <template #item="slotProps" v-if="$slots.item">
             <slot name="item" v-bind="slotProps" />
           </template>
