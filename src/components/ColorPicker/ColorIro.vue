@@ -1,33 +1,24 @@
 <script setup lang="ts">
-import {
-	ref,
-	watch,
-	nextTick,
-	onUnmounted,
-	onMounted,
-	defineAsyncComponent,
-	computed,
-} from 'vue'
+import { ref, watch, nextTick, onUnmounted, onMounted, computed } from 'vue'
 import iro from '@jaames/iro'
 import { useEyeDropper } from '@vueuse/core'
-
-const Button = defineAsyncComponent(() => import('@/components/Button.vue'))
+import Button from '../Button.vue'
 
 const props = withDefaults(
-	defineProps<{
-		color: string
-		showHeader?: boolean
-		size?: 'sm' | 'md' | 'lg'
-	}>(),
-	{
-		showHeader: true,
-		size: 'md',
-	},
+  defineProps<{
+    color: string
+    showHeader?: boolean
+    size?: 'sm' | 'md' | 'lg'
+  }>(),
+  {
+    showHeader: true,
+    size: 'md',
+  }
 )
 
 const emit = defineEmits<{
-	'update:color': [color: string]
-	close: []
+  'update:color': [color: string]
+  close: []
 }>()
 
 const pickerRef = ref<HTMLDivElement>()
@@ -36,181 +27,175 @@ const colorPicker = ref<any>(null)
 const { isSupported, open, sRGBHex } = useEyeDropper()
 
 const pickerWidth = computed(() => {
-	switch (props.size) {
-		case 'sm':
-			return 140
-		case 'lg':
-			return 170
-		case 'md':
-		default:
-			return 162
-	}
+  switch (props.size) {
+    case 'sm':
+      return 140
+    case 'lg':
+      return 170
+    case 'md':
+    default:
+      return 162
+  }
 })
 
 const pickerHeight = {
-	sm: 120,
-	md: 140,
-	lg: 150,
+  sm: 120,
+  md: 140,
+  lg: 150,
 }
 
 const initializePicker = async () => {
-	if (!pickerRef.value || colorPicker.value) return
+  if (!pickerRef.value || colorPicker.value) return
 
-	await nextTick()
+  await nextTick()
 
-	try {
-		if (colorPicker.value) {
-			colorPicker.value.off('color:change')
-			colorPicker.value = null
-		}
-		
-		// Ensure element is clean before init to prevent duplication/glitches
-		if (pickerRef.value) {
-			pickerRef.value.innerHTML = ''
-		}
+  try {
+    if (colorPicker.value) {
+      colorPicker.value.off('color:change')
+      colorPicker.value = null
+    }
 
-		colorPicker.value = iro.ColorPicker(pickerRef.value, {
-			width: pickerWidth.value,
-			color: props.color,
-			margin: 9,
+    // Ensure element is clean before init to prevent duplication/glitches
+    if (pickerRef.value) {
+      pickerRef.value.innerHTML = ''
+    }
 
-			boxHeight: pickerHeight[props.size],
+    colorPicker.value = iro.ColorPicker(pickerRef.value, {
+      width: pickerWidth.value,
+      color: props.color,
+      margin: 9,
 
-			sliderSize: 14,
-			layout: [
-				{
-					component: iro.ui.Box,
-				},
-				{
-					component: iro.ui.Slider,
-					options: {
-						sliderType: 'hue',
-					},
-				},
-				{
-					component: iro.ui.Slider,
-					options: {
-						sliderType: 'saturation',
-					},
-				},
-				{
-					component: iro.ui.Slider,
-					options: {
-						sliderType: 'value',
-					},
-				},
-			],
-		})
+      boxHeight: pickerHeight[props.size],
 
-		colorPicker.value.on('color:change', (color: any) => {
-			emit('update:color', color.hexString)
-		})
-	} catch (error) {
-		console.error('Failed to initialize color picker:', error)
-	}
+      sliderSize: 14,
+      layout: [
+        {
+          component: iro.ui.Box,
+        },
+        {
+          component: iro.ui.Slider,
+          options: {
+            sliderType: 'hue',
+          },
+        },
+        {
+          component: iro.ui.Slider,
+          options: {
+            sliderType: 'saturation',
+          },
+        },
+        {
+          component: iro.ui.Slider,
+          options: {
+            sliderType: 'value',
+          },
+        },
+      ],
+    })
+
+    colorPicker.value.on('color:change', (color: any) => {
+      emit('update:color', color.hexString)
+    })
+  } catch (error) {
+    console.error('Failed to initialize color picker:', error)
+  }
 }
 
 const destroyPicker = () => {
-	if (colorPicker.value) {
-		colorPicker.value.off('color:change')
-		colorPicker.value = null
-	}
-	// Fully clear DOM bindings from iro.js to prevent resizing/mounting bugs 
-	// when re-opening dropdown
-	if (pickerRef.value) {
-		pickerRef.value.innerHTML = ''
-	}
+  if (colorPicker.value) {
+    colorPicker.value.off('color:change')
+    colorPicker.value = null
+  }
+  // Fully clear DOM bindings from iro.js to prevent resizing/mounting bugs
+  // when re-opening dropdown
+  if (pickerRef.value) {
+    pickerRef.value.innerHTML = ''
+  }
 }
 
 watch(
-	() => props.color,
-	(newColor) => {
-		if (
-			colorPicker.value &&
-			colorPicker.value.color.hexString !== newColor
-		) {
-			try {
-				colorPicker.value.color.hexString = newColor
-			} catch (error) {
-				console.error('Error updating color:', error)
-			}
-		}
-	},
+  () => props.color,
+  (newColor) => {
+    if (colorPicker.value && colorPicker.value.color.hexString !== newColor) {
+      try {
+        colorPicker.value.color.hexString = newColor
+      } catch (error) {
+        console.error('Error updating color:', error)
+      }
+    }
+  }
 )
 
 watch(
-	() => props.size,
-	() => {
-		destroyPicker()
-		initializePicker()
-	},
+  () => props.size,
+  () => {
+    destroyPicker()
+    initializePicker()
+  }
 )
 
 watch(sRGBHex, (newColor) => {
-	if (newColor) {
-		emit('update:color', newColor)
-		if (colorPicker.value) {
-			try {
-				colorPicker.value.color.hexString = newColor
-			} catch (error) {
-				console.error('Error updating color from eyedropper:', error)
-			}
-		}
-	}
+  if (newColor) {
+    emit('update:color', newColor)
+    if (colorPicker.value) {
+      try {
+        colorPicker.value.color.hexString = newColor
+      } catch (error) {
+        console.error('Error updating color from eyedropper:', error)
+      }
+    }
+  }
 })
 
 const openEyeDropper = async () => {
-	try {
-		await open()
-	} catch (error) {
-		console.error('Error opening eyedropper:', error)
-	}
+  try {
+    await open()
+  } catch (error) {
+    console.error('Error opening eyedropper:', error)
+  }
 }
 
 onMounted(() => {
-	initializePicker()
+  initializePicker()
 })
 
 onUnmounted(() => {
-	destroyPicker()
+  destroyPicker()
 })
 </script>
 
 <template>
-	<div class="space-y-3 w-max">
-		<div
-			class="flex gap-2 mb-2.5 -text-fs-3 pr-0.5"
-			v-if="showHeader">
-			<Button
-				icon="typcn:arrow-back"
-				@click="emit('close')"
-				class="flex-1 px-2 py-1 bg-background hover:bg-accent rounded text-xs border border-border transition-colors">
-			</Button>
-			<Button
-				v-if="isSupported"
-				@click="openEyeDropper"
-				icon="pepicons-pop:color-picker"
-				class="flex-1 px-2 py-1 bg-background hover:bg-accent rounded text-xs border border-border transition-colors"></Button>
-		</div>
-		<div
-			ref="pickerRef"
-			:style="{ width: pickerWidth + 'px', minHeight: pickerHeight[size] + 'px' }"></div>
-		
-		<slot name="bottom">
-			<Button
-				v-if="isSupported && !showHeader"
-				@click="openEyeDropper"
-				icon="pepicons-pop:color-picker"
-				variant="outline"
-				size="sm"
-				class="w-full"></Button>
-		</slot>
-	</div>
+  <div class="space-y-3 w-max">
+    <div class="flex gap-2 mb-2.5 -text-fs-3 pr-0.5" v-if="showHeader">
+      <Button
+        icon="typcn:arrow-back"
+        @click="emit('close')"
+        class="flex-1 px-2 py-1 bg-background hover:bg-accent rounded text-xs border border-border transition-colors">
+      </Button>
+      <Button
+        v-if="isSupported"
+        @click="openEyeDropper"
+        icon="pepicons-pop:color-picker"
+        class="flex-1 px-2 py-1 bg-background hover:bg-accent rounded text-xs border border-border transition-colors"></Button>
+    </div>
+    <div
+      ref="pickerRef"
+      :style="{ width: pickerWidth + 'px', minHeight: pickerHeight[size] + 'px' }"></div>
+
+    <slot name="bottom">
+      <Button
+        v-if="isSupported && !showHeader"
+        @click="openEyeDropper"
+        icon="pepicons-pop:color-picker"
+        variant="outline"
+        size="sm"
+        class="w-full"></Button>
+    </slot>
+  </div>
 </template>
 
 <style>
 .IroBox {
-	border-radius: 8px !important;
+  border-radius: 8px !important;
 }
 </style>
-
