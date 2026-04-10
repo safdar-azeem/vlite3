@@ -68,6 +68,20 @@ const props = withDefaults(defineProps<LineChartProps>(), {
 // ─── Dimensions ───────────────────────────────
 const containerRef = ref<HTMLElement>()
 const svgWidth = ref(600)
+
+const xLabels = computed(() => {
+  if (props.labels?.length) return props.labels
+  if (props.datasets?.length) return props.datasets[0].data.map((_, i) => String(i + 1))
+  return (props.data ?? []).map((p) => p.label)
+})
+
+// Check if labels are dense enough to require slanting (-45 deg)
+const needsSlant = computed(() => {
+  if (!props.showXLabels || xLabels.value.length === 0) return false
+  const maxVisibleFlat = Math.max(2, Math.floor(svgWidth.value / 65))
+  return xLabels.value.length > maxVisibleFlat
+})
+
 const actualPadding = computed(() => {
   const getLen = (val: string | number) => String(val).length
   // Only measure text width when labels are actually visible
@@ -75,11 +89,19 @@ const actualPadding = computed(() => {
     ? Math.max(2, ...yTicks.value.map(t => getLen(props.formatValue ? props.formatValue(t) : formatNumber(t)))) * 6.5
     : 0
   const leftBase = props.showYLabels ? Math.max(24, maxAxisW + 12) : 8
+
+  // Increase bottom padding if labels are slanted
+  let bottomBase = props.showXLabels ? 24 : 6
+  if (props.showXLabels && needsSlant.value) {
+    const maxLen = Math.max(2, ...xLabels.value.map(l => String(l).length))
+    // Slanted text requires approx (length * charWidth * sin(45)) + basePadding
+    bottomBase = (maxLen * 6.5 * 0.7) + 16
+  }
+
   return {
     top: 16,
     right: 16,
-    // Collapse bottom padding when X labels are hidden
-    bottom: props.showXLabels ? 24 : 6,
+    bottom: bottomBase,
     left: leftBase + (props.yLabel ? 20 : 0)
   }
 })
@@ -106,11 +128,21 @@ const allSeries = computed(() => {
   ]
 })
 
-const xLabels = computed(() => {
-  if (props.labels?.length) return props.labels
-  if (props.datasets?.length) return props.datasets[0].data.map((_, i) => String(i + 1))
-  return (props.data ?? []).map((p) => p.label)
+// ─── Label Overlap Prevention ──────────────────
+const xLabelStep = computed(() => {
+  // If slanted, we can fit labels much closer horizontally (e.g., every ~25px)
+  const itemWidth = needsSlant.value ? 25 : 65
+  const maxVisible = Math.max(2, Math.floor(chartW.value / itemWidth))
+  return Math.ceil(xLabels.value.length / maxVisible)
 })
+
+const isVisibleLabel = (i: number) => {
+  const n = xLabels.value.length
+  if (xLabelStep.value <= 1) return true
+  if (i === 0 || i === n - 1) return true // Always show first and last
+  if (n - 1 - i < xLabelStep.value * 0.7) return false // Prevent overlap with the last label
+  return i % xLabelStep.value === 0
+}
 
 // ─── Y Axis ───────────────────────────────────
 const allValues = computed(() => allSeries.value.flatMap((s) => s.values))
@@ -237,7 +269,6 @@ const uid = Math.random().toString(36).slice(2, 7)
 
 <template>
   <div ref="containerRef" class="vlite-line-chart w-full select-none">
-    <!-- Legend -->
     <div
       v-if="showLegend && allSeries.length > 1"
       class="flex flex-wrap gap-x-4 gap-y-1 mb-3 pl-14">
@@ -247,7 +278,6 @@ const uid = Math.random().toString(36).slice(2, 7)
       </div>
     </div>
 
-    <!-- SVG Chart -->
     <svg
       :width="svgWidth"
       :height="height"
@@ -258,12 +288,10 @@ const uid = Math.random().toString(36).slice(2, 7)
       @mouseleave="onMouseLeave">
 
       <defs>
-        <!-- Clip path to animate drawing progress -->
         <clipPath :id="`clip-${uid}`">
           <rect :x="0" :y="-10" :width="chartW * progress" :height="chartH + 20" />
         </clipPath>
 
-        <!-- Per-series gradients -->
         <linearGradient
           v-for="(s, i) in allSeries"
           :key="i"
@@ -276,7 +304,6 @@ const uid = Math.random().toString(36).slice(2, 7)
 
       <g :transform="`translate(${actualPadding.left},${actualPadding.top})`">
 
-        <!-- Grid lines -->
         <template v-if="showGrid">
           <line
             v-for="tick in yTicks"
@@ -288,7 +315,6 @@ const uid = Math.random().toString(36).slice(2, 7)
             stroke-width="1" />
         </template>
 
-        <!-- Y Axis tick labels -->
         <template v-if="showYLabels">
           <text
             v-for="tick in yTicks"
@@ -302,32 +328,30 @@ const uid = Math.random().toString(36).slice(2, 7)
           </text>
         </template>
 
-        <!-- X Axis tick labels -->
         <template v-if="showXLabels">
           <text
             v-for="(lbl, i) in xLabels"
             :key="`xl-${i}`"
+            v-show="isVisibleLabel(i)"
             :x="toX(i)"
-            :y="chartH + 16"
-            text-anchor="middle"
+            :y="chartH + (needsSlant ? 12 : 16)"
+            :text-anchor="needsSlant ? 'end' : 'middle'"
+            :transform="needsSlant ? `rotate(-45, ${toX(i)}, ${chartH + 12})` : undefined"
             class="fill-muted-foreground"
             font-size="11">
             {{ lbl }}
           </text>
         </template>
 
-        <!-- X axis border (bottom) -->
         <line
           v-if="showXAxis"
           :x1="0" :y1="chartH" :x2="chartW" :y2="chartH"
           stroke="currentColor" :stroke-opacity="axisOpacity" />
-        <!-- Y axis border (left) -->
         <line
           v-if="showYAxis"
           :x1="0" :y1="0" :x2="0" :y2="chartH"
           stroke="currentColor" :stroke-opacity="axisOpacity" />
 
-        <!-- Active crosshair -->
         <line
           v-if="activeIndex !== null"
           :x1="toX(activeIndex)" :y1="0"
@@ -337,16 +361,13 @@ const uid = Math.random().toString(36).slice(2, 7)
           stroke-width="1"
           stroke-dasharray="4 3" />
 
-        <!-- Series: fill + line + dots -->
         <g v-for="(s, si) in seriesPaths" :key="si">
-          <!-- Fill area -->
           <path
             v-if="fill"
             :d="s.fillPath"
             :fill="`url(#grad-${uid}-${si})`"
             :clip-path="`url(#clip-${uid})`" />
 
-          <!-- Line stroke -->
           <path
             :d="s.line"
             fill="none"
@@ -356,7 +377,6 @@ const uid = Math.random().toString(36).slice(2, 7)
             stroke-linecap="round"
             :clip-path="`url(#clip-${uid})`" />
 
-          <!-- Dots -->
           <template v-if="showDots">
             <circle
               v-for="(pt, pi) in s.pts"
@@ -371,7 +391,6 @@ const uid = Math.random().toString(36).slice(2, 7)
           </template>
         </g>
 
-        <!-- Y axis label -->
         <text
           v-if="yLabel"
           :x="-(chartH / 2)"
@@ -383,7 +402,6 @@ const uid = Math.random().toString(36).slice(2, 7)
           {{ yLabel }}
         </text>
 
-        <!-- X axis label -->
         <text
           v-if="xLabel"
           :x="chartW / 2"
@@ -396,7 +414,6 @@ const uid = Math.random().toString(36).slice(2, 7)
       </g>
     </svg>
 
-    <!-- Tooltip -->
     <Teleport to="body">
       <div
         v-if="tooltip"
