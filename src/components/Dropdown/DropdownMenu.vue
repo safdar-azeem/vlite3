@@ -22,7 +22,7 @@ interface Props {
   nestedPosition?: any
   nestedOffset?: [number, number]
   selectable?: boolean
-  showEmptyState?: boolean
+  isCustomSlotMenu?: boolean
   layout?: 'default' | 'grouped'
   columns?: number | string
   loading?: boolean
@@ -49,7 +49,7 @@ const props = withDefaults(defineProps<Props>(), {
   loading: false,
   hasMore: false,
   searchable: true,
-  showEmptyState: true,
+  isCustomSlotMenu: false,
   remote: false,
   debounceTime: 300,
   direction: 'ltr',
@@ -288,16 +288,11 @@ const shouldShowChevron = (option: IDropdownOption): boolean => {
     <div v-if="$slots.header" class="shrink-0">
       <slot name="header" />
     </div>
-
     <div
       ref="containerRef"
       :tabindex="showSearch ? -1 : 0"
       role="menu"
-      v-if="
-        $slots.menu || !showEmptyState
-          ? false
-          : normalizedOptions.length > 0 || filteredOptions.length === 0
-      "
+      v-if="isCustomSlotMenu ? false : normalizedOptions.length > 0 || filteredOptions.length === 0"
       :class="[
         'w-full p-1 space-y-0.5 overflow-y-auto overflow-x-hidden focus:outline-none flex-1 scrollbar-thin',
         props.class,
