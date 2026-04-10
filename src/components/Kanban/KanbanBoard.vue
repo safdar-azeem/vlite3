@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref, watch, computed, defineAsyncComponent } from 'vue'
+import { onMounted, ref, watch, computed } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
 import { useKanbanBoard } from './useKanbanBoard'
 import type { KanbanColumn, KanbanLoadDataResult, KanbanChangeEvent } from './types'
 import { $t } from '@/utils'
-
-const Spinner = defineAsyncComponent(() => import('../Spinner/Spinner.vue'))
+import Spinner from '../Spinner/Spinner.vue'
 
 const props = defineProps<{
   column: KanbanColumn
@@ -194,7 +193,11 @@ const isItemDisabledFn = (item: any): boolean => {
                   ? `${DISABLED_ITEM_CLASS} cursor-not-allowed`
                   : 'cursor-grab active:cursor-grabbing',
             ]">
-            <slot name="item" :item="item" :column="column" :is-disabled="isBoardDisabled || isItemDisabledFn(item)">
+            <slot
+              name="item"
+              :item="item"
+              :column="column"
+              :is-disabled="isBoardDisabled || isItemDisabledFn(item)">
               <div
                 :class="[
                   'bg-body p-3 rounded-md shadow-sm border border-border text-sm',
