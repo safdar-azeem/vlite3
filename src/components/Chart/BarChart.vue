@@ -60,6 +60,39 @@ const props = withDefaults(defineProps<BarChartProps>(), {
 const containerRef = ref<HTMLElement>()
 const svgWidth = ref(600)
 
+const allSeries = computed(() => {
+  if (props.datasets?.length) {
+    return props.datasets.map((ds, i) => ({
+      label: ds.label,
+      color: ds.color ?? getColor(props.colors!, i),
+      values: ds.data,
+    }))
+  }
+  const pts = props.data ?? []
+  return [
+    {
+      label: '',
+      color: '', // will use per-bar color from data
+      values: pts.map((p) => p.value),
+    },
+  ]
+})
+
+const isMulti = computed(() => allSeries.value.length > 1 || !!props.datasets?.length)
+
+const xLabels = computed(() => {
+  if (props.labels?.length) return props.labels
+  if (props.datasets?.length) return allSeries.value[0]?.values.map((_, i) => String(i + 1)) ?? []
+  return (props.data ?? []).map((p) => p.label)
+})
+
+// Check if labels are dense enough to require slanting (-45 deg)
+const needsSlant = computed(() => {
+  if (props.orientation !== 'vertical' || !props.showXLabels || xLabels.value.length === 0) return false
+  const maxVisibleFlat = Math.max(2, Math.floor(svgWidth.value / 65))
+  return xLabels.value.length > maxVisibleFlat
+})
+
 const actualPadding = computed(() => {
   const getLen = (val: string | number) => String(val).length
 
@@ -92,11 +125,17 @@ const actualPadding = computed(() => {
     ? Math.max(2, ...yTicks.value.map(t => getLen(props.formatValue ? props.formatValue(t) : formatNumber(t)))) * 6.5
     : 0
   const leftPad = props.showYLabels ? Math.max(24, maxAxisW + 12) : 8
+  
+  let bottomBase = props.showXLabels ? 24 : 6
+  if (props.showXLabels && needsSlant.value) {
+    const maxLen = Math.max(2, ...xLabels.value.map(l => String(l).length))
+    bottomBase = (maxLen * 6.5 * 0.7) + 16
+  }
+
   return {
     top: 24,
     right: 0,
-    // Collapse bottom padding when X labels are hidden
-    bottom: props.showXLabels ? 24 : 6,
+    bottom: bottomBase,
     left: leftPad
   }
 })
@@ -104,32 +143,22 @@ const actualPadding = computed(() => {
 const chartW = computed(() => Math.max(0, svgWidth.value - actualPadding.value.left - actualPadding.value.right))
 const chartH = computed(() => Math.max(0, props.height - actualPadding.value.top - actualPadding.value.bottom))
 
-// ─── Normalise data ────────────────────────────
-const allSeries = computed(() => {
-  if (props.datasets?.length) {
-    return props.datasets.map((ds, i) => ({
-      label: ds.label,
-      color: ds.color ?? getColor(props.colors!, i),
-      values: ds.data,
-    }))
-  }
-  const pts = props.data ?? []
-  return [
-    {
-      label: '',
-      color: '', // will use per-bar color from data
-      values: pts.map((p) => p.value),
-    },
-  ]
+// ─── Label Overlap Prevention ──────────────────
+const xLabelStep = computed(() => {
+  if (props.orientation !== 'vertical') return 1
+  const itemWidth = needsSlant.value ? 25 : 65
+  const maxVisible = Math.max(2, Math.floor(chartW.value / itemWidth))
+  return Math.ceil(xLabels.value.length / maxVisible)
 })
 
-const isMulti = computed(() => allSeries.value.length > 1 || !!props.datasets?.length)
-
-const xLabels = computed(() => {
-  if (props.labels?.length) return props.labels
-  if (props.datasets?.length) return allSeries.value[0]?.values.map((_, i) => String(i + 1)) ?? []
-  return (props.data ?? []).map((p) => p.label)
-})
+const isVisibleLabel = (i: number) => {
+  if (props.orientation !== 'vertical') return true
+  const n = xLabels.value.length
+  if (xLabelStep.value <= 1) return true
+  if (i === 0 || i === n - 1) return true
+  if (n - 1 - i < xLabelStep.value * 0.7) return false
+  return i % xLabelStep.value === 0
+}
 
 const barColors = computed(() =>
   (props.data ?? []).map((p, i) => p.color ?? getColor(props.colors!, i))
@@ -282,7 +311,6 @@ const uid = Math.random().toString(36).slice(2, 7)
 
 <template>
   <div ref="containerRef" class="vlite-bar-chart w-full select-none">
-    <!-- Legend -->
     <div
       v-if="showLegend && isMulti"
       class="flex flex-wrap gap-x-4 gap-y-1 mb-3 pl-14">
@@ -292,7 +320,6 @@ const uid = Math.random().toString(36).slice(2, 7)
       </div>
     </div>
 
-    <!-- SVG -->
     <svg
       :width="svgWidth"
       :height="height"
@@ -321,9 +348,7 @@ const uid = Math.random().toString(36).slice(2, 7)
         </linearGradient>
       </defs>
 
-      <!-- Vertical orientation -->
       <g v-if="orientation === 'vertical'" :transform="`translate(${actualPadding.left},${actualPadding.top})`">
-        <!-- Grid -->
         <template v-if="showGrid">
           <line
             v-for="tick in yTicks" :key="tick"
@@ -332,7 +357,6 @@ const uid = Math.random().toString(36).slice(2, 7)
             stroke="currentColor" :stroke-opacity="gridOpacity" stroke-width="1" />
         </template>
 
-        <!-- Y tick labels -->
         <template v-if="showYLabels">
           <text
             v-for="tick in yTicks" :key="`yt-${tick}`"
@@ -343,7 +367,6 @@ const uid = Math.random().toString(36).slice(2, 7)
           </text>
         </template>
 
-        <!-- Bars -->
         <g v-for="(group, gi) in barGeometry" :key="gi">
           <path
             v-for="(bar, bi) in group.bars" :key="bi"
@@ -351,7 +374,6 @@ const uid = Math.random().toString(36).slice(2, 7)
             :fill="isMulti ? `url(#bgrad-${uid}-${bi})` : `url(#bgrad-single-${uid}-${gi})`"
             :opacity="activeGroup !== null && activeGroup !== gi ? 0.5 : 1"
             class="transition-opacity duration-150" />
-          <!-- Value labels -->
           <text
             v-if="showValues"
             v-for="(bar, bi) in group.bars" :key="`vl-${bi}`"
@@ -365,26 +387,25 @@ const uid = Math.random().toString(36).slice(2, 7)
           </text>
         </g>
 
-        <!-- X axis labels -->
         <template v-if="showXLabels">
           <text
             v-for="(lbl, i) in xLabels" :key="`xl-${i}`"
+            v-show="isVisibleLabel(i)"
             :x="(i + 0.5) * (chartW / xLabels.length)"
-            :y="chartH + 16"
-            text-anchor="middle" font-size="11"
+            :y="chartH + (needsSlant ? 12 : 16)"
+            :text-anchor="needsSlant ? 'end' : 'middle'"
+            :transform="needsSlant ? `rotate(-45, ${(i + 0.5) * (chartW / xLabels.length)}, ${chartH + 12})` : undefined"
+            font-size="11"
             class="fill-muted-foreground">
             {{ lbl }}
           </text>
         </template>
 
-        <!-- Axis lines -->
         <line v-if="showXAxis" :x1="0" :y1="chartH" :x2="chartW" :y2="chartH" stroke="currentColor" :stroke-opacity="axisOpacity" />
         <line v-if="showYAxis" :x1="0" :y1="0" :x2="0" :y2="chartH" stroke="currentColor" :stroke-opacity="axisOpacity" />
       </g>
 
-      <!-- Horizontal orientation -->
       <g v-else :transform="`translate(${actualPadding.left},${actualPadding.top})`">
-        <!-- Grid -->
         <template v-if="showGrid">
           <line
             v-for="tick in yTicks" :key="tick"
@@ -393,7 +414,6 @@ const uid = Math.random().toString(36).slice(2, 7)
             stroke="currentColor" :stroke-opacity="gridOpacity" stroke-width="1" />
         </template>
 
-        <!-- X ticks (top) -->
         <template v-if="showXLabels">
           <text
             v-for="tick in yTicks" :key="`xt-${tick}`"
@@ -404,7 +424,6 @@ const uid = Math.random().toString(36).slice(2, 7)
           </text>
         </template>
 
-        <!-- Y labels (left) -->
         <template v-if="showYLabels">
           <text
             v-for="(lbl, i) in xLabels" :key="`yl-${i}`"
@@ -416,7 +435,6 @@ const uid = Math.random().toString(36).slice(2, 7)
           </text>
         </template>
 
-        <!-- Bars -->
         <g v-for="(group, gi) in hBarGeometry" :key="gi">
           <path
             v-for="(bar, bi) in group.bars" :key="bi"
@@ -424,7 +442,6 @@ const uid = Math.random().toString(36).slice(2, 7)
             :fill="isMulti ? `url(#bgrad-${uid}-${bi})` : `url(#bgrad-single-${uid}-${gi})`"
             :opacity="activeGroup !== null && activeGroup !== gi ? 0.5 : 1"
             class="transition-opacity duration-150" />
-          <!-- Value labels -->
           <text
             v-if="showValues"
             v-for="(bar, bi) in group.bars" :key="`hvl-${bi}`"
@@ -437,13 +454,11 @@ const uid = Math.random().toString(36).slice(2, 7)
           </text>
         </g>
 
-        <!-- Axis lines -->
         <line v-if="showYAxis" :x1="0" :y1="0" :x2="0" :y2="chartH" stroke="currentColor" :stroke-opacity="axisOpacity" />
         <line v-if="showXAxis" :x1="0" :y1="chartH" :x2="chartW" :y2="chartH" stroke="currentColor" :stroke-opacity="axisOpacity" />
       </g>
     </svg>
 
-    <!-- Tooltip -->
     <Teleport to="body">
       <div
         v-if="tooltip"
