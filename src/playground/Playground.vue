@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useLocalStorage } from '@vueuse/core'
-import { Navbar } from '@/components/Navbar'
+import { AppShell } from '@/components/AppShell'
 import SidebarMenu from '@/components/SidebarMenu/SidebarMenu.vue'
 import type { SidebarMenuItemSchema } from '@/components/SidebarMenu'
 import ThemeToggle from '@/components/ThemeToggle.vue'
@@ -154,7 +154,7 @@ const menuItems: SidebarMenuItemSchema[] = [
 
 <template>
   <div class="h-screen w-full overflow-hidden">
-    <Navbar
+    <AppShell
       variant="sidebar"
       layout-mode="dashboard"
       mobileBreakpoint="md"
@@ -254,6 +254,6 @@ const menuItems: SidebarMenuItemSchema[] = [
           <router-view></router-view>
         </div>
       </template>
-    </Navbar>
+    </AppShell>
   </div>
 </template>
