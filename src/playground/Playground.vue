@@ -163,7 +163,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       :render-nested-tabs="isSidebarCompact"
       class="border-r border-border"
       :class="isSidebarCompact ? 'w-28' : 'w-64'">
-      <template #default>
+      <template #sidebar>
         <div>
           <SidebarMenu
             class="hidden md:flex"
@@ -191,7 +191,7 @@ const menuItems: SidebarMenuItemSchema[] = [
         </div>
       </template>
 
-      <template #right>
+      <template #sidebar-footer>
         <div
           class="flex items-center gap-2 px-2 py-2"
           :class="isSidebarCompact ? 'flex-col justify-center' : 'flex-row justify-between'">
@@ -200,10 +200,10 @@ const menuItems: SidebarMenuItemSchema[] = [
         </div>
       </template>
 
-      <template #logo>
+      <template #sidebar-header>
         <div
           class="font-bold text-lg flex items-center gap-2 w-full"
-          :class="isSidebarCompact ? 'flex-col justify-center' : 'flex-row'">
+          :class="isSidebarCompact ? 'md:flex-col md:justify-center' : 'flex-row'">
           <div class="w-7 h-7 rounded bg-primary text-white flex items-center justify-center">
             V
           </div>
