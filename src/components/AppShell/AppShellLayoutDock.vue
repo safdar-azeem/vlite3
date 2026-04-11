@@ -55,24 +55,24 @@ const {
         aria-label="Sidebar dock">
         <!-- Logo -->
         <div
-          v-if="$slots.logo"
+          v-if="$slots['sidebar-header']"
           class="flex items-center justify-center mb-1.5 pb-2 border-b border-border/40 w-full">
-          <slot name="logo" />
+          <slot name="sidebar-header" />
         </div>
 
         <!-- Navigation items (icons) -->
         <div
           class="flex flex-col items-center gap-0.5 w-full"
           :class="props.contentClass">
-          <slot />
+          <slot name="sidebar" />
         </div>
 
         <!-- Bottom actions -->
         <div
-          v-if="$slots.right"
+          v-if="$slots['sidebar-footer']"
           class="flex flex-col items-center mt-1.5 pt-2 border-t border-border/40 w-full"
           :class="props.rightClass">
-          <slot name="right" />
+          <slot name="sidebar-footer" />
         </div>
       </nav>
     </Transition>
@@ -139,14 +139,14 @@ const {
       bodyClass="p-0!"
       :class="breakpointClasses.mobileTrigger">
       <template #header>
-        <slot name="logo">Brand</slot>
+        <slot name="mobile-sidebar-header"><slot name="sidebar-header">Brand</slot></slot>
       </template>
       <div class="flex flex-col h-full">
         <div class="flex-1 overflow-y-auto px-3.5 pt-4 scrollbar-thin scrollbar-stable">
-          <slot />
+          <slot name="mobile-sidebar"><slot name="sidebar"></slot></slot>
         </div>
-        <div class="mt-auto pt-2 border-t border-border px-3 py-2" v-if="$slots.right">
-          <slot name="right" />
+        <div class="mt-auto pt-2 border-t border-border px-3 py-2" v-if="$slots['mobile-sidebar-footer'] || $slots['sidebar-footer']">
+          <slot name="mobile-sidebar-footer"><slot name="sidebar-footer" /></slot>
         </div>
       </div>
     </SidePanel>
