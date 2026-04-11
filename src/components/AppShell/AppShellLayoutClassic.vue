@@ -130,14 +130,14 @@ onClickOutside(
                 class="flex-1 px-2.5 pt-0 pb-4 overflow-y-auto space-y-4 scrollbar-thin scrollbar-stable"
                 :class="props.contentClass">
                 <slot name="left" />
-                <slot />
+                <slot name="sidebar" />
                 <slot name="center" />
               </div>
               <div
                 class="p-2 border-t border-border shrink-0 bg-background mt-auto"
                 :class="props.rightClass"
-                v-if="$slots?.right">
-                <slot name="right" />
+                v-if="$slots?.['sidebar-footer']">
+                <slot name="sidebar-footer" />
               </div>
             </div>
           </template>
@@ -209,7 +209,7 @@ onClickOutside(
         bodyClass="p-0!"
         :class="breakpointClasses.mobileTrigger">
         <template #header>
-          <slot name="logo">Brand</slot>
+          <slot name="mobile-sidebar-header"><slot name="sidebar-header">Brand</slot></slot>
         </template>
         <div class="flex flex-col space-y-6 pt-4 h-full">
           <template v-if="props.variant === 'header'">
@@ -225,12 +225,12 @@ onClickOutside(
             <div
               class="flex flex-col space-y-4 flex-1 overflow-y-auto px-3.5! scrollbar-thin scrollbar-stable">
               <slot name="left" />
-              <slot />
+              <slot name="mobile-sidebar"><slot name="sidebar" /></slot>
               <slot name="center" />
             </div>
           </template>
-          <div class="mt-auto pt-2 border-t border-border px-3! py-2!" v-if="$slots?.right">
-            <slot name="right" />
+          <div class="mt-auto pt-2 border-t border-border px-3! py-2!" v-if="$slots?.['mobile-sidebar-footer'] || $slots?.['sidebar-footer']">
+            <slot name="mobile-sidebar-footer"><slot name="sidebar-footer" /></slot>
           </div>
         </div>
       </SidePanel>
