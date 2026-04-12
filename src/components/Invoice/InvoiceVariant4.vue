@@ -108,7 +108,7 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
     </div>
 
     <div :class="compact ? 'p-5' : 'px-7 py-4.5'">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6" :class="d.shippingInfo ? 'md:grid-cols-3' : 'md:grid-cols-2'">
         <div v-if="d.companyInfo">
           <p
             class="font-bold text-gray-700 uppercase tracking-widest border-b border-gray-300 pb-1 inline-block mb-2"
@@ -171,6 +171,35 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
             <p v-if="d.customerInfo.taxId" class="text-xs font-semibold">
               {{ l.taxId || 'Tax ID' }}: {{ d.customerInfo.taxId }}
             </p>
+          </div>
+        </div>
+
+        <div v-if="d.shippingInfo">
+          <p
+            class="font-bold text-gray-700 uppercase tracking-widest border-b border-gray-300 pb-1 inline-block mb-2"
+            :class="compact ? 'text-[10px]' : 'text-[11px]'">
+            {{ l.shipTo || 'Ship To' }}
+          </p>
+          <div
+            class="text-muted-foreground leading-relaxed"
+            :class="compact ? 'text-xs space-y-0.5' : 'text-sm space-y-1'">
+            <p
+              v-if="d.shippingInfo.name"
+              class="font-extrabold text-foreground"
+              :class="compact ? 'text-sm mb-0.5' : 'text-base mb-1'">
+              {{ d.shippingInfo.name }}
+            </p>
+            <p v-if="d.shippingInfo.address">{{ d.shippingInfo.address }}</p>
+            <p v-if="d.shippingInfo.city || d.shippingInfo.state">
+              {{ d.shippingInfo.city
+              }}<template v-if="d.shippingInfo.city && d.shippingInfo.state">, </template
+              >{{ d.shippingInfo.state }} {{ d.shippingInfo.zip }}
+            </p>
+            <p v-if="d.shippingInfo.country">{{ d.shippingInfo.country }}</p>
+            <div class="flex flex-col gap-0.5">
+              <p v-if="d.shippingInfo.email">{{ d.shippingInfo.email }}</p>
+              <p v-if="d.shippingInfo.phone">{{ d.shippingInfo.phone }}</p>
+            </div>
           </div>
         </div>
       </div>
