@@ -235,7 +235,9 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
         :tabindex="disabled || readonly ? -1 : 0"
         @keydown.enter.prevent="!(disabled || readonly) && (isOpen = !isOpen)"
         @keydown.space.prevent="!(disabled || readonly) && (isOpen = !isOpen)"
-        :data-testid="$attrs['data-testid'] || ($attrs.name ? `multiselect-${$attrs.name}` : 'multiselect')">
+        :data-testid="
+          $attrs['data-testid'] || ($attrs.name ? `multiselect-${$attrs.name}` : 'multiselect')
+        ">
         <div
           class="flex gap-1.5 items-center flex-1 min-w-0"
           :class="[wrap ? 'flex-wrap py-0.5' : 'flex-nowrap overflow-hidden py-1']">
@@ -326,7 +328,6 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
         @close="isOpen = false"
         @load-more="$emit('load-more')"
         @search="(q) => $emit('search', q)">
-        
         <template #menu v-if="$slots.menu">
           <slot name="menu" />
         </template>
