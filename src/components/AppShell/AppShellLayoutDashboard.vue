@@ -121,7 +121,7 @@ const {
         <slot name="mobile-sidebar-header"><slot name="sidebar-header">Brand</slot></slot>
       </template>
       <div class="flex flex-col h-full">
-        <div class="flex-1 overflow-y-auto px-3.5 pt-4 scrollbar-thin scrollbar-stable">
+        <div class="flex-1 overflow-y-auto px-3.5 pt-4 scrollbar-thin scrollbar-stable" style="will-change: transform; contain: layout style">
           <slot name="mobile-sidebar"><slot name="sidebar"></slot></slot>
         </div>
         <div class="mt-auto pt-2 border-t border-border px-3 py-2" v-if="$slots['mobile-sidebar-footer'] || $slots['sidebar-footer']">
