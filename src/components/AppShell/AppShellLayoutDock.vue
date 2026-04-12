@@ -36,7 +36,6 @@ const {
 <template>
   <div
     class="vlite-app-layout flex flex-row w-full h-full bg-background p-0 sm:p-2 gap-0 sm:gap-2 overflow-hidden items-stretch">
-    <!-- ── Floating Dock Sidebar ──────────────────────────────────────────── -->
     <Transition
       enter-active-class="transition-all duration-300 ease-in-out"
       leave-active-class="transition-all duration-300 ease-in-out"
@@ -53,19 +52,16 @@ const {
         ]"
         role="navigation"
         aria-label="Sidebar dock">
-        <!-- Logo -->
         <div
           v-if="$slots['sidebar-header']"
           class="flex items-center justify-center mb-1.5 pb-2 border-b border-border/40 w-full">
           <slot name="sidebar-header" />
         </div>
 
-        <!-- Navigation items (icons) -->
         <div class="flex flex-col items-center gap-0.5 w-full" :class="props.contentClass">
           <slot name="sidebar" />
         </div>
 
-        <!-- Bottom actions -->
         <div
           v-if="$slots['sidebar-footer']"
           class="flex flex-col items-center mt-1.5 pt-2 border-t border-border/40 w-full"
@@ -75,7 +71,6 @@ const {
       </nav>
     </Transition>
 
-    <!-- ── Main Content Container ─────────────────────────────────────────── -->
     <div
       class="flex flex-col flex-1 min-w-0 h-full overflow-hidden bg-background rounded-xl max-sm:rounded-none border border-border/70 max-sm:border-0 shadow-sm">
       <header
@@ -126,7 +121,6 @@ const {
       </main>
     </div>
 
-    <!-- ── Mobile SidePanel ───────────────────────────────────────────────── -->
     <SidePanel
       v-model:show="isMobileMenuOpen"
       position="left"
@@ -140,7 +134,7 @@ const {
         <slot name="mobile-sidebar-header"><slot name="sidebar-header">Brand</slot></slot>
       </template>
       <div class="flex flex-col h-full">
-        <div class="flex-1 overflow-y-auto px-3.5 pt-4 scrollbar-thin scrollbar-stable">
+        <div class="flex-1 overflow-y-auto px-3.5 pt-4 scrollbar-thin scrollbar-stable" style="will-change: transform; contain: layout style">
           <slot name="mobile-sidebar"><slot name="sidebar"></slot></slot>
         </div>
         <div
