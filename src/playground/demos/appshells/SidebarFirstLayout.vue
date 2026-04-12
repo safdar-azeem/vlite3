@@ -15,8 +15,8 @@ import { statItems, menuItems } from './shared-data'
 <template>
   <DemoSection title="Sidebar-First Layout (Standard)" :code="sourceCode">
     <p class="text-sm text-gray-500 mb-4">
-      The <code>variant1</code> layout mode is the default and stretches the sidebar down the
-      entire vertical axis. The header and main content reside next to it. Perfect for most admin
+      The <code>variant1</code> layout mode is the default and stretches the sidebar down the entire
+      vertical axis. The header and main content reside next to it. Perfect for most admin
       interfaces.
     </p>
     <div
@@ -50,7 +50,7 @@ import { statItems, menuItems } from './shared-data'
 
         <template #header="{ toggle, pageTitle }">
           <div
-            class="h-14 border-b border-border bg-background/95 backdrop-blur flex items-center justify-between px-6 w-full gap-4 sticky top-0 z-10 shadow-sm">
+            class="h-14 border-b border-border bg-background flex items-center justify-between px-6 w-full gap-4 sticky top-0 z-10 shadow-sm">
             <div class="flex items-center gap-4">
               <Button
                 variant="ghost"
@@ -75,7 +75,8 @@ import { statItems, menuItems } from './shared-data'
         <template #main>
           <div class="p-6 h-full flex flex-col gap-6">
             <Stats :items="statItems.slice(0, 3)" columns="3" variant="shadow" />
-            <div class="flex-1 bg-white border border-border shadow-sm rounded-xl p-4 min-h-[300px]">
+            <div
+              class="flex-1 bg-white border border-border shadow-sm rounded-xl p-4 min-h-[300px]">
               <h3 class="font-medium text-lg mb-4">Monthly Revenue</h3>
               <BarChart :data="monthlyBarData" class="h-64" />
             </div>
