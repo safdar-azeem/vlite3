@@ -62,7 +62,7 @@ const close = () => {
 
 const handleOpenDynamicModal = (body: any, modalProps: any) => {
   close()
-  // PERFORMANCE: markRaw strictly enforces that nested components 
+  // PERFORMANCE: markRaw strictly enforces that nested components
   // do not trigger recursive reactivity trees.
   activeModalBody.value = body ? markRaw(body) : null
   activeModalProps.value = modalProps || {}
@@ -123,7 +123,7 @@ const isMac = computed(() =>
   <template v-if="enabled">
     <button
       type="button"
-      class="command-palette-trigger inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-muted-foreground bg-muted/60 hover:bg-muted border border-border/60 focus-visible:outline-none justify-between focus-visible:ring-2 focus-visible:ring-primary/50 select-none cursor-pointer shrink-0"
+      class="command-palette-trigger inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-muted-foreground bg-muted/60 hover:bg-muted border border-border/90 focus-visible:outline-none justify-between focus-visible:ring-2 focus-visible:ring-primary/50 select-none cursor-pointer shrink-0"
       :aria-label="`Open command palette`"
       :class="triggerClass"
       @click="open">
