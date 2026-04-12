@@ -24,6 +24,7 @@ All components:
 - **Animated** — smooth entry animations via `requestAnimationFrame` with ease-out cubic
 - **Responsive** — adapts to container width via `ResizeObserver`
 - **Accessible** — SVGs have `role="img"` and `aria-label`
+- **Focused Interactions** — hover effects highlight targets without dimming surrounding elements
 - **Fully typed** — TypeScript interfaces exported from each component
 
 ---
@@ -271,7 +272,7 @@ A responsive area/line chart supporting single and multi-series data, smooth bez
 
 ## BarChart
 
-A vertical or horizontal bar chart supporting single and multi-series grouped data, per-bar color overrides, value labels, animated grow-in, and full axis customization.
+A vertical or horizontal bar chart supporting single and multi-series grouped data, per-bar color overrides, value labels, animated grow-in, focused hover states, and full axis customization.
 
 ### Basic Usage
 
@@ -391,7 +392,7 @@ A vertical or horizontal bar chart supporting single and multi-series grouped da
 
 ## PieChart
 
-A pie or donut chart with animated arc draw, explode-on-hover effect, optional center content, and a fully interactive legend.
+A pie or donut chart with animated arc draw, explode-on-hover effect, optional center content, and an interactive legend.
 
 ### Basic Usage
 
@@ -615,7 +616,7 @@ A single-value animated progress ring (gauge), supporting semantic color tokens,
 
 ## TimelineChart
 
-A Gantt-style horizontal timeline chart showing task bars per person across configurable time periods. Each person occupies their own row, with rounded colored bars spanning from a start to end position.
+A Gantt-style horizontal timeline chart showing task bars per person across configurable time periods. Each person occupies their own row, with focused hover states, rounded colored bars spanning from a start to end position.
 
 ### Basic Usage
 
