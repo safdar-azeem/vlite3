@@ -163,7 +163,6 @@ const uid = Math.random().toString(36).slice(2, 7)
           :width="seg.pct * containerWidth"
           :height="barHeight"
           :fill="seg.color"
-          :opacity="activeSegment !== null && activeSegment !== i ? 0.6 : 1"
           class="cursor-pointer transition-opacity duration-150"
           @mouseenter="(e) => onSegEnter(e, i)"
           @mousemove="onSegMove"
