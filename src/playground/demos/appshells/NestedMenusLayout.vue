@@ -20,7 +20,7 @@ import { menuItems } from './shared-data'
       class="border rounded-lg overflow-hidden h-[500px] relative z-0 flex flex-col w-full shadow-sm">
       <AppShell
         variant="sidebar"
-        layout-mode="classic"
+        layout-mode="variant4"
         class="bg-white border-r"
         renderNestedTabs>
         <template #sidebar-header>
