@@ -39,7 +39,8 @@ The root object passed to the `:data` prop.
 | `issuedDate`    | `string \| Date?`      | Date the invoice was generated.                                          |
 | `dueDate`       | `string \| Date?`      | Deadline for payment.                                                    |
 | `companyInfo`   | `InvoiceCompanyInfo?`  | Nested object for issuer details (From).                                 |
-| `customerInfo`  | `InvoiceCustomerInfo?` | Nested object for recipient details (To).                                |
+| `customerInfo`  | `InvoiceCustomerInfo?` | Nested object for recipient details (Billed To).                         |
+| `shippingInfo`  | `InvoiceCustomerInfo?` | Nested object for shipping details (Ship To).                            |
 | `barcode`       | `string?`              | Renders a CODE128 barcode at the bottom.                                 |
 | `qrcode`        | `string?`              | Renders a QR code (ideal for payment/tracking URLs).                     |
 | `notes`         | `string?`              | Multi-line text for memos or additional terms.                           |
@@ -65,7 +66,7 @@ Fields for individual row items in the document.
 
 #### `InvoiceCustomerInfo` & `InvoiceCompanyInfo`
 
-Detailed contact structures for both parties.
+Detailed contact structures for parties involved (From, Billed To, Ship To).
 
 | Field     | Type      | Description                               |
 | :-------- | :-------- | :---------------------------------------- |
@@ -104,6 +105,7 @@ Dictionary used to override static English text inside the component via the `la
 | `due`      | `string?` | Replaces "Due" or "Due Date".       |
 | `from`     | `string?` | Replaces "From".                    |
 | `billedTo` | `string?` | Replaces "Billed To" or "Customer". |
+| `shipTo`   | `string?` | Replaces "Ship To" or "Delivery".   |
 | `item`     | `string?` | Replaces "Description" or "Item".   |
 | `price`    | `string?` | Replaces "Unit Price" or "Price".   |
 | `qty`      | `string?` | Replaces "Qty".                     |
@@ -172,6 +174,14 @@ Use this exhaustive object to generate or validate a full-featured invoice paylo
     "state": "FL",
     "zip": "33101",
     "email": "procurement@global.log"
+  },
+  "shippingInfo": {
+    "name": "Global Logistics Inc. (Receiving)",
+    "address": "400 Harbor Drive, Dock 4",
+    "city": "Miami",
+    "state": "FL",
+    "zip": "33101",
+    "phone": "+1 (555) 019-8833"
   },
   "items": [
     {
@@ -309,3 +319,4 @@ const serviceData = {
     - **Variant 2** is the only one that uses `print:max-w-[300px]`, making it dedicated to roll-based thermal printers.
     - **Variant 4** uses `hero` header backgrounds; ensure you have a high-contrast logo (either white or dark) defined in `brandLogo`.
 4.  **Responsive Print**: Use `compact: true` specifically for email attachments or physical printing to minimize page count.
+
