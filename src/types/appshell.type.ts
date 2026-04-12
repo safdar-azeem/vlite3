@@ -1,7 +1,7 @@
 export type AppShellVariant = 'header' | 'sidebar'
 export type AppShellPosition = 'fixed' | 'sticky' | 'relative' | 'absolute'
 export type AppShellCenterPosition = 'center' | 'left' | 'right'
-export type AppShellLayoutMode = 'classic' | 'sidebar-first' | 'dashboard' | 'dock'
+export type AppShellLayoutMode = 'classic' | 'sidebar-first' | 'dashboard' | 'dock' | 'header-shell'
 
 export interface AppShellProps {
   variant?: AppShellVariant
