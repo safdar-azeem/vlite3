@@ -132,3 +132,49 @@ export function generateMultiSeriesData(days: number) {
     ]
   };
 }
+
+// ─── Timeline Chart Data ──────────────────────
+
+export const timelinePeriods = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug']
+
+export const timelineTasks = [
+  { person: 'Caleb', task: 'UI Design',     start: 0.5, end: 4.5, color: '#10b981' },
+  { person: 'Shaw',  task: 'UX Design',     start: 2.5, end: 5.8, color: '#f43f5e' },
+  { person: 'Jane',  task: 'Music',         start: 1.8, end: 5.5, color: '#f59e0b' },
+  { person: 'Blake', task: 'Animation',     start: 1,   end: 6.2, color: '#e5e5e5' },
+  { person: 'Quinn', task: 'Prototyping',   start: 2.8, end: 7.5, color: '#3b82f6' },
+]
+
+// ─── Segment Bar Chart Data ───────────────────
+
+export const logisticsSegments = [
+  { label: 'On the way',  value: 33.3, color: '#525252' },
+  { label: 'Unloading',   value: 23.5, color: '#737373' },
+  { label: 'Loading',     value: 23.1, color: '#a3a3a3' },
+  { label: 'Waiting',     value: 20.1, color: '#d4d4d4' },
+]
+
+export const browserSegments = [
+  { label: 'Chrome',  value: 64.5, color: 'var(--color-chart-1)' },
+  { label: 'Safari',  value: 18.8, color: 'var(--color-chart-2)' },
+  { label: 'Firefox', value: 8.2,  color: 'var(--color-chart-3)' },
+  { label: 'Edge',    value: 5.3,  color: 'var(--color-chart-5)' },
+  { label: 'Other',   value: 3.2,  color: 'var(--color-chart-6)' },
+]
+
+// ─── Stat Card Chart Data ─────────────────────
+
+export const deviceStats = [
+  { label: 'Desktop', percentage: 17, value: 23.8,   trend: 'up' as const,   color: '#a3a3a3' },
+  { label: 'Tablet',  percentage: 65, value: 13.604, trend: 'down' as const, color: '#525252' },
+  { label: 'Mobile',  percentage: 18, value: 47.146, trend: 'up' as const,   color: '#737373' },
+]
+
+// ─── Waffle Chart Data ────────────────────────
+
+export const waffleMultiData = [
+  { label: 'Completed', value: 12, color: '#e5e5e5' },
+  { label: 'In Progress', value: 4, color: '#d4d4d4' },
+  { label: 'Remaining', value: 14, color: '#525252' },
+]
+
