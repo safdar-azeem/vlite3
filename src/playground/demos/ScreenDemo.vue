@@ -118,9 +118,6 @@ const handleDelete = (items: any[]) => {
               title: 'Add User',
             },
           }">
-          <template #sub-header>
-            <Input />
-          </template>
         </Screen>
       </div>
     </DemoSection>
