@@ -433,6 +433,7 @@ const cancelSelection = () => {
                 combinedOptions.length ||
                 $slots.menu ||
                 $slots.item ||
+                $slots.default ||
                 remote ||
                 searchable
           "
