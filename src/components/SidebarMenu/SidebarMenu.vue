@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<SidebarMenuProps>(), {
   compactIconSize: '21px',
   labelClass: 'text-sm',
   compactLabelClass: 'text-[11.5px] mt-1',
-  itemPadding: 'py-2 px-2',
+  itemPadding: 'py-1.5 px-2',
   compactItemPadding: 'py-2 px-1',
   nestedMenuWidth: '220px',
   nestedMenuMaxHeight: '300px',
@@ -299,10 +299,7 @@ const findDrillPath = (
  * matches the current path — so we know whether the path is "visible"
  * from the current drill level.
  */
-const isPathVisibleInItems = (
-  items: SidebarMenuItemSchema[],
-  path: string
-): boolean => {
+const isPathVisibleInItems = (items: SidebarMenuItemSchema[], path: string): boolean => {
   for (const item of items) {
     if (isPathMatch(item, path)) return true
     // Do NOT recurse into children here — we only care about direct items at this level
@@ -384,15 +381,14 @@ provide('sidebar-menu-ctx', context)
     role="tree"
     aria-label="Sidebar Menu">
     <!-- Drilldown Mode -->
-    <template v-if="(props.renderMode || 'tree') === 'drilldown' && currentOrientation === 'vertical'">
+    <template
+      v-if="(props.renderMode || 'tree') === 'drilldown' && currentOrientation === 'vertical'">
       <div class="w-full sidebar-drilldown-container relative overflow-hidden">
         <TransitionGroup
           :name="drillDirection === 'forward' ? 'drill-forward' : 'drill-backward'"
           tag="div"
           class="relative w-full">
-          <div
-            :key="drilldownStack.length"
-            class="w-full">
+          <div :key="drilldownStack.length" class="w-full">
             <!-- Back Button -->
             <button
               v-if="isDrilldown"
@@ -410,9 +406,7 @@ provide('sidebar-menu-ctx', context)
                 {{ drilldownCurrentLabel }}
               </span>
             </button>
-            <div
-              v-if="isDrilldown"
-              class="h-px bg-border/60 mx-1 mb-1.5" />
+            <div v-if="isDrilldown" class="h-px bg-border/60 mx-1 mb-1.5" />
 
             <!-- Items at current drill level -->
             <div :class="isDrilldown ? 'space-y-0.5' : 'space-y-1'">
