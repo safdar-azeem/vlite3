@@ -25,7 +25,7 @@ const {
 
 <template>
   <div
-    class="vlite-app-layout flex flex-row w-full h-full bg-muted/20 p-0 sm:p-2 gap-0 sm:gap-2 overflow-hidden">
+    class="vlite-app-layout flex flex-row w-full h-full bg-muted/20 p-0 sm:p-2.5 gap-0 sm:gap-2.5 overflow-hidden">
     <Transition
       enter-active-class="transition-all duration-300 ease-in-out"
       leave-active-class="transition-all duration-300 ease-in-out"
@@ -80,9 +80,7 @@ const {
         v-if="$slots.main"
         ref="layoutMainRef"
         class="flex-1 overflow-y-auto w-full relative h-full flex flex-col min-h-0 scrollbar-thin scrollbar-stable">
-        <div
-          v-if="props.renderNestedTabs && nestedTabsItems.length > 0"
-          class="shrink-0 w-full border-b border-border">
+        <div v-if="props.renderNestedTabs && nestedTabsItems.length > 0" class="shrink-0 w-full">
           <NavbarTabs
             v-model="activeNestedTab"
             @change="handleNestedTabClick"
