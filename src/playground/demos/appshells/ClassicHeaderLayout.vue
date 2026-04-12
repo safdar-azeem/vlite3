@@ -16,15 +16,12 @@ import { statItems } from './shared-data'
   <DemoSection title="Classic Layout (Top Navigation)" :code="sourceCode">
     <p class="text-sm text-gray-500 mb-4">
       Using <code>variant="header"</code> with <code>layout-mode="variant4"</code> renders a top
-      navigation bar instead of a sidebar. This is perfect for consumer-facing apps or less
-      complex admin tools.
+      navigation bar instead of a sidebar. This is perfect for consumer-facing apps or less complex
+      admin tools.
     </p>
     <div
       class="border rounded-lg overflow-hidden flex flex-col h-[500px] relative z-0 bg-body shadow-sm">
-      <AppShell
-        variant="header"
-        layout-mode="variant4"
-        class="bg-white/80 backdrop-blur-md border-b sticky top-0 z-50">
+      <AppShell variant="header" layout-mode="variant4" class="bg-white border-b sticky top-0 z-50">
         <template #mobile-trigger="{ toggle }">
           <div class="flex items-center gap-4 px-2">
             <div
@@ -96,17 +93,24 @@ import { statItems } from './shared-data'
         <template #main>
           <div class="h-full bg-gray-50/50 flex flex-col p-6 w-full max-w-5xl mx-auto space-y-6">
             <div class="flex justify-between items-center">
-               <div>
-                 <h1 class="text-2xl font-bold tracking-tight text-foreground">Welcome back</h1>
-                 <p class="text-muted-foreground text-sm mt-1">Here's what's happening with your store today.</p>
-               </div>
-               <Button class="rounded-full shadow-sm">
-                 <Icon icon="lucide:plus" class="w-4 h-4 mr-2" />
-                 Create Report
-               </Button>
+              <div>
+                <h1 class="text-2xl font-bold tracking-tight text-foreground">Welcome back</h1>
+                <p class="text-muted-foreground text-sm mt-1">
+                  Here's what's happening with your store today.
+                </p>
+              </div>
+              <Button class="rounded-full shadow-sm">
+                <Icon icon="lucide:plus" class="w-4 h-4 mr-2" />
+                Create Report
+              </Button>
             </div>
-            <Stats :items="statItems.slice(0, 3)" columns="3" variant="outline" layout="title-top-icon-bottom-right" />
-            <div class="flex-1 bg-white border border-border/50 shadow-sm rounded-xl p-6 min-h-[300px]">
+            <Stats
+              :items="statItems.slice(0, 3)"
+              columns="3"
+              variant="outline"
+              layout="title-top-icon-bottom-right" />
+            <div
+              class="flex-1 bg-white border border-border/50 shadow-sm rounded-xl p-6 min-h-[300px]">
               <h3 class="font-medium text-lg mb-6">Activity Overview</h3>
               <BarChart :data="monthlyBarData" class="w-full h-64" :show-grid="true" />
             </div>
