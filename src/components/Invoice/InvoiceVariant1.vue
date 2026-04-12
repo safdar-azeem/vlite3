@@ -108,10 +108,10 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
     </div>
 
     <div
-      v-if="d.companyInfo || d.customerInfo"
+      v-if="d.companyInfo || d.customerInfo || d.shippingInfo"
       class="border-b border-border"
       :class="compact ? 'px-5 py-4' : 'px-6 pt-4 pb-5'">
-      <div class="grid grid-cols-2 gap-8">
+      <div class="grid gap-8" :class="d.shippingInfo ? 'grid-cols-2 md:grid-cols-3' : 'grid-cols-2'">
         <div v-if="d.companyInfo">
           <p
             class="text-muted-foreground uppercase tracking-widest font-semibold mb-2"
@@ -166,6 +166,30 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
             <p v-if="d.customerInfo.taxId" class="pt-0.5">
               {{ l.taxId || 'Tax ID' }}: {{ d.customerInfo.taxId }}
             </p>
+          </div>
+        </div>
+
+        <div v-if="d.shippingInfo">
+          <p
+            class="text-muted-foreground uppercase tracking-widest font-semibold mb-2"
+            :class="compact ? 'text-[9px]' : 'text-[10px]'">
+            {{ l.shipTo || 'Ship To' }}
+          </p>
+          <p class="font-bold text-foreground" :class="compact ? 'text-sm' : 'text-base'">
+            {{ d.shippingInfo.name }}
+          </p>
+          <div
+            class="text-muted-foreground leading-snug mt-1"
+            :class="compact ? 'text-xs space-y-0.5' : 'text-sm space-y-0.5'">
+            <p v-if="d.shippingInfo.address">{{ d.shippingInfo.address }}</p>
+            <p v-if="d.shippingInfo.city || d.shippingInfo.state">
+              {{ d.shippingInfo.city
+              }}<template v-if="d.shippingInfo.city && d.shippingInfo.state">, </template
+              >{{ d.shippingInfo.state }} {{ d.shippingInfo.zip }}
+            </p>
+            <p v-if="d.shippingInfo.country">{{ d.shippingInfo.country }}</p>
+            <p v-if="d.shippingInfo.email" class="pt-0.5">{{ d.shippingInfo.email }}</p>
+            <p v-if="d.shippingInfo.phone">{{ d.shippingInfo.phone }}</p>
           </div>
         </div>
       </div>
