@@ -36,7 +36,7 @@ const props = withDefaults(defineProps<AppShellProps>(), {
   breadcrumbHomeIcon: 'lucide:home',
   breadcrumbPosition: 'header',
   breadcrumbClass: '',
-  layoutMode: 'sidebar-first',
+  layoutMode: 'variant1',
 })
 
 defineEmits<{
@@ -50,15 +50,15 @@ useAppShell(props, true)
 // ── Layout resolution ─────────────────────────────────────────────────────────
 const layoutComponent = computed(() => {
   switch (props.layoutMode) {
-    case 'sidebar-first':
+    case 'variant1':
       return AppShellLayoutSidebarFirst
-    case 'dashboard':
+    case 'variant2':
       return AppShellLayoutDashboard
-    case 'dock':
+    case 'variant3':
       return AppShellLayoutDock
-    case 'classic':
+    case 'variant4':
       return AppShellLayoutClassic
-    case 'header-shell':
+    case 'variant5':
       return AppShellLayoutHeaderShell
     default:
       return AppShellLayoutSidebarFirst
@@ -74,7 +74,6 @@ export default {
 
 <template>
   <component :is="layoutComponent">
-    <!-- Forward every slot from the consumer to the resolved layout component -->
     <template v-for="(_, name) in $slots" :key="name" v-slot:[name]="slotData">
       <slot :name="name" v-bind="slotData ?? {}" />
     </template>
