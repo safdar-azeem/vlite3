@@ -165,7 +165,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       class="border-r border-border"
       :class="isSidebarCompact ? 'w-28' : 'w-64'">
       <template #sidebar>
-        <div>
+        <div class="h-full">
           <SidebarMenu
             class="hidden md:flex"
             :show-tooltip="isSidebarCompact"
@@ -203,7 +203,7 @@ const menuItems: SidebarMenuItemSchema[] = [
 
       <template #sidebar-header>
         <div
-          class="font-bold text-lg flex items-center gap-2 w-full"
+          class="font-bold text-lg flex items-center gap-2 w-full px-4.5 py-3"
           :class="isSidebarCompact ? 'md:flex-col md:justify-center' : 'flex-row'">
           <div class="w-7 h-7 rounded bg-primary text-white flex items-center justify-center">
             V
@@ -214,19 +214,13 @@ const menuItems: SidebarMenuItemSchema[] = [
 
       <template #header="{ toggleSidebar, toggle, breadcrumbItems, pageTitle }">
         <div class="h-13 bg-background flex items-center justify-between px-4 w-full shadow-sm">
-          <div class="flex items-center gap-2 min-w-0 flex-1">
+          <div class="flex items-center min-w-0 flex-1">
             <Button variant="ghost" icon="lucide:menu" @click="toggle" class="md:hidden shrink-0" />
             <Button
               variant="ghost"
               :icon="isSidebarCompact ? 'lucide:panel-left-open' : 'lucide:panel-left-close'"
               @click="toggleCompact"
               class="max-md:hidden shrink-0 text-muted-foreground mr-2" />
-
-            <div
-              v-if="pageTitle"
-              class="font-semibold text-base hidden md:flex items-center mr-4 whitespace-nowrap">
-              {{ pageTitle }}
-            </div>
 
             <NavbarCommandPalette
               :enabled="true"
@@ -237,7 +231,7 @@ const menuItems: SidebarMenuItemSchema[] = [
 
             <div
               v-if="breadcrumbItems?.length > 1"
-              class="hidden lg:flex items-center pl-3 border-l border-border ml-2">
+              class="hidden lg:flex items-center pl-4 ml-3 border-l border-border">
               <Breadcrumb :items="breadcrumbItems" separator="slash" size="sm" />
             </div>
           </div>
