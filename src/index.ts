@@ -56,6 +56,7 @@ export * from './components/TagInput'
 export * from './components/Calendar'
 export * from './components/Skeleton'
 export * from './components/Chart'
+export * from './components/AppShell'
 
 export { default as Icon } from './components/Icon.vue'
 export { default as Logo } from './components/Logo.vue'
