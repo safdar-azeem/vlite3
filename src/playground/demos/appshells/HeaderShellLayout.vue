@@ -19,9 +19,9 @@ const isSidebarCompact = ref(false)
 <template>
   <DemoSection title="Header-Shell Layout (Flush Sidebar + Floating Content)" :code="sourceCode">
     <p class="text-sm text-gray-500 mb-4">
-      The <code>variant5</code> layout mode has the sidebar flush against the left, top, and
-      bottom edges. The header and main content sit inside a floating rounded card panel to the
-      right. Supports compact sidebar toggle.
+      The <code>variant5</code> layout mode has the sidebar flush against the left, top, and bottom
+      edges. The header and main content sit inside a floating rounded card panel to the right.
+      Supports compact sidebar toggle.
     </p>
     <div
       class="h-[600px] relative z-0 flex flex-col w-full bg-body rounded-lg overflow-hidden border shadow-sm">
@@ -31,7 +31,7 @@ const isSidebarCompact = ref(false)
         :class="isSidebarCompact ? 'w-22' : 'w-64'">
         <template #sidebar-header>
           <div
-            class="font-bold text-lg flex items-center gap-3 px-2 py-1"
+            class="font-bold text-lg flex items-center gap-3 px-4 py-3.5"
             :class="isSidebarCompact ? 'justify-center w-full px-0' : ''">
             <div
               class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-inner shrink-0">
@@ -44,14 +44,14 @@ const isSidebarCompact = ref(false)
         <template #sidebar>
           <SidebarMenu
             :items="menuItems"
-            class="px-3 py-2"
+            class="px-3"
             :compact="isSidebarCompact"
             :show-compact-labels="true" />
         </template>
 
         <template #sidebar-footer>
           <div
-            class="p-4 bg-muted/40 mt-auto flex items-center gap-3 cursor-pointer hover:bg-muted/50 transition-colors"
+            class="p-4 bg-muted/40 border-t mt-auto flex items-center gap-3 cursor-pointer hover:bg-muted/50 transition-colors"
             :class="isSidebarCompact ? 'justify-center px-2' : ''">
             <Avatar size="sm" fallback="JD" class="bg-blue-100 text-blue-700 font-medium" />
             <template v-if="!isSidebarCompact">
