@@ -259,3 +259,125 @@ export interface GaugeChartProps {
   /** Play an entry animation on mount and value change */
   animate?: boolean
 }
+
+// ─────────────────────────────────────────────
+// TimelineChart
+// ─────────────────────────────────────────────
+
+/** A single task bar on the timeline */
+export interface TimelineTask {
+  /** Person / row label shown on the Y axis */
+  person: string
+  /** Task name displayed inside the bar */
+  task: string
+  /** Start position (0-based index on the time axis) */
+  start: number
+  /** End position (0-based index on the time axis) */
+  end: number
+  /** CSS color for this bar */
+  color?: string
+}
+
+export interface TimelineChartProps {
+  /** Array of task objects */
+  tasks: TimelineTask[]
+  /** X-axis period labels (e.g. month names) */
+  periods: string[]
+  /** Chart height in px */
+  height?: number
+  /** Corner radius per bar */
+  barRadius?: number
+  /** Show dashed vertical grid lines */
+  showGrid?: boolean
+  /** Enable hover tooltip */
+  showTooltip?: boolean
+  /** Show task labels inside bars */
+  showLabels?: boolean
+  /** Entry animation */
+  animate?: boolean
+  /** Custom color palette (cycles for tasks without explicit color) */
+  colors?: string[]
+}
+
+// ─────────────────────────────────────────────
+// SegmentBarChart
+// ─────────────────────────────────────────────
+
+export interface SegmentBarChartProps {
+  /** Segment data — each item is { label, value, color? } */
+  data: ChartDataPoint[]
+  /** Bar height in px */
+  barHeight?: number
+  /** Corner radius */
+  barRadius?: number
+  /** Show category labels above the bar */
+  showLabels?: boolean
+  /** Show percentage values inside segments */
+  showValues?: boolean
+  /** Enable hover tooltip */
+  showTooltip?: boolean
+  /** Entry animation */
+  animate?: boolean
+  /** Custom color palette */
+  colors?: string[]
+  /** Custom value formatter */
+  formatValue?: (v: number, pct: number) => string
+}
+
+// ─────────────────────────────────────────────
+// StatCardChart
+// ─────────────────────────────────────────────
+
+/** A single metric card item */
+export interface StatCardItem {
+  /** Card label (e.g. "Desktop") */
+  label: string
+  /** Display percentage (e.g. 17) */
+  percentage: number
+  /** Bottom value (e.g. 23.8) */
+  value: number
+  /** Trend direction */
+  trend: 'up' | 'down'
+  /** Optional CSS color */
+  color?: string
+}
+
+export interface StatCardChartProps {
+  /** Array of stat card items */
+  data: StatCardItem[]
+  /** Entry animation */
+  animate?: boolean
+  /** Custom color palette */
+  colors?: string[]
+}
+
+// ─────────────────────────────────────────────
+// WaffleChart
+// ─────────────────────────────────────────────
+
+export interface WaffleChartProps {
+  /** Single-segment: current value */
+  value?: number
+  /** Single-segment: maximum value */
+  max?: number
+  /** Multi-segment data — each item fills proportionally */
+  data?: ChartDataPoint[]
+  /** Total number of cells in the grid */
+  cellCount?: number
+  /** Number of cells per row (for multi-row layouts) */
+  columns?: number
+  /** Cell corner radius */
+  cellRadius?: number
+  /** Gap between cells in px */
+  cellGap?: number
+  /** Color for single-segment filled cells */
+  color?: ChartColor
+  /** Custom color palette for multi-segment */
+  colors?: string[]
+  /** Background track color for unfilled cells */
+  trackColor?: string
+  /** Entry animation */
+  animate?: boolean
+  /** Enable hover tooltip */
+  showTooltip?: boolean
+}
