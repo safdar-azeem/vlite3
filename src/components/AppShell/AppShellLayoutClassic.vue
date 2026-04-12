@@ -128,6 +128,7 @@ onClickOutside(
             <div :class="breakpointClasses.desktopSidebar">
               <div
                 class="flex-1 px-2.5 pt-0 pb-4 overflow-y-auto space-y-4 scrollbar-thin scrollbar-stable"
+                style="will-change: transform; contain: layout style"
                 :class="props.contentClass">
                 <slot name="left" />
                 <slot name="sidebar" />
@@ -223,7 +224,8 @@ onClickOutside(
           </template>
           <template v-else>
             <div
-              class="flex flex-col space-y-4 flex-1 overflow-y-auto px-3.5! scrollbar-thin scrollbar-stable">
+              class="flex flex-col space-y-4 flex-1 overflow-y-auto px-3.5! scrollbar-thin scrollbar-stable"
+              style="will-change: transform; contain: layout style">
               <slot name="left" />
               <slot name="mobile-sidebar"><slot name="sidebar" /></slot>
               <slot name="center" />
