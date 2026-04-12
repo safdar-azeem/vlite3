@@ -99,6 +99,7 @@ const menuItems: SidebarMenuItemSchema[] = [
     label: 'Navigation & Layout',
     icon: 'lucide:layout-template',
     children: [
+      { label: 'App Shell', to: '/components/appshell', icon: 'lucide:layout-dashboard' },
       { label: 'Navbar', to: '/components/navbar', icon: 'lucide:layout-template' },
       { label: 'Sidebar Menu', to: '/components/sidebarmenu', icon: 'lucide:sidebar' },
       { label: 'Breadcrumb', to: '/components/breadcrumb', icon: 'lucide:chevrons-right' },
