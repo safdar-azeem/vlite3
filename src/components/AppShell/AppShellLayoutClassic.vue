@@ -41,7 +41,7 @@ onClickOutside(
 
 <template>
   <div class="vlite-app-layout flex flex-col w-full h-full bg-body overflow-hidden">
-    <header v-if="$slots.header" class="w-full shrink-0 z-50 flex flex-col relative">
+    <header v-if="$slots.header" class="w-full shrink-0 z-50 flex flex-col relative border-b">
       <slot
         name="header"
         :is-open="isMobileMenuOpen"
