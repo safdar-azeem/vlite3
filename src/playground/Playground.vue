@@ -213,8 +213,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       </template>
 
       <template #header="{ toggleSidebar, toggle, breadcrumbItems, pageTitle }">
-        <div
-          class="h-13 border-b bg-background flex items-center justify-between px-4 w-full shadow-sm">
+        <div class="h-13 bg-background flex items-center justify-between px-4 w-full shadow-sm">
           <div class="flex items-center gap-2 min-w-0 flex-1">
             <Button variant="ghost" icon="lucide:menu" @click="toggle" class="md:hidden shrink-0" />
             <Button
@@ -251,7 +250,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       </template>
 
       <template #main>
-        <div class="px-10 md:px-14 lg:px-16 py-8 lg:py-10 max-w-[1500px] mx-auto w-full">
+        <div class="px-10 md:px-14 lg:px-10 py-8 lg:py-8 max-w-[1500px] mx-auto w-full">
           <router-view></router-view>
         </div>
       </template>
