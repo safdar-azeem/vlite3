@@ -72,7 +72,7 @@ When using the `<template #header>` slot, you are granted several powerful scope
 
 ## Layout Modes Overview
 
-The `AppShell` offers four uniquely distinct orchestrations for your application via the `layout-mode` prop.
+The `AppShell` offers five uniquely distinct orchestrations for your application via the `layout-mode` prop.
 
 ### 1. `sidebar-first` (Default)
 The sidebar spans the entire full height of the viewport on the left. The `header` and `main` content are stacked vertically on the right side.
@@ -85,6 +85,9 @@ Creates a sophisticated "floating panel" aesthetic. The primary app wrapper rece
 
 ### 4. `dock`
 A minimalist floating sidebar that behaves similarly to a macOS dock. The sidebar is vertically centered, and dynamically bounds its height only to the content placed within it. Highly suited for compact application navigation.
+
+### 5. `header-shell`
+The sidebar is flush against the left, top, and bottom edges of the screen with no gaps or rounded corners. The header and main content sit to the right of the sidebar inside a floating, rounded card container. This creates a premium "shell" aesthetic where the sidebar acts as a solid anchor while the content area feels modern and elevated. Supports both expanded and compact sidebar modes.
 
 ---
 
