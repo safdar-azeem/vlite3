@@ -4,6 +4,10 @@ import BarChartDemo from './charts/BarChartDemo.vue'
 import PieChartDemo from './charts/PieChartDemo.vue'
 import CircleChartDemo from './charts/CircleChartDemo.vue'
 import GaugeChartDemo from './charts/GaugeChartDemo.vue'
+import TimelineChartDemo from './charts/TimelineChartDemo.vue'
+import SegmentBarChartDemo from './charts/SegmentBarChartDemo.vue'
+import StatCardChartDemo from './charts/StatCardChartDemo.vue'
+import WaffleChartDemo from './charts/WaffleChartDemo.vue'
 import DashboardPreviewDemo from './charts/DashboardPreviewDemo.vue'
 </script>
 
@@ -15,7 +19,7 @@ import DashboardPreviewDemo from './charts/DashboardPreviewDemo.vue'
       <p class="text-lg text-muted-foreground max-w-[80%]">
         Beautiful, zero-dependency SVG chart components. Fully customizable, dark mode ready,
         animated, and responsive. Includes Line, Bar, Pie/Donut, Circle (progress ring),
-        and Gauge (speedometer) charts.
+        Gauge (speedometer), Timeline, Segment Bar, Stat Card, and Waffle charts.
       </p>
     </div>
 
@@ -24,6 +28,11 @@ import DashboardPreviewDemo from './charts/DashboardPreviewDemo.vue'
     <PieChartDemo />
     <CircleChartDemo />
     <GaugeChartDemo />
+    <TimelineChartDemo />
+    <SegmentBarChartDemo />
+    <StatCardChartDemo />
+    <WaffleChartDemo />
     <DashboardPreviewDemo />
   </div>
 </template>
+
