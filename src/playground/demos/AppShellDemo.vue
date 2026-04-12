@@ -9,6 +9,16 @@ import Icon from '@/components/Icon.vue'
 import DemoSection from '../DemoSection.vue'
 import sourceCode from './AppShellDemo.vue?raw'
 import { ref } from 'vue'
+import { Stats } from '@/components/Stats'
+import { LineChart, BarChart } from '@/components/Chart'
+import { revenueData, monthlyBarData } from './charts/chart-data'
+
+const statItems = [
+  { id: 1, title: 'Total Revenue', value: '$45,231', icon: 'lucide:dollar-sign', trend: { value: '12%', isPositive: true }, color: 'primary' },
+  { id: 2, title: 'Active Users', value: '+2350', icon: 'lucide:users', trend: { value: '5%', isPositive: true }, color: 'success' },
+  { id: 3, title: 'Sales', value: '+12,234', icon: 'lucide:credit-card', trend: { value: '1%', isPositive: false }, color: 'warning' },
+  { id: 4, title: 'Bounce Rate', value: '14.5%', icon: 'lucide:activity', trend: { value: '2%', isPositive: false }, color: 'danger' },
+]
 
 // Mock Items
 const menuItems: SidebarMenuItemSchema[] = [
@@ -127,21 +137,10 @@ const isSidebarCompact = ref(false)
 
           <template #main>
             <div class="p-6 h-full flex flex-col gap-6">
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div
-                  v-for="i in 3"
-                  :key="i"
-                  class="h-24 rounded-xl border border-border bg-card shadow-sm p-4 flex flex-col justify-center">
-                  <div class="text-sm font-medium text-muted-foreground">Stat {{ i }}</div>
-                  <div class="text-2xl font-bold mt-1">{{ 100 * i }}</div>
-                </div>
-              </div>
-              <div
-                class="flex-1 border-2 border-dashed border-border/60 rounded-xl flex items-center justify-center bg-muted/5">
-                <p class="text-muted-foreground text-sm flex items-center gap-2">
-                  <Icon icon="lucide:layout-template" class="w-4 h-4" />
-                  Main workspace content
-                </p>
+              <Stats :items="statItems.slice(0, 3)" columns="3" variant="shadow" />
+              <div class="flex-1 bg-white border border-border shadow-sm rounded-xl p-4 min-h-[300px]">
+                <h3 class="font-medium text-lg mb-4">Monthly Revenue</h3>
+                <BarChart :data="monthlyBarData" class="h-64" />
               </div>
             </div>
           </template>
@@ -223,34 +222,10 @@ const isSidebarCompact = ref(false)
 
           <template #main>
             <div class="p-6 h-full flex flex-col gap-6">
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div
-                  v-for="i in 4"
-                  :key="i"
-                  class="bg-white p-6 rounded-xl border border-border/50 flex flex-col gap-2 shadow-sm transition-transform hover:-translate-y-1 duration-200">
-                  <div class="flex items-center justify-between text-muted-foreground">
-                    <span class="text-xs font-medium uppercase tracking-wider"
-                      >Metrics {{ i }}</span
-                    >
-                    <Icon icon="lucide:activity" class="w-4 h-4 opacity-50" />
-                  </div>
-                  <div class="text-3xl font-bold font-mono tracking-tighter mt-2">1,024</div>
-                  <div class="text-xs text-green-500 font-medium flex items-center gap-1 mt-1">
-                    <Icon icon="lucide:trending-up" class="w-3 h-3" />
-                    +12% from last month
-                  </div>
-                </div>
-              </div>
-              <div
-                class="flex-1 bg-white border border-border/50 shadow-sm rounded-xl flex items-center justify-center min-h-[200px]">
-                <div class="text-center text-muted-foreground flex flex-col items-center gap-3">
-                  <div
-                    class="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-2">
-                    <Icon icon="lucide:bar-chart-2" class="w-8 h-8 opacity-40 text-primary" />
-                  </div>
-                  <span class="font-medium text-lg text-foreground/70">Main content area</span>
-                  <span class="text-sm">This panel floats within the dashboard space</span>
-                </div>
+              <Stats :items="statItems" columns="4" variant="solid" :attached="true" layout="icon-right" />
+              <div class="flex-1 bg-white border border-border/50 shadow-sm rounded-xl p-6 min-h-[300px]">
+                <h3 class="font-medium text-lg mb-6">Audience Growth</h3>
+                <LineChart :data="revenueData" class="h-64 mt-2" :show-gradient="true" :smooth="true" :animated="true" />
               </div>
             </div>
           </template>
@@ -342,41 +317,19 @@ const isSidebarCompact = ref(false)
           <template #main>
             <div class="h-full bg-gray-50/50 flex flex-col p-6 w-full max-w-5xl mx-auto space-y-6">
               <div class="flex justify-between items-center">
-                <div>
-                  <h1 class="text-2xl font-bold tracking-tight text-foreground">Welcome back</h1>
-                  <p class="text-muted-foreground text-sm mt-1">
-                    Here's what's happening with your store today.
-                  </p>
-                </div>
-                <Button class="rounded-full shadow-sm">
-                  <Icon icon="lucide:plus" class="w-4 h-4 mr-2" />
-                  Create Report
-                </Button>
+                 <div>
+                   <h1 class="text-2xl font-bold tracking-tight text-foreground">Welcome back</h1>
+                   <p class="text-muted-foreground text-sm mt-1">Here's what's happening with your store today.</p>
+                 </div>
+                 <Button class="rounded-full shadow-sm">
+                   <Icon icon="lucide:plus" class="w-4 h-4 mr-2" />
+                   Create Report
+                 </Button>
               </div>
-              <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                <div
-                  v-for="i in 3"
-                  :key="i"
-                  class="h-32 rounded-xl bg-white border border-border/50 shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition-shadow">
-                  <div class="flex items-center justify-between text-muted-foreground">
-                    <span class="text-sm font-medium">Metric {{ i }}</span>
-                    <Icon icon="lucide:arrow-up-right" class="w-4 h-4 text-green-500" />
-                  </div>
-                  <div class="text-3xl font-bold tracking-tight">$45,231</div>
-                </div>
-              </div>
-              <div
-                class="flex-1 bg-white border border-border/50 shadow-sm rounded-xl min-h-[300px] flex items-center justify-center">
-                <div class="text-center">
-                  <div
-                    class="mx-auto w-12 h-12 bg-muted/50 rounded-full flex items-center justify-center mb-3">
-                    <Icon icon="lucide:inbox" class="w-5 h-5 text-muted-foreground" />
-                  </div>
-                  <h3 class="text-lg font-medium">No recent activity</h3>
-                  <p class="text-sm text-muted-foreground mt-1 max-w-sm">
-                    When you have new data, it will appear here in detailed charts.
-                  </p>
-                </div>
+              <Stats :items="statItems.slice(0, 3)" columns="3" variant="outline" layout="title-top-icon-bottom-right" />
+              <div class="flex-1 bg-white border border-border/50 shadow-sm rounded-xl p-6 min-h-[300px]">
+                <h3 class="font-medium text-lg mb-6">Activity Overview</h3>
+                <BarChart :data="monthlyBarData" class="w-full h-64" :show-grid="true" />
               </div>
             </div>
           </template>
