@@ -204,6 +204,15 @@ const ecomInvoice: InvoiceData = {
     email: 'sarah.kim@email.com',
     phone: '+1 (415) 555-0190',
   },
+  shippingInfo: {
+    name: 'Sarah L. Kim (Receiving)',
+    address: '120 Warehouse Blvd, Dock 4',
+    city: 'San Jose',
+    state: 'CA',
+    zip: '95112',
+    country: 'United States',
+    phone: '+1 (415) 555-0191',
+  },
   items: [
     {
       id: 1,
@@ -393,7 +402,7 @@ const invoicePropsFields = [
     name: 'labels',
     type: 'InvoiceLabels?',
     default: '—',
-    desc: 'Custom static text overrides (e.g. replacing "Invoice" with "Tax Invoice").',
+    desc: 'Custom static text overrides (e.g. replacing "Invoice" with "Tax Invoice", defining "shipTo").',
   },
 ]
 
@@ -426,6 +435,11 @@ const invoiceDataFields = [
     name: 'customerInfo',
     type: 'InvoiceCustomerInfo?',
     desc: 'Bill-to party name, address, email, phone, tax ID.',
+  },
+  {
+    name: 'shippingInfo',
+    type: 'InvoiceCustomerInfo?',
+    desc: 'Ship-to party name, address, email, phone.',
   },
   {
     name: 'items',
