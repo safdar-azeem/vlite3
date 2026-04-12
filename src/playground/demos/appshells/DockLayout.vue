@@ -12,13 +12,13 @@ import { menuItems } from './shared-data'
 <template>
   <DemoSection title="Dock Layout Mode (Minimal Vertical)" :code="sourceCode">
     <p class="text-sm text-gray-500 mb-4">
-      Using <code>layout-mode="dock"</code> to render a compact floating sidebar that aligns neatly
+      Using <code>layout-mode="variant3"</code> to render a compact floating sidebar that aligns neatly
       in the center of the vertical axis.
     </p>
     <div class="border rounded-lg overflow-hidden bg-gray-50 flex flex-col h-[500px] shadow-sm">
       <AppShell
         variant="sidebar"
-        layout-mode="dock"
+        layout-mode="variant3"
         :compact="true"
         class="w-16"
         mobileBreakpoint="md">
