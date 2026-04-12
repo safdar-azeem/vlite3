@@ -74,8 +74,10 @@ export interface InvoiceData {
   /** Due date of the invoice */
   dueDate?: string | Date
 
-  /** Customer details */
+  /** Customer details (Bill To) */
   customerInfo?: InvoiceCustomerInfo
+  /** Shipping details (Ship To) */
+  shippingInfo?: InvoiceCustomerInfo
 
   /** Array of line items */
   items: InvoiceLineItem[]
@@ -101,6 +103,7 @@ export interface InvoiceLabels {
   due?: string
   from?: string
   billedTo?: string
+  shipTo?: string
   status?: string
   item?: string
   price?: string
