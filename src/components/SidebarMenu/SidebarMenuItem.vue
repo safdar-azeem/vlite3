@@ -203,15 +203,32 @@ const handleChevronClick = (e: Event) => {
 
 // Styling
 const indentSize = computed(() => context.indentSize || 12)
+
+// Compute the tree line left position: aligns with parent icon center
+const treeLineLeft = computed(() => {
+  const iconPx = parseInt(context.iconSize || '16', 10)
+  // The parent item has px-2 = 8px padding, icon center = 8 + iconPx/2
+  const parentIconCenter = 8 + iconPx / 2
+  // For nested levels, offset by parent's depth indent
+  return `${props.depth * indentSize.value + parentIconCenter}px`
+})
+
 const itemStyle = computed(() => {
   if (isHorizontal.value) return {}
   if (context.compact) {
     return { width: '100%' }
   }
-  return {
-    marginLeft: `${props.depth * indentSize.value}px`,
-    width: `calc(100% - ${props.depth * indentSize.value}px)`,
+  if (props.depth > 0) {
+    // Child items: indent from left edge, reduce width accordingly
+    const iconPx = parseInt(context.iconSize || '16', 10)
+    const parentIconCenter = 8 + iconPx / 2
+    const indent = (props.depth - 1) * indentSize.value + parentIconCenter + 8
+    return {
+      marginLeft: `${indent}px`,
+      width: `calc(100% - ${indent}px)`,
+    }
   }
+  return {}
 })
 
 const itemClass = computed(() => {
@@ -444,7 +461,6 @@ const componentProps = computed(() => {
           :is="componentIs"
           v-bind="componentProps"
           :class="itemClass"
-          class="mb-0.5"
           :style="itemStyle"
           :aria-expanded="showChevron ? isExpanded : undefined"
           :aria-current="isActive ? 'page' : undefined"
@@ -526,15 +542,20 @@ const componentProps = computed(() => {
         @leave="leave">
         <div
           v-if="hasChildren && isExpanded && !isHorizontal"
-          class="overflow-hidden transition-all duration-300 ease-in-out relative">
+          class="sidebar-children-container overflow-hidden transition-all duration-300 ease-in-out relative">
+          <!-- Shadcn-style tree line: positioned under parent icon center -->
           <div
             v-if="context.variant === 'default'"
-            class="absolute top-0 bottom-2 w-px bg-border"
+            class="sidebar-tree-line absolute rounded-full z-[1]"
             :style="{
-              left: `${(depth + 1) * indentSize - indentSize / 2}px`,
+              left: treeLineLeft,
+              top: '4px',
+              bottom: '10px',
+              width: '1px',
+              backgroundColor: 'var(--color-border)',
             }"></div>
 
-          <div class="mt-0.5 space-y-0.5">
+          <div class="pt-1 space-y-0.5 pb-1.5">
             <SidebarMenuItem
               v-for="child in item.children"
               :key="child.id || child.label"
