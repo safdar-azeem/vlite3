@@ -4,6 +4,7 @@ import DashboardLayout from './appshells/DashboardLayout.vue'
 import ClassicHeaderLayout from './appshells/ClassicHeaderLayout.vue'
 import DockLayout from './appshells/DockLayout.vue'
 import NestedMenusLayout from './appshells/NestedMenusLayout.vue'
+import HeaderShellLayout from './appshells/HeaderShellLayout.vue'
 </script>
 
 <template>
@@ -26,6 +27,9 @@ import NestedMenusLayout from './appshells/NestedMenusLayout.vue'
 
     <!-- Dock Layout -->
     <DockLayout />
+
+    <!-- Header Shell Layout -->
+    <HeaderShellLayout />
 
     <!-- Nested Menus -->
     <NestedMenusLayout />
