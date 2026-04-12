@@ -40,7 +40,11 @@ const isSidebarCompact = ref(false)
         </template>
 
         <template #sidebar>
-          <SidebarMenu :items="menuItems" class="px-2" :compact="isSidebarCompact" />
+          <SidebarMenu
+            :items="menuItems"
+            class="px-2 mt-2"
+            :compact="isSidebarCompact"
+            :show-compact-labels="true" />
         </template>
 
         <template #sidebar-footer>
@@ -52,7 +56,7 @@ const isSidebarCompact = ref(false)
 
         <template #header="{ toggle, pageTitle }">
           <div class="h-16 flex items-center justify-between px-6 w-full gap-4">
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
               <Button
                 variant="ghost"
                 size="sm"
@@ -64,9 +68,12 @@ const isSidebarCompact = ref(false)
                 size="sm"
                 icon="lucide:panel-left-open"
                 class="max-md:hidden -ml-2 text-muted-foreground hover:text-foreground"
-                @click="() => { isSidebarCompact = !isSidebarCompact }" />
+                @click="
+                  () => {
+                    isSidebarCompact = !isSidebarCompact
+                  }
+                " />
               <div class="font-semibold text-lg flex items-center gap-2 text-foreground/90">
-                <Icon icon="lucide:layout" class="w-5 h-5 text-gray-400" />
                 {{ pageTitle || 'Overview' }}
               </div>
             </div>
@@ -86,10 +93,21 @@ const isSidebarCompact = ref(false)
 
         <template #main>
           <div class="p-6 h-full flex flex-col gap-6">
-            <Stats :items="statItems" columns="4" variant="solid" :attached="true" layout="icon-right" />
-            <div class="flex-1 bg-white border border-border/50 shadow-sm rounded-xl p-6 min-h-[300px]">
+            <Stats
+              :items="statItems"
+              columns="4"
+              variant="solid"
+              :attached="true"
+              layout="icon-right" />
+            <div
+              class="flex-1 bg-white border border-border/50 shadow-sm rounded-xl p-6 min-h-[300px]">
               <h3 class="font-medium text-lg mb-6">Audience Growth</h3>
-              <LineChart :data="revenueData" class="h-64 mt-2" :show-gradient="true" :smooth="true" :animated="true" />
+              <LineChart
+                :data="revenueData"
+                class="h-64 mt-2"
+                :show-gradient="true"
+                :smooth="true"
+                :animated="true" />
             </div>
           </div>
         </template>
