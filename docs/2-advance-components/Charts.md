@@ -12,6 +12,10 @@ Beautiful, highly customizable, zero-dependency SVG chart components for Vlite3.
 | `BarChart` | Vertical or horizontal bar chart — single or multi-series grouped bars |
 | `PieChart` | Pie or donut chart with animated arc draw and optional center content |
 | `CircleChart` | Single-value progress ring (gauge) with gradient stroke |
+| `TimelineChart` | Gantt-style horizontal timeline with task bars per person across periods |
+| `SegmentBarChart` | Single stacked horizontal bar showing proportional segments |
+| `StatCardChart` | Grid of metric cards with percentages, proportional indicators, and trends |
+| `WaffleChart` | Grid of rounded cells colored to represent proportional data |
 
 All components:
 
@@ -28,10 +32,14 @@ All components:
 
 ```vue
 <script setup lang="ts">
-import LineChart   from '@/components/Chart/LineChart.vue'
-import BarChart    from '@/components/Chart/BarChart.vue'
-import PieChart    from '@/components/Chart/PieChart.vue'
-import CircleChart from '@/components/Chart/CircleChart.vue'
+import LineChart       from '@/components/Chart/LineChart.vue'
+import BarChart        from '@/components/Chart/BarChart.vue'
+import PieChart        from '@/components/Chart/PieChart.vue'
+import CircleChart     from '@/components/Chart/CircleChart.vue'
+import TimelineChart   from '@/components/Chart/TimelineChart.vue'
+import SegmentBarChart from '@/components/Chart/SegmentBarChart.vue'
+import StatCardChart   from '@/components/Chart/StatCardChart.vue'
+import WaffleChart     from '@/components/Chart/WaffleChart.vue'
 </script>
 ```
 
@@ -605,6 +613,158 @@ A single-value animated progress ring (gauge), supporting semantic color tokens,
 
 ---
 
+## TimelineChart
+
+A Gantt-style horizontal timeline chart showing task bars per person across configurable time periods. Each person occupies their own row, with rounded colored bars spanning from a start to end position.
+
+### Basic Usage
+
+```vue
+<TimelineChart
+  :tasks="[
+    { person: 'Caleb', task: 'UI Design',   start: 0.5, end: 4.5, color: '#10b981' },
+    { person: 'Shaw',  task: 'UX Design',   start: 2.5, end: 5.8, color: '#f43f5e' },
+    { person: 'Jane',  task: 'Music',       start: 1.8, end: 5.5, color: '#f59e0b' },
+  ]"
+  :periods="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']" />
+```
+
+### Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `tasks` | `TimelineTask[]` | **required** | Array of task objects — `{ person, task, start, end, color? }` |
+| `periods` | `string[]` | **required** | X-axis period labels (e.g. month names) |
+| `height` | `number` | `300` | Chart height in pixels |
+| `barRadius` | `number` | `20` | Corner radius per task bar |
+| `showGrid` | `boolean` | `true` | Show dashed vertical grid lines |
+| `showTooltip` | `boolean` | `true` | Floating tooltip on bar hover |
+| `showLabels` | `boolean` | `true` | Show task name labels inside bars |
+| `animate` | `boolean` | `true` | Grow-in animation from zero width |
+| `colors` | `string[]` | CSS palette | Palette for tasks without explicit `color` |
+
+### TimelineTask Interface
+
+```ts
+interface TimelineTask {
+  person: string   // Row label (Y-axis)
+  task: string     // Text inside bar
+  start: number    // Start position (0-based index)
+  end: number      // End position
+  color?: string   // Optional CSS color
+}
+```
+
+---
+
+## SegmentBarChart
+
+A single stacked horizontal bar showing proportional segments. Each segment represents a category with color, label, and percentage value.
+
+### Basic Usage
+
+```vue
+<SegmentBarChart
+  :data="[
+    { label: 'On the way',  value: 33.3, color: '#525252' },
+    { label: 'Unloading',   value: 23.5, color: '#737373' },
+    { label: 'Loading',     value: 23.1, color: '#a3a3a3' },
+    { label: 'Waiting',     value: 20.1, color: '#d4d4d4' },
+  ]" />
+```
+
+### Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `data` | `ChartDataPoint[]` | **required** | Segment data — `{ label, value, color? }` |
+| `barHeight` | `number` | `48` | Height of the stacked bar in px |
+| `barRadius` | `number` | `8` | Corner radius for the outer bar |
+| `showLabels` | `boolean` | `true` | Show category labels with indicator dots above the bar |
+| `showValues` | `boolean` | `true` | Show percentage values inside each segment |
+| `showTooltip` | `boolean` | `true` | Floating tooltip on segment hover |
+| `animate` | `boolean` | `true` | Width expansion entry animation |
+| `colors` | `string[]` | CSS palette | Color palette for segments without explicit `color` |
+| `formatValue` | `(v: number, pct: number) => string` | built-in | Custom formatter for segment display |
+
+---
+
+## StatCardChart
+
+A responsive grid of metric cards showing a label, large percentage value, proportional size indicator, and a trend arrow. Designed for device or category breakdowns.
+
+### Basic Usage
+
+```vue
+<StatCardChart
+  :data="[
+    { label: 'Desktop', percentage: 17, value: 23.8,   trend: 'up',   color: '#a3a3a3' },
+    { label: 'Tablet',  percentage: 65, value: 13.604, trend: 'down', color: '#525252' },
+    { label: 'Mobile',  percentage: 18, value: 47.146, trend: 'up',   color: '#737373' },
+  ]" />
+```
+
+### Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `data` | `StatCardItem[]` | **required** | Array of card items |
+| `animate` | `boolean` | `true` | Staggered fade-in / slide-up entry animation |
+| `colors` | `string[]` | CSS palette | Color palette for items without explicit `color` |
+
+### StatCardItem Interface
+
+```ts
+interface StatCardItem {
+  label: string          // Card label (e.g. "Desktop")
+  percentage: number     // Large percentage value (e.g. 17)
+  value: number          // Bottom metric value (e.g. 23.8)
+  trend: 'up' | 'down'  // Trend arrow direction
+  color?: string         // Optional CSS color for the indicator
+}
+```
+
+---
+
+## WaffleChart
+
+A grid of rounded cells colored proportionally to represent data. Supports single-value (progress) and multi-segment modes with staggered fill animation.
+
+### Basic Usage
+
+```vue
+<!-- Single value -->
+<WaffleChart :value="60" :max="100" :cell-count="30" color="primary" />
+
+<!-- Multi-segment -->
+<WaffleChart
+  :data="[
+    { label: 'Completed',   value: 12, color: '#e5e5e5' },
+    { label: 'In Progress', value: 4,  color: '#d4d4d4' },
+    { label: 'Remaining',   value: 14, color: '#525252' },
+  ]"
+  :cell-count="30" />
+```
+
+### Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `number` | — | Current value (single-segment mode) |
+| `max` | `number` | `100` | Maximum value (single-segment mode) |
+| `data` | `ChartDataPoint[]` | — | Multi-segment data — each item fills proportionally |
+| `cellCount` | `number` | `30` | Total number of cells in the grid |
+| `columns` | `number` | auto | Number of cells per row (defaults to `cellCount` for a single row) |
+| `cellRadius` | `number` | `6` | Corner radius per cell |
+| `cellGap` | `number` | `4` | Gap between cells in px |
+| `color` | `ChartColor` | `'primary'` | Color for filled cells (single-segment mode) |
+| `colors` | `string[]` | CSS palette | Color palette for multi-segment mode |
+| `trackColor` | `string` | `var(--color-muted)` | Background color for unfilled cells |
+| `animate` | `boolean` | `true` | Staggered fill animation on mount |
+| `showTooltip` | `boolean` | `true` | Floating tooltip on cell hover |
+
+---
+
 ## Advanced Patterns
 
 ### Sparkline (no chrome)
@@ -901,5 +1061,74 @@ interface CircleChartProps {
   animate?:      boolean            // default: true
   trackColor?:   string             // default: var(--color-muted)
   lineCap?:      StrokeLineCap      // default: 'round'
+}
+
+// ─── TimelineChart ─────────────────────────────
+
+interface TimelineTask {
+  person:  string
+  task:    string
+  start:   number
+  end:     number
+  color?:  string
+}
+
+interface TimelineChartProps {
+  tasks:        TimelineTask[]    // required
+  periods:      string[]          // required
+  height?:      number            // default: 300
+  barRadius?:   number            // default: 20
+  showGrid?:    boolean           // default: true
+  showTooltip?: boolean           // default: true
+  showLabels?:  boolean           // default: true
+  animate?:     boolean           // default: true
+  colors?:      string[]          // default: CSS palette
+}
+
+// ─── SegmentBarChart ───────────────────────────
+
+interface SegmentBarChartProps {
+  data:          ChartDataPoint[] // required
+  barHeight?:    number           // default: 48
+  barRadius?:    number           // default: 8
+  showLabels?:   boolean          // default: true
+  showValues?:   boolean          // default: true
+  showTooltip?:  boolean          // default: true
+  animate?:      boolean          // default: true
+  colors?:       string[]         // default: CSS palette
+  formatValue?:  (v: number, pct: number) => string
+}
+
+// ─── StatCardChart ─────────────────────────────
+
+interface StatCardItem {
+  label:       string
+  percentage:  number
+  value:       number
+  trend:       'up' | 'down'
+  color?:      string
+}
+
+interface StatCardChartProps {
+  data:     StatCardItem[]        // required
+  animate?: boolean               // default: true
+  colors?:  string[]              // default: CSS palette
+}
+
+// ─── WaffleChart ───────────────────────────────
+
+interface WaffleChartProps {
+  value?:       number
+  max?:         number            // default: 100
+  data?:        ChartDataPoint[]
+  cellCount?:   number            // default: 30
+  columns?:     number            // default: cellCount (single row)
+  cellRadius?:  number            // default: 6
+  cellGap?:     number            // default: 4
+  color?:       ChartColor        // default: 'primary'
+  colors?:      string[]          // default: CSS palette
+  trackColor?:  string            // default: var(--color-muted)
+  animate?:     boolean           // default: true
+  showTooltip?: boolean           // default: true
 }
 ```
