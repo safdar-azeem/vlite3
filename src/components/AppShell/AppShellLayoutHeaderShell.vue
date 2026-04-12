@@ -36,7 +36,6 @@ const {
 
 <template>
   <div class="vlite-app-layout flex flex-row w-full h-full bg-background overflow-hidden">
-    <!-- ── Flush Sidebar (left, top, bottom edges) ──────────────────────── -->
     <Transition
       enter-active-class="transition-all duration-300 ease-in-out"
       leave-active-class="transition-all duration-300 ease-in-out"
@@ -72,9 +71,7 @@ const {
       </nav>
     </Transition>
 
-    <!-- ── Right side: header + main as separate floating panels ─────── -->
     <div class="flex flex-col flex-1 min-w-0 h-full overflow-hidden gap-2 max-sm:p-0 max-sm:gap-0">
-      <!-- ── Floating Header (independent rounded bar) ──────────────── -->
       <header v-if="$slots.header" class="w-full shrink-0 z-20 px-5 pt-2">
         <div
           class="w-full shrink-0 z-20 bg-background rounded-xl max-sm:rounded-none border border-border/70 max-sm:border-0 shadow-sm">
@@ -89,7 +86,6 @@ const {
         </div>
       </header>
 
-      <!-- ── Floating Main Content (separate rounded card) ──────────── -->
       <main
         v-if="$slots.main"
         ref="layoutMainRef"
@@ -125,7 +121,6 @@ const {
       </main>
     </div>
 
-    <!-- ── Mobile SidePanel ───────────────────────────────────────────── -->
     <SidePanel
       v-model:show="isMobileMenuOpen"
       position="left"
@@ -139,7 +134,7 @@ const {
         <slot name="mobile-sidebar-header"><slot name="sidebar-header">Brand</slot></slot>
       </template>
       <div class="flex flex-col h-full">
-        <div class="flex-1 overflow-y-auto px-3.5 pt-4 scrollbar-thin scrollbar-stable">
+        <div class="flex-1 overflow-y-auto px-3.5 pt-4 scrollbar-thin scrollbar-stable" style="will-change: transform; contain: layout style">
           <slot name="mobile-sidebar"><slot name="sidebar"></slot></slot>
         </div>
         <div
