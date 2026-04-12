@@ -8,6 +8,7 @@ import AppShellLayoutSidebarFirst from './AppShellLayoutSidebarFirst.vue'
 import AppShellLayoutDashboard from './AppShellLayoutDashboard.vue'
 import AppShellLayoutDock from './AppShellLayoutDock.vue'
 import AppShellLayoutClassic from './AppShellLayoutClassic.vue'
+import AppShellLayoutHeaderShell from './AppShellLayoutHeaderShell.vue'
 
 const props = withDefaults(defineProps<AppShellProps>(), {
   variant: 'sidebar',
@@ -57,6 +58,8 @@ const layoutComponent = computed(() => {
       return AppShellLayoutDock
     case 'classic':
       return AppShellLayoutClassic
+    case 'header-shell':
+      return AppShellLayoutHeaderShell
     default:
       return AppShellLayoutSidebarFirst
   }
