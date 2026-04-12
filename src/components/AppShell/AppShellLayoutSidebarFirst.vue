@@ -56,7 +56,7 @@ const {
     </Transition>
 
     <div class="flex flex-col flex-1 min-w-0 h-full overflow-hidden">
-      <header v-if="$slots.header" class="w-full shrink-0 z-20 bg-background">
+      <header v-if="$slots.header" class="w-full shrink-0 z-20 border-b bg-background">
         <slot
           name="header"
           :is-open="isMobileMenuOpen"
