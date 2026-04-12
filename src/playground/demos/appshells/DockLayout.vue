@@ -12,8 +12,8 @@ import { menuItems } from './shared-data'
 <template>
   <DemoSection title="Dock Layout Mode (Minimal Vertical)" :code="sourceCode">
     <p class="text-sm text-gray-500 mb-4">
-      Using <code>layout-mode="variant3"</code> to render a compact floating sidebar that aligns neatly
-      in the center of the vertical axis.
+      Using <code>layout-mode="variant3"</code> to render a compact floating sidebar that aligns
+      neatly in the center of the vertical axis.
     </p>
     <div class="border rounded-lg overflow-hidden bg-gray-50 flex flex-col h-[500px] shadow-sm">
       <AppShell
@@ -35,14 +35,16 @@ import { menuItems } from './shared-data'
             :compact="true"
             :show-tooltip="true"
             render-mode="popover"
-            class="mt-4 gap-2 px-2" />
+            class="mt-4 gap-2 w-full" />
         </template>
 
         <template #sidebar-footer>
-          <Avatar
-            size="sm"
-            fallback="JD"
-            class="bg-indigo-100 text-indigo-700 mb-2 border-2 border-white shadow-sm ring-1 ring-black/5" />
+          <div class="mt-3">
+            <Avatar
+              size="sm"
+              fallback="JD"
+              class="bg-indigo-100 text-indigo-700 mb-2 border-2 border-white shadow-sm ring-1 ring-black/5" />
+          </div>
         </template>
 
         <template #header="{ toggle, pageTitle }">
