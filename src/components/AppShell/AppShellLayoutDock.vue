@@ -35,7 +35,7 @@ const {
 
 <template>
   <div
-    class="vlite-app-layout flex flex-row w-full h-full bg-muted/20 p-0 sm:p-2 gap-0 sm:gap-2 overflow-hidden items-stretch">
+    class="vlite-app-layout flex flex-row w-full h-full bg-background p-0 sm:p-2 gap-0 sm:gap-2 overflow-hidden items-stretch">
     <!-- ── Floating Dock Sidebar ──────────────────────────────────────────── -->
     <Transition
       enter-active-class="transition-all duration-300 ease-in-out"
@@ -61,9 +61,7 @@ const {
         </div>
 
         <!-- Navigation items (icons) -->
-        <div
-          class="flex flex-col items-center gap-0.5 w-full"
-          :class="props.contentClass">
+        <div class="flex flex-col items-center gap-0.5 w-full" :class="props.contentClass">
           <slot name="sidebar" />
         </div>
 
@@ -145,7 +143,9 @@ const {
         <div class="flex-1 overflow-y-auto px-3.5 pt-4 scrollbar-thin scrollbar-stable">
           <slot name="mobile-sidebar"><slot name="sidebar"></slot></slot>
         </div>
-        <div class="mt-auto pt-2 border-t border-border px-3 py-2" v-if="$slots['mobile-sidebar-footer'] || $slots['sidebar-footer']">
+        <div
+          class="mt-auto pt-2 border-t border-border px-3 py-2"
+          v-if="$slots['mobile-sidebar-footer'] || $slots['sidebar-footer']">
           <slot name="mobile-sidebar-footer"><slot name="sidebar-footer" /></slot>
         </div>
       </div>
