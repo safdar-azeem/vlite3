@@ -212,7 +212,6 @@ const uid = Math.random().toString(36).slice(2, 7)
           <path
             :d="roundedRectH(bar.x, bar.y, bar.w, barH, barRadius)"
             :fill="`url(#tl-grad-${uid}-${i})`"
-            :opacity="activeBar !== null && activeBar !== i ? 0.45 : 1"
             class="cursor-pointer transition-opacity duration-150"
             @mouseenter="(e) => onBarEnter(e, i)"
             @mousemove="onBarMove"
