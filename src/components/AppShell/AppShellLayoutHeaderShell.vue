@@ -52,7 +52,7 @@ const {
         ]"
         role="navigation"
         aria-label="Sidebar">
-        <div class="flex items-center px-4 py-3" v-if="$slots['sidebar-header']">
+        <div class="flex items-center" v-if="$slots['sidebar-header']">
           <slot name="sidebar-header"></slot>
         </div>
         <div
@@ -62,10 +62,7 @@ const {
           <slot name="sidebar" />
         </div>
 
-        <div
-          v-if="$slots['sidebar-footer']"
-          class="shrink-0 border-t border-border bg-background"
-          :class="props.rightClass">
+        <div v-if="$slots['sidebar-footer']" class="shrink-0" :class="props.rightClass">
           <slot name="sidebar-footer" />
         </div>
       </nav>
@@ -74,7 +71,7 @@ const {
     <div class="flex flex-col flex-1 min-w-0 h-full overflow-hidden gap-2 max-sm:p-0 max-sm:gap-0">
       <header v-if="$slots.header" class="w-full shrink-0 z-20 px-5 pt-2">
         <div
-          class="w-full shrink-0 z-20 bg-background rounded-xl max-sm:rounded-none border border-border/70 max-sm:border-0 shadow-sm">
+          class="w-full shrink-0 z-20 bg-background rounded-xl max-sm:rounded-none border border-border max-sm:border-0 shadow-sm">
           <slot
             name="header"
             :is-open="isMobileMenuOpen"
@@ -104,7 +101,7 @@ const {
             props.breadcrumbPosition === 'main' &&
             breadcrumbData.items.value.length > 1
           "
-          class="shrink-0 w-full border-b border-border/50 px-6 py-2"
+          class="shrink-0 w-full border-b border-border px-6 py-2"
           :class="props.breadcrumbClass">
           <Breadcrumb
             :items="breadcrumbData.items.value"
@@ -130,16 +127,16 @@ const {
       headerClass="pl-3! pr-4.5! py-3!"
       bodyClass="p-0!"
       :class="breakpointClasses.mobileTrigger">
-      <template #header>
+      <template #header v-if="$slots['mobile-sidebar-header'] || $slots['sidebar-header']">
         <slot name="mobile-sidebar-header"><slot name="sidebar-header">Brand</slot></slot>
       </template>
       <div class="flex flex-col h-full">
-        <div class="flex-1 overflow-y-auto px-3.5 pt-4 scrollbar-thin scrollbar-stable" style="will-change: transform; contain: layout style">
+        <div
+          class="flex-1 overflow-y-auto scrollbar-thin scrollbar-stable"
+          style="will-change: transform; contain: layout style">
           <slot name="mobile-sidebar"><slot name="sidebar"></slot></slot>
         </div>
-        <div
-          class="mt-auto pt-2 border-t border-border px-3 py-2"
-          v-if="$slots['mobile-sidebar-footer'] || $slots['sidebar-footer']">
+        <div class="mt-auto" v-if="$slots['mobile-sidebar-footer'] || $slots['sidebar-footer']">
           <slot name="mobile-sidebar-footer"><slot name="sidebar-footer" /></slot>
         </div>
       </div>
