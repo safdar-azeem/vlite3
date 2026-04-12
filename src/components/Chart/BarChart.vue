@@ -372,7 +372,6 @@ const uid = Math.random().toString(36).slice(2, 7)
             v-for="(bar, bi) in group.bars" :key="bi"
             :d="roundedRect(bar.x, bar.y, bar.w, bar.bh, barRadius)"
             :fill="isMulti ? `url(#bgrad-${uid}-${bi})` : `url(#bgrad-single-${uid}-${gi})`"
-            :opacity="activeGroup !== null && activeGroup !== gi ? 0.5 : 1"
             class="transition-opacity duration-150" />
           <text
             v-if="showValues"
@@ -440,7 +439,6 @@ const uid = Math.random().toString(36).slice(2, 7)
             v-for="(bar, bi) in group.bars" :key="bi"
             :d="roundedRectH(bar.x, bar.y, bar.bw, bar.h, barRadius)"
             :fill="isMulti ? `url(#bgrad-${uid}-${bi})` : `url(#bgrad-single-${uid}-${gi})`"
-            :opacity="activeGroup !== null && activeGroup !== gi ? 0.5 : 1"
             class="transition-opacity duration-150" />
           <text
             v-if="showValues"
