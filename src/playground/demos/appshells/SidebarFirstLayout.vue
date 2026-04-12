@@ -15,13 +15,13 @@ import { statItems, menuItems } from './shared-data'
 <template>
   <DemoSection title="Sidebar-First Layout (Standard)" :code="sourceCode">
     <p class="text-sm text-gray-500 mb-4">
-      The <code>sidebar-first</code> layout mode is the default and stretches the sidebar down the
+      The <code>variant1</code> layout mode is the default and stretches the sidebar down the
       entire vertical axis. The header and main content reside next to it. Perfect for most admin
       interfaces.
     </p>
     <div
       class="h-[600px] relative z-0 flex flex-col w-full bg-body rounded-lg overflow-hidden border shadow-sm">
-      <AppShell variant="sidebar" layout-mode="sidebar-first" class="w-64">
+      <AppShell variant="sidebar" layout-mode="variant1" class="w-64">
         <template #sidebar-header>
           <div class="font-bold text-lg flex items-center gap-3 px-2 py-1">
             <div
