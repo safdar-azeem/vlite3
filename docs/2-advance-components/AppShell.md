@@ -12,7 +12,7 @@ By using `AppShell`, you separate the concern of *where* your UI elements live f
 
 | Prop                 | Type                                                    | Default           | Description                                                                                                                                                                                                |
 | :------------------- | :------------------------------------------------------ | :---------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `layoutMode`         | `'classic' \| 'sidebar-first' \| 'dashboard' \| 'dock'` | `'sidebar-first'` | Controls the layout structure. <br>• `classic`: Header on top, Sidebar+Main below. <br>• `sidebar-first`: Sidebar spans full height, Header+Main content to the right. <br>• `dashboard`: Floating rounded containers with a muted background. <br>• `dock`: Minimalist floating sidebar that auto-sizes to its content height, vertically centered on the left. |
+| `layoutMode`         | `'variant1' \| 'variant2' \| 'variant3' \| 'variant4' \| 'variant5'` | `'variant1'` | Controls the layout structure. <br>• `variant1`: Sidebar spans full height, Header+Main content to the right. <br>• `variant2`: Floating rounded containers with a muted background. <br>• `variant3`: Minimalist floating sidebar that auto-sizes to its content height, vertically centered on the left. <br>• `variant4`: Header on top, Sidebar+Main below. <br>• `variant5`: Flush sidebar with floating header and main content panels. |
 | `compact`            | `boolean`                                               | `false`           | Enables compact/collapsed mode for the main sidebar. Passed via provide/inject to child `SidebarMenu` components.                                            |
 | `sidebarToggle`      | `boolean`                                               | `false`           | Enables the desktop sidebar toggle feature. Renders a panel-left toggle if configured via `#header`. Preference is persisted in `localStorage` under `vlite-navbar-sidebar-visible`.               |
 | `renderNestedTabs`   | `boolean`                                               | `false`           | When `true`, clicking a top-level sidebar item with children extracts those children and renders them as a `NavbarTabs` bar at the top of the `#main` slot instead of expanding inline in the sidebar. |
@@ -74,19 +74,19 @@ When using the `<template #header>` slot, you are granted several powerful scope
 
 The `AppShell` offers five uniquely distinct orchestrations for your application via the `layout-mode` prop.
 
-### 1. `sidebar-first` (Default)
+### 1. `variant1` (Default)
 The sidebar spans the entire full height of the viewport on the left. The `header` and `main` content are stacked vertically on the right side.
 
-### 2. `classic`
+### 2. `variant4`
 The `header` spans the full width of the screen at the very top. The `sidebar` and `main` content are grouped together beneath the header.
 
-### 3. `dashboard`
+### 3. `variant2`
 Creates a sophisticated "floating panel" aesthetic. The primary app wrapper receives a muted tone color, while the sidebar, header, and main content fields are distinct, rounded, white cards separated by subtle gaps and styling. Ideal for modern SaaS apps.
 
-### 4. `dock`
+### 4. `variant3`
 A minimalist floating sidebar that behaves similarly to a macOS dock. The sidebar is vertically centered, and dynamically bounds its height only to the content placed within it. Highly suited for compact application navigation.
 
-### 5. `header-shell`
+### 5. `variant5`
 The sidebar is flush against the left, top, and bottom edges of the screen with no gaps or rounded corners. The header and main content sit to the right of the sidebar inside a floating, rounded card container. This creates a premium "shell" aesthetic where the sidebar acts as a solid anchor while the content area feels modern and elevated. Supports both expanded and compact sidebar modes.
 
 ---
@@ -96,8 +96,7 @@ The sidebar is flush against the left, top, and bottom edges of the screen with 
 ### Standard AppShell Implementation
 
 ```vue
-<AppShell variant="sidebar" layout-mode="dashboard">
-  <!-- Desktop Sidebar -->
+<AppShell variant="sidebar" layout-mode="variant2">
   <template #sidebar-header>
     <div class="font-bold text-lg p-2">Vlite3 App</div>
   </template>
@@ -114,11 +113,9 @@ The sidebar is flush against the left, top, and bottom edges of the screen with 
     </div>
   </template>
 
-  <!-- Top Application Header -->
   <template #header="{ toggle, pageTitle }">
     <div class="h-16 border-b bg-white flex items-center justify-between px-6 w-full">
       <div class="flex items-center gap-4">
-        <!-- Mobile hamburger toggle -->
         <button class="md:hidden" @click="toggle">
           <Icon icon="lucide:menu" />
         </button>
@@ -128,7 +125,6 @@ The sidebar is flush against the left, top, and bottom edges of the screen with 
     </div>
   </template>
 
-  <!-- Main Content Route -->
   <template #main>
     <div class="p-6">
       <RouterView />
@@ -141,7 +137,7 @@ The sidebar is flush against the left, top, and bottom edges of the screen with 
 
 ```vue
 <AppShell 
-  layout-mode="sidebar-first"
+  layout-mode="variant1"
   mobileBreakpoint="lg" 
   breadcrumb
 >
@@ -149,7 +145,6 @@ The sidebar is flush against the left, top, and bottom edges of the screen with 
     <SidebarMenu :items="desktopItems" />
   </template>
 
-  <!-- Optional Mobile Override -->
   <template #mobile-sidebar>
     <div class="text-xs text-muted-foreground p-2">Mobile Menu</div>
     <SidebarMenu :items="mobileOptimizedItems" />
@@ -161,7 +156,6 @@ The sidebar is flush against the left, top, and bottom edges of the screen with 
         <Icon icon="lucide:menu" />
       </button>
       
-      <!-- Auto-generated breadcrumbs mapped dynamically -->
       <Breadcrumb 
         v-if="breadcrumbItems.length > 1" 
         :items="breadcrumbItems" 
