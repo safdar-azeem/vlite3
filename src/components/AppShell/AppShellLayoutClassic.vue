@@ -65,9 +65,7 @@ onClickOutside(
           v-show="!sidebarHidden"
           :class="containerClasses"
           role="navigation"
-          :style="
-            props.sidebarToggle ? 'transition: width 0.3s ease, opacity 0.3s ease;' : ''
-          ">
+          :style="props.sidebarToggle ? 'transition: width 0.3s ease, opacity 0.3s ease;' : ''">
           <template v-if="props.variant === 'header'">
             <div class="flex items-center gap-4 shrink-0 z-10">
               <slot
@@ -99,8 +97,7 @@ onClickOutside(
               class="flex items-center gap-2 shrink-0 max-w-[40%] z-10"
               :class="[
                 {
-                  'ml-auto':
-                    props.centerPosition === 'left' || props.centerPosition === 'center',
+                  'ml-auto': props.centerPosition === 'left' || props.centerPosition === 'center',
                 },
                 props.rightClass,
               ]">
@@ -181,7 +178,7 @@ onClickOutside(
         <div
           v-if="isMobileMenuOpen"
           ref="mobileMenuRef"
-          class="absolute top-[calc(100%_+_1px)] left-0 w-full bg-body border border-border/50 shadow-xl z-50 flex flex-col transition-all duration-300 origin-top overflow-hidden will-change-transform"
+          class="absolute top-[calc(100%_+_1px)] left-0 w-full bg-body border border-border shadow-xl z-50 flex flex-col transition-all duration-300 origin-top overflow-hidden will-change-transform"
           :class="props.menuClass">
           <div
             class="flex flex-col max-h-[80vh] overflow-y-auto scrollbar-thin"
@@ -190,7 +187,7 @@ onClickOutside(
               <div class="space-y-1 p-2">
                 <slot name="left" />
               </div>
-              <div class="h-px bg-border/50 my-1 mx-2"></div>
+              <div class="h-px bg-border my-1 mx-2"></div>
               <div class="space-y-1 p-2">
                 <slot name="center" />
               </div>
@@ -209,7 +206,7 @@ onClickOutside(
         headerClass="pl-3! pr-4.5! py-3!"
         bodyClass="p-0!"
         :class="breakpointClasses.mobileTrigger">
-        <template #header>
+        <template #header v-if="$slots['mobile-sidebar-header'] || $slots['sidebar-header']">
           <slot name="mobile-sidebar-header"><slot name="sidebar-header">Brand</slot></slot>
         </template>
         <div class="flex flex-col space-y-6 pt-4 h-full">
@@ -231,7 +228,9 @@ onClickOutside(
               <slot name="center" />
             </div>
           </template>
-          <div class="mt-auto pt-2 border-t border-border px-3! py-2!" v-if="$slots?.['mobile-sidebar-footer'] || $slots?.['sidebar-footer']">
+          <div
+            class="mt-auto pt-2 border-t border-border px-3! py-2!"
+            v-if="$slots?.['mobile-sidebar-footer'] || $slots?.['sidebar-footer']">
             <slot name="mobile-sidebar-footer"><slot name="sidebar-footer" /></slot>
           </div>
         </div>
