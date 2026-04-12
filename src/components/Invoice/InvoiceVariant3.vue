@@ -74,7 +74,7 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
     </div>
 
     <div :class="compact ? 'p-4 space-y-4' : 'p-5 space-y-5'">
-      <div class="grid grid-cols-1 md:grid-cols-3" :class="compact ? 'gap-3' : 'gap-5'">
+      <div class="grid grid-cols-1 sm:grid-cols-2" :class="[d.shippingInfo ? 'md:grid-cols-4' : 'md:grid-cols-3', compact ? 'gap-3' : 'gap-5']">
         <div v-if="d.companyInfo">
           <p
             class="text-muted-foreground uppercase tracking-widest font-semibold mb-1.5"
@@ -109,6 +109,26 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
               {{ d.customerInfo.city }}, {{ d.customerInfo.state }} {{ d.customerInfo.zip }}
             </p>
             <p v-if="d.customerInfo.email">{{ d.customerInfo.email }}</p>
+          </div>
+        </div>
+
+        <div v-if="d.shippingInfo">
+          <p
+            class="text-muted-foreground uppercase tracking-widest font-semibold mb-1.5"
+            :class="compact ? 'text-[9px]' : 'text-[10px]'">
+            {{ l.shipTo || 'Ship To' }}
+          </p>
+          <p class="font-bold text-foreground" :class="compact ? 'text-xs' : 'text-sm'">
+            {{ d.shippingInfo.name }}
+          </p>
+          <div class="mt-0.5 text-muted-foreground space-y-0.5 text-xs">
+            <p v-if="d.shippingInfo.address">{{ d.shippingInfo.address }}</p>
+            <p v-if="d.shippingInfo.city">
+              {{ d.shippingInfo.city }}, {{ d.shippingInfo.state }} {{ d.shippingInfo.zip }}
+            </p>
+            <p v-if="d.shippingInfo.country">{{ d.shippingInfo.country }}</p>
+            <p v-if="d.shippingInfo.email">{{ d.shippingInfo.email }}</p>
+            <p v-if="d.shippingInfo.phone">{{ d.shippingInfo.phone }}</p>
           </div>
         </div>
 
