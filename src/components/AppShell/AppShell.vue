@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, markRaw } from 'vue'
 import type { AppShellProps } from '@/types/appshell.type'
 import { useAppShell } from './useAppShell'
 
@@ -51,17 +51,17 @@ useAppShell(props, true)
 const layoutComponent = computed(() => {
   switch (props.layoutMode) {
     case 'variant1':
-      return AppShellLayoutSidebarFirst
+      return markRaw(AppShellLayoutSidebarFirst)
     case 'variant2':
-      return AppShellLayoutDashboard
+      return markRaw(AppShellLayoutDashboard)
     case 'variant3':
-      return AppShellLayoutDock
+      return markRaw(AppShellLayoutDock)
     case 'variant4':
-      return AppShellLayoutClassic
+      return markRaw(AppShellLayoutClassic)
     case 'variant5':
-      return AppShellLayoutHeaderShell
+      return markRaw(AppShellLayoutHeaderShell)
     default:
-      return AppShellLayoutSidebarFirst
+      return markRaw(AppShellLayoutSidebarFirst)
   }
 })
 </script>
