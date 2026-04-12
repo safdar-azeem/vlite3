@@ -46,7 +46,7 @@ const {
       <nav
         v-show="!sidebarHidden"
         :class="[
-          'shrink-0 h-full flex flex-col bg-background border-r border-border overflow-hidden z-30',
+          'shrink-0 h-full flex flex-col bg-background border-r border-border  overflow-hidden z-30',
           breakpointClasses.mobileTrigger === 'md:hidden' ? 'max-md:hidden' : '',
           props.class,
         ]"
@@ -69,9 +69,9 @@ const {
     </Transition>
 
     <div class="flex flex-col flex-1 min-w-0 h-full overflow-hidden gap-2 max-sm:p-0 max-sm:gap-0">
-      <header v-if="$slots.header" class="w-full shrink-0 z-20 px-5 pt-2">
+      <header v-if="$slots.header" class="w-full shrink-0 z-20 px-5 pt-2 border-hidden">
         <div
-          class="w-full shrink-0 z-20 bg-background rounded-xl max-sm:rounded-none border border-border max-sm:border-0 shadow-sm">
+          class="w-full shrink-0 z-20 bg-background overflow-hidden rounded-xl max-sm:rounded-none border border-border max-sm:border-0">
           <slot
             name="header"
             :is-open="isMobileMenuOpen"
