@@ -23,7 +23,7 @@ import { statItems, menuItems } from './shared-data'
       class="h-[600px] relative z-0 flex flex-col w-full bg-body rounded-lg overflow-hidden border shadow-sm">
       <AppShell variant="sidebar" layout-mode="variant1" class="w-64">
         <template #sidebar-header>
-          <div class="font-bold text-lg flex items-center gap-3 px-2 py-1">
+          <div class="font-bold text-lg flex items-center gap-3 px-4 py-3.5">
             <div
               class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-inner">
               <Icon icon="lucide:boxes" class="w-5 h-5" />
@@ -33,7 +33,7 @@ import { statItems, menuItems } from './shared-data'
         </template>
 
         <template #sidebar>
-          <SidebarMenu :items="menuItems" class="px-3 py-2" />
+          <SidebarMenu :items="menuItems" class="px-3 pt-1" />
         </template>
 
         <template #sidebar-footer>
