@@ -19,7 +19,7 @@ const isSidebarCompact = ref(false)
 <template>
   <DemoSection title="Header-Shell Layout (Flush Sidebar + Floating Content)" :code="sourceCode">
     <p class="text-sm text-gray-500 mb-4">
-      The <code>header-shell</code> layout mode has the sidebar flush against the left, top, and
+      The <code>variant5</code> layout mode has the sidebar flush against the left, top, and
       bottom edges. The header and main content sit inside a floating rounded card panel to the
       right. Supports compact sidebar toggle.
     </p>
@@ -27,7 +27,7 @@ const isSidebarCompact = ref(false)
       class="h-[600px] relative z-0 flex flex-col w-full bg-body rounded-lg overflow-hidden border shadow-sm">
       <AppShell
         variant="sidebar"
-        layout-mode="header-shell"
+        layout-mode="variant5"
         :class="isSidebarCompact ? 'w-22' : 'w-64'">
         <template #sidebar-header>
           <div
