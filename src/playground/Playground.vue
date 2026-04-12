@@ -157,7 +157,7 @@ const menuItems: SidebarMenuItemSchema[] = [
   <div class="h-screen w-full overflow-hidden">
     <AppShell
       variant="sidebar"
-      layout-mode="dashboard"
+      layout-mode="variant2"
       mobileBreakpoint="md"
       breadcrumb
       :contentClass="isSidebarCompact ? 'px-2!' : 'px-2.5'"
