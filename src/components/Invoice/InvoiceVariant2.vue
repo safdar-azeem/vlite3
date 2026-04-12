@@ -73,11 +73,32 @@ const l = computed(() => props.labels || {})
         <span class="text-muted-foreground font-medium">{{ l.issued || 'Date' }}</span>
         <DateTime :value="d.issuedDate" type="dateTime" class="font-medium text-foreground" />
       </div>
-      <div v-if="d.customerInfo?.name" class="flex justify-between items-center">
-        <span class="text-muted-foreground font-medium">{{ l.billedTo || 'Customer' }}</span>
-        <span class="font-semibold text-foreground">{{ d.customerInfo.name }}</span>
+      
+      <div v-if="d.customerInfo?.name" class="flex justify-between items-start mt-1.5">
+        <span class="text-muted-foreground font-medium shrink-0 mr-4">{{ l.billedTo || 'Bill To' }}</span>
+        <div class="text-right flex flex-col">
+          <span class="font-semibold text-foreground">{{ d.customerInfo.name }}</span>
+          <span v-if="d.customerInfo.address" class="text-muted-foreground mt-0.5">{{ d.customerInfo.address }}</span>
+          <span v-if="d.customerInfo.city || d.customerInfo.state" class="text-muted-foreground">
+            {{ d.customerInfo.city }} {{ d.customerInfo.state }} {{ d.customerInfo.zip }}
+          </span>
+          <span v-if="d.customerInfo.phone" class="text-muted-foreground">{{ d.customerInfo.phone }}</span>
+        </div>
       </div>
-      <div v-if="d.status" class="flex justify-between items-center">
+
+      <div v-if="d.shippingInfo?.name" class="flex justify-between items-start mt-1.5">
+        <span class="text-muted-foreground font-medium shrink-0 mr-4">{{ l.shipTo || 'Ship To' }}</span>
+        <div class="text-right flex flex-col">
+          <span class="font-semibold text-foreground">{{ d.shippingInfo.name }}</span>
+          <span v-if="d.shippingInfo.address" class="text-muted-foreground mt-0.5">{{ d.shippingInfo.address }}</span>
+          <span v-if="d.shippingInfo.city || d.shippingInfo.state" class="text-muted-foreground">
+            {{ d.shippingInfo.city }} {{ d.shippingInfo.state }} {{ d.shippingInfo.zip }}
+          </span>
+          <span v-if="d.shippingInfo.phone" class="text-muted-foreground">{{ d.shippingInfo.phone }}</span>
+        </div>
+      </div>
+
+      <div v-if="d.status" class="flex justify-between items-center mt-1.5">
         <span class="text-muted-foreground font-medium">{{ l.status || 'Status' }}</span>
         <StatusChip :status="d.status" hide-icon size="small" />
       </div>
