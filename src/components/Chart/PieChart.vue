@@ -252,7 +252,6 @@ function sliceTransform(i: number, startA: number, endA: number): string {
         v-for="(item, i) in data"
         :key="i"
         class="flex items-center gap-2 cursor-pointer"
-        :class="hoveredIndex !== null && hoveredIndex !== i ? 'opacity-40' : ''"
         style="transition: opacity 0.15s"
         @mouseenter="hoveredIndex = i"
         @mouseleave="hoveredIndex = null">
