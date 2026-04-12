@@ -1,0 +1,153 @@
+<script setup lang="ts">
+/**
+ * AppShellLayoutHeaderShell
+ * ─────────────────────────
+ * A layout where the sidebar is flush against the left, top, and bottom
+ * edges (no gap, no rounding). To the right, the header and main content
+ * are rendered as **two separate floating rounded panels** with a gap
+ * between them — the header as an independent rounded bar, and the main
+ * content as a separate rounded card below it.
+ *
+ * Supports expanded and compact sidebar widths.
+ */
+import { inject } from 'vue'
+import SidePanel from '../SidePanel.vue'
+import NavbarTabs from '../Navbar/NavbarTabs.vue'
+import { Breadcrumb } from '../Breadcrumb'
+import { APPSHELL_LAYOUT_KEY } from './useAppShell'
+
+const ctx = inject(APPSHELL_LAYOUT_KEY)!
+const {
+  props,
+  sidebarHidden,
+  isMobileMenuOpen,
+  isSidebarVisible,
+  toggleSidebar,
+  pageTitle,
+  breadcrumbData,
+  breakpointClasses,
+  nestedTabsItems,
+  activeNestedTab,
+  handleNestedTabClick,
+  mainScrollRef,
+  layoutMainRef,
+} = ctx
+</script>
+
+<template>
+  <div class="vlite-app-layout flex flex-row w-full h-full bg-background overflow-hidden">
+    <!-- ── Flush Sidebar (left, top, bottom edges) ──────────────────────── -->
+    <Transition
+      enter-active-class="transition-all duration-300 ease-in-out"
+      leave-active-class="transition-all duration-300 ease-in-out"
+      enter-from-class="opacity-0 -translate-x-2"
+      enter-to-class="opacity-100 translate-x-0"
+      leave-from-class="opacity-100 translate-x-0"
+      leave-to-class="opacity-0 -translate-x-2">
+      <nav
+        v-show="!sidebarHidden"
+        :class="[
+          'shrink-0 h-full flex flex-col bg-background border-r border-border overflow-hidden z-30',
+          breakpointClasses.mobileTrigger === 'md:hidden' ? 'max-md:hidden' : '',
+          props.class,
+        ]"
+        role="navigation"
+        aria-label="Sidebar">
+        <div class="flex items-center px-4 py-3" v-if="$slots['sidebar-header']">
+          <slot name="sidebar-header"></slot>
+        </div>
+        <div
+          class="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-stable"
+          style="will-change: transform; contain: layout style"
+          :class="props.contentClass">
+          <slot name="sidebar" />
+        </div>
+
+        <div
+          v-if="$slots['sidebar-footer']"
+          class="shrink-0 border-t border-border bg-background"
+          :class="props.rightClass">
+          <slot name="sidebar-footer" />
+        </div>
+      </nav>
+    </Transition>
+
+    <!-- ── Right side: header + main as separate floating panels ─────── -->
+    <div class="flex flex-col flex-1 min-w-0 h-full overflow-hidden gap-2 max-sm:p-0 max-sm:gap-0">
+      <!-- ── Floating Header (independent rounded bar) ──────────────── -->
+      <header v-if="$slots.header" class="w-full shrink-0 z-20 px-5 pt-2">
+        <div
+          class="w-full shrink-0 z-20 bg-background rounded-xl max-sm:rounded-none border border-border/70 max-sm:border-0 shadow-sm">
+          <slot
+            name="header"
+            :is-open="isMobileMenuOpen"
+            :toggle="() => (isMobileMenuOpen = !isMobileMenuOpen)"
+            :sidebar-visible="isSidebarVisible"
+            :toggle-sidebar="toggleSidebar"
+            :breadcrumb-items="breadcrumbData.items.value"
+            :page-title="pageTitle" />
+        </div>
+      </header>
+
+      <!-- ── Floating Main Content (separate rounded card) ──────────── -->
+      <main
+        v-if="$slots.main"
+        ref="layoutMainRef"
+        class="flex-1 overflow-hidden w-full relative flex flex-col min-h-0 bg-background">
+        <div
+          v-if="props.renderNestedTabs && nestedTabsItems.length > 0"
+          class="shrink-0 w-full px-6">
+          <NavbarTabs
+            v-model="activeNestedTab"
+            @change="handleNestedTabClick"
+            :items="nestedTabsItems" />
+        </div>
+        <div
+          v-if="
+            props.breadcrumb &&
+            props.breadcrumbPosition === 'main' &&
+            breadcrumbData.items.value.length > 1
+          "
+          class="shrink-0 w-full border-b border-border/50 px-6 py-2"
+          :class="props.breadcrumbClass">
+          <Breadcrumb
+            :items="breadcrumbData.items.value"
+            :variant="props.breadcrumbVariant"
+            :separator="props.breadcrumbSeparator"
+            :size="props.breadcrumbSize" />
+        </div>
+        <div
+          ref="mainScrollRef"
+          style="will-change: transform; contain: layout style"
+          class="flex-1 overflow-y-auto w-full relative h-full scrollbar-thin scrollbar-stable px-6 pb-4 mt-4">
+          <slot name="main" />
+        </div>
+      </main>
+    </div>
+
+    <!-- ── Mobile SidePanel ───────────────────────────────────────────── -->
+    <SidePanel
+      v-model:show="isMobileMenuOpen"
+      position="left"
+      size="sm"
+      :triggerClass="breakpointClasses.mobileTrigger"
+      class="z-60"
+      headerClass="pl-3! pr-4.5! py-3!"
+      bodyClass="p-0!"
+      :class="breakpointClasses.mobileTrigger">
+      <template #header>
+        <slot name="mobile-sidebar-header"><slot name="sidebar-header">Brand</slot></slot>
+      </template>
+      <div class="flex flex-col h-full">
+        <div class="flex-1 overflow-y-auto px-3.5 pt-4 scrollbar-thin scrollbar-stable">
+          <slot name="mobile-sidebar"><slot name="sidebar"></slot></slot>
+        </div>
+        <div
+          class="mt-auto pt-2 border-t border-border px-3 py-2"
+          v-if="$slots['mobile-sidebar-footer'] || $slots['sidebar-footer']">
+          <slot name="mobile-sidebar-footer"><slot name="sidebar-footer" /></slot>
+        </div>
+      </div>
+    </SidePanel>
+  </div>
+</template>
