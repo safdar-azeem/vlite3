@@ -19,14 +19,14 @@ const isSidebarCompact = ref(false)
 <template>
   <DemoSection title="Dashboard Layout (Floating Panels)" :code="sourceCode">
     <p class="text-sm text-gray-500 mb-4">
-      The <code>dashboard</code> layout mode provides beautiful floating panels with distinct
+      The <code>variant2</code> layout mode provides beautiful floating panels with distinct
       backgrounds, automatically adjusting to flush components on mobile devices.
     </p>
     <div
       class="h-[600px] relative z-0 flex flex-col w-full bg-body rounded-lg overflow-hidden border shadow-sm">
       <AppShell
         variant="sidebar"
-        layout-mode="dashboard"
+        layout-mode="variant2"
         :class="isSidebarCompact ? 'w-22' : 'w-64'">
         <template #sidebar-header>
           <div
