@@ -69,7 +69,7 @@ const displayEmptyDescription = computed(() => {
   return res !== 'vlite.customFields.emptyDescription' ? res : 'Add a new item to get started'
 })
 
-// PERFORMANCE: Use shallowRef for arrays of items to prevent deep reactivity performance hits 
+// PERFORMANCE: Use shallowRef for arrays of items to prevent deep reactivity performance hits
 // during array transformations and immutability operations.
 const rows = shallowRef<(Record<string, any> & { _id: string })[]>([])
 const generateId = () => `row_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
@@ -98,12 +98,12 @@ const createEmptyRow = (): Record<string, any> & { _id: string } => {
   const row: Record<string, any> = {}
   for (const field of props.schema) {
     const defaultValue = typeof field.value === 'function' ? field.value() : field.value
-    
+
     let fallback: any = null
     if (field.props?.multiple || field.type === 'multiSelect' || field.type === 'tags') {
       fallback = []
     }
-    
+
     row[field.name] = defaultValue ?? fallback
   }
   return { ...row, _id: generateId() }
@@ -142,7 +142,7 @@ const handleFieldChange = async (
   if (field && field.updateValues) {
     try {
       const rowValues = newRows[rowIndex]
-      
+
       // Global Values: Re-construct global state with the patched array before execution
       let simulatedGlobalValues = { ...(props.values || {}) }
       if (props.name) {
@@ -156,7 +156,7 @@ const handleFieldChange = async (
         data: payload.data,
         isUpdate: props.isUpdate,
       })
-      
+
       if (updatedValues && typeof updatedValues === 'object') {
         newRows[rowIndex] = { ...newRows[rowIndex], ...updatedValues }
       }
@@ -214,7 +214,7 @@ const getRowContext = (rowIndex: number) => {
   return {
     values: rows.value[rowIndex] || {},
     globalValues: contextValues,
-    isUpdate: props.isUpdate
+    isUpdate: props.isUpdate,
   }
 }
 
@@ -268,7 +268,9 @@ const getRowErrorsHash = (rowIndex: number) => {
       <div
         v-if="columnHeaders.length > 0"
         class="flex border-b border-border bg-muted/50 text-gray-800 text-xs font-semibold uppercase tracking-wider">
-        <div v-if="draggable && !disabled && !readonly" class="w-10 flex-none p-3 border-r border-border"></div>
+        <div
+          v-if="draggable && !disabled && !readonly"
+          class="w-10 flex-none p-3 border-r border-border"></div>
         <div v-if="showRowNumbers" class="w-10 flex-none p-3 text-center border-r border-border">
           #
         </div>
@@ -289,18 +291,30 @@ const getRowErrorsHash = (rowIndex: number) => {
         :animation="150"
         handle=".drag-handle"
         ghost-class="opacity-50"
-        class="divide-y divide-border"
-      >
+        class="divide-y divide-border">
         <div
           v-for="(row, rowIndex) in rows"
           :key="row._id"
-          v-memo="[row, disabled, readonly, isUpdate, showRowNumbers, canRemoveRow, draggable, rowIndex, getRowErrorsHash(rowIndex)]"
+          v-memo="[
+            row,
+            disabled,
+            readonly,
+            isUpdate,
+            showRowNumbers,
+            canRemoveRow,
+            draggable,
+            rowIndex,
+            getRowErrorsHash(rowIndex),
+          ]"
           class="flex group bg-white transition-colors">
-          
           <div
             v-if="draggable && !disabled && !readonly"
             class="w-10 flex-none flex items-center justify-center border-r border-border bg-muted/5 drag-handle transition-colors"
-            :class="disabled ? 'cursor-not-allowed opacity-50' : 'cursor-grab active:cursor-grabbing hover:bg-muted/10 text-muted-foreground hover:text-foreground'">
+            :class="
+              disabled
+                ? 'cursor-not-allowed opacity-50'
+                : 'cursor-grab active:cursor-grabbing hover:bg-muted/10 text-muted-foreground hover:text-foreground'
+            ">
             <Icon icon="lucide:grip-vertical" class="w-4 h-4" />
           </div>
 
@@ -320,10 +334,12 @@ const getRowErrorsHash = (rowIndex: number) => {
               :field="{
                 ...field,
                 props: {
-                  ...(getResolvedType(field, rowIndex) === 'multiSelect' ? { showControls: false, wrap: false } : {}),
-                  ...(field.props || {})
+                  ...(getResolvedType(field, rowIndex) === 'multiSelect'
+                    ? { showControls: false, wrap: false }
+                    : {}),
+                  ...(field.props || {}),
                 },
-                label: undefined
+                label: undefined,
               }"
               :value="getFieldValue(rowIndex, field.name)"
               :values="rows[rowIndex] || {}"
@@ -394,11 +410,6 @@ const getRowErrorsHash = (rowIndex: number) => {
   border-radius: 0 !important;
   height: 100% !important;
   min-height: 40px;
-}
-
-.custom-fields-table :deep(.tooltip-trigger button),
-.custom-fields-table :deep(.tooltip-trigger > div) {
-  justify-content: space-between !important;
 }
 
 /* Focus state indication via inset shadow or background */
