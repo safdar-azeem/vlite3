@@ -15,7 +15,7 @@ import { statItems } from './shared-data'
 <template>
   <DemoSection title="Classic Layout (Top Navigation)" :code="sourceCode">
     <p class="text-sm text-gray-500 mb-4">
-      Using <code>variant="header"</code> with <code>layout-mode="classic"</code> renders a top
+      Using <code>variant="header"</code> with <code>layout-mode="variant4"</code> renders a top
       navigation bar instead of a sidebar. This is perfect for consumer-facing apps or less
       complex admin tools.
     </p>
@@ -23,7 +23,7 @@ import { statItems } from './shared-data'
       class="border rounded-lg overflow-hidden flex flex-col h-[500px] relative z-0 bg-body shadow-sm">
       <AppShell
         variant="header"
-        layout-mode="classic"
+        layout-mode="variant4"
         class="bg-white/80 backdrop-blur-md border-b sticky top-0 z-50">
         <template #mobile-trigger="{ toggle }">
           <div class="flex items-center gap-4 px-2">
