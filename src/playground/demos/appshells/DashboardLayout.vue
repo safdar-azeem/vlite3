@@ -30,7 +30,7 @@ const isSidebarCompact = ref(false)
         :class="isSidebarCompact ? 'w-22' : 'w-64'">
         <template #sidebar-header>
           <div
-            class="font-bold text-xl flex items-center gap-2"
+            class="font-bold text-xl flex items-center gap-2 px-4 py-3"
             :class="isSidebarCompact ? ' justify-center w-full' : ''">
             <div class="w-8 h-8 rounded-lg bg-black text-white flex items-center justify-center">
               V
@@ -42,7 +42,7 @@ const isSidebarCompact = ref(false)
         <template #sidebar>
           <SidebarMenu
             :items="menuItems"
-            class="px-2 mt-2"
+            class="px-2 mt-1"
             :compact="isSidebarCompact"
             :show-compact-labels="true" />
         </template>
