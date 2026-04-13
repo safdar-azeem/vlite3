@@ -51,9 +51,9 @@ const handleSubmit = (payload: IFormSubmitPayload) => {
 </script>
 
 <template>
-  <DemoSection title="Login Form" :code="sourceCode">
-    <div class="flex flex-col lg:flex-row gap-6">
-      <div class="flex-1 max-w-3xl">
+  <DemoSection title="Login Form" align="stretch" :code="sourceCode">
+    <div class="flex flex-col lg:flex-row gap-6 w-full max-w-[1200px] mx-auto">
+      <div class="flex-1 w-full max-w-3xl">
         <Form
           :schema="loginSchema"
           submitText="Sign In"
@@ -62,13 +62,13 @@ const handleSubmit = (payload: IFormSubmitPayload) => {
           :schema-loading="loading" />
       </div>
       <!-- Inline Submitted Values -->
-      <div v-if="submittedValues" class="flex-1 max-w-md">
-        <div class="bg-green-50 border border-green-200 rounded-lg p-4 h-full">
+      <div v-if="submittedValues" class="flex-1 w-full max-w-md">
+        <div class="bg-green-50 border border-green-200 rounded-lg p-4 h-full w-full">
           <div class="flex items-center gap-2 mb-3">
             <Icon icon="lucide:check-circle" class="w-5 h-5 text-green-600" />
             <h4 class="font-semibold text-green-800">Submitted Values</h4>
           </div>
-          <div class="bg-white rounded border border-green-200 p-3 overflow-auto max-h-60">
+          <div class="bg-white rounded border border-green-200 p-3 overflow-auto max-h-60 w-full">
             <pre class="text-xs text-gray-700 whitespace-pre-wrap">{{
               JSON.stringify(submittedValues, null, 2)
             }}</pre>
