@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, computed, provide, useSlots, markRaw } from 'vue'
-import Input from '../Input.vue'
-import Button from '../Button.vue'
 import ConfirmationModal from '../ConfirmationModal.vue'
 import { Pagination } from '../Pagination'
-import ScreenFilter from './ScreenFilter.vue'
 import ImportData from '../ImportData/ImportData.vue'
 import type { ScreenProps } from './types'
 import { usePersistentState } from '../../utils/usePersistentState'
@@ -14,9 +11,6 @@ import { SCREEN_CONTEXT_KEY } from '../DataTable/types'
 import type { ScreenContext, TableState } from '../DataTable/types'
 
 import ScreenHeaderTitle from './components/ScreenHeaderTitle.vue'
-import ScreenViewToggle from './components/ScreenViewToggle.vue'
-import ScreenOptionsDropdown from './components/ScreenOptionsDropdown.vue'
-import ScreenAddAction from './components/ScreenAddAction.vue'
 import ScreenEmptyState from './components/ScreenEmptyState.vue'
 import ScreenExportModal from './components/ScreenExportModal.vue'
 import ScreenQuickFilters from './components/ScreenQuickFilters.vue'
@@ -29,7 +23,9 @@ const props = withDefaults(defineProps<ScreenProps>(), {
   loading: false,
   variant: 'one',
   stats: () => [],
-  statsProps: () => ({}),
+  statsProps: () => ({
+    variant: 'transparent-header',
+  }),
   customHeader: false,
   canSearch: true,
   canAdd: true,
