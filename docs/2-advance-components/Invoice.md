@@ -41,6 +41,8 @@ The root object passed to the `:data` prop.
 | `companyInfo`   | `InvoiceCompanyInfo?`  | Nested object for issuer details (From).                                 |
 | `customerInfo`  | `InvoiceCustomerInfo?` | Nested object for recipient details (Billed To).                         |
 | `shippingInfo`  | `InvoiceCustomerInfo?` | Nested object for shipping details (Ship To).                            |
+| `paymentMethod` | `string?`              | Payment method used or expected.                                         |
+| `shippingMethod`| `string?`              | Shipping method used or expected.                                        |
 | `barcode`       | `string?`              | Renders a CODE128 barcode at the bottom.                                 |
 | `qrcode`        | `string?`              | Renders a QR code (ideal for payment/tracking URLs).                     |
 | `notes`         | `string?`              | Multi-line text for memos or additional terms.                           |
@@ -113,6 +115,8 @@ Dictionary used to override static English text inside the component via the `la
 | `notes`    | `string?` | Replaces "Notes".                   |
 | `taxId`    | `string?` | Replaces "Tax ID" or "VAT".         |
 | `sku`      | `string?` | Replaces "SKU".                     |
+| `paymentMethod` | `string?` | Replaces "Payment Method" or "Payment". |
+| `shippingMethod`| `string?` | Replaces "Shipping Method" or "Shipping".|
 
 ---
 
@@ -157,6 +161,8 @@ Use this exhaustive object to generate or validate a full-featured invoice paylo
   "status": "Paid",
   "issuedDate": "2024-03-30",
   "dueDate": "2024-04-15",
+  "paymentMethod": "Wire Transfer (Net 15)",
+  "shippingMethod": "FedEx Priority",
   "companyInfo": {
     "name": "Vertex Systems LLC",
     "address": "1200 Innovation Way",
