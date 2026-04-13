@@ -71,15 +71,15 @@ const setGlobalCurrency = (currency: string) => {
       <div class="flex flex-wrap items-center gap-8 text-xl font-medium">
         <div class="flex flex-col gap-1">
           <span class="text-xs text-muted-foreground uppercase">Thousands</span>
-          <Price :value="1500" format="compact" />
+          <Price :value="1500" numberFormat="compact" />
         </div>
         <div class="flex flex-col gap-1">
           <span class="text-xs text-muted-foreground uppercase">Millions</span>
-          <Price :value="2500000" format="compact" />
+          <Price :value="2500000" numberFormat="compact" />
         </div>
         <div class="flex flex-col gap-1">
           <span class="text-xs text-muted-foreground uppercase">Billions</span>
-          <Price :value="1500000000" format="compact" />
+          <Price :value="1500000000" numberFormat="compact" />
         </div>
       </div>
     </DemoSection>
