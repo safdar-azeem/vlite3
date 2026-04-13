@@ -67,19 +67,38 @@ const setGlobalCurrency = (currency: string) => {
       </div>
     </DemoSection>
 
-    <DemoSection title="Compact Formatting" :code="sourceCode">
-      <div class="flex flex-wrap items-center gap-8 text-xl font-medium">
-        <div class="flex flex-col gap-1">
-          <span class="text-xs text-muted-foreground uppercase">Thousands</span>
-          <Price :value="1500" numberFormat="compact" />
+    <DemoSection title="Compact Formatting & Thresholds" :code="sourceCode">
+      <div class="flex flex-col gap-6">
+        <div class="flex flex-wrap items-center gap-8 text-xl font-medium">
+          <div class="flex flex-col gap-1">
+            <span class="text-xs text-muted-foreground uppercase">Thousands</span>
+            <Price :value="1500" numberFormat="compact" />
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-xs text-muted-foreground uppercase">Millions</span>
+            <Price :value="2500000" numberFormat="compact" />
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-xs text-muted-foreground uppercase">Billions</span>
+            <Price :value="1500000000" numberFormat="compact" />
+          </div>
         </div>
-        <div class="flex flex-col gap-1">
-          <span class="text-xs text-muted-foreground uppercase">Millions</span>
-          <Price :value="2500000" numberFormat="compact" />
-        </div>
-        <div class="flex flex-col gap-1">
-          <span class="text-xs text-muted-foreground uppercase">Billions</span>
-          <Price :value="1500000000" numberFormat="compact" />
+
+        <div class="p-4 bg-muted/40 rounded-lg border border-border flex flex-col gap-4">
+          <p class="text-sm text-muted-foreground">
+            Using <code>compactThreshold</code>, you can control when the compact formatting activates.
+            The below instances use <code>numberFormat="compact"</code> but with a threshold of <strong>10,000</strong>.
+          </p>
+          <div class="flex flex-wrap items-center gap-8 text-xl font-medium">
+            <div class="flex flex-col gap-1">
+              <span class="text-xs text-muted-foreground uppercase">Below Threshold (9,500)</span>
+              <Price :value="9500" numberFormat="compact" :compactThreshold="10000" />
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-xs text-muted-foreground uppercase">Above Threshold (10,500)</span>
+              <Price :value="10500" numberFormat="compact" :compactThreshold="10000" />
+            </div>
+          </div>
         </div>
       </div>
     </DemoSection>
