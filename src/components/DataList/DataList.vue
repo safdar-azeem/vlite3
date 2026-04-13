@@ -27,7 +27,7 @@ const emit = defineEmits<{
 const internalLimit = ref(props.pageInfo?.itemsPerPage || props.paginationProps?.itemsPerPage || 10)
 
 // ── prevent deep reactivity on dynamically injected components ──
-const rawItem = computed(() => props.item ? markRaw(props.item as any) : undefined)
+const rawItem = computed(() => (props.item ? markRaw(props.item as any) : undefined))
 const rawSkeleton = computed(() => {
   const s = props.skeleton || props.skelton
   return s ? markRaw(s as any) : undefined
@@ -89,8 +89,7 @@ const totalPages = computed(() => props.pageInfo?.totalPages || 1)
           :titleI18n="emptyTitleI18n"
           :description="emptyDescription"
           :descriptionI18n="emptyDescriptionI18n"
-          :icon="emptyIcon"
-        />
+          :icon="emptyIcon" />
       </slot>
     </template>
 
