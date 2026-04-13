@@ -458,7 +458,11 @@ const handleBackendExport = async (format: string) => {
   <div class="flex flex-col w-full space-y-8" :class="containerClass">
     <template v-if="variant === 'two'">
       <div v-if="!customHeader" :class="[headerClass, 'flex flex-col space-y-6']">
-        <div :class="['flex flex-col md:flex-row justify-between items-start md:items-center gap-4', topHeaderClass]">
+        <div
+          :class="[
+            'flex flex-col md:flex-row justify-between items-start md:items-center gap-4',
+            topHeaderClass,
+          ]">
           <ScreenHeaderTitle
             :title="title"
             :title-i18n="titleI18n"
@@ -468,7 +472,9 @@ const handleBackendExport = async (format: string) => {
             :description-class="descriptionClass"
             :info="info"
             :info-i18n="infoI18n">
-            <template #title v-if="$slots.title"><slot name="title" v-bind="screenState" /></template>
+            <template #title v-if="$slots.title"
+              ><slot name="title" v-bind="screenState"
+            /></template>
             <template #description v-if="$slots.description"
               ><slot name="description" v-bind="screenState"
             /></template>
@@ -480,18 +486,28 @@ const handleBackendExport = async (format: string) => {
           <slot v-else name="header-stats" />
         </div>
 
-        <div :class="['flex flex-col lg:flex-row lg:items-center justify-between gap-4', bottomHeaderClass]">
-          <div :class="['flex-1 w-full flex items-center justify-start overflow-x-auto pt-1.5', filtersContainerClass]">
+        <div
+          :class="[
+            'flex flex-col lg:flex-row lg:items-center justify-between gap-4',
+            bottomHeaderClass,
+          ]">
+          <div
+            :class="[
+              'flex-1 w-full flex items-center justify-start overflow-x-auto pt-1.5',
+              filtersContainerClass,
+            ]">
             <ScreenQuickFilters
               v-if="hasQuickFilters"
               v-model="activeQuickFilter"
               :options="quickFilters!"
               :variant="quickFilterVariant"
-              @change="handleQuickFilterChange"
-            />
+              @change="handleQuickFilterChange" />
           </div>
           <ScreenToolbar
-            :class="['flex items-center gap-2.5 max-sm:w-full sm:w-auto justify-end', actionsContainerClass]"
+            :class="[
+              'flex items-center gap-2.5 max-sm:w-full sm:w-auto justify-end',
+              actionsContainerClass,
+            ]"
             :selected-rows="selectedRows"
             :hide-selectable="hideSelectable"
             :hide-delete-btn="hideDeleteBtn"
@@ -523,8 +539,7 @@ const handleBackendExport = async (format: string) => {
             @update:activeFilters="activeFilters = $event"
             @refresh="triggerChange"
             @add="$emit('add')"
-            @select-dropdown="handleDropdownSelect"
-          >
+            @select-dropdown="handleDropdownSelect">
             <template #before-search="slotProps">
               <slot name="before-search" v-bind="slotProps" />
             </template>
@@ -594,8 +609,7 @@ const handleBackendExport = async (format: string) => {
           @update:activeFilters="activeFilters = $event"
           @refresh="triggerChange"
           @add="$emit('add')"
-          @select-dropdown="handleDropdownSelect"
-        >
+          @select-dropdown="handleDropdownSelect">
           <template #before-search="slotProps">
             <slot name="before-search" v-bind="slotProps" />
           </template>
