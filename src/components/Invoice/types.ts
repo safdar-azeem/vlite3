@@ -79,6 +79,11 @@ export interface InvoiceData {
   /** Shipping details (Ship To) */
   shippingInfo?: InvoiceCustomerInfo
 
+  /** Payment method used or expected */
+  paymentMethod?: string
+  /** Shipping method used or expected */
+  shippingMethod?: string
+
   /** Array of line items */
   items: InvoiceLineItem[]
 
@@ -114,6 +119,8 @@ export interface InvoiceLabels {
   notes?: string
   sku?: string
   taxId?: string
+  paymentMethod?: string
+  shippingMethod?: string
 }
 
 export interface InvoiceProps {
