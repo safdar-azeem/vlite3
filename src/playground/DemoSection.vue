@@ -2,10 +2,17 @@
 import { ref, computed } from 'vue'
 import { highlightVue, extractSnippet } from './highlighter'
 
-const props = defineProps<{
-  title: string
+interface DemoProps {
+  title?: string
   code: string
-}>()
+  direction?: 'row' | 'col'
+  align?: 'center' | 'start' | 'end'
+}
+
+const props = withDefaults(defineProps<DemoProps>(), {
+  direction: 'col',
+  align: 'center'
+})
 
 const activeTab = ref<'preview' | 'code'>('preview')
 const copied = ref(false)
@@ -95,7 +102,11 @@ async function copyCode() {
       <!-- Preview Tab -->
       <div
         v-show="activeTab === 'preview'"
-        class="preview-container relative flex items-center justify-center w-full p-8 md:p-14 min-h-[150px] overflow-x-auto">
+        class="preview-container relative flex w-full p-8 md:p-14 min-h-[150px] overflow-x-auto"
+        :class="[
+          direction === 'row' ? 'flex-row gap-8' : 'flex-col gap-10',
+          align === 'center' ? 'items-center justify-center' : align === 'start' ? 'items-start justify-start' : 'items-end justify-end'
+        ]">
         <slot />
       </div>
 
