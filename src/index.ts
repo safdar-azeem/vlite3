@@ -58,6 +58,7 @@ export * from './components/Skeleton'
 export * from './components/Chart'
 export * from './components/AppShell'
 export * from './components/Rating'
+export * from './components/AsyncSelect'
 
 export { default as Icon } from './components/Icon.vue'
 export { default as Logo } from './components/Logo.vue'
