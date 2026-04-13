@@ -15,14 +15,14 @@ const val = ref('')
     </div>
 
     <DemoSection title="Basic Usage" :code="sourceCode">
-      <div class="max-w-xl space-y-4">
+      <div class="max-w-3xl w-full space-y-4">
         <Textarea placeholder="Type your message here..." v-model="val" :rows="4" />
         <p class="text-sm text-gray-500">Value: {{ val }}</p>
       </div>
     </DemoSection>
 
     <DemoSection title="States" :code="sourceCode">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl w-full">
         <Textarea disabled placeholder="This textarea is disabled" :rows="3" />
         <Textarea error="This field is required" placeholder="Error state" :rows="3" />
       </div>
