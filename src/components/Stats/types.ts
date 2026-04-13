@@ -1,4 +1,4 @@
-export type StatsVariant = 'solid' | 'outline' | 'shadow' | 'transparent'
+export type StatsVariant = 'solid' | 'outline' | 'shadow' | 'transparent' | 'transparent-header'
 export type StatsLayout =
   | 'icon-left'
   | 'icon-right'
