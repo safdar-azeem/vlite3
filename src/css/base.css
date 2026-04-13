@@ -155,6 +155,7 @@ html {
       opacity: 0;
       transform: translateY(4px) scale(0.97);
     }
+
     to {
       opacity: 1;
       transform: translateY(0) scale(1);
@@ -285,4 +286,9 @@ html {
 .year-view-layout .years-section {
   max-height: 210px !important;
   overflow-y: auto !important;
+}
+
+.v-event-calendar .calendar-day-number.today {
+  background-color: var(--color-primary) !important;
+  color: var(--color-primary-fg) !important;
 }
