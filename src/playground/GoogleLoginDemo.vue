@@ -63,6 +63,7 @@ const handleError = (error: any) => {
 </GoogleLogin>">
       <div class="max-w-sm">
         <GoogleLogin
+          v-if="env.VITE_GOOGLE_CLIENT_ID"
           :clientId="env.VITE_GOOGLE_CLIENT_ID"
           @success="handleSuccess"
           @error="handleError">
