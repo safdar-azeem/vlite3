@@ -17,21 +17,23 @@ const active2 = ref(true)
     </div>
 
     <DemoSection title="Basic Usage" :code="sourceCode">
-      <div class="flex items-center justify-between max-w-sm p-4 border rounded-lg">
-         <Label>Airplane Mode</Label>
-         <Switch v-model="active" />
+      <div class="flex flex-col items-center justify-center w-full">
+        <div class="flex items-center justify-between w-full max-w-sm p-4 border rounded-lg bg-background">
+           <Label>Airplane Mode</Label>
+           <Switch v-model="active" />
+        </div>
+        <p class="text-[13px] text-muted-foreground mt-3">Value: {{ active }}</p>
       </div>
-       <p class="text-xs text-gray-400">Value: {{ active }}</p>
     </DemoSection>
 
     <DemoSection title="States" :code="sourceCode">
-      <div class="grid gap-4 max-w-sm">
-        <div class="flex items-center justify-between p-4 border rounded-lg bg-gray-50">
-           <Label class="text-gray-400">Disabled Off</Label>
+      <div class="flex flex-col w-full max-w-sm gap-4">
+        <div class="flex items-center justify-between p-4 border rounded-lg bg-muted/20">
+           <Label class="text-muted-foreground">Disabled Off</Label>
            <Switch :model-value="false" disabled />
         </div>
-        <div class="flex items-center justify-between p-4 border rounded-lg bg-gray-50">
-           <Label class="text-gray-400">Disabled On</Label>
+        <div class="flex items-center justify-between p-4 border rounded-lg bg-muted/20">
+           <Label class="text-muted-foreground">Disabled On</Label>
            <Switch :model-value="true" disabled />
         </div>
       </div>
