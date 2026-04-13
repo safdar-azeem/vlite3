@@ -458,7 +458,7 @@ const handleCancel = () => {
     <div
       v-if="!schemaLoading && isMultiStepMode && timelineSteps.length > 0"
       class="form-timeline"
-      :class="timelineTextPosition == 'right' ? 'mb-6.5' : 'mb-13'">
+      :class="timelineTextPosition == 'right' ? 'mb-2' : 'mb-8'">
       <Timeline
         :steps="timelineSteps"
         :activeStep="currentStep"
