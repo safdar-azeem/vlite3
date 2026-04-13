@@ -14,7 +14,7 @@ import { statItems } from './shared-data'
 
 <template>
   <DemoSection title="Classic Layout (Top Navigation)" :code="sourceCode">
-    <p class="text-sm text-gray-500 mb-4">
+    <p class="text-sm text-gray-500 mb-4 w-full">
       Using <code>variant="header"</code> with <code>layout-mode="variant4"</code> renders a top
       navigation bar instead of a sidebar. This is perfect for consumer-facing apps or less complex
       admin tools.
