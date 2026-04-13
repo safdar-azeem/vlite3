@@ -13,7 +13,7 @@ interface DemoProps {
 const props = withDefaults(defineProps<DemoProps>(), {
   direction: 'col',
   align: 'center',
-  minWidth: false
+  minWidth: false,
 })
 
 const activeTab = ref<'preview' | 'code'>('preview')
@@ -55,10 +55,11 @@ async function copyCode() {
     </div>
 
     <!-- Container -->
-    <div class="relative flex flex-col rounded-xl border border-border/50 bg-background shadow-sm overflow-hidden">
-      
+    <div
+      class="relative flex flex-col rounded-xl border border-border/50 bg-background shadow-sm overflow-hidden">
       <!-- Tabs header -->
-      <div class="flex items-center justify-between px-3 py-2 border-b border-border/20 bg-muted/10 z-20">
+      <div
+        class="flex items-center justify-between px-3 py-2 border-b border-border/20 bg-muted/10 z-20">
         <div class="flex items-center space-x-1 p-1 rounded-lg bg-muted/30">
           <button
             class="relative inline-flex items-center justify-center whitespace-nowrap px-3 py-1.5 text-xs font-semibold rounded-md focus-visible:outline-none"
@@ -81,19 +82,38 @@ async function copyCode() {
             Code
           </button>
         </div>
-        
-        <button 
-          v-show="activeTab === 'code'" 
-          class="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-muted/60 text-muted-foreground hover:text-foreground" 
+
+        <button
+          v-show="activeTab === 'code'"
+          class="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-muted/60 text-muted-foreground hover:text-foreground"
           @click="copyCode"
           title="Copy Code">
           <template v-if="copied">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-emerald-500">
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </template>
           <template v-else>
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round">
               <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
               <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
             </svg>
@@ -107,8 +127,14 @@ async function copyCode() {
         class="preview-container relative flex w-full p-8 md:p-14 min-h-[150px] overflow-x-auto"
         :class="[
           direction === 'row' ? 'flex-row gap-8 justify-center' : 'flex-col gap-10',
-          align === 'center' ? 'items-center justify-center' : align === 'start' ? 'items-start justify-start' : align === 'stretch' ? 'items-stretch' : 'items-end justify-end',
-          minWidth ? 'preview-min-width' : ''
+          align === 'center'
+            ? 'items-center justify-center'
+            : align === 'start'
+              ? 'items-start justify-start'
+              : align === 'stretch'
+                ? 'items-stretch'
+                : 'items-end justify-end',
+          minWidth ? 'preview-min-width' : '',
         ]">
         <slot />
       </div>
@@ -168,11 +194,13 @@ async function copyCode() {
 
 /* Optional minimum width enforcing */
 .preview-min-width > :deep(div) {
-  min-width: min(100%, 350px);
+  min-width: min(100%, 30px);
+  width: 100% !important;
 }
 @media (min-width: 768px) {
   .preview-min-width > :deep(div) {
-    min-width: min(100%, 600px);
+    min-width: min(100%, 900px);
+    width: 100% !important;
   }
 }
 </style>
@@ -180,12 +208,32 @@ async function copyCode() {
 <!-- Global syntax highlight styles (unscoped) -->
 <style>
 /* Modern editor syntax highlighting (One Dark / Vitesse inspired) */
-.hl-sfc-tag { color: #f472b6; font-weight: 500; } /* pink-400 */
-.hl-tag { color: #60a5fa; font-weight: 500; } /* blue-400 */
-.hl-attr { color: #a78bfa; } /* purple-400 */
-.hl-directive { color: #fbbf24; } /* amber-400 */
-.hl-string { color: #34d399; } /* emerald-400 */
-.hl-keyword { color: #c084fc; font-weight: 500; } /* purple-400 */
-.hl-comment { color: #6b7280; font-style: italic; } /* gray-500 */
-.hl-number { color: #f87171; } /* red-400 */
+.hl-sfc-tag {
+  color: #f472b6;
+  font-weight: 500;
+} /* pink-400 */
+.hl-tag {
+  color: #60a5fa;
+  font-weight: 500;
+} /* blue-400 */
+.hl-attr {
+  color: #a78bfa;
+} /* purple-400 */
+.hl-directive {
+  color: #fbbf24;
+} /* amber-400 */
+.hl-string {
+  color: #34d399;
+} /* emerald-400 */
+.hl-keyword {
+  color: #c084fc;
+  font-weight: 500;
+} /* purple-400 */
+.hl-comment {
+  color: #6b7280;
+  font-style: italic;
+} /* gray-500 */
+.hl-number {
+  color: #f87171;
+} /* red-400 */
 </style>
