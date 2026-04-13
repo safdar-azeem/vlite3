@@ -383,7 +383,7 @@ const componentProps = computed(() => {
                 class="min-w-0 flex-1 flex"
                 :class="[
                   showCompactLabel && !isHorizontal
-                    ? 'flex-col items-center justify-center gap-1'
+                    ? 'flex-col items-center justify-center text-center gap-1'
                     : context.compact && !isHorizontal
                       ? 'justify-center'
                       : 'items-center gap-2.5',
@@ -404,6 +404,7 @@ const componentProps = computed(() => {
                   class="truncate leading-none pt-0.5 text-wrap"
                   :class="{
                     [context.compactLabelClass]: showCompactLabel && !isHorizontal,
+                    'w-full text-center': context.compact,
                     hidden: context.compact && !showCompactLabel && !isHorizontal,
                     'md:hidden': context.compact && !showCompactLabel && !isHorizontal,
                   }">
@@ -469,7 +470,7 @@ const componentProps = computed(() => {
             class="min-w-0 flex-1 flex py-0.5"
             :class="[
               showCompactLabel && !isHorizontal
-                ? 'flex-col items-center justify-center gap-1'
+                ? 'flex-col items-center justify-center text-center gap-1'
                 : context.compact && !isHorizontal
                   ? 'justify-center'
                   : 'items-center gap-2.5',
@@ -490,6 +491,7 @@ const componentProps = computed(() => {
               class="truncate leading-none pt-0.5 wrap-break-word flex-wrap text-wrap"
               :class="{
                 [context.compactLabelClass]: showCompactLabel && !isHorizontal,
+                'w-full text-center': context.compact,
                 hidden: context.compact && !showCompactLabel && !isHorizontal,
                 'md:hidden': context.compact && !showCompactLabel && !isHorizontal,
               }">
@@ -555,7 +557,7 @@ const componentProps = computed(() => {
               backgroundColor: 'var(--color-border)',
             }"></div>
 
-          <div class="pt-1 space-y-0.5 pb-1.5">
+          <div class="pt-1 space-y-0.5">
             <SidebarMenuItem
               v-for="child in item.children"
               :key="child.id || child.label"
