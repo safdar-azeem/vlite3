@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<SidebarMenuProps>(), {
   compactIconSize: '21px',
   labelClass: 'text-sm',
   compactLabelClass: 'text-[11.5px] mt-1',
-  itemPadding: 'py-1.5 px-2',
+  itemPadding: 'py-2 px-2',
   compactItemPadding: 'py-2 px-1',
   nestedMenuWidth: '220px',
   nestedMenuMaxHeight: '300px',
