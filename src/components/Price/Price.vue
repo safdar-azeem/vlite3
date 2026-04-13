@@ -7,10 +7,10 @@ const props = withDefaults(
     value?: number | string
     currency?: string
     numberFormat?: 'standard' | 'compact'
+    compactThreshold?: number
   }>(),
   {
     value: 0,
-    numberFormat: 'compact',
   }
 )
 
@@ -31,7 +31,9 @@ const formattedPrice = computed(() => {
       style: 'currency',
       currency: activeCurrency.value,
     }
-    if (activeFormat.value === 'compact') {
+    
+    const threshold = props.compactThreshold ?? config?.components?.price?.compactThreshold ?? 1000
+    if (activeFormat.value === 'compact' && Math.abs(numericValue) >= threshold) {
       options.notation = 'compact'
       options.compactDisplay = 'short'
     }
