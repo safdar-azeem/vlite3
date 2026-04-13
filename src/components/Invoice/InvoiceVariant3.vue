@@ -149,6 +149,14 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
               type="date"
               class="font-semibold text-xs text-foreground" />
           </div>
+          <div v-if="d.paymentMethod" class="flex gap-2 items-center">
+            <span class="text-muted-foreground font-medium text-xs">{{ l.paymentMethod || 'Payment' }}:</span>
+            <span class="font-semibold text-xs text-foreground">{{ d.paymentMethod }}</span>
+          </div>
+          <div v-if="d.shippingMethod" class="flex gap-2 items-center">
+            <span class="text-muted-foreground font-medium text-xs">{{ l.shippingMethod || 'Shipping' }}:</span>
+            <span class="font-semibold text-xs text-foreground">{{ d.shippingMethod }}</span>
+          </div>
           <div v-if="d.qrcode || d.barcode" class="flex items-center justify-end gap-2 mt-1">
             <div v-if="d.qrcode" class="">
               <QRCode :value="d.qrcode" :size="compact ? 40 : 48" />
