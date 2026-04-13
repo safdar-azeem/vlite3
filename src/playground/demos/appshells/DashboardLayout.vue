@@ -18,7 +18,7 @@ const isSidebarCompact = ref(false)
 
 <template>
   <DemoSection title="Dashboard Layout (Floating Panels)" :code="sourceCode">
-    <p class="text-sm text-gray-500 mb-4">
+    <p class="text-sm text-gray-500 mb-4 w-full">
       The <code>variant2</code> layout mode provides beautiful floating panels with distinct
       backgrounds, automatically adjusting to flush components on mobile devices.
     </p>
