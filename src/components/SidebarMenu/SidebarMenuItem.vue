@@ -235,9 +235,14 @@ const itemClass = computed(() => {
   const widthClass = isHorizontal.value ? 'w-auto' : 'w-full'
   const base = `group flex items-center justify-between font-medium rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 relative border border-transparent select-none cursor-pointer ${widthClass} ${props?.itemClass || ''} ${context.labelClass}`
 
+  let paddingClass = context.compact ? context.compactItemPadding : context.itemPadding
+  if (!context.compact && props.depth > 0) {
+    paddingClass = paddingClass.replace(/py-[\d\.]+/, 'py-1.5')
+  }
+
   const layout = context.compact
-    ? `justify-center ${context.compactItemPadding}`
-    : `justify-between ${context.itemPadding}`
+    ? `justify-center ${paddingClass}`
+    : `justify-between ${paddingClass}`
 
   let variantClass = ''
   if (isActive.value) {
