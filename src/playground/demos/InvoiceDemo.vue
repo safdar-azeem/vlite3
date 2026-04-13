@@ -58,6 +58,7 @@ const salesInvoice: InvoiceData = {
   status: 'Paid',
   issuedDate: new Date('2024-07-01'),
   dueDate: new Date('2024-07-31'),
+  paymentMethod: 'Bank Transfer',
   customerInfo: {
     name: 'John D. Mitchell',
     address: '1600 Pennsylvania Ave NW',
@@ -193,6 +194,8 @@ const ecomInvoice: InvoiceData = {
   status: 'Processing',
   issuedDate: new Date('2024-07-15'),
   dueDate: new Date('2024-07-22'),
+  paymentMethod: 'Credit Card (Visa ending in 4242)',
+  shippingMethod: 'Standard Delivery',
 
   customerInfo: {
     name: 'Sarah L. Kim',
@@ -440,6 +443,16 @@ const invoiceDataFields = [
     name: 'shippingInfo',
     type: 'InvoiceCustomerInfo?',
     desc: 'Ship-to party name, address, email, phone.',
+  },
+  {
+    name: 'paymentMethod',
+    type: 'string?',
+    desc: 'Method of payment used or expected.',
+  },
+  {
+    name: 'shippingMethod',
+    type: 'string?',
+    desc: 'Shipping method used or expected.',
   },
   {
     name: 'items',
