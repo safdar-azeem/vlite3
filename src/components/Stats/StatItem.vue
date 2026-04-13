@@ -41,8 +41,8 @@ const props = withDefaults(
  */
 function displayValue(item: StatItemSchema): string | number {
   const value = Number(item.value)
-  if (item.isPrice) return formatCurrency(value, { numberFormat: item.numberFormat || 'compact' })
-  if (item.numberFormat) return formatNumber(value, { numberFormat: item.numberFormat })
+  if (item.isPrice) return formatCurrency(value, { numberFormat: item.numberFormat || 'compact', compactThreshold: item.compactThreshold })
+  if (item.numberFormat) return formatNumber(value, { numberFormat: item.numberFormat, compactThreshold: item.compactThreshold })
   return item.value
 }
 
