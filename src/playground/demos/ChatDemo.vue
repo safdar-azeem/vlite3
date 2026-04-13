@@ -174,7 +174,7 @@ const allowFileUpload = ref(true)
 
     <DemoSection title="Standard Chat with Attachments" :code="sourceCode">
       <div
-        class="h-[600px] border border-border rounded-xl w-[200px] overflow-hidden bg-card flex flex-col shadow-sm">
+        class="h-[600px] w-full border border-border rounded-xl w-[200px] overflow-hidden bg-card flex flex-col shadow-sm">
         <ChatInterface
           :data="messages"
           :current-user-id="currentUserId"
