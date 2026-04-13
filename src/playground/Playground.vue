@@ -60,6 +60,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'TagInput', to: '/components/taginput', icon: 'lucide:tags' },
       { label: 'Rich Text Editor', to: '/components/richtexteditor', icon: 'lucide:type' },
       { label: 'Form', to: '/components/form', icon: 'lucide:file-input' },
+      { label: 'Rating', to: '/components/rating', icon: 'lucide:star' },
       { label: 'Google Login', to: '/components/googlelogin', icon: 'lucide:chrome' },
       {
         label: 'Permission Matrix',
