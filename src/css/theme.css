@@ -459,30 +459,30 @@
   /* Semantics - Dark Mode High Contrast */
 
   /* Danger */
-  --color-danger-light: rgba(239, 68, 68, 0.12);
+  --color-danger-light: #170E0D;
   --color-danger-fg-light: #fca5a5;
   --color-danger: #ef4444;
   --color-danger-fg: #ffffff;
   --color-danger-dark: #7f1d1d;
 
   /* Warning */
-  --color-warning-light: rgba(245, 158, 11, 0.12);
+  --color-warning-light: #281D0F;
   --color-warning-fg-light: #fcd34d;
   --color-warning: #f59e0b;
   --color-warning-fg: #ffffff;
   --color-warning-dark: #78350f;
 
   /* Info */
-  --color-info-light: rgba(59, 130, 246, 0.12);
+  --color-info-light: #111A28;
   --color-info-fg-light: #93c5fd;
   --color-info: #3b82f6;
   --color-info-fg: #ffffff;
   --color-info-dark: #1e3a8a;
 
   /* Success */
-  --color-success-light: rgba(16, 185, 129, 0.12);
+  --color-success-light: #10201A;
   --color-success-fg-light: #6ee7b7;
-  --color-success: #10b981;
+  --color-success: #064e3b;
   --color-success-fg: #ffffff;
   --color-success-dark: #064e3b;
 
