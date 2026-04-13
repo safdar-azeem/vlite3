@@ -20,11 +20,15 @@ import ScreenAddAction from './components/ScreenAddAction.vue'
 import ScreenEmptyState from './components/ScreenEmptyState.vue'
 import ScreenExportModal from './components/ScreenExportModal.vue'
 import ScreenQuickFilters from './components/ScreenQuickFilters.vue'
+import Stats from '../Stats/Stats.vue'
 
 const props = withDefaults(defineProps<ScreenProps>(), {
   name: '',
   data: () => [],
   loading: false,
+  variant: 'one',
+  stats: () => [],
+  statsProps: () => ({}),
   customHeader: false,
   canSearch: true,
   canAdd: true,
@@ -450,106 +454,212 @@ const handleBackendExport = async (format: string) => {
 </script>
 
 <template>
-  <div class="flex flex-col w-full space-y-8">
-    <div
-      v-if="!customHeader"
-      :class="headerClass"
-      class="flex flex-col md:flex-row sm:items-start md:items-center justify-between gap-4">
-      <ScreenHeaderTitle
-        :title="title"
-        :title-i18n="titleI18n"
-        :title-class="titleClass"
-        :description="description"
-        :description-i18n="descriptionI18n"
-        :description-class="descriptionClass"
-        :info="info"
-        :info-i18n="infoI18n">
-        <template #title v-if="$slots.title"><slot name="title" v-bind="screenState" /></template>
-        <template #description v-if="$slots.description"
-          ><slot name="description" v-bind="screenState"
-        /></template>
-      </ScreenHeaderTitle>
+  <div class="flex flex-col w-full space-y-8" :class="containerClass">
+    <template v-if="variant === 'two'">
+      <div v-if="!customHeader" :class="[headerClass, 'flex flex-col space-y-6']">
+        <div :class="['flex flex-col md:flex-row justify-between items-start md:items-center gap-4', topHeaderClass]">
+          <ScreenHeaderTitle
+            :title="title"
+            :title-i18n="titleI18n"
+            :title-class="titleClass"
+            :description="description"
+            :description-i18n="descriptionI18n"
+            :description-class="descriptionClass"
+            :info="info"
+            :info-i18n="infoI18n">
+            <template #title v-if="$slots.title"><slot name="title" v-bind="screenState" /></template>
+            <template #description v-if="$slots.description"
+              ><slot name="description" v-bind="screenState"
+            /></template>
+          </ScreenHeaderTitle>
 
-      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2.5 w-full justify-end">
-        <div
-          class="flex items-center gap-2 w-full sm:w-auto flex-1 md:flex-none justify-start sm:justify-end">
-          <Button
-            v-if="selectedRows.length > 0 && !hideSelectable && !hideDeleteBtn"
-            variant="outline"
-            class="hover:bg-destructive/10 shrink-0 h-9! w-9!"
-            icon="lucide:trash-2"
-            :title="txtDeleteSelected"
-            @click="requestDelete(selectedRows)" />
+          <div v-if="stats && stats.length > 0">
+            <Stats :items="stats" v-bind="statsProps" />
+          </div>
+          <slot v-else name="header-stats" />
+        </div>
 
-          <ScreenViewToggle v-if="hasMultipleViews" v-model="activeView" :views="resolvedViews" />
+        <div :class="['flex flex-col lg:flex-row lg:items-center justify-between gap-4', bottomHeaderClass]">
+          <div :class="['flex-1 w-full flex items-center justify-start overflow-x-auto pt-1.5', filtersContainerClass]">
+            <ScreenQuickFilters
+              v-if="hasQuickFilters"
+              v-model="activeQuickFilter"
+              :options="quickFilters!"
+              :variant="quickFilterVariant"
+              @change="handleQuickFilterChange"
+            />
+          </div>
+          <div :class="['flex items-center gap-2.5 max-sm:w-full sm:w-auto justify-end', actionsContainerClass]">
+            <div class="flex items-center gap-2 w-full sm:w-auto flex-1 md:flex-none justify-start sm:justify-end">
+              <Button
+                v-if="selectedRows.length > 0 && !hideSelectable && !hideDeleteBtn"
+                variant="outline"
+                class="hover:bg-destructive/10 shrink-0 h-9! w-9!"
+                icon="lucide:trash-2"
+                :title="txtDeleteSelected"
+                @click="requestDelete(selectedRows)" />
 
-          <slot name="before-search" v-bind="screenState" />
+              <ScreenViewToggle v-if="hasMultipleViews" v-model="activeView" :views="resolvedViews" />
 
-          <Button
-            v-if="showRefresh"
-            variant="outline"
-            icon="lucide:refresh-cw"
-            size="lg"
-            class="shrink-0 h-9! w-9!"
-            :title="txtRefresh"
-            :disabled="loading"
-            @click="triggerChange" />
+              <slot name="before-search" v-bind="screenState" />
 
-          <ScreenFilter
-            v-if="filterSchema && filterSchema.length > 0"
-            :schema="filterSchema"
-            :type="filterType"
-            v-model="activeFilters"
-            @change="triggerChange" />
+              <Button
+                v-if="showRefresh"
+                variant="outline"
+                icon="lucide:refresh-cw"
+                size="lg"
+                class="shrink-0 h-9! w-9!"
+                :title="txtRefresh"
+                :disabled="loading"
+                @click="triggerChange" />
 
-          <div v-if="canSearch" class="w-full md:w-60! max-sm:order-last">
-            <Input
-              lazy
-              v-model="searchQuery"
-              icon="lucide:search"
-              :placeholder="txtSearch"
-              variant="outline"
-              class="bg-background w-full"
-              :show-clear-button="true" />
+              <ScreenFilter
+                v-if="filterSchema && filterSchema.length > 0"
+                :schema="filterSchema"
+                :type="filterType"
+                v-model="activeFilters"
+                @change="triggerChange" />
+
+              <div v-if="canSearch" class="w-full md:w-60! max-sm:order-last">
+                <Input
+                  lazy
+                  v-model="searchQuery"
+                  icon="lucide:search"
+                  :placeholder="txtSearch"
+                  variant="outline"
+                  class="bg-background w-full"
+                  :show-clear-button="true" />
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3 max-sm:w-full sm:w-auto max-sm:order-last">
+              <slot name="actions" v-bind="screenState">
+                <ScreenAddAction
+                  :can-add="canAdd"
+                  :add-component="addComponent"
+                  :add-btn="addBtn"
+                  :loading="loading"
+                  :data="data"
+                  :refetch="refetch"
+                  @add="$emit('add')" />
+              </slot>
+
+              <ScreenOptionsDropdown
+                v-if="hasExportOrImport"
+                :export-props="exportProps"
+                :import-props="importProps"
+                @select="handleDropdownSelect" />
+
+              <slot name="after-add" v-bind="screenState" />
+            </div>
           </div>
         </div>
+      </div>
+      <slot name="custom-header" v-else v-bind="screenState" />
+      <slot name="sub-header" v-bind="screenState" />
+    </template>
 
-        <div class="flex items-center gap-3 max-sm:w-full sm:w-auto max-sm:order-last">
-          <slot name="actions" v-bind="screenState">
-            <ScreenAddAction
-              :can-add="canAdd"
-              :add-component="addComponent"
-              :add-btn="addBtn"
-              :loading="loading"
-              :data="data"
-              :refetch="refetch"
-              @add="$emit('add')" />
-          </slot>
+    <template v-else>
+      <div
+        v-if="!customHeader"
+        :class="headerClass"
+        class="flex flex-col md:flex-row sm:items-start md:items-center justify-between gap-4">
+        <ScreenHeaderTitle
+          :title="title"
+          :title-i18n="titleI18n"
+          :title-class="titleClass"
+          :description="description"
+          :description-i18n="descriptionI18n"
+          :description-class="descriptionClass"
+          :info="info"
+          :info-i18n="infoI18n">
+          <template #title v-if="$slots.title"><slot name="title" v-bind="screenState" /></template>
+          <template #description v-if="$slots.description"
+            ><slot name="description" v-bind="screenState"
+          /></template>
+        </ScreenHeaderTitle>
 
-          <ScreenOptionsDropdown
-            v-if="hasExportOrImport"
-            :export-props="exportProps"
-            :import-props="importProps"
-            @select="handleDropdownSelect" />
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2.5 w-full justify-end">
+          <div
+            class="flex items-center gap-2 w-full sm:w-auto flex-1 md:flex-none justify-start sm:justify-end">
+            <Button
+              v-if="selectedRows.length > 0 && !hideSelectable && !hideDeleteBtn"
+              variant="outline"
+              class="hover:bg-destructive/10 shrink-0 h-9! w-9!"
+              icon="lucide:trash-2"
+              :title="txtDeleteSelected"
+              @click="requestDelete(selectedRows)" />
 
-          <slot name="after-add" v-bind="screenState" />
+            <ScreenViewToggle v-if="hasMultipleViews" v-model="activeView" :views="resolvedViews" />
+
+            <slot name="before-search" v-bind="screenState" />
+
+            <Button
+              v-if="showRefresh"
+              variant="outline"
+              icon="lucide:refresh-cw"
+              size="lg"
+              class="shrink-0 h-9! w-9!"
+              :title="txtRefresh"
+              :disabled="loading"
+              @click="triggerChange" />
+
+            <ScreenFilter
+              v-if="filterSchema && filterSchema.length > 0"
+              :schema="filterSchema"
+              :type="filterType"
+              v-model="activeFilters"
+              @change="triggerChange" />
+
+            <div v-if="canSearch" class="w-full md:w-60! max-sm:order-last">
+              <Input
+                lazy
+                v-model="searchQuery"
+                icon="lucide:search"
+                :placeholder="txtSearch"
+                variant="outline"
+                class="bg-background w-full"
+                :show-clear-button="true" />
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3 max-sm:w-full sm:w-auto max-sm:order-last">
+            <slot name="actions" v-bind="screenState">
+              <ScreenAddAction
+                :can-add="canAdd"
+                :add-component="addComponent"
+                :add-btn="addBtn"
+                :loading="loading"
+                :data="data"
+                :refetch="refetch"
+                @add="$emit('add')" />
+            </slot>
+
+            <ScreenOptionsDropdown
+              v-if="hasExportOrImport"
+              :export-props="exportProps"
+              :import-props="importProps"
+              @select="handleDropdownSelect" />
+
+            <slot name="after-add" v-bind="screenState" />
+          </div>
         </div>
       </div>
-    </div>
-    <slot name="custom-header" v-else v-bind="screenState" />
-    <slot name="sub-header" v-bind="screenState" />
-    <div
-      v-if="hasQuickFilters"
-      class="-mt-1 max-sm:hidden!"
-      :class="quickFilterVariant == 'line' ? 'mb-1.5 sm:mb-3' : 'mb-3.5'">
-      <ScreenQuickFilters
-        v-model="activeQuickFilter"
-        :options="quickFilters!"
-        :variant="quickFilterVariant"
-        @change="handleQuickFilterChange" />
-    </div>
+      <slot name="custom-header" v-else v-bind="screenState" />
+      <slot name="sub-header" v-bind="screenState" />
+      <div
+        v-if="hasQuickFilters"
+        class="-mt-1 max-sm:hidden!"
+        :class="quickFilterVariant == 'line' ? 'mb-1.5 sm:mb-3' : 'mb-3.5'">
+        <ScreenQuickFilters
+          v-model="activeQuickFilter"
+          :options="quickFilters!"
+          :variant="quickFilterVariant"
+          @change="handleQuickFilterChange" />
+      </div>
+    </template>
 
-    <div class="flex-1 w-full relative" :class="containerClass">
+    <div class="flex-1 w-full relative" :class="mainContainerClass">
       <template v-if="!hasData && !loading && !shouldSkipEmptyState">
         <slot name="empty" v-if="$slots.empty" v-bind="screenState" />
         <ScreenEmptyState
