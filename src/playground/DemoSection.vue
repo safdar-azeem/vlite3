@@ -6,12 +6,14 @@ interface DemoProps {
   title?: string
   code: string
   direction?: 'row' | 'col'
-  align?: 'center' | 'start' | 'end'
+  align?: 'center' | 'start' | 'end' | 'stretch'
+  minWidth?: boolean
 }
 
 const props = withDefaults(defineProps<DemoProps>(), {
   direction: 'col',
-  align: 'center'
+  align: 'center',
+  minWidth: false
 })
 
 const activeTab = ref<'preview' | 'code'>('preview')
@@ -104,8 +106,9 @@ async function copyCode() {
         v-show="activeTab === 'preview'"
         class="preview-container relative flex w-full p-8 md:p-14 min-h-[150px] overflow-x-auto"
         :class="[
-          direction === 'row' ? 'flex-row gap-8' : 'flex-col gap-10',
-          align === 'center' ? 'items-center justify-center' : align === 'start' ? 'items-start justify-start' : 'items-end justify-end'
+          direction === 'row' ? 'flex-row gap-8 justify-center' : 'flex-col gap-10',
+          align === 'center' ? 'items-center justify-center' : align === 'start' ? 'items-start justify-start' : align === 'stretch' ? 'items-stretch' : 'items-end justify-end',
+          minWidth ? 'preview-min-width' : ''
         ]">
         <slot />
       </div>
@@ -161,6 +164,16 @@ async function copyCode() {
 :deep(.dark) .preview-container,
 .dark .preview-container {
   background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+}
+
+/* Optional minimum width enforcing */
+.preview-min-width > :deep(div) {
+  min-width: min(100%, 350px);
+}
+@media (min-width: 768px) {
+  .preview-min-width > :deep(div) {
+    min-width: min(100%, 600px);
+  }
 }
 </style>
 
