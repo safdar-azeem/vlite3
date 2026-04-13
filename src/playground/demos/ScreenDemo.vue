@@ -131,11 +131,12 @@ const handleDelete = (items: any[]) => {
           description="Manage your organization employees and staff details."
           variant="two"
           :stats="[
-            { id: 1, title: 'Sales', value: '$23k' },
+            { id: 1, title: 'Sales', value: '23', isPrice: true },
             { id: 2, title: 'Customers', value: '8.51k' },
             { id: 3, title: 'Products', value: '2.5k' },
             { id: 4, title: 'Revenue', value: '1.2k' },
           ]"
+          :stats-props="{ variant: 'transparent-header' }"
           :data="result?.users"
           :loading="loading"
           :page-info="result?.pageInfo"
