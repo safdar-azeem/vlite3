@@ -15,6 +15,7 @@ const props = withDefaults(defineProps<StatsProps>(), {
   iconBoxShape: 'rounded',
   iconBoxStyle: 'filled',
   class: '',
+  numberFormat: 'compact',
 })
 
 const gridColsClass = computed(() => {
@@ -39,7 +40,11 @@ const containerClass = computed(() => {
   return [
     'grid',
     gridColsClass.value,
-    props.attached ? `gap-0 ${attachedBorderClass}` : (props.variant === 'transparent-header' ? 'gap-2 md:gap-3.5' : 'gap-3 sm:gap-4.5'),
+    props.attached
+      ? `gap-0 ${attachedBorderClass}`
+      : props.variant === 'transparent-header'
+        ? 'gap-2 md:gap-3.5'
+        : 'gap-3 sm:gap-4.5',
     props.variant === 'shadow' && props.attached ? 'shadow-md' : '',
     props?.layout === 'inline-label-value' ? 'rounded-sm' : '',
     props.class,
@@ -57,11 +62,18 @@ const containerClass = computed(() => {
       :layout="variant === 'transparent-header' ? 'centered-value-title' : layout"
       :attached="attached"
       :loading="loading"
-      :titleSize="variant === 'transparent-header' && !titleSize ? 'text-sm font-normal! text-gray-900' : titleSize"
-      :valueSize="variant === 'transparent-header' && !valueSize ? 'text-lg font-bold text-gray-900' : valueSize"
+      :titleSize="
+        variant === 'transparent-header' && !titleSize
+          ? 'text-sm font-normal! text-gray-900'
+          : titleSize
+      "
+      :valueSize="
+        variant === 'transparent-header' && !valueSize
+          ? 'text-lg font-bold text-gray-900'
+          : valueSize
+      "
       :iconSize="iconSize"
       :iconBoxShape="iconBoxShape"
-      :iconBoxStyle="iconBoxStyle"
-    />
+      :iconBoxStyle="iconBoxStyle" />
   </div>
 </template>
