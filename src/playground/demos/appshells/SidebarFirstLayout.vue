@@ -14,7 +14,7 @@ import { statItems, menuItems } from './shared-data'
 
 <template>
   <DemoSection title="Sidebar-First Layout (Standard)" :code="sourceCode">
-    <p class="text-sm text-gray-500 mb-4">
+    <p class="text-sm text-gray-500 mb-4 w-full">
       The <code>variant1</code> layout mode is the default and stretches the sidebar down the entire
       vertical axis. The header and main content reside next to it. Perfect for most admin
       interfaces.
