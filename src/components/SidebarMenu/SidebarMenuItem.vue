@@ -130,7 +130,7 @@ const isExactlyActive = computed(() => {
 
 const scrollToNode = (smooth = true) => {
   if (isExactlyActive.value && itemRef.value) {
-    itemRef.value.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'nearest' })
+    itemRef.value.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'center' })
   }
 }
 
