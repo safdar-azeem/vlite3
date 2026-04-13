@@ -136,7 +136,6 @@ const handleDelete = (items: any[]) => {
             { id: 3, title: 'Products', value: '2.5k' },
             { id: 4, title: 'Revenue', value: '1.2k' },
           ]"
-          :stats-props="{ variant: 'transparent-header' }"
           :data="result?.users"
           :loading="loading"
           :page-info="result?.pageInfo"
