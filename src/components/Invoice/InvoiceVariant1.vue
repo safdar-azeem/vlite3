@@ -282,6 +282,29 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
         class="flex flex-col-reverse lg:flex-row justify-between"
         :class="compact ? 'gap-6' : 'gap-8'">
         <div class="w-full lg:w-1/2 flex flex-col" :class="compact ? 'gap-4' : 'gap-5'">
+          <div v-if="d.paymentMethod || d.shippingMethod" class="flex flex-wrap gap-6">
+            <div v-if="d.paymentMethod">
+              <p
+                class="text-muted-foreground uppercase tracking-widest font-semibold mb-2"
+                :class="compact ? 'text-[9px]' : 'text-[10px]'">
+                {{ l.paymentMethod || 'Payment Method' }}
+              </p>
+              <p class="font-medium text-foreground" :class="compact ? 'text-xs' : 'text-sm'">
+                {{ d.paymentMethod }}
+              </p>
+            </div>
+            <div v-if="d.shippingMethod">
+              <p
+                class="text-muted-foreground uppercase tracking-widest font-semibold mb-2"
+                :class="compact ? 'text-[9px]' : 'text-[10px]'">
+                {{ l.shippingMethod || 'Shipping Method' }}
+              </p>
+              <p class="font-medium text-foreground" :class="compact ? 'text-xs' : 'text-sm'">
+                {{ d.shippingMethod }}
+              </p>
+            </div>
+          </div>
+
           <div v-if="d.notes">
             <p
               class="text-muted-foreground uppercase tracking-widest font-semibold mb-2"
