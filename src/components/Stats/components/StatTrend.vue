@@ -15,7 +15,7 @@ const containerClass = computed(() => {
   if (isInline.value) {
     return [
       'shrink-0 flex items-center gap-0.5 text-xs font-medium',
-      props.trend.isPositive ? 'text-success-dark' : 'text-danger-dark'
+      props.trend.isPositive ? 'text-success-subtle-fg' : 'text-danger-subtle-fg'
     ].join(' ')
   }
   
@@ -46,7 +46,7 @@ const containerClass = computed(() => {
       :class="trend.isPositive ? 'text-success' : 'text-danger'"
       class="w-4 h-4 shrink-0" />
     <span
-      :class="trend.isPositive ? 'text-success-dark' : 'text-danger-dark'"
+      :class="trend.isPositive ? 'text-success-subtle-fg' : 'text-danger-subtle-fg'"
       class="font-medium whitespace-nowrap">
       {{ trend.value }}
     </span>
