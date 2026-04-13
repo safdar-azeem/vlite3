@@ -11,6 +11,7 @@ export interface RatingProps {
   size?: 'sm' | 'md' | 'lg' | 'xl'
   clearable?: boolean
   disabled?: boolean
+  solid?: boolean
   class?: string
 }
 
