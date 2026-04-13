@@ -170,7 +170,6 @@ const menuItems: SidebarMenuItemSchema[] = [
         <div class="h-full">
           <SidebarMenu
             class="hidden md:flex"
-            :show-tooltip="isSidebarCompact"
             :items="menuItems"
             :allow-multiple="true"
             :compact="isSidebarCompact"
