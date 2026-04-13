@@ -34,10 +34,10 @@ const boxClass = computed(() => {
     const colorMap: Record<string, string> = {
       primary: 'text-primary',
       secondary: 'text-secondary-foreground',
-      success: 'text-success-dark',
-      warning: 'text-warning-dark',
-      danger: 'text-danger-dark',
-      info: 'text-info-dark',
+      success: 'text-success-subtle-fg',
+      warning: 'text-warning-subtle-fg',
+      danger: 'text-danger-subtle-fg',
+      info: 'text-info-subtle-fg',
     }
     return `shrink-0 ${colorMap[c] || 'text-primary'} ${props.class || ''}`
   }
@@ -49,10 +49,10 @@ const boxClass = computed(() => {
     const colorOnlyMap: Record<string, string> = {
       primary: 'text-primary',
       secondary: 'text-secondary-foreground',
-      success: 'text-success-dark',
-      warning: 'text-warning-dark',
-      danger: 'text-danger-dark',
-      info: 'text-info-dark',
+      success: 'text-success-subtle-fg',
+      warning: 'text-warning-subtle-fg',
+      danger: 'text-danger-subtle-fg',
+      info: 'text-info-subtle-fg',
     }
     return `${base} bg-transparent ${colorOnlyMap[c] || 'text-primary'}`
   }
@@ -71,10 +71,10 @@ const boxClass = computed(() => {
     const map: Record<string, string> = {
       primary: 'bg-primary-light text-primary',
       secondary: 'bg-secondary text-secondary-foreground',
-      success: 'bg-success-light text-success-dark',
-      warning: 'bg-warning-light text-warning-dark',
-      danger: 'bg-danger-light text-danger-dark',
-      info: 'bg-info-light text-info-dark',
+      success: 'bg-success-subtle text-success-subtle-fg',
+      warning: 'bg-warning-subtle text-warning-subtle-fg',
+      danger: 'bg-danger-subtle text-danger-subtle-fg',
+      info: 'bg-info-subtle text-info-subtle-fg',
     }
     return `${base} ${map[c] || map.primary}`
   }
