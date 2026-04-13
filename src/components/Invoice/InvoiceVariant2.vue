@@ -98,6 +98,16 @@ const l = computed(() => props.labels || {})
         </div>
       </div>
 
+      <div v-if="d.paymentMethod" class="flex justify-between items-start mt-1.5">
+        <span class="text-muted-foreground font-medium shrink-0 mr-4">{{ l.paymentMethod || 'Payment' }}</span>
+        <span class="font-semibold text-foreground text-right">{{ d.paymentMethod }}</span>
+      </div>
+
+      <div v-if="d.shippingMethod" class="flex justify-between items-start mt-1.5">
+        <span class="text-muted-foreground font-medium shrink-0 mr-4">{{ l.shippingMethod || 'Shipping' }}</span>
+        <span class="font-semibold text-foreground text-right">{{ d.shippingMethod }}</span>
+      </div>
+
       <div v-if="d.status" class="flex justify-between items-center mt-1.5">
         <span class="text-muted-foreground font-medium">{{ l.status || 'Status' }}</span>
         <StatusChip :status="d.status" hide-icon size="small" />
