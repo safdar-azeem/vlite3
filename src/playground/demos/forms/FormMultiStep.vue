@@ -108,8 +108,8 @@ const handleSubmit = ({ values }: IFormSubmitPayload) => {
 </script>
 
 <template>
-  <DemoSection title="Multi-Step Form" :code="sourceCode">
-    <div class="space-y-8">
+  <DemoSection title="Multi-Step Form" :code="sourceCode" class="w-full">
+    <div class="space-y-8 w-full">
       <div>
         <p class="text-sm text-gray-500 mb-4">
           Wizard style form with state preservation between steps.
@@ -117,7 +117,7 @@ const handleSubmit = ({ values }: IFormSubmitPayload) => {
       </div>
 
       <div
-        class="max-w-3xl mx-auto bg-white border border-border rounded-xl overflow-hidden shadow-sm">
+        class="max-w-3xl w-full bg-white border border-border rounded-xl overflow-hidden shadow-sm">
         <div class="p-8">
           <div v-if="!submitData">
             <Form
