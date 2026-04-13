@@ -14,6 +14,7 @@ The component inherits its currency settings from the global `vlite3` configurat
 | :--------- | :----------------- | :------ | :-------------------------------------------------------------------------- |
 | `value`    | `number \| string` | `0`     | The numeric value to format. Strings are automatically parsed to numbers.   |
 | `currency` | `string`           | —       | Local override for the currency code (e.g., `'EUR'`, `'GBP'`, `'JPY'`).     |
+| `format`   | `string`           | `'standard'` | How the number is formatted. Set to `'compact'` to use abbreviations (e.g., 1K, 1M). |
 
 ---
 
@@ -31,6 +32,7 @@ import { Price } from 'vlite3'
 <template>
   <Price :value="1234.56" /> 
   <Price :value="2500" currency="EUR" /> 
+  <Price :value="1000000" format="compact" /> <!-- Renders as $1M -->
   </template>
 
 ```
@@ -53,6 +55,7 @@ const vlite = createVLite({
   components: {
     price: {
       currency: 'GBP', // Set default currency to British Pound
+      format: 'standard', // Set default format to standard
     },
   },
 })
