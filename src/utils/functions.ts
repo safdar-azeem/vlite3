@@ -257,7 +257,8 @@ export const truncate = (text: string, length: number, ellipsis: string = '...')
 export const formatCurrency = (
   amount: number,
   locale: string = 'en-US',
-  currency?: string
+  currency?: string,
+  format?: 'standard' | 'compact'
 ): string => {
   console.log('amount', amount)
   if (!Number.isFinite(amount)) return ''
@@ -266,11 +267,20 @@ export const formatCurrency = (
   // configState is a singleton reactive object set up in core/config.ts.
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const resolvedCurrency = currency || configState?.components?.price?.currency || 'USD'
+  const resolvedFormat = format || configState?.components?.price?.format || 'standard'
   console.log('resolvedCurrency', resolvedCurrency)
-  return new Intl.NumberFormat(locale, {
+
+  const options: Intl.NumberFormatOptions = {
     style: 'currency',
     currency: resolvedCurrency,
-  }).format(amount)
+  }
+
+  if (resolvedFormat === 'compact') {
+    options.notation = 'compact'
+    options.compactDisplay = 'short'
+  }
+
+  return new Intl.NumberFormat(locale, options).format(amount)
 }
 
 /**
