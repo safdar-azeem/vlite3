@@ -225,7 +225,7 @@ const codeForm = `<div class="max-w-md border rounded-xl p-6 space-y-4">
             
             <div class="flex flex-col gap-2">
               <label class="text-sm font-medium">Your Feedback</label>
-              <Textarea v-model="reviewForm.feedback" placeholder="What did you like or dislike?" rows="4" />
+              <Textarea v-model="reviewForm.feedback" placeholder="What did you like or dislike?" :rows="4" />
             </div>
             
             <Button 
