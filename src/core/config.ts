@@ -17,6 +17,7 @@ const defaultConfig: VLiteConfig = {
     price: {
       currency: 'USD',
       numberFormat: 'standard',
+      compactThreshold: 1000,
     },
     datetime: {
       format: 'MM/DD/YYYY',
