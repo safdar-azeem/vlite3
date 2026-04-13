@@ -238,6 +238,7 @@ export interface FormatNumberOptions {
   locale?: string
   numberFormat?: 'standard' | 'compact'
   currency?: string
+  compactThreshold?: number
 }
 
 export function formatNumber(
@@ -248,7 +249,12 @@ export function formatNumber(
   if (!Number.isFinite(num)) return ''
 
   const locale = options.locale || 'en-US'
-  const resolvedFormat = options.numberFormat || 'standard'
+  let resolvedFormat = options.numberFormat || 'standard'
+  const threshold = options.compactThreshold ?? 1000
+
+  if (resolvedFormat === 'compact' && Math.abs(num) < threshold) {
+    resolvedFormat = 'standard'
+  }
 
   const intlOptions: Intl.NumberFormatOptions = {}
   
@@ -289,11 +295,13 @@ export const formatCurrency = (
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const resolvedCurrency = options.currency || configState?.components?.price?.currency || 'USD'
   const resolvedFormat = options.numberFormat || configState?.components?.price?.numberFormat || 'standard'
+  const resolvedThreshold = options.compactThreshold ?? configState?.components?.price?.compactThreshold ?? 1000
 
   return formatNumber(num, {
     locale: options.locale,
     currency: resolvedCurrency,
     numberFormat: resolvedFormat,
+    compactThreshold: resolvedThreshold,
   })
 }
 
