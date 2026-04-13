@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject } from 'vue'
+import { computed, inject, ref, onMounted, watch, nextTick } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import Icon from '../Icon.vue'
 import Tooltip from '@/components/Tooltip.vue'
@@ -26,6 +26,8 @@ const route = useRoute()
 if (!context) {
   throw new Error('SidebarMenuItem must be used within a SidebarMenu')
 }
+
+const itemRef = ref<HTMLElement | null>(null)
 
 const isHorizontal = computed(
   () => context.currentOrientation === 'horizontal' && props.depth === 0
@@ -120,6 +122,32 @@ const isActive = computed(() => {
 
   // Leaf item: match by activeItem id
   return activeId === itemId.value
+})
+
+const isExactlyActive = computed(() => {
+  return context.activeItem === itemId.value
+})
+
+const scrollToNode = (smooth = true) => {
+  if (isExactlyActive.value && itemRef.value) {
+    itemRef.value.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'nearest' })
+  }
+}
+
+onMounted(() => {
+  if (isExactlyActive.value) {
+    nextTick(() => {
+      scrollToNode(false) // Instant scroll on load
+    })
+  }
+})
+
+watch(isExactlyActive, (isActive) => {
+  if (isActive) {
+    setTimeout(() => {
+      scrollToNode(true) // Smooth scroll when dynamically changing
+    }, 250) // Slight delay to allow any expand animations to finish
+  }
 })
 
 const handleClick = (e: MouseEvent) => {
@@ -345,7 +373,7 @@ const componentProps = computed(() => {
 </script>
 
 <template>
-  <div :class="['relative sidebar-manu-item', isHorizontal ? 'w-auto' : 'w-full']">
+  <div ref="itemRef" :class="['relative sidebar-manu-item', isHorizontal ? 'w-auto' : 'w-full']">
     <Dropdown
       v-if="usePopover"
       :position="isHorizontal ? 'bottom-start' : 'right-start'"
