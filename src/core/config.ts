@@ -16,6 +16,7 @@ const defaultConfig: VLiteConfig = {
     form: {},
     price: {
       currency: 'USD',
+      format: 'standard',
     },
     datetime: {
       format: 'MM/DD/YYYY',
