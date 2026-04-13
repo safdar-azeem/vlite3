@@ -33,7 +33,7 @@ const handleError = (err: string) => {
 
     <!-- 1. Basic Usage -->
     <DemoSection title="Basic Usage" :code="sourceCode">
-      <div class="p-4 border rounded-xl bg-gray-50/50">
+      <div class="p-4 border rounded-xl bg-gray-50/50 w-full">
         <FilePicker
           allow-rename
           v-model="basicFiles"
@@ -44,7 +44,7 @@ const handleError = (err: string) => {
 
     <!-- 2. Multi-Select -->
     <DemoSection title="Multi-Select" :code="sourceCode">
-      <div class="p-4 border rounded-xl bg-gray-50/50">
+      <div class="p-4 border rounded-xl bg-gray-50/50 w-full">
         <FilePicker
           v-model="multiFiles"
           multi-select
@@ -55,7 +55,7 @@ const handleError = (err: string) => {
 
     <!-- 3. Restricted File Types (Images) -->
     <DemoSection title="Restricted Types (Images Only)" :code="sourceCode">
-      <div class="p-4 border rounded-xl bg-gray-50/50">
+      <div class="p-4 border rounded-xl bg-gray-50/50 w-full">
         <FilePicker
           v-model="imageFiles"
           :file-types="['image/*', '.png', '.jpg', '.jpeg', '.webp']"
@@ -66,7 +66,7 @@ const handleError = (err: string) => {
 
     <!-- 4. Base64 Return Format -->
     <DemoSection title="Base64 Output" :code="sourceCode">
-      <div class="p-4 border rounded-xl bg-gray-50/50">
+      <div class="p-4 border rounded-xl bg-gray-50/50 w-full">
         <FilePicker
           v-model="base64Files"
           return-format="base64"
@@ -82,7 +82,7 @@ const handleError = (err: string) => {
 
     <!-- 5. Custom Trigger -->
     <DemoSection title="Custom Trigger" :code="sourceCode">
-      <div class="p-4 border rounded-xl bg-gray-50/50">
+      <div class="p-4 border rounded-xl bg-gray-50/50 w-full">
         <FilePicker
           v-model="customTriggerFiles"
           @change="(val) => logChange('Custom', val)"
@@ -108,7 +108,7 @@ const handleError = (err: string) => {
 
     <!-- 6. States -->
     <DemoSection title="States" :code="sourceCode">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
         <div class="p-4 border rounded-xl bg-gray-50/50">
           <p class="text-sm font-medium mb-2">Disabled</p>
           <FilePicker disabled />
