@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import Icon from '../Icon.vue'
 import Price from '../Price/Price.vue'
+import Tooltip from '../Tooltip.vue'
 import { $t } from '@/utils/i18n'
 import { formatDate } from '@/utils/functions'
 
@@ -76,6 +77,19 @@ const resolvedValue = computed(() => {
     default:
       return String(val)
   }
+})
+
+const isNumberCompacted = computed(() => {
+  if (props.field.type !== 'number') return false
+  const activeFormat = props.field.numberFormat || 'compact'
+  const threshold = props.field.compactThreshold ?? 1000
+  const numericValue = Number(rawValue.value) || 0
+  return activeFormat === 'compact' && Math.abs(numericValue) >= threshold
+})
+
+const exactFormattedNumber = computed(() => {
+  if (props.field.type !== 'number') return ''
+  return formatNumber(rawValue.value, { numberFormat: 'standard' })
 })
 
 const labelText = computed(() =>
@@ -173,6 +187,16 @@ const stackedCellClass = computed(() => {
               :value="rawValue"
               class="text-sm font-semibold text-foreground wrap-break-word leading-snug"
               :class="valueClass" />
+            <Tooltip
+              v-else-if="field.type === 'number'"
+              :content="exactFormattedNumber"
+              :disabled="!isNumberCompacted"
+            >
+              <span
+                class="text-sm font-semibold text-foreground wrap-break-word leading-snug"
+                :class="valueClass"
+                v-html="resolvedValue" />
+            </Tooltip>
             <span
               v-else
               class="text-sm font-semibold text-foreground wrap-break-word leading-snug"
@@ -208,6 +232,16 @@ const stackedCellClass = computed(() => {
           :value="rawValue"
           class="text-sm font-semibold text-foreground wrap-break-word leading-snug"
           :class="valueClass" />
+        <Tooltip
+          v-else-if="field.type === 'number'"
+          :content="exactFormattedNumber"
+          :disabled="!isNumberCompacted"
+        >
+          <span
+            class="text-sm font-semibold text-foreground wrap-break-word leading-snug"
+            :class="valueClass"
+            v-html="resolvedValue" />
+        </Tooltip>
         <span
           v-else
           class="text-sm font-semibold text-foreground wrap-break-word leading-snug"
@@ -258,6 +292,16 @@ const stackedCellClass = computed(() => {
               :value="rawValue"
               class="text-sm text-gray-600 wrap-break-word leading-snug"
               :class="valueClass" />
+            <Tooltip
+              v-else-if="field.type === 'number'"
+              :content="exactFormattedNumber"
+              :disabled="!isNumberCompacted"
+            >
+              <span
+                class="text-sm text-gray-600 wrap-break-word leading-snug"
+                :class="valueClass"
+                v-html="resolvedValue" />
+            </Tooltip>
             <span
               v-else
               class="text-sm text-gray-600 wrap-break-word leading-snug"
@@ -290,6 +334,16 @@ const stackedCellClass = computed(() => {
           :value="rawValue"
           class="text-sm text-gray-900 wrap-break-word leading-snug"
           :class="valueClass" />
+        <Tooltip
+          v-else-if="field.type === 'number'"
+          :content="exactFormattedNumber"
+          :disabled="!isNumberCompacted"
+        >
+          <span
+            class="text-sm text-gray-900 wrap-break-word leading-snug"
+            :class="valueClass"
+            v-html="resolvedValue" />
+        </Tooltip>
         <span
           v-else
           class="text-sm text-gray-900 wrap-break-word leading-snug"
@@ -333,6 +387,16 @@ const stackedCellClass = computed(() => {
             :value="rawValue"
             class="text-sm text-gray-600 text-right wrap-break-word"
             :class="valueClass" />
+          <Tooltip
+            v-else-if="field.type === 'number'"
+            :content="exactFormattedNumber"
+            :disabled="!isNumberCompacted"
+          >
+            <span
+              class="text-sm text-gray-600 text-right wrap-break-word"
+              :class="valueClass"
+              v-html="resolvedValue" />
+          </Tooltip>
           <span
             v-else
             class="text-sm text-gray-600 text-right wrap-break-word"
@@ -364,6 +428,16 @@ const stackedCellClass = computed(() => {
           :value="rawValue"
           class="text-sm text-gray-900 text-right wrap-break-word leading-snug"
           :class="valueClass" />
+        <Tooltip
+          v-else-if="field.type === 'number'"
+          :content="exactFormattedNumber"
+          :disabled="!isNumberCompacted"
+        >
+          <span
+            class="text-sm text-gray-900 text-right wrap-break-word leading-snug"
+            :class="valueClass"
+            v-html="resolvedValue" />
+        </Tooltip>
         <span
           v-else
           class="text-sm text-gray-900 text-right wrap-break-word leading-snug"
