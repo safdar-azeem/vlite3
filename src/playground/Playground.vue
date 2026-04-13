@@ -245,7 +245,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       </template>
 
       <template #main>
-        <div class="px-10 md:px-14 lg:px-10 py-8 lg:py-8 max-w-[1500px] mx-auto w-full">
+        <div class="px-6 md:px-10 lg:px-12 py-8 lg:py-10 max-w-[1280px] mx-auto w-full pb-20">
           <router-view></router-view>
         </div>
       </template>
