@@ -45,14 +45,14 @@ function displayValue(item: StatItemSchema): string | number {
 }
 
 const itemClass = computed(() => {
-  const base = props.layout === 'inline-label-value' ? 'flex px-3.5 py-3' : 'flex p-3'
+  const base = props.layout === 'inline-label-value' ? 'flex px-3.5 py-3' : (props.layout === 'centered-value-title' ? 'flex px-1 py-1' : 'flex p-3')
 
   const layoutClasses: Record<string, string> = {
     'icon-left': 'flex-row items-center gap-3 text-left',
     'icon-right': 'flex-row items-center justify-between gap-3 text-left',
     'icon-top': 'flex-col items-start gap-1 px-5! pt-2! text-left',
     'title-top-icon-bottom-right': 'flex-col items-start gap-0 text-left px-5! py-4!',
-    'centered-value-title': 'flex-col items-center justify-center text-center gap-1',
+    'centered-value-title': 'flex-col items-center justify-center text-center gap-0',
     'floating-icon': 'flex-col items-start gap-1 text-left relative',
     'split-bar': 'flex-row items-center gap-3 text-left border-l-4',
     'inline-label-value': 'flex-row items-center gap-2.5 text-left',
