@@ -1,4 +1,5 @@
 import { getStatusColorClass } from '@/utils/status'
+import { formatNumber } from '@/utils/functions'
 
 /**
  * Resolves a dot-notation path from a nested object.
@@ -10,10 +11,4 @@ export function getObjectValue(path: string, obj: Record<string, any>): any {
   return path.split('.').reduce((acc: any, key) => acc?.[key], obj)
 }
 
-export { getStatusColorClass }
-
-export function formatNumber(value: any): string {
-  const num = Number(value)
-  if (isNaN(num)) return String(value ?? '--')
-  return new Intl.NumberFormat('en-US').format(num)
-}
+export { getStatusColorClass, formatNumber }
