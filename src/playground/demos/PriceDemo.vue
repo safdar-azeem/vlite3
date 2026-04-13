@@ -67,6 +67,23 @@ const setGlobalCurrency = (currency: string) => {
       </div>
     </DemoSection>
 
+    <DemoSection title="Compact Formatting" :code="sourceCode">
+      <div class="flex flex-wrap items-center gap-8 text-xl font-medium">
+        <div class="flex flex-col gap-1">
+          <span class="text-xs text-muted-foreground uppercase">Thousands</span>
+          <Price :value="1500" format="compact" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <span class="text-xs text-muted-foreground uppercase">Millions</span>
+          <Price :value="2500000" format="compact" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <span class="text-xs text-muted-foreground uppercase">Billions</span>
+          <Price :value="1500000000" format="compact" />
+        </div>
+      </div>
+    </DemoSection>
+
     <DemoSection title="Dynamic Global Configuration" :code="sourceCode">
       <div class="space-y-6">
         <div class="flex flex-col gap-2">
