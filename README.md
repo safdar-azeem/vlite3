@@ -431,6 +431,7 @@ Follow these rules strictly to ensure visual consistency and predictable styling
 - [x] **CustomFields**
 - [x] **GoogleLogin**
 - [x] **PermissionEditor**
+- [x] **Rating**
 - [x] **RichTextEditor**
 
 ### Data Display
