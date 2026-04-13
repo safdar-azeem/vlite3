@@ -6,6 +6,7 @@ import { ref } from 'vue'
 import DemoSection from '../DemoSection.vue'
 import sourceCode from './TimelineDemo.vue?raw'
 import type { TimelineStep } from '@/types'
+import StatusChip from '@/components/StatusChip/StatusChip.vue'
 
 const activeStep = ref(1)
 
@@ -120,7 +121,7 @@ const reviewSteps: TimelineStep[] = [
             line-style="dashed">
             <template #body="{ step }">
               <div
-                class="mt-4 flex items-center gap-4 p-4 bg-muted/20 rounded-xl border border-border shadow-sm">
+                class="flex items-center gap-4 p-4 bg-muted/20 rounded-xl border border-border shadow-sm">
                 <img
                   v-if="step.user.img"
                   :src="step.user.img"
@@ -163,30 +164,7 @@ const reviewSteps: TimelineStep[] = [
                     </div>
                   </div>
 
-                  <span
-                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border"
-                    :class="[
-                      step.status === 'Completed'
-                        ? 'bg-primary-light text-primary border-primary/20'
-                        : '',
-                      step.status === 'Approved'
-                        ? 'bg-success-light text-success border-success/20'
-                        : '',
-                      step.status === 'In Progress'
-                        ? 'bg-primary-light text-primary border-primary/20'
-                        : '',
-                    ]">
-                    <Icon v-if="step.status === 'Approved'" icon="lucide:check" class="h-3 w-3" />
-                    <Icon
-                      v-else-if="step.status === 'In Progress'"
-                      icon="lucide:loader-2"
-                      class="h-3 w-3 animate-spin" />
-                    <Icon
-                      v-else-if="step.status === 'Completed'"
-                      icon="lucide:history"
-                      class="h-3 w-3" />
-                    {{ step.status }}
-                  </span>
+                  <StatusChip :status="step.status" />
                 </div>
 
                 <div class="flex justify-between items-end mt-2">
