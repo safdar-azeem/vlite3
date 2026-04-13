@@ -373,7 +373,13 @@ const componentProps = computed(() => {
 </script>
 
 <template>
-  <div ref="itemRef" :class="['relative sidebar-manu-item', isHorizontal ? 'w-auto' : 'w-full']">
+  <div
+    ref="itemRef"
+    :class="[
+      'relative sidebar-manu-item',
+      isHorizontal ? 'w-auto' : 'w-full',
+      context.compact && 'mb-px',
+    ]">
     <Dropdown
       v-if="usePopover"
       :position="isHorizontal ? 'bottom-start' : 'right-start'"
