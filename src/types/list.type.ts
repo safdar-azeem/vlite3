@@ -57,6 +57,8 @@ export interface ListField {
   addStatusColor?: boolean
   /** A built-in type for automatic rendering */
   type?: ListFieldType
+  /** Defines how number types should be formatted */
+  numberFormat?: 'standard' | 'compact'
   /** Static class or dynamic class function for the value cell */
   class?: string | ((value: any, data: any) => string)
   /** Render a Vue component instead of a value; receives { data, value } props */
