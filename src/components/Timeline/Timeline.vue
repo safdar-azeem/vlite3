@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import TimelineItem from './TimelineItem.vue'
-import type { TimelineStep, TimelineDirection, TimelineTextPosition, TimelineLineStyle, TimelineIndicatorType } from '@/types'
+import type {
+  TimelineStep,
+  TimelineDirection,
+  TimelineTextPosition,
+  TimelineLineStyle,
+  TimelineIndicatorType,
+} from '@/types'
 
 interface Props {
   steps: TimelineStep[]
@@ -42,16 +48,17 @@ const handleStepClick = (step: TimelineStep, index: number) => {
 </script>
 
 <template>
-  <nav :aria-label="'Progress'" :class="['w-full', props.class]">
+  <nav :aria-label="'Progress'" :class="['w-full pb-5', props.class]">
     <ol
       role="list"
       :class="[
         'relative flex',
         isVertical ? 'flex-col space-y-0' : '',
-        !isVertical && textPosition === 'bottom' ? 'flex-row w-full justify-between items-center' : '',
+        !isVertical && textPosition === 'bottom'
+          ? 'flex-row w-full justify-between items-center'
+          : '',
         !isVertical && textPosition === 'right' ? 'flex-row w-full' : '',
       ]">
-      
       <div
         v-if="!isVertical && textPosition === 'bottom'"
         class="absolute top-4 left-4 right-4 h-0.5 bg-border"
@@ -73,7 +80,17 @@ const handleStepClick = (step: TimelineStep, index: number) => {
       <TimelineItem
         v-for="(step, index) in steps"
         :key="step.id"
-        v-memo="[step, index, activeStep, direction, textPosition, lineStyle, indicatorType, clickable, steps.length]"
+        v-memo="[
+          step,
+          index,
+          activeStep,
+          direction,
+          textPosition,
+          lineStyle,
+          indicatorType,
+          clickable,
+          steps.length,
+        ]"
         :step="step"
         :index="index"
         :is-last="index === steps.length - 1"
@@ -83,8 +100,7 @@ const handleStepClick = (step: TimelineStep, index: number) => {
         :line-style="lineStyle"
         :indicator-type="indicatorType"
         :clickable="clickable"
-        @step-click="handleStepClick"
-      >
+        @step-click="handleStepClick">
         <template #indicator="slotProps"><slot name="indicator" v-bind="slotProps" /></template>
         <template #title="slotProps"><slot name="title" v-bind="slotProps" /></template>
         <template #subtitle="slotProps"><slot name="subtitle" v-bind="slotProps" /></template>
