@@ -238,7 +238,7 @@ const lineByLineDemoFields: ListField[] = [
 
     <!-- ── Customer Details (2-col default) ─────────────────── -->
     <DemoSection title="Customer Details (2 columns, default variant)" :code="sourceCode">
-      <div class="space-y-4">
+      <div class="space-y-4 w-full">
         <List
           :fields="customerFields"
           :data="customer"
@@ -267,7 +267,7 @@ const lineByLineDemoFields: ListField[] = [
 
     <!-- ── Stacked Variant — Personal & Account Info ───────── -->
     <DemoSection title="Stacked Variant (label on top, value below)" :code="sourceCode">
-      <div class="space-y-4">
+      <div class="space-y-4 w-full">
         <List
           :fields="personalInfoFields"
           :data="personalInfo"
@@ -289,7 +289,7 @@ const lineByLineDemoFields: ListField[] = [
 
     <!-- ── Product (striped, 1-col) ─────────────────────────── -->
     <DemoSection title="Product Info (striped, single column)" :code="sourceCode">
-      <div class="max-w-lg">
+      <div class="max-w-lg w-full">
         <List
           :fields="productFields"
           :data="product"
@@ -302,7 +302,7 @@ const lineByLineDemoFields: ListField[] = [
 
     <!-- ── Variants showcase ─────────────────────────────────── -->
     <DemoSection title="Variants" :code="sourceCode">
-      <div class="grid md:grid-cols-2 gap-6">
+      <div class="grid md:grid-cols-2 gap-6 w-full">
         <div class="space-y-1">
           <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
             default
@@ -375,7 +375,7 @@ const lineByLineDemoFields: ListField[] = [
 
     <!-- ── Conditional fields (when / whenTrue) ──────────────── -->
     <DemoSection title="Conditional Fields (when / whenTrue)" :code="sourceCode">
-      <div class="max-w-lg space-y-3">
+      <div class="max-w-lg space-y-3 w-full">
         <p class="text-xs text-muted-foreground">
           <code>adminCode</code> uses <code>whenTrue</code> (only shows if value is truthy).
           <code>notes</code> uses <code>when</code> (custom function). Notes is empty so it's
@@ -414,7 +414,7 @@ const lineByLineDemoFields: ListField[] = [
 
     <!-- ── Loading skeleton ───────────────────────────────────── -->
     <DemoSection title="Loading Skeleton" :code="sourceCode">
-      <div class="max-w-lg space-y-2">
+      <div class="max-w-lg space-y-2 w-full">
         <p class="text-xs text-muted-foreground">Auto-dismisses after 2.5s</p>
         <List
           :fields="customerFields.slice(0, 6)"
@@ -440,7 +440,7 @@ const lineByLineDemoFields: ListField[] = [
 
     <!-- ── Line by Line Layout ─────────────────────────────────── -->
     <DemoSection title="Line-by-Line Layout Control" :code="sourceCode">
-      <div class="max-w-2xl space-y-4">
+      <div class="max-w-2xl space-y-4 w-full">
         <p class="text-xs text-muted-foreground italic">
           Demonstrates how <code>lineByLineLayout</code> can force full-width items to be inline or
           column items to be stacked.
