@@ -93,7 +93,7 @@ export interface VLiteConfig {
     }
     price?: {
       currency?: string
-      format?: 'standard' | 'compact'
+      numberFormat?: 'standard' | 'compact'
     }
     datetime?: {
       format?: string
