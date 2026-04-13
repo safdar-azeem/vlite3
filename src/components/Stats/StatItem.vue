@@ -5,6 +5,8 @@ import { formatCurrency, formatNumber } from '@/utils/functions'
 import type { StatItemSchema, StatsVariant, StatsLayout, IconBoxShape, IconBoxStyle } from './types'
 import StatTrend from './components/StatTrend.vue'
 import StatIconBox from './components/StatIconBox.vue'
+import Tooltip from '../Tooltip.vue'
+import { configState } from '@/core'
 
 // Provide all the individual item props
 const props = withDefaults(
@@ -45,6 +47,22 @@ function displayValue(item: StatItemSchema): string | number {
   if (item.numberFormat) return formatNumber(value, { numberFormat: item.numberFormat, compactThreshold: item.compactThreshold })
   return item.value
 }
+
+const isItemCompacted = computed(() => {
+  const value = Number(props.item.value) || 0
+  if (!props.item.isPrice && !props.item.numberFormat) return false
+  const activeFormat = props.item.numberFormat || (props.item.isPrice ? 'compact' : 'standard')
+  if (activeFormat !== 'compact') return false
+  const threshold = props.item.compactThreshold ?? configState?.components?.price?.compactThreshold ?? 1000
+  return Math.abs(value) >= threshold
+})
+
+const exactValue = computed(() => {
+  const value = Number(props.item.value) || 0
+  if (props.item.isPrice) return formatCurrency(value, { numberFormat: 'standard' })
+  if (props.item.numberFormat) return formatNumber(value, { numberFormat: 'standard' })
+  return props.item.value
+})
 
 const itemClass = computed(() => {
   const base =
@@ -145,9 +163,11 @@ const itemStyle = computed(() => {
       <div class="flex items-center justify-between w-full mt-1">
         <div>
           <div v-if="loading" class="h-8 w-24 bg-gray-50 animate-pulse rounded-md"></div>
-          <p v-else :class="valueSize || 'text-2xl font-bold text-foreground truncate'">
-            {{ displayValue(item) }}
-          </p>
+          <Tooltip v-else :content="exactValue" :disabled="!isItemCompacted">
+            <p :class="valueSize || 'text-2xl font-bold text-foreground truncate'">
+              {{ displayValue(item) }}
+            </p>
+          </Tooltip>
           <StatTrend v-if="item.trend && !loading" :trend="item.trend" :layout="layout" />
         </div>
         <StatIconBox
@@ -164,9 +184,11 @@ const itemStyle = computed(() => {
 
     <template v-else-if="layout === 'centered-value-title'">
       <div v-if="loading" class="h-9 w-24 bg-gray-50 animate-pulse rounded-md"></div>
-      <p v-else :class="valueSize || 'text-3xl font-bold text-foreground'">
-        {{ displayValue(item) }}
-      </p>
+      <Tooltip v-else :content="exactValue" :disabled="!isItemCompacted">
+        <p :class="valueSize || 'text-3xl font-bold text-foreground'">
+          {{ displayValue(item) }}
+        </p>
+      </Tooltip>
       <h3 :class="titleSize || 'text-sm font-medium text-muted-foreground'">
         {{ item.titleI18n ? $t(item.titleI18n) : item.title }}
       </h3>
@@ -188,9 +210,11 @@ const itemStyle = computed(() => {
         {{ item.titleI18n ? $t(item.titleI18n) : item.title }}
       </h3>
       <div v-if="loading" class="h-8 w-20 bg-gray-50 animate-pulse rounded-md mt-1"></div>
-      <p v-else :class="valueSize || 'text-2xl font-bold text-foreground truncate mt-1'">
-        {{ displayValue(item) }}
-      </p>
+      <Tooltip v-else :content="exactValue" :disabled="!isItemCompacted">
+        <p :class="valueSize || 'text-2xl font-bold text-foreground truncate mt-1'">
+          {{ displayValue(item) }}
+        </p>
+      </Tooltip>
       <StatTrend v-if="item.trend && !loading" :trend="item.trend" :layout="layout" />
     </template>
 
@@ -204,9 +228,11 @@ const itemStyle = computed(() => {
           {{ item.titleI18n ? $t(item.titleI18n) : item.title }}
         </h3>
         <div v-if="loading" class="h-9 w-24 bg-gray-50 animate-pulse rounded-md mt-0.5"></div>
-        <p v-else :class="valueSize || 'text-3xl font-black text-foreground truncate mt-0.5'">
-          {{ displayValue(item) }}
-        </p>
+        <Tooltip v-else :content="exactValue" :disabled="!isItemCompacted">
+          <p :class="valueSize || 'text-3xl font-black text-foreground truncate mt-0.5'">
+            {{ displayValue(item) }}
+          </p>
+        </Tooltip>
         <StatTrend v-if="item.trend && !loading" :trend="item.trend" :layout="layout" />
       </div>
     </template>
@@ -227,11 +253,12 @@ const itemStyle = computed(() => {
         {{ item.titleI18n ? $t(item.titleI18n) : item.title }}
       </span>
       <div v-if="loading" class="h-6 w-5 bg-gray-50 animate-pulse rounded-sm shrink-0"></div>
-      <span
-        v-else
-        :class="valueSize || '-text-fs-1 font-semibold text-foreground tabular-nums shrink-0'">
-        {{ displayValue(item) }}
-      </span>
+      <Tooltip v-else :content="exactValue" :disabled="!isItemCompacted">
+        <span
+          :class="valueSize || '-text-fs-1 font-semibold text-foreground tabular-nums shrink-0'">
+          {{ displayValue(item) }}
+        </span>
+      </Tooltip>
       <StatTrend v-if="item.trend && !loading" :trend="item.trend" :layout="layout" />
     </template>
 
@@ -252,9 +279,11 @@ const itemStyle = computed(() => {
         </h3>
         <div class="flex items-baseline gap-2 mt-1">
           <div v-if="loading" class="h-8 w-24 bg-gray-50 animate-pulse rounded-md"></div>
-          <p v-else :class="valueSize || 'text-2xl font-bold text-foreground truncate'">
-            {{ displayValue(item) }}
-          </p>
+          <Tooltip v-else :content="exactValue" :disabled="!isItemCompacted">
+            <p :class="valueSize || 'text-2xl font-bold text-foreground truncate'">
+              {{ displayValue(item) }}
+            </p>
+          </Tooltip>
         </div>
         <StatTrend v-if="item.trend && !loading" :trend="item.trend" :layout="layout" />
       </div>
