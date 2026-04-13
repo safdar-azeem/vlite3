@@ -5,6 +5,7 @@ import { IForm } from '../Form'
 import type { ExportField } from '../ExportData/types'
 import type { ImportField } from '../ImportData/types'
 import { TabesVariant } from '../Tabes'
+import type { StatItemSchema, StatsProps } from '../Stats/types'
 
 export interface ScreenPaginationProps extends Omit<
   PaginationProps,
@@ -76,6 +77,9 @@ export interface ScreenProps {
   pageInfo?: PageInfo
   data?: any[]
   loading?: boolean
+  variant?: 'one' | 'two'
+  stats?: StatItemSchema[] | any[]
+  statsProps?: Partial<StatsProps>
   /**
    * Called on every search, filter, pagination, sort, or quick-filter change.
    * Standard payload shape: { pagination, search, sort, filter }
@@ -143,7 +147,12 @@ export interface ScreenProps {
   filterType?: 'modal' | 'dropdown'
   showRefresh?: boolean
   containerClass?: string
+  mainContainerClass?: string
   headerClass?: string
+  topHeaderClass?: string
+  bottomHeaderClass?: string
+  filtersContainerClass?: string
+  actionsContainerClass?: string
   titleClass?: string
   descriptionClass?: string
   viewProps?: Record<string, any>
