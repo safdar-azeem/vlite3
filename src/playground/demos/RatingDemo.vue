@@ -172,9 +172,10 @@ const codeForm = `<div class="max-w-md border rounded-xl p-6 space-y-4">
         v-model="emojiRating" 
         :icon="emojiIcons" 
         :active-icon="emojiIcons"
-        active-color="text-yellow-400" 
+        active-color="text-amber-500" 
         inactive-color="text-muted-foreground/30"
         size="xl"
+        :solid="false"
       />
     </DemoSection>
     
