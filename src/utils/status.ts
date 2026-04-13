@@ -1,10 +1,10 @@
 import { STATUS_MAP } from '@/components/StatusChip/status-map'
 
 const VARIANT_COLOR_MAP: Record<string, string> = {
-  success: 'text-success-dark font-medium',
-  info: 'text-info-dark font-medium',
-  warning: 'text-warning-dark font-medium',
-  danger: 'text-danger-dark font-medium',
+  success: 'text-success-subtle-fg font-medium',
+  info: 'text-info-subtle-fg font-medium',
+  warning: 'text-warning-subtle-fg font-medium',
+  danger: 'text-danger-subtle-fg font-medium',
   secondary: 'text-muted-foreground',
   teal: 'text-teal-subtle-fg font-medium',
   indigo: 'text-indigo-subtle-fg font-medium',
@@ -15,13 +15,13 @@ const VARIANT_COLOR_MAP: Record<string, string> = {
 }
 
 const EXTRA_STATUS_COLORS: Record<string, string> = {
-  high: 'text-danger-dark font-medium',
-  medium: 'text-warning-dark font-medium',
+  high: 'text-danger-subtle-fg font-medium',
+  medium: 'text-warning-subtle-fg font-medium',
   low: 'text-muted-foreground',
-  yes: 'text-success-dark font-medium',
-  no: 'text-danger-dark font-medium',
-  true: 'text-success-dark font-medium',
-  false: 'text-danger-dark font-medium',
+  yes: 'text-success-subtle-fg font-medium',
+  no: 'text-danger-subtle-fg font-medium',
+  true: 'text-success-subtle-fg font-medium',
+  false: 'text-danger-subtle-fg font-medium',
 }
 
 /**
