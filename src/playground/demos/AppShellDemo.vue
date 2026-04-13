@@ -8,8 +8,8 @@ import HeaderShellLayout from './appshells/HeaderShellLayout.vue'
 </script>
 
 <template>
-  <div class="space-y-10">
-    <div class="space-y-2">
+  <div class="space-y-10 w-full">
+    <div class="space-y-2 w-full">
       <h2 class="text-2xl font-bold">App Shell</h2>
       <p class="text-gray-500">
         The master orchestrator for complex application layouts (sidebars, dashboards, layout-tabs).
