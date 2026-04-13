@@ -48,33 +48,33 @@ async function copyCode() {
 </script>
 
 <template>
-  <section class="flex flex-col space-y-4 mb-10 w-full group">
+  <section class="flex flex-col space-y-4 mb-10 w-full">
     <!-- Header -->
     <div class="flex items-center justify-between">
       <h3 class="text-[1.05rem] font-medium tracking-tight text-foreground">{{ title }}</h3>
     </div>
 
     <!-- Container -->
-    <div class="relative flex flex-col rounded-xl border border-border/50 bg-background shadow-sm overflow-hidden transition-all duration-300 group-hover:border-border/80 group-hover:shadow-md">
+    <div class="relative flex flex-col rounded-xl border border-border/50 bg-background shadow-sm overflow-hidden">
       
       <!-- Tabs header -->
-      <div class="flex items-center justify-between px-3 py-2 border-b border-border/20 bg-muted/10 backdrop-blur-sm z-20">
+      <div class="flex items-center justify-between px-3 py-2 border-b border-border/20 bg-muted/10 z-20">
         <div class="flex items-center space-x-1 p-1 rounded-lg bg-muted/30">
           <button
-            class="relative inline-flex items-center justify-center whitespace-nowrap px-3 py-1.5 text-xs font-medium transition-all rounded-md focus-visible:outline-none"
+            class="relative inline-flex items-center justify-center whitespace-nowrap px-3 py-1.5 text-xs font-semibold rounded-md focus-visible:outline-none"
             :class="
               activeTab === 'preview'
-                ? 'bg-background text-foreground shadow-sm ring-1 ring-border/20'
+                ? 'bg-primary text-white shadow-md ring-1 ring-primary/20'
                 : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
             "
             @click="activeTab = 'preview'">
             Preview
           </button>
           <button
-            class="relative inline-flex items-center justify-center whitespace-nowrap px-3 py-1.5 text-xs font-medium transition-all rounded-md focus-visible:outline-none"
+            class="relative inline-flex items-center justify-center whitespace-nowrap px-3 py-1.5 text-xs font-semibold rounded-md focus-visible:outline-none"
             :class="
               activeTab === 'code'
-                ? 'bg-background text-foreground shadow-sm ring-1 ring-border/20'
+                ? 'bg-primary text-white shadow-md ring-1 ring-primary/20'
                 : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
             "
             @click="activeTab = 'code'">
@@ -84,7 +84,7 @@ async function copyCode() {
         
         <button 
           v-show="activeTab === 'code'" 
-          class="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-muted/60 text-muted-foreground hover:text-foreground transition-colors" 
+          class="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-muted/60 text-muted-foreground hover:text-foreground" 
           @click="copyCode"
           title="Copy Code">
           <template v-if="copied">
