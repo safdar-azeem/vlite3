@@ -11,11 +11,12 @@ const props = withDefaults(defineProps<RatingProps>(), {
   showText: false,
   icon: 'lucide:star',
   activeIcon: 'lucide:star',
-  activeColor: 'text-amber-400 fill-amber-400',
+  activeColor: 'text-amber-400',
   inactiveColor: 'text-muted-foreground/30',
   size: 'md',
   clearable: false,
-  disabled: false
+  disabled: false,
+  solid: true
 })
 
 const emit = defineEmits<{
@@ -129,7 +130,7 @@ const calculateFill = (val: number) => {
       >
         <Icon
           :icon="getIcon(val, 'active')"
-          :class="[sizeClasses[size], activeColor]"
+          :class="[sizeClasses[size], activeColor, { 'is-solid': solid }]"
         />
       </div>
     </div>
@@ -141,3 +142,12 @@ const calculateFill = (val: number) => {
     </slot>
   </div>
 </template>
+
+<style scoped>
+.is-solid :deep(path),
+.is-solid :deep(polygon),
+.is-solid :deep(circle),
+.is-solid :deep(rect) {
+  fill: currentColor !important;
+}
+</style>
