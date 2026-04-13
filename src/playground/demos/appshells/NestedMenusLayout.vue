@@ -11,22 +11,17 @@ import { menuItems } from './shared-data'
 
 <template>
   <DemoSection title="Nested Menus as Layout Tabs" :code="sourceCode">
-    <p class="text-sm text-gray-500 mb-4">
+    <p class="text-sm text-gray-500 mb-4 w-full">
       When using <code>renderNestedTabs="true"</code>, clicking a primary Sidebar navigation item
       that has children creates a tab bar at the top of the <code>main</code> slot layout
       dynamically.
     </p>
     <div
       class="border rounded-lg overflow-hidden h-[500px] relative z-0 flex flex-col w-full shadow-sm">
-      <AppShell
-        variant="sidebar"
-        layout-mode="variant4"
-        class="bg-white border-r"
-        renderNestedTabs>
+      <AppShell variant="sidebar" layout-mode="variant4" class="bg-white border-r" renderNestedTabs>
         <template #sidebar-header>
           <div class="font-bold text-lg flex items-center gap-2 px-2 py-3 border-b">
-            <div
-              class="w-7 h-7 rounded-md bg-teal-500 text-white flex items-center justify-center">
+            <div class="w-7 h-7 rounded-md bg-teal-500 text-white flex items-center justify-center">
               <Icon icon="lucide:hexagon" class="w-4 h-4" />
             </div>
             <span class="tracking-tight">TabFlow UI</span>
@@ -59,17 +54,16 @@ import { menuItems } from './shared-data'
         </template>
 
         <template #main>
-          <div
-            class="p-8 h-full bg-slate-50/50 flex flex-col items-center justify-center border-l">
+          <div class="p-8 h-full bg-slate-50/50 flex flex-col items-center justify-center border-l">
             <div
               class="w-16 h-16 bg-white rounded-2xl shadow-sm border flex items-center justify-center mb-6 rotate-3">
               <Icon icon="lucide:panel-top" class="w-8 h-8 text-teal-500" />
             </div>
             <h3 class="text-xl font-semibold text-slate-800 mb-2">Dynamic Layout Tabs</h3>
             <p class="text-slate-500 text-center max-w-sm text-sm leading-relaxed">
-              Notice the tab bar at the very top of this view? Clicking on "Analytics",
-              "Projects", or "Settings" in the sidebar keeps the parent active and shows siblings
-              as horizontal tabs!
+              Notice the tab bar at the very top of this view? Clicking on "Analytics", "Projects",
+              or "Settings" in the sidebar keeps the parent active and shows siblings as horizontal
+              tabs!
             </p>
             <div class="mt-8 flex gap-3">
               <div
