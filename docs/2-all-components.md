@@ -42,6 +42,7 @@ Check the individual Markdown files inside the docs folders for full details.
 - [Price](./1-Components/Price.md)
 - [ProgressBar](./1-Components/ProgressBar.md)
 - [QRCode](./1-Components/QRCode.md)
+- [Rating](./1-Components/Rating.md)
 - [RichTextEditor](./1-Components/RichTextEditor.md)
 - [Screen](./1-Components/Screen.md)
 - [SidePanel](./1-Components/SidePanel.md)
