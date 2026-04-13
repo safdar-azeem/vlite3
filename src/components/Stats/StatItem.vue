@@ -61,7 +61,7 @@ const exactValue = computed(() => {
   const value = Number(props.item.value) || 0
   if (props.item.isPrice) return formatCurrency(value, { numberFormat: 'standard' })
   if (props.item.numberFormat) return formatNumber(value, { numberFormat: 'standard' })
-  return props.item.value
+  return String(props.item.value)
 })
 
 const itemClass = computed(() => {
