@@ -234,6 +234,37 @@ export const truncate = (text: string, length: number, ellipsis: string = '...')
   return result + ellipsis
 }
 
+export interface FormatNumberOptions {
+  locale?: string
+  numberFormat?: 'standard' | 'compact'
+  currency?: string
+}
+
+export function formatNumber(
+  amount: number | string,
+  options: FormatNumberOptions = {}
+): string {
+  const num = Number(amount)
+  if (!Number.isFinite(num)) return ''
+
+  const locale = options.locale || 'en-US'
+  const resolvedFormat = options.numberFormat || 'standard'
+
+  const intlOptions: Intl.NumberFormatOptions = {}
+  
+  if (options.currency) {
+    intlOptions.style = 'currency'
+    intlOptions.currency = options.currency
+  }
+
+  if (resolvedFormat === 'compact') {
+    intlOptions.notation = 'compact'
+    intlOptions.compactDisplay = 'short'
+  }
+
+  return new Intl.NumberFormat(locale, intlOptions).format(num)
+}
+
 /**
  * Formats a numeric amount as a locale-aware currency string
  * using the `Intl.NumberFormat` API.
@@ -243,44 +274,27 @@ export const truncate = (text: string, length: number, ellipsis: string = '...')
  * if no global config value is set.
  *
  * @param amount The numeric value to format
- * @param locale A BCP 47 locale string (default: `'en-US'`)
- * @param currency An ISO 4217 currency code. Defaults to the globally configured
- *   currency from `createVLite({ components: { price: { currency: '...' } } })`,
- *   or `'USD'` if not configured.
+ * @param options Object containing locale, currency, and format overrides
  * @returns The formatted currency string
- *
- * @example
- * formatCurrency(1234.5)                  // uses global currency, e.g. 'Rs1,234.50' if PKR is set
- * formatCurrency(1234.5, 'de-DE', 'EUR')  // '1.234,50 E'
- * formatCurrency(0)                       // '$0.00' (when no global config)
  */
 export const formatCurrency = (
-  amount: number,
-  locale: string = 'en-US',
-  currency?: string,
-  format?: 'standard' | 'compact'
+  amount: number | string,
+  options: FormatNumberOptions = {}
 ): string => {
-  console.log('amount', amount)
-  if (!Number.isFinite(amount)) return ''
+  const num = Number(amount)
+  if (!Number.isFinite(num)) return ''
 
   // Lazily import configState to avoid circular dependency issues at module load time.
   // configState is a singleton reactive object set up in core/config.ts.
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const resolvedCurrency = currency || configState?.components?.price?.currency || 'USD'
-  const resolvedFormat = format || configState?.components?.price?.format || 'standard'
-  console.log('resolvedCurrency', resolvedCurrency)
+  const resolvedCurrency = options.currency || configState?.components?.price?.currency || 'USD'
+  const resolvedFormat = options.numberFormat || configState?.components?.price?.numberFormat || 'standard'
 
-  const options: Intl.NumberFormatOptions = {
-    style: 'currency',
+  return formatNumber(num, {
+    locale: options.locale,
     currency: resolvedCurrency,
-  }
-
-  if (resolvedFormat === 'compact') {
-    options.notation = 'compact'
-    options.compactDisplay = 'short'
-  }
-
-  return new Intl.NumberFormat(locale, options).format(amount)
+    numberFormat: resolvedFormat,
+  })
 }
 
 /**
