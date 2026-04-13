@@ -81,6 +81,7 @@ function onItemClick({ item, index }: { item: BreadcrumbItemSchema; index: numbe
         </p>
 
         <Breadcrumb :items="wizardSteps" variant="pills" @item-click="onWizardClick" />
+        <br />
         activeStep:{{ activeStep }}
       </div>
     </DemoSection>
