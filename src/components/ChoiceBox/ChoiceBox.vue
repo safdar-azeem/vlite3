@@ -41,12 +41,15 @@ const emit = defineEmits<{
   (e: 'change', value: string | number | (string | number)[] | null): void
 }>()
 
-const displayTitle = computed(() => props.titleI18n ? $t(props.titleI18n) : props.title)
-const displayDescription = computed(() => props.descriptionI18n ? $t(props.descriptionI18n) : props.description)
+const displayTitle = computed(() => (props.titleI18n ? $t(props.titleI18n) : props.title))
+const displayDescription = computed(() =>
+  props.descriptionI18n ? $t(props.descriptionI18n) : props.description
+)
 
-const getOptionTitle = (opt: ChoiceBoxOption) => opt.titleI18n ? $t(opt.titleI18n) : opt.title
-const getOptionDesc = (opt: ChoiceBoxOption) => opt.descriptionI18n ? $t(opt.descriptionI18n) : opt.description
-const getOptionBadge = (opt: ChoiceBoxOption) => opt.badgeI18n ? $t(opt.badgeI18n) : opt.badge
+const getOptionTitle = (opt: ChoiceBoxOption) => (opt.titleI18n ? $t(opt.titleI18n) : opt.title)
+const getOptionDesc = (opt: ChoiceBoxOption) =>
+  opt.descriptionI18n ? $t(opt.descriptionI18n) : opt.description
+const getOptionBadge = (opt: ChoiceBoxOption) => (opt.badgeI18n ? $t(opt.badgeI18n) : opt.badge)
 
 const isSelected = (id: string | number) => {
   if (Array.isArray(props.modelValue)) {
@@ -170,7 +173,9 @@ const gapClass = computed(() => {
                 {{ getOptionBadge(option) }}
               </span>
             </div>
-            <span v-if="option.description || option.descriptionI18n" class="mt-1 -text-fs-3 text-muted leading-relaxed">
+            <span
+              v-if="option.description || option.descriptionI18n"
+              class="mt-0.5 -text-fs-3 text-muted leading-relaxed">
               {{ getOptionDesc(option) }}
             </span>
           </div>
@@ -184,4 +189,3 @@ const gapClass = computed(() => {
     </div>
   </div>
 </template>
-
