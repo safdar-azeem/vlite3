@@ -18,7 +18,7 @@ const isSidebarCompact = ref(false)
 
 <template>
   <DemoSection title="Header-Shell Layout (Flush Sidebar + Floating Content)" :code="sourceCode">
-    <p class="text-sm text-gray-500 mb-4">
+    <p class="text-sm text-gray-500 mb-4 w-full">
       The <code>variant5</code> layout mode has the sidebar flush against the left, top, and bottom
       edges. The header and main content sit inside a floating rounded card panel to the right.
       Supports compact sidebar toggle.
