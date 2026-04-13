@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useVLiteConfig } from '@/core'
+import Tooltip from '../Tooltip.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -42,8 +43,28 @@ const formattedPrice = computed(() => {
     return `$${numericValue.toFixed(2)}`
   }
 })
+
+const exactFormattedPrice = computed(() => {
+  const numericValue = Number(props.value) || 0
+  try {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: activeCurrency.value,
+    }).format(numericValue)
+  } catch (e) {
+    return `$${numericValue.toFixed(2)}`
+  }
+})
+
+const isCompacted = computed(() => {
+  const numericValue = Number(props.value) || 0
+  const threshold = props.compactThreshold ?? config?.components?.price?.compactThreshold ?? 1000
+  return activeFormat.value === 'compact' && Math.abs(numericValue) >= threshold
+})
 </script>
 
 <template>
-  <span>{{ formattedPrice }}</span>
+  <Tooltip :content="exactFormattedPrice" :disabled="!isCompacted">
+    <span>{{ formattedPrice }}</span>
+  </Tooltip>
 </template>
