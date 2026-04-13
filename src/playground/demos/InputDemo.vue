@@ -28,7 +28,7 @@ const protocols = [
 
     <!-- Variants -->
     <DemoSection title="Variants" :code="sourceCode">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
         <Input label="Outline (Default)" placeholder="Start typing..." variant="outline" />
         <Input label="Solid" placeholder="Start typing..." variant="solid" />
         <Input label="Outline Bottom" placeholder="Start typing..." variant="outline-b" />
@@ -37,7 +37,7 @@ const protocols = [
     </DemoSection>
 
     <DemoSection title="Sizes" :code="sourceCode">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end w-full">
         <Input label="Small" size="sm" placeholder="sm" />
         <Input label="Medium" size="md" placeholder="md" />
         <Input label="Large" size="lg" placeholder="lg" />
@@ -45,7 +45,7 @@ const protocols = [
     </DemoSection>
 
     <DemoSection title="States" :code="sourceCode">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
         <Input label="Disabled" disabled placeholder="You cannot type here" />
         <Input label="Error State" error="This field is required" placeholder="Invalid input" />
         <Input label="Loading" loading placeholder="Validating..." />
@@ -54,7 +54,7 @@ const protocols = [
     </DemoSection>
 
     <DemoSection title="Label Positioning" :code="sourceCode">
-      <div class="space-y-4 max-w-lg">
+      <div class="space-y-4 max-w-lg w-full">
         <Input label="Top Label" label-position="top" placeholder="Default" />
         <Input label="Left Label" label-position="left" placeholder="Side mapped" />
         <Input label="Right Label" label-position="right" placeholder="Reversed" />
@@ -62,7 +62,7 @@ const protocols = [
     </DemoSection>
 
     <DemoSection title="Input Groups & Addons" :code="sourceCode">
-      <div class="space-y-6">
+      <div class="space-y-6 w-full">
         <p class="text-sm text-gray-500">
           Use the <code>addon-left</code> and <code>addon-right</code> slots to attach buttons,
           dropdowns, or static text.
