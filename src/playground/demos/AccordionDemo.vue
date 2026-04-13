@@ -109,8 +109,7 @@ const bodyComponentItems = [
     </div>
 
     <DemoSection title="Layouts & Variants" :code="sourceCode">
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 w-full">
         <div class="space-y-3">
           <h4 class="font-medium text-sm text-gray-500 uppercase tracking-wider">
             Default (Detached)
@@ -152,8 +151,7 @@ const bodyComponentItems = [
     </DemoSection>
 
     <DemoSection title="New Features: Numbering & Icons" :code="sourceCode">
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 w-full">
         <div class="space-y-3">
           <h4 class="font-medium text-sm text-gray-500 uppercase tracking-wider">
             With Numbering (show-index)
@@ -189,8 +187,7 @@ const bodyComponentItems = [
     </DemoSection>
 
     <DemoSection title="Interactive Playground" :code="sourceCode">
-
-      <div class="p-6 border rounded-xl space-y-6 bg-gray-50/50">
+      <div class="p-6 border rounded-xl space-y-6 bg-gray-50/50 w-full">
         <div class="flex items-center gap-6">
           <div class="flex items-center gap-2">
             <Switch v-model="allowMultiple" />
@@ -216,7 +213,7 @@ const bodyComponentItems = [
     <DemoSection title="Advanced: Scoped Slots" :code="sourceCode">
       <p class="text-gray-500">Fully customize the trigger or content using slots.</p>
 
-      <div class="max-w-2xl border rounded-lg p-4 bg-white">
+      <div class="max-w-2xl border rounded-lg p-4 bg-white w-full">
         <Accordion
           :items="[
             {
@@ -262,8 +259,7 @@ const bodyComponentItems = [
     </DemoSection>
 
     <DemoSection title="Size Variants" :code="sourceCode">
-
-      <div class="space-y-8 max-w-3xl">
+      <div class="space-y-8 max-w-3xl w-full">
         <div class="space-y-3">
           <h4 class="font-medium text-sm text-gray-500 uppercase">Small (size="sm")</h4>
           <Accordion :items="basicItems" size="sm" variant="outline" attached />
@@ -286,7 +282,7 @@ const bodyComponentItems = [
         Pass a component definition directly to the item object to render it in the body.
       </p>
 
-      <div class="max-w-2xl">
+      <div class="max-w-2xl w-full">
         <Accordion :items="bodyComponentItems" variant="outline" />
       </div>
     </DemoSection>
