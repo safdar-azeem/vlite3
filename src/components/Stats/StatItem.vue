@@ -102,12 +102,12 @@ const itemClass = computed(() => {
       case 'solid': {
         const c = props.item.color || 'primary'
         const solidMap: Record<string, string> = {
-          primary: 'bg-primary-light',
-          secondary: 'bg-secondary',
-          success: 'bg-success-light',
-          warning: 'bg-warning-light',
-          danger: 'bg-danger-light',
-          info: 'bg-info-light',
+          primary: 'bg-primary-light dark:ring-1 dark:ring-inset dark:ring-primary/20',
+          secondary: 'bg-secondary dark:ring-1 dark:ring-inset dark:ring-secondary-foreground/20',
+          success: 'bg-success-light dark:ring-1 dark:ring-inset dark:ring-success/20',
+          warning: 'bg-warning-light dark:ring-1 dark:ring-inset dark:ring-warning/20',
+          danger: 'bg-danger-light dark:ring-1 dark:ring-inset dark:ring-danger/20',
+          info: 'bg-info-light dark:ring-1 dark:ring-inset dark:ring-info/20',
         }
         variantClasses = `${solidMap[c] || solidMap.primary}`
         break
