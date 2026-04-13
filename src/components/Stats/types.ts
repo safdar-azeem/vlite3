@@ -24,6 +24,7 @@ export interface StatItemSchema {
   titleI18n?: string
   value: string | number
   isPrice?: boolean
+  numberFormat?: 'standard' | 'compact'
   icon?: string
   color?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | string
   trend?: StatTrend
