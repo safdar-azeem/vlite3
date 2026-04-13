@@ -35,13 +35,13 @@ defineProps<{
 }>()
 
 defineEmits<{
-  (e: 'update:activeView', val: string): void
-  (e: 'update:activeFilters', val: any): void
-  (e: 'update:searchQuery', val: string): void
-  (e: 'delete', items: any[]): void
-  (e: 'refresh'): void
-  (e: 'add'): void
-  (e: 'select-dropdown', opt: any): void
+  'update:activeView': [val: string]
+  'update:activeFilters': [val: any]
+  'update:searchQuery': [val: string]
+  'delete': [items: any[]]
+  'refresh': []
+  'add': []
+  'select-dropdown': [opt: any]
 }>()
 </script>
 
@@ -86,7 +86,7 @@ defineEmits<{
         <Input
           lazy
           :model-value="searchQuery"
-          @update:model-value="$emit('update:searchQuery', $event)"
+          @update:model-value="$emit('update:searchQuery', String($event))"
           icon="lucide:search"
           :placeholder="txtSearch"
           variant="outline"
