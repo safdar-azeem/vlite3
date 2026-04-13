@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { $t } from '@/utils/i18n'
-import { formatCurrency } from '@/utils/functions'
+import { formatCurrency, formatNumber } from '@/utils/functions'
 import type { StatItemSchema, StatsVariant, StatsLayout, IconBoxShape, IconBoxStyle } from './types'
 import StatTrend from './components/StatTrend.vue'
 import StatIconBox from './components/StatIconBox.vue'
@@ -40,12 +40,19 @@ const props = withDefaults(
  * Otherwise returns the raw value as-is.
  */
 function displayValue(item: StatItemSchema): string | number {
-  if (item.isPrice) return formatCurrency(Number(item.value))
+  const value = Number(item.value)
+  if (item.isPrice) return formatCurrency(value, { numberFormat: item.numberFormat || 'compact' })
+  if (item.numberFormat) return formatNumber(value, { numberFormat: item.numberFormat })
   return item.value
 }
 
 const itemClass = computed(() => {
-  const base = props.layout === 'inline-label-value' ? 'flex px-3.5 py-3' : (props.layout === 'centered-value-title' ? 'flex px-1 py-1' : 'flex p-3')
+  const base =
+    props.layout === 'inline-label-value'
+      ? 'flex px-3.5 py-3'
+      : props.layout === 'centered-value-title'
+        ? 'flex px-1 py-1'
+        : 'flex p-3'
 
   const layoutClasses: Record<string, string> = {
     'icon-left': 'flex-row items-center gap-3 text-left',
