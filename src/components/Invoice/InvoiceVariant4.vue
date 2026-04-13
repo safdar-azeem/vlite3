@@ -83,6 +83,30 @@ const hasDiscount = computed(() => d.value.items.some((item) => item.discount !=
                 class="font-extrabold"
                 :class="compact ? 'text-sm' : 'text-base'" />
             </div>
+            <div v-if="d.paymentMethod">
+              <p
+                class="font-semibold uppercase tracking-widest opacity-60"
+                :class="compact ? 'text-[9px] mb-0.5' : 'text-[10px] mb-1'">
+                {{ l.paymentMethod || 'Payment' }}
+              </p>
+              <p
+                class="font-extrabold"
+                :class="compact ? 'text-sm' : 'text-base'">
+                {{ d.paymentMethod }}
+              </p>
+            </div>
+            <div v-if="d.shippingMethod">
+              <p
+                class="font-semibold uppercase tracking-widest opacity-60"
+                :class="compact ? 'text-[9px] mb-0.5' : 'text-[10px] mb-1'">
+                {{ l.shippingMethod || 'Shipping' }}
+              </p>
+              <p
+                class="font-extrabold"
+                :class="compact ? 'text-sm' : 'text-base'">
+                {{ d.shippingMethod }}
+              </p>
+            </div>
           </div>
         </div>
 
