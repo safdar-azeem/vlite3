@@ -20,6 +20,7 @@ import ScreenAddAction from './components/ScreenAddAction.vue'
 import ScreenEmptyState from './components/ScreenEmptyState.vue'
 import ScreenExportModal from './components/ScreenExportModal.vue'
 import ScreenQuickFilters from './components/ScreenQuickFilters.vue'
+import ScreenToolbar from './components/ScreenToolbar.vue'
 import Stats from '../Stats/Stats.vue'
 
 const props = withDefaults(defineProps<ScreenProps>(), {
@@ -489,70 +490,51 @@ const handleBackendExport = async (format: string) => {
               @change="handleQuickFilterChange"
             />
           </div>
-          <div :class="['flex items-center gap-2.5 max-sm:w-full sm:w-auto justify-end', actionsContainerClass]">
-            <div class="flex items-center gap-2 w-full sm:w-auto flex-1 md:flex-none justify-start sm:justify-end">
-              <Button
-                v-if="selectedRows.length > 0 && !hideSelectable && !hideDeleteBtn"
-                variant="outline"
-                class="hover:bg-destructive/10 shrink-0 h-9! w-9!"
-                icon="lucide:trash-2"
-                :title="txtDeleteSelected"
-                @click="requestDelete(selectedRows)" />
-
-              <ScreenViewToggle v-if="hasMultipleViews" v-model="activeView" :views="resolvedViews" />
-
-              <slot name="before-search" v-bind="screenState" />
-
-              <Button
-                v-if="showRefresh"
-                variant="outline"
-                icon="lucide:refresh-cw"
-                size="lg"
-                class="shrink-0 h-9! w-9!"
-                :title="txtRefresh"
-                :disabled="loading"
-                @click="triggerChange" />
-
-              <ScreenFilter
-                v-if="filterSchema && filterSchema.length > 0"
-                :schema="filterSchema"
-                :type="filterType"
-                v-model="activeFilters"
-                @change="triggerChange" />
-
-              <div v-if="canSearch" class="w-full md:w-60! max-sm:order-last">
-                <Input
-                  lazy
-                  v-model="searchQuery"
-                  icon="lucide:search"
-                  :placeholder="txtSearch"
-                  variant="outline"
-                  class="bg-background w-full"
-                  :show-clear-button="true" />
-              </div>
-            </div>
-
-            <div class="flex items-center gap-3 max-sm:w-full sm:w-auto max-sm:order-last">
-              <slot name="actions" v-bind="screenState">
-                <ScreenAddAction
-                  :can-add="canAdd"
-                  :add-component="addComponent"
-                  :add-btn="addBtn"
-                  :loading="loading"
-                  :data="data"
-                  :refetch="refetch"
-                  @add="$emit('add')" />
-              </slot>
-
-              <ScreenOptionsDropdown
-                v-if="hasExportOrImport"
-                :export-props="exportProps"
-                :import-props="importProps"
-                @select="handleDropdownSelect" />
-
-              <slot name="after-add" v-bind="screenState" />
-            </div>
-          </div>
+          <ScreenToolbar
+            :class="['flex items-center gap-2.5 max-sm:w-full sm:w-auto justify-end', actionsContainerClass]"
+            :selected-rows="selectedRows"
+            :hide-selectable="hideSelectable"
+            :hide-delete-btn="hideDeleteBtn"
+            :txt-delete-selected="txtDeleteSelected"
+            :has-multiple-views="hasMultipleViews"
+            :active-view="activeView"
+            :resolved-views="resolvedViews"
+            :show-refresh="showRefresh"
+            :loading="loading"
+            :txt-refresh="txtRefresh"
+            :filter-schema="filterSchema"
+            :filter-type="filterType"
+            :active-filters="activeFilters"
+            :can-search="canSearch"
+            :search-query="searchQuery"
+            :txt-search="txtSearch"
+            :can-add="canAdd"
+            :add-component="addComponent"
+            :add-btn="addBtn"
+            :data="data"
+            :refetch="refetch"
+            :has-export-or-import="hasExportOrImport"
+            :export-props="exportProps"
+            :import-props="importProps"
+            :screen-state="screenState"
+            @delete="requestDelete"
+            @update:activeView="activeView = $event"
+            @update:searchQuery="searchQuery = $event"
+            @update:activeFilters="activeFilters = $event"
+            @refresh="triggerChange"
+            @add="$emit('add')"
+            @select-dropdown="handleDropdownSelect"
+          >
+            <template #before-search="slotProps">
+              <slot name="before-search" v-bind="slotProps" />
+            </template>
+            <template #actions="slotProps">
+              <slot name="actions" v-bind="slotProps" />
+            </template>
+            <template #after-add="slotProps">
+              <slot name="after-add" v-bind="slotProps" />
+            </template>
+          </ScreenToolbar>
         </div>
       </div>
       <slot name="custom-header" v-else v-bind="screenState" />
@@ -579,71 +561,51 @@ const handleBackendExport = async (format: string) => {
           /></template>
         </ScreenHeaderTitle>
 
-        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2.5 w-full justify-end">
-          <div
-            class="flex items-center gap-2 w-full sm:w-auto flex-1 md:flex-none justify-start sm:justify-end">
-            <Button
-              v-if="selectedRows.length > 0 && !hideSelectable && !hideDeleteBtn"
-              variant="outline"
-              class="hover:bg-destructive/10 shrink-0 h-9! w-9!"
-              icon="lucide:trash-2"
-              :title="txtDeleteSelected"
-              @click="requestDelete(selectedRows)" />
-
-            <ScreenViewToggle v-if="hasMultipleViews" v-model="activeView" :views="resolvedViews" />
-
-            <slot name="before-search" v-bind="screenState" />
-
-            <Button
-              v-if="showRefresh"
-              variant="outline"
-              icon="lucide:refresh-cw"
-              size="lg"
-              class="shrink-0 h-9! w-9!"
-              :title="txtRefresh"
-              :disabled="loading"
-              @click="triggerChange" />
-
-            <ScreenFilter
-              v-if="filterSchema && filterSchema.length > 0"
-              :schema="filterSchema"
-              :type="filterType"
-              v-model="activeFilters"
-              @change="triggerChange" />
-
-            <div v-if="canSearch" class="w-full md:w-60! max-sm:order-last">
-              <Input
-                lazy
-                v-model="searchQuery"
-                icon="lucide:search"
-                :placeholder="txtSearch"
-                variant="outline"
-                class="bg-background w-full"
-                :show-clear-button="true" />
-            </div>
-          </div>
-
-          <div class="flex items-center gap-3 max-sm:w-full sm:w-auto max-sm:order-last">
-            <slot name="actions" v-bind="screenState">
-              <ScreenAddAction
-                :can-add="canAdd"
-                :add-component="addComponent"
-                :add-btn="addBtn"
-                :loading="loading"
-                :data="data"
-                :refetch="refetch"
-                @add="$emit('add')" />
-            </slot>
-
-            <ScreenOptionsDropdown
-              v-if="hasExportOrImport"
-              :export-props="exportProps"
-              :import-props="importProps"
-              @select="handleDropdownSelect" />
-
-            <slot name="after-add" v-bind="screenState" />
-          </div>
-        </div>
+        <ScreenToolbar
+          class="flex flex-col sm:flex-row items-start sm:items-center gap-2.5 w-full justify-end"
+          :selected-rows="selectedRows"
+          :hide-selectable="hideSelectable"
+          :hide-delete-btn="hideDeleteBtn"
+          :txt-delete-selected="txtDeleteSelected"
+          :has-multiple-views="hasMultipleViews"
+          :active-view="activeView"
+          :resolved-views="resolvedViews"
+          :show-refresh="showRefresh"
+          :loading="loading"
+          :txt-refresh="txtRefresh"
+          :filter-schema="filterSchema"
+          :filter-type="filterType"
+          :active-filters="activeFilters"
+          :can-search="canSearch"
+          :search-query="searchQuery"
+          :txt-search="txtSearch"
+          :can-add="canAdd"
+          :add-component="addComponent"
+          :add-btn="addBtn"
+          :data="data"
+          :refetch="refetch"
+          :has-export-or-import="hasExportOrImport"
+          :export-props="exportProps"
+          :import-props="importProps"
+          :screen-state="screenState"
+          @delete="requestDelete"
+          @update:activeView="activeView = $event"
+          @update:searchQuery="searchQuery = $event"
+          @update:activeFilters="activeFilters = $event"
+          @refresh="triggerChange"
+          @add="$emit('add')"
+          @select-dropdown="handleDropdownSelect"
+        >
+          <template #before-search="slotProps">
+            <slot name="before-search" v-bind="slotProps" />
+          </template>
+          <template #actions="slotProps">
+            <slot name="actions" v-bind="slotProps" />
+          </template>
+          <template #after-add="slotProps">
+            <slot name="after-add" v-bind="slotProps" />
+          </template>
+        </ScreenToolbar>
       </div>
       <slot name="custom-header" v-else v-bind="screenState" />
       <slot name="sub-header" v-bind="screenState" />
