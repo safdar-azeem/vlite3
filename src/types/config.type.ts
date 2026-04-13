@@ -94,6 +94,7 @@ export interface VLiteConfig {
     price?: {
       currency?: string
       numberFormat?: 'standard' | 'compact'
+      compactThreshold?: number
     }
     datetime?: {
       format?: string
