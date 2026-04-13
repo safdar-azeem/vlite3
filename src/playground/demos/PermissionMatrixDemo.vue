@@ -306,12 +306,14 @@ const matrixCode = `<PermissionEditor
       </div>
 
       <DemoSection title="Permission Editor (Matrix)" :code="matrixCode">
-        <PermissionEditor v-model="matrixPerms" layout="matrix" :matrix-groups="matrixGroups" />
-        <div class="mt-4 p-3 bg-muted rounded-lg">
-          <p class="text-xs font-semibold text-muted-foreground mb-1">v-model output:</p>
-          <pre class="text-xs text-foreground overflow-auto">{{
-            JSON.stringify(matrixPerms, null, 2)
-          }}</pre>
+        <div class="w-full">
+          <PermissionEditor v-model="matrixPerms" layout="matrix" :matrix-groups="matrixGroups" />
+          <div class="mt-4 p-3 bg-muted rounded-lg">
+            <p class="text-xs font-semibold text-muted-foreground mb-1">v-model output:</p>
+            <pre class="text-xs text-foreground overflow-auto">{{
+              JSON.stringify(matrixPerms, null, 2)
+            }}</pre>
+          </div>
         </div>
       </DemoSection>
 
@@ -325,18 +327,22 @@ const matrixCode = `<PermissionEditor
         </p>
 
         <DemoSection title="Permission Editor (Checkbox)" :code="editorCode">
-          <PermissionEditor
-            v-model="editorPerms"
-            :groups="groups"
-            :default-expanded="['users', 'hrm']" />
+          <div class="w-full">
+            <PermissionEditor
+              v-model="editorPerms"
+              :groups="groups"
+              :default-expanded="['users', 'hrm']" />
+          </div>
         </DemoSection>
       </div>
 
       <DemoSection title="Permission Editor (Switch)" :code="editorSwitchCode">
-        <PermissionEditor
-          v-model="editorSwitchPerms"
-          :groups="groups.slice(0, 3)"
-          toggle-mode="switch" />
+        <div class="w-full">
+          <PermissionEditor
+            v-model="editorSwitchPerms"
+            :groups="groups.slice(0, 3)"
+            toggle-mode="switch" />
+        </div>
       </DemoSection>
 
       <!-- Multi-Role Permission Matrix (below) -->
@@ -348,31 +354,39 @@ const matrixCode = `<PermissionEditor
       </div>
 
       <DemoSection title="Default (Checkbox)" :code="defaultCode">
-        <PermissionMatrix v-model="permissions" :roles="roles" :groups="groups" />
+        <div class="w-full">
+          <PermissionMatrix v-model="permissions" :roles="roles" :groups="groups" />
+        </div>
       </DemoSection>
 
       <DemoSection title="Switch Mode" :code="switchCode">
-        <PermissionMatrix
-          v-model="switchPermissions"
-          :roles="roles"
-          :groups="groups.slice(0, 2)"
-          toggle-mode="switch" />
+        <div class="w-full">
+          <PermissionMatrix
+            v-model="switchPermissions"
+            :roles="roles"
+            :groups="groups.slice(0, 2)"
+            toggle-mode="switch" />
+        </div>
       </DemoSection>
 
       <DemoSection title="Read-Only" :code="readonlyCode">
-        <PermissionMatrix
-          v-model="readonlyPermissions"
-          :roles="roles"
-          :groups="groups.slice(0, 2)"
-          readonly />
+        <div class="w-full">
+          <PermissionMatrix
+            v-model="readonlyPermissions"
+            :roles="roles"
+            :groups="groups.slice(0, 2)"
+            readonly />
+        </div>
       </DemoSection>
 
       <DemoSection title="Compact Size" :code="smallCode">
-        <PermissionMatrix
-          v-model="permissions"
-          :roles="roles"
-          :groups="groups.slice(0, 3)"
-          size="sm" />
+        <div class="w-full">
+          <PermissionMatrix
+            v-model="permissions"
+            :roles="roles"
+            :groups="groups.slice(0, 3)"
+            size="sm" />
+        </div>
       </DemoSection>
     </div>
   </div>
