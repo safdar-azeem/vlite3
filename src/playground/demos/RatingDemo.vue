@@ -11,6 +11,7 @@ const decimalRating = ref(4.3)
 const textRating = ref(0)
 const heartRating = ref(0)
 const emojiRating = ref(0)
+const outlineRating = ref(3)
 
 const emojiIcons = [
   'lucide:angry',
@@ -40,6 +41,17 @@ const codeHalf = `<Rating v-model="rating" allow-half />`
 const codeDecimals = `<Rating :model-value="4.3" allow-half readonly show-text />`
 
 const codeText = `<Rating v-model="rating" show-text />`
+
+const codeSolid = `<div class="flex flex-col gap-4">
+  <div class="flex items-center gap-4">
+    <span class="text-sm w-16">Solid</span>
+    <Rating v-model="rating" solid />
+  </div>
+  <div class="flex items-center gap-4">
+    <span class="text-sm w-16">Outline</span>
+    <Rating v-model="rating" :solid="false" />
+  </div>
+</div>`
 
 const codeHeart = `<Rating 
   v-model="rating" 
@@ -128,6 +140,20 @@ const codeForm = `<div class="max-w-md border rounded-xl p-6 space-y-4">
     <!-- 4. Text Display -->
     <DemoSection title="With Value Text" :code="codeText">
       <Rating v-model="textRating" show-text />
+    </DemoSection>
+
+    <!-- 4.5. Solid vs Outline -->
+    <DemoSection title="Solid vs Outline Styles" :code="codeSolid">
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center gap-4">
+          <span class="text-sm w-16">Solid</span>
+          <Rating v-model="outlineRating" solid />
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="text-sm w-16">Outline</span>
+          <Rating v-model="outlineRating" :solid="false" />
+        </div>
+      </div>
     </DemoSection>
     
     <!-- 5. Heart custom icon -->
