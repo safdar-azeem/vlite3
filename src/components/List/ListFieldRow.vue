@@ -66,7 +66,7 @@ const resolvedValue = computed(() => {
 
   switch (props.field.type) {
     case 'number':
-      return formatNumber(val, { numberFormat: props.field.numberFormat || 'compact' })
+      return formatNumber(val, { numberFormat: props.field.numberFormat || 'compact', compactThreshold: props.field.compactThreshold })
     case 'boolean':
       return val ? 'Yes' : 'No'
     case 'date':
