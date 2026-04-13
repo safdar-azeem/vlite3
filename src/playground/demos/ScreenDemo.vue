@@ -121,5 +121,59 @@ const handleDelete = (items: any[]) => {
         </Screen>
       </div>
     </DemoSection>
+
+    <div title="Screen Variant Two Usage" :code="sourceCode">
+      <div class="">
+        <Screen
+          name="users-directory-demo-variant-two"
+          title="Employees"
+          info="Variant two layout places stats directly opposite to the title, while quick-filters appear opposite to the actions segment."
+          description="Manage your organization employees and staff details."
+          variant="two"
+          :stats="[
+            { id: 1, title: 'Sales', value: '$23k' },
+            { id: 2, title: 'Customers', value: '8.51k' },
+            { id: 3, title: 'Products', value: '2.5k' },
+            { id: 4, title: 'Revenue', value: '1.2k' },
+          ]"
+          :data="result?.users"
+          :loading="loading"
+          :page-info="result?.pageInfo"
+          :refetch="fetchData"
+          :list="UserList"
+          :table="UserTable"
+          show-refresh
+          :quick-filters="[
+            { label: 'All', value: '' },
+            { label: 'Active', value: 'active' },
+            { label: 'On Notice Period', value: 'notice' },
+            { label: 'Laid Off', value: 'laid_off' },
+            { label: 'Terminated', value: 'terminated' },
+            { label: 'Resigned', value: 'resigned' },
+          ]"
+          :filter-schema="[
+            {
+              name: 'user',
+              type: 'text',
+              label: 'User',
+            },
+          ]"
+          filter-type="dropdown"
+          export-props
+          import-props
+          export-mode="backend"
+          export-type="user"
+          import-type="user"
+          @delete="handleDelete"
+          :add-btn="{
+            modal: AddUser,
+            label: 'Add Employee',
+            modalProps: {
+              title: 'Add Employee',
+            },
+          }">
+        </Screen>
+      </div>
+    </div>
   </div>
 </template>
