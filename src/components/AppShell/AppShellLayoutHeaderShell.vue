@@ -112,7 +112,7 @@ const {
         <div
           ref="mainScrollRef"
           style="will-change: transform; contain: layout style"
-          class="flex-1 overflow-y-auto w-full relative h-full scrollbar-thin scrollbar-stable px-6 pb-4 mt-4">
+          class="flex-1 overflow-y-auto w-full relative h-full scrollbar-thin scrollbar-stable">
           <slot name="main" />
         </div>
       </main>
