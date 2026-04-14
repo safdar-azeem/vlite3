@@ -107,7 +107,7 @@ const isSidebarCompact = ref(false)
         </template>
 
         <template #main>
-          <div class="h-full flex flex-col gap-6">
+          <div class="h-full flex flex-col gap-6 pt-5 px-6">
             <Stats :items="statItems.slice(0, 3)" columns="3" variant="shadow" />
             <div
               class="flex-1 bg-white border border-border shadow-sm rounded-xl p-4 min-h-[300px]">
