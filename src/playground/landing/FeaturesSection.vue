@@ -36,94 +36,34 @@ const features = [
 </script>
 
 <template>
-  <section class="features-section">
-    <div class="landing-container">
-      <div class="section-header animate-fade-up">
-        <span class="section-eyebrow">Why vlite3</span>
-        <h2 class="section-title">
+  <section class="py-24 bg-background border-t border-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16 animate-fade-up">
+        <span class="text-sm font-semibold text-primary uppercase tracking-wider">Why vlite3</span>
+        <h2 class="mt-3 text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
           Crafted for developers who value <span class="text-primary">simplicity</span>
         </h2>
-        <p class="section-subtitle">
+        <p class="mt-4 text-lg text-muted-foreground leading-relaxed">
           Every pixel is intentional. Every API is ergonomic. Built for teams that ship fast.
         </p>
       </div>
 
-      <div class="features-grid">
-        <div v-for="(feature, i) in features" :key="i" class="feature-card animate-fade-up" :style="{ animationDelay: `${150 + i * 80}ms` }">
-          <div class="feature-icon">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div 
+          v-for="(feature, i) in features" 
+          :key="i" 
+          class="bg-background border border-border/60 hover:border-border rounded-2xl p-8 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 animate-fade-up"
+          :style="{ animationDelay: `${150 + i * 80}ms` }"
+        >
+          <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6">
             <Icon :icon="feature.icon" class="w-6 h-6" />
           </div>
-          <h3 class="feature-title">{{ feature.title }}</h3>
-          <p class="feature-desc">{{ feature.desc }}</p>
+          <h3 class="text-xl font-bold text-foreground mb-3">{{ feature.title }}</h3>
+          <p class="text-muted-foreground leading-relaxed">
+            {{ feature.desc }}
+          </p>
         </div>
       </div>
     </div>
   </section>
 </template>
-
-<style scoped>
-@import './shared.css';
-
-/* ── Features Section ── */
-.features-section {
-  padding: 5rem 0;
-}
-
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 2rem;
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-@media (min-width: 640px) {
-  .features-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .features-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.feature-card {
-  padding: 2rem;
-  background: var(--color-background);
-  border: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
-  border-radius: 1.5rem;
-  transition: border-color 0.3s, transform 0.3s;
-}
-
-.feature-card:hover {
-  border-color: var(--color-border);
-  transform: translateY(-4px);
-}
-
-.feature-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 0.75rem;
-  background: var(--color-muted);
-  color: var(--color-foreground);
-  margin-bottom: 1.5rem;
-}
-
-.feature-title {
-  font-size: 1.125rem;
-  font-weight: 700;
-  margin-bottom: 0.75rem;
-  color: var(--color-foreground);
-}
-
-.feature-desc {
-  font-size: 0.9375rem;
-  color: var(--color-muted-foreground);
-  line-height: 1.6;
-}
-</style>
