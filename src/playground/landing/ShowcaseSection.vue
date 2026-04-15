@@ -100,7 +100,7 @@ const dummyAvatarItems = [
               
               <TagInput v-else-if="comp.previewType === 'taginput'" :modelValue="['Vue', 'Tailwind']" placeholder="Add tag" class="w-full max-w-[220px] pointer-events-none" />
               
-              <StatusChip v-else-if="comp.previewType === 'statuschip'" status="success" size="md" />
+              <StatusChip v-else-if="comp.previewType === 'statuschip'" status="success" size="medium" />
               
               <Pagination v-else-if="comp.previewType === 'pagination'" :totalPages="5" :currentPage="2" navType="icon" rounded="full" class="scale-90 pointer-events-none" />
               
