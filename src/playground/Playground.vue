@@ -17,6 +17,13 @@ const toggleCompact = () => {
 
 const menuItems: SidebarMenuItemSchema[] = [
   {
+    label: 'Overview',
+    icon: 'lucide:book-open',
+    children: [
+      { label: 'Getting Started', to: '/components/getting-started', icon: 'lucide:rocket' },
+    ],
+  },
+  {
     label: 'Theme & Style',
     icon: 'lucide:palette',
     children: [
@@ -220,6 +227,7 @@ const menuItems: SidebarMenuItemSchema[] = [
             :render-mode="isSidebarCompact ? 'popover' : 'tree'"
             show-compact-labels
             :default-expanded="[
+              'Overview',
               'Buttons & Indicators',
               'Text Inputs',
               'Avatars & People',
