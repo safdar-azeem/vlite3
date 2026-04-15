@@ -9,7 +9,8 @@ import sourceCode from './PersonaDemo.vue?raw'
     <div class="flex flex-col space-y-2 pb-6 mb-8 border-b border-border/30">
       <h2 class="text-3xl font-bold tracking-tight text-foreground">Persona</h2>
       <p class="text-base text-muted-foreground w-full max-w-[800px]">
-        A visual representation of a person, combining an avatar, presence indicator, and text details.
+        A visual representation of a person, combining an avatar, presence indicator, and text
+        details.
       </p>
     </div>
 
@@ -33,47 +34,43 @@ import sourceCode from './PersonaDemo.vue?raw'
 
       <DemoSection title="Sizes" :code="sourceCode">
         <div class="flex flex-wrap items-end justify-center gap-8 w-full">
-          <Persona size="xs" label="Extra Small" presence="online" fallback="XS" />
-          <Persona size="sm" label="Small User" secondaryLabel="Available" presence="online" fallback="SM" />
-          <Persona size="md" label="Medium Default" secondaryLabel="Available" presence="online" fallback="MD" />
-          <Persona size="lg" label="Large Persona" secondaryLabel="Design Team" presence="busy" fallback="LG" />
+          <Persona size="xs" label="Extra Small" fallback="XS" />
+          <Persona size="sm" label="Small User" secondaryLabel="Available" fallback="SM" />
+          <Persona size="md" label="Medium Default" secondaryLabel="Available" fallback="MD" />
+          <Persona size="lg" label="Large Persona" secondaryLabel="Design Team" fallback="LG" />
         </div>
       </DemoSection>
 
       <DemoSection title="Hide Details" :code="sourceCode">
         <div class="flex flex-wrap items-center justify-center gap-6 w-full">
-          <Persona 
-            label="Hidden Name" 
-            secondaryLabel="Should not be visible" 
-            hideDetails 
-            presence="online" 
-            fallback="HD" 
-          />
+          <Persona
+            label="Hidden Name"
+            secondaryLabel="Should not be visible"
+            hideDetails
+            presence="online"
+            fallback="HD" />
           <span class="text-sm text-muted-foreground">&larr; Details are hidden by prop</span>
         </div>
       </DemoSection>
 
       <DemoSection title="Custom Avatars via Src" :code="sourceCode">
         <div class="flex flex-wrap items-center justify-center gap-6 w-full">
-          <Persona 
+          <Persona
             src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=64&h=64&q=80"
             alt="Isabella"
-            label="Isabella Nguyen"
+            label="Safdar Azeem"
             secondaryLabel="Project Manager"
-            presence="online"
-            size="lg"
-          />
+            size="lg" />
         </div>
       </DemoSection>
 
       <DemoSection title="Navigation Link" :code="sourceCode">
         <div class="flex flex-wrap items-center justify-center gap-6 w-full">
-          <Persona 
-            link="/components/persona" 
-            label="Click Me" 
-            secondaryLabel="Navigates via router-link" 
-            presence="online" 
-          />
+          <Persona
+            link="/components/persona"
+            label="Click Me"
+            secondaryLabel="Navigates via router-link"
+            presence="online" />
         </div>
       </DemoSection>
     </div>
