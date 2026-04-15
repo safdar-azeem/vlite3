@@ -58,7 +58,7 @@ const dummyAvatarItems = [
 <template>
   <section class="py-24 bg-muted/20 border-y border-border overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="text-center max-w-3xl mx-auto mb-16">
+      <div class="text-center max-w-3xl mx-auto mb-16" v-scroll-reveal>
         <span class="text-sm font-semibold text-primary uppercase tracking-wider">Component Grid</span>
         <h2 class="mt-3 text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
           A glimpse into <span class="text-primary">the ecosystem</span>
@@ -73,6 +73,7 @@ const dummyAvatarItems = [
           v-for="(comp, i) in allComponents"
           :key="i"
           v-memo="[comp.name]"
+          v-scroll-reveal="{ delay: (i % 4) * 50 }"
           class="group bg-background border border-border/60 hover:border-border rounded-2xl overflow-hidden cursor-pointer flex flex-col"
           @click="router.push(comp.link)"
         >
@@ -282,7 +283,7 @@ const dummyAvatarItems = [
         </div>
       </div>
 
-      <div class="mt-20 text-center border-t border-border pt-12">
+      <div class="mt-20 text-center border-t border-border pt-12" v-scroll-reveal>
         <h3 class="text-2xl font-bold text-foreground mb-4">Ready to see more?</h3>
         <p class="text-muted-foreground mb-8 max-w-xl mx-auto">
           Explore the full collection of accessible, customizable, and beautifully designed components built for modern Vue applications.
