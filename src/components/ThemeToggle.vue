@@ -18,7 +18,7 @@ const titleText = computed(() => {
   const isLight = theme.value === 'light'
   const lightKey = 'vlite.themeToggle.switchToDark'
   const darkKey = 'vlite.themeToggle.switchToLight'
-  
+
   if (isLight) {
     const res = $t(lightKey)
     return res !== lightKey ? res : 'Switch to dark mode'
@@ -34,11 +34,10 @@ const titleText = computed(() => {
     <Button
       :icon="theme === 'light' ? 'lucide:sun' : 'lucide:moon'"
       :variant="variant || 'secondary'"
-      :rounded="rounded || 'md'"
+      :rounded="rounded || 'full'"
       :size="size"
       :class="class"
       :title="titleText"
       @click="toggleTheme" />
   </slot>
 </template>
-
