@@ -49,7 +49,7 @@ const footerData: FooterData = {
 
 <template>
   <div class="landing-root">
-    <div class="grid-bg" aria-hidden="true"></div>
+    <div v-once class="grid-bg" aria-hidden="true"></div>
 
     <LandingHeader />
 
