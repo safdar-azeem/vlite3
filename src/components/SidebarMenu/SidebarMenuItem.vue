@@ -142,13 +142,6 @@ onMounted(() => {
   }
 })
 
-watch(isExactlyActive, (isActive) => {
-  if (isActive) {
-    setTimeout(() => {
-      scrollToNode(true) // Smooth scroll when dynamically changing
-    }, 250) // Slight delay to allow any expand animations to finish
-  }
-})
 
 const handleClick = (e: MouseEvent) => {
   if (props.item.disabled) return
