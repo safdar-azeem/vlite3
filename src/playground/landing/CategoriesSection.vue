@@ -90,9 +90,9 @@ const categories = [
 </script>
 
 <template>
-  <section class="py-24 bg-muted/20 border-y border-border">
+  <section v-once class="py-24 bg-muted/20 border-y border-border">
     <div class="max-w-5xl mx-auto px-6 lg:px-8">
-      <div class="mb-14 animate-fade-up">
+      <div class="mb-14">
         <h2 class="text-3xl font-bold text-foreground tracking-tight mb-3">Component Directory</h2>
         <p class="text-base text-muted-foreground max-w-2xl leading-relaxed">
           A minimalist, list-driven approach to browsing the ecosystem.
@@ -103,11 +103,10 @@ const categories = [
         <div
           v-for="(cat, i) in categories"
           :key="i"
-          class="flex items-start gap-6 py-5 border-t border-border last:border-b group hover:bg-muted/20 transition-colors duration-150 px-3 -mx-3 rounded-md animate-fade-up"
-          :style="{ animationDelay: `${80 + i * 55}ms` }">
+          class="flex items-start gap-6 py-5 border-t border-border last:border-b hover:bg-muted/20 px-3 -mx-3 rounded-md">
           <!-- Icon -->
           <div
-            class="w-8 h-8 rounded-md bg-muted flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-foreground group-hover:text-background transition-colors duration-150">
+            class="w-8 h-8 rounded-md bg-muted flex items-center justify-center shrink-0 mt-0.5">
             <Icon :icon="cat.icon" class="w-4 h-4" />
           </div>
 
@@ -115,7 +114,7 @@ const categories = [
           <div class="flex-1 min-w-0">
             <div class="flex items-start justify-between gap-4 mb-1.5">
               <h3
-                class="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
+                class="text-sm font-semibold text-foreground">
                 {{ cat.title }}
               </h3>
               <span class="text-sm font-semibold text-muted-foreground tabular-nums shrink-0">{{
@@ -127,7 +126,7 @@ const categories = [
               <span
                 v-for="item in cat.items"
                 :key="item"
-                class="text-xs text-muted-foreground/60 hover:text-foreground transition-colors cursor-default">
+                class="text-xs text-muted-foreground/60 hover:text-foreground cursor-default">
                 {{ item }}
               </span>
             </div>
@@ -135,7 +134,7 @@ const categories = [
         </div>
       </div>
 
-      <div class="mt-12 animate-fade-up delay-4">
+      <div class="mt-12">
         <Button @click="navigateToComponents" variant="outline" icon-right="lucide:arrow-right">
           Explore All Components
         </Button>
