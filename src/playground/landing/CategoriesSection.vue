@@ -68,40 +68,48 @@ const categories = [
 </script>
 
 <template>
-  <section class="categories-section">
-    <div class="landing-container">
-      <div class="section-header animate-fade-up">
-        <span class="section-eyebrow">Component Categories</span>
-        <h2 class="section-title">
+  <section class="py-24 bg-muted/30">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16 animate-fade-up">
+        <span class="text-sm font-semibold text-primary uppercase tracking-wider">Component Categories</span>
+        <h2 class="mt-3 text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
           Everything you need, <span class="text-primary">nothing you don't</span>
         </h2>
-        <p class="section-subtitle">
+        <p class="mt-4 text-lg text-muted-foreground leading-relaxed">
           From basic inputs to complex data grids and kanban boards — all with a consistent, clean API.
         </p>
       </div>
 
-      <div class="categories-grid">
-        <div v-for="(cat, i) in categories" :key="i" class="category-card animate-fade-up" :style="{ animationDelay: `${200 + i * 80}ms` }">
-          <div class="category-header">
-            <div class="category-icon" :class="cat.iconColor">
-              <Icon :icon="cat.icon" class="w-[22px] h-[22px]" />
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div 
+          v-for="(cat, i) in categories" 
+          :key="i" 
+          class="bg-background border border-border/60 hover:border-border rounded-2xl p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 animate-fade-up flex flex-col"
+          :style="{ animationDelay: `${150 + i * 80}ms` }"
+        >
+          <div class="flex items-start gap-4 mb-4">
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-gradient-to-br" :class="cat.color">
+              <Icon :icon="cat.icon" class="w-6 h-6" :class="cat.iconColor" />
             </div>
             <div>
-              <h3 class="category-title">{{ cat.title }}</h3>
-              <span class="category-count">{{ cat.count }} components</span>
+              <h3 class="text-lg font-bold text-foreground">{{ cat.title }}</h3>
+              <span class="text-sm font-medium text-muted-foreground">{{ cat.count }} components</span>
             </div>
           </div>
-          <div class="category-items">
-            <span v-for="item in cat.items" :key="item" class="category-tag">{{ item }}</span>
-            <span v-if="cat.count > cat.items.length" class="category-tag category-tag-more">
+          
+          <div class="flex flex-wrap gap-2 mt-auto pt-4">
+            <span v-for="item in cat.items" :key="item" class="text-xs font-medium px-2.5 py-1 bg-muted text-muted-foreground rounded-full border border-border/50">
+              {{ item }}
+            </span>
+            <span v-if="cat.count > cat.items.length" class="text-xs font-medium px-2.5 py-1 text-primary bg-primary/10 rounded-full border border-primary/20">
               +{{ cat.count - cat.items.length }} more
             </span>
           </div>
         </div>
       </div>
 
-      <div class="categories-cta animate-fade-up">
-        <Button @click="navigateToComponents" size="lg" class="rounded-full h-12 px-10 text-base font-medium shadow-md">
+      <div class="mt-16 text-center animate-fade-up delay-4">
+        <Button @click="navigateToComponents" size="lg" class="rounded-full h-12 px-8 text-base font-medium shadow-md">
           Browse All Components
           <Icon icon="lucide:arrow-right" class="ml-2 w-4 h-4" />
         </Button>
@@ -109,99 +117,3 @@ const categories = [
     </div>
   </section>
 </template>
-
-<style scoped>
-@import './shared.css';
-
-/* ── Categories Section ── */
-.categories-section {
-  padding: 6rem 0;
-  background: color-mix(in srgb, var(--color-muted) 30%, transparent);
-}
-
-.categories-grid {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 1.5rem;
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-@media (min-width: 768px) {
-  .categories-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.category-card {
-  background: var(--color-background);
-  border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  transition: all 0.3s ease;
-}
-
-.category-card:hover {
-  border-color: color-mix(in srgb, var(--color-border) 100%, transparent);
-  box-shadow: 0 4px 20px -2px color-mix(in srgb, var(--color-foreground) 5%, transparent);
-}
-
-.category-header {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.category-icon {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
-}
-
-.category-title {
-  font-size: 1.125rem;
-  font-weight: 700;
-  margin-bottom: 0.25rem;
-  color: var(--color-foreground);
-}
-
-.category-count {
-  font-size: 0.8125rem;
-  color: var(--color-muted-foreground);
-  font-weight: 500;
-}
-
-.category-items {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.category-tag {
-  font-size: 0.75rem;
-  font-weight: 500;
-  padding: 0.25rem 0.625rem;
-  background: var(--color-muted);
-  color: var(--color-muted-foreground);
-  border-radius: 9999px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
-}
-
-.category-tag-more {
-  background: transparent;
-  border-color: transparent;
-  color: var(--color-primary);
-  padding-left: 0.25rem;
-  padding-right: 0.25rem;
-}
-
-.categories-cta {
-  margin-top: 4rem;
-  text-align: center;
-}
-</style>
