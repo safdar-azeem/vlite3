@@ -106,11 +106,11 @@ watch(visible, (val) => {
     document.body.style.overflow = 'hidden'
   } else {
     document.body.style.overflow = ''
-    // Performance fix: Wait for the 300ms side panel transition to
-    // finish before allowing parent dropdowns to unmount from DOM.
+    // Wait for the leave transition (150 ms) to finish before
+    // allowing parent dropdowns to unmount from the DOM.
     toggleTimeout = setTimeout(() => {
       dropdownContext?.onChildToggle?.(false)
-    }, 300)
+    }, 150)
   }
 })
 
@@ -168,13 +168,7 @@ const displayDescription = computed(() =>
     </slot>
   </span>
   <Teleport to="body">
-    <Transition
-      enter-active-class="transition-opacity duration-300 ease-out"
-      enter-from-class="opacity-0"
-      enter-to-class="opacity-100"
-      leave-active-class="transition-opacity duration-200 ease-in"
-      leave-from-class="opacity-100"
-      leave-to-class="opacity-0">
+    <Transition name="sp-overlay">
       <div
         v-if="visible"
         class="fixed inset-0 z-50 v-sidepanel-overlay"
@@ -190,7 +184,7 @@ const displayDescription = computed(() =>
         v-if="visible"
         role="dialog"
         aria-modal="true"
-        class="sidepanel-body fixed inset-y-0 z-50 flex flex-col bg-body shadow-sm border border-border/80 transition-transform duration-200 ease-in-out w-full"
+        class="sidepanel-body fixed inset-y-0 z-50 flex flex-col bg-body shadow-sm border border-border/80 w-full"
         :class="[sizeClasses[size], positionClasses, props.class]"
         :data-testid="
           $attrs['data-testid'] ||
@@ -263,6 +257,52 @@ const displayDescription = computed(() =>
   background-color: rgba(0, 0, 0, 0.2);
 }
 
+/* ── Overlay fade ─────────────────────────────────────────────────────────
+   180 ms in / 150 ms out — opacity only, compositor layer.
+*/
+.sp-overlay-enter-active {
+  transition: opacity 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sp-overlay-leave-active {
+  transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sp-overlay-enter-from,
+.sp-overlay-leave-to {
+  opacity: 0;
+}
+
+/* ── Panel slide-right (position = right) ────────────────────────────────
+   Uses transform only — no layout thrash, pure GPU compositing.
+*/
+.slide-right-enter-active {
+  transition: transform 180ms cubic-bezier(0.4, 0, 0.2, 1),
+              opacity   180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide-right-leave-active {
+  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              opacity   150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide-right-enter-from,
+.slide-right-leave-to {
+  transform: translateX(6%);
+  opacity: 0;
+}
+
+/* ── Panel slide-left (position = left) ──────────────────────────────────*/
+.slide-left-enter-active {
+  transition: transform 180ms cubic-bezier(0.4, 0, 0.2, 1),
+              opacity   180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide-left-leave-active {
+  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              opacity   150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide-left-enter-from,
+.slide-left-leave-to {
+  transform: translateX(-6%);
+  opacity: 0;
+}
+
 /*
   Promote the panel body to its own GPU compositor layer.
   This isolates hover and focus repaints on child elements so they
@@ -271,7 +311,7 @@ const displayDescription = computed(() =>
   escaping the panel subtree and causing parent layout invalidations.
 */
 .sidepanel-body {
-  will-change: transform;
+  will-change: transform, opacity;
   contain: layout style;
 }
 </style>
