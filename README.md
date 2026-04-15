@@ -437,6 +437,7 @@ Follow these rules strictly to ensure visual consistency and predictable styling
 ### Data Display
 
 - [x] **Avatar**
+- [x] **Persona**
 - [x] **Accordion**
 - [x] **Carousel**
 - [x] **DataTable**
@@ -460,6 +461,7 @@ Follow these rules strictly to ensure visual consistency and predictable styling
 ### Feedback & Overlays
 
 - [x] **Alert**
+- [x] **Beacon**
 - [x] **Modal**
 - [x] **Empty**
 - [x] **ConfirmationModal**
