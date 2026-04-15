@@ -133,7 +133,7 @@ const sizeClasses: Record<SidePanelSize, string> = {
 }
 
 const positionClasses = computed(() => {
-  return props.position === 'left' ? 'left-0' : 'right-0'
+  return props.position === 'left' ? 'left-0 rounded-r-lg' : 'right-0 rounded-l-md'
 })
 
 const transitionName = computed(() => {
@@ -151,7 +151,16 @@ const displayDescription = computed(() =>
     @click.stop="handleOpen"
     :class="`${triggerClass}`"
     v-bind="$attrs"
-    :data-testid="$attrs['data-testid'] ? `${$attrs['data-testid']}-trigger` : (displayTitle ? `sidepanel-trigger-${displayTitle.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : 'sidepanel-trigger')">
+    :data-testid="
+      $attrs['data-testid']
+        ? `${$attrs['data-testid']}-trigger`
+        : displayTitle
+          ? `sidepanel-trigger-${displayTitle
+              .toString()
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, '-')}`
+          : 'sidepanel-trigger'
+    ">
     <slot name="trigger">
       <template v-if="body">
         <slot />
@@ -181,9 +190,17 @@ const displayDescription = computed(() =>
         v-if="visible"
         role="dialog"
         aria-modal="true"
-        class="sidepanel-body fixed inset-y-0 z-50 flex flex-col bg-body shadow-sm border transition-transform duration-300 ease-in-out w-full"
+        class="sidepanel-body fixed inset-y-0 z-50 flex flex-col bg-body shadow-sm border border-border/80 transition-transform duration-200 ease-in-out w-full"
         :class="[sizeClasses[size], positionClasses, props.class]"
-        :data-testid="$attrs['data-testid'] || (displayTitle ? `sidepanel-${displayTitle.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : 'sidepanel')">
+        :data-testid="
+          $attrs['data-testid'] ||
+          (displayTitle
+            ? `sidepanel-${displayTitle
+                .toString()
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')}`
+            : 'sidepanel')
+        ">
         <div
           v-if="displayTitle || $slots.header"
           :class="headerClass"
