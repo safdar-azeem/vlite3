@@ -36,7 +36,7 @@ const features = [
 </script>
 
 <template>
-  <section class="py-28 bg-background">
+  <section v-once class="py-28 bg-background">
     <div class="max-w-6xl mx-auto px-6 lg:px-8">
       <div class="lg:grid lg:grid-cols-12 lg:gap-20">
         <div class="lg:col-span-4 mb-16 lg:mb-0">
