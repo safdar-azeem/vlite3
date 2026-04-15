@@ -401,23 +401,23 @@
   --color-mixture-2: #ffffff !important;
 
   --color-gray-50: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 97.5%,
+      var(--color-mixture-1, #ffffff) 97%,
       var(--color-mixture-2, #000000));
 
   --color-gray-100: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 96%,
+      var(--color-mixture-1, #ffffff) 95.5%,
       var(--color-mixture-2, #000000));
 
   --color-gray-150: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 92%,
+      var(--color-mixture-1, #ffffff) 91.5%,
       var(--color-mixture-2, #000000));
 
   --color-gray-200: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 88%,
+      var(--color-mixture-1, #ffffff) 87.5%,
       var(--color-mixture-2, #000000));
 
   --color-gray-250: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 84%,
+      var(--color-mixture-1, #ffffff) 83.5%,
       var(--color-mixture-2, #000000));
 
   --color-gray-300: color-mix(in oklab,
@@ -425,15 +425,18 @@
       var(--color-mixture-2, #000000));
 
   --color-gray-350: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 72%,
+      var(--color-mixture-1, #ffffff) 71.5%,
       var(--color-mixture-2, #000000));
 
-  --color-secondary: color-mix(in oklab, var(--color-mixture-1) 89%, var(--color-mixture-2));
+  --color-secondary: color-mix(in oklab, var(--color-mixture-1) 88.5%, var(--color-mixture-2));
   --color-muted: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 96%,
+      var(--color-mixture-1, #ffffff) 95%,
       var(--color-mixture-2, #000000));
   --color-destructive: #7f1d1d;
   --color-destructive-foreground: #fafafa;
+
+  --color-border: color-mix(in oklab, var(--color-mixture-1) 90%, var(--color-mixture-2));
+  --color-input: color-mix(in oklab, var(--color-mixture-1) 89.5%, var(--color-mixture-2));
 
   /* Charts (Dark) */
   --color-chart-1: #818cf8;
@@ -562,10 +565,10 @@
 }
 
 .dark .bg-card {
-  --color-body: #111111 !important;
+  --color-body: #121212 !important;
   --color-mixture-1: #1b1b1b !important;
   --color-mixture-2: #ffffff !important;
-  background-color: #111111 !important;
+  background-color: #121212 !important;
 }
 
 .dark .bg-card .bg-body {
