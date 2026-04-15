@@ -56,7 +56,7 @@ const dummyAvatarItems = [
 </script>
 
 <template>
-  <section class="py-24 bg-muted/10 border-t border-border">
+  <section class="py-24 bg-muted/20 border-y border-border overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
       <div class="text-center max-w-3xl mx-auto mb-16 animate-fade-up">
         <span class="text-sm font-semibold text-primary uppercase tracking-wider">Component Grid</span>
