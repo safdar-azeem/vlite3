@@ -36,32 +36,39 @@ const features = [
 </script>
 
 <template>
-  <section class="py-24 bg-background border-t border-border">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="text-center max-w-3xl mx-auto mb-16 animate-fade-up">
-        <span class="text-sm font-semibold text-primary uppercase tracking-wider">Why vlite3</span>
-        <h2 class="mt-3 text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
-          Crafted for developers who value <span class="text-primary">simplicity</span>
-        </h2>
-        <p class="mt-4 text-lg text-muted-foreground leading-relaxed">
-          Every pixel is intentional. Every API is ergonomic. Built for teams that ship fast.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        <div 
-          v-for="(feature, i) in features" 
-          :key="i" 
-          class="bg-background border border-border/60 hover:border-border rounded-2xl p-8 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 animate-fade-up"
-          :style="{ animationDelay: `${150 + i * 80}ms` }"
-        >
-          <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6">
-            <Icon :icon="feature.icon" class="w-6 h-6" />
+  <section class="py-28 bg-background">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8">
+      <div class="lg:grid lg:grid-cols-12 lg:gap-20">
+        <div class="lg:col-span-4 mb-16 lg:mb-0">
+          <div class="lg:sticky lg:top-28">
+            <p
+              class="text-xs font-semibold text-primary-fg w-max rounded-full px-3 py-1 bg-primary uppercase tracking-widest mb-5">
+              Why vlite3
+            </p>
+            <h2 class="text-4xl font-bold text-foreground tracking-tight leading-[1.2]">
+              Crafted for developers who value simplicity
+            </h2>
+            <p class="mt-5 text-[15px] text-muted-foreground leading-relaxed">
+              Every pixel is intentional. Every API is ergonomic. Built for teams that ship fast.
+            </p>
           </div>
-          <h3 class="text-xl font-bold text-foreground mb-3">{{ feature.title }}</h3>
-          <p class="text-muted-foreground leading-relaxed">
-            {{ feature.desc }}
-          </p>
+        </div>
+
+        <div class="lg:col-span-8">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-10">
+            <div v-for="(feature, i) in features" :key="i" class="flex flex-col gap-4">
+              <div
+                class="w-11 h-11 rounded-xl bg-muted flex items-center justify-center text-primary">
+                <Icon :icon="feature.icon" class="w-5 h-5" />
+              </div>
+              <div class="flex flex-col gap-2">
+                <h3 class="text-[17px] font-semibold text-foreground leading-snug">
+                  {{ feature.title }}
+                </h3>
+                <p class="text-[15px] text-muted-foreground leading-relaxed">{{ feature.desc }}</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
