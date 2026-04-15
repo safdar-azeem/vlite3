@@ -168,13 +168,11 @@ const displayDescription = computed(() =>
     </slot>
   </span>
   <Teleport to="body">
-    <Transition name="sp-overlay">
-      <div
-        v-if="visible"
-        class="fixed inset-0 z-50 v-sidepanel-overlay"
-        :class="overlayClass"
-        @click="handleBackdropClick"></div>
-    </Transition>
+    <div
+      v-if="visible"
+      class="fixed inset-0 z-50 v-sidepanel-overlay"
+      :class="overlayClass"
+      @click="handleBackdropClick"></div>
 
     <Transition
       :name="transitionName"
@@ -257,49 +255,21 @@ const displayDescription = computed(() =>
   background-color: rgba(0, 0, 0, 0.2);
 }
 
-/* ── Overlay fade ─────────────────────────────────────────────────────────
-   180 ms in / 150 ms out — opacity only, compositor layer.
+/* ── Panel open/close — opacity only, no movement ───────────────────────
+   80 ms in (feels instant) / 120 ms out (soft disappear).
 */
-.sp-overlay-enter-active {
-  transition: opacity 180ms cubic-bezier(0.4, 0, 0.2, 1);
+.slide-right-enter-active,
+.slide-left-enter-active {
+  transition: opacity 80ms ease-out;
 }
-.sp-overlay-leave-active {
-  transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-.sp-overlay-enter-from,
-.sp-overlay-leave-to {
-  opacity: 0;
-}
-
-/* ── Panel slide-right (position = right) ────────────────────────────────
-   Uses transform only — no layout thrash, pure GPU compositing.
-*/
-.slide-right-enter-active {
-  transition: transform 180ms cubic-bezier(0.4, 0, 0.2, 1),
-              opacity   180ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-.slide-right-leave-active {
-  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1),
-              opacity   150ms cubic-bezier(0.4, 0, 0.2, 1);
+.slide-right-leave-active,
+.slide-left-leave-active {
+  transition: opacity 120ms ease-in;
 }
 .slide-right-enter-from,
-.slide-right-leave-to {
-  transform: translateX(6%);
-  opacity: 0;
-}
-
-/* ── Panel slide-left (position = left) ──────────────────────────────────*/
-.slide-left-enter-active {
-  transition: transform 180ms cubic-bezier(0.4, 0, 0.2, 1),
-              opacity   180ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-.slide-left-leave-active {
-  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1),
-              opacity   150ms cubic-bezier(0.4, 0, 0.2, 1);
-}
+.slide-right-leave-to,
 .slide-left-enter-from,
 .slide-left-leave-to {
-  transform: translateX(-6%);
   opacity: 0;
 }
 
