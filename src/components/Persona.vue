@@ -68,23 +68,23 @@ const textGroupClasses = computed(() => {
 const labelClasses = computed(() => {
   const sizes: Record<string, string> = {
     xs: 'text-[10px] font-medium leading-none',
-    sm: 'text-xs font-medium leading-none',
-    md: 'text-sm font-medium leading-none',
-    lg: 'text-lg font-semibold leading-none',
-    xl: 'text-xl font-semibold leading-tight',
-    '2xl': 'text-2xl font-bold leading-tight',
+    sm: 'text-xs font-semibold leading-none',
+    md: 'text-sm font-semibold leading-none',
+    lg: 'text-fs-4.5 font-semibold leading-none',
+    xl: 'text-fs-5.5 font-semibold leading-tight',
+    '2xl': 'text-fs-6.5 font-bold leading-tight',
   }
   return sizes[props.size] || sizes.md
 })
 
 const secondaryLabelClasses = computed(() => {
   const sizes: Record<string, string> = {
-    xs: 'text-[9px] leading-none',
-    sm: 'text-[10px] leading-none',
-    md: 'text-xs leading-none',
-    lg: 'text-base leading-none',
-    xl: 'text-lg leading-tight',
-    '2xl': 'text-xl leading-tight',
+    xs: 'text-[9px] leading-none mt-0.5',
+    sm: 'text-[10px] leading-none mt-1',
+    md: '-text-fs-3 leading-none mt-0.5',
+    lg: '-text-fs-1.5 leading-none mt-1',
+    xl: 'text-base leading-tight',
+    '2xl': 'text-fs-1 leading-tight',
   }
   return sizes[props.size] || sizes.md
 })
@@ -97,32 +97,33 @@ const secondaryLabelClasses = computed(() => {
     :class="[
       'inline-flex items-center gap-2.5',
       props.class,
-      props.link && 'cursor-pointer hover:opacity-80 transition-opacity'
-    ]"
-  >
+      props.link && 'cursor-pointer hover:opacity-80 transition-opacity',
+    ]">
     <div class="relative inline-flex flex-shrink-0">
       <Avatar
         :src="props.src"
         :alt="props.alt"
         :fallback="props.fallback"
         :size="props.size"
-        :rounded="props.rounded"
-      />
+        :rounded="props.rounded" />
       <span
         v-if="props.presence"
         :class="[
           'absolute bottom-0 right-0 rounded-full ring-background border-background',
           presenceColor,
-          presenceSizeClasses
-        ]"
-      >
-        <span v-if="props.presence === 'dnd'" class="absolute inset-0 flex items-center justify-center">
+          presenceSizeClasses,
+        ]">
+        <span
+          v-if="props.presence === 'dnd'"
+          class="absolute inset-0 flex items-center justify-center">
           <span class="w-1/2 h-[1px] bg-white rounded-full"></span>
         </span>
       </span>
     </div>
 
-    <div v-if="!props.hideDetails && (props.label || props.secondaryLabel)" :class="['flex flex-col justify-center', textGroupClasses]">
+    <div
+      v-if="!props.hideDetails && (props.label || props.secondaryLabel)"
+      :class="['flex flex-col justify-center', textGroupClasses]">
       <span v-if="props.label" :class="['text-foreground', labelClasses]">
         {{ props.label }}
       </span>
