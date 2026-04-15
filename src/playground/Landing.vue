@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Footer from '@/components/Footer/Footer.vue'
 import type { FooterData } from '@/components/Footer/types'
+import './landing/shared.css'
 
 import LandingHeader from './landing/LandingHeader.vue'
 import HeroSection from './landing/HeroSection.vue'
@@ -13,7 +14,8 @@ import CodeSection from './landing/CodeSection.vue'
 const footerData: FooterData = {
   brandName: 'vlite3',
   brandLogo: 'https://api.iconify.design/lucide:box.svg',
-  brandDescription: 'A lightweight, minimalistic Vue 3 UI component library built with Tailwind CSS v4.',
+  brandDescription:
+    'A lightweight, minimalistic Vue 3 UI component library built with Tailwind CSS v4.',
   badge: 'v0.6.2',
   copyright: 'Built with ❤️ by Safdar Azeem',
   socialLinks: [
@@ -26,18 +28,22 @@ const footerData: FooterData = {
       links: [
         { label: 'Documentation', url: '/components/button' },
         { label: 'Components', url: '/components/button' },
-        { label: 'GitHub', url: 'https://github.com/safdar-azeem/vlite3', external: true }
-      ]
+        { label: 'GitHub', url: 'https://github.com/safdar-azeem/vlite3', external: true },
+      ],
     },
     {
       title: 'Community',
       links: [
         { label: 'Issues', url: 'https://github.com/safdar-azeem/vlite3/issues', external: true },
-        { label: 'Discussions', url: 'https://github.com/safdar-azeem/vlite3/discussions', external: true },
-        { label: 'NPM Package', url: 'https://www.npmjs.com/package/vlite3', external: true }
-      ]
-    }
-  ]
+        {
+          label: 'Discussions',
+          url: 'https://github.com/safdar-azeem/vlite3/discussions',
+          external: true,
+        },
+        { label: 'NPM Package', url: 'https://www.npmjs.com/package/vlite3', external: true },
+      ],
+    },
+  ],
 }
 </script>
 
@@ -52,16 +58,14 @@ const footerData: FooterData = {
       <ShowcaseSection />
       <FeaturesSection />
       <CategoriesSection />
-      <CodeSection />
     </main>
+    <CodeSection />
 
     <Footer :data="footerData" variant="Variant1" />
   </div>
 </template>
 
 <style scoped>
-@import './landing/shared.css';
-
 /* ====================================
    Landing Page — Premium UI Library
    ==================================== */
@@ -85,9 +89,17 @@ const footerData: FooterData = {
   height: 100%;
   z-index: 0;
   pointer-events: none;
-  background-image: 
-    linear-gradient(to right, color-mix(in srgb, var(--color-border) 40%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--color-border) 40%, transparent) 1px, transparent 1px);
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-border) 40%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-border) 40%, transparent) 1px,
+      transparent 1px
+    );
   background-size: 4rem 4rem;
   mask-image: linear-gradient(to bottom, black 0%, transparent 60%);
   -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 60%);
