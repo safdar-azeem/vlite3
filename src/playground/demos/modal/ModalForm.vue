@@ -9,94 +9,59 @@ import sourceCode from './ModalForm.vue?raw'
 
 const showFormModal = ref(false)
 
-const modalFormSchema: IForm[] = [
+const inviteFormSchema: IForm[] = [
   {
-    type: 'fileUploader',
-    name: 'files',
-    label: 'Upload Files',
-    required: true,
-    props: { multiSelect: true },
-  },
-  {
-    name: 'title',
-    label: 'Task Title',
+    name: 'email',
+    label: 'Email Address',
     type: 'text',
     required: true,
-    placeholder: 'Enter task title',
+    placeholder: 'colleague@company.com',
   },
   {
-    name: 'priority',
-    label: 'Priority',
+    name: 'role',
+    label: 'Role',
     type: 'select',
+    required: true,
     options: [
-      { label: 'Low', value: 'low' },
-      { label: 'Medium', value: 'medium' },
-      { label: 'High', value: 'high' },
+      { label: 'Admin', value: 'admin' },
+      { label: 'Editor', value: 'editor' },
+      { label: 'Viewer', value: 'viewer' },
     ],
-    required: true,
   },
   {
-    type: 'fileUploader',
-    name: 'files',
-    label: 'Upload Files',
-    required: true,
-    props: { multiSelect: true },
-  },
-  {
-    type: 'fileUploader',
-    name: 'files',
-    label: 'Upload Files',
-    required: true,
-    props: { multiSelect: true },
-  },
-  {
-    type: 'fileUploader',
-    name: 'files',
-    label: 'Upload Files',
-    required: true,
-    props: { multiSelect: true },
-  },
-  {
-    name: 'dueDate',
-    label: 'Due Date',
-    type: 'date',
-    required: true,
-  },
-  {
-    name: 'description',
-    label: 'Description',
+    name: 'message',
+    label: 'Personal message (optional)',
     type: 'textarea',
-    placeholder: 'Add details...',
+    placeholder: 'Add a note to the invitation email...',
     props: { rows: 3 },
   },
 ]
 
-const handleFormSubmit = async (payload: any) => {
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-  console.log('Form submitted from modal:', payload)
-  toast.success('Task created successfully!')
+const handleInviteSubmit = async (payload: any) => {
+  await new Promise((resolve) => setTimeout(resolve, 800))
+  console.log('Invite sent:', payload)
+  toast.success('Invitation sent successfully!')
 }
 </script>
 
 <template>
   <DemoSection title="Form Integration (Auto-detect)" :code="sourceCode">
-    <div class="flex items-center gap-2 mb-2">
-      <span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded font-medium">New</span>
-    </div>
-    <p class="text-sm text-gray-500">
-      The <code>Form</code> component automatically detects if it is rendered inside a
-      <code>Modal</code>. It will automatically show a "Cancel" button and handle closing the modal
-      upon successful submission.
-    </p>
+    <div class="flex flex-col items-center gap-4">
+      <p class="text-sm text-muted-foreground text-center max-w-sm">
+        The <code class="text-xs bg-muted/60 px-1 py-0.5 rounded font-mono">Form</code> component
+        automatically detects a parent
+        <code class="text-xs bg-muted/60 px-1 py-0.5 rounded font-mono">Modal</code> and wires up
+        the submit/cancel buttons — no extra configuration needed.
+      </p>
 
-    <Button @click="showFormModal = true">Open Form Modal</Button>
+      <Button icon="lucide:user-plus" @click="showFormModal = true">Invite Team Member</Button>
+    </div>
 
     <Modal
       v-model:show="showFormModal"
-      title="Create New Task"
-      description="Fill out the details below. The form handles the modal buttons automatically.">
-      <Form :schema="modalFormSchema" submitText="Create Task" @onSubmit="handleFormSubmit" />
+      title="Invite Team Member"
+      description="Send an invitation email with a role assignment. The recipient will receive a link to accept.">
+      <Form :schema="inviteFormSchema" submitText="Send Invitation" @onSubmit="handleInviteSubmit" />
     </Modal>
   </DemoSection>
 </template>
