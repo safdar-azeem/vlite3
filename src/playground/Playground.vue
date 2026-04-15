@@ -25,123 +25,162 @@ const menuItems: SidebarMenuItemSchema[] = [
     ],
   },
   {
-    label: 'Buttons & Actions',
+    label: 'Buttons & Indicators',
     icon: 'lucide:mouse-pointer-2',
     children: [
       { label: 'Button', to: '/components/button', icon: 'lucide:mouse-pointer-2' },
       { label: 'Button Group', to: '/components/buttongroup', icon: 'lucide:git-merge' },
       { label: 'Badge', to: '/components/badge', icon: 'lucide:tag' },
       { label: 'Chip', to: '/components/chip', icon: 'lucide:sticker' },
+      { label: 'StatusChip', to: '/components/statuschip', icon: 'lucide:badge-check' },
+      { label: 'Beacon', to: '/components/beacon', icon: 'lucide:radio' },
     ],
   },
   {
-    label: 'Forms & Inputs',
-    icon: 'lucide:text-cursor-input',
+    label: 'Text Inputs',
+    icon: 'lucide:type',
     children: [
       { label: 'Input', to: '/components/input', icon: 'lucide:text-cursor-input' },
+      { label: 'Textarea', to: '/components/textarea', icon: 'lucide:align-left' },
       { label: 'Number Input', to: '/components/numberinput', icon: 'lucide:hash' },
       { label: 'OTP Input', to: '/components/otpinput', icon: 'lucide:shield-check' },
-      { label: 'Textarea', to: '/components/textarea', icon: 'lucide:align-left' },
+      { label: 'Rich Text Editor', to: '/components/richtexteditor', icon: 'lucide:type' },
+      { label: 'TagInput', to: '/components/taginput', icon: 'lucide:tags' },
+    ]
+  },
+  {
+    label: 'Selects & Toggles',
+    icon: 'lucide:check-square',
+    children: [
       { label: 'CheckBox', to: '/components/checkbox', icon: 'lucide:check-square' },
       { label: 'Switch', to: '/components/switch', icon: 'lucide:toggle-left' },
       { label: 'Slider', to: '/components/slider', icon: 'lucide:sliders-horizontal' },
+      { label: 'MultiSelect', to: '/components/multiselect', icon: 'lucide:list-checks' },
+      { label: 'ChoiceBox', to: '/components/choicebox', icon: 'lucide:layout-grid' },
+      { label: 'Rating', to: '/components/rating', icon: 'lucide:star' },
+    ]
+  },
+  {
+    label: 'Pickers & Upload',
+    icon: 'lucide:mouse-pointer-click',
+    children: [
       { label: 'ColorPicker', to: '/components/colorpicker', icon: 'lucide:palette' },
       { label: 'IconPicker', to: '/components/iconpicker', icon: 'lucide:smile' },
       { label: 'DatePicker', to: '/components/datepicker', icon: 'lucide:calendar' },
-      {
-        label: 'DateRangePicker',
-        to: '/components/daterangepicker',
-        icon: 'lucide:calendar-range',
-      },
-      { label: 'MultiSelect', to: '/components/multiselect', icon: 'lucide:list-checks' },
-      { label: 'ChoiceBox', to: '/components/choicebox', icon: 'lucide:layout-grid' },
+      { label: 'DateRangePicker', to: '/components/daterangepicker', icon: 'lucide:calendar-range' },
       { label: 'FilePicker', to: '/components/filepicker', icon: 'lucide:upload-cloud' },
       { label: 'ThumbnailSelector', to: '/components/thumbnailselector', icon: 'lucide:image' },
-      { label: 'TagInput', to: '/components/taginput', icon: 'lucide:tags' },
-      { label: 'Rich Text Editor', to: '/components/richtexteditor', icon: 'lucide:type' },
-      { label: 'Form', to: '/components/form', icon: 'lucide:file-input' },
-      { label: 'Rating', to: '/components/rating', icon: 'lucide:star' },
-      { label: 'Google Login', to: '/components/googlelogin', icon: 'lucide:chrome' },
-      {
-        label: 'Permission Matrix',
-        to: '/components/permissionmatrix',
-        icon: 'lucide:shield-check',
-      },
-    ],
+    ]
   },
   {
-    label: 'Display & Data',
-    icon: 'lucide:table-2',
+    label: 'Avatars & People',
+    icon: 'lucide:users',
     children: [
-      { label: 'DataTable', to: '/components/datatable', icon: 'lucide:table-2' },
-      { label: 'DataList', to: '/components/datalist', icon: 'lucide:layout-grid' },
-      { label: 'List', to: '/components/list', icon: 'lucide:layout-list' },
-      { label: 'Calendar', to: '/components/calendar', icon: 'lucide:calendar-days' },
-      { label: 'Stats', to: '/components/stats', icon: 'lucide:bar-chart-2' },
-      { label: 'Heatmap', to: '/components/heatmap', icon: 'lucide:activity' },
-      { label: 'Charts', to: '/components/chart', icon: 'lucide:chart-line' },
       { label: 'Avatar', to: '/components/avatar', icon: 'lucide:user' },
       { label: 'Persona', to: '/components/persona', icon: 'lucide:user-circle' },
       { label: 'Avatar Group', to: '/components/avatargroup', icon: 'lucide:users' },
       { label: 'Avatar Uploader', to: '/components/avatar-uploader', icon: 'lucide:camera' },
-      { label: 'ProgressBar', to: '/components/progressbar', icon: 'lucide:bar-chart-3' },
-      { label: 'StatusChip', to: '/components/statuschip', icon: 'lucide:badge-check' },
-      { label: 'Price', to: '/components/price', icon: 'lucide:circle-dollar-sign' },
-      { label: 'Date', to: '/components/datetime', icon: 'lucide:calendar-days' },
-      { label: 'Clock', to: '/components/clock', icon: 'lucide:clock-3' },
-      {
-        label: 'Custom Fields Display',
-        to: '/components/customfieldsdisplay',
-        icon: 'lucide:list-tree',
-      },
-      { label: 'Timeline', to: '/components/timeline', icon: 'lucide:clock' },
-    ],
+    ]
   },
   {
-    label: 'Navigation & Layout',
-    icon: 'lucide:layout-template',
+    label: 'Tables & Lists',
+    icon: 'lucide:table',
+    children: [
+      { label: 'DataTable', to: '/components/datatable', icon: 'lucide:table-2' },
+      { label: 'DataList', to: '/components/datalist', icon: 'lucide:layout-grid' },
+      { label: 'List', to: '/components/list', icon: 'lucide:layout-list' },
+      { label: 'Custom Fields', to: '/components/customfieldsdisplay', icon: 'lucide:list-tree' },
+    ]
+  },
+  {
+    label: 'Metrics & Data',
+    icon: 'lucide:bar-chart-2',
+    children: [
+      { label: 'Stats', to: '/components/stats', icon: 'lucide:bar-chart-2' },
+      { label: 'Charts', to: '/components/chart', icon: 'lucide:chart-line' },
+      { label: 'Heatmap', to: '/components/heatmap', icon: 'lucide:activity' },
+      { label: 'ProgressBar', to: '/components/progressbar', icon: 'lucide:bar-chart-3' },
+      { label: 'Price', to: '/components/price', icon: 'lucide:circle-dollar-sign' },
+    ]
+  },
+  {
+    label: 'Time & Dates',
+    icon: 'lucide:calendar-days',
+    children: [
+      { label: 'Calendar', to: '/components/calendar', icon: 'lucide:calendar-days' },
+      { label: 'Date Built-in', to: '/components/datetime', icon: 'lucide:calendar' },
+      { label: 'Clock', to: '/components/clock', icon: 'lucide:clock-3' },
+      { label: 'Timeline', to: '/components/timeline', icon: 'lucide:clock' },
+    ]
+  },
+  {
+    label: 'App & Shell',
+    icon: 'lucide:layout-dashboard',
     children: [
       { label: 'App Shell', to: '/components/appshell', icon: 'lucide:layout-dashboard' },
       { label: 'Screen', to: '/components/screen', icon: 'lucide:monitor' },
-      { label: 'Footer', to: '/components/footer', icon: 'lucide:panel-bottom' },
-      { label: 'File Tree', to: '/components/filetree', icon: 'lucide:folder-tree' },
-      { label: 'Breadcrumb', to: '/components/breadcrumb', icon: 'lucide:chevrons-right' },
-      { label: 'Tabs', to: '/components/tabes', icon: 'lucide:panels-top-left' },
-      { label: 'Accordion', to: '/components/accordion', icon: 'lucide:list' },
-      { label: 'Pagination', to: '/components/pagination', icon: 'lucide:arrow-left-right' },
-      { label: 'Command Palette', to: '/components/commandpalette', icon: 'lucide:command' },
       { label: 'Navbar', to: '/components/navbar', icon: 'lucide:layout-template' },
       { label: 'Sidebar Menu', to: '/components/sidebarmenu', icon: 'lucide:sidebar' },
-      { label: 'Splitter', to: '/components/splitter', icon: 'lucide:columns' },
-      { label: 'Masonry Grid', to: '/components/masonry', icon: 'lucide:layout-dashboard' },
-
-      { label: 'Carousel', to: '/components/carousel', icon: 'lucide:gallery-horizontal' },
-    ],
+      { label: 'Footer', to: '/components/footer', icon: 'lucide:panel-bottom' },
+    ]
   },
   {
-    label: 'Overlays & Feedback',
-    icon: 'lucide:layers',
+    label: 'Layout Blocks',
+    icon: 'lucide:columns',
+    children: [
+      { label: 'Accordion', to: '/components/accordion', icon: 'lucide:list' },
+      { label: 'Tabs', to: '/components/tabes', icon: 'lucide:panels-top-left' },
+      { label: 'Splitter', to: '/components/splitter', icon: 'lucide:columns' },
+      { label: 'Masonry Grid', to: '/components/masonry', icon: 'lucide:layout-dashboard' },
+      { label: 'Carousel', to: '/components/carousel', icon: 'lucide:gallery-horizontal' },
+    ]
+  },
+  {
+    label: 'Navigation Elements',
+    icon: 'lucide:navigation',
+    children: [
+      { label: 'Breadcrumb', to: '/components/breadcrumb', icon: 'lucide:chevrons-right' },
+      { label: 'Pagination', to: '/components/pagination', icon: 'lucide:arrow-left-right' },
+      { label: 'Command Palette', to: '/components/commandpalette', icon: 'lucide:command' },
+      { label: 'File Tree', to: '/components/filetree', icon: 'lucide:folder-tree' },
+    ]
+  },
+  {
+    label: 'Modals & Popovers',
+    icon: 'lucide:app-window',
     children: [
       { label: 'Modal', to: '/components/modal', icon: 'lucide:app-window' },
       { label: 'SidePanel', to: '/components/sidepanel', icon: 'lucide:panel-right' },
       { label: 'Dropdown', to: '/components/dropdown', icon: 'lucide:chevron-down-square' },
       { label: 'Tooltip', to: '/components/tooltip', icon: 'lucide:message-square' },
+    ]
+  },
+  {
+    label: 'Alerts & Status',
+    icon: 'lucide:bell',
+    children: [
       { label: 'Toast', to: '/components/toast', icon: 'lucide:bell' },
       { label: 'Alert', to: '/components/alert', icon: 'lucide:alert-circle' },
-      { label: 'Beacon', to: '/components/beacon', icon: 'lucide:radio' },
-      { label: 'Skeleton', to: '/components/skeleton', icon: 'lucide:layout-template' },
       { label: 'Spinner', to: '/components/spinner', icon: 'lucide:loader-2' },
-      { label: 'Scroll Reveal', to: '/components/scroll-reveal', icon: 'lucide:move-down' },
+      { label: 'Skeleton', to: '/components/skeleton', icon: 'lucide:layout-template' },
       { label: 'Empty State', to: '/components/empty', icon: 'lucide:inbox' },
+      { label: 'Scroll Reveal', to: '/components/scroll-reveal', icon: 'lucide:move-down' },
+    ]
+  },
+  {
+    label: 'Collaboration',
+    icon: 'lucide:message-square',
+    children: [
       { label: 'Chat Interface', to: '/components/chat', icon: 'lucide:message-circle' },
       { label: 'Comment Thread', to: '/components/comment', icon: 'lucide:message-square-dashed' },
       { label: 'Attachments', to: '/components/attachments', icon: 'lucide:paperclip' },
-    ],
+    ]
   },
   {
     label: 'Tools & Utilities',
     icon: 'lucide:wrench',
     children: [
+      { label: 'Form Builder', to: '/components/form', icon: 'lucide:file-input' },
       { label: 'Kanban', to: '/components/kanban', icon: 'lucide:kanban' },
       { label: 'Category Manager', to: '/components/categorymanager', icon: 'lucide:folder-tree' },
       { label: 'Workbook', to: '/components/workbook', icon: 'lucide:folder-edit' },
@@ -151,6 +190,8 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Import Data', to: '/components/import-data', icon: 'lucide:file-up' },
       { label: 'Barcode', to: '/components/barcode', icon: 'lucide:barcode' },
       { label: 'QRCode', to: '/components/qrcode', icon: 'lucide:qr-code' },
+      { label: 'Google Login', to: '/components/googlelogin', icon: 'lucide:chrome' },
+      { label: 'Permission Matrix', to: '/components/permissionmatrix', icon: 'lucide:shield-check' },
       { label: 'i18n Support', to: '/components/i18n', icon: 'lucide:globe' },
     ],
   },
@@ -179,12 +220,12 @@ const menuItems: SidebarMenuItemSchema[] = [
             :render-mode="isSidebarCompact ? 'popover' : 'tree'"
             show-compact-labels
             :default-expanded="[
-              'Buttons & Actions',
-              'Forms & Inputs',
-              'Display & Data',
-              'Navigation & Layout',
-              'Overlays & Feedback',
-              'Tools & Utilities',
+              'Buttons & Indicators',
+              'Text Inputs',
+              'Avatars & People',
+              'Alerts & Status',
+              'Layout Blocks',
+              'Modals & Popovers',
             ]" />
           <SidebarMenu
             class="md:hidden"
