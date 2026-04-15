@@ -53,7 +53,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'OTP Input', to: '/components/otpinput', icon: 'lucide:shield-check' },
       { label: 'Rich Text Editor', to: '/components/richtexteditor', icon: 'lucide:type' },
       { label: 'TagInput', to: '/components/taginput', icon: 'lucide:tags' },
-    ]
+    ],
   },
   {
     label: 'Selects & Toggles',
@@ -65,7 +65,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'MultiSelect', to: '/components/multiselect', icon: 'lucide:list-checks' },
       { label: 'ChoiceBox', to: '/components/choicebox', icon: 'lucide:layout-grid' },
       { label: 'Rating', to: '/components/rating', icon: 'lucide:star' },
-    ]
+    ],
   },
   {
     label: 'Pickers & Upload',
@@ -74,10 +74,14 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'ColorPicker', to: '/components/colorpicker', icon: 'lucide:palette' },
       { label: 'IconPicker', to: '/components/iconpicker', icon: 'lucide:smile' },
       { label: 'DatePicker', to: '/components/datepicker', icon: 'lucide:calendar' },
-      { label: 'DateRangePicker', to: '/components/daterangepicker', icon: 'lucide:calendar-range' },
+      {
+        label: 'DateRangePicker',
+        to: '/components/daterangepicker',
+        icon: 'lucide:calendar-range',
+      },
       { label: 'FilePicker', to: '/components/filepicker', icon: 'lucide:upload-cloud' },
       { label: 'ThumbnailSelector', to: '/components/thumbnailselector', icon: 'lucide:image' },
-    ]
+    ],
   },
   {
     label: 'Avatars & People',
@@ -87,7 +91,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Persona', to: '/components/persona', icon: 'lucide:user-circle' },
       { label: 'Avatar Group', to: '/components/avatargroup', icon: 'lucide:users' },
       { label: 'Avatar Uploader', to: '/components/avatar-uploader', icon: 'lucide:camera' },
-    ]
+    ],
   },
   {
     label: 'Tables & Lists',
@@ -97,7 +101,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'DataList', to: '/components/datalist', icon: 'lucide:layout-grid' },
       { label: 'List', to: '/components/list', icon: 'lucide:layout-list' },
       { label: 'Custom Fields', to: '/components/customfieldsdisplay', icon: 'lucide:list-tree' },
-    ]
+    ],
   },
   {
     label: 'Metrics & Data',
@@ -108,7 +112,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Heatmap', to: '/components/heatmap', icon: 'lucide:activity' },
       { label: 'ProgressBar', to: '/components/progressbar', icon: 'lucide:bar-chart-3' },
       { label: 'Price', to: '/components/price', icon: 'lucide:circle-dollar-sign' },
-    ]
+    ],
   },
   {
     label: 'Time & Dates',
@@ -118,7 +122,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Date Built-in', to: '/components/datetime', icon: 'lucide:calendar' },
       { label: 'Clock', to: '/components/clock', icon: 'lucide:clock-3' },
       { label: 'Timeline', to: '/components/timeline', icon: 'lucide:clock' },
-    ]
+    ],
   },
   {
     label: 'App & Shell',
@@ -129,7 +133,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Navbar', to: '/components/navbar', icon: 'lucide:layout-template' },
       { label: 'Sidebar Menu', to: '/components/sidebarmenu', icon: 'lucide:sidebar' },
       { label: 'Footer', to: '/components/footer', icon: 'lucide:panel-bottom' },
-    ]
+    ],
   },
   {
     label: 'Layout Blocks',
@@ -140,7 +144,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Splitter', to: '/components/splitter', icon: 'lucide:columns' },
       { label: 'Masonry Grid', to: '/components/masonry', icon: 'lucide:layout-dashboard' },
       { label: 'Carousel', to: '/components/carousel', icon: 'lucide:gallery-horizontal' },
-    ]
+    ],
   },
   {
     label: 'Navigation Elements',
@@ -150,7 +154,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Pagination', to: '/components/pagination', icon: 'lucide:arrow-left-right' },
       { label: 'Command Palette', to: '/components/commandpalette', icon: 'lucide:command' },
       { label: 'File Tree', to: '/components/filetree', icon: 'lucide:folder-tree' },
-    ]
+    ],
   },
   {
     label: 'Modals & Popovers',
@@ -160,7 +164,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'SidePanel', to: '/components/sidepanel', icon: 'lucide:panel-right' },
       { label: 'Dropdown', to: '/components/dropdown', icon: 'lucide:chevron-down-square' },
       { label: 'Tooltip', to: '/components/tooltip', icon: 'lucide:message-square' },
-    ]
+    ],
   },
   {
     label: 'Alerts & Status',
@@ -172,7 +176,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Skeleton', to: '/components/skeleton', icon: 'lucide:layout-template' },
       { label: 'Empty State', to: '/components/empty', icon: 'lucide:inbox' },
       { label: 'Scroll Reveal', to: '/components/scroll-reveal', icon: 'lucide:move-down' },
-    ]
+    ],
   },
   {
     label: 'Collaboration',
@@ -181,7 +185,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Chat Interface', to: '/components/chat', icon: 'lucide:message-circle' },
       { label: 'Comment Thread', to: '/components/comment', icon: 'lucide:message-square-dashed' },
       { label: 'Attachments', to: '/components/attachments', icon: 'lucide:paperclip' },
-    ]
+    ],
   },
   {
     label: 'Tools & Utilities',
@@ -198,7 +202,11 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Barcode', to: '/components/barcode', icon: 'lucide:barcode' },
       { label: 'QRCode', to: '/components/qrcode', icon: 'lucide:qr-code' },
       { label: 'Google Login', to: '/components/googlelogin', icon: 'lucide:chrome' },
-      { label: 'Permission Matrix', to: '/components/permissionmatrix', icon: 'lucide:shield-check' },
+      {
+        label: 'Permission Matrix',
+        to: '/components/permissionmatrix',
+        icon: 'lucide:shield-check',
+      },
       { label: 'i18n Support', to: '/components/i18n', icon: 'lucide:globe' },
     ],
   },
@@ -249,7 +257,7 @@ const menuItems: SidebarMenuItemSchema[] = [
           class="flex items-center gap-2 px-2 py-2"
           :class="isSidebarCompact ? 'flex-col justify-center' : 'flex-row justify-between'">
           <ThemeToggle />
-          <p v-if="!isSidebarCompact" class="text-xs text-muted-foreground">v0.6.2</p>
+          <p v-if="!isSidebarCompact" class="text-xs text-muted-foreground">v1.2.5</p>
         </div>
       </template>
 
