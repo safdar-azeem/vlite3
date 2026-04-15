@@ -2,17 +2,10 @@
 import { ref } from 'vue'
 import Button from '@/components/Button.vue'
 import Icon from '@/components/Icon.vue'
-
-const copied = ref<string | null>(null)
+import Clipboard from '@/components/Clipboard.vue'
 
 const stylesCode = `@import 'tailwindcss';\n@import 'vlite3/style.css';`
 const usageCode = `<script setup>\nimport { Button } from 'vlite3'\n</s` + `cript>\n\n<template>\n  <Button variant="primary">Click Me</Button>\n</t` + `emplate>`
-
-const copyContent = (text: string, id: string) => {
-  navigator.clipboard.writeText(text)
-  copied.value = id
-  setTimeout(() => { copied.value = null }, 2000)
-}
 </script>
 
 <template>
@@ -49,9 +42,7 @@ const copyContent = (text: string, id: string) => {
         </div>
         <div class="p-5 flex items-start justify-between relative">
           <code class="text-sm sm:text-base font-mono text-foreground font-medium select-all">npm install vlite3</code>
-          <button @click="copyContent('npm install vlite3', 'install')" class="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-all hover:scale-110 p-2 rounded-md hover:bg-muted/80" aria-label="Copy code">
-            <Icon :icon="copied === 'install' ? 'lucide:check' : 'lucide:copy'" class="w-4 h-4" :class="{ 'text-success': copied === 'install' }" />
-          </button>
+          <Clipboard text-to-copy="npm install vlite3" as-icon variant="ghost" class="absolute top-4 right-4 text-muted-foreground hover:text-foreground hover:bg-muted/80 w-8 h-8" />
         </div>
       </div>
     </section>
@@ -74,9 +65,7 @@ const copyContent = (text: string, id: string) => {
           <h3 class="text-lg font-semibold mb-3 text-foreground">1. Import Styles</h3>
           <p class="text-sm text-muted-foreground mb-4 leading-relaxed">Add the vlite3 styles to your main CSS file (e.g., <code>src/style.css</code> or <code>src/assets/main.css</code>):</p>
           <div class="bg-card border border-border shadow-sm rounded-xl p-5 relative group overflow-hidden">
-             <button @click="copyContent(stylesCode, 'styles')" class="absolute top-3 right-3 text-muted-foreground hover:text-foreground transition-all p-2 rounded-md hover:bg-muted/80 z-10" aria-label="Copy CSS">
-              <Icon :icon="copied === 'styles' ? 'lucide:check' : 'lucide:copy'" class="w-4 h-4" :class="{ 'text-success': copied === 'styles' }" />
-            </button>
+             <Clipboard :text-to-copy="stylesCode" as-icon variant="ghost" class="absolute top-3 right-3 text-muted-foreground hover:text-foreground hover:bg-muted/80 z-10 w-8 h-8" />
             <pre class="text-sm font-mono text-foreground overflow-x-auto m-0"><code class="language-css"><span class="text-muted-foreground">/* Import Tailwind v4 core */</span>
 <span class="text-primary/80">@import</span> <span class="text-green-500/90">'tailwindcss'</span>;
 
@@ -111,9 +100,7 @@ const copyContent = (text: string, id: string) => {
           <span class="text-xs font-semibold text-muted-foreground">App.vue</span>
         </div>
         <div class="p-5 relative">
-          <button @click="copyContent(usageCode, 'usage')" class="absolute top-3 right-3 text-muted-foreground hover:text-foreground transition-all p-2 rounded-md hover:bg-muted/80 z-10" aria-label="Copy Vue code">
-            <Icon :icon="copied === 'usage' ? 'lucide:check' : 'lucide:copy'" class="w-4 h-4" :class="{ 'text-success': copied === 'usage' }" />
-          </button>
+          <Clipboard :text-to-copy="usageCode" as-icon variant="ghost" class="absolute top-3 right-3 text-muted-foreground hover:text-foreground hover:bg-muted/80 z-10 w-8 h-8" />
           <pre class="text-sm font-mono text-foreground overflow-x-auto m-0"><code><span class="text-primary/70">&lt;script setup&gt;</span>
 <span class="text-purple-500">import</span> { Button } <span class="text-purple-500">from</span> <span class="text-green-500/90">'vlite3'</span>
 <span class="text-primary/70">&lt;/script&gt;</span>
