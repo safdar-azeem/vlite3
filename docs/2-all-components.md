@@ -40,6 +40,7 @@ Check the individual Markdown files inside the docs folders for full details.
 - [NumberInput](./1-Components/NumberInput.md)
 - [OTPInput](./1-Components/OTPInput.md)
 - [Pagination](./1-Components/Pagination.md)
+- [Persona](./1-Components/Persona.md)
 - [Price](./1-Components/Price.md)
 - [ProgressBar](./1-Components/ProgressBar.md)
 - [QRCode](./1-Components/QRCode.md)
