@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <section class="bg-background border-b border-border" id="code">
+  <section v-once class="bg-background border-b border-border" id="code">
     <div class="max-w-7xl mx-auto flex flex-col lg:flex-row">
       <div class="lg:border-r border-border pr-8 py-16 w-full lg:w-1/3 px-6 lg:px-8 lg:pr-12">
         <span class="text-sm font-semibold text-primary uppercase tracking-wider">Integration</span>
