@@ -4,6 +4,7 @@ import Avatar from './Avatar.vue'
 import type { AvatarSize, AvatarRounded } from '@/types'
 
 export type PresenceType = 'online' | 'offline' | 'busy' | 'dnd' | 'away'
+export type PersonaLabelTheme = 'default' | 'primary' | 'secondary' | 'danger' | 'warning' | 'success' | 'info' | 'muted' | string
 
 interface Props {
   src?: string
@@ -15,6 +16,7 @@ interface Props {
   presence?: PresenceType
   label?: string
   secondaryLabel?: string
+  labelTheme?: PersonaLabelTheme
   hideDetails?: boolean
   class?: string
 }
@@ -22,6 +24,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   size: 'md',
   rounded: 'full',
+  labelTheme: 'default',
   hideDetails: false,
   class: '',
 })
@@ -77,6 +80,20 @@ const labelClasses = computed(() => {
   return sizes[props.size] || sizes.md
 })
 
+const labelThemeClass = computed(() => {
+  const themes: Record<string, string> = {
+    default: 'text-foreground',
+    primary: 'text-primary',
+    secondary: 'text-secondary-foreground',
+    danger: 'text-danger',
+    warning: 'text-warning',
+    success: 'text-success',
+    info: 'text-info',
+    muted: 'text-muted-foreground',
+  }
+  return themes[props.labelTheme] || props.labelTheme
+})
+
 const secondaryLabelClasses = computed(() => {
   const sizes: Record<string, string> = {
     xs: 'text-[9px] leading-none mt-0.5',
@@ -124,7 +141,7 @@ const secondaryLabelClasses = computed(() => {
     <div
       v-if="!props.hideDetails && (props.label || props.secondaryLabel)"
       :class="['flex flex-col justify-center', textGroupClasses]">
-      <span v-if="props.label" :class="['text-foreground', labelClasses]">
+      <span v-if="props.label" :class="[labelThemeClass, labelClasses]">
         {{ props.label }}
       </span>
       <span v-if="props.secondaryLabel" :class="['text-muted-foreground', secondaryLabelClasses]">
