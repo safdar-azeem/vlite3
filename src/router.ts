@@ -21,6 +21,7 @@ const children: RouteRecordRaw[] = Object.entries(demoModules).map(([path, compo
   if (rawName === 'ImportData') routePath = 'import-data'
   if (rawName === 'PricingPlan') routePath = 'pricing'
   if (rawName === 'RichTextEditor') routePath = 'richtexteditor'
+  if (rawName === 'GettingStarted') routePath = 'getting-started'
 
   return {
     path: routePath,
@@ -33,7 +34,7 @@ const children: RouteRecordRaw[] = Object.entries(demoModules).map(([path, compo
 children.push({
   path: '',
   name: 'Default',
-  redirect: '/components/button',
+  redirect: '/components/getting-started',
 })
 
 const router = createRouter({
