@@ -16,7 +16,7 @@ const footerData: FooterData = {
   brandLogo: 'https://api.iconify.design/lucide:box.svg',
   brandDescription:
     'A lightweight, minimalistic Vue 3 UI component library built with Tailwind CSS v4.',
-  badge: 'v0.6.2',
+  badge: 'v1.2.5',
   copyright: 'Built with ❤️ by Safdar Azeem',
   socialLinks: [
     { icon: 'lucide:github', url: 'https://github.com/safdar-azeem' },
