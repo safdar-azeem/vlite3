@@ -54,4 +54,10 @@ type ButtonRounded = 'none' | 'sm' | 'sm2' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
 ```vue
 <Button variant="primary" icon="lucide:plus">Add Item</Button>
 <Button variant="ghost" loading />
+
+<!-- With Beacon -->
+<div class="relative inline-flex">
+  <Button icon="lucide:bell" variant="outline" rounded="full" />
+  <Beacon variant="danger" class="absolute top-0 right-0" />
+</div>
 ```
