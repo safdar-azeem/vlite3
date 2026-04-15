@@ -90,7 +90,7 @@ const categories = [
 </script>
 
 <template>
-  <section class="py-24 bg-background border-t border-border">
+  <section class="py-24 bg-muted/20 border-y border-border">
     <div class="max-w-5xl mx-auto px-6 lg:px-8">
       <div class="mb-14 animate-fade-up">
         <h2 class="text-3xl font-bold text-foreground tracking-tight mb-3">Component Directory</h2>
