@@ -19,6 +19,7 @@ import sourceCode from './PersonaDemo.vue?raw'
         <div class="flex flex-wrap items-center justify-center gap-6 w-full">
           <Persona label="Olivia Martin" secondaryLabel="Frontend Engineer" />
           <Persona label="Jackson Lee" secondaryLabel="Online" presence="online" fallback="JL" />
+          <Persona label="Primary Label" secondaryLabel="Label Theme" labelTheme="primary" fallback="PL" />
         </div>
       </DemoSection>
 
