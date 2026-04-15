@@ -246,14 +246,15 @@ const menuItems: SidebarMenuItemSchema[] = [
       </template>
 
       <template #sidebar-header>
-        <div
-          class="font-bold text-lg flex items-center gap-2 w-full px-4.5 py-3"
+        <router-link
+          to="/"
+          class="font-bold text-lg flex items-center gap-2 w-full px-4.5 py-3 hover:opacity-80 transition-opacity"
           :class="isSidebarCompact ? 'md:flex-col md:justify-center' : 'flex-row'">
           <div class="w-7 h-7 rounded bg-primary text-white flex items-center justify-center">
             V
           </div>
-          Vlite3
-        </div>
+          <span v-if="!isSidebarCompact">Vlite3</span>
+        </router-link>
       </template>
 
       <template #header="{ toggleSidebar, toggle, breadcrumbItems, pageTitle }">
