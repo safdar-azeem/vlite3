@@ -17,6 +17,7 @@ A visual representation of a person inside your application. The component consi
 | `presence`       | `online` \| `offline` \| `busy` \| `dnd` \| `away`                 | —         | Type of presence badge displayed on the avatar       |
 | `label`          | `string`                                                           | —         | Primary display text (usually Name)                  |
 | `secondaryLabel` | `string`                                                           | —         | Secondary text underneath label (Job, Status)        |
+| `labelTheme`     | `default` \| `primary` \| `danger` \| *etc*                        | `default` | Color theme for the primary label                    |
 | `hideDetails`    | `boolean`                                                          | `false`   | Option to visually hide the `label` and `secondary`  |
 | `class`          | `any`                                                              | —         | Custom classes for the container wrapper             |
 
@@ -25,6 +26,9 @@ A visual representation of a person inside your application. The component consi
 ```vue
 <!-- Basic -->
 <Persona label="Olivia Martin" secondaryLabel="Frontend Engineer" fallback="OM" />
+
+<!-- With Custom Label Theme -->
+<Persona label="Premium Member" secondaryLabel="Subscribed" labelTheme="primary" fallback="PM" />
 
 <!-- With Src & Presence -->
 <Persona 
