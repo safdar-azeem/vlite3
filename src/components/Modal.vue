@@ -180,7 +180,9 @@ const displayDescription = computed(() =>
       class="fixed inset-0 z-50 flex items-center justify-center p-4 v-modal-overlay"
       :class="backdrop ? 'v-modal-backdrop' : ''"
       @click="handleBackdropClick">
+      <Transition name="modal-dialog">
       <div
+        v-if="visible"
         ref="modalRef"
         tabindex="-1"
         role="dialog"
@@ -231,6 +233,7 @@ const displayDescription = computed(() =>
           <slot name="footer" :close="handleClose" />
         </div>
       </div>
+      </Transition>
     </div>
   </Teleport>
 </template>
@@ -242,11 +245,24 @@ const displayDescription = computed(() =>
 
 .v-modal-backdrop {
   transform: translateZ(0);
-  will-change: opacity;
+}
+
+/* ── Dialog open/close — opacity only, no movement ───────────────────────
+   80 ms in (feels instant) / 120 ms out (soft disappear).
+*/
+.modal-dialog-enter-active {
+  transition: opacity 80ms ease-out;
+}
+.modal-dialog-leave-active {
+  transition: opacity 120ms ease-in;
+}
+.modal-dialog-enter-from,
+.modal-dialog-leave-to {
+  opacity: 0;
 }
 
 .modal-body {
-  will-change: transform;
+  will-change: opacity;
   contain: layout style;
 }
 
