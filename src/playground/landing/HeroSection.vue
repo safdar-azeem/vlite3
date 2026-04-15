@@ -81,7 +81,7 @@ const navigateToComponents = () => {
 
 /* ── Hero Section ── */
 .hero-section {
-  padding: 5.1rem 4rem 8rem 4rem;
+  padding: 5rem 4rem 10rem 4rem;
   text-align: center;
 }
 
