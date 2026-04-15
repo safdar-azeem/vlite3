@@ -8,7 +8,7 @@ import Icon from '@/components/Icon.vue'
 const router = useRouter()
 
 const navigateToComponents = () => {
-  router.push('/components/button')
+  router.push('/components/getting-started')
 }
 
 // Animated component counter
@@ -57,7 +57,7 @@ const copyInstall = () => {
 
       <div class="hero-actions animate-fade-up delay-3">
         <Button @click="navigateToComponents" size="xl" class="rounded-full px-8 shadow-lg shadow-primary/20 text-base font-medium">
-          Browse Components
+          Get Started
         </Button>
         
         <button class="hero-cmd" @click="copyInstall">
