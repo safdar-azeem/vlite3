@@ -70,9 +70,9 @@ const labelClasses = computed(() => {
     xs: 'text-[10px] font-medium leading-none',
     sm: 'text-xs font-medium leading-none',
     md: 'text-sm font-medium leading-none',
-    lg: 'text-base font-semibold leading-none',
-    xl: 'text-lg font-semibold leading-tight',
-    '2xl': 'text-xl font-semibold leading-tight',
+    lg: 'text-lg font-semibold leading-none',
+    xl: 'text-xl font-semibold leading-tight',
+    '2xl': 'text-2xl font-bold leading-tight',
   }
   return sizes[props.size] || sizes.md
 })
@@ -82,9 +82,9 @@ const secondaryLabelClasses = computed(() => {
     xs: 'text-[9px] leading-none',
     sm: 'text-[10px] leading-none',
     md: 'text-xs leading-none',
-    lg: 'text-sm leading-none',
-    xl: 'text-sm leading-tight',
-    '2xl': 'text-base leading-tight',
+    lg: 'text-base leading-none',
+    xl: 'text-lg leading-tight',
+    '2xl': 'text-xl leading-tight',
   }
   return sizes[props.size] || sizes.md
 })
