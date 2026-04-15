@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Button from '@/components/Button.vue'
 import BackButton from '@/components/BackButton.vue'
-import CopyButton from '@/components/CopyButton.vue'
+import Clipboard from '@/components/Clipboard.vue'
 import Beacon from '@/components/Beacon.vue'
 import DemoSection from '../DemoSection.vue'
 import sourceCode from './ButtonDemo.vue?raw'
@@ -100,16 +100,16 @@ import sourceCode from './ButtonDemo.vue?raw'
         </div>
       </DemoSection>
 
-      <DemoSection title="Copy Button" :code="sourceCode">
+      <DemoSection title="Clipboard" :code="sourceCode">
         <div class="flex flex-col items-center justify-center gap-4 w-full">
           <p class="text-[13px] text-center text-muted-foreground w-full max-w-[500px] mb-2">
             A button that copies text to the clipboard and provides visual feedback.
           </p>
           <div class="flex flex-wrap items-center justify-center gap-3 w-full">
-            <CopyButton text-to-copy="npm install vlite3" />
-            <CopyButton text-to-copy="Hello World" variant="secondary" />
-            <CopyButton text-to-copy="Icon only copy" as-icon rounded="full" variant="ghost" />
-            <CopyButton
+            <Clipboard text-to-copy="npm install vlite3" />
+            <Clipboard text-to-copy="Hello World" variant="secondary" />
+            <Clipboard text-to-copy="Icon only copy" as-icon rounded="full" variant="ghost" />
+            <Clipboard
               text-to-copy="Custom text"
               default-text="Copy Link"
               copied-text="Link Copied!"
