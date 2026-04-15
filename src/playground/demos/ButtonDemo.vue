@@ -2,6 +2,7 @@
 import Button from '@/components/Button.vue'
 import BackButton from '@/components/BackButton.vue'
 import CopyButton from '@/components/CopyButton.vue'
+import Beacon from '@/components/Beacon.vue'
 import DemoSection from '../DemoSection.vue'
 import sourceCode from './ButtonDemo.vue?raw'
 </script>
@@ -113,6 +114,30 @@ import sourceCode from './ButtonDemo.vue?raw'
               default-text="Copy Link"
               copied-text="Link Copied!"
               variant="outline-primary" />
+          </div>
+        </div>
+      </DemoSection>
+
+      <DemoSection title="With Beacons" :code="sourceCode">
+        <div class="flex flex-col items-center justify-center gap-4 w-full">
+          <p class="text-[13px] text-center text-muted-foreground w-full max-w-[500px] mb-2">
+            Use the <strong>Beacon</strong> component to indicate new notifications or status updates on buttons.
+          </p>
+          <div class="flex flex-wrap items-center justify-center gap-6 w-full mt-2">
+            <div class="relative inline-flex">
+              <Button icon="lucide:bell" variant="outline" rounded="full" />
+              <Beacon variant="danger" class="absolute top-0 right-0" />
+            </div>
+            
+            <div class="relative inline-flex">
+              <Button icon="lucide:mail" variant="ghost" />
+              <Beacon variant="primary" size="sm" class="absolute top-1.5 right-2" />
+            </div>
+
+            <Button>
+              Updates
+              <Beacon variant="success" class="ml-2" />
+            </Button>
           </div>
         </div>
       </DemoSection>
