@@ -22,7 +22,7 @@ onUnmounted(() => {
 
 const navItems = [
   { label: 'Components', path: '/components/button' },
-  { label: 'Documentation', path: '/components/button' },
+  { label: 'Documentation', path: '/components/getting-started' },
 ]
 </script>
 
@@ -72,7 +72,7 @@ const navItems = [
         <Button 
           size="md" 
           class="hidden sm:flex rounded-full px-6 font-semibold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:-translate-y-0.5" 
-          @click="router.push('/components/button')"
+          @click="router.push('/components/getting-started')"
         >
           Get Started
         </Button>
