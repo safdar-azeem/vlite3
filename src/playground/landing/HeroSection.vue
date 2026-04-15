@@ -15,24 +15,24 @@ const navigateToComponents = () => {
 <template>
   <section v-once class="hero-section">
     <div class="landing-container hero-inner">
-      <Badge variant="outline" class="hero-pill">
+      <Badge variant="outline" class="hero-pill" v-scroll-reveal>
         <span class="hero-pill-badge">New</span>
         <span>v1.2.5 fully free & open-source</span>
         <Icon icon="lucide:arrow-right" class="w-3 h-3 ml-1" />
       </Badge>
 
-      <h1 class="hero-title">
+      <h1 class="hero-title" v-scroll-reveal="{ delay: 150 }">
         Build clean interfaces <br />
         <span class="text-muted-foreground font-light">without the bloat.</span>
       </h1>
 
-      <p class="hero-desc">
+      <p class="hero-desc" v-scroll-reveal="{ delay: 300 }">
         A comprehensive, fully open-source Vue 3 component library built on Tailwind CSS v4.
         Designed for developers who value minimal aesthetics, semantic code, and blazing
         performance.
       </p>
 
-      <div class="hero-actions">
+      <div class="hero-actions" v-scroll-reveal="{ delay: 450 }">
         <Button
           @click="navigateToComponents"
           size="xl"
@@ -51,7 +51,7 @@ const navigateToComponents = () => {
         </div>
       </div>
 
-      <div class="hero-stats">
+      <div class="hero-stats" v-scroll-reveal="{ delay: 600 }">
         <div class="stat-item">
           <span class="stat-value">80+</span>
           <span class="stat-label">Components</span>
@@ -81,7 +81,7 @@ const navigateToComponents = () => {
 
 /* ── Hero Section ── */
 .hero-section {
-  padding: 6rem 0 4rem;
+  padding: 5.1rem 4rem 8rem 4rem;
   text-align: center;
 }
 
