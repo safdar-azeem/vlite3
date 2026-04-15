@@ -127,6 +127,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Tooltip', to: '/components/tooltip', icon: 'lucide:message-square' },
       { label: 'Toast', to: '/components/toast', icon: 'lucide:bell' },
       { label: 'Alert', to: '/components/alert', icon: 'lucide:alert-circle' },
+      { label: 'Beacon', to: '/components/beacon', icon: 'lucide:radio' },
       { label: 'Skeleton', to: '/components/skeleton', icon: 'lucide:layout-template' },
       { label: 'Spinner', to: '/components/spinner', icon: 'lucide:loader-2' },
       { label: 'Scroll Reveal', to: '/components/scroll-reveal', icon: 'lucide:move-down' },
