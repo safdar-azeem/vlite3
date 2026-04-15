@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import Badge from '@/components/Badge.vue'
 import Button from '@/components/Button.vue'
 import Icon from '@/components/Icon.vue'
+import Clipboard from '@/components/Clipboard.vue'
 
 const router = useRouter()
 
@@ -28,13 +29,6 @@ onMounted(() => {
     }
   }, 30)
 })
-
-const copied = ref(false)
-const copyInstall = () => {
-  navigator.clipboard.writeText('npm install vlite3')
-  copied.value = true
-  setTimeout(() => (copied.value = false), 2000)
-}
 </script>
 
 <template>
@@ -42,7 +36,7 @@ const copyInstall = () => {
     <div class="landing-container hero-inner">
       <Badge variant="outline" class="hero-pill animate-fade-up">
         <span class="hero-pill-badge">New</span>
-        <span>v0.6.2 is now fully free & open-source</span>
+        <span>v1.2.5 fully free & open-source</span>
         <Icon icon="lucide:arrow-right" class="w-3 h-3 ml-1" />
       </Badge>
 
@@ -52,22 +46,28 @@ const copyInstall = () => {
       </h1>
 
       <p class="hero-desc animate-fade-up delay-2">
-        A comprehensive, fully open-source Vue 3 component library built on Tailwind CSS v4. Designed for developers who value minimal aesthetics, semantic code, and blazing performance.
+        A comprehensive, fully open-source Vue 3 component library built on Tailwind CSS v4.
+        Designed for developers who value minimal aesthetics, semantic code, and blazing
+        performance.
       </p>
 
       <div class="hero-actions animate-fade-up delay-3">
-        <Button @click="navigateToComponents" size="xl" class="rounded-full px-8 shadow-lg shadow-primary/20 text-base font-medium">
+        <Button
+          @click="navigateToComponents"
+          size="xl"
+          class="rounded-full px-8 shadow-lg shadow-primary/20 text-base font-medium">
           Get Started
         </Button>
-        
-        <button class="hero-cmd" @click="copyInstall">
+
+        <div class="hero-cmd">
           <span class="hero-cmd-prompt">$</span>
           <span class="hero-cmd-text">npm install vlite3</span>
-          <span class="hero-cmd-copy">
-            <Icon v-if="copied" icon="lucide:check" class="text-success w-3.5 h-3.5" />
-            <Icon v-else icon="lucide:copy" class="w-3.5 h-3.5 text-muted-foreground" />
-          </span>
-        </button>
+          <Clipboard
+            text-to-copy="npm install vlite3"
+            as-icon
+            rounded="full"
+            class="w-8 h-8 bg-background border-border shrink-0" />
+        </div>
       </div>
 
       <div class="hero-stats animate-fade-up delay-4">
@@ -192,17 +192,6 @@ const copyInstall = () => {
 
 .hero-cmd-text {
   margin-right: 1.5rem;
-}
-
-.hero-cmd-copy {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  background: var(--color-background);
-  border-radius: 9999px;
-  border: 1px solid var(--color-border);
 }
 
 .hero-stats {
