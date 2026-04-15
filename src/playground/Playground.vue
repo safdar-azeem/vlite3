@@ -81,6 +81,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Heatmap', to: '/components/heatmap', icon: 'lucide:activity' },
       { label: 'Charts', to: '/components/chart', icon: 'lucide:chart-line' },
       { label: 'Avatar', to: '/components/avatar', icon: 'lucide:user' },
+      { label: 'Persona', to: '/components/persona', icon: 'lucide:user-circle' },
       { label: 'Avatar Group', to: '/components/avatargroup', icon: 'lucide:users' },
       { label: 'Avatar Uploader', to: '/components/avatar-uploader', icon: 'lucide:camera' },
       { label: 'ProgressBar', to: '/components/progressbar', icon: 'lucide:bar-chart-3' },
