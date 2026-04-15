@@ -58,7 +58,7 @@ const dummyAvatarItems = [
 <template>
   <section class="py-24 bg-muted/20 border-y border-border overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="text-center max-w-3xl mx-auto mb-16 animate-fade-up">
+      <div class="text-center max-w-3xl mx-auto mb-16">
         <span class="text-sm font-semibold text-primary uppercase tracking-wider">Component Grid</span>
         <h2 class="mt-3 text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
           A glimpse into <span class="text-primary">the ecosystem</span>
@@ -68,18 +68,18 @@ const dummyAvatarItems = [
         </p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" style="will-change: transform; contain: layout style;">
         <div
           v-for="(comp, i) in allComponents"
           :key="i"
-          class="group bg-background border border-border/60 hover:border-border rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col animate-fade-up"
-          :style="{ animationDelay: `${150 + (i % 4) * 50}ms` }"
+          v-memo="[comp.name]"
+          class="group bg-background border border-border/60 hover:border-border rounded-2xl overflow-hidden cursor-pointer flex flex-col"
           @click="router.push(comp.link)"
         >
           <div class="h-40 bg-muted/30 flex items-center justify-center p-6 border-b border-border/50 relative overflow-hidden">
             <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: radial-gradient(#000 1px, transparent 1px); background-size: 10px 10px;"></div>
             
-            <div class="relative z-10 w-full flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
+            <div class="relative z-10 w-full flex items-center justify-center">
               <Button v-if="comp.previewType === 'button'" variant="primary" size="md" class="shadow-sm">Action Button</Button>
               <div v-else-if="comp.previewType === 'badge'" class="flex gap-2">
                 <Badge variant="success" size="md">Active</Badge>
@@ -275,21 +275,21 @@ const dummyAvatarItems = [
           <div class="p-5 flex-1 flex flex-col">
             <div class="flex items-center justify-between mb-2">
               <h3 class="text-base font-bold text-foreground">{{ comp.name }}</h3>
-              <Icon icon="lucide:arrow-up-right" class="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:text-primary transition-all -translate-x-2 translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0" />
+              <Icon icon="lucide:arrow-up-right" class="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:text-primary" />
             </div>
             <p class="text-sm text-muted-foreground leading-relaxed">{{ comp.desc }}</p>
           </div>
         </div>
       </div>
 
-      <div class="mt-20 text-center animate-fade-up border-t border-border pt-12">
+      <div class="mt-20 text-center border-t border-border pt-12">
         <h3 class="text-2xl font-bold text-foreground mb-4">Ready to see more?</h3>
         <p class="text-muted-foreground mb-8 max-w-xl mx-auto">
           Explore the full collection of accessible, customizable, and beautifully designed components built for modern Vue applications.
         </p>
-        <Button @click="router.push('/components')" size="lg" class="rounded-full h-12 px-8 text-base font-medium shadow-md group">
+        <Button @click="router.push('/components')" size="lg" class="rounded-full h-12 px-8 text-base font-medium shadow-none group">
           Explore All Components
-          <Icon icon="lucide:arrow-right" class="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          <Icon icon="lucide:arrow-right" class="ml-2 w-4 h-4" />
         </Button>
       </div>
     </div>
