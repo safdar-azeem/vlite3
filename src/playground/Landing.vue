@@ -26,7 +26,7 @@ const footerData: FooterData = {
     {
       title: 'Resources',
       links: [
-        { label: 'Documentation', url: '/components/button' },
+        { label: 'Documentation', url: '/components/getting-started' },
         { label: 'Components', url: '/components/button' },
         { label: 'GitHub', url: 'https://github.com/safdar-azeem/vlite3', external: true },
       ],
