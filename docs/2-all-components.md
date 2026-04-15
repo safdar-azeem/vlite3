@@ -11,6 +11,7 @@ Check the individual Markdown files inside the docs folders for full details.
 - [AvatarUploader](./1-Components/AvatarUploader.md)
 - [Badge](./1-Components/Badge.md)
 - [Barcode](./1-Components/Barcode.md)
+- [Beacon](./1-Components/Beacon.md)
 - [Breadcrumb](./1-Components/Breadcrumb.md)
 - [Button](./1-Components/Button.md)
 - [ButtonGroup](./1-Components/ButtonGroup.md)
