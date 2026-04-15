@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import Badge from '@/components/Badge.vue'
 import Button from '@/components/Button.vue'
@@ -11,51 +10,33 @@ const router = useRouter()
 const navigateToComponents = () => {
   router.push('/components/getting-started')
 }
-
-// Animated component counter
-const componentCount = ref(0)
-const targetCount = 80
-
-onMounted(() => {
-  let current = 0
-  const step = Math.ceil(targetCount / 60)
-  const interval = setInterval(() => {
-    current += step
-    if (current >= targetCount) {
-      componentCount.value = targetCount
-      clearInterval(interval)
-    } else {
-      componentCount.value = current
-    }
-  }, 30)
-})
 </script>
 
 <template>
-  <section class="hero-section">
+  <section v-once class="hero-section">
     <div class="landing-container hero-inner">
-      <Badge variant="outline" class="hero-pill animate-fade-up">
+      <Badge variant="outline" class="hero-pill">
         <span class="hero-pill-badge">New</span>
         <span>v1.2.5 fully free & open-source</span>
         <Icon icon="lucide:arrow-right" class="w-3 h-3 ml-1" />
       </Badge>
 
-      <h1 class="hero-title animate-fade-up delay-1">
+      <h1 class="hero-title">
         Build clean interfaces <br />
         <span class="text-muted-foreground font-light">without the bloat.</span>
       </h1>
 
-      <p class="hero-desc animate-fade-up delay-2">
+      <p class="hero-desc">
         A comprehensive, fully open-source Vue 3 component library built on Tailwind CSS v4.
         Designed for developers who value minimal aesthetics, semantic code, and blazing
         performance.
       </p>
 
-      <div class="hero-actions animate-fade-up delay-3">
+      <div class="hero-actions">
         <Button
           @click="navigateToComponents"
           size="xl"
-          class="rounded-full px-8 shadow-lg shadow-primary/20 text-base font-medium">
+          class="rounded-full px-8 text-base font-medium">
           Get Started
         </Button>
 
@@ -70,9 +51,9 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="hero-stats animate-fade-up delay-4">
+      <div class="hero-stats">
         <div class="stat-item">
-          <span class="stat-value">{{ componentCount }}+</span>
+          <span class="stat-value">80+</span>
           <span class="stat-label">Components</span>
         </div>
         <div class="stat-divider"></div>
