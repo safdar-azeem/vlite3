@@ -68,7 +68,10 @@ const fontSizes: Record<AvatarSize, string> = {
       v-for="(item, index) in visibleItems"
       :key="index"
       :class="[index !== 0 ? overlapClass[overlap] : '', 'relative shrink-0']">
-      <Tooltip :disabled="!item.heading && !item.text" placement="top">
+      <Tooltip
+        :disabled="!item.heading && !item.text"
+        placement="top"
+        contentClass="min-w-[100px] px-10!">
         <Avatar
           :src="item.src"
           :alt="item.alt"
@@ -113,4 +116,3 @@ const fontSizes: Record<AvatarSize, string> = {
     </div>
   </div>
 </template>
-
