@@ -331,7 +331,7 @@
 
   --tooltip-bg: var(--color-background) !important;
   --tooltip-text: var(--color-foreground) !important;
-  --tooltip-border: color-mix(in oklab, var(--color-mixture-1) 93%, var(--color-mixture-2)) !important;
+  --tooltip-border: color-mix(in oklab, var(--color-mixture-1) 90%, var(--color-mixture-2)) !important;
   --date-picker-border: var(--color-border) !important;
   --iconPicker-border: var(--color-border) !important;
 
