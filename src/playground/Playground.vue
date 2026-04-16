@@ -37,6 +37,7 @@ const menuItems: SidebarMenuItemSchema[] = [
     children: [
       { label: 'Button', to: '/components/button', icon: 'lucide:mouse-pointer-2' },
       { label: 'Button Group', to: '/components/buttongroup', icon: 'lucide:git-merge' },
+      { label: 'Clipboard', to: '/components/clipboard', icon: 'lucide:clipboard' },
       { label: 'Badge', to: '/components/badge', icon: 'lucide:tag' },
       { label: 'Chip', to: '/components/chip', icon: 'lucide:sticker' },
       { label: 'StatusChip', to: '/components/statuschip', icon: 'lucide:badge-check' },
