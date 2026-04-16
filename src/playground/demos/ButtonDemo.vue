@@ -2,8 +2,6 @@
 import { ref } from 'vue'
 import Button from '@/components/Button.vue'
 import BackButton from '@/components/BackButton.vue'
-import Clipboard from '@/components/Clipboard.vue'
-import Beacon from '@/components/Beacon.vue'
 import DemoSection from '../DemoSection.vue'
 import sourceCode from './ButtonDemo.vue?raw'
 
@@ -147,59 +145,6 @@ const simulateLoad = () => {
       </div>
     </DemoSection>
 
-    <!-- ── Clipboard ──────────────────────────────────────────── -->
-    <DemoSection title="Clipboard" :code="sourceCode">
-      <div class="flex flex-col items-center gap-4 w-full">
-        <p class="text-sm text-center text-muted-foreground max-w-[480px]">
-          Copies text to the clipboard and shows a visual "Copied!" confirmation. Handy for install
-          commands, share links, or API keys.
-        </p>
-        <div class="flex flex-wrap items-center justify-center gap-3">
-          <Clipboard text-to-copy="npm install vlite3" />
-          <Clipboard text-to-copy="Hello World" variant="secondary" />
-          <Clipboard text-to-copy="Icon only copy" as-icon rounded="full" variant="ghost" />
-          <Clipboard
-            text-to-copy="https://vlite3.dev"
-            default-text="Copy Link"
-            copied-text="Link Copied!"
-            variant="outline-primary"
-          />
-        </div>
-      </div>
-    </DemoSection>
-
-    <!-- ── Button + Beacon ────────────────────────────────────── -->
-    <DemoSection title="With Beacons" :code="sourceCode">
-      <div class="flex flex-col items-center gap-4 w-full">
-        <p class="text-sm text-center text-muted-foreground max-w-[480px]">
-          Use the <strong>Beacon</strong> component to draw attention to buttons — for notifications,
-          new features, or live status indicators.
-        </p>
-        <div class="flex flex-wrap items-center justify-center gap-8 mt-2">
-          <div class="relative inline-flex">
-            <Button icon="lucide:bell" variant="outline" rounded="full" />
-            <Beacon variant="danger" class="absolute -top-0.5 -right-0.5" />
-          </div>
-
-          <div class="relative inline-flex">
-            <Button icon="lucide:mail" variant="ghost" />
-            <Beacon variant="primary" size="sm" class="absolute top-1.5 right-2" />
-          </div>
-
-          <div class="relative inline-flex">
-            <Button icon="lucide:message-square" variant="secondary">
-              Messages
-            </Button>
-            <Beacon variant="success" class="absolute -top-1 -right-1" />
-          </div>
-
-          <Button variant="outline">
-            What's New
-            <Beacon variant="warning" class="ml-1" />
-          </Button>
-        </div>
-      </div>
-    </DemoSection>
 
     <!-- ── Real-world Usage ───────────────────────────────────── -->
     <DemoSection title="Real-world Patterns" :code="sourceCode">
