@@ -474,11 +474,26 @@ export function useGetUsers(initialFilter?: TableFilter): UseGetUsersResult {
 
     const page = filter?.pagination?.page || 1
     const limit = filter?.pagination?.limit || 10
-    const search = filter?.filter?.search || ''
-    const sorting = filter?.filter?.sorting
+
+    // Support both Screen's top-level `search` and nested `filter.search`
+    const search =
+      (filter as any)?.search || filter?.filter?.search || ''
+
+    // Support Screen's top-level `sort` and nested `filter.sorting`
+    const sorting: { field: string; order: string } | undefined =
+      (filter as any)?.sort?.field
+        ? (filter as any).sort
+        : filter?.filter?.sorting?.field
+          ? filter.filter.sorting
+          : undefined
+
+    // Support Screen's quick-filter (lands in filter.status via quickFilterKey)
+    const statusFilter: string =
+      (filter as any)?.filter?.status || filter?.filter?.status || ''
 
     let filtered = [...mockUsers]
 
+    // Search filter
     if (search) {
       const query = search.toLowerCase()
       filtered = filtered.filter(
@@ -490,6 +505,12 @@ export function useGetUsers(initialFilter?: TableFilter): UseGetUsersResult {
       )
     }
 
+    // Status / quick-filter
+    if (statusFilter) {
+      filtered = filtered.filter((user) => user.status === statusFilter)
+    }
+
+    // Sorting
     if (sorting?.field && sorting?.order) {
       filtered.sort((a, b) => {
         const aVal = (a as any)[sorting.field]
