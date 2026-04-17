@@ -23,7 +23,7 @@ export interface FilterConfig {
 
 export interface TableFilter {
   pagination: PaginationConfig
-  sort: SortConfig
+  sort?: SortConfig
   filter: FilterConfig
 }
 
