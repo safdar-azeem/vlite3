@@ -495,3 +495,7 @@ Follow these rules strictly to ensure visual consistency and predictable styling
 - [3-utility.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/3-utility.md)
 - [4-i18n.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/4-i18n.md)
 - [5-search-util.md](https://github.com/safdar-azeem/vlite3/blob/main/docs/5-search-util.md)
+
+## Author
+
+[safdar-azeem](https://github.com/safdar-azeem)
