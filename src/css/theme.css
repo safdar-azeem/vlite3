@@ -311,8 +311,8 @@
   --color-background: var(--color-body);
   --color-foreground: var(--color-gray-850);
 
-  --color-border: color-mix(in oklab, var(--color-mixture-1) 91%, var(--color-mixture-2));
-  --color-input: color-mix(in oklab, var(--color-mixture-1) 89%, var(--color-mixture-2));
+  --color-border: color-mix(in oklab, var(--color-mixture-1) 90%, var(--color-mixture-2));
+  --color-input: color-mix(in oklab, var(--color-mixture-1) 88%, var(--color-mixture-2));
 
   --color-scrollbar: color-mix(in oklab, var(--color-mixture-1) 80%, var(--color-mixture-2));
   --color-scrollbar-hover: color-mix(in oklab, var(--color-mixture-1) 75%, var(--color-mixture-2));
@@ -435,8 +435,8 @@
   --color-destructive: #7f1d1d;
   --color-destructive-foreground: #fafafa;
 
-  --color-border: color-mix(in oklab, var(--color-mixture-1) 89%, var(--color-mixture-2));
-  --color-input: color-mix(in oklab, var(--color-mixture-1) 89%, var(--color-mixture-2));
+  --color-border: color-mix(in oklab, var(--color-mixture-1) 88%, var(--color-mixture-2));
+  --color-input: color-mix(in oklab, var(--color-mixture-1) 88%, var(--color-mixture-2));
 
   /* Charts (Dark) */
   --color-chart-1: #818cf8;
