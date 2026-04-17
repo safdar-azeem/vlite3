@@ -22,14 +22,13 @@ const navigateToComponents = () => {
       </Badge>
 
       <h1 class="hero-title" v-scroll-reveal="{ delay: 150 }">
-        Build clean interfaces <br />
-        <span class="text-muted-foreground font-light">without the bloat.</span>
+        Build large, complex applications with confidence.
       </h1>
 
       <p class="hero-desc" v-scroll-reveal="{ delay: 300 }">
-        A comprehensive, fully open-source Vue 3 component library built on Tailwind CSS v4.
-        Designed for developers who value minimal aesthetics, semantic code, and blazing
-        performance.
+        Vlite3 delivers 80+ production-ready Vue 3 components designed for real-world enterprise
+        applications. Each component has been thoroughly tested in demanding enterprise production
+        environments, ensuring stability, scalability, and performance.
       </p>
 
       <div class="hero-actions" v-scroll-reveal="{ delay: 450 }">
@@ -81,7 +80,7 @@ const navigateToComponents = () => {
 
 /* ── Hero Section ── */
 .hero-section {
-  padding: 5rem 4rem 10rem 4rem;
+  padding: 6rem 4rem 10rem 4rem;
   text-align: center;
 }
 
@@ -89,7 +88,7 @@ const navigateToComponents = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 800px;
+  max-width: 1000px;
 }
 
 .hero-pill {
@@ -114,11 +113,11 @@ const navigateToComponents = () => {
 }
 
 .hero-title {
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-size: clamp(2.6rem, 6vw, 4.72rem);
   font-weight: 800;
-  line-height: 1.05;
+  line-height: 1.2;
   letter-spacing: -0.04em;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.4rem;
   color: var(--color-foreground);
 }
 
@@ -126,7 +125,7 @@ const navigateToComponents = () => {
   font-size: clamp(1.125rem, 2vw, 1.25rem);
   color: var(--color-muted-foreground);
   line-height: 1.6;
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto 2.5rem;
   font-weight: 400;
 }
