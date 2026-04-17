@@ -1,6 +1,12 @@
-# vlite3
+# Vlite3: The Foundation for Enterprise SaaS
 
-A lightweight Vue 3 UI component library built with Tailwind CSS, created for personal projects and available for anyone to use.
+A clean, modular, and highly customizable component library for Vue 3. Build large, complex applications with confidence. Vlite3 gives you the solid, Vlite3 delivers 80+ production-ready components designed for real-world enterprise applications. Each component has been thoroughly tested in demanding enterprise production environments, ensuring stability, scalability, and performance.
+
+Created for personal projects and available for anyone to use.
+
+## Demo
+
+[Live Demo](https://vlite3.vercel.app/)
 
 ## Installation
 
@@ -13,10 +19,6 @@ npm install vlite3
 yarn add vlite3
 
 ```
-
-## Demo
-
-[Live Demo](https://vlite3.vercel.app/)
 
 ## 2. Tailwind CSS Setup (Tailwind v4)
 
