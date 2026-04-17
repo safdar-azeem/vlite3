@@ -189,7 +189,7 @@ async function copyCode() {
 
 :deep(.dark) .preview-container,
 .dark .preview-container {
-  /* background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px); */
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
 }
 
 /* Optional minimum width enforcing */
