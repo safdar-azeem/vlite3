@@ -94,7 +94,7 @@ const handleColorChange = (color: string) => {
         }" />
     </template>
 
-    <div v-if="isOpen" class="p-2 w-max flex flex-col justify-center">
+    <div v-if="isOpen" class="p-1 w-max flex flex-col justify-center">
       <ColorIro
         :color="modelValue"
         :show-header="false"
