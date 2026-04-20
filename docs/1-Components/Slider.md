@@ -16,6 +16,7 @@
 | `icon`         | `string`                       | —       | Icon next to label   |
 | `showValue`    | `boolean`                      | `true`  | Show numerical value |
 | `size`         | `'xs' \| 'sm' \| 'md' \| 'lg'` | `md`    | Dimensions           |
+| `variant`      | `'default' \| 'solid'`         | `default`| Thumb style variant  |
 | `centerOrigin` | `boolean`                      | —       | Force bipolar mode   |
 | `orientation`  | `'horizontal' \| 'vertical'`   | `horizontal` | Slider orientation  |
 | `disabled`     | `boolean`                      | `false` | Disable interaction  |
