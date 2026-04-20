@@ -89,10 +89,10 @@ const badgeText = computed(() => {
 
 <template>
   <div :class="containerClasses" @click="handleClick">
-    <div v-if="isPopular" class="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
+    <div v-if="isPopular" class="absolute -top-3 left-1/2 -translate-x-1/2 z-20 flex w-full max-w-[90%] justify-center">
       <Badge
         :variant="badgeVariant"
-        class="shadow-sm px-4 py-1 text-xs uppercase tracking-wider font-bold">
+        class="shadow-sm px-4 py-1 text-xs uppercase tracking-wider font-bold truncate max-w-full">
         {{ badgeText }}
       </Badge>
     </div>
