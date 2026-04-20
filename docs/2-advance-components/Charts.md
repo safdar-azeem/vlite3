@@ -1,6 +1,6 @@
 # Charts
 
-Beautiful, highly customizable, zero-dependency SVG chart components for Vlite3. All charts are driven by CSS variables for seamless dark/light mode support, include entry animations, interactive tooltips, and resize responsively via `ResizeObserver`.
+Beautiful, zero-dependency SVG chart components. Fully customizable, dark mode ready, animated, and responsive. Includes Line, Bar, Pie/Donut, Circle (progress ring), Gauge (arc/ticks), Speedometer (car dashboard), Timeline, Segment Bar, Stat Card, and Waffle charts.
 
 ---
 
@@ -12,6 +12,8 @@ Beautiful, highly customizable, zero-dependency SVG chart components for Vlite3.
 | `BarChart` | Vertical or horizontal bar chart — single or multi-series grouped bars |
 | `PieChart` | Pie or donut chart with animated arc draw and optional center content |
 | `CircleChart` | Single-value progress ring (gauge) with gradient stroke |
+| `GaugeChart` | Multi-variant gauge (arc, ticks, slim, ball) with zones and needle |
+| `SpeedometerChart` | Car-dashboard-style speedometer with numbered ticks, needle, and red zone |
 | `TimelineChart` | Gantt-style horizontal timeline with task bars per person across periods |
 | `SegmentBarChart` | Single stacked horizontal bar showing proportional segments |
 | `StatCardChart` | Grid of metric cards with percentages, proportional indicators, and trends |
@@ -37,6 +39,8 @@ import LineChart       from '@/components/Chart/LineChart.vue'
 import BarChart        from '@/components/Chart/BarChart.vue'
 import PieChart        from '@/components/Chart/PieChart.vue'
 import CircleChart     from '@/components/Chart/CircleChart.vue'
+import GaugeChart      from '@/components/Chart/GaugeChart.vue'
+import SpeedometerChart from '@/components/Chart/SpeedometerChart.vue'
 import TimelineChart   from '@/components/Chart/TimelineChart.vue'
 import SegmentBarChart from '@/components/Chart/SegmentBarChart.vue'
 import StatCardChart   from '@/components/Chart/StatCardChart.vue'
@@ -614,6 +618,136 @@ A single-value animated progress ring (gauge), supporting semantic color tokens,
 
 ---
 
+## SpeedometerChart
+
+A car-dashboard-style gauge with numbered tick marks around the arc, a sweeping animated needle, glowing hub, and optional red zone. Supports four visual variants: classic, modern, sport, and minimal.
+
+### Basic Usage
+
+```vue
+<SpeedometerChart :value="120" />
+```
+
+### Props
+
+#### Data
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `number` | **required** | Current speed / value the needle points to |
+| `min` | `number` | `0` | Minimum value on the scale |
+| `max` | `number` | `240` | Maximum value on the scale |
+
+#### Visual Variant
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `variant` | `'classic' \| 'modern' \| 'sport' \| 'minimal'` | `'classic'` | Rendering style. Classic = traditional car dash, Modern = sleek with glow, Sport = aggressive with red zone effects, Minimal = clean thin design. |
+
+#### Dimensions
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `size` | `number` | `280` | SVG diameter in pixels. All labels and ticks scale proportionally. |
+| `gapAngle` | `number` | `60` | Opening gap at the bottom of the gauge arc, in degrees. |
+
+#### Colors
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `color` | `ChartColor \| string` | `'primary'` | Semantic color token or any CSS color. Controls the needle, progress arc, and hub. |
+| `needleColor` | `string` | — | Override needle color. Defaults to `'danger'` for sport variant, otherwise inherits `color`. |
+
+#### Scale
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `majorStep` | `number` | `20` | Step between major (numbered) tick labels. E.g. `20` → labels at 0, 20, 40, 60, ... |
+| `minorTicks` | `number` | `4` | Number of minor ticks between each pair of major ticks. |
+| `unit` | `string` | `'km/h'` | Unit label displayed below the value (e.g. `'mph'`, `'RPM'`, `'°C'`). |
+
+#### Labels & Display
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `showValue` | `boolean` | `true` | Show the current value in the center of the gauge. |
+| `formatValue` | `(v: number) => string` | built-in | Custom formatter for the center value display. |
+| `label` | `string` | — | Primary label rendered below the gauge SVG. |
+
+#### Red Zone
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `redZoneStart` | `number` | — | Start of the danger zone (absolute value). When set, renders a red arc segment and — in sport variant — turns the needle, value, and progress arc red when the value enters the zone. |
+
+#### Behaviour
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `animate` | `boolean` | `true` | Animate needle sweep on mount and when value changes. |
+
+### Examples
+
+```vue
+<!-- Basic speedometer -->
+<SpeedometerChart :value="120" :max="240" unit="km/h" />
+
+<!-- Sport variant with red zone -->
+<SpeedometerChart
+  :value="210"
+  variant="sport"
+  color="primary"
+  :max="260"
+  :major-step="20"
+  unit="km/h"
+  :red-zone-start="220"
+  label="Speed" />
+
+<!-- Tachometer (RPM) -->
+<SpeedometerChart
+  :value="5500"
+  :min="0" :max="8000"
+  :major-step="1000"
+  :minor-ticks="4"
+  variant="sport"
+  color="info"
+  unit="RPM"
+  :red-zone-start="6500"
+  :format-value="(v) => (v / 1000).toFixed(1)" />
+
+<!-- Temperature gauge -->
+<SpeedometerChart
+  :value="92"
+  :min="50" :max="130"
+  :major-step="10"
+  :minor-ticks="1"
+  variant="minimal"
+  color="warning"
+  unit="°C"
+  :red-zone-start="110"
+  :format-value="(v) => Math.round(v) + '°'" />
+
+<!-- Fuel gauge -->
+<SpeedometerChart
+  :value="65"
+  :min="0" :max="100"
+  :major-step="25"
+  variant="modern"
+  color="success"
+  unit="%"
+  label="Fuel Level" />
+
+<!-- Custom colors, smaller size -->
+<SpeedometerChart
+  :value="90"
+  color="#8b5cf6"
+  :size="180"
+  :max="200"
+  :major-step="40" />
+```
+
+---
+
 ## TimelineChart
 
 A Gantt-style horizontal timeline chart showing task bars per person across configurable time periods. Each person occupies their own row, with focused hover states, rounded colored bars spanning from a start to end position.
@@ -1062,6 +1196,31 @@ interface CircleChartProps {
   animate?:      boolean            // default: true
   trackColor?:   string             // default: var(--color-muted)
   lineCap?:      StrokeLineCap      // default: 'round'
+}
+
+// ─── TimelineChart ─────────────────────────────
+
+// ─── SpeedometerChart ─────────────────────────
+
+type SpeedometerVariant = 'classic' | 'modern' | 'sport' | 'minimal'
+
+interface SpeedometerChartProps {
+  value:         number             // required
+  min?:          number             // default: 0
+  max?:          number             // default: 240
+  variant?:      SpeedometerVariant // default: 'classic'
+  size?:         number             // default: 280
+  gapAngle?:     number             // default: 60
+  color?:        ChartColor         // default: 'primary'
+  needleColor?:  string
+  majorStep?:    number             // default: 20
+  minorTicks?:   number             // default: 4
+  unit?:         string             // default: 'km/h'
+  showValue?:    boolean            // default: true
+  formatValue?:  (v: number) => string
+  label?:        string
+  redZoneStart?: number
+  animate?:      boolean            // default: true
 }
 
 // ─── TimelineChart ─────────────────────────────
