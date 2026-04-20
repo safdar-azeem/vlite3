@@ -4,6 +4,7 @@ import DemoSection from '../../DemoSection.vue'
 // @ts-ignore
 import sourceCode from './VariantsDemo.vue?raw'
 import { dashboardItems } from './data'
+// dashboardItems has 2 trends (Revenue + Active Sessions) — ideal for showing the full feature set
 </script>
 
 <!-- @demo-snippet Variants -->
