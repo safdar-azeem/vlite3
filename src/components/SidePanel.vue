@@ -202,7 +202,7 @@ const displayDescription = computed(() =>
               <h3 class="text-lg font-bold text-foreground">
                 {{ displayTitle }}
               </h3>
-              <p v-if="displayDescription" class="mt-1 text-sm text-muted-foreground">
+              <p v-if="displayDescription" class="-text-fs-2 text-muted-foreground">
                 {{ displayDescription }}
               </p>
             </div>
