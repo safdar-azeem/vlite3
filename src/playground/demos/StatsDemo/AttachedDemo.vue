@@ -4,6 +4,7 @@ import DemoSection from '../../DemoSection.vue'
 // @ts-ignore
 import sourceCode from './AttachedDemo.vue?raw'
 import { dashboardItems } from './data'
+// dashboardItems has 2 trends — good for attached since it's also a full-featured showcase
 </script>
 
 <!-- @demo-snippet Attached (Fused Borders) -->
