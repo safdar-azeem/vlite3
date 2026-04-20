@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, nextTick, computed } from 'vue'
+import { ref, watch, onMounted, onUnmounted, nextTick, computed } from 'vue'
 
 interface Props {
   length?: number
@@ -16,6 +16,14 @@ interface Props {
   mask?: boolean
   // New: make inputs stretch to fill parent width equally
   fluid?: boolean
+  // Resend logic
+  allowResend?: boolean
+  resendDuration?: number
+  maxResends?: number
+  resendText?: string
+  resendActionText?: string
+  resendWaitText?: string
+  resendLimitText?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -31,16 +39,53 @@ const props = withDefaults(defineProps<Props>(), {
   size: 'md',
   mask: false,
   fluid: false,
+  allowResend: false,
+  resendDuration: 45,
+  maxResends: 5,
+  resendText: 'Don\'t see it?',
+  resendActionText: 'Resend code',
+  resendWaitText: 'Resend code in',
+  resendLimitText: 'Too many attempts. Please try again.',
 })
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void
   (e: 'complete', value: string): void
   (e: 'change', value: string): void
+  (e: 'resend', count: number): void
+  (e: 'resend-limit-reached'): void
 }>()
 
 const inputs = ref<(HTMLInputElement | null)[]>([])
 const digits = ref<string[]>(new Array(props.length).fill(''))
+
+// Resend Logic States
+const countdown = ref(props.resendDuration)
+const resendCount = ref(0)
+let countdownInterval: ReturnType<typeof setInterval> | null = null
+
+const startCountdown = () => {
+  if (countdownInterval) clearInterval(countdownInterval)
+  countdown.value = props.resendDuration
+  countdownInterval = setInterval(() => {
+    if (countdown.value > 0) {
+      countdown.value--
+    } else {
+      if (countdownInterval) clearInterval(countdownInterval)
+    }
+  }, 1000)
+}
+
+const triggerResend = () => {
+  if (resendCount.value >= props.maxResends) return
+  resendCount.value++
+  emit('resend', resendCount.value)
+  if (resendCount.value >= props.maxResends) {
+    emit('resend-limit-reached')
+  } else {
+    startCountdown()
+  }
+}
 
 // Sync from modelValue
 watch(
@@ -166,6 +211,13 @@ onMounted(() => {
       inputs.value[0]?.focus()
     })
   }
+  if (props.allowResend) {
+    startCountdown()
+  }
+})
+
+onUnmounted(() => {
+  if (countdownInterval) clearInterval(countdownInterval)
 })
 
 // Resolved input type: mask overrides number/text to password-like display
@@ -181,6 +233,13 @@ const resolvedInputMode = computed((): 'numeric' | 'text' | undefined => {
 })
 
 // Styling Computed Props
+const rootClasses = computed(() => {
+  return [
+    'flex flex-col gap-2',
+    props.fluid ? 'w-full' : 'w-fit'
+  ].filter(Boolean).join(' ')
+})
+
 const containerClasses = computed(() => {
   const gap = props.attached ? '-space-x-px' : 'gap-2'
   const width = props.fluid ? 'w-full' : ''
@@ -227,21 +286,45 @@ const inputClasses = (index: number) => {
 </script>
 
 <template>
-  <div :class="containerClasses">
-    <input
-      v-for="(digit, index) in props.length"
-      :key="index"
-      :ref="(el) => setInputRef(el, index)"
-      :value="digits[index]"
-      :type="resolvedInputType"
-      :inputmode="resolvedInputMode"
-      :maxlength="1"
-      :disabled="disabled"
-      :placeholder="placeholder"
-      :class="inputClasses(index)"
-      @input="(e) => handleInput(e, index)"
-      @keydown="(e) => handleKeyDown(e, index)"
-      @paste="handlePaste"
-      @focus="$emit('update:modelValue', digits.join(''))" />
+  <div :class="rootClasses">
+    <div :class="containerClasses">
+      <input
+        v-for="(digit, index) in props.length"
+        :key="index"
+        :ref="(el) => setInputRef(el, index)"
+        :value="digits[index]"
+        :type="resolvedInputType"
+        :inputmode="resolvedInputMode"
+        :maxlength="1"
+        :disabled="disabled"
+        :placeholder="placeholder"
+        :class="inputClasses(index)"
+        @input="(e) => handleInput(e, index)"
+        @keydown="(e) => handleKeyDown(e, index)"
+        @paste="handlePaste"
+        @focus="$emit('update:modelValue', digits.join(''))" />
+    </div>
+
+    <!-- Resend UI -->
+    <div v-if="allowResend" class="text-sm text-center text-muted-foreground mt-1">
+      <template v-if="resendCount < maxResends">
+        <span v-if="countdown > 0">
+          {{ resendText }} {{ resendWaitText }} <span class="font-medium text-primary">{{ countdown }}s</span>
+        </span>
+        <span v-else>
+          {{ resendText }}
+          <button
+            type="button"
+            @click="triggerResend"
+            class="font-medium text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary rounded px-1 transition-colors"
+          >
+            {{ resendActionText }}
+          </button>
+        </span>
+      </template>
+      <template v-else>
+        <span class="text-destructive font-medium">{{ resendLimitText }}</span>
+      </template>
+    </div>
   </div>
 </template>
