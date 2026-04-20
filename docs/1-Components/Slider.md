@@ -17,6 +17,7 @@
 | `showValue`    | `boolean`                      | `true`  | Show numerical value |
 | `size`         | `'xs' \| 'sm' \| 'md' \| 'lg'` | `md`    | Dimensions           |
 | `centerOrigin` | `boolean`                      | —       | Force bipolar mode   |
+| `orientation`  | `'horizontal' \| 'vertical'`   | `horizontal` | Slider orientation  |
 | `disabled`     | `boolean`                      | `false` | Disable interaction  |
 
 ### Events
