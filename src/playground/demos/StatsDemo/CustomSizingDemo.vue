@@ -30,7 +30,7 @@ import { analyticsItems } from './data'
       <!-- Compact -->
       <div>
         <p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
-          Compact — tighter text
+          Compact — tight text for dense UIs
         </p>
         <Stats
           :items="analyticsItems.slice(0, 2)"
