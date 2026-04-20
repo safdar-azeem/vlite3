@@ -56,10 +56,10 @@ async function copyCode() {
 
     <!-- Container -->
     <div
-      class="relative flex flex-col rounded-xl border border-border/50 bg-background shadow-sm overflow-hidden">
+      class="relative flex flex-col rounded-xl border border-border/80 dark:border-border/50 bg-background shadow-sm overflow-hidden">
       <!-- Tabs header -->
       <div
-        class="flex items-center justify-between px-3 py-2 border-b border-border/20 bg-muted/10 z-20">
+        class="flex items-center justify-between px-3 py-2 border-b border-border/80 dark:border-border/50 z-20">
         <div class="flex items-center space-x-1 p-1 rounded-lg bg-muted/30">
           <button
             class="relative inline-flex items-center justify-center whitespace-nowrap px-3 py-1.5 text-xs font-semibold rounded-md focus-visible:outline-none"
