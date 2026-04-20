@@ -17,13 +17,22 @@
 | `disabled`    | `boolean`                         | `false`   | Disable all inputs                                 |
 | `autofocus`   | `boolean`                         | `false`   | Focus first input on mount                         |
 | `mask`        | `boolean`                         | `false`   | Hide input values like a password field            |
-| `fluid`       | `boolean`                         | `false`   | Stretch inputs to fill parent container width equally |
+| `fluid`            | `boolean`                         | `false`   | Stretch inputs to fill parent container width equally |
+| `allowResend`      | `boolean`                         | `false`   | Enables the resend countdown UI                    |
+| `resendDuration`   | `number`                          | `45`      | The countdown duration in seconds                  |
+| `maxResends`       | `number`                          | `5`       | Maximum number of times a user can resend          |
+| `resendText`       | `string`                          | `'Don\'t see it?'`       | Text displayed before wait/action text   |
+| `resendActionText` | `string`                          | `'Resend code'`          | Text of the clickable action button      |
+| `resendWaitText`   | `string`                          | `'Resend code in'`       | Text displayed during countdown          |
+| `resendLimitText`  | `string`                          | `'Too many attempts...'` | Text displayed when limits are reached   |
 
 ### Events
 
 - `@update:modelValue`: Emitted on change
 - `@change`: Emitted when the joined string changes
 - `@complete`: Emitted when all fields are filled
+- `@resend`: Emitted when the user requests a new code, providing the current `count`
+- `@resend-limit-reached`: Emitted when the user surpasses the `maxResends` capacity
 
 ### Usage
 ```vue
@@ -42,4 +51,14 @@
 <div class="w-full max-w-sm">
   <OTPInput v-model="otp" mask fluid @complete="verifyOtp" />
 </div>
+
+<!-- With Resend Functionality -->
+<OTPInput 
+  v-model="otp" 
+  allow-resend
+  :resend-duration="45"
+  :max-resends="3"
+  @resend="handleResend"
+  @resend-limit-reached="handleResendLimit" 
+/>
 ```
