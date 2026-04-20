@@ -8,6 +8,7 @@ export { default as TimelineChart } from './TimelineChart.vue'
 export { default as SegmentBarChart } from './SegmentBarChart.vue'
 export { default as StatCardChart } from './StatCardChart.vue'
 export { default as WaffleChart } from './WaffleChart.vue'
+export { default as GanttChart } from './GanttChart.vue'
 
 export type {
   ChartDataPoint,
@@ -27,4 +28,7 @@ export type {
   StatCardChartProps,
   StatCardItem,
   WaffleChartProps,
+  GanttChartProps,
+  GanttTask,
+  GanttViewMode,
 } from './types'
