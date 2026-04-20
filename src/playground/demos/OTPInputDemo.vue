@@ -14,9 +14,18 @@ const code7 = ref('')
 const codeMask = ref('')
 const codeFluid = ref('')
 const codeMaskFluid = ref('')
+const codeResend = ref('')
 
 const handleComplete = (val: string) => {
 	console.log('OTP Complete:', val)
+}
+
+const handleResend = (count: number) => {
+	console.log(`OTP Resend triggered: ${count} times`)
+}
+
+const handleResendLimit = () => {
+	console.log('OTP Resend Limit Reached!')
 }
 </script>
 
@@ -201,6 +210,24 @@ const handleComplete = (val: string) => {
 							@complete="handleComplete" />
 					</div>
 					<p class="mt-2 text-sm text-gray-500">Value: {{ codeMaskFluid }}</p>
+				</div>
+			</div>
+		</DemoSection>
+
+		<!-- Resend functionality -->
+		<DemoSection title="Resend Configuration" :code="sourceCode">
+			<div class="grid gap-6">
+				<div>
+					<p class="text-sm font-medium mb-2 text-gray-600">
+						Built-in Resend (Demo: 5s countdown, max 3 attempts)
+					</p>
+					<OTPInput
+						v-model="codeResend"
+						allow-resend
+						:resend-duration="5"
+						:max-resends="3"
+						@resend="handleResend"
+						@resend-limit-reached="handleResendLimit" />
 				</div>
 			</div>
 		</DemoSection>
