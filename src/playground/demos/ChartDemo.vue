@@ -4,6 +4,7 @@ import BarChartDemo from './charts/BarChartDemo.vue'
 import PieChartDemo from './charts/PieChartDemo.vue'
 import CircleChartDemo from './charts/CircleChartDemo.vue'
 import GaugeChartDemo from './charts/GaugeChartDemo.vue'
+import SpeedometerChartDemo from './charts/SpeedometerChartDemo.vue'
 import TimelineChartDemo from './charts/TimelineChartDemo.vue'
 import SegmentBarChartDemo from './charts/SegmentBarChartDemo.vue'
 import StatCardChartDemo from './charts/StatCardChartDemo.vue'
@@ -28,6 +29,7 @@ import DashboardPreviewDemo from './charts/DashboardPreviewDemo.vue'
     <PieChartDemo />
     <CircleChartDemo />
     <GaugeChartDemo />
+    <SpeedometerChartDemo />
     <TimelineChartDemo />
     <SegmentBarChartDemo />
     <StatCardChartDemo />
