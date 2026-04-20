@@ -443,3 +443,84 @@ export interface WaffleChartProps {
   /** Enable hover tooltip */
   showTooltip?: boolean
 }
+
+// ─────────────────────────────────────────────
+// GanttChart
+// ─────────────────────────────────────────────
+
+/** View granularity for the Gantt time axis */
+export type GanttViewMode = 'day' | 'week' | 'month'
+
+/** A single task (or milestone) on the Gantt chart */
+export interface GanttTask {
+  /** Unique identifier for this task */
+  id: string
+  /** Display name shown in the row label */
+  name: string
+  /** Start date (Date object or ISO string) */
+  start: Date | string
+  /** End date (Date object or ISO string) */
+  end: Date | string
+  /** Percentage complete (0–100). Renders a filled overlay inside the bar */
+  progress?: number
+  /** CSS color for this task bar. Falls back to palette rotation */
+  color?: string
+  /** Group label — tasks sharing the same group are visually grouped */
+  group?: string
+  /** IDs of tasks this task depends on. Renders dependency arrows */
+  dependencies?: string[]
+  /** If true, renders as a diamond milestone marker instead of a bar */
+  milestone?: boolean
+}
+
+export interface GanttChartProps {
+  // ── Core data ──────────────────────────────────
+  /** Array of task objects */
+  tasks: GanttTask[]
+
+  // ── View mode ─────────────────────────────────
+  /** Time axis granularity */
+  viewMode?: GanttViewMode
+
+  // ── Dimensions ───────────────────────────────
+  /** Total chart height in px (auto-expands if more rows) */
+  height?: number
+  /** Height of each task row in px */
+  rowHeight?: number
+  /** Corner radius per task bar */
+  barRadius?: number
+  /** Task bar height within the row (should be ≤ rowHeight) */
+  barHeight?: number
+  /** Width of the left task-name sidebar in px */
+  sidebarWidth?: number
+
+  // ── Visual toggles ───────────────────────────
+  /** Show dashed vertical grid lines */
+  showGrid?: boolean
+  /** Enable hover tooltip */
+  showTooltip?: boolean
+  /** Show task name labels inside bars when wide enough */
+  showLabels?: boolean
+  /** Show progress fill inside task bars */
+  showProgress?: boolean
+  /** Render dependency arrows between tasks */
+  showDependencies?: boolean
+  /** Show a vertical "today" marker line */
+  showTodayLine?: boolean
+  /** Show the top date axis header */
+  showHeader?: boolean
+
+  // ── Animation ────────────────────────────────
+  /** Play an entry animation on mount */
+  animate?: boolean
+
+  // ── Colors ───────────────────────────────────
+  /** Custom color palette (cycles for tasks without explicit color) */
+  colors?: string[]
+  /** Color for the "today" marker line */
+  todayColor?: string
+
+  // ── Formatting ───────────────────────────────
+  /** Locale string for date formatting (e.g. 'en-US') */
+  locale?: string
+}
