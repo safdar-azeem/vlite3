@@ -287,7 +287,7 @@ const updateImportData = (val: any[]) => {
 
     <template #default="{ close }">
       <div class="px-2">
-        <Timeline :steps="timelineSteps" :active-step="currentStep - 1" class="mb-13" />
+        <Timeline :steps="timelineSteps" :active-step="currentStep - 1" class="mb-8" />
 
         <div class="min-h-[300px]">
           <ImportStep1
