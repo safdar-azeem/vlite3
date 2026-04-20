@@ -3,6 +3,7 @@ export { default as BarChart } from './BarChart.vue'
 export { default as PieChart } from './PieChart.vue'
 export { default as CircleChart } from './CircleChart.vue'
 export { default as GaugeChart } from './GaugeChart.vue'
+export { default as SpeedometerChart } from './SpeedometerChart.vue'
 export { default as TimelineChart } from './TimelineChart.vue'
 export { default as SegmentBarChart } from './SegmentBarChart.vue'
 export { default as StatCardChart } from './StatCardChart.vue'
@@ -18,6 +19,8 @@ export type {
   GaugeChartProps,
   GaugeVariant,
   GaugeZone,
+  SpeedometerChartProps,
+  SpeedometerVariant,
   TimelineChartProps,
   TimelineTask,
   SegmentBarChartProps,
