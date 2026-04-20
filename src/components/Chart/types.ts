@@ -261,6 +261,68 @@ export interface GaugeChartProps {
 }
 
 // ─────────────────────────────────────────────
+// SpeedometerChart
+// ─────────────────────────────────────────────
+
+/** Visual rendering mode for SpeedometerChart */
+export type SpeedometerVariant = 'classic' | 'modern' | 'sport' | 'minimal'
+
+export interface SpeedometerChartProps {
+  // ── Core data ──────────────────────────────────
+  /** Current speed / value */
+  value: number
+  /** Minimum value on the scale */
+  min?: number
+  /** Maximum value on the scale (default 240) */
+  max?: number
+
+  // ── Visual variant ────────────────────────────
+  /**
+   * classic — Traditional car speedometer with full tick marks and numbers
+   * modern — Sleek speedometer with glowing accents
+   * sport  — Racing-style with red-zone, aggressive ticks
+   * minimal — Clean minimal speedometer with fewer markings
+   */
+  variant?: SpeedometerVariant
+
+  // ── Dimensions ───────────────────────────────
+  /** SVG bounding diameter in px */
+  size?: number
+  /** Opening gap at the bottom, in degrees (default 60) */
+  gapAngle?: number
+
+  // ── Colors ───────────────────────────────────
+  /** Semantic color name ('primary', 'success', etc.) or any CSS color */
+  color?: ChartColor
+  /** Needle color — defaults to 'danger' for sport, color for others */
+  needleColor?: string
+
+  // ── Scale ────────────────────────────────────
+  /** Step between major tick labels (e.g. 20 → 0, 20, 40, 60, ...) */
+  majorStep?: number
+  /** Number of minor ticks between major ticks */
+  minorTicks?: number
+  /** Unit label (e.g. 'km/h', 'mph', 'RPM') */
+  unit?: string
+
+  // ── Labels ───────────────────────────────────
+  /** Show the current value in the center */
+  showValue?: boolean
+  /** Custom value formatter */
+  formatValue?: (v: number) => string
+  /** Primary label below the chart */
+  label?: string
+
+  // ── Red Zone ─────────────────────────────────
+  /** Start of the danger zone (absolute value). Rendered in red. */
+  redZoneStart?: number
+
+  // ── Animation ────────────────────────────────
+  /** Animate needle sweep on mount and value change */
+  animate?: boolean
+}
+
+// ─────────────────────────────────────────────
 // TimelineChart
 // ─────────────────────────────────────────────
 
