@@ -3,7 +3,8 @@ import Stats from '@/components/Stats/Stats.vue'
 import DemoSection from '../../DemoSection.vue'
 // @ts-ignore
 import sourceCode from './IconStyleDemo.vue?raw'
-import { analyticsItems, dashboardItems } from './data'
+import { analyticsItems, metricsItems } from './data'
+// Clean datasets — focus is on icon shape/style, not data decoration.
 </script>
 
 <!-- @demo-snippet Icon Box Shape & Style -->
@@ -28,7 +29,7 @@ import { analyticsItems, dashboardItems } from './data'
       <!-- Styles -->
       <div>
         <p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">Transparent icon box</p>
-        <Stats :items="dashboardItems" layout="icon-left" variant="outline" icon-box-style="transparent" />
+        <Stats :items="metricsItems" layout="icon-left" variant="outline" icon-box-style="transparent" />
       </div>
       <div>
         <p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">Transparent · Full-Rounded · Title-Top-Icon-Bottom-Right</p>
