@@ -44,5 +44,14 @@ const val3 = ref(0)
 
       <Slider label="Disabled" :model-value="30" disabled />
     </DemoSection>
+
+    <DemoSection title="Vertical Orientation" :code="sourceCode">
+      <div class="flex gap-10 h-[200px] mb-8">
+        <Slider label="Vol" orientation="vertical" v-model="val1" icon="lucide:volume-2" />
+        <Slider label="Bal" orientation="vertical" :min="-50" :max="50" v-model="val3" />
+        <Slider orientation="vertical" size="sm" v-model="val1" />
+        <Slider label="Disabled" orientation="vertical" :model-value="30" disabled />
+      </div>
+    </DemoSection>
   </div>
 </template>
