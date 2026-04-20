@@ -18,6 +18,7 @@ const props = withDefaults(
     centerOrigin?: boolean
     size?: 'xs' | 'sm' | 'md' | 'lg'
     orientation?: 'horizontal' | 'vertical'
+    variant?: 'default' | 'solid'
   }>(),
   {
     min: 0,
@@ -28,6 +29,7 @@ const props = withDefaults(
     centerOrigin: undefined,
     size: 'md',
     orientation: 'horizontal',
+    variant: 'default',
   }
 )
 
@@ -262,11 +264,14 @@ const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : pro
       ></div>
 
       <div
-        class="absolute bg-background border border-border shadow-sm rounded-full pointer-events-none transition-transform duration-100 ease-out z-10"
+        class="absolute rounded-full pointer-events-none transition-transform duration-100 ease-out z-10"
         :class="[
+          props.variant === 'solid' ? 'bg-primary' : 'bg-background border border-border shadow-sm',
           {
-            'border-primary shadow-md scale-110': isDragging,
-            'border-primary': isModified,
+            'border-primary shadow-md scale-110': isDragging && props.variant !== 'solid',
+            'scale-110': isDragging && props.variant === 'solid',
+            'border-primary': isModified && props.variant !== 'solid',
+            'bg-muted-foreground': disabled && props.variant === 'solid',
           },
           sizeClasses.thumb,
           props.orientation === 'vertical'
