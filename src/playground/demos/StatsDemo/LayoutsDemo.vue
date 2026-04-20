@@ -3,7 +3,8 @@ import Stats from '@/components/Stats/Stats.vue'
 import DemoSection from '../../DemoSection.vue'
 // @ts-ignore
 import sourceCode from './LayoutsDemo.vue?raw'
-import { dashboardItems, analyticsItems, inlineItems } from './data'
+import { metricsItems, analyticsItems, inlineItems } from './data'
+// All clean datasets — no trends. Focus is on the layout, not the data.
 </script>
 
 <!-- @demo-snippet Layouts -->
@@ -14,7 +15,7 @@ import { dashboardItems, analyticsItems, inlineItems } from './data'
       <!-- Icon Left (default) -->
       <div>
         <p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">Icon Left (default)</p>
-        <Stats :items="dashboardItems" layout="icon-left" variant="outline" />
+        <Stats :items="metricsItems" layout="icon-left" variant="outline" />
       </div>
 
       <!-- Icon Right -->
@@ -32,25 +33,25 @@ import { dashboardItems, analyticsItems, inlineItems } from './data'
       <!-- Title Top / Icon Bottom-Right -->
       <div>
         <p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">Title Top · Icon Bottom-Right</p>
-        <Stats :items="dashboardItems" layout="title-top-icon-bottom-right" variant="outline" />
+        <Stats :items="metricsItems" layout="title-top-icon-bottom-right" variant="outline" />
       </div>
 
       <!-- Centered Value/Title -->
       <div>
         <p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">Centered Value &amp; Title</p>
-        <Stats :items="dashboardItems" layout="centered-value-title" variant="outline" />
+        <Stats :items="metricsItems" layout="centered-value-title" variant="outline" />
       </div>
 
       <!-- Floating Icon -->
       <div>
         <p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">Floating Icon (absolute top-right)</p>
-        <Stats :items="dashboardItems" layout="floating-icon" variant="shadow" />
+        <Stats :items="metricsItems" layout="floating-icon" variant="shadow" />
       </div>
 
       <!-- Split Bar -->
       <div>
         <p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">Split Bar (color-accent left border)</p>
-        <Stats :items="dashboardItems" layout="split-bar" variant="outline" />
+        <Stats :items="metricsItems" layout="split-bar" variant="outline" />
       </div>
 
       <!-- Inline Label-Value -->
