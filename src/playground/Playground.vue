@@ -110,6 +110,7 @@ const menuItems: SidebarMenuItemSchema[] = [
     children: [
       { label: 'Stats', to: '/components/stats', icon: 'lucide:bar-chart-2' },
       { label: 'Charts', to: '/components/chart', icon: 'lucide:chart-line' },
+      { label: 'Gantt Chart', to: '/components/ganttchart', icon: 'lucide:gantt-chart' },
       { label: 'Heatmap', to: '/components/heatmap', icon: 'lucide:activity' },
       { label: 'ProgressBar', to: '/components/progressbar', icon: 'lucide:bar-chart-3' },
       { label: 'Price', to: '/components/price', icon: 'lucide:circle-dollar-sign' },
