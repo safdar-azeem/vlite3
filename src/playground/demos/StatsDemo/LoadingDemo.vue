@@ -3,7 +3,7 @@ import Stats from '@/components/Stats/Stats.vue'
 import DemoSection from '../../DemoSection.vue'
 // @ts-ignore
 import sourceCode from './LoadingDemo.vue?raw'
-import { dashboardItems, inlineItems } from './data'
+import { metricsItems, inlineItems } from './data'
 </script>
 
 <!-- @demo-snippet Loading State -->
@@ -12,7 +12,7 @@ import { dashboardItems, inlineItems } from './data'
     <div class="space-y-6 w-full">
       <div>
         <p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">Outline · Loading</p>
-        <Stats :items="dashboardItems" variant="outline" loading />
+        <Stats :items="metricsItems" variant="outline" loading />
       </div>
       <div>
         <p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">Inline Label-Value · Attached · Loading</p>
