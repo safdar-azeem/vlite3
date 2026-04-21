@@ -11,13 +11,15 @@ import type { GanttTask } from '@/components/Chart/types'
 const tasks = ref([...initialTasks])
 
 function onTaskUpdate(task: GanttTask, changes: { start: Date; end: Date }) {
-  const idx = tasks.value.findIndex(t => t.id === task.id)
+  const newTasks = [...tasks.value]
+  const idx = newTasks.findIndex(t => t.id === task.id)
   if (idx < 0) return
-  tasks.value[idx] = {
-    ...tasks.value[idx],
+  newTasks[idx] = {
+    ...newTasks[idx],
     start: changes.start.toISOString().slice(0, 10),
     end: changes.end.toISOString().slice(0, 10),
   }
+  tasks.value = newTasks
 }
 
 function resetTasks() {
@@ -38,6 +40,7 @@ const opts = ref({
   showHeader: true,
   animate: true,
   draggable: true,
+  cascadeDependencies: false,
 })
 
 const controls = [
@@ -50,6 +53,7 @@ const controls = [
   { key: 'showHeader',       label: 'Header',        type: 'toggle' as const },
   { key: 'animate',          label: 'Animate',       type: 'toggle' as const },
   { key: 'draggable',        label: 'Drag & Drop',   type: 'toggle' as const },
+  { key: 'cascadeDependencies', label: 'Cascade Move', type: 'toggle' as const },
   { key: 'barRadius',        label: 'Bar Radius',    type: 'slider' as const, min: 0, max: 16, step: 1 },
   { key: 'barHeight',        label: 'Bar Height',    type: 'slider' as const, min: 16, max: 40, step: 2 },
   { key: 'rowHeight',        label: 'Row Height',    type: 'slider' as const, min: 32, max: 60, step: 2 },
@@ -128,6 +132,7 @@ function onTaskClick(task: GanttTask) {
             :show-header="opts.showHeader as boolean"
             :animate="opts.animate as boolean"
             :draggable="opts.draggable as boolean"
+            :cascade-dependencies="opts.cascadeDependencies as boolean"
             @task-click="onTaskClick"
             @task-update="onTaskUpdate" />
         </div>
