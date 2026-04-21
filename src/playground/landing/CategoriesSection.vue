@@ -27,7 +27,7 @@ const categories = [
   {
     title: 'Data Display',
     icon: 'lucide:layout-template',
-    count: 16,
+    count: 17,
     desc: 'Powerful components to cleanly organize and present your complex datasets.',
     items: [
       'DataTable',
@@ -36,6 +36,7 @@ const categories = [
       'Heatmap',
       'Charts',
       'Timeline',
+      'Gantt Chart',
       'Stats',
       'Avatar',
     ],
