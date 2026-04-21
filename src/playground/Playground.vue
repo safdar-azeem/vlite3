@@ -147,6 +147,7 @@ const menuItems: SidebarMenuItemSchema[] = [
       { label: 'Splitter', to: '/components/splitter', icon: 'lucide:columns' },
       { label: 'Masonry Grid', to: '/components/masonry', icon: 'lucide:layout-dashboard' },
       { label: 'Carousel', to: '/components/carousel', icon: 'lucide:gallery-horizontal' },
+      { label: 'Image Comparison', to: '/components/image-comparison', icon: 'lucide:image-minus' },
     ],
   },
   {
