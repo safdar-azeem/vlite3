@@ -527,4 +527,6 @@ export interface GanttChartProps {
   // ── Interactivity ────────────────────────────
   /** Allow drag-and-drop to move/resize tasks */
   draggable?: boolean
+  /** When moving a task, also shift all dependent tasks recursively */
+  cascadeDependencies?: boolean
 }
