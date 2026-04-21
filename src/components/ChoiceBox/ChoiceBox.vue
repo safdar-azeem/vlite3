@@ -297,7 +297,7 @@ const radioDotClass = computed(() => props.size === 'sm' ? 'h-2 w-2' : props.siz
                 class="mt-0.5 leading-relaxed transition-colors"
                 :class="[
                   descSizeClass, 
-                  isSelected(option.id) && variant === '5' && !lineThroughOnSelect ? 'text-primary-foreground/80' : 'text-muted-foreground',
+                  'text-muted-foreground',
                   lineThroughOnSelect && isSelected(option.id) ? 'line-through opacity-50' : ''
                 ]">
                 {{ getOptionDesc(option) }}
