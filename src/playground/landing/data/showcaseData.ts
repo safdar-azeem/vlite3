@@ -126,6 +126,12 @@ export const allComponents = [
     link: '/components/toast',
     previewType: 'toast',
   },
+  {
+    name: 'Data Table',
+    desc: 'Advanced data grids with sorting, selection, and pagination.',
+    link: '/components/datatable',
+    previewType: 'datatable',
+  },
   // 6 Newly Added Advanced Components
   {
     name: 'App Shell',
