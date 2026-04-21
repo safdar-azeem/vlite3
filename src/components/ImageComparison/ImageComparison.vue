@@ -109,7 +109,7 @@ const containerStyle = computed(() => {
     <!-- After Label -->
     <div
       v-if="afterLabel"
-      class="absolute top-4 right-4 bg-[#4846468d] px-3 py-1 -text-fs-4 rounded-full text-sm font-medium text-white transition-opacity duration-300 pointer-events-none"
+      class="absolute top-4 right-4 bg-[#4846468d] px-3 py-1 -text-fs-4 rounded-full text-sm font-medium text-[white] transition-opacity duration-300 pointer-events-none"
       :class="sliderPosition > 80 ? 'opacity-0' : 'opacity-100'">
       {{ afterLabel }}
     </div>
@@ -128,7 +128,7 @@ const containerStyle = computed(() => {
     <!-- Before Label -->
     <div
       v-if="beforeLabel"
-      class="absolute top-4 left-4 bg-[#4846468d] px-3 py-1 -text-fs-4 rounded-full text-sm font-medium text-white transition-opacity duration-300 pointer-events-none z-10"
+      class="absolute top-4 left-4 bg-[#4846468d] px-3 py-1 -text-fs-4 rounded-full text-sm font-medium text-[white] transition-opacity duration-300 pointer-events-none z-10"
       :class="sliderPosition < 20 ? 'opacity-0' : 'opacity-100'">
       {{ beforeLabel }}
     </div>
@@ -142,17 +142,17 @@ const containerStyle = computed(() => {
         willChange: 'transform',
       }">
       <!-- Top Line -->
-      <div class="w-px h-full bg-white/70"></div>
+      <div class="w-px h-full bg-[white]"></div>
 
       <!-- Handle Knob (Transparent) -->
       <div
-        class="w-7 h-7 border-[1.5px] border-white/70 rounded-full flex-shrink-0 flex items-center justify-center transform transition-all duration-200"
-        :class="[isDragging ? 'scale-110 bg-white/10' : 'group-hover:scale-105', handleClass]">
-        <Icon icon="lucide:chevrons-left-right" class="w-4 h-4 text-white/90" v-once />
+        class="w-7 h-7 border-[1.5px] border-[white] rounded-full flex-shrink-0 flex items-center justify-center transform transition-all duration-200"
+        :class="[isDragging ? 'scale-110 ' : 'group-hover:scale-105', handleClass]">
+        <Icon icon="lucide:chevrons-left-right" class="w-4 h-4 text-[white]" v-once />
       </div>
 
       <!-- Bottom Line -->
-      <div class="w-px h-full bg-white/70"></div>
+      <div class="w-px h-full bg-[white]"></div>
     </div>
   </div>
 </template>
