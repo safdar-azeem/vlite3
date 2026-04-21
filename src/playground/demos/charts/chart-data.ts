@@ -180,7 +180,9 @@ export const waffleMultiData = [
 
 // ─── Gantt Chart Data ─────────────────────────
 
-export const ganttTasks = [
+import type { GanttTask } from '@/components/Chart/types'
+
+export const ganttTasks: GanttTask[] = [
   {
     id: 'task-1',
     name: 'Research & Planning',
