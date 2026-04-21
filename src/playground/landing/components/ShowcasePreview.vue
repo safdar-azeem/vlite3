@@ -614,6 +614,106 @@ defineProps<{
   </div>
 
   <div
+    v-else-if="previewType === 'screen'"
+    class="w-full max-w-[240px] h-[140px] border border-border rounded-xl bg-background shadow-md overflow-hidden flex flex-col cursor-default text-[6px]">
+    
+    <!-- Top Header & Toolbar -->
+    <div class="px-2 pt-2 flex justify-between items-start shrink-0">
+      <div class="flex flex-col gap-0.5">
+        <div class="flex items-center gap-1">
+          <span class="text-[8px] font-bold text-foreground">Users Directory</span>
+          <Icon icon="lucide:info" class="w-2 h-2 text-muted-foreground/60" />
+        </div>
+        <div class="w-16 h-[2.5px] bg-muted-foreground/20 rounded mt-0.5"></div>
+        <div class="w-12 h-[2.5px] bg-muted-foreground/20 rounded mt-[1px]"></div>
+      </div>
+      <div class="flex items-center gap-0.5 mt-0.5">
+        <!-- Toolbar items -->
+        <div class="flex items-center border border-border rounded-[2.5px] p-[1.5px] gap-[1px]">
+           <div class="w-[7px] h-[7px] bg-muted rounded-[1px] flex items-center justify-center">
+             <Icon icon="lucide:list" class="w-1.5 h-1.5 text-foreground" />
+           </div>
+           <div class="w-[7px] h-[7px] rounded-[1px] flex items-center justify-center">
+             <Icon icon="lucide:grid" class="w-1.5 h-1.5 text-muted-foreground/60" />
+           </div>
+        </div>
+        <!-- Search bar -->
+        <div class="w-10 h-[12px] rounded-[2.5px] border border-border flex items-center px-1 ml-0.5">
+          <Icon icon="lucide:search" class="w-[7px] h-[7px] text-muted-foreground/50" />
+        </div>
+        <!-- Add button -->
+        <div class="px-1.5 h-[12px] rounded-[2.5px] bg-foreground flex items-center gap-0.5">
+          <Icon icon="lucide:plus" class="w-2 h-2 text-background" />
+          <span class="text-[4px] text-background font-bold tracking-wide">Add</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Tabs -->
+    <div class="flex px-2 mt-2 gap-2 border-b border-border/40 shrink-0 text-muted-foreground font-medium">
+      <div class="text-foreground border-b-[1.5px] border-foreground pb-0.5">All</div>
+      <div class="pb-0.5">Active</div>
+      <div class="pb-0.5">Inactive</div>
+    </div>
+
+    <!-- Table Header -->
+    <div class="flex items-center px-2 py-1 bg-muted/20 border-b border-border/40 text-[4px] font-bold text-muted-foreground shrink-0 uppercase tracking-wider gap-1">
+      <div class="w-1.5 h-1.5 rounded-[1px] border border-border shrink-0"></div>
+      <div class="w-[45px] ml-1">USER</div>
+      <div class="flex-1">EMAIL</div>
+      <div class="w-8 text-center shrink-0">STATUS</div>
+    </div>
+
+    <!-- Table Body -->
+    <div class="flex-1 overflow-hidden flex flex-col text-[5px]">
+      <!-- Row 1 -->
+      <div class="flex items-center px-2 py-1 border-b border-border/30 gap-1 shrink-0">
+        <div class="w-1.5 h-1.5 rounded-[1px] border border-border shrink-0"></div>
+        <div class="w-[45px] flex items-center gap-1 ml-1 shrink-0">
+           <div class="w-3.5 h-3.5 rounded-full bg-primary/20 shrink-0"></div>
+           <div class="w-7 h-[2.5px] bg-foreground/80 rounded"></div>
+        </div>
+        <div class="flex-1">
+           <div class="w-12 h-[2px] bg-muted-foreground/40 rounded"></div>
+        </div>
+        <div class="w-8 shrink-0 flex justify-center">
+           <div class="w-5 h-[6px] bg-success/20 text-success-fg rounded-[2px] flex items-center justify-center font-bold text-[3px]">Active</div>
+        </div>
+      </div>
+      <!-- Row 2 -->
+      <div class="flex items-center px-2 py-1 border-b border-border/30 gap-1 shrink-0 bg-muted/10">
+        <div class="w-1.5 h-1.5 rounded-[1px] border border-border shrink-0 bg-primary border-primary flex items-center justify-center">
+          <Icon icon="lucide:check" class="w-1 h-1 text-primary-foreground" />
+        </div>
+        <div class="w-[45px] flex items-center gap-1 ml-1 shrink-0">
+           <div class="w-3.5 h-3.5 rounded-full bg-orange-500/20 shrink-0"></div>
+           <div class="w-8 h-[2.5px] bg-foreground/80 rounded"></div>
+        </div>
+        <div class="flex-1">
+           <div class="w-14 h-[2px] bg-muted-foreground/40 rounded"></div>
+        </div>
+        <div class="w-8 shrink-0 flex justify-center">
+           <div class="w-5 h-[6px] bg-muted text-muted-foreground rounded-[2px] flex items-center justify-center font-bold text-[3px]">Pndg</div>
+        </div>
+      </div>
+      <!-- Row 3 -->
+      <div class="flex items-center px-2 py-1 gap-1 shrink-0">
+        <div class="w-1.5 h-1.5 rounded-[1px] border border-border shrink-0"></div>
+        <div class="w-[45px] flex items-center gap-1 ml-1 shrink-0">
+           <div class="w-3.5 h-3.5 rounded-full bg-blue-500/20 shrink-0"></div>
+           <div class="w-6 h-[2.5px] bg-foreground/80 rounded"></div>
+        </div>
+        <div class="flex-1">
+           <div class="w-10 h-[2px] bg-muted-foreground/40 rounded"></div>
+        </div>
+        <div class="w-8 shrink-0 flex justify-center">
+           <div class="w-5 h-[6px] bg-success/20 text-success-fg rounded-[2px] flex items-center justify-center font-bold text-[3px]">Active</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
     v-else-if="previewType === 'datatable'"
     class="w-full max-w-[240px] border border-border rounded-sm shadow-sm bg-background overflow-hidden flex flex-col">
     <div class="flex items-center gap-2 bg-muted/50 border-b border-border px-2 py-1.5">
