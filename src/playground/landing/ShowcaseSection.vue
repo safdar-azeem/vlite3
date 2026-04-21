@@ -862,20 +862,27 @@ const dummyAvatarItems = [
               <div
                 v-else-if="comp.previewType === 'thumbnailselector'"
                 class="w-full max-w-[200px] flex flex-col gap-2">
-                <div class="w-full h-24 rounded-xl bg-muted border border-border flex items-center justify-center overflow-hidden relative shadow-sm group-hover:shadow-md transition-shadow">
-                  <Icon icon="lucide:mountain-snow" class="w-8 h-8 text-muted-foreground/60 stroke-[1.5]" />
+                <div
+                  class="w-full h-24 rounded-xl bg-muted border border-border flex items-center justify-center overflow-hidden relative shadow-sm">
+                  <Icon
+                    icon="lucide:mountain-snow"
+                    class="w-8 h-8 text-muted-foreground/60 stroke-[1.5]" />
                 </div>
                 <div class="flex gap-2 justify-between">
-                  <div class="w-12 h-10 rounded-lg ring-2 ring-primary ring-offset-1 ring-offset-background bg-muted border-none overflow-hidden relative flex items-center justify-center shadow-sm">
+                  <div
+                    class="w-12 h-10 rounded-lg ring-2 ring-primary ring-offset-1 ring-offset-background bg-muted border-none overflow-hidden relative flex items-center justify-center shadow-sm">
                     <Icon icon="lucide:mountain-snow" class="w-4 h-4 text-foreground/80" />
                   </div>
-                  <div class="w-12 h-10 rounded-lg border border-border bg-background overflow-hidden opacity-70 flex items-center justify-center hover:opacity-100 transition-opacity">
+                  <div
+                    class="w-12 h-10 rounded-lg border border-border bg-background overflow-hidden opacity-70 flex items-center justify-center">
                     <Icon icon="lucide:leaf" class="w-4 h-4 text-muted-foreground/70" />
                   </div>
-                  <div class="w-12 h-10 rounded-lg border border-border bg-background overflow-hidden opacity-70 flex items-center justify-center hover:opacity-100 transition-opacity">
+                  <div
+                    class="w-12 h-10 rounded-lg border border-border bg-background overflow-hidden opacity-70 flex items-center justify-center">
                     <Icon icon="lucide:sun" class="w-4 h-4 text-muted-foreground/70" />
                   </div>
-                  <div class="w-12 h-10 rounded-lg border border-border bg-muted/50 overflow-hidden flex items-center justify-center hover:bg-muted transition-colors">
+                  <div
+                    class="w-12 h-10 rounded-lg border border-border bg-muted/50 overflow-hidden flex items-center justify-center">
                     <span class="text-[10px] font-semibold text-muted-foreground">+3</span>
                   </div>
                 </div>
@@ -886,17 +893,22 @@ const dummyAvatarItems = [
                 v-else-if="comp.previewType === 'timeline'"
                 class="w-full max-w-[180px] flex flex-col items-start gap-0 relative isolate">
                 <!-- Background dashed line connecting the nodes -->
-                <div class="absolute left-3 top-2 bottom-2 w-px border-l-2 border-dashed border-border -z-10"></div>
-                
+                <div
+                  class="absolute left-3 top-2 bottom-2 w-px border-l-2 border-dashed border-border -z-10"></div>
+
                 <!-- Node 1 -->
                 <div class="flex gap-2 w-full mb-3">
-                  <div class="w-6 h-6 rounded-full bg-foreground text-background flex items-center justify-center text-[10px] font-bold shrink-0 shadow-sm ring-4 ring-background z-10">1</div>
+                  <div
+                    class="w-6 h-6 rounded-full bg-foreground text-background flex items-center justify-center text-[10px] font-bold shrink-0 shadow-sm ring-4 ring-background z-10">
+                    1
+                  </div>
                   <div class="flex flex-col gap-1 w-full pt-1">
                     <div class="flex justify-between items-center w-full">
                       <div class="h-2 bg-foreground/90 rounded-sm w-8"></div>
                       <div class="h-2 bg-muted-foreground/30 rounded-xl w-10"></div>
                     </div>
-                    <div class="h-10 border border-border bg-background rounded-md shadow-sm mt-0.5 p-1.5 flex gap-1.5 items-center">
+                    <div
+                      class="h-10 border border-border bg-background rounded-md shadow-sm mt-0.5 p-1.5 flex gap-1.5 items-center">
                       <div class="w-6 h-6 rounded bg-muted"></div>
                       <div class="space-y-1">
                         <div class="h-1.5 bg-foreground/70 rounded w-12"></div>
@@ -908,7 +920,10 @@ const dummyAvatarItems = [
 
                 <!-- Node 2 -->
                 <div class="flex gap-2 w-full mb-3">
-                  <div class="w-6 h-6 rounded-full bg-foreground text-background flex items-center justify-center text-[10px] font-bold shrink-0 shadow-sm ring-4 ring-background z-10">2</div>
+                  <div
+                    class="w-6 h-6 rounded-full bg-foreground text-background flex items-center justify-center text-[10px] font-bold shrink-0 shadow-sm ring-4 ring-background z-10">
+                    2
+                  </div>
                   <div class="flex flex-col gap-1 w-full pt-1">
                     <div class="flex justify-between items-center w-full">
                       <div class="h-2 bg-foreground/90 rounded-sm w-12"></div>
@@ -919,7 +934,10 @@ const dummyAvatarItems = [
 
                 <!-- Node 3 -->
                 <div class="flex gap-2 w-full">
-                  <div class="w-6 h-6 rounded-full bg-muted border border-border text-muted-foreground flex items-center justify-center text-[10px] font-bold shrink-0 ring-4 ring-background z-10">3</div>
+                  <div
+                    class="w-6 h-6 rounded-full bg-muted border border-border text-muted-foreground flex items-center justify-center text-[10px] font-bold shrink-0 ring-4 ring-background z-10">
+                    3
+                  </div>
                   <div class="flex flex-col gap-1 w-full pt-1">
                     <div class="flex justify-between items-center w-full">
                       <div class="h-2 bg-foreground/50 rounded-sm w-10"></div>
@@ -935,20 +953,29 @@ const dummyAvatarItems = [
                 class="w-full max-w-[200px] flex flex-col items-center gap-2 overflow-hidden py-1">
                 <div class="relative w-full h-20 flex items-center justify-center">
                   <!-- Prev Slide (cut off) -->
-                  <div class="absolute left-[-20px] w-14 h-16 rounded-lg bg-muted border border-border opacity-60 flex items-center justify-center"><Icon icon="lucide:image" class="w-5 h-5 text-muted-foreground/40" /></div>
+                  <div
+                    class="absolute left-[-20px] w-12 h-16 rounded-lg bg-muted border border-border opacity-60 flex items-center justify-center">
+                    <Icon icon="lucide:image" class="w-5 h-5 text-muted-foreground/40" />
+                  </div>
                   <!-- Main Slide -->
-                  <div class="relative w-[120px] h-20 rounded-xl bg-background border border-border shadow-sm flex flex-col items-center justify-center overflow-hidden z-10 transition-transform group-hover:scale-105">
+                  <div
+                    class="relative w-[130px] h-20 rounded-xl bg-background border border-border shadow-sm flex flex-col items-center justify-center overflow-hidden z-10">
                     <Icon icon="lucide:image" class="w-8 h-8 text-muted-foreground/50" />
                     <!-- Arrows -->
-                    <div class="absolute left-1 w-5 h-5 rounded-full bg-muted flex items-center justify-center shadow-sm border border-border/80">
-                      <Icon icon="lucide:chevron-left" class="w-3 h-3 text-foreground" />
+                    <div
+                      class="absolute left-1 w-5 h-5 rounded-full bg-muted flex items-center justify-center shadow-sm border border-border/80">
+                      <Icon icon="lucide:chevron-left" class="w-3 h-3 text-gray-600" />
                     </div>
-                    <div class="absolute right-1 w-5 h-5 rounded-full bg-muted flex items-center justify-center shadow-sm border border-border/80">
-                      <Icon icon="lucide:chevron-right" class="w-3 h-3 text-foreground" />
+                    <div
+                      class="absolute right-1 w-5 h-5 rounded-full bg-muted flex items-center justify-center shadow-sm border border-border/80">
+                      <Icon icon="lucide:chevron-right" class="w-3 h-3 text-gray-600" />
                     </div>
                   </div>
                   <!-- Next Slide (cut off) -->
-                  <div class="absolute right-[-20px] w-14 h-16 rounded-lg bg-muted border border-border opacity-60 flex items-center justify-center"><Icon icon="lucide:image" class="w-5 h-5 text-muted-foreground/40" /></div>
+                  <div
+                    class="absolute right-[-20px] w-12 h-16 rounded-lg bg-muted border border-border opacity-60 flex items-center justify-center">
+                    <Icon icon="lucide:image" class="w-5 h-5 text-muted-foreground/40" />
+                  </div>
                 </div>
                 <!-- Pagination Dots -->
                 <div class="flex gap-1.5 mt-0.5">
