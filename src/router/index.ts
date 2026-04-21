@@ -22,6 +22,7 @@ import ThumbnailSelectorDemo from '../playground/demos/ThumbnailSelectorDemo.vue
 import TagInputDemo from '../playground/demos/TagInputDemo.vue'
 import TextareaDemo from '../playground/demos/TextareaDemo.vue'
 import CheckBoxDemo from '../playground/demos/CheckBoxDemo.vue'
+import RadioDemo from '../playground/demos/RadioDemo.vue'
 import SwitchDemo from '../playground/demos/SwitchDemo.vue'
 import SliderDemo from '../playground/demos/SliderDemo.vue'
 import ColorPickerDemo from '../playground/demos/ColorPickerDemo.vue'
@@ -106,6 +107,7 @@ const routes = [
       { path: 'taginput', component: TagInputDemo },
       { path: 'textarea', component: TextareaDemo },
       { path: 'checkbox', component: CheckBoxDemo },
+      { path: 'radio', component: RadioDemo },
       { path: 'switch', component: SwitchDemo },
       { path: 'slider', component: SliderDemo },
       { path: 'colorpicker', component: ColorPickerDemo },
