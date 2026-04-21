@@ -191,6 +191,30 @@ const allComponents = [
     link: '/components/chat',
     previewType: 'chat',
   },
+  {
+    name: 'OTP Input',
+    desc: 'Secure one-time password entry fields.',
+    link: '/components/otpinput',
+    previewType: 'otpinput',
+  },
+  {
+    name: 'Rich Text Editor',
+    desc: 'Advanced WYSIWYG text editing interface.',
+    link: '/components/richtexteditor',
+    previewType: 'richtexteditor',
+  },
+  {
+    name: 'File Picker',
+    desc: 'Drag & drop file upload and selection.',
+    link: '/components/filepicker',
+    previewType: 'filepicker',
+  },
+  {
+    name: 'Thumbnail Selector',
+    desc: 'Visual media gallery and selection.',
+    link: '/components/thumbnailselector',
+    previewType: 'thumbnailselector',
+  },
 ]
 
 const dummyAvatarItems = [
@@ -764,6 +788,70 @@ const dummyAvatarItems = [
                     stroke-dasharray="3 2" />
                   <circle cx="156" cy="16" r="2" fill="#EF4444" fill-opacity="0.6" />
                 </svg>
+              </div>
+
+              <!-- OTP Input preview -->
+              <div
+                v-else-if="comp.previewType === 'otpinput'"
+                class="w-full max-w-[180px] flex gap-2 justify-center">
+                <div class="w-10 h-10 rounded-md border-2 border-primary bg-background shadow-sm flex items-center justify-center text-lg font-bold text-foreground">8</div>
+                <div class="w-10 h-10 rounded-md border border-border bg-background shadow-sm flex items-center justify-center text-lg font-bold text-foreground">4</div>
+                <div class="w-10 h-10 rounded-md border border-border bg-background shadow-sm flex items-center justify-center text-lg font-bold text-foreground">1</div>
+                <div class="w-10 h-10 rounded-md border border-border bg-muted/20 flex items-center justify-center">
+                  <div class="w-2 h-4 bg-primary/50 animate-pulse"></div>
+                </div>
+              </div>
+
+              <!-- Rich Text Editor preview -->
+              <div
+                v-else-if="comp.previewType === 'richtexteditor'"
+                class="w-full max-w-[200px] bg-background border border-border rounded-lg shadow-sm overflow-hidden flex flex-col">
+                <div class="h-7 border-b border-border bg-muted/30 flex items-center px-2 gap-1.5">
+                  <div class="w-3 h-3 rounded-sm bg-muted-foreground/30"></div>
+                  <div class="w-3 h-3 rounded-sm bg-muted-foreground/30"></div>
+                  <div class="w-[1px] h-3 bg-border mx-0.5"></div>
+                  <div class="flex-1"></div>
+                  <div class="w-3 h-3 rounded-sm bg-muted-foreground/30"></div>
+                </div>
+                <div class="p-2 space-y-1.5 bg-background h-16">
+                  <div class="h-2 bg-foreground/80 rounded w-[60%]"></div>
+                  <div class="h-1.5 bg-muted-foreground/40 rounded w-[90%]"></div>
+                  <div class="h-1.5 bg-muted-foreground/40 rounded w-[70%]"></div>
+                </div>
+              </div>
+
+              <!-- File Picker preview -->
+              <div
+                v-else-if="comp.previewType === 'filepicker'"
+                class="w-full max-w-[200px] h-24 rounded-xl border border-dashed border-primary/50 bg-primary/5 flex flex-col items-center justify-center gap-2 group-hover:border-primary group-hover:bg-primary/10 transition-colors">
+                <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                  <Icon icon="lucide:upload-cloud" class="w-4 h-4" />
+                </div>
+                <div class="text-[10px] text-muted-foreground">Drop files here</div>
+              </div>
+
+              <!-- Thumbnail Selector preview -->
+              <div
+                v-else-if="comp.previewType === 'thumbnailselector'"
+                class="w-full max-w-[200px] flex flex-col gap-1.5">
+                <div class="w-full h-16 rounded-lg bg-muted border border-border flex items-center justify-center overflow-hidden relative">
+                  <div class="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent"></div>
+                  <Icon icon="lucide:image" class="w-6 h-6 text-muted-foreground/40" />
+                </div>
+                <div class="flex gap-1.5 justify-between">
+                  <div class="w-11 h-10 rounded border-2 border-primary bg-muted overflow-hidden relative opacity-100 flex items-center justify-center">
+                    <Icon icon="lucide:image" class="w-4 h-4 text-primary/50" />
+                  </div>
+                  <div class="w-11 h-10 rounded border border-border bg-muted overflow-hidden opacity-60 flex items-center justify-center">
+                    <Icon icon="lucide:image" class="w-4 h-4 text-muted-foreground/40" />
+                  </div>
+                  <div class="w-11 h-10 rounded border border-border bg-muted overflow-hidden opacity-60 flex items-center justify-center">
+                    <Icon icon="lucide:image" class="w-4 h-4 text-muted-foreground/40" />
+                  </div>
+                  <div class="w-11 h-10 rounded border border-border bg-muted overflow-hidden opacity-60 flex items-center justify-center">
+                    <span class="text-[8px] font-medium text-muted-foreground">+3</span>
+                  </div>
+                </div>
               </div>
 
               <div
