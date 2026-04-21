@@ -215,6 +215,12 @@ const allComponents = [
     link: '/components/thumbnailselector',
     previewType: 'thumbnailselector',
   },
+  {
+    name: 'Timeline',
+    desc: 'Chronological progression of events and tracking.',
+    link: '/components/timeline',
+    previewType: 'timeline',
+  },
 ]
 
 const dummyAvatarItems = [
@@ -872,6 +878,52 @@ const dummyAvatarItems = [
                   <div
                     class="w-12 h-6 rounded-sm border border-border bg-muted overflow-hidden opacity-60 flex items-center justify-center">
                     <span class="text-[8px] font-medium text-muted-foreground">+3</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Timeline preview -->
+              <div
+                v-else-if="comp.previewType === 'timeline'"
+                class="w-full max-w-[180px] flex flex-col items-start gap-0">
+                <div class="flex gap-3 w-full">
+                  <div class="relative flex flex-col items-center">
+                    <div
+                      class="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center z-10 ring-4 ring-background">
+                      <div class="w-2.5 h-2.5 rounded-full bg-primary shadow-sm"></div>
+                    </div>
+                    <div class="w-[2px] h-10 bg-primary/30"></div>
+                  </div>
+                  <div class="flex flex-col gap-1 -mt-0.5 w-full">
+                    <div class="h-2.5 bg-foreground/90 rounded-sm w-16"></div>
+                    <div class="h-1.5 bg-muted-foreground/50 rounded-sm w-[90%]"></div>
+                    <div class="h-1.5 bg-muted-foreground/50 rounded-sm w-[70%]"></div>
+                  </div>
+                </div>
+                <!-- Node 2 -->
+                <div class="flex gap-3 w-full">
+                  <div class="relative flex flex-col items-center">
+                    <div
+                      class="w-5 h-5 rounded-full bg-muted border border-border flex items-center justify-center z-10 ring-4 ring-background">
+                      <div class="w-2 h-2 rounded-full bg-muted-foreground/30"></div>
+                    </div>
+                    <div class="w-[2px] h-8 bg-border"></div>
+                  </div>
+                  <div class="flex flex-col gap-1 -mt-0.5 w-full">
+                    <div class="h-2 bg-foreground/60 rounded-sm w-20"></div>
+                    <div class="h-1.5 bg-muted-foreground/40 rounded-sm w-[80%]"></div>
+                  </div>
+                </div>
+                <!-- Node 3 -->
+                <div class="flex gap-3 w-full">
+                  <div class="relative flex flex-col items-center">
+                    <div
+                      class="w-5 h-5 rounded-full bg-muted border border-border flex items-center justify-center z-10 ring-4 ring-background">
+                      <div class="w-2 h-2 rounded-full bg-muted-foreground/30"></div>
+                    </div>
+                  </div>
+                  <div class="flex flex-col gap-1 -mt-0.5 w-full">
+                    <div class="h-2 bg-foreground/60 rounded-sm w-14"></div>
                   </div>
                 </div>
               </div>
