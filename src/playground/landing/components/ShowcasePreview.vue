@@ -669,45 +669,45 @@ defineProps<{
       <!-- Row 1 -->
       <div class="flex items-center px-2 py-1 border-b border-border/30 gap-1 shrink-0">
         <div class="w-1.5 h-1.5 rounded-[1px] border border-border shrink-0"></div>
-        <div class="w-[45px] flex items-center gap-1 ml-1 shrink-0">
-           <div class="w-3.5 h-3.5 rounded-full bg-primary/20 shrink-0"></div>
-           <div class="w-7 h-[2.5px] bg-foreground/80 rounded"></div>
+        <div class="w-[45px] flex items-center gap-1.5 ml-1 shrink-0">
+           <div class="w-3.5 h-3.5 rounded-full bg-gray-300 shrink-0"></div>
+           <div class="w-7 h-[2.5px] bg-gray-600 rounded"></div>
         </div>
         <div class="flex-1">
-           <div class="w-12 h-[2px] bg-muted-foreground/40 rounded"></div>
+           <div class="w-12 h-[2.5px] bg-gray-400 rounded"></div>
         </div>
         <div class="w-8 shrink-0 flex justify-center">
-           <div class="w-5 h-[6px] bg-success/20 text-success-fg rounded-[2px] flex items-center justify-center font-bold text-[3px]">Active</div>
+           <div class="w-6 h-[6px] bg-gray-200 text-gray-500 rounded-[2px] flex items-center justify-center font-bold text-[3px]">Active</div>
         </div>
       </div>
       <!-- Row 2 -->
       <div class="flex items-center px-2 py-1 border-b border-border/30 gap-1 shrink-0 bg-muted/10">
-        <div class="w-1.5 h-1.5 rounded-[1px] border border-border shrink-0 bg-primary border-primary flex items-center justify-center">
-          <Icon icon="lucide:check" class="w-1 h-1 text-primary-foreground" />
+        <div class="w-1.5 h-1.5 rounded-[1px] border border-gray-800 shrink-0 bg-gray-800 flex items-center justify-center">
+          <Icon icon="lucide:check" class="w-1 h-1 text-white" />
         </div>
-        <div class="w-[45px] flex items-center gap-1 ml-1 shrink-0">
-           <div class="w-3.5 h-3.5 rounded-full bg-orange-500/20 shrink-0"></div>
-           <div class="w-8 h-[2.5px] bg-foreground/80 rounded"></div>
+        <div class="w-[45px] flex items-center gap-1.5 ml-1 shrink-0">
+           <div class="w-3.5 h-3.5 rounded-full bg-gray-200 shrink-0"></div>
+           <div class="w-8 h-[2.5px] bg-gray-600 rounded"></div>
         </div>
         <div class="flex-1">
-           <div class="w-14 h-[2px] bg-muted-foreground/40 rounded"></div>
+           <div class="w-14 h-[2.5px] bg-gray-400 rounded"></div>
         </div>
         <div class="w-8 shrink-0 flex justify-center">
-           <div class="w-5 h-[6px] bg-muted text-muted-foreground rounded-[2px] flex items-center justify-center font-bold text-[3px]">Pndg</div>
+           <div class="w-6 h-[6px] bg-gray-100 text-gray-400 rounded-[2px] flex items-center justify-center font-bold text-[3px]">Pndg</div>
         </div>
       </div>
       <!-- Row 3 -->
       <div class="flex items-center px-2 py-1 gap-1 shrink-0">
         <div class="w-1.5 h-1.5 rounded-[1px] border border-border shrink-0"></div>
-        <div class="w-[45px] flex items-center gap-1 ml-1 shrink-0">
-           <div class="w-3.5 h-3.5 rounded-full bg-blue-500/20 shrink-0"></div>
-           <div class="w-6 h-[2.5px] bg-foreground/80 rounded"></div>
+        <div class="w-[45px] flex items-center gap-1.5 ml-1 shrink-0">
+           <div class="w-3.5 h-3.5 rounded-full bg-gray-300 shrink-0"></div>
+           <div class="w-6 h-[2.5px] bg-gray-600 rounded"></div>
         </div>
         <div class="flex-1">
-           <div class="w-10 h-[2px] bg-muted-foreground/40 rounded"></div>
+           <div class="w-10 h-[2.5px] bg-gray-400 rounded"></div>
         </div>
         <div class="w-8 shrink-0 flex justify-center">
-           <div class="w-5 h-[6px] bg-success/20 text-success-fg rounded-[2px] flex items-center justify-center font-bold text-[3px]">Active</div>
+           <div class="w-6 h-[6px] bg-gray-200 text-gray-500 rounded-[2px] flex items-center justify-center font-bold text-[3px]">Active</div>
         </div>
       </div>
     </div>
