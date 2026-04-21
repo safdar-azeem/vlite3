@@ -793,30 +793,46 @@ const dummyAvatarItems = [
               <!-- OTP Input preview -->
               <div
                 v-else-if="comp.previewType === 'otpinput'"
-                class="w-full max-w-[180px] flex gap-2 justify-center">
-                <div class="w-10 h-10 rounded-md border-2 border-primary bg-background shadow-sm flex items-center justify-center text-lg font-bold text-foreground">8</div>
-                <div class="w-10 h-10 rounded-md border border-border bg-background shadow-sm flex items-center justify-center text-lg font-bold text-foreground">4</div>
-                <div class="w-10 h-10 rounded-md border border-border bg-background shadow-sm flex items-center justify-center text-lg font-bold text-foreground">1</div>
-                <div class="w-10 h-10 rounded-md border border-border bg-muted/20 flex items-center justify-center">
-                  <div class="w-2 h-4 bg-primary/50 animate-pulse"></div>
+                class="w-full max-w-[180px] flex gap-2.5 justify-center">
+                <div
+                  class="w-11 h-12 rounded-lg border border-border bg-background shadow-sm flex items-center justify-center text-xl font-medium text-foreground">
+                  8
+                </div>
+                <div
+                  class="w-11 h-12 rounded-lg border border-border bg-background shadow-sm flex items-center justify-center text-xl font-medium text-foreground">
+                  4
+                </div>
+                <div
+                  class="w-11 h-12 rounded-lg border border-border bg-background shadow-sm flex items-center justify-center text-xl font-medium text-foreground">
+                  1
+                </div>
+                <div
+                  class="w-11 h-12 rounded-lg ring-2 ring-primary ring-offset-1 ring-offset-background border-transparent bg-background shadow-sm flex items-center justify-center relative">
+                  <div class="w-[2px] h-6 bg-primary animate-pulse rounded-full"></div>
                 </div>
               </div>
 
               <!-- Rich Text Editor preview -->
               <div
                 v-else-if="comp.previewType === 'richtexteditor'"
-                class="w-full max-w-[200px] bg-background border border-border rounded-lg shadow-sm overflow-hidden flex flex-col">
-                <div class="h-7 border-b border-border bg-muted/30 flex items-center px-2 gap-1.5">
-                  <div class="w-3 h-3 rounded-sm bg-muted-foreground/30"></div>
-                  <div class="w-3 h-3 rounded-sm bg-muted-foreground/30"></div>
-                  <div class="w-[1px] h-3 bg-border mx-0.5"></div>
+                class="w-full max-w-[210px] bg-background border border-border rounded-xl shadow-md overflow-hidden flex flex-col">
+                <div
+                  class="h-8 border-b border-border bg-muted/40 flex items-center px-2 gap-1.5 shadow-sm z-10">
+                  <Icon icon="lucide:bold" class="w-3.5 h-3.5 text-foreground" />
+                  <Icon icon="lucide:italic" class="w-3.5 h-3.5 text-muted-foreground" />
+                  <div class="w-[1px] h-4 bg-border mx-0.5"></div>
+                  <Icon icon="lucide:align-left" class="w-3.5 h-3.5 text-foreground" />
+                  <Icon icon="lucide:list" class="w-3.5 h-3.5 text-muted-foreground" />
                   <div class="flex-1"></div>
-                  <div class="w-3 h-3 rounded-sm bg-muted-foreground/30"></div>
+                  <Icon icon="lucide:link" class="w-3.5 h-3.5 text-primary opacity-80" />
                 </div>
-                <div class="p-2 space-y-1.5 bg-background h-16">
-                  <div class="h-2 bg-foreground/80 rounded w-[60%]"></div>
-                  <div class="h-1.5 bg-muted-foreground/40 rounded w-[90%]"></div>
-                  <div class="h-1.5 bg-muted-foreground/40 rounded w-[70%]"></div>
+                <div class="p-3 space-y-2 bg-background h-20">
+                  <div class="h-2.5 bg-foreground/90 rounded-full w-[65%] shadow-sm"></div>
+                  <div class="space-y-1.5">
+                    <div class="h-1.5 bg-muted-foreground/50 rounded-full w-[95%]"></div>
+                    <div class="h-1.5 bg-muted-foreground/50 rounded-full w-[85%]"></div>
+                    <div class="h-1.5 bg-muted-foreground/50 rounded-full w-[50%]"></div>
+                  </div>
                 </div>
               </div>
 
@@ -824,7 +840,8 @@ const dummyAvatarItems = [
               <div
                 v-else-if="comp.previewType === 'filepicker'"
                 class="w-full max-w-[200px] h-24 rounded-xl border border-dashed border-primary/50 bg-primary/5 flex flex-col items-center justify-center gap-2 group-hover:border-primary group-hover:bg-primary/10 transition-colors">
-                <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <div
+                  class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                   <Icon icon="lucide:upload-cloud" class="w-4 h-4" />
                 </div>
                 <div class="text-[10px] text-muted-foreground">Drop files here</div>
@@ -833,22 +850,28 @@ const dummyAvatarItems = [
               <!-- Thumbnail Selector preview -->
               <div
                 v-else-if="comp.previewType === 'thumbnailselector'"
-                class="w-full max-w-[200px] flex flex-col gap-1.5">
-                <div class="w-full h-16 rounded-lg bg-muted border border-border flex items-center justify-center overflow-hidden relative">
-                  <div class="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent"></div>
+                class="w-full max-w-[120px] flex flex-col gap-2.5">
+                <div
+                  class="w-full h-20 rounded-lg bg-muted border border-border flex items-center justify-center overflow-hidden relative">
+                  <div
+                    class="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent"></div>
                   <Icon icon="lucide:image" class="w-6 h-6 text-muted-foreground/40" />
                 </div>
                 <div class="flex gap-1.5 justify-between">
-                  <div class="w-11 h-10 rounded border-2 border-primary bg-muted overflow-hidden relative opacity-100 flex items-center justify-center">
-                    <Icon icon="lucide:image" class="w-4 h-4 text-primary/50" />
+                  <div
+                    class="w-12 h-6 rounded-sm border border-primary bg-muted overflow-hidden relative opacity-70 flex items-center justify-center">
+                    <Icon icon="lucide:image" class="w-3 h-3 text-primary/50" />
                   </div>
-                  <div class="w-11 h-10 rounded border border-border bg-muted overflow-hidden opacity-60 flex items-center justify-center">
-                    <Icon icon="lucide:image" class="w-4 h-4 text-muted-foreground/40" />
+                  <div
+                    class="w-12 h-6 rounded-sm border border-border bg-muted overflow-hidden opacity-60 flex items-center justify-center">
+                    <Icon icon="lucide:image" class="w-3 h-3 text-muted-foreground/40" />
                   </div>
-                  <div class="w-11 h-10 rounded border border-border bg-muted overflow-hidden opacity-60 flex items-center justify-center">
-                    <Icon icon="lucide:image" class="w-4 h-4 text-muted-foreground/40" />
+                  <div
+                    class="w-12 h-6 rounded-sm border border-border bg-muted overflow-hidden opacity-60 flex items-center justify-center">
+                    <Icon icon="lucide:image" class="w-3 h-3 text-muted-foreground/40" />
                   </div>
-                  <div class="w-11 h-10 rounded border border-border bg-muted overflow-hidden opacity-60 flex items-center justify-center">
+                  <div
+                    class="w-12 h-6 rounded-sm border border-border bg-muted overflow-hidden opacity-60 flex items-center justify-center">
                     <span class="text-[8px] font-medium text-muted-foreground">+3</span>
                   </div>
                 </div>
