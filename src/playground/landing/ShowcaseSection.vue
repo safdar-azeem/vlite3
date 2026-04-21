@@ -824,7 +824,6 @@ const dummyAvatarItems = [
                   <Icon icon="lucide:align-left" class="w-3.5 h-3.5 text-foreground" />
                   <Icon icon="lucide:list" class="w-3.5 h-3.5 text-muted-foreground" />
                   <div class="flex-1"></div>
-                  <Icon icon="lucide:link" class="w-3.5 h-3.5 text-primary opacity-80" />
                 </div>
                 <div class="p-3 space-y-2 bg-background h-20">
                   <div class="h-2.5 bg-foreground/90 rounded-full w-[65%] shadow-sm"></div>
@@ -839,7 +838,7 @@ const dummyAvatarItems = [
               <!-- File Picker preview -->
               <div
                 v-else-if="comp.previewType === 'filepicker'"
-                class="w-full max-w-[200px] h-24 rounded-xl border border-dashed border-primary/50 bg-primary/5 flex flex-col items-center justify-center gap-2 group-hover:border-primary group-hover:bg-primary/10 transition-colors">
+                class="w-full max-w-[200px] h-24 rounded-xl border border-dashed border-primary/50 bg-primary/5 flex flex-col items-center justify-center gap-2">
                 <div
                   class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                   <Icon icon="lucide:upload-cloud" class="w-4 h-4" />
