@@ -215,7 +215,7 @@ export const allComponents = [
   {
     name: 'Radio Group',
     desc: 'Mutually exclusive selection controls.',
-    link: '/components/radiogroup',
+    link: '/components/radio',
     previewType: 'radiogroup',
   },
   {
