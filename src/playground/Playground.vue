@@ -61,6 +61,7 @@ const menuItems: SidebarMenuItemSchema[] = [
     icon: 'lucide:check-square',
     children: [
       { label: 'CheckBox', to: '/components/checkbox', icon: 'lucide:check-square' },
+      { label: 'Radio', to: '/components/radio', icon: 'lucide:circle-dot' },
       { label: 'Switch', to: '/components/switch', icon: 'lucide:toggle-left' },
       { label: 'Slider', to: '/components/slider', icon: 'lucide:sliders-horizontal' },
       { label: 'MultiSelect', to: '/components/multiselect', icon: 'lucide:list-checks' },
