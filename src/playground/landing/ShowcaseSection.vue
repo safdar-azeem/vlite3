@@ -1102,7 +1102,7 @@ const dummyMasonryItems = [
                       class="rounded-xl border border-white/5 transition-all duration-500 overflow-hidden relative group-hover/masonry:border-white/10 shadow-lg shadow-black/20">
                       <img
                         :src="data.image"
-                        class="absolute inset-0 w-full h-full object-cover brightness-[0.7] group-hover/masonry:brightness-100 transition-all duration-700"
+                        class="absolute inset-0 w-full h-full object-cover grayscale brightness-[0.7] group-hover/masonry:grayscale-0 group-hover/masonry:brightness-100 transition-all duration-700"
                         alt="Masonry preview" />
                       <div
                         class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
