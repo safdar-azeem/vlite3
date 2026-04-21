@@ -645,6 +645,32 @@ defineProps<{
   </div>
 
   <div
+    v-else-if="previewType === 'splitter'"
+    class="w-full max-w-[240px] h-[140px] border border-border rounded-xl bg-background shadow-md overflow-hidden flex flex-col cursor-default">
+    <!-- Top pane -->
+    <div class="h-[50%] w-full flex flex-col bg-muted/5 relative overflow-hidden"></div>
+
+    <!-- Vertical Resizer Handle (Horizontal Bar) -->
+    <div class="h-1.5 w-full bg-border/40 flex items-center justify-center shrink-0">
+      <div class="w-6 h-0.5 bg-muted-foreground/30 rounded-full"></div>
+    </div>
+
+    <!-- Bottom pane (Horizontal Split) -->
+    <div class="flex-1 w-full flex overflow-hidden">
+      <!-- Bottom Left pane -->
+      <div class="w-[25%] h-full flex flex-col bg-muted/10 relative overflow-hidden"></div>
+
+      <!-- Horizontal Resizer Handle (Vertical Bar) -->
+      <div class="w-1.5 h-full bg-border/40 flex items-center justify-center shrink-0">
+        <div class="h-6 w-0.5 bg-muted-foreground/30 rounded-full"></div>
+      </div>
+
+      <!-- Bottom Right pane -->
+      <div class="flex-1 h-full flex flex-col bg-muted/5 relative overflow-hidden"></div>
+    </div>
+  </div>
+
+  <div
     v-else
     class="text-sm font-medium text-muted-foreground border border-dashed border-border/60 rounded-lg px-4 py-2 bg-background">
     Hover to interact
