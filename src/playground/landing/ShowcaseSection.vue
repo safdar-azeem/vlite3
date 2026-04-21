@@ -11,6 +11,7 @@ import Input from '@/components/Input.vue'
 import TagInput from '@/components/TagInput/TagInput.vue'
 import StatusChip from '@/components/StatusChip/StatusChip.vue'
 import Pagination from '@/components/Pagination/Pagination.vue'
+import Masonry from '@/components/Masonry/Masonry.vue'
 
 const router = useRouter()
 
@@ -235,6 +236,12 @@ const allComponents = [
     link: '/components/filetree',
     previewType: 'filetree',
   },
+  {
+    name: 'Masonry Grid',
+    desc: 'Optimized masonry layout with content-visibility optimization.',
+    link: '/components/masonry',
+    previewType: 'masonry',
+  },
 ]
 
 const dummyAvatarItems = [
@@ -243,6 +250,15 @@ const dummyAvatarItems = [
   { src: 'https://i.pravatar.cc/150?u=3' },
   { src: 'https://i.pravatar.cc/150?u=4' },
   { src: 'https://i.pravatar.cc/150?u=5' },
+]
+
+const dummyMasonryItems = [
+  { height: 80, color: 'bg-white/5' },
+  { height: 120, color: 'bg-white/10' },
+  { height: 90, color: 'bg-white/5' },
+  { height: 110, color: 'bg-white/10' },
+  { height: 75, color: 'bg-white/5' },
+  { height: 130, color: 'bg-white/10' },
 ]
 </script>
 
@@ -1055,6 +1071,23 @@ const dummyAvatarItems = [
                   <Icon icon="lucide:folder" class="w-4.5 h-4.5 text-muted-foreground/60" />
                   <div class="h-2 bg-gray-300 rounded-full w-12"></div>
                 </div>
+              </div>
+
+              <!-- Masonry preview -->
+              <div
+                v-else-if="comp.previewType === 'masonry'"
+                class="w-full max-w-[240px] h-32 overflow-hidden relative group/masonry">
+                <Masonry :data="dummyMasonryItems" :cols="3" :gap="10" class="scale-90 origin-top">
+                  <template #default="{ data }">
+                    <div
+                      :style="{ height: data.height + 'px' }"
+                      class="rounded-2xl border border-white/5 transition-all duration-500 group-hover/masonry:border-white/20 shadow-sm"
+                      :class="data.color"></div>
+                  </template>
+                </Masonry>
+                <!-- Gradient Mask -->
+                <div
+                  class="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none z-10"></div>
               </div>
 
               <div
