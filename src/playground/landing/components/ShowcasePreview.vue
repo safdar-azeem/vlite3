@@ -479,6 +479,53 @@ defineProps<{
   </div>
 
   <div
+    v-else-if="previewType === 'imagecomparison'"
+    class="w-full max-w-[180px] h-[140px] border border-border rounded-xl shadow-md overflow-hidden relative cursor-default isolate group">
+    <!-- After Image -->
+    <div class="absolute inset-0">
+      <img
+        src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300&q=80"
+        class="w-full h-full object-cover"
+        alt="After" />
+    </div>
+
+    <!-- Before Image -->
+    <div class="absolute inset-0" style="clip-path: inset(0 50% 0 0)">
+      <img
+        src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300&q=80"
+        class="w-full h-full object-cover grayscale brightness-[0.6] contrast-125"
+        alt="Before" />
+    </div>
+
+    <!-- Labels -->
+    <div
+      class="absolute top-2 left-2 bg-[#4846468d] px-2 py-0.5 rounded-full text-[7px] font-medium text-[white] pointer-events-none z-10">
+      Before
+    </div>
+    <div
+      class="absolute top-2 right-2 bg-[#4846468d] px-2 py-0.5 rounded-full text-[7px] font-medium text-[white] pointer-events-none z-10">
+      After
+    </div>
+
+    <!-- Slider Handle Line -->
+    <div
+      class="absolute top-0 bottom-0 left-[50%] flex flex-col items-center justify-center pointer-events-none z-20"
+      style="transform: translateX(-50%)">
+      <!-- Top Line -->
+      <div class="w-px h-full bg-[white]"></div>
+
+      <!-- Handle Knob (Transparent) -->
+      <div
+        class="w-5 h-5 border-[1px] border-[white] rounded-full flex-shrink-0 flex items-center justify-center group-hover:scale-105 transition-transform duration-200 backdrop-blur-sm">
+        <Icon icon="lucide:chevrons-left-right" class="w-3 h-3 text-[white]" />
+      </div>
+
+      <!-- Bottom Line -->
+      <div class="w-px h-full bg-[white]"></div>
+    </div>
+  </div>
+
+  <div
     v-else-if="previewType === 'timeline'"
     class="w-full max-w-[180px] flex flex-col items-start gap-0 relative isolate">
     <div
@@ -616,7 +663,6 @@ defineProps<{
   <div
     v-else-if="previewType === 'screen'"
     class="w-full max-w-[240px] h-[140px] border border-border rounded-xl bg-background shadow-md overflow-hidden flex flex-col cursor-default text-[6px]">
-    
     <!-- Top Header & Toolbar -->
     <div class="px-2 pt-2 flex justify-between items-start shrink-0">
       <div class="flex flex-col gap-0.5">
@@ -630,15 +676,16 @@ defineProps<{
       <div class="flex items-center gap-0.5 mt-0.5">
         <!-- Toolbar items -->
         <div class="flex items-center border border-border rounded-[2.5px] p-[1.5px] gap-[1px]">
-           <div class="w-[7px] h-[7px] bg-muted rounded-[1px] flex items-center justify-center">
-             <Icon icon="lucide:list" class="w-1.5 h-1.5 text-foreground" />
-           </div>
-           <div class="w-[7px] h-[7px] rounded-[1px] flex items-center justify-center">
-             <Icon icon="lucide:grid" class="w-1.5 h-1.5 text-muted-foreground/60" />
-           </div>
+          <div class="w-[7px] h-[7px] bg-muted rounded-[1px] flex items-center justify-center">
+            <Icon icon="lucide:list" class="w-1.5 h-1.5 text-foreground" />
+          </div>
+          <div class="w-[7px] h-[7px] rounded-[1px] flex items-center justify-center">
+            <Icon icon="lucide:grid" class="w-1.5 h-1.5 text-muted-foreground/60" />
+          </div>
         </div>
         <!-- Search bar -->
-        <div class="w-10 h-[12px] rounded-[2.5px] border border-border flex items-center px-1 ml-0.5">
+        <div
+          class="w-10 h-[12px] rounded-[2.5px] border border-border flex items-center px-1 ml-0.5">
           <Icon icon="lucide:search" class="w-[7px] h-[7px] text-muted-foreground/50" />
         </div>
         <!-- Add button -->
@@ -648,16 +695,18 @@ defineProps<{
         </div>
       </div>
     </div>
-    
+
     <!-- Tabs -->
-    <div class="flex px-2 mt-2 gap-2 border-b border-border/40 shrink-0 text-muted-foreground font-medium">
+    <div
+      class="flex px-2 mt-2 gap-2 border-b border-border/40 shrink-0 text-muted-foreground font-medium">
       <div class="text-foreground border-b-[1.5px] border-foreground pb-0.5">All</div>
       <div class="pb-0.5">Active</div>
       <div class="pb-0.5">Inactive</div>
     </div>
 
     <!-- Table Header -->
-    <div class="flex items-center px-2 py-1 bg-muted/20 border-b border-border/40 text-[4px] font-bold text-muted-foreground shrink-0 uppercase tracking-wider gap-1">
+    <div
+      class="flex items-center px-2 py-1 bg-muted/20 border-b border-border/40 text-[4px] font-bold text-muted-foreground shrink-0 uppercase tracking-wider gap-1">
       <div class="w-1.5 h-1.5 rounded-[1px] border border-border shrink-0"></div>
       <div class="w-[45px] ml-1">USER</div>
       <div class="flex-1">EMAIL</div>
@@ -670,44 +719,54 @@ defineProps<{
       <div class="flex items-center px-2 py-1 border-b border-border/30 gap-1 shrink-0">
         <div class="w-1.5 h-1.5 rounded-[1px] border border-border shrink-0"></div>
         <div class="w-[45px] flex items-center gap-1.5 ml-1 shrink-0">
-           <div class="w-3.5 h-3.5 rounded-full bg-gray-300 shrink-0"></div>
-           <div class="w-7 h-[2.5px] bg-gray-600 rounded"></div>
+          <div class="w-3.5 h-3.5 rounded-full bg-gray-300 shrink-0"></div>
+          <div class="w-7 h-[2.5px] bg-gray-600 rounded"></div>
         </div>
         <div class="flex-1">
-           <div class="w-12 h-[2.5px] bg-gray-400 rounded"></div>
+          <div class="w-12 h-[2.5px] bg-gray-400 rounded"></div>
         </div>
         <div class="w-8 shrink-0 flex justify-center">
-           <div class="w-6 h-[6px] bg-gray-200 text-gray-500 rounded-[2px] flex items-center justify-center font-bold text-[3px]">Active</div>
+          <div
+            class="w-6 h-[6px] bg-gray-200 text-gray-500 rounded-[2px] flex items-center justify-center font-bold text-[3px]">
+            Active
+          </div>
         </div>
       </div>
       <!-- Row 2 -->
       <div class="flex items-center px-2 py-1 border-b border-border/30 gap-1 shrink-0 bg-muted/10">
-        <div class="w-1.5 h-1.5 rounded-[1px] border border-gray-800 shrink-0 bg-gray-800 flex items-center justify-center">
+        <div
+          class="w-1.5 h-1.5 rounded-[1px] border border-gray-800 shrink-0 bg-gray-800 flex items-center justify-center">
           <Icon icon="lucide:check" class="w-1 h-1 text-white" />
         </div>
         <div class="w-[45px] flex items-center gap-1.5 ml-1 shrink-0">
-           <div class="w-3.5 h-3.5 rounded-full bg-gray-200 shrink-0"></div>
-           <div class="w-8 h-[2.5px] bg-gray-600 rounded"></div>
+          <div class="w-3.5 h-3.5 rounded-full bg-gray-200 shrink-0"></div>
+          <div class="w-8 h-[2.5px] bg-gray-600 rounded"></div>
         </div>
         <div class="flex-1">
-           <div class="w-14 h-[2.5px] bg-gray-400 rounded"></div>
+          <div class="w-14 h-[2.5px] bg-gray-400 rounded"></div>
         </div>
         <div class="w-8 shrink-0 flex justify-center">
-           <div class="w-6 h-[6px] bg-gray-100 text-gray-400 rounded-[2px] flex items-center justify-center font-bold text-[3px]">Pndg</div>
+          <div
+            class="w-6 h-[6px] bg-gray-100 text-gray-400 rounded-[2px] flex items-center justify-center font-bold text-[3px]">
+            Pndg
+          </div>
         </div>
       </div>
       <!-- Row 3 -->
       <div class="flex items-center px-2 py-1 gap-1 shrink-0">
         <div class="w-1.5 h-1.5 rounded-[1px] border border-border shrink-0"></div>
         <div class="w-[45px] flex items-center gap-1.5 ml-1 shrink-0">
-           <div class="w-3.5 h-3.5 rounded-full bg-gray-300 shrink-0"></div>
-           <div class="w-6 h-[2.5px] bg-gray-600 rounded"></div>
+          <div class="w-3.5 h-3.5 rounded-full bg-gray-300 shrink-0"></div>
+          <div class="w-6 h-[2.5px] bg-gray-600 rounded"></div>
         </div>
         <div class="flex-1">
-           <div class="w-10 h-[2.5px] bg-gray-400 rounded"></div>
+          <div class="w-10 h-[2.5px] bg-gray-400 rounded"></div>
         </div>
         <div class="w-8 shrink-0 flex justify-center">
-           <div class="w-6 h-[6px] bg-gray-200 text-gray-500 rounded-[2px] flex items-center justify-center font-bold text-[3px]">Active</div>
+          <div
+            class="w-6 h-[6px] bg-gray-200 text-gray-500 rounded-[2px] flex items-center justify-center font-bold text-[3px]">
+            Active
+          </div>
         </div>
       </div>
     </div>
