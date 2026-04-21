@@ -253,12 +253,30 @@ const dummyAvatarItems = [
 ]
 
 const dummyMasonryItems = [
-  { height: 80, color: 'bg-white/5' },
-  { height: 120, color: 'bg-white/10' },
-  { height: 90, color: 'bg-white/5' },
-  { height: 110, color: 'bg-white/10' },
-  { height: 75, color: 'bg-white/5' },
-  { height: 130, color: 'bg-white/10' },
+  {
+    height: 140,
+    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300&q=80',
+  },
+  {
+    height: 100,
+    image: 'https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=300&q=80',
+  },
+  {
+    height: 160,
+    image: 'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=300&q=80',
+  },
+  {
+    height: 120,
+    image: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=300&q=80',
+  },
+  {
+    height: 110,
+    image: 'https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?w=300&q=80',
+  },
+  {
+    height: 140,
+    image: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=300&q=80',
+  },
 ]
 </script>
 
@@ -1076,18 +1094,24 @@ const dummyMasonryItems = [
               <!-- Masonry preview -->
               <div
                 v-else-if="comp.previewType === 'masonry'"
-                class="w-full max-w-[240px] h-32 overflow-hidden relative group/masonry">
-                <Masonry :data="dummyMasonryItems" :cols="3" :gap="10" class="scale-90 origin-top">
+                class="w-full max-w-[240px] h-36 overflow-hidden relative group/masonry rounded-2xl">
+                <Masonry :data="dummyMasonryItems" :cols="3" :gap="8" class="origin-top">
                   <template #default="{ data }">
                     <div
                       :style="{ height: data.height + 'px' }"
-                      class="rounded-2xl border border-white/5 transition-all duration-500 group-hover/masonry:border-white/20 shadow-sm"
-                      :class="data.color"></div>
+                      class="rounded-xl border border-white/5 transition-all duration-500 overflow-hidden relative group-hover/masonry:border-white/10 shadow-lg shadow-black/20">
+                      <img
+                        :src="data.image"
+                        class="absolute inset-0 w-full h-full object-cover brightness-[0.7] group-hover/masonry:brightness-100 transition-all duration-700"
+                        alt="Masonry preview" />
+                      <div
+                        class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                    </div>
                   </template>
                 </Masonry>
-                <!-- Gradient Mask -->
+                <!-- Gradient Mask for fade-out -->
                 <div
-                  class="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none z-10"></div>
+                  class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none z-10"></div>
               </div>
 
               <div
