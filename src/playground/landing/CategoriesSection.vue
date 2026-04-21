@@ -27,12 +27,13 @@ const categories = [
   {
     title: 'Data Display',
     icon: 'lucide:layout-template',
-    count: 17,
+    count: 18,
     desc: 'Powerful components to cleanly organize and present your complex datasets.',
     items: [
       'DataTable',
       'DataList',
       'Calendar',
+      'Masonry',
       'Heatmap',
       'Charts',
       'Timeline',
