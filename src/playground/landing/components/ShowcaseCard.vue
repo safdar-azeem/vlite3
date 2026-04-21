@@ -23,7 +23,7 @@ const router = useRouter()
           background-size: 10px 10px;
         "></div>
 
-      <div class="relative z-10 w-full flex items-center justify-center">
+      <div class="relative z-10 w-full flex items-center justify-center select-none">
         <ShowcasePreview :previewType="comp.previewType" />
       </div>
     </div>
