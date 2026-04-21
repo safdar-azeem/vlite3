@@ -523,4 +523,8 @@ export interface GanttChartProps {
   // ── Formatting ───────────────────────────────
   /** Locale string for date formatting (e.g. 'en-US') */
   locale?: string
+
+  // ── Interactivity ────────────────────────────
+  /** Allow drag-and-drop to move/resize tasks */
+  draggable?: boolean
 }
