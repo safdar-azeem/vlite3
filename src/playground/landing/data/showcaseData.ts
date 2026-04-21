@@ -103,6 +103,12 @@ export const allComponents = [
     previewType: 'invoice',
   },
   {
+    name: 'Image Comparison',
+    desc: 'Before/after image slider with interactive handle.',
+    link: '/components/image-comparison',
+    previewType: 'imagecomparison',
+  },
+  {
     name: 'Thumbnail Selector',
     desc: 'Visual media gallery and selection.',
     link: '/components/thumbnailselector',
