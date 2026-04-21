@@ -137,6 +137,12 @@ export const allComponents = [
     previewType: 'tabs',
   },
   {
+    name: 'Splitter',
+    desc: 'Resizable layout partitions with nesting support.',
+    link: '/components/splitter',
+    previewType: 'splitter',
+  },
+  {
     name: 'Accordion',
     desc: 'Vertically collapsing content panels.',
     link: '/components/accordion',
