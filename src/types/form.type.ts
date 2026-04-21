@@ -62,3 +62,30 @@ export interface CheckboxProps {
   size?: CheckboxSize
   rounded?: CheckboxRounded
 }
+
+// Radio Types
+export type RadioSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+export type RadioColor = 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info'
+
+export interface RadioProps {
+  modelValue?: any
+  value?: any
+  disabled?: boolean
+  label?: string
+  labelI18n?: string
+  id?: string
+  class?: string
+  size?: RadioSize
+  color?: RadioColor
+  name?: string
+}
+
+export interface RadioGroupProps {
+  modelValue?: any
+  name?: string
+  disabled?: boolean
+  direction?: 'row' | 'column'
+  size?: RadioSize
+  color?: RadioColor
+  class?: string
+}
