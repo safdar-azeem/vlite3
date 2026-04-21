@@ -21,12 +21,7 @@ const allComponents = [
     link: '/components/button',
     previewType: 'button',
   },
-  {
-    name: 'Badge',
-    desc: 'Small status indicators for elements.',
-    link: '/components/badge',
-    previewType: 'badge',
-  },
+
   {
     name: 'Avatar Group',
     desc: 'Stack of user avatars with overflow.',
@@ -68,6 +63,12 @@ const allComponents = [
     desc: 'Input field for managing multiple tags.',
     link: '/components/taginput',
     previewType: 'taginput',
+  },
+  {
+    name: 'Badge',
+    desc: 'Small status indicators for elements.',
+    link: '/components/badge',
+    previewType: 'badge',
   },
   {
     name: 'Status Chip',
@@ -166,7 +167,12 @@ const allComponents = [
     link: '/components/kanban',
     previewType: 'kanban',
   },
-
+  {
+    name: 'Carousel',
+    desc: 'Interactive image gallery and slider.',
+    link: '/components/carousel',
+    previewType: 'carousel',
+  },
   {
     name: 'Skeleton',
     desc: 'Placeholder loading state variants.',
@@ -180,18 +186,6 @@ const allComponents = [
     previewType: 'invoice',
   },
   {
-    name: 'Form',
-    desc: 'Structured data entry and validation.',
-    link: '/components/form',
-    previewType: 'form',
-  },
-  {
-    name: 'Chat',
-    desc: 'Conversational UI messaging bubbles.',
-    link: '/components/chat',
-    previewType: 'chat',
-  },
-  {
     name: 'OTP Input',
     desc: 'Secure one-time password entry fields.',
     link: '/components/otpinput',
@@ -203,6 +197,19 @@ const allComponents = [
     link: '/components/richtexteditor',
     previewType: 'richtexteditor',
   },
+  {
+    name: 'Form',
+    desc: 'Structured data entry and validation.',
+    link: '/components/form',
+    previewType: 'form',
+  },
+  {
+    name: 'Chat',
+    desc: 'Conversational UI messaging bubbles.',
+    link: '/components/chat',
+    previewType: 'chat',
+  },
+
   {
     name: 'File Picker',
     desc: 'Drag & drop file upload and selection.',
@@ -221,11 +228,12 @@ const allComponents = [
     link: '/components/timeline',
     previewType: 'timeline',
   },
+
   {
-    name: 'Carousel',
-    desc: 'Interactive image gallery and slider.',
-    link: '/components/carousel',
-    previewType: 'carousel',
+    name: 'File Tree',
+    desc: 'Recursive folder and file hierarchy browser.',
+    link: '/components/filetree',
+    previewType: 'filetree',
   },
 ]
 
@@ -302,7 +310,7 @@ const dummyAvatarItems = [
                 v-else-if="comp.previewType === 'progress'"
                 :modelValue="75"
                 variant="primary"
-                size="md"
+                size="sm"
                 class="w-full max-w-[200px]" />
 
               <div
@@ -436,8 +444,7 @@ const dummyAvatarItems = [
 
               <div
                 v-else-if="comp.previewType === 'modal'"
-                class="relative w-full max-w-[220px] h-28 border border-border rounded-lg bg-muted/30 flex items-center justify-center p-4 overflow-hidden">
-                <div class="absolute inset-0 bg-background/50 backdrop-blur-[1px]"></div>
+                class="relative w-full max-w-[250px] h-28 flex items-center justify-center p-4 overflow-hidden">
                 <div
                   class="relative z-10 w-full bg-background border border-border shadow-lg rounded-lg p-3">
                   <div class="text-xs font-bold mb-1">Confirm Action</div>
@@ -457,8 +464,8 @@ const dummyAvatarItems = [
                 v-else-if="comp.previewType === 'toast'"
                 class="w-full max-w-[220px] bg-background border border-border shadow-md rounded-lg p-3 flex gap-3 items-start">
                 <div
-                  class="w-6 h-6 rounded-full bg-success/20 flex items-center justify-center shrink-0">
-                  <Icon icon="lucide:check" class="w-3 h-3 text-success" />
+                  class="w-6 h-6 rounded-full bg-success flex items-center justify-center shrink-0">
+                  <Icon icon="lucide:check" class="w-3 h-3 text-success-fg" />
                 </div>
                 <div>
                   <div class="text-xs font-bold mb-0.5">Message Sent</div>
@@ -838,11 +845,11 @@ const dummyAvatarItems = [
                   <div class="flex-1"></div>
                 </div>
                 <div class="p-3 space-y-2 bg-background h-20">
-                  <div class="h-2.5 bg-foreground/90 rounded-full w-[65%] shadow-sm"></div>
+                  <div class="h-2.5 bg-gray-600 rounded-full w-[65%] shadow-sm"></div>
                   <div class="space-y-1.5">
-                    <div class="h-1.5 bg-muted-foreground/50 rounded-full w-[95%]"></div>
-                    <div class="h-1.5 bg-muted-foreground/50 rounded-full w-[85%]"></div>
-                    <div class="h-1.5 bg-muted-foreground/50 rounded-full w-[50%]"></div>
+                    <div class="h-1.5 bg-gray-300 rounded-full w-[95%]"></div>
+                    <div class="h-1.5 bg-gray-300 rounded-full w-[85%]"></div>
+                    <div class="h-1.5 bg-gray-300 rounded-full w-[50%]"></div>
                   </div>
                 </div>
               </div>
@@ -864,26 +871,24 @@ const dummyAvatarItems = [
                 class="w-full max-w-[200px] flex flex-col gap-2">
                 <div
                   class="w-full h-24 rounded-xl bg-muted border border-border flex items-center justify-center overflow-hidden relative shadow-sm">
-                  <Icon
-                    icon="lucide:mountain-snow"
-                    class="w-8 h-8 text-muted-foreground/60 stroke-[1.5]" />
+                  <Icon icon="lucide:image" class="w-8 h-8 text-muted-foreground/60 stroke-[1.5]" />
                 </div>
                 <div class="flex gap-2 justify-between">
                   <div
-                    class="w-12 h-10 rounded-lg ring-2 ring-primary ring-offset-1 ring-offset-background bg-muted border-none overflow-hidden relative flex items-center justify-center shadow-sm">
-                    <Icon icon="lucide:mountain-snow" class="w-4 h-4 text-foreground/80" />
+                    class="w-12 h-10 rounded-lg border border-primary bg-muted overflow-hidden relative flex items-center justify-center shadow-sm">
+                    <Icon icon="lucide:image" class="w-4 h-4 text-foreground/80" />
                   </div>
                   <div
                     class="w-12 h-10 rounded-lg border border-border bg-background overflow-hidden opacity-70 flex items-center justify-center">
-                    <Icon icon="lucide:leaf" class="w-4 h-4 text-muted-foreground/70" />
+                    <Icon icon="lucide:image" class="w-4 h-4 text-muted-foreground/70" />
                   </div>
                   <div
                     class="w-12 h-10 rounded-lg border border-border bg-background overflow-hidden opacity-70 flex items-center justify-center">
-                    <Icon icon="lucide:sun" class="w-4 h-4 text-muted-foreground/70" />
+                    <Icon icon="lucide:image" class="w-4 h-4 text-muted-foreground/70" />
                   </div>
                   <div
-                    class="w-12 h-10 rounded-lg border border-border bg-muted/50 overflow-hidden flex items-center justify-center">
-                    <span class="text-[10px] font-semibold text-muted-foreground">+3</span>
+                    class="w-12 h-10 rounded-lg border border-border bg-background overflow-hidden opacity-70 flex items-center justify-center">
+                    <Icon icon="lucide:image" class="w-4 h-4 text-muted-foreground/70" />
                   </div>
                 </div>
               </div>
@@ -899,20 +904,19 @@ const dummyAvatarItems = [
                 <!-- Node 1 -->
                 <div class="flex gap-2 w-full mb-3">
                   <div
-                    class="w-6 h-6 rounded-full bg-foreground text-background flex items-center justify-center text-[10px] font-bold shrink-0 shadow-sm ring-4 ring-background z-10">
+                    class="w-6 h-6 rounded-full bg-primary text-primary-fg flex items-center justify-center text-[10px] font-bold shrink-0 shadow-sm z-10">
                     1
                   </div>
                   <div class="flex flex-col gap-1 w-full pt-1">
                     <div class="flex justify-between items-center w-full">
-                      <div class="h-2 bg-foreground/90 rounded-sm w-8"></div>
-                      <div class="h-2 bg-muted-foreground/30 rounded-xl w-10"></div>
+                      <div class="h-2 bg-gray-300 rounded-sm w-8"></div>
                     </div>
                     <div
                       class="h-10 border border-border bg-background rounded-md shadow-sm mt-0.5 p-1.5 flex gap-1.5 items-center">
-                      <div class="w-6 h-6 rounded bg-muted"></div>
+                      <div class="w-6 h-6 rounded bg-gray-300"></div>
                       <div class="space-y-1">
-                        <div class="h-1.5 bg-foreground/70 rounded w-12"></div>
-                        <div class="h-1 bg-muted-foreground/50 rounded w-8"></div>
+                        <div class="h-1.5 bg-gray-300 rounded w-12"></div>
+                        <div class="h-1 bg-gray-250 rounded w-8"></div>
                       </div>
                     </div>
                   </div>
@@ -926,9 +930,9 @@ const dummyAvatarItems = [
                   </div>
                   <div class="flex flex-col gap-1 w-full pt-1">
                     <div class="flex justify-between items-center w-full">
-                      <div class="h-2 bg-foreground/90 rounded-sm w-12"></div>
+                      <div class="h-2 bg-gray-300 rounded-sm w-12"></div>
                     </div>
-                    <div class="h-1.5 bg-muted-foreground/40 rounded-sm w-[70%] mt-1"></div>
+                    <div class="h-1.5 bg-gray-250 rounded-sm w-[70%] mt-1"></div>
                   </div>
                 </div>
 
@@ -940,9 +944,9 @@ const dummyAvatarItems = [
                   </div>
                   <div class="flex flex-col gap-1 w-full pt-1">
                     <div class="flex justify-between items-center w-full">
-                      <div class="h-2 bg-foreground/50 rounded-sm w-10"></div>
+                      <div class="h-2 bg-gray-300 rounded-sm w-10"></div>
                     </div>
-                    <div class="h-1.5 bg-muted-foreground/30 rounded-sm w-[50%] mt-1"></div>
+                    <div class="h-1.5 bg-gray-250 rounded-sm w-[50%] mt-1"></div>
                   </div>
                 </div>
               </div>
@@ -950,16 +954,16 @@ const dummyAvatarItems = [
               <!-- Carousel preview -->
               <div
                 v-else-if="comp.previewType === 'carousel'"
-                class="w-full max-w-[200px] flex flex-col items-center gap-2 overflow-hidden py-1">
-                <div class="relative w-full h-20 flex items-center justify-center">
+                class="w-full max-w-[300px] flex flex-col items-center gap-2 overflow-hidden py-1">
+                <div class="relative w-full h-24 flex items-center justify-center">
                   <!-- Prev Slide (cut off) -->
                   <div
-                    class="absolute left-[-20px] w-12 h-16 rounded-lg bg-muted border border-border opacity-60 flex items-center justify-center">
+                    class="absolute left-[-20px] w-12 h-20 rounded-lg bg-muted border border-border opacity-60 flex items-center justify-center">
                     <Icon icon="lucide:image" class="w-5 h-5 text-muted-foreground/40" />
                   </div>
                   <!-- Main Slide -->
                   <div
-                    class="relative w-[130px] h-20 rounded-xl bg-background border border-border shadow-sm flex flex-col items-center justify-center overflow-hidden z-10">
+                    class="relative w-[160px] h-24 rounded-xl bg-background border border-border shadow-sm flex flex-col items-center justify-center overflow-hidden z-10">
                     <Icon icon="lucide:image" class="w-8 h-8 text-muted-foreground/50" />
                     <!-- Arrows -->
                     <div
@@ -973,7 +977,7 @@ const dummyAvatarItems = [
                   </div>
                   <!-- Next Slide (cut off) -->
                   <div
-                    class="absolute right-[-20px] w-12 h-16 rounded-lg bg-muted border border-border opacity-60 flex items-center justify-center">
+                    class="absolute right-[-20px] w-12 h-20 rounded-lg bg-muted border border-border opacity-60 flex items-center justify-center">
                     <Icon icon="lucide:image" class="w-5 h-5 text-muted-foreground/40" />
                   </div>
                 </div>
@@ -983,6 +987,41 @@ const dummyAvatarItems = [
                   <div class="w-3 h-1.5 rounded-full bg-foreground shadow-sm"></div>
                   <div class="w-1.5 h-1.5 rounded-full bg-muted-foreground/30"></div>
                   <div class="w-1.5 h-1.5 rounded-full bg-muted-foreground/30"></div>
+                </div>
+              </div>
+
+              <!-- File Tree preview -->
+              <div
+                v-else-if="comp.previewType === 'filetree'"
+                class="w-full max-w-[200px] p-4 flex flex-col gap-2 overflow-hidden">
+                <!-- Level 1 -->
+                <div class="flex items-center gap-2">
+                  <Icon icon="lucide:chevron-down" class="w-3.5 h-3.5 text-muted-foreground/50" />
+                  <Icon icon="lucide:folder" class="w-4.5 h-4.5 text-foreground/80" />
+                  <div class="h-2 bg-gray-300 rounded-full w-24"></div>
+                </div>
+                <!-- Level 2 -->
+                <div class="flex items-center gap-2 ml-4">
+                  <Icon icon="lucide:chevron-down" class="w-3.5 h-3.5 text-muted-foreground/50" />
+                  <Icon icon="lucide:folder" class="w-4.5 h-4.5 text-foreground/80" />
+                  <div class="h-2 bg-gray-300 rounded-full w-16"></div>
+                </div>
+                <!-- Level 3 (Selected) -->
+                <div class="flex items-center gap-2 ml-6 py-1.5 px-2 bg-muted/60 rounded-lg">
+                  <Icon icon="lucide:chevron-down" class="w-3.5 h-3.5 text-muted-foreground/80" />
+                  <Icon icon="lucide:folder" class="w-4.5 h-4.5 text-foreground/90" />
+                  <div class="h-2 bg-gray-300 rounded-full w-20"></div>
+                </div>
+                <!-- Level 4 (File) -->
+                <div class="flex items-center gap-2 ml-14">
+                  <Icon icon="lucide:file-text" class="w-4.5 h-4.5 text-muted-foreground/60" />
+                  <div class="h-2 bg-gray-300 rounded-full w-14"></div>
+                </div>
+                <!-- Level 2 (Collapsed) -->
+                <div class="flex items-center gap-2 ml-4">
+                  <Icon icon="lucide:chevron-right" class="w-3.5 h-3.5 text-muted-foreground/50" />
+                  <Icon icon="lucide:folder" class="w-4.5 h-4.5 text-muted-foreground/60" />
+                  <div class="h-2 bg-gray-300 rounded-full w-12"></div>
                 </div>
               </div>
 
