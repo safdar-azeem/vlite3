@@ -301,8 +301,8 @@ const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : pro
         :orient="props.orientation === 'vertical' ? 'vertical' : undefined"
         :style="
           props.orientation === 'vertical'
-            ? { appearance: 'slider-vertical', WebkitAppearance: 'slider-vertical' }
-            : {}
+            ? 'appearance: slider-vertical; -webkit-appearance: slider-vertical;'
+            : ''
         " />
     </div>
 
