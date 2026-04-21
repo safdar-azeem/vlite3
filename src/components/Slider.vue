@@ -173,10 +173,10 @@ const sizeClasses = computed(() => {
   const isVertical = props.orientation === 'vertical'
   const sizes = {
     xs: {
-      track: isVertical ? 'w-[2.85px] bg-gray-300' : 'h-[2.85px] bg-gray-300',
+      track: isVertical ? 'w-[2.85px] bg-gray-300' : 'h-[2.5px] bg-gray-300',
       thumb: 'w-[12px] h-[12px]',
       wrapper: isVertical ? 'w-4 min-h-[100px]' : 'h-4 w-full',
-      tick: isVertical ? 'w-2.5 h-[2px]' : 'h-2.5 w-[2px]',
+      tick: isVertical ? 'w-2.5 h-[1.85px]' : 'h-2.5 w-[2px]',
     },
     sm: {
       track: isVertical ? 'w-[4px] bg-gray-300' : 'h-[4px] bg-gray-300',
@@ -208,7 +208,7 @@ const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : pro
     class="slider-wrapper flex items-center gap-3 select-none touch-none"
     :class="[
       { 'opacity-50 pointer-events-none': disabled },
-      props.orientation === 'vertical' ? 'flex-col h-full py-2' : 'w-full flex-row'
+      props.orientation === 'vertical' ? 'flex-col h-full py-2' : 'w-full flex-row',
     ]"
     @mouseenter="isHovered = true"
     @mouseleave="isHovered = false">
@@ -226,15 +226,15 @@ const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : pro
 
     <div
       class="relative flex-1 flex justify-center items-center group"
-      :class="sizeClasses.wrapper"
-    >
+      :class="sizeClasses.wrapper">
       <div
         class="absolute rounded-full"
         :class="[
           sizeClasses.track,
-          props.orientation === 'vertical' ? 'h-full left-1/2 transform -translate-x-1/2' : 'w-full top-1/2 transform -translate-y-1/2'
-        ]"
-      ></div>
+          props.orientation === 'vertical'
+            ? 'h-full left-1/2 transform -translate-x-1/2'
+            : 'w-full top-1/2 transform -translate-y-1/2',
+        ]"></div>
 
       <div
         v-if="isBipolar"
@@ -243,10 +243,13 @@ const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : pro
           sizeClasses.tick,
           props.orientation === 'vertical'
             ? 'left-1/2 transform -translate-x-1/2'
-            : 'top-1/2 transform -translate-y-1/2'
+            : 'top-1/2 transform -translate-y-1/2',
         ]"
-        :style="props.orientation === 'vertical' ? { bottom: getContainedPos(zeroPercentage) } : { left: getContainedPos(zeroPercentage) }"
-      ></div>
+        :style="
+          props.orientation === 'vertical'
+            ? { bottom: getContainedPos(zeroPercentage) }
+            : { left: getContainedPos(zeroPercentage) }
+        "></div>
 
       <div
         class="absolute bg-primary rounded-full will-change-transform"
@@ -258,10 +261,11 @@ const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : pro
           },
           sizeClasses.track,
           trackRoundingClass,
-          props.orientation === 'vertical' ? 'left-1/2 transform -translate-x-1/2' : 'top-1/2 transform -translate-y-1/2'
+          props.orientation === 'vertical'
+            ? 'left-1/2 transform -translate-x-1/2'
+            : 'top-1/2 transform -translate-y-1/2',
         ]"
-        :style="trackStyle"
-      ></div>
+        :style="trackStyle"></div>
 
       <div
         class="absolute rounded-full pointer-events-none transition-transform duration-100 ease-out z-10"
@@ -276,10 +280,9 @@ const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : pro
           sizeClasses.thumb,
           props.orientation === 'vertical'
             ? 'left-1/2 transform -translate-x-1/2 translate-y-1/2'
-            : 'top-1/2 -ml-px transform -translate-y-1/2 -translate-x-1/2'
+            : 'top-1/2 -ml-px transform -translate-y-1/2 -translate-x-1/2',
         ]"
-        :style="thumbStyle"
-      ></div>
+        :style="thumbStyle"></div>
 
       <input
         type="range"
@@ -296,7 +299,11 @@ const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : pro
         @touchend="isDragging = false"
         class="slider-input absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20 m-0 p-0"
         :orient="props.orientation === 'vertical' ? 'vertical' : undefined"
-        :style="props.orientation === 'vertical' ? { appearance: 'slider-vertical', WebkitAppearance: 'slider-vertical' } : {}" />
+        :style="
+          props.orientation === 'vertical'
+            ? { appearance: 'slider-vertical', WebkitAppearance: 'slider-vertical' }
+            : {}
+        " />
     </div>
 
     <span
