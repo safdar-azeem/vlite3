@@ -24,6 +24,12 @@ export const allComponents = [
     link: '/components/appshell',
     previewType: 'appshell',
   },
+  {
+    name: 'Screen',
+    desc: 'Full-page structured layout with headers and toolbars.',
+    link: '/components/screen',
+    previewType: 'screen',
+  },
 
   // 📈 2. Advanced Visuals & Data Display
   {
