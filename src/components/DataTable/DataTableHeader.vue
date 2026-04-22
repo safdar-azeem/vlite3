@@ -42,8 +42,13 @@ const sortIcon = computed(() => {
   return 'lucide:chevrons-up-down'
 })
 
+const isSortEnabled = computed(() => {
+  const hasTitle = !!props.header.title || !!props.header.titleI18n
+  return props.tableSortable && props.header.sortable !== false && hasTitle
+})
+
 const handleSort = () => {
-  if (props.tableSortable && props.header.sortable !== false) {
+  if (isSortEnabled.value) {
     // Always emit the display field — DataTable.handleSort resolves the sort key internally
     emit('sort', props.header.field)
   }
@@ -76,7 +81,7 @@ const sizeClass = computed(() => {
     class="group/th px-3 text-left align-middle font-medium text-muted-foreground transition-colors [&:has([role=checkbox])]:pr-0 overflow-hidden max-w-[400px]"
     :class="[
       sizeClass,
-      header.sortable !== false && tableSortable ? 'cursor-pointer hover:bg-muted/50' : '',
+      isSortEnabled ? 'cursor-pointer hover:bg-muted/50' : '',
       header.hideOnMobile ? 'hidden md:table-cell' : '',
     ]"
     @click="handleSort">
@@ -84,7 +89,7 @@ const sizeClass = computed(() => {
       <span class="text-xs font-bold! uppercase tracking-wider text-gray-900 truncate">
         {{ displayTitle }}
       </span>
-      <span v-if="tableSortable && header.sortable !== false" class="w-4 h-4 shrink-0">
+      <span v-if="isSortEnabled" class="w-4 h-4 shrink-0">
         <Icon
           :icon="sortIcon"
           class="w-3.5 h-3.5 transition-all text-muted-foreground mt-0.5"
