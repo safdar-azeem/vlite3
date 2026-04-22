@@ -136,7 +136,7 @@ html {
   .dark .basic-tooltip {
     --tooltip-bg: var(--color-gray-200) !important;
     --tooltip-text: var(--color-foreground) !important;
-    --tooltip-border: var(--color-gray-300) !important;
+    --tooltip-border: var(--color-gray-350) !important;
   }
 
   /* ── Shared Chart Tooltip ──────────────────── */
