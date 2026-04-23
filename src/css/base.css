@@ -139,6 +139,10 @@ html {
     --tooltip-border: var(--color-gray-350) !important;
   }
 
+  .basic-tooltip {
+    --tooltip-border: var(--color-gray-300) !important;
+  }
+
   /* ── Shared Chart Tooltip ──────────────────── */
   .vlite-chart-tooltip {
     position: fixed;
