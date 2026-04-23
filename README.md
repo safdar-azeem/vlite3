@@ -431,6 +431,7 @@ Follow these rules strictly to ensure visual consistency and predictable styling
 - [x] **ThumbnailSelector**
 - [x] **IconPicker**
 - [x] **MultiSelect**
+- [x] **RadioGroup**
 - [x] **Forms**
 - [x] **CustomFields**
 - [x] **GoogleLogin**
@@ -461,6 +462,8 @@ Follow these rules strictly to ensure visual consistency and predictable styling
 - [x] **Invoice**
 - [x] **Footer**
 - [x] **Charts**
+- [x] **GanttChart**
+- [x] **ImageComparison**
 
 ### Feedback & Overlays
 
