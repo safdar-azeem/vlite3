@@ -44,7 +44,7 @@ const val3 = ref(0)
         v-model="val3"
         icon="lucide:scale" />
 
-      <Slider label="Solid Variant (Media Player)" variant="solid" v-model="val1" />
+      <Slider label="Solid Variant (Media Player)" thumb-variant="solid" v-model="val1" />
 
       <Slider label="Disabled" :model-value="30" disabled />
     </DemoSection>
