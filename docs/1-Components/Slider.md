@@ -13,6 +13,7 @@
 | `label`        | `string`                       | —       | Label text           |
 | `labelI18n`    | `string`                       | —       | I18n key for label   |
 | `labelClass`   | `string`                       | —       | CSS class for label  |
+| `valueClass`   | `string`                       | —       | CSS class for value  |
 | `icon`         | `string`                       | —       | Icon next to label   |
 | `showValue`    | `boolean`                      | `true`  | Show numerical value |
 | `size`         | `'xs' \| 'sm' \| 'md' \| 'lg'` | `md`    | Dimensions           |
