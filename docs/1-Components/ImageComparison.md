@@ -18,6 +18,8 @@ A highly optimized before/after slider component to showcase visual differences.
 | `height`          | `string \| number` | `'auto'`   | Height of the container                        |
 | `containerClass`  | `string`           | `''`       | Custom CSS class for the root container        |
 | `handleClass`     | `string`           | `''`       | Custom CSS class for the slider handle         |
+| `showHandle`      | `boolean`          | `true`     | Show or hide the handle icon on the divider    |
+| `variant`         | `'one' \| 'two'`   | `'one'`    | Visual style of the comparison slider          |
 
 ### Usage
 
