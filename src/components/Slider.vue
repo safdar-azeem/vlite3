@@ -18,7 +18,7 @@ const props = withDefaults(
     centerOrigin?: boolean
     size?: 'xs' | 'sm' | 'md' | 'lg'
     orientation?: 'horizontal' | 'vertical'
-    variant?: 'default' | 'solid'
+    variant?: 'one' | 'two' | 'default' | 'solid'
   }>(),
   {
     min: 0,
@@ -29,7 +29,7 @@ const props = withDefaults(
     centerOrigin: undefined,
     size: 'md',
     orientation: 'horizontal',
-    variant: 'default',
+    variant: 'one',
   }
 )
 
@@ -205,15 +205,40 @@ const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : pro
 
 <template>
   <div
-    class="slider-wrapper flex items-center gap-3 select-none touch-none"
+    class="slider-wrapper flex select-none touch-none"
     :class="[
       { 'opacity-50 pointer-events-none': disabled },
-      props.orientation === 'vertical' ? 'flex-col h-full py-2' : 'w-full flex-row',
+      props.orientation === 'vertical' 
+        ? 'flex-col items-center h-full py-2 gap-3' 
+        : (props.variant === 'two' ? 'flex-col w-full gap-1' : 'w-full flex-row items-center gap-3')
     ]"
     @mouseenter="isHovered = true"
     @mouseleave="isHovered = false">
+    
     <div
-      v-if="displayLabel || icon"
+      v-if="props.variant === 'two' && props.orientation !== 'vertical'"
+      class="flex justify-between items-end w-full">
+      <div
+        v-if="displayLabel || icon"
+        class="flex items-center gap-2 cursor-pointer transition-colors"
+        :class="[{ 'text-primary': isDragging || isHovered }, labelClass || 'text-muted-foreground']"
+        @click="emit('iconClick')"
+        :title="`Double-click to reset`">
+        <Icon v-if="icon" :icon="icon" class="h-4 w-4" />
+        <label v-if="displayLabel" class="text-sm font-medium whitespace-nowrap cursor-pointer">
+          {{ displayLabel }}
+        </label>
+      </div>
+      <span
+        @dblclick="handleReset"
+        v-if="showValue"
+        class="font-mono tabular-nums text-muted-foreground text-right min-w-6 text-sm">
+        {{ displayValue }}
+      </span>
+    </div>
+
+    <div
+      v-if="(props.variant !== 'two' || props.orientation === 'vertical') && (displayLabel || icon)"
       class="flex items-center gap-2 min-w-fit cursor-pointer transition-colors"
       :class="[{ 'text-primary': isDragging || isHovered }, labelClass || 'text-muted-foreground']"
       @click="emit('iconClick')"
@@ -225,8 +250,11 @@ const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : pro
     </div>
 
     <div
-      class="relative flex-1 flex justify-center items-center group"
-      :class="sizeClasses.wrapper">
+      class="relative flex justify-center items-center group"
+      :class="[
+        sizeClasses.wrapper,
+        props.orientation === 'vertical' || props.variant !== 'two' ? 'flex-1' : ''
+      ]">
       <div
         class="absolute rounded-full"
         :class="[
@@ -308,7 +336,7 @@ const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : pro
 
     <span
       @dblclick="handleReset"
-      v-if="showValue"
+      v-if="(props.variant !== 'two' || props.orientation === 'vertical') && showValue"
       class="font-mono tabular-nums text-muted-foreground text-right min-w-6 text-sm">
       {{ displayValue }}
     </span>
