@@ -41,6 +41,7 @@ const opts = ref({
   animate: true,
   draggable: true,
   cascadeDependencies: false,
+  zoom: true,
 })
 
 const controls = [
@@ -52,6 +53,7 @@ const controls = [
   { key: 'showTodayLine',    label: 'Today Line',    type: 'toggle' as const },
   { key: 'showHeader',       label: 'Header',        type: 'toggle' as const },
   { key: 'animate',          label: 'Animate',       type: 'toggle' as const },
+  { key: 'zoom',             label: 'Zoom Controls', type: 'toggle' as const },
   { key: 'draggable',        label: 'Drag & Drop',   type: 'toggle' as const },
   { key: 'cascadeDependencies', label: 'Cascade Move', type: 'toggle' as const },
   { key: 'barRadius',        label: 'Bar Radius',    type: 'slider' as const, min: 0, max: 16, step: 1 },
@@ -131,6 +133,7 @@ function onTaskClick(task: GanttTask) {
             :show-today-line="opts.showTodayLine as boolean"
             :show-header="opts.showHeader as boolean"
             :animate="opts.animate as boolean"
+            :zoom="opts.zoom as boolean"
             :draggable="opts.draggable as boolean"
             :cascade-dependencies="opts.cascadeDependencies as boolean"
             @task-click="onTaskClick"
