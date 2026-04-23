@@ -3,8 +3,7 @@ import { ref } from 'vue'
 import DemoSection from '../DemoSection.vue'
 import ImageComparison from '@/components/ImageComparison/ImageComparison.vue'
 import sourceCode from './ImageComparisonDemo.vue?raw'
-import Switch from '@/components/Switch/Switch.vue'
-import ChoiceBox from '@/components/ChoiceBox/ChoiceBox.vue'
+
 
 const showHandle = ref(true)
 const variant = ref<'one' | 'two'>('two')
