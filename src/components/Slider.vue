@@ -173,8 +173,8 @@ const sizeClasses = computed(() => {
   const isVertical = props.orientation === 'vertical'
   const sizes = {
     xs: {
-      track: isVertical ? 'w-[2.85px] bg-gray-300' : 'h-[2.5px] bg-gray-300',
-      thumb: 'w-[12px] h-[12px]',
+      track: isVertical ? 'w-[2.85px] bg-gray-300' : 'h-[2.4px] bg-gray-300',
+      thumb: 'w-[11.5px] h-[11.5px]',
       wrapper: isVertical ? 'w-4 min-h-[100px]' : 'h-4 w-full',
       tick: isVertical ? 'w-2.5 h-[1.85px]' : 'h-2.5 w-[2px]',
     },
