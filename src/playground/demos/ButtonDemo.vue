@@ -23,8 +23,8 @@ const simulateLoad = () => {
       </div>
       <h2 class="text-3xl font-extrabold tracking-tight lg:text-4xl text-foreground">Button</h2>
       <p class="text-lg text-muted-foreground max-w-[70ch]">
-        A versatile, accessible button component with a comprehensive set of variants, sizes, states,
-        icon support, and ripple effects. The building block of every interactive UI.
+        A versatile, accessible button component with a comprehensive set of variants, sizes,
+        states, icon support, and ripple effects. The building block of every interactive UI.
       </p>
     </div>
 
@@ -51,6 +51,7 @@ const simulateLoad = () => {
         </div>
         <!-- Light tints -->
         <div class="flex flex-wrap items-center justify-center gap-3">
+          <Button variant="primary-light">primary Light</Button>
           <Button variant="info-light">Info Light</Button>
           <Button variant="success-light">Success Light</Button>
           <Button variant="warning-light">Warning Light</Button>
@@ -121,8 +122,7 @@ const simulateLoad = () => {
         <Button
           variant="outline"
           icon="https://cdn.prod.website-files.com/666ad77562dfabab1eb27f63/6747850440da96e6bc2d78b3_friso_ai3.webp"
-          text="Open AI"
-        />
+          text="Open AI" />
       </div>
     </DemoSection>
 
@@ -145,12 +145,12 @@ const simulateLoad = () => {
       </div>
     </DemoSection>
 
-
     <!-- ── Real-world Usage ───────────────────────────────────── -->
     <DemoSection title="Real-world Patterns" :code="sourceCode">
       <div class="flex flex-col gap-6 w-full max-w-2xl">
         <!-- Toolbar row -->
-        <div class="flex flex-wrap justify-between items-center gap-3 p-4 rounded-xl border border-border bg-muted/20">
+        <div
+          class="flex flex-wrap justify-between items-center gap-3 p-4 rounded-xl border border-border bg-muted/20">
           <div class="flex gap-2">
             <Button variant="ghost" icon="lucide:bold" size="sm" />
             <Button variant="ghost" icon="lucide:italic" size="sm" />
