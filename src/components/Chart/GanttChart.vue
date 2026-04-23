@@ -33,6 +33,7 @@ export interface GanttChartProps {
   draggable?: boolean
   /** When moving a task, also shift all tasks that depend on it (recursively) */
   cascadeDependencies?: boolean
+  zoom?: boolean
 }
 
 const props = withDefaults(defineProps<GanttChartProps>(), {
@@ -55,6 +56,7 @@ const props = withDefaults(defineProps<GanttChartProps>(), {
   locale: 'en-US',
   draggable: true,
   cascadeDependencies: false,
+  zoom: true,
 })
 
 const emit = defineEmits<{
@@ -142,8 +144,71 @@ const dateRange = computed(() => {
 })
 const totalDays = computed(() => Math.max(1, daysBetween(dateRange.value.start, dateRange.value.end)))
 
+// ─── Zoom ─────────────────────────────────────
+const zoomLevel = ref(1)
+let targetScrollLeft: number | null = null
+
+function onWheel(e: WheelEvent) {
+  if (!props.zoom) return
+  // Use ctrlKey to capture pinch-to-zoom on trackpads or Ctrl+Scroll on mouse
+  if (e.ctrlKey || e.metaKey) {
+    e.preventDefault()
+    const el = timelineRef.value
+    if (!el) return
+    
+    const rect = el.getBoundingClientRect()
+    const mx = e.clientX - rect.left
+    
+    const currentScrollX = targetScrollLeft !== null ? targetScrollLeft : el.scrollLeft
+    const px = currentScrollX + mx
+    
+    const oldZoom = zoomLevel.value
+    let newZoom = oldZoom * Math.exp(-e.deltaY * 0.005)
+    newZoom = Math.max(0.2, Math.min(newZoom, 5))
+    if (newZoom === oldZoom) return
+    
+    zoomLevel.value = newZoom
+    
+    const scale = newZoom / oldZoom
+    const newPx = px * scale
+    targetScrollLeft = newPx - mx
+    
+    nextTick(() => {
+      if (timelineRef.value && targetScrollLeft !== null) {
+        timelineRef.value.scrollLeft = targetScrollLeft
+        targetScrollLeft = null
+      }
+    })
+  }
+}
+
+function zoomIn() { 
+  const el = timelineRef.value
+  if (!el) { zoomLevel.value = Math.min(zoomLevel.value + 0.2, 5); return }
+  const mx = el.clientWidth / 2
+  const px = el.scrollLeft + mx
+  const oldZoom = zoomLevel.value
+  zoomLevel.value = Math.min(oldZoom + 0.2, 5)
+  const scale = zoomLevel.value / oldZoom
+  nextTick(() => el.scrollLeft = px * scale - mx)
+}
+
+function zoomOut() { 
+  const el = timelineRef.value
+  if (!el) { zoomLevel.value = Math.max(zoomLevel.value - 0.2, 0.2); return }
+  const mx = el.clientWidth / 2
+  const px = el.scrollLeft + mx
+  const oldZoom = zoomLevel.value
+  zoomLevel.value = Math.max(oldZoom - 0.2, 0.2)
+  const scale = zoomLevel.value / oldZoom
+  nextTick(() => el.scrollLeft = px * scale - mx)
+}
+
 // ─── Columns ──────────────────────────────────
-const columnWidth = computed(() => ({ day: 40, week: 120, month: 180 }[props.viewMode]))
+const columnWidth = computed(() => {
+  const base = { day: 40, week: 120, month: 180 }[props.viewMode]
+  return base * zoomLevel.value
+})
 const timeColumns = computed(() => {
   const cols: { label: string; sublabel?: string; x: number; width: number }[] = []
   const { start, end } = dateRange.value
@@ -515,7 +580,10 @@ let cancelAnim: (() => void) | null = null
 function runAnimation() { cancelAnim?.(); progress.value = 0; cancelAnim = animateProgress(900, t => (progress.value = t)) }
 
 onMounted(() => { setupResize(); if (props.animate) runAnimation() })
-watch(() => props.viewMode, () => { if (props.animate) runAnimation() })
+watch(() => props.viewMode, () => { 
+  zoomLevel.value = 1
+  if (props.animate) runAnimation() 
+})
 // Shallow watch on tasks length/identity — NOT deep
 watch(() => props.tasks.length, () => { if (props.animate) runAnimation() })
 
@@ -584,8 +652,29 @@ function formatDuration(s: Date, e: Date): string {
 <template>
   <div ref="containerRef" class="vlite-gantt-chart w-full select-none">
     <!-- Toolbar -->
-    <div v-if="showTodayLine && todayVisible" class="vlite-gantt-toolbar">
-      <button class="vlite-gantt-today-btn" @click="scrollToToday">
+    <div v-if="(showTodayLine && todayVisible) || zoom" class="vlite-gantt-toolbar">
+      <div v-if="zoom" class="vlite-gantt-zoom-controls">
+        <button class="vlite-gantt-btn" @click="zoomOut" :disabled="zoomLevel <= 0.4">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            <line x1="8" y1="11" x2="14" y2="11" />
+          </svg>
+          <span>Zoom Out</span>
+        </button>
+        <button class="vlite-gantt-btn" @click="zoomIn" :disabled="zoomLevel >= 3">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            <line x1="11" y1="8" x2="11" y2="14" />
+            <line x1="8" y1="11" x2="14" y2="11" />
+          </svg>
+          <span>Zoom In</span>
+        </button>
+      </div>
+      <button v-if="showTodayLine && todayVisible" class="vlite-gantt-btn" @click="scrollToToday">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
           stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" />
@@ -630,7 +719,7 @@ function formatDuration(s: Date, e: Date): string {
       </div>
 
       <!-- Timeline -->
-      <div ref="timelineRef" class="vlite-gantt-timeline" @scroll="onTimelineScroll">
+      <div ref="timelineRef" class="vlite-gantt-timeline" @scroll="onTimelineScroll" @wheel="onWheel">
         <div v-if="showHeader" class="vlite-gantt-timeline-header"
           :style="{ height: `${headerHeight}px`, width: `${timelineWidth}px` }">
           <svg :width="timelineWidth" :height="headerHeight" class="overflow-visible">
@@ -798,13 +887,15 @@ function formatDuration(s: Date, e: Date): string {
 <style scoped>
 .vlite-gantt-chart { font-family: inherit; }
 .vlite-gantt-toolbar { display: flex; justify-content: flex-end; margin-bottom: 8px; gap: 6px; }
-.vlite-gantt-today-btn {
+.vlite-gantt-btn {
   display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px;
   font-size: 11px; font-weight: 600; color: var(--color-muted-foreground);
   background: var(--color-muted); border: 1px solid var(--color-border);
   border-radius: var(--radius); cursor: pointer; transition: all 0.15s;
 }
-.vlite-gantt-today-btn:hover { background: var(--color-accent); color: var(--color-foreground); }
+.vlite-gantt-btn:hover:not(:disabled) { background: var(--color-accent); color: var(--color-foreground); }
+.vlite-gantt-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.vlite-gantt-zoom-controls { display: flex; gap: 6px; }
 
 .vlite-gantt-wrapper {
   display: flex; border: 1px solid var(--color-border);
