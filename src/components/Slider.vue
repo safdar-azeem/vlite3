@@ -15,6 +15,7 @@ const props = withDefaults(
     showValue?: boolean
     modelValue?: number
     labelClass?: string
+    valueClass?: string
     centerOrigin?: boolean
     size?: 'xs' | 'sm' | 'md' | 'lg'
     orientation?: 'horizontal' | 'vertical'
@@ -221,18 +222,19 @@ const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : pro
       <div
         v-if="displayLabel || icon"
         class="flex items-center gap-2 cursor-pointer transition-colors"
-        :class="[{ 'text-primary': isDragging || isHovered }, labelClass || 'text-muted-foreground']"
+        :class="[{ 'text-primary': isDragging || isHovered }, labelClass || 'text-muted-foreground text-sm font-medium']"
         @click="emit('iconClick')"
         :title="`Double-click to reset`">
         <Icon v-if="icon" :icon="icon" class="h-4 w-4" />
-        <label v-if="displayLabel" class="text-sm font-medium whitespace-nowrap cursor-pointer">
+        <label v-if="displayLabel" class="whitespace-nowrap cursor-pointer">
           {{ displayLabel }}
         </label>
       </div>
       <span
         @dblclick="handleReset"
         v-if="showValue"
-        class="font-mono tabular-nums text-muted-foreground text-right min-w-6 text-sm">
+        class="font-mono tabular-nums text-right min-w-6"
+        :class="valueClass || 'text-muted-foreground text-sm'">
         {{ displayValue }}
       </span>
     </div>
@@ -240,11 +242,11 @@ const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : pro
     <div
       v-if="(props.variant !== 'two' || props.orientation === 'vertical') && (displayLabel || icon)"
       class="flex items-center gap-2 min-w-fit cursor-pointer transition-colors"
-      :class="[{ 'text-primary': isDragging || isHovered }, labelClass || 'text-muted-foreground']"
+      :class="[{ 'text-primary': isDragging || isHovered }, labelClass || 'text-muted-foreground text-sm font-medium']"
       @click="emit('iconClick')"
       :title="`Double-click to reset`">
       <Icon v-if="icon" :icon="icon" class="h-4 w-4" />
-      <label v-if="displayLabel" class="text-sm font-medium whitespace-nowrap cursor-pointer">
+      <label v-if="displayLabel" class="whitespace-nowrap cursor-pointer">
         {{ displayLabel }}
       </label>
     </div>
@@ -337,7 +339,8 @@ const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : pro
     <span
       @dblclick="handleReset"
       v-if="(props.variant !== 'two' || props.orientation === 'vertical') && showValue"
-      class="font-mono tabular-nums text-muted-foreground text-right min-w-6 text-sm">
+      class="font-mono tabular-nums text-right min-w-6"
+      :class="valueClass || 'text-muted-foreground text-sm'">
       {{ displayValue }}
     </span>
   </div>
