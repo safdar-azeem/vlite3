@@ -430,7 +430,6 @@ Follow these rules strictly to ensure visual consistency and predictable styling
 - [x] **AvatarUploader**
 - [x] **ThumbnailSelector**
 - [x] **IconPicker**
-- [x] **MultiSelect**
 - [x] **RadioGroup**
 - [x] **Forms**
 - [x] **CustomFields**
@@ -475,6 +474,8 @@ Follow these rules strictly to ensure visual consistency and predictable styling
 - [x] **ToastNotification**
 - [x] **Tooltip**
 - [x] **Dropdown**
+- [x] **MultiSelect**
+- [x] **AsyncSelect**
 - [x] **ProgressBar**
 - [x] **Spinner**
 - [x] **CommandPalette**
