@@ -5,14 +5,39 @@ brand: 'vlite3'
 
 tokens:
   colors:
-    global:
-      white: '#ffffff'
-      black: '#000000'
-      gray-50: 'color-mix(in oklab, #ffffff 98.2%, #000000)'
-      gray-100: 'color-mix(in oklab, #ffffff 97%, #000000)'
-      gray-150: 'color-mix(in oklab, #ffffff 96%, #000000)'
-      gray-200: 'color-mix(in oklab, #ffffff 94.5%, #000000)'
-      gray-900: 'color-mix(in oklab, #ffffff 6%, #000000)'
+    base:
+      light:
+        white: '#FFFFFF'
+        black: '#0C0C0C'
+        gray-50: '#F9F9F9'
+        gray-100: '#F7F7F7'
+        gray-150: '#F4F4F4'
+        gray-200: '#F0F0F0'
+        gray-250: '#E9E9E9'
+        gray-300: '#D8D8D8'
+        gray-400: '#989898'
+        gray-500: '#777777'
+        gray-600: '#5F5F5F'
+        gray-700: '#434343'
+        gray-800: '#2D2D2D'
+        gray-900: '#171717'
+        gray-950: '#0C0C0C'
+      dark:
+        white: '#FFFFFF'
+        black: '#0B0B0B'
+        gray-50: '#111111'
+        gray-100: '#141414'
+        gray-150: '#1C1C1C'
+        gray-200: '#242424'
+        gray-250: '#2C2C2C'
+        gray-300: '#343434'
+        gray-400: '#5C5C5C'
+        gray-500: '#7C7C7C'
+        gray-600: '#959595'
+        gray-700: '#B5B5B5'
+        gray-800: '#D0D0D0'
+        gray-900: '#EEEEEE'
+        gray-950: '#FFFFFF'
 
     semantic:
       light:
@@ -130,3 +155,5 @@ When generating code or UI components for this project, you **MUST strictly abid
    - Use `rounded` instead of `rounded-md` or `rounded-rounded`
 5. **Dark Mode Modals/Cards Hierarchy:**
    The `bg-card` token automatically handles nested elevation logic based on CSS depth (i.e. `.bg-card .bg-card .bg-card`). Ensure you wrap surfaces properly.
+6. **Automatic Dark Mode Swapping (NO `dark:` prefix):**
+   When the `.dark` class is applied to the HTML root, all base, grayscale, and semantic colors are automatically replaced with their dark mode equivalents via CSS variables. **Do not use the `dark:` prefix for any colors** (e.g., avoid `dark:bg-gray-50`). Always use the base class (e.g., `bg-gray-50`) and it will seamlessly switch in dark mode.
