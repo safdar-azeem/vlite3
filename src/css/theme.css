@@ -6,6 +6,7 @@
 
     --color-gray-150: '';
     --color-gray-250: '';
+    --color-gray-350: '';
     --color-body: '';
     --color-background: '';
     --color-foreground: '';
@@ -273,7 +274,7 @@
       var(--color-mixture-2, #000000));
 
   --color-gray-350: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 75%,
+      var(--color-mixture-1, #ffffff) 80%,
       var(--color-mixture-2, #000000));
 
   --color-gray-400: color-mix(in oklab,
@@ -424,9 +425,6 @@
       var(--color-mixture-1, #ffffff) 80%,
       var(--color-mixture-2, #000000));
 
-  --color-gray-350: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 80%,
-      var(--color-mixture-2, #000000));
 
   --color-secondary: color-mix(in oklab, var(--color-mixture-1) 88.5%, var(--color-mixture-2));
   --color-muted: color-mix(in oklab,
