@@ -27,7 +27,7 @@ const classes = computed(() => {
 
   const variants: Record<ButtonVariant, string> = {
     primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
-    'primary-light': 'bg-primary-light text-primary-fg-light hover:bg-primary/20',
+    'primary-light': 'bg-primary-light text-primary-fg-light hover:bg-primary/15',
     secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
     danger: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
     'danger-light': 'bg-destructive/10 text-destructive hover:bg-destructive/20',
