@@ -33,6 +33,8 @@ const val3 = ref(0)
 
       <Slider label="Standard (0-100)" v-model="val1" />
 
+      <Slider label="Variant Two (Top Label)" variant="two" v-model="val1" />
+
       <Slider label="Range (50-200)" :min="50" :max="200" v-model="val2" icon="lucide:maximize" />
 
       <Slider
