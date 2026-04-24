@@ -204,6 +204,22 @@ const sizeClasses = computed(() => {
 })
 
 const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : props.label))
+
+const computedLabelClass = computed(() => {
+  if (props.labelClass) return props.labelClass
+  if (props.size === 'xs' || props.size === 'sm') {
+    return 'text-muted-foreground text-xs font-normal'
+  }
+  return 'text-muted-foreground text-sm font-medium'
+})
+
+const computedValueClass = computed(() => {
+  if (props.valueClass) return props.valueClass
+  if (props.size === 'xs' || props.size === 'sm') {
+    return 'text-muted-foreground text-xs font-normal'
+  }
+  return 'text-muted-foreground text-sm'
+})
 </script>
 
 <template>
@@ -224,7 +240,7 @@ const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : pro
       <div
         v-if="displayLabel || icon"
         class="flex items-center gap-2 cursor-pointer transition-colors"
-        :class="[{ 'text-primary': isDragging || isHovered }, labelClass || 'text-muted-foreground text-sm font-medium']"
+        :class="[{ 'text-primary': isDragging || isHovered }, computedLabelClass]"
         @click="emit('iconClick')"
         :title="`Double-click to reset`">
         <Icon v-if="icon" :icon="icon" class="h-4 w-4" />
@@ -236,7 +252,7 @@ const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : pro
         @dblclick="handleReset"
         v-if="showValue"
         class="font-mono tabular-nums text-right min-w-6"
-        :class="valueClass || 'text-muted-foreground text-sm'">
+        :class="computedValueClass">
         {{ displayValue }}
       </span>
     </div>
@@ -244,7 +260,7 @@ const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : pro
     <div
       v-if="(props.variant !== 'two' || props.orientation === 'vertical') && (displayLabel || icon)"
       class="flex items-center gap-2 min-w-fit cursor-pointer transition-colors"
-      :class="[{ 'text-primary': isDragging || isHovered }, labelClass || 'text-muted-foreground text-sm font-medium']"
+      :class="[{ 'text-primary': isDragging || isHovered }, computedLabelClass]"
       @click="emit('iconClick')"
       :title="`Double-click to reset`">
       <Icon v-if="icon" :icon="icon" class="h-4 w-4" />
@@ -342,7 +358,7 @@ const displayLabel = computed(() => (props.labelI18n ? $t(props.labelI18n) : pro
       @dblclick="handleReset"
       v-if="(props.variant !== 'two' || props.orientation === 'vertical') && showValue"
       class="font-mono tabular-nums text-right min-w-6"
-      :class="valueClass || 'text-muted-foreground text-sm'">
+      :class="computedValueClass">
       {{ displayValue }}
     </span>
   </div>
