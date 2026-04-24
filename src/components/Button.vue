@@ -29,14 +29,15 @@ const classes = computed(() => {
     primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
     'primary-light': 'bg-primary-light text-primary-fg-light hover:bg-primary/15',
     secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-    danger: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-    'danger-light': 'bg-destructive/10 text-destructive hover:bg-destructive/20',
+    danger: 'bg-danger text-danger-fg hover:bg-danger/90',
+    'danger-light': 'bg-danger-light text-destructive hover:bg-danger/20 dark:hover:bg-danger/40',
     warning: 'bg-warning text-warning-fg hover:bg-warning/80',
-    'warning-light': 'bg-warning-light text-warning-fg-light hover:bg-warning/20',
+    'warning-light': 'bg-warning-light text-warning-fg-light hover:bg-warning/25',
     info: 'bg-info text-info-fg hover:bg-info/80',
-    'info-light': 'bg-info-light text-info-fg-light hover:bg-info/20',
+    'info-light': 'bg-info-light text-info-fg-light hover:bg-info/30',
     success: 'bg-success text-success-fg hover:bg-success/80',
-    'success-light': 'bg-success-light text-success-fg-light hover:bg-success/20',
+    'success-light':
+      'bg-success-light text-success-fg-light hover:bg-success/20 dark:hover:bg-success/35',
 
     outline:
       'border border-input bg-background hover:bg-accent hover:text-accent-foreground text-foreground',
