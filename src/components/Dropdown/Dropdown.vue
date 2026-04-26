@@ -62,6 +62,7 @@ const props = withDefaults(
     isNested?: boolean // Used internally to identify child vs root dropdowns
     disabled?: boolean // Prevents opening and selecting options
     readonly?: boolean // Prevents opening and hides interaction visual cues
+    unstyled?: boolean // Prevents applying default background and borders
   }>(),
   {
     options: () => [],
@@ -89,6 +90,7 @@ const props = withDefaults(
     isNested: false,
     disabled: false,
     readonly: false,
+    unstyled: false,
   }
 )
 const emit = defineEmits<{
@@ -398,12 +400,16 @@ const cancelSelection = () => {
       :menuId="uniqueMenuId"
       :ignoreClickOutside="finalIgnoreClickOutside"
       class="w-full"
-      :className="'dropdown ' + (className || '')"
+      :className="'dropdown ' + (className || '') + (unstyled ? ' unstyled-dropdown' : '')"
       @onShow="$emit('onOpen')"
       @onHide="$emit('onClose')"
       @update:isOpen="handleVisibilityChange"
       triggerClass="w-full"
-      :styles="{ padding: '0' }">
+      :styles="{
+        padding: '0',
+        ...(width ? { width: width, maxWidth: width } : {}),
+        ...(unstyled ? { background: 'transparent', border: 'none', boxShadow: 'none' } : {}),
+      }">
       <template #trigger="{ isOpen }">
         <slot
           name="trigger"
