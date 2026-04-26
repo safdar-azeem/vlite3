@@ -244,6 +244,9 @@ const {
   isFieldReadonly,
   handleSubmit: formSubmit,
   reinitialize,
+  resetForm,
+  setFieldError,
+  clearErrors,
 } = useForm({
   schema: props.schema,
   values: props.values,
@@ -407,6 +410,16 @@ const handleSaveShortcut = (event: KeyboardEvent) => {
   }
 }
 
+defineExpose({
+  formValues,
+  errors,
+  isSubmitting,
+  handleSubmit,
+  validateAll,
+  resetForm,
+  setFieldError,
+  clearErrors,
+})
 const handleCancel = () => {
   emit('onCancel')
   if (modalContext) {
