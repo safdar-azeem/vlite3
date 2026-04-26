@@ -105,6 +105,7 @@ const variantClasses = computed(() => {
     orange: `bg-orange-subtle text-orange-subtle-fg border-orange-subtle-border ${isInteractive.value ? 'hover:opacity-80' : ''}`,
     pink: `bg-pink-subtle text-pink-subtle-fg border-pink-subtle-border ${isInteractive.value ? 'hover:opacity-80' : ''}`,
     cyan: `bg-cyan-subtle text-cyan-subtle-fg border-cyan-subtle-border ${isInteractive.value ? 'hover:opacity-80' : ''}`,
+    blue: `bg-blue-200/40 text-blue-600 dark:text-blue-700 border-blue-200 ${isInteractive.value ? 'hover:opacity-80' : ''}`,
   }
 
   return `${variants[props.variant] || variants['subtle']} ${interactiveHover}`
