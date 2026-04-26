@@ -31,6 +31,7 @@ export const STATUS_MAP: Record<string, StatusConfig> = {
   available: { variant: 'teal', icon: 'lucide:circle-check' },
   present: { variant: 'success', icon: 'lucide:user-check' },
   shipped: { variant: 'teal', icon: 'lucide:truck' },
+  arrived: { variant: 'teal', icon: 'lucide:map-pin' },
   published: { variant: 'success', icon: 'lucide:globe' },
   online: { variant: 'indigo', icon: 'lucide:globe' },
   success: { variant: 'success', icon: 'lucide:check-circle-2' },
@@ -60,6 +61,7 @@ export const STATUS_MAP: Record<string, StatusConfig> = {
   reviewing: { variant: 'indigo', icon: 'lucide:eye' },
   underreview: { variant: 'indigo', icon: 'lucide:eye' },
   submitted: { variant: 'indigo', icon: 'lucide:send' },
+  submited: { variant: 'indigo', icon: 'lucide:send' },
   sent: { variant: 'cyan', icon: 'lucide:send' },
   scheduled: { variant: 'cyan', icon: 'lucide:calendar-clock' },
   syncing: { variant: 'purple', icon: 'lucide:refresh-cw' },
@@ -151,12 +153,22 @@ export const STATUS_MAP: Record<string, StatusConfig> = {
   unposted: { variant: 'secondary', icon: 'lucide:file-x' },
   settled: { variant: 'success', icon: 'lucide:handshake' },
   voided: { variant: 'secondary', icon: 'lucide:ban' },
+  profit: { variant: 'success', icon: 'lucide:trending-up' },
+  loss: { variant: 'danger', icon: 'lucide:trending-down' },
+  revenue: { variant: 'success', icon: 'lucide:coins' },
+  journal: { variant: 'purple', icon: 'lucide:book-open' },
+  journalentry: { variant: 'purple', icon: 'lucide:book-open', label: 'Journal Entry' },
+  voucher: { variant: 'cyan', icon: 'lucide:ticket' },
 
   // ── Payment Methods ────────────────────────────────────────────────────────
   cash: { variant: 'success', icon: 'lucide:banknote' },
   check: { variant: 'blue', icon: 'lucide:receipt' },
   card: { variant: 'purple', icon: 'lucide:credit-card' },
   transfer: { variant: 'cyan', icon: 'lucide:arrow-right-left' },
+  bank: { variant: 'blue', icon: 'lucide:landmark' },
+  app: { variant: 'indigo', icon: 'lucide:smartphone' },
+  checkslip: { variant: 'secondary', icon: 'lucide:receipt', label: 'Check Slip' },
+  bankcheck: { variant: 'blue', icon: 'lucide:receipt', label: 'Bank Check' },
 
   // ── HR / Recruiting ────────────────────────────────────────────────────────
   hired: { variant: 'success', icon: 'lucide:user-check' },
@@ -201,6 +213,7 @@ export const STATUS_MAP: Record<string, StatusConfig> = {
   // ── Invoice Type ───────────────────────────────────────────────────────────
   sale: { variant: 'success', icon: 'lucide:shopping-cart' },
   expense: { variant: 'warning', icon: 'lucide:receipt' },
+  expenses: { variant: 'warning', icon: 'lucide:receipt' },
 
   // ── Payment Type ───────────────────────────────────────────────────────────
   debit: { variant: 'danger', icon: 'lucide:arrow-up-right' },
@@ -237,7 +250,10 @@ export function normalizeStatus(status: string): string {
  * Checks global custom statuses first to allow overwriting defaults.
  * Falls back to a secondary chip with the raw label if not found.
  */
-export function resolveStatus(status: string, customStatuses?: Record<string, StatusConfig>): StatusConfig {
+export function resolveStatus(
+  status: string,
+  customStatuses?: Record<string, StatusConfig>
+): StatusConfig {
   const key = normalizeStatus(status)
 
   if (customStatuses) {
