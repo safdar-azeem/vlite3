@@ -26,6 +26,12 @@ import sourceCode from './StatusChipDemo.vue?raw'
         <StatusChip status="overdue" />
         <StatusChip status="void" />
         <StatusChip status="cancelled" />
+        <StatusChip status="profit" />
+        <StatusChip status="loss" />
+        <StatusChip status="revenue" />
+        <StatusChip status="journal" />
+        <StatusChip status="journal_entry" />
+        <StatusChip status="voucher" />
       </div>
     </DemoSection>
 
@@ -36,6 +42,10 @@ import sourceCode from './StatusChipDemo.vue?raw'
         <StatusChip status="card" />
         <StatusChip status="transfer" />
         <StatusChip status="online" />
+        <StatusChip status="bank" />
+        <StatusChip status="app" />
+        <StatusChip status="check_slip" />
+        <StatusChip status="bank_check" />
       </div>
     </DemoSection>
 
@@ -52,6 +62,9 @@ import sourceCode from './StatusChipDemo.vue?raw'
         <StatusChip status="cancelled" />
         <StatusChip status="rejected" />
         <StatusChip status="scheduled" />
+        <StatusChip status="arrived" />
+        <StatusChip status="submitted" />
+        <StatusChip status="submited" />
       </div>
     </DemoSection>
 
@@ -157,6 +170,7 @@ import sourceCode from './StatusChipDemo.vue?raw'
       <div class="flex flex-wrap gap-2">
         <StatusChip status="sale" />
         <StatusChip status="expense" />
+        <StatusChip status="expenses" />
       </div>
     </DemoSection>
 
