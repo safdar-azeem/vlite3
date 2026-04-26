@@ -302,3 +302,26 @@ html {
   background-color: var(--color-primary) !important;
   color: var(--color-primary-fg) !important;
 }
+
+.unstyled-dropdown .tooltip-content {
+  --tooltip-bg: transparent !important;
+  --tooltip-border: transparent !important;
+  --tooltip-radius: 0px !important;
+  --tooltip-padding: 0px 0px !important;
+  padding: 0px !important;
+  background-color: transparent !important;
+  padding: 0px !important;
+  border: none !important;
+  width: auto !important;
+}
+
+.unstyled-dropdown {
+  --tooltip-bg: transparent !important;
+  --tooltip-border: transparent !important;
+  --tooltip-radius: 0px !important;
+  --tooltip-padding: 0px 0px !important;
+  background-color: transparent !important;
+  padding: 0px !important;
+  border: none !important;
+  width: auto !important;
+}
