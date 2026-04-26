@@ -227,13 +227,14 @@ const computedValueClass = computed(() => {
     class="slider-wrapper flex select-none touch-none"
     :class="[
       { 'opacity-50 pointer-events-none': disabled },
-      props.orientation === 'vertical' 
-        ? 'flex-col items-center h-full py-2 gap-3' 
-        : (props.variant === 'two' ? 'flex-col w-full gap-1' : 'w-full flex-row items-center gap-3')
+      props.orientation === 'vertical'
+        ? 'flex-col items-center h-full py-2 gap-3'
+        : props.variant === 'two'
+          ? 'flex-col w-full gap-1'
+          : 'w-full flex-row items-center gap-3',
     ]"
     @mouseenter="isHovered = true"
     @mouseleave="isHovered = false">
-    
     <div
       v-if="props.variant === 'two' && props.orientation !== 'vertical'"
       class="flex justify-between items-end w-full">
@@ -273,7 +274,7 @@ const computedValueClass = computed(() => {
       class="relative flex justify-center items-center group"
       :class="[
         sizeClasses.wrapper,
-        props.orientation === 'vertical' || props.variant !== 'two' ? 'flex-1' : ''
+        props.orientation === 'vertical' || props.variant !== 'two' ? 'flex-1' : '',
       ]">
       <div
         class="absolute rounded-full"
@@ -318,7 +319,9 @@ const computedValueClass = computed(() => {
       <div
         class="absolute rounded-full pointer-events-none transition-transform duration-100 ease-out z-10"
         :class="[
-          props.thumbVariant === 'solid' ? 'bg-primary' : 'bg-background border border-border shadow-sm',
+          props.thumbVariant === 'solid'
+            ? 'bg-primary'
+            : 'bg-background border border-gray-400/90 shadow-sm',
           {
             'border-primary shadow-md scale-110': isDragging && props.thumbVariant !== 'solid',
             'scale-110': isDragging && props.thumbVariant === 'solid',
