@@ -7,6 +7,7 @@ export type ChipVariant =
   | 'success'
   | 'warning'
   | 'danger'
+  | 'blue'
   | 'info'
 
 export type ChipSize = 'small' | 'medium' | 'large'
@@ -22,4 +23,3 @@ export interface ChipProps {
   deletable?: boolean
   class?: string
 }
-
