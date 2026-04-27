@@ -60,7 +60,8 @@ const handleRipple = (event: MouseEvent, el: HTMLElement) => {
 }
 
 export const vRipple = {
-  mounted(el: RippleElement) {
+  mounted(el: RippleElement, binding: { value?: boolean }) {
+    if (binding.value === false) return
     if (window.getComputedStyle(el).position === 'static') {
       el.style.position = 'relative'
     }
