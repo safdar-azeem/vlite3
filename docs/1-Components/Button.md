@@ -17,6 +17,7 @@
 | `loading`        | `boolean`                   | `false`   | Show spinner                        |
 | `disabled`       | `boolean`                   | `false`   | Disable interaction                 |
 | `asIcon`         | `boolean`                   | `false`   | Force render as icon button         |
+| `layout`         | `'horizontal' \| 'vertical'`| `horizontal`| Layout orientation                |
 | `textClass`      | `string`                    | —         | Custom class for text span          |
 | `iconClass`      | `string`                    | —         | Custom class for left icon          |
 | `iconRightClass` | `string`                    | —         | Custom class for right icon         |
