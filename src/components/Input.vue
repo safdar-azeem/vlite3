@@ -311,6 +311,7 @@ onMounted(() => {
 <template>
   <div :class="wrapperClass">
     <Label
+      size="xs"
       v-if="displayLabel && variant !== 'floating'"
       :for="displayLabel"
       :class="['mb-1.5', labelPosition !== 'top' ? 'mb-0' : ''].join(' ')">
@@ -352,7 +353,17 @@ onMounted(() => {
           @update:model-value="emit('update:modelValue', $event)"
           @blur="handleBlur"
           @focus="handleFocus"
-          :data-testid="$attrs['data-testid'] || ($attrs.name ? `input-${$attrs.name}` : (displayLabel ? `input-${displayLabel.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : 'textarea'))" />
+          :data-testid="
+            $attrs['data-testid'] ||
+            ($attrs.name
+              ? `input-${$attrs.name}`
+              : displayLabel
+                ? `input-${displayLabel
+                    .toString()
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, '-')}`
+                : 'textarea')
+          " />
 
         <input
           v-else
@@ -374,7 +385,17 @@ onMounted(() => {
           @blur="handleBlur"
           @focus="handleFocus"
           @animationstart="handleAnimationStart"
-          :data-testid="$attrs['data-testid'] || ($attrs.name ? `input-${$attrs.name}` : (displayLabel ? `input-${displayLabel.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : 'input'))" />
+          :data-testid="
+            $attrs['data-testid'] ||
+            ($attrs.name
+              ? `input-${$attrs.name}`
+              : displayLabel
+                ? `input-${displayLabel
+                    .toString()
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, '-')}`
+                : 'input')
+          " />
 
         <div
           v-if="icon"
