@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useSlots } from 'vue'
+import { computed, useSlots, useAttrs } from 'vue'
 import Icon from './Icon.vue'
 import { vRipple } from '../directives/vRipple'
 import type { ButtonVariant, ButtonSize, ButtonRounded, ButtonProps } from '@/types'
@@ -13,7 +13,11 @@ const props = withDefaults(defineProps<ButtonProps>(), {
   disabled: false,
   loading: false,
   class: '',
+  layout: 'horizontal',
 })
+
+const attrs = useAttrs()
+const resolvedLayout = computed(() => props.layout === 'vertical' || attrs.layout === 'vertical' ? 'vertical' : 'horizontal')
 
 const displayText = computed(() => (props.textI18n ? $t(props.textI18n) : props.text))
 
@@ -23,7 +27,7 @@ const isOnlyIcon = computed(
 )
 
 const classes = computed(() => {
-  const baseClasses = `inline-flex items-center justify-center whitespace-nowrap text-sm font-medium disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] cursor-pointer gap-2 ${isOnlyIcon.value ? 'icon-only shrink-0' : ''}`
+  const baseClasses = `inline-flex items-center justify-center whitespace-nowrap text-sm font-medium disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] cursor-pointer ${resolvedLayout.value === 'vertical' ? 'flex-col gap-1.5' : 'gap-2'} ${isOnlyIcon.value ? 'icon-only shrink-0' : ''}`
 
   const variants: Record<ButtonVariant, string> = {
     primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
@@ -84,6 +88,18 @@ const classes = computed(() => {
   }
 
   let sizeClass = isOnlyIcon.value ? iconSizes[props.size] : sizes[props.size]
+  
+  if (resolvedLayout.value === 'vertical') {
+    const verticalSizes: Record<ButtonSize, string> = {
+      xs: 'h-auto py-1.5 px-2 min-w-16',
+      sm: 'h-auto py-2 px-3 min-w-20',
+      sm2: 'h-auto py-2 px-3 min-w-20',
+      md: 'h-auto py-2.5 px-4 min-w-24',
+      lg: 'h-auto py-3 px-4 min-w-28',
+      xl: 'h-auto py-4 px-10 min-w-32',
+    }
+    sizeClass = verticalSizes[props.size]
+  }
 
   return [
     baseClasses,
@@ -113,7 +129,11 @@ const iconClasses = computed(() => {
     xl: 'w-4 h-4',
   }
 
-  return isOnlyIcon.value ? iconSizes[props.size] : sizes[props.size]
+  let iconClassStr = isOnlyIcon.value ? iconSizes[props.size] : sizes[props.size]
+  if (resolvedLayout.value === 'vertical') {
+    iconClassStr += ' scale-105'
+  }
+  return iconClassStr
 })
 </script>
 
