@@ -17,7 +17,8 @@
 | `loading`        | `boolean`                   | `false`   | Show spinner                        |
 | `disabled`       | `boolean`                   | `false`   | Disable interaction                 |
 | `asIcon`         | `boolean`                   | `false`   | Force render as icon button         |
-| `layout`         | `'horizontal' \| 'vertical'`| `horizontal`| Layout orientation                |
+| `layout`         | `'horizontal' \| 'vertical' \| 'tile'` | `horizontal` | Layout orientation         |
+| `tileIconBg`     | `ButtonVariant`             | —         | Override variant for tile icon circle |
 | `textClass`      | `string`                    | —         | Custom class for text span          |
 | `iconClass`      | `string`                    | —         | Custom class for left icon          |
 | `iconRightClass` | `string`                    | —         | Custom class for right icon         |
@@ -55,6 +56,13 @@ type ButtonRounded = 'none' | 'sm' | 'sm2' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
 ```vue
 <Button variant="primary" icon="lucide:plus">Add Item</Button>
 <Button variant="ghost" loading />
+
+<!-- Tile layout (app-shortcut grid) -->
+<Button icon="lucide:instagram" layout="tile" variant="primary" rounded="xl">Instagram</Button>
+<Button icon="lucide:camera" layout="tile" variant="info-light" rounded="xl">Camera</Button>
+
+<!-- Tile with custom icon background -->
+<Button icon="lucide:heart" layout="tile" variant="primary" tile-icon-bg="danger" rounded="xl">Health</Button>
 
 <!-- With Beacon -->
 <div class="relative inline-flex">
