@@ -43,7 +43,6 @@ const props = withDefaults(defineProps<LocalButtonProps>(), {
   loading: false,
   class: '',
   layout: 'horizontal',
-  tileIconBg: undefined,
 })
 
 const attrs = useAttrs()
@@ -58,8 +57,7 @@ const isTile = computed(() => resolvedLayout.value === 'tile')
 
 /** Classes for the icon circle background in tile mode */
 const tileCircleClasses = computed(() => {
-  const bg = props.tileIconBg ?? props.variant
-  return tileIconBgMap[bg] ?? tileIconBgMap.primary
+  return tileIconBgMap[props.variant] ?? tileIconBgMap.primary
 })
 
 const tileCircleSizeClasses = computed(() => {
