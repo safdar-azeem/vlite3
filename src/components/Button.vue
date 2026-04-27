@@ -5,6 +5,31 @@ import { vRipple } from '../directives/vRipple'
 import type { ButtonVariant, ButtonSize, ButtonRounded, ButtonProps } from '@/types'
 import { $t } from '@/utils/i18n'
 
+// Variant → classes for the tile icon background circle
+const tileIconBgMap: Record<ButtonVariant, string> = {
+  primary: 'bg-primary text-primary-foreground',
+  'primary-light': 'bg-primary-light text-primary-fg-light',
+  secondary: 'bg-secondary text-secondary-foreground',
+  danger: 'bg-danger text-danger-fg',
+  'danger-light': 'bg-danger-light text-destructive',
+  warning: 'bg-warning text-warning-fg',
+  'warning-light': 'bg-warning-light text-warning-fg-light',
+  info: 'bg-info text-info-fg',
+  'info-light': 'bg-info-light text-info-fg-light',
+  success: 'bg-success text-success-fg',
+  'success-light': 'bg-success-light text-success-fg-light',
+  outline: 'bg-muted text-foreground',
+  'outline-floating': 'bg-muted text-foreground',
+  'outline-primary': 'bg-primary/10 text-primary',
+  'outline-danger': 'bg-destructive/10 text-destructive',
+  'outline-warning': 'bg-warning/10 text-warning',
+  'outline-info': 'bg-info/10 text-info',
+  'outline-success': 'bg-success/10 text-success',
+  ghost: 'bg-accent text-accent-foreground',
+  link: 'bg-primary/10 text-primary',
+  transparent: 'bg-muted text-foreground',
+}
+
 const props = withDefaults(defineProps<ButtonProps>(), {
   variant: 'primary',
   size: 'md',
@@ -14,12 +39,36 @@ const props = withDefaults(defineProps<ButtonProps>(), {
   loading: false,
   class: '',
   layout: 'horizontal',
+  tileIconBg: undefined,
 })
 
 const attrs = useAttrs()
-const resolvedLayout = computed(() =>
-  props.layout === 'vertical' || attrs.layout === 'vertical' ? 'vertical' : 'horizontal'
-)
+const resolvedLayout = computed(() => {
+  const l = props.layout || attrs.layout
+  if (l === 'tile') return 'tile'
+  if (l === 'vertical') return 'vertical'
+  return 'horizontal'
+})
+
+const isTile = computed(() => resolvedLayout.value === 'tile')
+
+/** Classes for the icon circle background in tile mode */
+const tileCircleClasses = computed(() => {
+  const bg = props.tileIconBg ?? props.variant
+  return tileIconBgMap[bg] ?? tileIconBgMap.primary
+})
+
+const tileCircleSizeClasses = computed(() => {
+  const map: Record<ButtonSize, string> = {
+    xs: 'w-9 h-9',
+    sm: 'w-10 h-10',
+    sm2: 'w-11 h-11',
+    md: 'w-12 h-12',
+    lg: 'w-14 h-14',
+    xl: 'w-16 h-16',
+  }
+  return map[props.size]
+})
 
 const displayText = computed(() => (props.textI18n ? $t(props.textI18n) : props.text))
 
@@ -29,7 +78,13 @@ const isOnlyIcon = computed(
 )
 
 const classes = computed(() => {
-  const baseClasses = `inline-flex items-center justify-center whitespace-nowrap text-sm font-medium disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] cursor-pointer ${resolvedLayout.value === 'vertical' ? 'flex-col gap-1.5' : 'gap-2'} ${isOnlyIcon.value ? 'icon-only shrink-0' : ''}`
+  const layoutGap = resolvedLayout.value === 'tile'
+    ? 'flex-col gap-1.5 items-center'
+    : resolvedLayout.value === 'vertical'
+      ? 'flex-col gap-1.5'
+      : 'gap-2'
+
+  const baseClasses = `inline-flex items-center justify-center whitespace-nowrap text-sm font-medium disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] cursor-pointer ${layoutGap} ${isOnlyIcon.value ? 'icon-only shrink-0' : ''}`
 
   const variants: Record<ButtonVariant, string> = {
     primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
@@ -91,7 +146,17 @@ const classes = computed(() => {
 
   let sizeClass = isOnlyIcon.value ? iconSizes[props.size] : sizes[props.size]
 
-  if (resolvedLayout.value === 'vertical') {
+  if (resolvedLayout.value === 'tile') {
+    const tileSizes: Record<ButtonSize, string> = {
+      xs: 'h-auto py-2 px-2 min-w-16',
+      sm: 'h-auto py-2.5 px-3 min-w-18',
+      sm2: 'h-auto py-2.5 px-3 min-w-18',
+      md: 'h-auto py-3 px-4 min-w-20',
+      lg: 'h-auto py-3.5 px-4 min-w-24',
+      xl: 'h-auto py-4 px-5 min-w-28',
+    }
+    sizeClass = tileSizes[props.size]
+  } else if (resolvedLayout.value === 'vertical') {
     const verticalSizes: Record<ButtonSize, string> = {
       xs: 'h-auto py-1.5 px-2 min-w-16',
       sm: 'h-auto py-2 px-3 min-w-20',
@@ -103,9 +168,12 @@ const classes = computed(() => {
     sizeClass = verticalSizes[props.size]
   }
 
+  // In tile mode the outer button has no fill — the icon circle carries the color
+  const variantClass = isTile.value ? 'hover:bg-accent/50 text-foreground' : variants[props.variant]
+
   return [
     baseClasses,
-    variants[props.variant],
+    variantClass,
     roundedVariants[props.rounded],
     sizeClass,
     props.class,
@@ -157,27 +225,55 @@ const iconClasses = computed(() => {
           : 'button')
     "
     class="cursor-pointer">
-    <Icon
-      v-if="loading"
-      icon="lucide:loader-2"
-      class="animate-spin pointer-events-none"
-      :class="iconClasses" />
+    <!-- ── Tile layout: icon inside a circle ─────────────────── -->
+    <template v-if="isTile">
+      <span
+        class="inline-flex items-center justify-center rounded-full shrink-0 transition-colors"
+        :class="[tileCircleClasses, tileCircleSizeClasses]">
+        <Icon
+          v-if="loading"
+          icon="lucide:loader-2"
+          class="animate-spin pointer-events-none"
+          :class="iconClasses" />
+        <Icon
+          v-else-if="icon"
+          :icon="icon"
+          class="pointer-events-none"
+          :class="[iconClass, iconClasses]" />
+      </span>
 
-    <Icon
-      v-else-if="icon"
-      :icon="icon"
-      class="pointer-events-none"
-      :class="[iconClass, iconClasses, isOnlyIcon ? 'mx-auto' : '']" />
+      <span
+        v-if="displayText || $slots.default"
+        class="text-xs font-medium leading-tight text-center truncate max-w-full"
+        :class="textClass">
+        <slot>{{ displayText }}</slot>
+      </span>
+    </template>
 
-    <span v-if="textClass" :class="textClass">
-      <slot>{{ displayText }}</slot>
-    </span>
-    <slot v-else>{{ displayText }}</slot>
+    <!-- ── Default / horizontal / vertical layouts ────────── -->
+    <template v-else>
+      <Icon
+        v-if="loading"
+        icon="lucide:loader-2"
+        class="animate-spin pointer-events-none"
+        :class="iconClasses" />
 
-    <Icon
-      v-if="iconRight && !loading"
-      :icon="iconRight"
-      :class="[iconRightClass, iconClasses]"
-      class="h-4 w-4 pointer-events-none" />
+      <Icon
+        v-else-if="icon"
+        :icon="icon"
+        class="pointer-events-none"
+        :class="[iconClass, iconClasses, isOnlyIcon ? 'mx-auto' : '']" />
+
+      <span v-if="textClass" :class="textClass">
+        <slot>{{ displayText }}</slot>
+      </span>
+      <slot v-else>{{ displayText }}</slot>
+
+      <Icon
+        v-if="iconRight && !loading"
+        :icon="iconRight"
+        :class="[iconRightClass, iconClasses]"
+        class="h-4 w-4 pointer-events-none" />
+    </template>
   </button>
 </template>
