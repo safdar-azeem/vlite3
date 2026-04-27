@@ -34,9 +34,7 @@ const simulateLoad = () => {
         <Button variant="primary">Primary</Button>
         <Button variant="secondary">Secondary</Button>
         <Button variant="outline">Outline</Button>
-        <Button variant="outline-floating">Outline Floating</Button>
         <Button variant="ghost">Ghost</Button>
-        <Button variant="transparent">Transparent</Button>
         <Button variant="link">Link</Button>
       </div>
     </DemoSection>
