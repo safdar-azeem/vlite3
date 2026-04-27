@@ -62,7 +62,7 @@ const props = withDefaults(
     isNested?: boolean // Used internally to identify child vs root dropdowns
     disabled?: boolean // Prevents opening and selecting options
     readonly?: boolean // Prevents opening and hides interaction visual cues
-    unstyled?: boolean // Prevents applying default background and borders
+    variant?: 'default' | 'transparent' | 'secondary' // Dropdown visual variant
   }>(),
   {
     options: () => [],
@@ -90,7 +90,7 @@ const props = withDefaults(
     isNested: false,
     disabled: false,
     readonly: false,
-    unstyled: false,
+    variant: 'default',
   }
 )
 const emit = defineEmits<{
@@ -400,7 +400,7 @@ const cancelSelection = () => {
       :menuId="uniqueMenuId"
       :ignoreClickOutside="finalIgnoreClickOutside"
       class="w-full"
-      :className="'dropdown ' + (className || '') + (unstyled ? ' unstyled-dropdown' : '')"
+      :className="'dropdown ' + (className || '') + (variant === 'transparent' ? ' unstyled-dropdown' : '') + (variant === 'secondary' ? ' dropdown-secondary' : '')"
       @onShow="$emit('onOpen')"
       @onHide="$emit('onClose')"
       @update:isOpen="handleVisibilityChange"
@@ -408,7 +408,7 @@ const cancelSelection = () => {
       :styles="{
         padding: '0',
         ...(width ? { width: width, maxWidth: width } : {}),
-        ...(unstyled ? { background: 'transparent', border: 'none', boxShadow: 'none' } : {}),
+        ...(variant === 'transparent' ? { background: 'transparent', border: 'none', boxShadow: 'none' } : {}),
       }">
       <template #trigger="{ isOpen }">
         <slot
