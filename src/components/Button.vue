@@ -30,7 +30,11 @@ const tileIconBgMap: Record<ButtonVariant, string> = {
   transparent: 'bg-muted text-foreground',
 }
 
-const props = withDefaults(defineProps<ButtonProps>(), {
+export interface LocalButtonProps extends ButtonProps {
+  description?: string
+}
+
+const props = withDefaults(defineProps<LocalButtonProps>(), {
   variant: 'primary',
   size: 'md',
   type: 'button',
@@ -117,12 +121,12 @@ const classes = computed(() => {
   }
 
   const sizes: Record<ButtonSize, string> = {
-    xs: 'h-6.5 px-2',
-    sm: 'h-7.5 px-3',
-    sm2: 'h-8 px-3',
-    md: 'h-9 px-4 py-2',
-    lg: 'h-10 px-4',
-    xl: 'h-12 px-10',
+    xs: props.description ? 'h-auto py-1.5 px-2' : 'h-6.5 px-2',
+    sm: props.description ? 'h-auto py-2 px-3' : 'h-7.5 px-3',
+    sm2: props.description ? 'h-auto py-2 px-3' : 'h-8 px-3',
+    md: props.description ? 'h-auto py-2.5 px-4' : 'h-9 px-4 py-2',
+    lg: props.description ? 'h-auto py-3 px-4' : 'h-10 px-4',
+    xl: props.description ? 'h-auto py-4 px-10' : 'h-12 px-10',
   }
 
   const iconSizes: Record<ButtonSize, string> = {
@@ -246,10 +250,19 @@ const textScaleClass = computed(() => (resolvedLayout.value === 'vertical' ? 'sc
       </span>
 
       <span
-        v-if="displayText || $slots.default"
-        class="text-xs font-medium leading-tight text-center truncate max-w-full"
+        v-if="displayText || $slots.default || props.description"
+        class="flex flex-col items-center max-w-full"
         :class="textClass">
-        <slot>{{ displayText }}</slot>
+        <span
+          v-if="displayText || $slots.default"
+          class="text-xs font-medium leading-tight truncate max-w-full">
+          <slot>{{ displayText }}</slot>
+        </span>
+        <span
+          v-if="props.description"
+          class="text-[10px] font-normal opacity-70 mt-0.5 leading-tight truncate max-w-full">
+          {{ props.description }}
+        </span>
       </span>
     </template>
 
@@ -267,13 +280,17 @@ const textScaleClass = computed(() => (resolvedLayout.value === 'vertical' ? 'sc
         class="pointer-events-none"
         :class="[iconClass, iconClasses, isOnlyIcon ? 'mx-auto' : '']" />
 
-      <span v-if="textClass" :class="[textClass, textScaleClass]">
-        <slot>{{ displayText }}</slot>
-      </span>
-      <span v-else-if="textScaleClass" :class="textScaleClass">
-        <slot>{{ displayText }}</slot>
-      </span>
-      <slot v-else>{{ displayText }}</slot>
+      <div
+        v-if="displayText || $slots.default || props.description"
+        class="flex flex-col justify-center"
+        :class="resolvedLayout === 'vertical' ? 'items-center text-center' : 'items-start text-left'">
+        <span :class="[textClass, textScaleClass]" class="leading-tight">
+          <slot>{{ displayText }}</slot>
+        </span>
+        <span v-if="props.description" class="text-[0.75em] font-normal opacity-70 mt-0.5 leading-tight">
+          {{ props.description }}
+        </span>
+      </div>
 
       <Icon
         v-if="iconRight && !loading"
