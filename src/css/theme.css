@@ -38,7 +38,7 @@
         var(--color-primary, #000000));
 
     /* Danger */
-    --color-danger-light: #ffefe9;
+    --color-danger-light: #ffeeee;
     --color-danger: #ff3b30;
     --color-danger-dark: #ee392e;
     --color-danger-fg: #ffffff;
@@ -461,7 +461,7 @@
   /* Semantics - Dark Mode High Contrast */
 
   /* Danger */
-  --color-danger-light: #341212;
+  --color-danger-light: #311716;
   --color-danger-fg-light: #FCFCFC;
   --color-danger: #7F1D1D;
   --color-danger-fg: #ffffff;
@@ -660,4 +660,10 @@
 
 .dark .text-danger {
   color: #ee1f1f !important
+}
+
+
+.dark .bg-danger-light .text-danger,
+.dark .bg-danger-light.text-danger {
+  color: #fd9999 !important
 }
