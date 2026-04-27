@@ -50,6 +50,8 @@ const markerStyle = ref({
   opacity: 0,
 })
 
+const isInitialized = ref(false)
+
 const updateMarker = async () => {
   await nextTick()
   const container = containerRef.value
@@ -73,6 +75,12 @@ const updateMarker = async () => {
     height: `${height}px`,
     transform: `translate(${left}px, ${top}px)`,
     opacity: 1,
+  }
+
+  if (!isInitialized.value) {
+    setTimeout(() => {
+      isInitialized.value = true
+    }, 50)
   }
 }
 
@@ -186,8 +194,11 @@ const getItemClasses = (option: TabesOption) => {
 }
 
 const markerClasses = computed(() => {
+  const transitionClass = isInitialized.value
+    ? 'transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)]'
+    : ''
   const base =
-    'absolute left-0 top-0 transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)] z-0 pointer-events-none'
+    `absolute left-0 top-0 z-0 pointer-events-none ${transitionClass}`
 
   if (props.variant === 'line') {
     return `${base} !h-[2px] !top-auto bottom-0`
