@@ -4,7 +4,7 @@
 
 ### Description
 
-A spreadsheet-like tab interface supporting drag-and-drop reordering, inline editing (renaming), duplication, and dynamic sheet management.
+A spreadsheet-like tab interface supporting drag-and-drop reordering, inline editing (renaming), duplication, and dynamic sheet management. It features horizontal overflow support, meaning that when the number of tabs exceeds the available width, the tabs area becomes scrollable while keeping the layout and Add button accessible.
 
 ### Props
 
@@ -20,10 +20,17 @@ A spreadsheet-like tab interface supporting drag-and-drop reordering, inline edi
 | `variant`           | `'chrome' \| 'folder' \| 'simple' \| 'card'` | `'chrome'`      | Visual style variant                    |
 | `maxSheets`         | `number`                                     | `50`            | Maximum number of sheets                |
 | `confirmDelete`     | `boolean`                                    | `false`         | Show delete confirmation modal          |
+| `confirmDeleteTexts`| `object`                                     | —               | Custom text for delete confirmation     |
 | `class`             | `string`                                     | —               | Custom wrapper class                    |
 | `itemClass`         | `string`                                     | —               | Class for sheet tabs                    |
 | `activeItemClass`   | `string`                                     | —               | Class for active sheet tab              |
 | `inactiveItemClass` | `string`                                     | —               | Class for inactive sheet tabs           |
+
+### Slots
+
+- `default`: The main content area displayed below the tabs.
+- `left-addons`: Rendered to the left of the tabs container. Useful for global controls.
+- `right-addons`: Rendered to the extreme right of the header, alongside the `fixed-right` add button.
 
 ### Sheet Object (`WorkbookSheet`)
 
