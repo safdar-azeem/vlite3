@@ -200,9 +200,9 @@ const iconClasses = computed(() => {
 
   let iconClassStr = isOnlyIcon.value ? iconSizes[props.size] : sizes[props.size]
   if (isTile.value) {
-    iconClassStr += ' scale-[1.45]'
+    iconClassStr += ' scale-[1.45]!'
   } else if (resolvedLayout.value === 'vertical') {
-    iconClassStr += ' scale-[1.3] mt-1'
+    iconClassStr += ' scale-[1.35]! mt-1'
   }
   return iconClassStr
 })
