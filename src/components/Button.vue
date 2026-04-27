@@ -131,7 +131,7 @@ const iconClasses = computed(() => {
 
   let iconClassStr = isOnlyIcon.value ? iconSizes[props.size] : sizes[props.size]
   if (resolvedLayout.value === 'vertical') {
-    iconClassStr += ' scale-105'
+    iconClassStr += ' scale-[1.15]'
   }
   return iconClassStr
 })
