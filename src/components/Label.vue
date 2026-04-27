@@ -1,18 +1,30 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-interface Props {
+export type LabelSize = 'xs' | 'sm' | 'md' | 'lg'
+
+export interface LabelProps {
   for?: string
   class?: string
+  size?: LabelSize
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<LabelProps>(), {
   class: '',
+  size: 'md',
 })
 
 const classes = computed(() => {
+  const sizeClasses: Record<LabelSize, string> = {
+    xs: '-text-fs-3.5',
+    sm: '-text-fs-3',
+    md: '-text-fs-2',
+    lg: 'text-base',
+  }
+
   return [
-    'text-sm  leading-none text-gray-800 peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
+    sizeClasses[props.size],
+    'leading-none text-gray-800 peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
     props.class,
   ].join(' ')
 })
