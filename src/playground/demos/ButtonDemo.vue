@@ -126,6 +126,17 @@ const simulateLoad = () => {
       </div>
     </DemoSection>
 
+    <!-- ── Layout Orientations ────────────────────────────────── -->
+    <DemoSection title="Layout Orientations" :code="sourceCode">
+      <div class="flex flex-wrap items-end justify-center gap-4 w-full">
+        <Button icon="lucide:compass" layout="horizontal">Horizontal</Button>
+        <Button icon="lucide:compass" layout="vertical">Vertical</Button>
+        <Button icon="lucide:map" layout="vertical" variant="secondary">Map</Button>
+        <Button icon="lucide:camera" layout="vertical" variant="outline">Photos</Button>
+        <Button icon="lucide:heart" layout="vertical" variant="danger-light">Favorites</Button>
+      </div>
+    </DemoSection>
+
     <!-- ── Back Button ────────────────────────────────────────── -->
     <DemoSection title="Back Button" :code="sourceCode">
       <div class="flex flex-col items-center gap-4 w-full">
