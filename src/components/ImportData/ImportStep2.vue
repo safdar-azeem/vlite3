@@ -101,7 +101,6 @@ const txtNoHeaders = computed(() =>
                   :options="getDropdownOptions()"
                   :selected="mappings[header]"
                   placeholder="Select Field"
-                  variant="outline"
                   showCaret
                   :btn-props="{ class: 'w-full justify-between' }"
                   @onSelect="
