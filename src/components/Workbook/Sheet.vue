@@ -5,6 +5,7 @@ import type { WorkbookSheet } from './types'
 import { Dropdown } from '@/components/Dropdown'
 import IconPicker from '@/components/IconPicker.vue'
 import { $t } from '@/utils/i18n'
+import Button from '../Button.vue'
 
 interface Props {
   sheet: WorkbookSheet
@@ -47,7 +48,9 @@ const emit = defineEmits<{
 const inputRef = ref<HTMLInputElement | null>(null)
 const localTitle = ref(props.sheet.title)
 
-const displayTitle = computed(() => props.sheet.titleI18n ? $t(props.sheet.titleI18n) : props.sheet.title)
+const displayTitle = computed(() =>
+  props.sheet.titleI18n ? $t(props.sheet.titleI18n) : props.sheet.title
+)
 
 const startEdit = () => {
   localTitle.value = props.sheet.title
@@ -80,18 +83,27 @@ const handleKeyDown = (e: KeyboardEvent) => {
 }
 
 const menuOptions = computed(() => [
-  { 
-    label: $t('vlite.workbook.rename') !== 'vlite.workbook.rename' ? $t('vlite.workbook.rename') : 'Rename', 
-    value: 'rename', 
-    icon: 'lucide:pencil' 
-  },
-  { 
-    label: $t('vlite.workbook.duplicate') !== 'vlite.workbook.duplicate' ? $t('vlite.workbook.duplicate') : 'Duplicate', 
-    value: 'duplicate', 
-    icon: 'lucide:copy' 
+  {
+    label:
+      $t('vlite.workbook.rename') !== 'vlite.workbook.rename'
+        ? $t('vlite.workbook.rename')
+        : 'Rename',
+    value: 'rename',
+    icon: 'lucide:pencil',
   },
   {
-    label: $t('vlite.workbook.delete') !== 'vlite.workbook.delete' ? $t('vlite.workbook.delete') : 'Delete',
+    label:
+      $t('vlite.workbook.duplicate') !== 'vlite.workbook.duplicate'
+        ? $t('vlite.workbook.duplicate')
+        : 'Duplicate',
+    value: 'duplicate',
+    icon: 'lucide:copy',
+  },
+  {
+    label:
+      $t('vlite.workbook.delete') !== 'vlite.workbook.delete'
+        ? $t('vlite.workbook.delete')
+        : 'Delete',
     value: 'delete',
     icon: 'lucide:trash-2',
     class: 'text-danger',
@@ -107,7 +119,7 @@ const menuOptions = computed(() => [
             if (props.canDelete) {
               emit('delete', props.sheet.id)
             }
-          }
+          },
         }
       : undefined,
   },
@@ -137,7 +149,9 @@ const containerClass = computed(() => {
       ? `bg-muted text-foreground ring-1 ring-border ring-b-0 z-10 ${props.activeItemClass}`
       : `text-muted-foreground hover:bg-accent/50 ${props.inactiveItemClass}`,
     props.isEditing ? 'cursor-text' : '',
-  ].filter(Boolean).join(' ') 
+  ]
+    .filter(Boolean)
+    .join(' ')
 })
 </script>
 
@@ -181,7 +195,7 @@ const containerClass = computed(() => {
     </div>
 
     <div
-      class="opacity-0 group-hover:opacity-100 transition-opacity ml-auto pl-1 flex items-center bg-inherit"
+      class="opacity-0 group-hover:opacity-100 transition-opacity ml-auto pl-1 -mr-2 flex items-center"
       @click.stop>
       <Dropdown
         :options="menuOptions"
@@ -192,10 +206,7 @@ const containerClass = computed(() => {
         @onConfirm="handleConfirm"
         @confirm="handleConfirm">
         <template #trigger>
-          <button
-            class="p-1 rounded-md hover:bg-accent text-muted-foreground hover:text-foreground transition-colors">
-            <Icon icon="lucide:more-vertical" class="w-3.5 h-3.5" />
-          </button>
+          <Button icon="lucide:more-vertical" asIcon size="xs" rounded="full" variant="ghost" />
         </template>
         <template #item="{ option }">
           <div :class="['flex items-center']">
