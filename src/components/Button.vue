@@ -169,7 +169,7 @@ const classes = computed(() => {
   }
 
   // In tile mode the outer button has no fill — the icon circle carries the color
-  const variantClass = isTile.value ? 'hover:bg-accent/50 text-foreground' : variants[props.variant]
+  const variantClass = isTile.value ? 'text-foreground' : variants[props.variant]
 
   return [
     baseClasses,
