@@ -40,4 +40,5 @@ export interface ButtonProps {
   iconClass?: string
   iconRightClass?: string
   asIcon?: boolean
+  layout?: 'horizontal' | 'vertical'
 }
