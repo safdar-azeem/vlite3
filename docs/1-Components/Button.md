@@ -40,13 +40,16 @@ type ButtonVariant =
   | 'success'
   | 'success-light'
   | 'outline'
+  | 'outline-floating'
   | 'outline-primary'
   | 'outline-danger'
   | 'outline-warning'
   | 'outline-info'
   | 'outline-success'
   | 'ghost'
+  | 'transparent'
   | 'link'
+
 type ButtonSize = 'xs' | 'sm' | 'sm2' | 'md' | 'lg' | 'xl'
 type ButtonRounded = 'none' | 'sm' | 'sm2' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
 ```
