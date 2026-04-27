@@ -79,6 +79,24 @@ const isOnlyIcon = computed(
   () => props?.asIcon || (props.icon && !displayText.value && !slots.default)
 )
 
+const isImageIcon = computed(() => {
+  if (!props.icon) return false
+
+  // Check for URL
+  if (props.icon.startsWith('http://') || props.icon.startsWith('https://')) {
+    return true
+  }
+
+  // Check for data URI (base64 images)
+  if (props.icon.startsWith('data:image/')) {
+    return true
+  }
+
+  // Check for local paths that look like images (relative or absolute)
+  const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.ico', '.avif']
+  return imageExtensions.some((ext) => props.icon!.toLowerCase().endsWith(ext))
+})
+
 const classes = computed(() => {
   const layoutGap =
     resolvedLayout.value === 'tile'
@@ -184,6 +202,10 @@ const classes = computed(() => {
 })
 
 const iconClasses = computed(() => {
+  if (isTile.value && isImageIcon.value) {
+    return `${tileCircleSizeClasses.value} object-cover`
+  }
+
   const isDescHz = props.description && resolvedLayout.value === 'horizontal'
   const sizes: Record<ButtonSize, string> = {
     xs: isDescHz ? 'w-3.5 h-3.5' : 'w-3 h-3',
@@ -204,6 +226,9 @@ const iconClasses = computed(() => {
   }
 
   let iconClassStr = isOnlyIcon.value ? iconSizes[props.size] : sizes[props.size]
+  if (isImageIcon.value) {
+    iconClassStr += ' object-cover'
+  }
   if (isTile.value) {
     iconClassStr += ' scale-[1.45]!'
   } else if (resolvedLayout.value === 'vertical') {
@@ -236,13 +261,17 @@ const textScaleClass = computed(() => (resolvedLayout.value === 'vertical' ? 'sc
     <!-- ── Tile layout: icon inside a circle ─────────────────── -->
     <template v-if="isTile">
       <span
-        class="inline-flex items-center justify-center rounded-full shrink-0 transition-transform duration-150 ease-out group-active:scale-[0.92]"
-        :class="[tileCircleClasses, tileCircleSizeClasses]">
+        class="inline-flex items-center justify-center shrink-0 transition-transform duration-150 ease-out group-active:scale-[0.92]"
+        :class="[
+          !isImageIcon ? 'rounded-full' : '',
+          !isImageIcon ? tileCircleClasses : '',
+          !isImageIcon ? tileCircleSizeClasses : ''
+        ]">
         <Icon
           v-if="loading"
           icon="lucide:loader-2"
           class="animate-spin pointer-events-none"
-          :class="iconClasses" />
+          :class="[iconClasses, isImageIcon ? tileCircleSizeClasses : '']" />
         <Icon
           v-else-if="icon"
           :icon="icon"
