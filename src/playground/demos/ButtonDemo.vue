@@ -142,21 +142,69 @@ const simulateLoad = () => {
       <div class="flex flex-col items-center gap-6 w-full">
         <!-- Horizontal -->
         <div class="flex flex-wrap items-end justify-center gap-4 w-full">
-          <Button variant="primary" icon="lucide:cloud" description="Upload your files securely">Cloud Sync</Button>
-          <Button variant="outline" icon="lucide:settings" description="Manage your preferences">Settings</Button>
-          <Button variant="danger-light" icon="lucide:trash" description="This action is irreversible">Delete Account</Button>
+          <Button variant="primary" icon="lucide:cloud" description="Upload your files securely"
+            >Cloud Sync</Button
+          >
+          <Button variant="outline" icon="lucide:settings" description="Manage your preferences"
+            >Settings</Button
+          >
+          <Button
+            variant="danger-light"
+            icon="lucide:trash"
+            description="This action is irreversible"
+            >Delete Account</Button
+          >
         </div>
         <!-- Vertical -->
         <div class="flex flex-wrap items-end justify-center gap-4 w-full">
-          <Button layout="vertical" variant="secondary" icon="lucide:map" description="Find your way">Maps</Button>
-          <Button layout="vertical" variant="outline" icon="lucide:camera" description="Take a picture">Camera</Button>
-          <Button layout="vertical" variant="primary-light" icon="lucide:heart" description="Saved items">Favorites</Button>
+          <Button
+            layout="vertical"
+            variant="secondary"
+            icon="lucide:map"
+            description="Find your way"
+            >Maps</Button
+          >
+          <Button
+            layout="vertical"
+            variant="outline"
+            icon="lucide:camera"
+            description="Take a picture"
+            >Camera</Button
+          >
+          <Button
+            layout="vertical"
+            variant="primary-light"
+            icon="lucide:heart"
+            description="Saved items"
+            >Favorites</Button
+          >
         </div>
         <!-- Tile -->
         <div class="flex flex-wrap items-end justify-center gap-6 w-full mt-2">
-          <Button layout="tile" variant="primary" icon="lucide:instagram" rounded="xl" description="Social Media">Instagram</Button>
-          <Button layout="tile" variant="info-light" icon="lucide:message-circle" rounded="xl" description="Chat with us">Messages</Button>
-          <Button layout="tile" variant="success-light" icon="lucide:phone" rounded="xl" description="Call support">Phone</Button>
+          <Button
+            layout="tile"
+            variant="primary"
+            icon="lucide:instagram"
+            rounded="xl"
+            description="Social Media"
+            >Instagram</Button
+          >
+          <Button
+            layout="tile"
+            variant="info-light"
+            icon="lucide:message-circle"
+            rounded="xl"
+            description="Chat with us"
+            >Messages</Button
+          >
+          <Button
+            layout="tile"
+            variant="success-light"
+            icon="lucide:phone"
+            rounded="xl"
+            description="Call support"
+            >Phone</Button
+          >
         </div>
       </div>
     </DemoSection>
@@ -196,40 +244,20 @@ const simulateLoad = () => {
 
         <!-- Custom tileIconBg overrides -->
         <div class="flex flex-wrap items-start justify-center gap-10">
-          <Button
-            icon="lucide:settings"
-            layout="tile"
-            variant="secondary"
-            rounded="xl"
+          <Button icon="lucide:settings" layout="tile" variant="secondary" rounded="xl"
             >Settings</Button
           >
-          <Button
-            icon="lucide:heart"
-            layout="tile"
-            variant="danger"
-            rounded="xl"
-            >Health</Button
-          >
-          <Button
-            icon="lucide:wallet"
-            layout="tile"
-            variant="success-light"
-            rounded="xl"
+          <Button icon="lucide:heart" layout="tile" variant="danger" rounded="xl">Health</Button>
+          <Button icon="lucide:wallet" layout="tile" variant="success-light" rounded="xl"
             >Wallet</Button
           >
-          <Button
-            icon="lucide:phone"
-            layout="tile"
-            variant="info-light"
-            rounded="xl"
-            >Phone</Button
-          >
+          <Button icon="lucide:phone" layout="tile" variant="info-light" rounded="xl">Phone</Button>
           <Button
             icon="https://cdn.prod.website-files.com/666ad77562dfabab1eb27f63/6747850440da96e6bc2d78b3_friso_ai3.webp"
             layout="tile"
             variant="info-light"
             rounded="xl"
-            >Phone</Button
+            >Eric Chou</Button
           >
         </div>
 
