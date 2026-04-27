@@ -12,6 +12,7 @@
 | `icon`           | `string`                    | —         | Left icon (Iconify ID or Image URL) |
 | `iconRight`      | `string`                    | —         | Right icon (Iconify ID)             |
 | `text`           | `string`                    | —         | Label text (alt to slot)            |
+| `description`    | `string`                    | —         | Subtitle/description text below label |
 | `textI18n`       | `string`                    | —         | I18n translation key for text       |
 | `type`           | `button \| submit \| reset` | `button`  | Native type                         |
 | `loading`        | `boolean`                   | `false`   | Show spinner                        |
