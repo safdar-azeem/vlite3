@@ -14,6 +14,7 @@ const val1 = ref('1')
     <div class="flex items-center gap-4">
       <Dropdown
         closeOnSelect
+        variant="secondary"
         :options="[
           {
             value: '1',
