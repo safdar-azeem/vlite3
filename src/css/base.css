@@ -325,3 +325,16 @@ html {
   border: none !important;
   width: auto !important;
 }
+
+.dropdown-secondary .tooltip-content {
+  --tooltip-border: var(--color-gray-200) !important;
+}
+
+.dropdown-secondary {}
+
+
+.dark .dropdown-secondary {
+  --color-white: #1f1f1f !important;
+  --color-mixture-1: #272727 !important;
+  --color-mixture-2: #ffffff !important;
+}
