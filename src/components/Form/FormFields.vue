@@ -59,7 +59,7 @@ const getResolvedType = (field: IForm) => {
   return resolveFieldType(field, {
     values: props.values,
     globalValues: props.values,
-    isUpdate: props.isUpdate
+    isUpdate: props.isUpdate,
   })
 }
 
@@ -243,12 +243,19 @@ const getSafeLabel = (field: IForm) => {
           showRequiredAsterisk,
           fieldLoading[field.name],
           getResolvedType(field),
-          (isComponent(getResolvedType(field)) || getResolvedType(field) === 'customFields') ? values : null,
-          getAddonName(field.addonLeft) ? getNestedValue(values, getAddonName(field.addonLeft) as string) : null,
-          getAddonName(field.addonRight) ? getNestedValue(values, getAddonName(field.addonRight) as string) : null
+          isComponent(getResolvedType(field)) || getResolvedType(field) === 'customFields'
+            ? values
+            : null,
+          getAddonName(field.addonLeft)
+            ? getNestedValue(values, getAddonName(field.addonLeft) as string)
+            : null,
+          getAddonName(field.addonRight)
+            ? getNestedValue(values, getAddonName(field.addonRight) as string)
+            : null,
         ]"
         :class="['max-md:col-span-full! form-field-item', getItemClass(field)]">
         <Label
+          size="md"
           v-if="
             getFieldLabel(field) &&
             getResolvedType(field) !== 'switch' &&
@@ -258,7 +265,7 @@ const getSafeLabel = (field: IForm) => {
             !shouldHideExternalLabel(field)
           "
           :for="field.name"
-          class="mb-2 block -text-fs-2! font-medium">
+          class="mb-2.5 block font-medium">
           <component
             v-if="isComponent(getFieldLabel(field))"
             :is="renderLabel(getFieldLabel(field))" />
@@ -272,7 +279,12 @@ const getSafeLabel = (field: IForm) => {
 
         <div
           class="relative"
-          :class="(getResolvedType(field) === 'check' || (getResolvedType(field) === 'switch' && field.props?.switchVariant === 'basic')) ? 'w-auto' : 'w-full'"
+          :class="
+            getResolvedType(field) === 'check' ||
+            (getResolvedType(field) === 'switch' && field.props?.switchVariant === 'basic')
+              ? 'w-auto'
+              : 'w-full'
+          "
           @focusin="handleFocusIn(field.name)"
           @focusout="handleFocusOut(field.name)">
           <label
@@ -334,7 +346,7 @@ const getSafeLabel = (field: IForm) => {
 
         <Label
           v-if="
-            (getResolvedType(field) === 'check') ||
+            getResolvedType(field) === 'check' ||
             (getResolvedType(field) === 'switch' && field.props?.switchVariant === 'basic')
           "
           :for="field.name"
