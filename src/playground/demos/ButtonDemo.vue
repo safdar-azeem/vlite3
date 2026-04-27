@@ -199,40 +199,35 @@ const simulateLoad = () => {
           <Button
             icon="lucide:settings"
             layout="tile"
-            variant="primary"
-            tile-icon-bg="secondary"
+            variant="secondary"
             rounded="xl"
             >Settings</Button
           >
           <Button
             icon="lucide:heart"
             layout="tile"
-            variant="primary"
-            tile-icon-bg="danger"
+            variant="danger"
             rounded="xl"
             >Health</Button
           >
           <Button
             icon="lucide:wallet"
             layout="tile"
-            variant="primary"
-            tile-icon-bg="success-light"
+            variant="success-light"
             rounded="xl"
             >Wallet</Button
           >
           <Button
             icon="lucide:phone"
             layout="tile"
-            variant="primary"
-            tile-icon-bg="info-light"
+            variant="info-light"
             rounded="xl"
             >Phone</Button
           >
           <Button
             icon="https://cdn.prod.website-files.com/666ad77562dfabab1eb27f63/6747850440da96e6bc2d78b3_friso_ai3.webp"
             layout="tile"
-            variant="primary"
-            tile-icon-bg="info-light"
+            variant="info-light"
             rounded="xl"
             >Phone</Button
           >
