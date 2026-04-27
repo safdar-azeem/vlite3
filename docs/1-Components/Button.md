@@ -4,25 +4,25 @@
 
 ### Props
 
-| Prop             | Type                        | Default   | Description                         |
-| :--------------- | :-------------------------- | :-------- | :---------------------------------- |
-| `variant`        | `ButtonVariant`             | `primary` | Visual style                        |
-| `size`           | `ButtonSize`                | `md`      | Dimensions                          |
-| `rounded`        | `ButtonRounded`             | `md`      | Border radius                       |
-| `icon`           | `string`                    | —         | Left icon (Iconify ID or Image URL) |
-| `iconRight`      | `string`                    | —         | Right icon (Iconify ID)             |
-| `text`           | `string`                    | —         | Label text (alt to slot)            |
-| `description`    | `string`                    | —         | Subtitle/description text below label |
-| `textI18n`       | `string`                    | —         | I18n translation key for text       |
-| `type`           | `button \| submit \| reset` | `button`  | Native type                         |
-| `loading`        | `boolean`                   | `false`   | Show spinner                        |
-| `disabled`       | `boolean`                   | `false`   | Disable interaction                 |
-| `asIcon`         | `boolean`                   | `false`   | Force render as icon button         |
-| `layout`         | `'horizontal' \| 'vertical' \| 'tile'` | `horizontal` | Layout orientation         |
-| `textClass`      | `string`                    | —         | Custom class for text span          |
-| `iconClass`      | `string`                    | —         | Custom class for left icon          |
-| `iconRightClass` | `string`                    | —         | Custom class for right icon         |
-| `class`          | `any`                       | —         | Custom class for button router/root |
+| Prop             | Type                                   | Default      | Description                           |
+| :--------------- | :------------------------------------- | :----------- | :------------------------------------ |
+| `variant`        | `ButtonVariant`                        | `primary`    | Visual style                          |
+| `size`           | `ButtonSize`                           | `md`         | Dimensions                            |
+| `rounded`        | `ButtonRounded`                        | `md`         | Border radius                         |
+| `icon`           | `string`                               | —            | Left icon (Iconify ID or Image URL)   |
+| `iconRight`      | `string`                               | —            | Right icon (Iconify ID)               |
+| `text`           | `string`                               | —            | Label text (alt to slot)              |
+| `description`    | `string`                               | —            | Subtitle/description text below label |
+| `textI18n`       | `string`                               | —            | I18n translation key for text         |
+| `type`           | `button \| submit \| reset`            | `button`     | Native type                           |
+| `loading`        | `boolean`                              | `false`      | Show spinner                          |
+| `disabled`       | `boolean`                              | `false`      | Disable interaction                   |
+| `asIcon`         | `boolean`                              | `false`      | Force render as icon button           |
+| `layout`         | `'horizontal' \| 'vertical' \| 'tile'` | `horizontal` | Layout orientation                    |
+| `textClass`      | `string`                               | —            | Custom class for text span            |
+| `iconClass`      | `string`                               | —            | Custom class for left icon            |
+| `iconRightClass` | `string`                               | —            | Custom class for right icon           |
+| `class`          | `any`                                  | —            | Custom class for button router/root   |
 
 ### Types
 
@@ -40,7 +40,6 @@ type ButtonVariant =
   | 'success'
   | 'success-light'
   | 'outline'
-  | 'outline-floating'
   | 'outline-primary'
   | 'outline-danger'
   | 'outline-warning'
