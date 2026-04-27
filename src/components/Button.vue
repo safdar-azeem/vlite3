@@ -78,11 +78,12 @@ const isOnlyIcon = computed(
 )
 
 const classes = computed(() => {
-  const layoutGap = resolvedLayout.value === 'tile'
-    ? 'flex-col gap-1.5 items-center'
-    : resolvedLayout.value === 'vertical'
-      ? 'flex-col gap-1.5'
-      : 'gap-2'
+  const layoutGap =
+    resolvedLayout.value === 'tile'
+      ? 'flex-col gap-1.5 items-center'
+      : resolvedLayout.value === 'vertical'
+        ? 'flex-col gap-1.5'
+        : 'gap-2'
 
   const baseClasses = `inline-flex items-center justify-center whitespace-nowrap text-sm font-medium disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] cursor-pointer ${layoutGap} ${isOnlyIcon.value ? 'icon-only shrink-0' : ''}`
 
@@ -91,7 +92,7 @@ const classes = computed(() => {
     'primary-light': 'bg-primary-light text-primary-fg-light hover:bg-primary/15',
     secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
     danger: 'bg-danger text-danger-fg hover:bg-danger/90',
-    'danger-light': 'bg-danger-light text-destructive hover:bg-danger/20 dark:hover:bg-danger/40',
+    'danger-light': 'bg-danger-light text-danger hover:bg-danger/20 dark:hover:bg-danger/40',
     warning: 'bg-warning text-warning-fg hover:bg-warning/80',
     'warning-light': 'bg-warning-light text-warning-fg-light hover:bg-warning/25',
     info: 'bg-info text-info-fg hover:bg-info/80',
@@ -173,13 +174,9 @@ const classes = computed(() => {
     ? 'group text-foreground focus:outline-none focus-visible:outline-none active:scale-100!'
     : variants[props.variant]
 
-  return [
-    baseClasses,
-    variantClass,
-    roundedVariants[props.rounded],
-    sizeClass,
-    props.class,
-  ].join(' ')
+  return [baseClasses, variantClass, roundedVariants[props.rounded], sizeClass, props.class].join(
+    ' '
+  )
 })
 
 const iconClasses = computed(() => {
@@ -202,7 +199,9 @@ const iconClasses = computed(() => {
   }
 
   let iconClassStr = isOnlyIcon.value ? iconSizes[props.size] : sizes[props.size]
-  if (resolvedLayout.value === 'vertical') {
+  if (isTile.value) {
+    iconClassStr += ' scale-[1.45]'
+  } else if (resolvedLayout.value === 'vertical') {
     iconClassStr += ' scale-[1.3] mt-1'
   }
   return iconClassStr
