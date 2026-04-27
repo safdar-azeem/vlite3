@@ -87,7 +87,9 @@ const classes = computed(() => {
       ? 'flex-col gap-1.5 items-center'
       : resolvedLayout.value === 'vertical'
         ? 'flex-col gap-2'
-        : 'gap-2'
+        : props.description
+          ? 'gap-3'
+          : 'gap-2'
 
   const baseClasses = `inline-flex items-center justify-center whitespace-nowrap text-sm font-medium disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] cursor-pointer ${layoutGap} ${isOnlyIcon.value ? 'icon-only shrink-0' : ''}`
 
@@ -184,13 +186,14 @@ const classes = computed(() => {
 })
 
 const iconClasses = computed(() => {
+  const isDescHz = props.description && resolvedLayout.value === 'horizontal'
   const sizes: Record<ButtonSize, string> = {
-    xs: 'w-3 h-3',
-    sm: 'w-4 h-4',
-    sm2: 'w-4 h-4',
-    md: 'w-4 h-4',
-    lg: 'w-4 h-4',
-    xl: 'w-4 h-4',
+    xs: isDescHz ? 'w-3.5 h-3.5' : 'w-3 h-3',
+    sm: isDescHz ? 'w-5 h-5' : 'w-4 h-4',
+    sm2: isDescHz ? 'w-5 h-5' : 'w-4 h-4',
+    md: isDescHz ? 'w-5 h-5' : 'w-4 h-4',
+    lg: isDescHz ? 'w-5 h-5' : 'w-4 h-4',
+    xl: isDescHz ? 'w-5 h-5' : 'w-4 h-4',
   }
 
   const iconSizes: Record<ButtonSize, string> = {
