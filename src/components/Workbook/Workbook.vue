@@ -45,7 +45,7 @@ watch(
   () => props.sheets,
   (newSheets) => {
     let needsUpdate = false
-    
+
     // Check if structure (length) changed
     if (newSheets.length !== sheetsList.value.length) {
       needsUpdate = true
@@ -186,7 +186,7 @@ const canDeleteSheet = computed(() => props.sheets.length > 1)
               editingTabId === sheet.id,
               canDeleteSheet,
               confirmDelete,
-              allowIconChange
+              allowIconChange,
             ]"
             :sheet="sheet"
             :is-active="modelValue === sheet.id"
@@ -207,7 +207,9 @@ const canDeleteSheet = computed(() => props.sheets.length > 1)
             @delete="handleDelete" />
         </VueDraggable>
 
-        <div v-if="addable && addButtonPosition === 'attached'" class="shrink-0 mb-1">
+        <div
+          v-if="addable && addButtonPosition === 'attached'"
+          class="shrink-0 sticky right-0 z-10 bg-white flex items-center justify-center h-full">
           <WorkbookAddButton @click="handleAdd" />
         </div>
 
