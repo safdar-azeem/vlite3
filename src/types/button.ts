@@ -42,4 +42,5 @@ export interface ButtonProps {
   asIcon?: boolean
   layout?: 'horizontal' | 'vertical' | 'tile'
   tileIconBg?: ButtonVariant
+  description?: string
 }
