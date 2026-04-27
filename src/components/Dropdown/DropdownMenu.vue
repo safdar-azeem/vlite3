@@ -269,7 +269,7 @@ const shouldShowChevron = (option: IDropdownOption): boolean => {
 </script>
 
 <template>
-  <div class="dropdown-menu w-full min-w-[150px] flex flex-col" :dir="direction">
+  <div class="dropdown-menu w-full flex flex-col" :dir="direction">
     <div v-if="showSearch" class="bg-body border-b z-10 rounded-t-md shrink-0">
       <Input
         v-model="searchQuery"
