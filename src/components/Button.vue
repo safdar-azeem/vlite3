@@ -206,6 +206,8 @@ const iconClasses = computed(() => {
   }
   return iconClassStr
 })
+
+const textScaleClass = computed(() => (resolvedLayout.value === 'vertical' ? 'scale-[0.9]' : ''))
 </script>
 
 <template>
@@ -265,7 +267,10 @@ const iconClasses = computed(() => {
         class="pointer-events-none"
         :class="[iconClass, iconClasses, isOnlyIcon ? 'mx-auto' : '']" />
 
-      <span v-if="textClass" :class="textClass">
+      <span v-if="textClass" :class="[textClass, textScaleClass]">
+        <slot>{{ displayText }}</slot>
+      </span>
+      <span v-else-if="textScaleClass" :class="textScaleClass">
         <slot>{{ displayText }}</slot>
       </span>
       <slot v-else>{{ displayText }}</slot>
