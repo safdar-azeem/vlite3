@@ -19,7 +19,6 @@
 | `disabled`       | `boolean`                   | `false`   | Disable interaction                 |
 | `asIcon`         | `boolean`                   | `false`   | Force render as icon button         |
 | `layout`         | `'horizontal' \| 'vertical' \| 'tile'` | `horizontal` | Layout orientation         |
-| `tileIconBg`     | `ButtonVariant`             | —         | Override variant for tile icon circle |
 | `textClass`      | `string`                    | —         | Custom class for text span          |
 | `iconClass`      | `string`                    | —         | Custom class for left icon          |
 | `iconRightClass` | `string`                    | —         | Custom class for right icon         |
@@ -63,7 +62,7 @@ type ButtonRounded = 'none' | 'sm' | 'sm2' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
 <Button icon="lucide:camera" layout="tile" variant="info-light" rounded="xl">Camera</Button>
 
 <!-- Tile with custom icon background -->
-<Button icon="lucide:heart" layout="tile" variant="primary" tile-icon-bg="danger" rounded="xl">Health</Button>
+<Button icon="lucide:heart" layout="tile" variant="danger" rounded="xl">Health</Button>
 
 <!-- With Beacon -->
 <div class="relative inline-flex">
