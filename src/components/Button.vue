@@ -17,7 +17,9 @@ const props = withDefaults(defineProps<ButtonProps>(), {
 })
 
 const attrs = useAttrs()
-const resolvedLayout = computed(() => props.layout === 'vertical' || attrs.layout === 'vertical' ? 'vertical' : 'horizontal')
+const resolvedLayout = computed(() =>
+  props.layout === 'vertical' || attrs.layout === 'vertical' ? 'vertical' : 'horizontal'
+)
 
 const displayText = computed(() => (props.textI18n ? $t(props.textI18n) : props.text))
 
@@ -88,7 +90,7 @@ const classes = computed(() => {
   }
 
   let sizeClass = isOnlyIcon.value ? iconSizes[props.size] : sizes[props.size]
-  
+
   if (resolvedLayout.value === 'vertical') {
     const verticalSizes: Record<ButtonSize, string> = {
       xs: 'h-auto py-1.5 px-2 min-w-16',
@@ -131,7 +133,7 @@ const iconClasses = computed(() => {
 
   let iconClassStr = isOnlyIcon.value ? iconSizes[props.size] : sizes[props.size]
   if (resolvedLayout.value === 'vertical') {
-    iconClassStr += ' scale-[1.15]'
+    iconClassStr += ' scale-[1.3] mt-1'
   }
   return iconClassStr
 })
