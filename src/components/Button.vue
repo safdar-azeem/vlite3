@@ -169,7 +169,9 @@ const classes = computed(() => {
   }
 
   // In tile mode the outer button has no fill — the icon circle carries the color
-  const variantClass = isTile.value ? 'text-foreground' : variants[props.variant]
+  const variantClass = isTile.value
+    ? 'text-foreground focus:outline-none focus-visible:outline-none active:scale-100!'
+    : variants[props.variant]
 
   return [
     baseClasses,
@@ -209,7 +211,7 @@ const iconClasses = computed(() => {
 
 <template>
   <button
-    v-ripple
+    v-ripple="!isTile"
     :type="type"
     :class="classes"
     :disabled="disabled || loading"
@@ -228,7 +230,8 @@ const iconClasses = computed(() => {
     <!-- ── Tile layout: icon inside a circle ─────────────────── -->
     <template v-if="isTile">
       <span
-        class="inline-flex items-center justify-center rounded-full shrink-0 transition-colors"
+        v-ripple
+        class="inline-flex items-center justify-center rounded-full shrink-0 transition-colors overflow-hidden relative"
         :class="[tileCircleClasses, tileCircleSizeClasses]">
         <Icon
           v-if="loading"
