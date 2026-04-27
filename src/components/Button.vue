@@ -82,7 +82,7 @@ const classes = computed(() => {
     resolvedLayout.value === 'tile'
       ? 'flex-col gap-1.5 items-center'
       : resolvedLayout.value === 'vertical'
-        ? 'flex-col gap-1.5'
+        ? 'flex-col gap-2'
         : 'gap-2'
 
   const baseClasses = `inline-flex items-center justify-center whitespace-nowrap text-sm font-medium disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] cursor-pointer ${layoutGap} ${isOnlyIcon.value ? 'icon-only shrink-0' : ''}`
