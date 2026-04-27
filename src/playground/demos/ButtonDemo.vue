@@ -137,6 +137,46 @@ const simulateLoad = () => {
       </div>
     </DemoSection>
 
+    <!-- ── Tile Layout ──────────────────────────────────────── -->
+    <DemoSection title="Tile Layout" :code="sourceCode">
+      <div class="flex flex-col items-center gap-6 w-full">
+        <!-- Primary variants row -->
+        <div class="flex flex-wrap items-start justify-center gap-3">
+          <Button icon="lucide:instagram" layout="tile" variant="primary" rounded="xl">Instagram</Button>
+          <Button icon="lucide:facebook" layout="tile" variant="info" rounded="xl">Facebook</Button>
+          <Button icon="lucide:twitter" layout="tile" variant="secondary" rounded="xl">Threads</Button>
+          <Button icon="lucide:bot" layout="tile" variant="success" rounded="xl">Meta AI</Button>
+          <Button icon="lucide:message-circle" layout="tile" variant="warning" rounded="xl">Messages</Button>
+        </div>
+
+        <!-- Light variant backgrounds -->
+        <div class="flex flex-wrap items-start justify-center gap-3">
+          <Button icon="lucide:camera" layout="tile" variant="primary-light" rounded="xl">Camera</Button>
+          <Button icon="lucide:music" layout="tile" variant="info-light" rounded="xl">Music</Button>
+          <Button icon="lucide:map" layout="tile" variant="success-light" rounded="xl">Maps</Button>
+          <Button icon="lucide:shield" layout="tile" variant="danger-light" rounded="xl">Security</Button>
+          <Button icon="lucide:sun" layout="tile" variant="warning-light" rounded="xl">Weather</Button>
+        </div>
+
+        <!-- Custom tileIconBg overrides -->
+        <div class="flex flex-wrap items-start justify-center gap-3">
+          <Button icon="lucide:settings" layout="tile" variant="primary" tile-icon-bg="secondary" rounded="xl">Settings</Button>
+          <Button icon="lucide:heart" layout="tile" variant="primary" tile-icon-bg="danger" rounded="xl">Health</Button>
+          <Button icon="lucide:wallet" layout="tile" variant="primary" tile-icon-bg="success-light" rounded="xl">Wallet</Button>
+          <Button icon="lucide:phone" layout="tile" variant="primary" tile-icon-bg="info-light" rounded="xl">Phone</Button>
+        </div>
+
+        <!-- Size comparison -->
+        <div class="flex flex-wrap items-end justify-center gap-4">
+          <Button icon="lucide:star" layout="tile" variant="primary" size="xs" rounded="lg">XS</Button>
+          <Button icon="lucide:star" layout="tile" variant="primary" size="sm" rounded="lg">SM</Button>
+          <Button icon="lucide:star" layout="tile" variant="primary" size="md" rounded="xl">MD</Button>
+          <Button icon="lucide:star" layout="tile" variant="primary" size="lg" rounded="xl">LG</Button>
+          <Button icon="lucide:star" layout="tile" variant="primary" size="xl" rounded="xl">XL</Button>
+        </div>
+      </div>
+    </DemoSection>
+
     <!-- ── Back Button ────────────────────────────────────────── -->
     <DemoSection title="Back Button" :code="sourceCode">
       <div class="flex flex-col items-center gap-4 w-full">
