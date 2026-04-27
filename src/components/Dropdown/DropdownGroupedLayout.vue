@@ -50,8 +50,8 @@ const isSelected = (option: IDropdownOption) => {
   return props.selected === option.value
 }
 
-const getGroupLabel = (group: IDropdownOption) => group.labelI18n ? $t(group.labelI18n) : group.label
-
+const getGroupLabel = (group: IDropdownOption) =>
+  group.labelI18n ? $t(group.labelI18n) : group.label
 </script>
 
 <template>
@@ -59,12 +59,16 @@ const getGroupLabel = (group: IDropdownOption) => group.labelI18n ? $t(group.lab
     <div
       v-for="(group, gIndex) in options"
       :key="group.key || group.value || gIndex"
-      class="flex flex-col space-y-2 min-w-[150px]">
+      class="flex flex-col space-y-2">
       <div class="flex items-center gap-2 px-2 py-1 mb-1" :class="headerClass">
         <span class="font-semibold text-sm text-foreground">
           {{ getGroupLabel(group) }}
         </span>
-        <Icon v-if="group.icon || group.emoji" :icon="group.icon" :emoji="group.emoji" class="w-4 h-4 text-muted-foreground" />
+        <Icon
+          v-if="group.icon || group.emoji"
+          :icon="group.icon"
+          :emoji="group.emoji"
+          class="w-4 h-4 text-muted-foreground" />
       </div>
 
       <div class="flex flex-col space-y-1">
@@ -99,4 +103,3 @@ const getGroupLabel = (group: IDropdownOption) => group.labelI18n ? $t(group.lab
     </div>
   </div>
 </template>
-
