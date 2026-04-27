@@ -16,10 +16,10 @@ const titleText = computed(() => {
 <template>
   <Button
     variant="ghost"
-    size="sm"
+    size="md"
     icon="lucide:plus"
     :title="titleText"
     rounded="none"
+    class="h-full!"
     @click="emit('click', $event)" />
 </template>
-
