@@ -149,12 +149,12 @@ const classes = computed(() => {
 
   if (resolvedLayout.value === 'tile') {
     const tileSizes: Record<ButtonSize, string> = {
-      xs: 'h-auto p-0! min-w-16',
-      sm: 'h-auto p-0! min-w-18',
-      sm2: 'h-auto p-0! min-w-18',
-      md: 'h-auto p-0! min-w-20',
-      lg: 'h-auto p-0! min-w-24',
-      xl: 'h-auto p-0! min-w-28',
+      xs: 'h-auto p-0!',
+      sm: 'h-auto p-0!',
+      sm2: 'h-auto p-0!',
+      md: 'h-auto p-0!',
+      lg: 'h-auto p-0!',
+      xl: 'h-auto p-0!',
     }
     sizeClass = tileSizes[props.size]
   } else if (resolvedLayout.value === 'vertical') {
