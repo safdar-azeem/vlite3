@@ -148,7 +148,7 @@ const isItemDisabledFn = (item: any): boolean => {
     <div
       ref="scrollContainer"
       :class="[
-        'flex-1 flex flex-col overflow-y-auto p-3 custom-scrollbar scrollable-container',
+        'flex-1 flex flex-col overflow-y-auto p-3 scrollbar-thin  scrollable-container',
         bodyClass,
       ]"
       @scroll="handleScroll">
