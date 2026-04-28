@@ -67,7 +67,7 @@ const txtNoHeaders = computed(() =>
     </div>
 
     <div class="border border-border rounded-xl overflow-hidden">
-      <div class="overflow-x-auto max-h-[440px]">
+      <div class="overflow-x-auto max-h-[440px] always-scroll scrollbar-thin">
         <table class="import-table">
           <thead class="import-thead">
             <tr>
