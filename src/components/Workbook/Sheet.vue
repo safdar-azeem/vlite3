@@ -61,8 +61,10 @@ const startEdit = () => {
   })
 }
 
+let isSaving = false
 const saveEdit = () => {
-  if (!props.isEditing) return
+  if (!props.isEditing || isSaving) return
+  isSaving = true
   const val = localTitle.value.trim()
   if (val) {
     emit('update:title', props.sheet.id, val)
@@ -70,16 +72,14 @@ const saveEdit = () => {
     localTitle.value = props.sheet.title
   }
   emit('edit-end', props.sheet.id)
+  setTimeout(() => {
+    isSaving = false
+  }, 100)
 }
 
 const cancelEdit = () => {
   localTitle.value = props.sheet.title
   emit('edit-end', props.sheet.id)
-}
-
-const handleKeyDown = (e: KeyboardEvent) => {
-  if (e.key === 'Enter') saveEdit()
-  if (e.key === 'Escape') cancelEdit()
 }
 
 const menuOptions = computed(() => [
@@ -130,15 +130,8 @@ const handleMenuSelect = (option: any) => {
   if (option.value === 'duplicate') emit('duplicate', props.sheet.id)
   if (option.value === 'delete') {
     if (!props.canDelete) return
-    if (props.confirmDelete) return
     emit('delete', props.sheet.id)
   }
-}
-
-const handleConfirm = (option?: any) => {
-  if (option && option.value && option.value !== 'delete') return
-  if (!props.canDelete) return
-  emit('delete', props.sheet.id)
 }
 
 const containerClass = computed(() => {
@@ -187,7 +180,8 @@ const containerClass = computed(() => {
         type="text"
         class="w-full bg-transparent border-none outline-none p-0 text-sm font-medium text-foreground placeholder-muted-foreground focus:ring-0"
         @blur="saveEdit"
-        @keydown="handleKeyDown"
+        @keydown.enter.prevent="saveEdit"
+        @keydown.esc.prevent="cancelEdit"
         @click.stop />
       <span v-else class="block truncate text-sm font-medium leading-normal">
         {{ displayTitle }}
@@ -202,9 +196,7 @@ const containerClass = computed(() => {
         :position="'bottom-end'"
         :width="'140px'"
         :teleport="true"
-        @onSelect="handleMenuSelect"
-        @onConfirm="handleConfirm"
-        @confirm="handleConfirm">
+        @onSelect="handleMenuSelect">
         <template #trigger>
           <Button icon="lucide:more-vertical" asIcon size="xs" rounded="full" variant="ghost" />
         </template>
