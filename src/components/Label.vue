@@ -24,7 +24,7 @@ const classes = computed(() => {
 
   return [
     sizeClasses[props.size],
-    'leading-none text-gray-800 peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
+    'leading-none text-gray-800 block peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
     props.class,
   ].join(' ')
 })
