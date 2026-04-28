@@ -26,6 +26,7 @@ const filesToRead = [
   'base.css',
   'input.css',
   'invoiceTable.css',
+  'scroll.css',
   'i18n.css',
   'dark-shades.css',
   'importTable.css',
