@@ -42,9 +42,9 @@ const { arrivedState } = useScroll(scrollContainer)
 // Drag and Drop State using shallowRef for massive arrays performance boost
 const sheetsList = shallowRef<WorkbookSheet[]>([...props.sheets])
 
-// Watch for external updates to sheets prop
+// Watch for external updates to sheets prop without deep proxy traversal
 watch(
-  () => props.sheets,
+  () => [...props.sheets],
   (newSheets) => {
     let needsUpdate = false
 
@@ -52,7 +52,7 @@ watch(
     if (newSheets.length !== sheetsList.value.length) {
       needsUpdate = true
     } else {
-      // Fast O(n) check for object reference or ID changes without deep proxy traversal overhead
+      // Fast O(n) check for object reference or ID changes
       for (let i = 0; i < newSheets.length; i++) {
         if (newSheets[i] !== sheetsList.value[i] || newSheets[i].id !== sheetsList.value[i].id) {
           needsUpdate = true
@@ -62,10 +62,9 @@ watch(
     }
 
     if (needsUpdate) {
-      sheetsList.value = [...newSheets]
+      sheetsList.value = newSheets
     }
-  },
-  { deep: true } // Must be true so parent mutating the array via .push() correctly triggers the watcher
+  }
 )
 
 const handleSheetsUpdate = (newItems: WorkbookSheet[]) => {
@@ -189,6 +188,9 @@ const canDeleteSheet = computed(() => props.sheets.length > 1)
               canDeleteSheet,
               confirmDelete,
               allowIconChange,
+              itemClass,
+              activeItemClass,
+              inactiveItemClass,
             ]"
             :sheet="sheet"
             :is-active="modelValue === sheet.id"
