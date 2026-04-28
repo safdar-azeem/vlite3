@@ -210,16 +210,6 @@ const columnData = (colId: string | number) => {
 </template>
 
 <style scoped>
-.custom-scrollbar-x::-webkit-scrollbar {
-  height: 8px;
-}
-.custom-scrollbar-x::-webkit-scrollbar-track {
-  background: transparent;
-}
-.custom-scrollbar-x::-webkit-scrollbar-thumb {
-  background-color: var(--color-border);
-  border-radius: 10px;
-}
 .scrollable-container {
   will-change: transform;
   contain: layout style;
