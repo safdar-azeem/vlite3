@@ -141,15 +141,13 @@ const txtFilter = computed(() => {
         class="shrink-0 h-9! w-9!" />
     </template>
 
-    <div
-      class="pt-2 mt-2! px-2 min-w-[295px]"
-      style="will-change: transform; contain: layout style">
+    <div class="pt-2 px-2 min-w-[295px]" style="will-change: transform; contain: layout style">
       <Form
         :schema="schema"
         :values="modelValue"
         :submit-text="txtApplyFilters"
         className="gap-3!"
-        footer-class="mt-0.5!  border-0! border-transparent! rounded-none!"
+        footer-class="mt-0.5! translate-y-0.5 pb-4.5! border-0! border-transparent! rounded-none!"
         :submit-props="{
           size: 'sm',
           class: 'w-full',
