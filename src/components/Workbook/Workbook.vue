@@ -209,7 +209,7 @@ const canDeleteSheet = computed(() => props.sheets.length > 1)
 
         <div
           v-if="addable && addButtonPosition === 'attached'"
-          class="shrink-0 sticky right-0 z-10 bg-white flex items-center justify-center h-full">
+          class="shrink-0 sticky right-0 z-10 bg-body flex items-center justify-center h-full shadow-[-10px_0_12px_-4px_#fff] dark:shadow-[-10px_0_12px_-4px_#000]">
           <WorkbookAddButton @click="handleAdd" />
         </div>
 
