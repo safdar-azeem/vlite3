@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, nextTick, computed, shallowRef } from 'vue'
+import { useScroll } from '@vueuse/core'
 import { VueDraggable } from 'vue-draggable-plus'
 import type { WorkbookSheet, WorkbookProps, AddButtonPosition } from './types'
 import SheetItem from './Sheet.vue'
@@ -36,6 +37,7 @@ const emit = defineEmits<{
 // State
 const scrollContainer = ref<HTMLElement | null>(null)
 const editingTabId = ref<string | null>(null)
+const { arrivedState } = useScroll(scrollContainer)
 
 // Drag and Drop State using shallowRef for massive arrays performance boost
 const sheetsList = shallowRef<WorkbookSheet[]>([...props.sheets])
@@ -209,7 +211,10 @@ const canDeleteSheet = computed(() => props.sheets.length > 1)
 
         <div
           v-if="addable && addButtonPosition === 'attached'"
-          class="shrink-0 sticky right-0 z-10 bg-body flex items-center justify-center h-full shadow-[-10px_0_12px_-4px_#fff] dark:shadow-[-10px_0_12px_-4px_#000]">
+          class="shrink-0 sticky right-0 z-10 bg-body flex items-center justify-center h-full"
+          :class="{
+            'shadow-[-10px_0_12px_-4px_#fff] dark:shadow-[-10px_0_12px_-4px_#000]': !arrivedState.right
+          }">
           <WorkbookAddButton @click="handleAdd" />
         </div>
 
