@@ -13,18 +13,21 @@ import type {
   PermissionMatrixSize,
 } from './types'
 
-const props = withDefaults(defineProps<{
-  matrixGroups: PermissionMatrixGroup[]
-  modelValue: string[]
-  collapsedGroups: Set<string>
-  toggleMode: PermissionToggleMode
-  readonly: boolean
-  size: PermissionMatrixSize
-  collapsible: boolean
-  stickyHeader?: boolean
-}>(), {
-  stickyHeader: true
-})
+const props = withDefaults(
+  defineProps<{
+    matrixGroups: PermissionMatrixGroup[]
+    modelValue: string[]
+    collapsedGroups: Set<string>
+    toggleMode: PermissionToggleMode
+    readonly: boolean
+    size: PermissionMatrixSize
+    collapsible: boolean
+    stickyHeader?: boolean
+  }>(),
+  {
+    stickyHeader: true,
+  }
+)
 
 const emit = defineEmits<{
   (e: 'update:modelValue', val: string[]): void
@@ -233,24 +236,6 @@ function handleToggleMatrixGroup(group: PermissionMatrixGroup) {
   /* Promote to GPU layer for performance in Modals/Drawers */
   will-change: transform;
   contain: layout style;
-}
-
-.permission-matrix-wrapper::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.permission-matrix-wrapper::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.permission-matrix-wrapper::-webkit-scrollbar-thumb {
-  background: var(--color-gray-350);
-  border-radius: 3px;
-}
-
-.permission-matrix-wrapper::-webkit-scrollbar-thumb:hover {
-  background: var(--color-gray-400);
 }
 
 .custom-table {
