@@ -166,7 +166,16 @@ const displayDescription = computed(() =>
     @click.stop="handleOpen"
     :class="`${triggerClass}`"
     v-bind="$attrs"
-    :data-testid="$attrs['data-testid'] ? `${$attrs['data-testid']}-trigger` : (displayTitle ? `modal-trigger-${displayTitle.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : 'modal-trigger')"
+    :data-testid="
+      $attrs['data-testid']
+        ? `${$attrs['data-testid']}-trigger`
+        : displayTitle
+          ? `modal-trigger-${displayTitle
+              .toString()
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, '-')}`
+          : 'modal-trigger'
+    "
     v-if="$slots?.trigger || $slots?.default">
     <slot name="trigger">
       <template v-if="body">
@@ -181,58 +190,66 @@ const displayDescription = computed(() =>
       :class="backdrop ? 'v-modal-backdrop' : ''"
       @click="handleBackdropClick">
       <Transition name="modal-dialog">
-      <div
-        v-if="visible"
-        ref="modalRef"
-        tabindex="-1"
-        role="dialog"
-        aria-modal="true"
-        class="modal-body relative w-full rounded border border-border/60 bg-body shadow-lg text-foreground flex flex-col max-h-[85vh] sm:max-h-[90vh] focus:outline-none"
-        :class="[maxWidth]"
-        :data-testid="$attrs['data-testid'] || (displayTitle ? `modal-${displayTitle.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : 'modal')"
-        @click.stop>
         <div
-          v-if="displayTitle"
-          class="flex-none flex flex-col space-y-1.5 pb-0 border-b border-border/90">
+          v-if="visible"
+          ref="modalRef"
+          tabindex="-1"
+          role="dialog"
+          aria-modal="true"
+          class="modal-body relative w-full rounded border border-border/60 bg-body shadow-lg text-foreground flex flex-col max-h-[85vh] sm:max-h-[90vh] focus:outline-none"
+          :class="[maxWidth]"
+          :data-testid="
+            $attrs['data-testid'] ||
+            (displayTitle
+              ? `modal-${displayTitle
+                  .toString()
+                  .toLowerCase()
+                  .replace(/[^a-z0-9]+/g, '-')}`
+              : 'modal')
+          "
+          @click.stop>
           <div
-            class="flex items-center justify-between py-2 px-4 rounded-t-md"
-            :class="headerClass">
-            <h3 class="text-lg font-semibold leading-none tracking-tight">
-              {{ displayTitle }}
-            </h3>
-            <Button
-              rounded="full"
-              size="sm"
-              icon="lucide:x"
-              variant="ghost"
-              class="hover:bg-gray-250/25!"
-              :class="{ 'blink-bg': showBlink }"
-              data-testid="modal-close-btn"
-              @click="close" />
+            v-if="displayTitle"
+            class="flex-none flex flex-col space-y-1.5 pb-0 border-b border-border/90">
+            <div
+              class="flex items-center justify-between py-2 px-4 rounded-t-md"
+              :class="headerClass">
+              <h3 class="text-lg font-semibold leading-none tracking-tight">
+                {{ displayTitle }}
+              </h3>
+              <Button
+                rounded="full"
+                size="sm"
+                icon="lucide:x"
+                variant="ghost"
+                class="hover:bg-gray-250/25!"
+                :class="{ 'blink-bg': showBlink }"
+                data-testid="modal-close-btn"
+                @click="close" />
+            </div>
+          </div>
+
+          <div
+            class="flex-1 overflow-y-auto px-4 pt-4 min-h-0 scrollbar-thin scrollbar-stable"
+            :class="[hasFormWithFooter ? 'pb-0' : 'pb-3.5', bodyClass]">
+            <p v-if="displayDescription" class="text-sm text-muted-foreground mb-3.5">
+              {{ displayDescription }}
+            </p>
+            <template v-if="rawBody">
+              <component :is="rawBody" v-bind="{ ...bodyProps, ...$attrs }" :close="handleClose" />
+            </template>
+            <template v-else>
+              <slot :close="handleClose" />
+            </template>
+          </div>
+
+          <div
+            v-if="$slots.footer"
+            :class="footerClass"
+            class="flex-none flex items-center px-4 py-3 border-t border-border/90 rounded-b-xl bg-body">
+            <slot name="footer" :close="handleClose" />
           </div>
         </div>
-
-        <div
-          class="flex-1 overflow-y-auto px-4 pt-4 min-h-0 scrollbar-thin scrollbar-stable"
-          :class="[hasFormWithFooter ? 'pb-0' : 'pb-3.5', bodyClass]">
-          <p v-if="displayDescription" class="text-sm text-muted-foreground mb-3.5">
-            {{ displayDescription }}
-          </p>
-          <template v-if="rawBody">
-            <component :is="rawBody" v-bind="{ ...bodyProps, ...$attrs }" :close="handleClose" />
-          </template>
-          <template v-else>
-            <slot :close="handleClose" />
-          </template>
-        </div>
-
-        <div
-          v-if="$slots.footer"
-          :class="footerClass"
-          class="flex-none flex items-center px-4 py-3 border-t border-border/75 rounded-b-xl bg-body">
-          <slot name="footer" :close="handleClose" />
-        </div>
-      </div>
       </Transition>
     </div>
   </Teleport>
