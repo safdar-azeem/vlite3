@@ -13,8 +13,7 @@ html {
 
 
 @layer utilities {
-  .scrollbar-thin:not(.always-scroll) {
-    scrollbar-width: thin;
+  .scrollbar-thin:not(:has(.always-scroll)) {
     scrollbar-color: var(--color-gray-300) transparent;
   }
 
@@ -47,6 +46,11 @@ html {
 }
 
 .always-scroll.scrollbar-thin {
+  scrollbar-width: 20px !important;
+  scrollbar-color: var(--color-gray-300) !important;
+}
+
+.always-scroll {
   scrollbar-width: 20px !important;
   scrollbar-color: var(--color-gray-300) !important;
 }
