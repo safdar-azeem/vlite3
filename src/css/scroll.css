@@ -1,0 +1,52 @@
+html {
+  scroll-behavior: smooth;
+}
+
+html {
+  overflow: -moz-scrollbars-vertical;
+  overflow-y: scroll;
+}
+
+html {
+  overflow-y: scroll;
+}
+
+
+@layer utilities {
+  .scrollbar-thin:not(.always-scroll) {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-gray-300) transparent;
+  }
+
+
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: var(--radius);
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: var(--color-scrollbar);
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    background-clip: padding-box;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-scrollbar-hover);
+  }
+
+  .scrollbar-stable {
+    scrollbar-gutter: stable;
+  }
+}
+
+.always-scroll.scrollbar-thin {
+  scrollbar-width: 20px !important;
+  scrollbar-color: var(--color-gray-300) !important;
+}
