@@ -11,12 +11,20 @@ const UserTable = defineAsyncComponent(() => import('./ScreenDemoComponents/User
 const AddUser = defineAsyncComponent(() => import('./ScreenDemoComponents/AddUser.vue'))
 
 // Separate data instances so both Screen demos are independent
-const { result: result1, loading: loading1, refetch: refetch1 } = useGetUsers({
+const {
+  result: result1,
+  loading: loading1,
+  refetch: refetch1,
+} = useGetUsers({
   pagination: { page: 1, limit: 10 },
   filter: { search: '' },
 })
 
-const { result: result2, loading: loading2, refetch: refetch2 } = useGetUsers({
+const {
+  result: result2,
+  loading: loading2,
+  refetch: refetch2,
+} = useGetUsers({
   pagination: { page: 1, limit: 10 },
   filter: { search: '' },
 })
@@ -66,10 +74,19 @@ const filterType = ref<'dropdown' | 'sidebar'>('dropdown')
 
       <!-- Feature pills -->
       <div class="flex flex-wrap gap-2">
-        <span v-for="feat in ['Auto-pagination', 'Search built-in', 'Sort support', 'Export / Import', 'Quick Filters', 'View toggle', 'Add modal', 'Stats bar']"
+        <span
+          v-for="feat in [
+            'Auto-pagination',
+            'Search built-in',
+            'Sort support',
+            'Export / Import',
+            'Quick Filters',
+            'View toggle',
+            'Add modal',
+            'Stats bar',
+          ]"
           :key="feat"
-          class="px-2.5 py-1 rounded-md bg-muted/50 border border-border/40 text-xs font-medium text-muted-foreground"
-        >
+          class="px-2.5 py-1 rounded-md bg-muted/50 border border-border/40 text-xs font-medium text-muted-foreground">
           {{ feat }}
         </span>
       </div>
@@ -79,8 +96,8 @@ const filterType = ref<'dropdown' | 'sidebar'>('dropdown')
     <div class="space-y-3">
       <h3 class="text-base font-semibold text-foreground">Default Screen — Users Directory</h3>
       <p class="text-sm text-muted-foreground max-w-[65ch]">
-        The standard Screen layout. Includes a title, description, search input, quick filters,
-        view toggle (table ↔ list), add button with modal, export &amp; import, and built-in pagination.
+        The standard Screen layout. Includes a title, description, search input, quick filters, view
+        toggle (table ↔ list), add button with modal, export &amp; import, and built-in pagination.
       </p>
     </div>
 
@@ -106,6 +123,7 @@ const filterType = ref<'dropdown' | 'sidebar'>('dropdown')
         :skip-quick-filter-views="['list']"
         :filter-schema="[
           { name: 'user', type: 'text', label: 'User Name' },
+
           {
             name: 'userType',
             label: 'User Type',
@@ -145,17 +163,16 @@ const filterType = ref<'dropdown' | 'sidebar'>('dropdown')
           modal: AddUser,
           label: 'Add User',
           modalProps: { title: 'Add User' },
-        }"
-      />
+        }" />
     </DemoSection>
 
     <!-- ─── SECTION 2: Variant Two ─────────────────────────── -->
     <div class="space-y-3">
       <h3 class="text-base font-semibold text-foreground">Stats Layout — Variant Two</h3>
       <p class="text-sm text-muted-foreground max-w-[65ch]">
-        <code class="text-xs bg-muted px-1 py-0.5 rounded">variant="two"</code> moves stats
-        directly opposite to the title, while quick-filters appear on the actions row. Great for
-        dashboards that need KPI numbers visible at a glance.
+        <code class="text-xs bg-muted px-1 py-0.5 rounded">variant="two"</code> moves stats directly
+        opposite to the title, while quick-filters appear on the actions row. Great for dashboards
+        that need KPI numbers visible at a glance.
       </p>
     </div>
 
@@ -222,8 +239,7 @@ const filterType = ref<'dropdown' | 'sidebar'>('dropdown')
           modal: AddUser,
           label: 'Add Employee',
           modalProps: { title: 'Add Employee' },
-        }"
-      />
+        }" />
     </DemoSection>
   </div>
 </template>
