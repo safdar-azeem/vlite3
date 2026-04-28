@@ -24,9 +24,11 @@ export default defineConfig({
   },
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/index.ts'),
+      entry: {
+        index: path.resolve(__dirname, 'src/index.ts'),
+        'test/index': path.resolve(__dirname, 'src/test/index.ts'),
+      },
       name: 'vlite3',
-      fileName: 'index',
       formats: ['es'],
     },
     rollupOptions: {
@@ -55,6 +57,7 @@ export default defineConfig({
           'jsbarcode',
           'dayjs',
           'qrcode',
+          '@vue/test-utils',
         ]
         // Check exact match or start with for scoped packages if needed
         // For simple behavior, we can check if the id starts with the external name
@@ -73,3 +76,4 @@ export default defineConfig({
     },
   },
 })
+
