@@ -40,6 +40,7 @@ const props = withDefaults(
     selectedIndex?: number | null
     maxHeight?: string
     width?: string
+    minWidth?: string
     ignoreClickOutside?: string[]
     menuId?: string
     nestedPosition?: TooltTipPlacement
@@ -75,6 +76,7 @@ const props = withDefaults(
     teleport: true,
     selectedIndex: null,
     maxHeight: '300px',
+    minWidth: '130px',
     showSelectedLabel: true,
     showSelectedIcon: false,
     selectable: true,
@@ -400,7 +402,12 @@ const cancelSelection = () => {
       :menuId="uniqueMenuId"
       :ignoreClickOutside="finalIgnoreClickOutside"
       class="w-full"
-      :className="'dropdown ' + (className || '') + (variant === 'transparent' ? ' unstyled-dropdown' : '') + (variant === 'secondary' ? ' dropdown-secondary' : '')"
+      :className="
+        'dropdown ' +
+        (className || '') +
+        (variant === 'transparent' ? ' unstyled-dropdown' : '') +
+        (variant === 'secondary' ? ' dropdown-secondary' : '')
+      "
       @onShow="$emit('onOpen')"
       @onHide="$emit('onClose')"
       @update:isOpen="handleVisibilityChange"
@@ -408,7 +415,10 @@ const cancelSelection = () => {
       :styles="{
         padding: '0',
         ...(width ? { width: width, maxWidth: width } : {}),
-        ...(variant === 'transparent' ? { background: 'transparent', border: 'none', boxShadow: 'none' } : {}),
+        ...(minWidth ? { minWidth: minWidth } : {}),
+        ...(variant === 'transparent'
+          ? { background: 'transparent', border: 'none', boxShadow: 'none' }
+          : {}),
       }">
       <template #trigger="{ isOpen }">
         <slot
