@@ -265,7 +265,7 @@ const getSafeLabel = (field: IForm) => {
             !shouldHideExternalLabel(field)
           "
           :for="field.name"
-          class="mb-2.5 block font-medium">
+          class="mb-2 block font-medium">
           <component
             v-if="isComponent(getFieldLabel(field))"
             :is="renderLabel(getFieldLabel(field))" />
