@@ -116,6 +116,7 @@ const txtFilter = computed(() => {
     v-model:isOpen="isOpen"
     :close-on-select="false"
     position="bottom-end"
+    class-name="pb-0! always-scroll"
     class="w-auto">
     <template #trigger>
       <Button
@@ -140,12 +141,15 @@ const txtFilter = computed(() => {
         class="shrink-0 h-9! w-9!" />
     </template>
 
-    <div class="pt-3 px-2 min-w-[295px]" style="will-change: transform; contain: layout style">
+    <div
+      class="pt-2 mt-2! px-2 min-w-[295px]"
+      style="will-change: transform; contain: layout style">
       <Form
         :schema="schema"
         :values="modelValue"
         :submit-text="txtApplyFilters"
-        footer-class="mt-0.5! border-0! border-transparent! rounded-none! bg-transparent!"
+        className="gap-3!"
+        footer-class="mt-0.5!  border-0! border-transparent! rounded-none!"
         :submit-props="{
           size: 'sm',
           class: 'w-full',
