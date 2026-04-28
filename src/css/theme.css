@@ -544,29 +544,35 @@
 
 .dark .modal-body,
 .dark .sidepanel-body {
-  --color-white: #101010 !important;
-  --color-mixture-1: #161616 !important;
+  --color-white: #121212 !important;
+  --color-body: #121212 !important;
+  --color-mixture-1: #171919 !important;
   --color-mixture-2: #ffffff !important;
   --color-input: color-mix(in oklab, var(--color-mixture-1) 92%, var(--color-mixture-2));
 }
 
 .dark .tooltip-container {
-  --color-white: #131313 !important;
-  --color-mixture-1: #161616 !important;
+  --color-body: #121212 !important;
+  --color-white: #121212 !important;
+  --color-mixture-1: #171919 !important;
   --color-mixture-2: #ffffff !important;
+  --tooltip-border: color-mix(in oklab, var(--color-mixture-1) 94%, var(--color-mixture-2)) !important;
+
 }
 
 .dark .modal-body .bg-card,
 .dark .sidepanel-body .bg-card,
 .dark .tooltip-container .bg-card {
-  --color-body: #131313 !important;
-  --color-mixture-1: #131313 !important;
+  --color-body: #121212 !important;
+  --color-white: #121212 !important;
+  --color-mixture-1: #171919 !important;
   --color-mixture-2: #ffffff !important;
   background-color: var(--color-body) !important;
 }
 
 .dark .bg-card {
   --color-body: #121212 !important;
+  --color-white: #121212 !important;
   --color-mixture-1: #1b1b1b !important;
   --color-mixture-2: #ffffff !important;
   background-color: #121212 !important;
@@ -584,6 +590,7 @@
 
 .bg-card {
   --color-body: #FAFAFA !important;
+  --color-white: #FAFAFA !important;
   --color-mixture-1: #FAFAFA !important;
   --color-mixture-2: #000000 !important;
   background-color: #FAFAFA !important;
@@ -592,6 +599,7 @@
 
 .bg-card .bg-card {
   --color-body: #F5F5F5 !important;
+  --color-white: #F5F5F5 !important;
   --color-mixture-1: #F5F5F5;
   --color-mixture-2: #000000;
   background-color: #F5F5F5 !important;
@@ -599,6 +607,7 @@
 
 .bg-card .bg-card .bg-card {
   --color-body: #EEE !important;
+  --color-white: #EEE !important;
   --color-mixture-1: #F5F5F5;
   --color-mixture-2: #000000;
   background-color: #EEE !important;
@@ -606,6 +615,7 @@
 
 .dark .bg-card .bg-card {
   --color-body: #171717 !important;
+  --color-white: #171717 !important;
   --color-mixture-1: #181818;
   --color-mixture-2: #000000;
   background-color: #171717 !important;
@@ -613,6 +623,7 @@
 
 .dark .bg-card .bg-card .bg-card {
   --color-body: #1A1A1A !important;
+  --color-white: #1A1A1A !important;
   --color-mixture-1: #171717;
   --color-mixture-2: #000000;
   background-color: #1A1A1A !important;
