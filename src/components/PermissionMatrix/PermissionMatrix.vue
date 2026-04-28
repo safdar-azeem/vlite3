@@ -155,7 +155,9 @@ function getTotalPerms(): number {
       <p :class="textSize">No permissions match your search.</p>
     </div>
 
-    <div v-else class="permission-matrix-wrapper border rounded-lg overflow-auto">
+    <div
+      v-else
+      class="permission-matrix-wrapper border rounded-lg scrollbar-thin always-scroll overflow-auto">
       <table class="w-full border-collapse">
         <thead :class="stickyHeader ? 'sticky top-0 z-10' : ''">
           <tr class="bg-muted">
@@ -309,23 +311,5 @@ function getTotalPerms(): number {
   /* Promote to GPU layer for performance in Modals/Drawers */
   will-change: transform;
   contain: layout style;
-}
-
-.permission-matrix-wrapper::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.permission-matrix-wrapper::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.permission-matrix-wrapper::-webkit-scrollbar-thumb {
-  background: var(--color-gray-350);
-  border-radius: 3px;
-}
-
-.permission-matrix-wrapper::-webkit-scrollbar-thumb:hover {
-  background: var(--color-gray-400);
 }
 </style>
