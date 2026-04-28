@@ -171,7 +171,7 @@ const columnData = (colId: string | number) => {
 <template>
   <div
     :class="[
-      'flex gap-4 overflow-x-auto p-1 custom-scrollbar-x scrollable-container',
+      'flex gap-4 scrollbar-thin overflow-x-auto p-1 scrollbar-thin-x scrollable-container',
       props.class,
     ]">
     <KanbanBoard
