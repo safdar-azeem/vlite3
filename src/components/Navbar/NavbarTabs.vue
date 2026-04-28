@@ -222,14 +222,6 @@ const getItemClasses = (item: NavbarTabItem): string => {
 </template>
 
 <style>
-.navbar-tabs-no-scrollbar {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.navbar-tabs-no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
 .fade-x-enter-active,
 .fade-x-leave-active {
   transition: opacity 0.15s ease;
