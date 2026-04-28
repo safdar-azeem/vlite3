@@ -220,16 +220,6 @@ const isItemDisabledFn = (item: any): boolean => {
 </template>
 
 <style scoped>
-.custom-scrollbar::-webkit-scrollbar {
-  width: 0px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: var(--color-border);
-  border-radius: 10px;
-}
 .scrollable-container {
   will-change: transform;
   contain: layout style;
