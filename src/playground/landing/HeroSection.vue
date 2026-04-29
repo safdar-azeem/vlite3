@@ -42,11 +42,7 @@ const navigateToComponents = () => {
         <div class="hero-cmd">
           <span class="hero-cmd-prompt">$</span>
           <span class="hero-cmd-text">npm install vlite3</span>
-          <Clipboard
-            text-to-copy="npm install vlite3"
-            as-icon
-            rounded="full"
-            class="w-8 h-8 bg-background border-border shrink-0" />
+          <Clipboard text-to-copy="npm install vlite3" as-icon rounded="full" />
         </div>
       </div>
 
