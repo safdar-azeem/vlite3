@@ -9,7 +9,9 @@
   "author": "safdar-azeem",
   "license": "MIT",
   "scripts": {
-    "build": "vite build"
+    "build": "vite build",
+    "prepublishOnly": "yarn build",
+    "publish-pkg": "npm publish"
   },
   "dependencies": {
     "@vue/test-utils": "^2.4.8",
