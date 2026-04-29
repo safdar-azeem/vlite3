@@ -106,7 +106,6 @@ const menuOptions = computed(() => [
         : 'Delete',
     value: 'delete',
     icon: 'lucide:trash-2',
-    class: 'text-danger',
     disabled: !props.canDelete,
     confirmation: props.confirmDelete
       ? {
@@ -199,12 +198,6 @@ const containerClass = computed(() => {
         @onSelect="handleMenuSelect">
         <template #trigger>
           <Button icon="lucide:more-vertical" asIcon size="xs" rounded="full" variant="ghost" />
-        </template>
-        <template #item="{ option }">
-          <div :class="['flex items-center']">
-            <Icon v-if="option?.icon" :icon="option?.icon" class="w-3.5 h-3.5 mr-2 opacity-70" />
-            {{ option?.label }}
-          </div>
         </template>
       </Dropdown>
     </div>
