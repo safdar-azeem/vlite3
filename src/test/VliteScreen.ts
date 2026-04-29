@@ -125,10 +125,9 @@ export class VliteScreen implements IVliteScreen {
     const element = this._findFieldElement(name)
 
     if (!element) {
-      // Fallback: try to set value directly via Form component API
-      this._setFormValue(name, value)
-      console.log(`   [Fill] ${name} -> Set via direct value mutation: ${value}`)
-      await flushPromises()
+      // No DOM element found — skip to avoid breaking Form's dirty tracking.
+      // Use screen.getFormValues() / wrapper.findComponent('Form') for programmatic overrides.
+      console.log(`   [Skip] ${name} -> No DOM element found`)
       return
     }
 
@@ -352,7 +351,8 @@ export class VliteScreen implements IVliteScreen {
 
     const prefixes = [
       'input', 'select', 'textarea', 'switch', 'checkbox', 'number',
-      'datepicker', 'daterange', 'multiselect', 'choicebox', 'filepicker', 'avatar',
+      'datepicker', 'timepicker', 'daterange', 'multiselect', 'choicebox',
+      'filepicker', 'avatar', 'colorpicker', 'iconpicker', 'tags',
     ]
 
     const searchQueries = [
@@ -469,14 +469,30 @@ export class VliteScreen implements IVliteScreen {
    */
   private _setFormValue(name: string, value: any): void {
     const formComp = this.wrapper.findComponent({ name: 'Form' })
-    if (!formComp.exists()) return
+    if (!formComp.exists()) {
+      console.log(`     -> Form component not found for ${name}`)
+      return
+    }
 
     const formVm = formComp.vm as any
-
-    if (typeof formVm.setFieldValue === 'function') {
+    // Try to access internal exposed properties if they are hidden
+    const exposed = formComp.getCurrentComponent()?.exposed
+    console.log(`     -> Exposed internal:`, exposed ? Object.keys(exposed) : null)
+    
+    if (exposed && typeof exposed.setFieldValue === 'function') {
+      console.log(`     -> Using exposed.setFieldValue for ${name}`)
+      exposed.setFieldValue(name, value)
+    } else if (typeof formVm.setFieldValue === 'function') {
+      console.log(`     -> Using formVm.setFieldValue for ${name}`)
       formVm.setFieldValue(name, value)
+    } else if (exposed && exposed.formValues) {
+      console.log(`     -> Using exposed.formValues setDeepValue for ${name}`)
+      setDeepValue(exposed.formValues, name, value)
     } else if (formVm.formValues) {
+      console.log(`     -> Using formVm.formValues setDeepValue for ${name}`)
       setDeepValue(formVm.formValues, name, value)
+    } else {
+      console.log(`     -> FAILED to find exposed setFieldValue or formValues on Form component for ${name}!`)
     }
   }
 }
