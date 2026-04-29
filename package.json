@@ -28,11 +28,6 @@
       "import": "./index.js",
       "require": "./index.js"
     },
-    "./test": {
-      "types": "./test/index.d.ts",
-      "import": "./test/index.js",
-      "require": "./test/index.js"
-    },
     "./style.css": "./style.css"
   },
   "dependencies": {
@@ -62,31 +57,20 @@
     "xlsx": "^0.18.5"
   },
   "peerDependencies": {
-    "@vue/test-utils": "^2.4.0",
-    "vitest": "^1.0.0 || ^2.0.0",
     "vue": "^3.5.24",
     "vue-router": "4"
   },
-  "peerDependenciesMeta": {
-    "@vue/test-utils": {
-      "optional": true
-    },
-    "vitest": {
-      "optional": true
-    }
-  },
+  "peerDependenciesMeta": {},
   "devDependencies": {
     "@types/jsbarcode": "^3.11.4",
     "@types/node": "^25.0.10",
     "@types/qrcode": "^1.5.6",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vitejs/plugin-vue-jsx": "^4.1.1",
-    "@vue/test-utils": "^2.4.8",
     "@vue/tsconfig": "^0.8.1",
     "typescript": "~5.9.3",
     "vite": "^7.2.4",
     "vite-plugin-dts": "^4.5.4",
-    "vitest": "^2.1.8",
     "vue": "^3.5.24",
     "vue-router": "^4.0.0",
     "vue-tsc": "^3.1.4"
