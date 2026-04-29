@@ -41,6 +41,26 @@ const dummyDictionary: Record<string, string> = {
   'vlite.copyButton.copy': 'Copiar (Translated)',
   'vlite.copyButton.copied': '¡Copiado! (Translated)',
 
+  // CategoryManager i18n
+  'vlite.categoryManager.emptyTitle': 'No se encontraron categorías (Translated)',
+  'vlite.categoryManager.emptyDescription': 'Comience creando su primera categoría. (Translated)',
+  'vlite.categoryManager.headerTitle': 'Categorías (Translated)',
+  'vlite.categoryManager.headerDescription': 'Administra tu estructura jerárquica. (Translated)',
+  'vlite.categoryManager.addCategory': 'Añadir Categoría (Translated)',
+  'vlite.categoryManager.createCategory': 'Crear Categoría (Translated)',
+  'vlite.categoryManager.newRootPlaceholder': 'Nueva categoría raíz... (Translated)',
+  'vlite.categoryManager.modalTitleAdd': 'Añadir Categoría (Translated)',
+  'vlite.categoryManager.modalTitleAddChild': 'Añadir Subcategoría (Translated)',
+  'vlite.categoryManager.modalTitleEdit': 'Editar Categoría (Translated)',
+  'vlite.categoryManager.modalSaveText': 'Guardar Detalles (Translated)',
+  'vlite.categoryManager.newSubcategoryPlaceholder': 'Nuevo título de subcategoría... (Translated)',
+  'vlite.categoryManager.categoryTitlePlaceholder': 'Título de la categoría... (Translated)',
+  'vlite.categoryManager.quickAddTooltip': 'Añadir Subcategoría Rápido (Translated)',
+  'vlite.categoryManager.advancedDetailsTooltip': 'Detalles Avanzados (Translated)',
+  'vlite.categoryManager.deleteTooltip': 'Eliminar (Translated)',
+  'vlite.categoryManager.saveTooltip': 'Guardar (Translated)',
+  'vlite.categoryManager.cancelTooltip': 'Cancelar (Translated)',
+
   // DataList / Empty
   'vlite.empty.title': 'No se encontraron datos (Translated)',
   'vlite.empty.description': 'No hay nada que mostrar aquí en este momento. (Translated)',
