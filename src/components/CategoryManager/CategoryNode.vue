@@ -161,7 +161,7 @@ const vFocus = {
                 'bg-transparent border-0 outline-none focus:ring-0 px-1 py-0.5 -ml-1 transition-colors w-full truncate cursor-text min-w-0 shadow-none caret-primary',
                 nodeTextClass,
               ]"
-              placeholder="Category title..."
+              :placeholder="ctx?.categoryTitlePlaceholderText.value || 'Category title...'"
               @change="ctx?.saveItem(item)"
               @keyup.enter="($event.target as HTMLInputElement).blur()"
               @click.stop />
@@ -176,21 +176,21 @@ const vFocus = {
             variant="ghost"
             size="xs"
             icon="lucide:plus"
-            title="Quick Add Subcategory"
+            :title="ctx?.quickAddTooltipText.value || 'Quick Add Subcategory'"
             class="h-7 w-7 px-0 text-muted-foreground hover:text-primary"
             @click="ctx?.startInline('add-child', item.id)" />
           <Button
             variant="ghost"
             size="xs"
             icon="lucide:settings"
-            title="Advanced Details"
+            :title="ctx?.advancedDetailsTooltipText.value || 'Advanced Details'"
             class="h-7 w-7 px-0 text-muted-foreground hover:text-primary"
             @click="ctx?.openModalForm('edit', item)" />
           <Button
             variant="ghost"
             size="xs"
             icon="lucide:trash-2"
-            title="Delete"
+            :title="ctx?.deleteTooltipText.value || 'Delete'"
             class="h-7 w-7 px-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
             @click="ctx?.deleteItem(item)" />
         </div>
@@ -230,7 +230,7 @@ const vFocus = {
             v-focus
             v-model="ctx.inlineState.value.title"
             class="flex-1 bg-transparent border-0 outline-none focus:ring-0 px-1 py-0.5 text-sm transition-colors w-full shadow-none caret-primary text-foreground placeholder:text-muted-foreground"
-            placeholder="New subcategory title..."
+            :placeholder="ctx?.newSubcategoryPlaceholderText.value || 'New subcategory title...'"
             @keyup.enter="ctx.saveInline()"
             @keyup.esc="ctx.cancelInline()" />
           <Button
@@ -238,14 +238,14 @@ const vFocus = {
             size="xs"
             icon="lucide:check"
             class="shrink-0 h-6 w-6 px-0"
-            title="Save"
+            :title="ctx?.saveTooltipText.value || 'Save'"
             @click="ctx.saveInline()" />
           <Button
             variant="ghost"
             size="xs"
             icon="lucide:x"
             class="shrink-0 h-6 w-6 px-0"
-            title="Cancel"
+            :title="ctx?.cancelTooltipText.value || 'Cancel'"
             @click="ctx.cancelInline()" />
         </div>
       </div>
