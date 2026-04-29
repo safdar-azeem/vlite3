@@ -228,6 +228,8 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
     :selectable="true"
     :searchable="false"
     :remote="false"
+    class-name="max-h-full! px-0! py-0!"
+    max-height="100%"
     :disabled="disabled || readonly">
     <template #trigger>
       <div
@@ -317,7 +319,7 @@ const badgeSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
         :selected="modelValue"
         :emptyMessage="emptyMessage"
         :searchEmptyMessage="searchEmptyMessage"
-        class="min-w-[300px]"
+        class="min-w-[250px] -mx-0.5 px-2 mt-0.5"
         :loading="loading || hydration.isHydrating.value"
         :hasMore="hasMore"
         :searchable="searchable"
