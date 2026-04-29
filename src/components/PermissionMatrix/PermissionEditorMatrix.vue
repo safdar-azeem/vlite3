@@ -89,7 +89,7 @@ function handleToggleMatrixGroup(group: PermissionMatrixGroup) {
     <p :class="textSize">No permissions match your filters.</p>
   </div>
 
-  <div v-else class="permission-matrix-wrapper" :style="customStyles">
+  <div v-else class="permission-matrix-wrapper scrollbar-thin always-scroll" :style="customStyles">
     <table class="custom-table">
       <thead :class="stickyHeader ? 'custom-sticky-header' : ''">
         <tr>
