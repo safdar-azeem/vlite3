@@ -312,11 +312,11 @@ const textScaleClass = computed(() => (resolvedLayout.value === 'vertical' ? 'sc
 
       <div
         v-if="displayText || $slots.default || props.description"
-        class="flex flex-col justify-center"
+        class="flex flex-col justify-center flex-1 w-full"
         :class="resolvedLayout === 'vertical' ? 'items-center text-center' : 'items-start text-left'">
-        <span :class="[textClass, textScaleClass]" class="leading-tight">
+        <div :class="[textClass, textScaleClass]" class="leading-tight w-full">
           <slot>{{ displayText }}</slot>
-        </span>
+        </div>
         <span v-if="props.description" class="text-[0.75em] font-normal opacity-70 mt-0.5 leading-tight">
           {{ props.description }}
         </span>
