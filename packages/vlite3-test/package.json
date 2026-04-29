@@ -7,6 +7,7 @@
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": "safdar-azeem",
+  "repository": "https://github.com/safdar-azeem/vlite3",
   "license": "MIT",
   "scripts": {
     "build": "vite build",
