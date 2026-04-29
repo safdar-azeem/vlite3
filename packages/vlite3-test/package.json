@@ -1,6 +1,6 @@
 {
   "name": "vlite3-test",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Testing SDK for vlite3 components",
   "type": "module",
   "main": "dist/index.js",
