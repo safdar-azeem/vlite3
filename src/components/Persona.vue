@@ -4,7 +4,16 @@ import Avatar from './Avatar.vue'
 import type { AvatarSize, AvatarRounded } from '@/types'
 
 export type PresenceType = 'online' | 'offline' | 'busy' | 'dnd' | 'away'
-export type PersonaLabelTheme = 'default' | 'primary' | 'secondary' | 'danger' | 'warning' | 'success' | 'info' | 'muted' | string
+export type PersonaLabelTheme =
+  | 'default'
+  | 'primary'
+  | 'secondary'
+  | 'danger'
+  | 'warning'
+  | 'success'
+  | 'info'
+  | 'muted'
+  | string
 
 interface Props {
   src?: string
@@ -40,7 +49,7 @@ const presenceColor = computed(() => {
       return 'bg-warning'
     case 'offline':
     default:
-      return 'bg-muted-foreground'
+      return 'bg-muted'
   }
 })
 
