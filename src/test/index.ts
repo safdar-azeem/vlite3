@@ -38,10 +38,12 @@ export { createDataFactory } from './createDataFactory'
 export { renderVlite } from './renderVlite'
 export { VliteScreen } from './VliteScreen'
 export { extractSchemaFields } from './extractSchemaFields'
+export { createFormTestSuite } from './createFormTestSuite'
 
 // ── Types ──
 export type {
   DataFactoryOptions,
   RenderVliteOptions,
   IVliteScreen,
+  FormTestSuiteOptions,
 } from './types'
