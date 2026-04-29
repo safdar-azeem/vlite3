@@ -20,6 +20,23 @@ Built-in features include drag-and-drop reordering at every tree level, accordio
 | `size`             | `'sm' \| 'md' \| 'lg'` | `'md'`                             | Size modifier applied to each tree node row.                                            |
 | `emptyTitle`       | `string`        | `'No Categories Found'`                    | Heading shown in the empty state.                                                       |
 | `emptyDescription` | `string`        | `'Get started by creating your first category.'` | Body text shown in the empty state.                                               |
+| `*I18n`            | `string`        | `undefined`                                | Every text element in the component can be customized or localized. See **Customization & i18n** section. |
+
+---
+
+### Customization & i18n
+
+Every string in the `CategoryManager` is customizable via props. You can pass raw strings (e.g. `addCategoryText="New Category"`) or i18n keys if you are using an i18n solution (e.g. `addCategoryTextI18n="myApp.newCategory"`).
+
+| Property Type       | Available Props (Append `I18n` for i18n keys)                                                                                                           |
+| :------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Empty State**     | `emptyTitle`, `emptyDescription`                                                                                                                        |
+| **Header**          | `headerTitle`, `headerDescription`, `addCategoryText`, `createCategoryText`                                                                             |
+| **Placeholders**    | `newRootPlaceholder`, `newSubcategoryPlaceholder`, `categoryTitlePlaceholder`                                                                           |
+| **Modal**           | `modalTitleAdd`, `modalTitleAddChild`, `modalTitleEdit`, `modalSaveText`                                                                                |
+| **Tooltips**        | `quickAddTooltip`, `advancedDetailsTooltip`, `deleteTooltip`, `saveTooltip`, `cancelTooltip`                                                            |
+
+By default, the component looks for internal global keys using the `$t` utility (e.g., `vlite.categoryManager.emptyTitle`).
 
 ---
 
