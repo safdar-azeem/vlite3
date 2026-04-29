@@ -544,17 +544,17 @@
 
 .dark .modal-body,
 .dark .sidepanel-body {
-  --color-white: #121212 !important;
-  --color-body: #121212 !important;
-  --color-mixture-1: #171919 !important;
+  --color-white: #171717 !important;
+  --color-body: #171717 !important;
+  --color-mixture-1: #1c1c1c !important;
   --color-mixture-2: #ffffff !important;
   --color-input: color-mix(in oklab, var(--color-mixture-1) 92%, var(--color-mixture-2));
 }
 
 .dark .tooltip-container {
-  --color-body: #121212 !important;
-  --color-white: #121212 !important;
-  --color-mixture-1: #171919 !important;
+  --color-body: #171717 !important;
+  --color-white: #171717 !important;
+  --color-mixture-1: #1c1c1c !important;
   --color-mixture-2: #ffffff !important;
   --tooltip-border: color-mix(in oklab, var(--color-mixture-1) 94%, var(--color-mixture-2)) !important;
 
