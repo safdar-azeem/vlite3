@@ -252,7 +252,7 @@ const displayDescription = computed(() =>
   is still rendered for click-outside handling but is fully transparent.
 */
 .v-sidepanel-overlay {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.412);
 }
 
 /* ── Panel open/close — opacity only, no movement ───────────────────────
