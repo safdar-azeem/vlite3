@@ -26,7 +26,6 @@ export default defineConfig({
     lib: {
       entry: {
         index: path.resolve(__dirname, 'src/index.ts'),
-        'test/index': path.resolve(__dirname, 'src/test/index.ts'),
       },
       name: 'vlite3',
       formats: ['es'],
