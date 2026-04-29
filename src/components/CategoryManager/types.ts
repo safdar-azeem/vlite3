@@ -38,6 +38,47 @@ export interface CategoryManagerProps {
   emptyDescription?: string
   /** Size modifier for the category nodes */
   size?: 'sm' | 'md' | 'lg'
+
+  // I18n Props
+  emptyTitleI18n?: string
+  emptyDescriptionI18n?: string
+
+  headerTitle?: string
+  headerTitleI18n?: string
+  headerDescription?: string
+  headerDescriptionI18n?: string
+
+  addCategoryText?: string
+  addCategoryTextI18n?: string
+  createCategoryText?: string
+  createCategoryTextI18n?: string
+
+  newRootPlaceholder?: string
+  newRootPlaceholderI18n?: string
+  newSubcategoryPlaceholder?: string
+  newSubcategoryPlaceholderI18n?: string
+  categoryTitlePlaceholder?: string
+  categoryTitlePlaceholderI18n?: string
+
+  modalTitleAdd?: string
+  modalTitleAddI18n?: string
+  modalTitleAddChild?: string
+  modalTitleAddChildI18n?: string
+  modalTitleEdit?: string
+  modalTitleEditI18n?: string
+  modalSaveText?: string
+  modalSaveTextI18n?: string
+
+  quickAddTooltip?: string
+  quickAddTooltipI18n?: string
+  advancedDetailsTooltip?: string
+  advancedDetailsTooltipI18n?: string
+  deleteTooltip?: string
+  deleteTooltipI18n?: string
+  saveTooltip?: string
+  saveTooltipI18n?: string
+  cancelTooltip?: string
+  cancelTooltipI18n?: string
 }
 
 export interface InlineState {
@@ -66,4 +107,13 @@ export interface CategoryManagerContext {
   deleteItem: (item: CategoryItem) => void
   readonly: ComputedRef<boolean>
   size: ComputedRef<'sm' | 'md' | 'lg'>
+
+  // Display texts for CategoryNode
+  newSubcategoryPlaceholderText: ComputedRef<string>
+  categoryTitlePlaceholderText: ComputedRef<string>
+  quickAddTooltipText: ComputedRef<string>
+  advancedDetailsTooltipText: ComputedRef<string>
+  deleteTooltipText: ComputedRef<string>
+  saveTooltipText: ComputedRef<string>
+  cancelTooltipText: ComputedRef<string>
 }
