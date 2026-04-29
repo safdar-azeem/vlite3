@@ -116,7 +116,7 @@ const txtFilter = computed(() => {
     v-model:isOpen="isOpen"
     :close-on-select="false"
     position="bottom-end"
-    maxHeight="410px"
+    maxHeight="400px"
     class-name="pb-0! always-scroll"
     class="w-auto">
     <template #trigger>
