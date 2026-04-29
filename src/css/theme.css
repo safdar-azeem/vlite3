@@ -240,6 +240,7 @@
 .dark .sidepanel-body,
 .dark .tooltip-container,
 .bg-card,
+.bg-muted,
 .theme-section,
 .light,
 :root {
@@ -428,8 +429,11 @@
 
 
   --color-secondary: color-mix(in oklab, var(--color-mixture-1) 88.5%, var(--color-mixture-2));
+  --color-accent: color-mix(in oklab,
+      var(--color-mixture-1, #ffffff) 94.5%,
+      var(--color-mixture-2, #000000));
   --color-muted: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 95%,
+      var(--color-mixture-1, #ffffff) 94%,
       var(--color-mixture-2, #000000));
   --color-destructive: #7f1d1d;
   --color-destructive-foreground: #fafafa;
@@ -569,20 +573,31 @@
 }
 
 .dark .bg-card {
-  --color-body: #121212 !important;
-  --color-white: #121212 !important;
+  --color-body: #141414 !important;
+  --color-white: #141414 !important;
   --color-mixture-1: #1b1b1b !important;
   --color-mixture-2: #ffffff !important;
-  background-color: #121212 !important;
-}
-
-.dark .bg-card .bg-body {
-  --color-mixture-1: #0e0e0e !important;
-  --color-mixture-2: #ffffff !important;
+  background-color: #141414 !important;
 }
 
 .dark .hover\:bg-card:hover {
   background-color: var(--color-gray-50);
+}
+
+.dark .bg-card .bg-card {
+  --color-body: #202020 !important;
+  --color-white: #202020 !important;
+  --color-mixture-1: #181818;
+  --color-mixture-2: #000000;
+  background-color: #202020 !important;
+}
+
+.dark .bg-card .bg-card .bg-card {
+  --color-body: #292929 !important;
+  --color-white: #292929 !important;
+  --color-mixture-1: #202020;
+  --color-mixture-2: #000000;
+  background-color: #292929 !important;
 }
 
 
@@ -611,21 +626,6 @@
   background-color: #EEE !important;
 }
 
-.dark .bg-card .bg-card {
-  --color-body: #171717 !important;
-  --color-white: #171717 !important;
-  --color-mixture-1: #181818;
-  --color-mixture-2: #000000;
-  background-color: #171717 !important;
-}
-
-.dark .bg-card .bg-card .bg-card {
-  --color-body: #1A1A1A !important;
-  --color-white: #1A1A1A !important;
-  --color-mixture-1: #171717;
-  --color-mixture-2: #000000;
-  background-color: #1A1A1A !important;
-}
 
 .shadow-sm {
   box-shadow: var(--shadow-sm) !important;
