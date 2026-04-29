@@ -123,10 +123,6 @@ const filterType = ref<'dropdown' | 'sidebar'>('dropdown')
         :skip-quick-filter-views="['list']"
         :filter-schema="[
           { name: 'user', type: 'text', label: 'User Name' },
-          { name: 'user', type: 'text', label: 'User Name' },
-          { name: 'user', type: 'text', label: 'User Name' },
-          { name: 'user', type: 'text', label: 'User Name' },
-          { name: 'user', type: 'text', label: 'User Name' },
           {
             name: 'userType',
             label: 'User Type',
