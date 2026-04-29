@@ -42,7 +42,13 @@ const displayDescription = computed(() =>
       option.class || '',
     ]"
     :data-disabled="option.disabled ? true : undefined"
-    :data-testid="$attrs['data-testid'] || (option.value ? `dropdown-item-${option.value}` : `dropdown-item-${option.label}`).toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')"
+    :data-testid="
+      $attrs['data-testid'] ||
+      (option.value ? `dropdown-item-${option.value}` : `dropdown-item-${option.label}`)
+        .toString()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+    "
     @click="emit('click', option)"
     @keydown.enter.prevent="emit('click', option)"
     @mouseenter="$emit('mouseenter', index ?? -1)">
@@ -51,7 +57,7 @@ const displayDescription = computed(() =>
         v-if="option.icon || option.emoji"
         :icon="option.icon"
         :emoji="option.emoji"
-        class="mr-2 h-4 w-4 shrink-0 mt-0.5" />
+        class="mr-2.5 h-4 w-4 shrink-0 mt-0.5" />
       <div class="flex flex-col flex-1 min-w-0">
         <div class="flex items-center justify-between gap-2">
           <span class="truncate font-medium">{{ displayLabel }}</span>
