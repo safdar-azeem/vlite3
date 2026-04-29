@@ -257,7 +257,7 @@ const displayDescription = computed(() =>
 
 <style scoped>
 .v-modal-overlay {
-  background-color: rgba(0, 0, 0, 0.32);
+  background-color: rgba(0, 0, 0, 0.52);
 }
 
 .v-modal-backdrop {
