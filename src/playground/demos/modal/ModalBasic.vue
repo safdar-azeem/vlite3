@@ -19,7 +19,7 @@ const showModal = ref(false)
       max-width="max-w-2xl">
       <div class="space-y-5 py-2">
         <!-- Avatar row -->
-        <div class="flex items-center gap-4 p-4 rounded-lg bg-muted/40 border border-border/40">
+        <div class="flex items-center gap-4 p-4 rounded-lg bg-card border border-border/40">
           <div
             class="h-16 w-16 rounded-full bg-primary/15 flex items-center justify-center text-primary font-bold text-xl shrink-0">
             SA
