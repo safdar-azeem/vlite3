@@ -57,3 +57,36 @@ export interface IVliteScreen {
   // ── Utilities ──
   flushAll(delayMs?: number): Promise<void>
 }
+
+// ─── Test Suite Boilerplate ────────────────────────────────────────────────────
+
+export interface FormTestSuiteOptions {
+  /** The Vue component to test */
+  component: any
+  /** The vlite3 schema that drives the form */
+  schema: IForm[] | IForm[][]
+  /** Global mount options (plugins, stubs, props, mocks) */
+  globalOptions?: Record<string, any>
+  /** Set to true for forms that only support update (no standalone create) */
+  updateOnly?: boolean
+  /** If provided, the engine will run an UPDATE test with this initial data */
+  updateData?: any | (() => Promise<any> | any)
+  /** Override specific fields in the auto-generated mock data */
+  overrides?: Record<string, any>
+  /** Setup function to run once before the test suite starts (e.g. for authentication) */
+  setupSuite?: () => Promise<void> | void
+  /**
+   * Network interception configuration to capture and validate API calls.
+   * By default, it intercepts GraphQL mutations and validates them.
+   */
+  network?: {
+    /** Type of API to intercept (default: 'graphql') */
+    type?: 'graphql' | 'rest'
+    /** Expected endpoint substring to filter requests (e.g. '/api' or '/graphql') */
+    endpoint?: string
+    /** Custom request matcher to determine if a fetch call is the expected submission */
+    matchRequest?: (url: string, init: any, parsedBody?: any) => boolean
+    /** Custom validation function for the captured request and response */
+    validate?: (request: any, response: any) => void
+  }
+}
