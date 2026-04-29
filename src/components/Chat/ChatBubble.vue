@@ -105,7 +105,7 @@ const cancelPendingDelete = () => {
           :class="[
             isSender
               ? 'bg-primary text-primary-foreground rounded-br-sm'
-              : 'bg-muted text-foreground rounded-bl-sm',
+              : 'bg-muted! text-foreground rounded-bl-sm',
           ]">
           <div
             v-if="showUserInfo && message.senderName && !isSender"
