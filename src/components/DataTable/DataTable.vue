@@ -344,14 +344,13 @@ const txtCancelBtn = computed(() => {
 
 <template>
   <div class="space-y-6.5">
-
     <div :class="containerClass">
       <div class="overflow-x-auto w-full">
         <table :class="tableClass" class="data-table">
           <thead
             :class="[
               '[&_tr]:border-b [&_tr]:border-border',
-              headerVariant === 'minimal' ? 'bg-transparent' : 'bg-muted',
+              headerVariant === 'minimal' ? 'bg-transparent' : 'bg-accent',
               variant === 'raised'
                 ? '[&_th:first-child]:rounded-tl-lg [&_th:last-child]:rounded-tr-lg'
                 : '',
@@ -380,10 +379,7 @@ const txtCancelBtn = computed(() => {
                 :table-sortable="sortable"
                 :cell-bordered="cellBordered"
                 @sort="handleSort"
-                :class="[
-                  cellBordered ? '' : 'last:pr-5!',
-                  getColumnClass(header)
-                ]"
+                :class="[cellBordered ? '' : 'last:pr-5!', getColumnClass(header)]"
                 :style="getColumnStyle(header)" />
             </tr>
           </thead>
@@ -409,7 +405,7 @@ const txtCancelBtn = computed(() => {
                   class="align-middle"
                   :class="[
                     header.hideOnMobile ? 'hidden md:table-cell' : '',
-                    cellBordered ? 'px-5! py-3!' : 'p-5! last:pr-6!'
+                    cellBordered ? 'px-5! py-3!' : 'p-5! last:pr-6!',
                   ]">
                   <div
                     class="rounded-md bg-muted/50 animate-pulse h-4"
