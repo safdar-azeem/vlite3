@@ -422,8 +422,8 @@ const isSeparator = (item: ListItem): item is DateSeparator =>
       role="log"
       aria-live="polite"
       aria-label="Chat messages"
-      style="will-change: transform; contain: layout style; overflow-anchor: auto;">
-      <div ref="observerTargetRef" class="h-1 w-full shrink-0" style="overflow-anchor: none;"></div>
+      style="will-change: transform; contain: layout style; overflow-anchor: auto">
+      <div ref="observerTargetRef" class="h-1 w-full shrink-0" style="overflow-anchor: none"></div>
 
       <div
         v-if="isLoadingMore"
