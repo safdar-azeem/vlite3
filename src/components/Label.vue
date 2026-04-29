@@ -16,10 +16,10 @@ const props = withDefaults(defineProps<LabelProps>(), {
 
 const classes = computed(() => {
   const sizeClasses: Record<LabelSize, string> = {
-    xs: '-text-fs-3.5',
-    sm: '-text-fs-3',
-    md: '-text-fs-2',
-    lg: 'text-base',
+    xs: '-text-fs-3.5!',
+    sm: '-text-fs-3!',
+    md: '-text-fs-2!',
+    lg: 'text-base!',
   }
 
   return [
