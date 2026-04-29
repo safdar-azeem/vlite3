@@ -419,6 +419,7 @@ defineExpose({
   resetForm,
   setFieldError,
   clearErrors,
+  setFieldValue: handleFieldChange,
 })
 const handleCancel = () => {
   emit('onCancel')
