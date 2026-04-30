@@ -138,7 +138,7 @@ const containerClass = computed(() => {
     'group relative flex items-center min-w-[120px] max-w-[240px] h-9 px-3 border-r border-border select-none cursor-pointer transition-all duration-200 ease-out',
     props.itemClass,
     props.isActive
-      ? `bg-muted text-foreground ring-1 ring-border ring-b-0 z-10 ${props.activeItemClass}`
+      ? `bg-secondary text-foreground ring-1 ring-border ring-b-0 z-10 ${props.activeItemClass}`
       : `text-muted-foreground hover:bg-accent/50 ${props.inactiveItemClass}`,
     props.isEditing ? 'cursor-text' : '',
   ]
