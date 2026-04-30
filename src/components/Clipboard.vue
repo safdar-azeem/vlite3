@@ -84,5 +84,6 @@ const handleCopy = async () => {
     :text="currentText"
     :as-icon="asIcon"
     @click="handleCopy">
+    <slot v-if="!asIcon && !currentText" name="default" :copied="copied"></slot>
   </Button>
 </template>
