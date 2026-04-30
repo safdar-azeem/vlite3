@@ -311,10 +311,13 @@ const textScaleClass = computed(() => (resolvedLayout.value === 'vertical' ? 'sc
         :class="[iconClass, iconClasses, isOnlyIcon ? 'mx-auto' : '']" />
 
       <div
-        v-if="displayText || $slots.default || props.description"
-        class="flex flex-col justify-center flex-1 w-full"
-        :class="resolvedLayout === 'vertical' ? 'items-center text-center' : 'items-start text-left'">
-        <div :class="[textClass, textScaleClass]" class="leading-tight w-full">
+        v-if="!isOnlyIcon && (displayText || $slots.default || props.description)"
+        class="flex flex-col justify-center"
+        :class="[
+          resolvedLayout === 'vertical' ? 'items-center text-center' : (props.description ? 'items-start text-left' : 'items-center text-center'),
+          (!icon && !iconRight && !loading) ? 'flex-1 w-full' : ''
+        ]">
+        <div :class="[textClass, textScaleClass]" class="leading-tight w-full [&>:where(svg)]:mx-auto [&>:where(img)]:mx-auto">
           <slot>{{ displayText }}</slot>
         </div>
         <span v-if="props.description" class="text-[0.75em] font-normal opacity-70 mt-0.5 leading-tight">
