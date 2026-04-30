@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useSlots, useAttrs } from 'vue'
+import { computed, useSlots, useAttrs, Comment, Text, Fragment } from 'vue'
 import Icon from './Icon.vue'
 import { vRipple } from '../directives/vRipple'
 import type { ButtonVariant, ButtonSize, ButtonRounded, ButtonProps } from '@/types'
@@ -75,8 +75,20 @@ const tileCircleSizeClasses = computed(() => {
 const displayText = computed(() => (props.textI18n ? $t(props.textI18n) : props.text))
 
 const slots = useSlots()
+
+const hasSlotContent = computed(() => {
+  if (!slots.default) return false
+  const content = slots.default()
+  return content.some((vnode) => {
+    if (vnode.type === Comment) return false
+    if (vnode.type === Fragment && Array.isArray(vnode.children) && vnode.children.length === 0) return false
+    if (vnode.type === Text && typeof vnode.children === 'string' && vnode.children.trim() === '') return false
+    return true
+  })
+})
+
 const isOnlyIcon = computed(
-  () => props?.asIcon || (props.icon && !displayText.value && !slots.default)
+  () => props?.asIcon || (props.icon && !displayText.value && !hasSlotContent.value)
 )
 
 const isImageIcon = computed(() => {
@@ -280,11 +292,11 @@ const textScaleClass = computed(() => (resolvedLayout.value === 'vertical' ? 'sc
       </span>
 
       <span
-        v-if="displayText || $slots.default || props.description"
+        v-if="displayText || hasSlotContent || props.description"
         class="flex flex-col items-center max-w-full"
         :class="textClass">
         <span
-          v-if="displayText || $slots.default"
+          v-if="displayText || hasSlotContent"
           class="text-xs font-medium leading-tight truncate max-w-full">
           <slot>{{ displayText }}</slot>
         </span>
@@ -311,7 +323,7 @@ const textScaleClass = computed(() => (resolvedLayout.value === 'vertical' ? 'sc
         :class="[iconClass, iconClasses, isOnlyIcon ? 'mx-auto' : '']" />
 
       <div
-        v-if="!isOnlyIcon && (displayText || $slots.default || props.description)"
+        v-if="displayText || hasSlotContent || props.description"
         class="flex flex-col justify-center"
         :class="[
           resolvedLayout === 'vertical' ? 'items-center text-center' : (props.description ? 'items-start text-left' : 'items-center text-center'),
