@@ -62,6 +62,7 @@ import HeatmapDemo from '../playground/demos/HeatmapDemo.vue'
 import FileTreeDemo from '../playground/demos/FileTreeDemo.vue'
 import DataTableDemo from '../playground/demos/DataTableDemo.vue'
 import CarouselDemo from '../playground/demos/CarouselDemo.vue'
+import FadeOverlayDemo from '../playground/demos/FadeOverlayDemo.vue'
 import KanbanDemo from '../playground/demos/KanbanDemo.vue'
 import CategoryManagerDemo from '../playground/demos/CategoryManagerDemo.vue'
 import DataListDemo from '../playground/demos/DataListDemo.vue'
@@ -146,6 +147,7 @@ const routes = [
       { path: 'datalist', component: DataListDemo },
       { path: 'screen', component: ScreenDemo },
       { path: 'carousel', component: CarouselDemo },
+      { path: 'fadeoverlay', component: FadeOverlayDemo },
       { path: 'kanban', component: KanbanDemo },
       { path: 'categorymanager', component: CategoryManagerDemo },
       { path: 'barcode', component: BarcodeDemo },
