@@ -252,7 +252,7 @@
       var(--color-mixture-2, #000000));
 
   --color-gray-50: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 98.2%,
+      var(--color-mixture-1, #ffffff) 98%,
       var(--color-mixture-2, #000000));
 
   --color-gray-100: color-mix(in oklab,
@@ -264,7 +264,7 @@
       var(--color-mixture-2, #000000));
 
   --color-gray-200: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 94.5%,
+      var(--color-mixture-1, #ffffff) 94%,
       var(--color-mixture-2, #000000));
 
   --color-gray-250: color-mix(in oklab,
@@ -314,8 +314,8 @@
   --color-background: var(--color-body);
   --color-foreground: var(--color-gray-850);
 
-  --color-border: color-mix(in oklab, var(--color-mixture-1) 90%, var(--color-mixture-2));
-  --color-input: color-mix(in oklab, var(--color-mixture-1) 88%, var(--color-mixture-2));
+  --color-border: color-mix(in oklab, var(--color-mixture-1) 88%, var(--color-mixture-2));
+  --color-input: color-mix(in oklab, var(--color-mixture-1) 87%, var(--color-mixture-2));
 
   --color-scrollbar: color-mix(in oklab, var(--color-mixture-1) 80%, var(--color-mixture-2));
   --color-scrollbar-hover: color-mix(in oklab, var(--color-mixture-1) 75%, var(--color-mixture-2));
@@ -408,19 +408,19 @@
       var(--color-mixture-2, #000000));
 
   --color-gray-100: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 95.5%,
+      var(--color-mixture-1, #ffffff) 95%,
       var(--color-mixture-2, #000000));
 
   --color-gray-150: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 91.5%,
+      var(--color-mixture-1, #ffffff) 91%,
       var(--color-mixture-2, #000000));
 
   --color-gray-200: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 87.5%,
+      var(--color-mixture-1, #ffffff) 87%,
       var(--color-mixture-2, #000000));
 
   --color-gray-250: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 83.5%,
+      var(--color-mixture-1, #ffffff) 83%,
       var(--color-mixture-2, #000000));
 
   --color-gray-300: color-mix(in oklab,
@@ -428,18 +428,18 @@
       var(--color-mixture-2, #000000));
 
 
-  --color-secondary: color-mix(in oklab, var(--color-mixture-1) 88.5%, var(--color-mixture-2));
+  --color-secondary: color-mix(in oklab, var(--color-mixture-1) 88%, var(--color-mixture-2));
   --color-accent: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 94.5%,
+      var(--color-mixture-1, #ffffff) 94%,
       var(--color-mixture-2, #000000));
   --color-muted: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 94%,
+      var(--color-mixture-1, #ffffff) 93%,
       var(--color-mixture-2, #000000));
   --color-destructive: #7f1d1d;
   --color-destructive-foreground: #fafafa;
 
-  --color-border: color-mix(in oklab, var(--color-mixture-1) 88%, var(--color-mixture-2));
-  --color-input: color-mix(in oklab, var(--color-mixture-1) 88%, var(--color-mixture-2));
+  --color-border: color-mix(in oklab, var(--color-mixture-1) 86%, var(--color-mixture-2));
+  --color-input: color-mix(in oklab, var(--color-mixture-1) 85%, var(--color-mixture-2));
 
   /* Charts (Dark) */
   --color-chart-1: #818cf8;
