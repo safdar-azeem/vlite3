@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import Button from '@/components/Button.vue'
+import Icon from '@/components/Icon.vue'
 import BackButton from '@/components/BackButton.vue'
 import DemoSection from '../DemoSection.vue'
 import sourceCode from './ButtonDemo.vue?raw'
@@ -123,6 +124,35 @@ const simulateLoad = () => {
           variant="outline"
           icon="https://cdn.prod.website-files.com/666ad77562dfabab1eb27f63/6747850440da96e6bc2d78b3_friso_ai3.webp"
           text="Open AI" />
+      </div>
+    </DemoSection>
+
+    <!-- ── Slot with Icons ────────────────────────────────────── -->
+    <DemoSection title="Slot with Icons" :code="sourceCode">
+      <div class="flex flex-col items-center gap-4 w-full">
+        <p class="text-sm text-center text-muted-foreground max-w-[480px]">
+          Place text and icons directly in the slot — they align automatically on a single line with
+          proper spacing. No manual classes needed.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <Button size="md">
+            Start Building
+            <Icon icon="lucide:chevron-right" class="w-4 h-4" />
+          </Button>
+          <Button size="md" variant="outline">
+            <Icon icon="lucide:github" class="w-4 h-4" />
+            View on GitHub
+          </Button>
+          <Button size="md" variant="secondary">
+            <Icon icon="lucide:download" class="w-4 h-4" />
+            Download
+            <Icon icon="lucide:chevron-down" class="w-4 h-4" />
+          </Button>
+          <Button size="lg" variant="success">
+            <Icon icon="lucide:check" class="w-4 h-4" />
+            Confirm Order
+          </Button>
+        </div>
       </div>
     </DemoSection>
 
