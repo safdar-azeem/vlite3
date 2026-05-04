@@ -84,5 +84,23 @@ import sourceCode from './FadeOverlayDemo.vue?raw'
         />
       </div>
     </DemoSection>
+
+    <DemoSection title="Blurred Glassmorphism" description="Set blur to true (or a px value) to create a premium frosted-glass fade effect." :code="sourceCode">
+      <div class="relative w-full max-w-sm h-48 bg-card rounded-md overflow-hidden border border-border flex items-center p-4">
+        <!-- Background Pattern to showcase blur -->
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--color-primary)_1px,_transparent_1px)] bg-[length:16px_16px] opacity-20"></div>
+        
+        <p class="text-sm font-medium relative z-0">
+          Scroll down to see the blur... <br/><br/>
+          This text and the dotted background will be smoothly blurred out at the bottom. This effect uses a mask-image combined with a backdrop-filter to ensure the blur doesn't have a harsh edge!
+        </p>
+
+        <FadeOverlay 
+          direction="bottom" 
+          coverage="70%" 
+          blur="8px"
+        />
+      </div>
+    </DemoSection>
   </div>
 </template>
