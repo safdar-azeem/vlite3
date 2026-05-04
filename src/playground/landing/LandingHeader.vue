@@ -59,10 +59,7 @@ const navItems = [
           </a>
         </div>
 
-        <Button
-          size="md"
-          class="hidden sm:flex rounded-full px-6 font-bold tracking-wide bg-foreground text-background hover:bg-primary hover:text-primary-foreground group"
-          @click="router.push('/components/getting-started')">
+        <Button size="md" @click="router.push('/components/getting-started')">
           Start Building
           <Icon
             icon="lucide:chevron-right"
