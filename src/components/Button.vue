@@ -329,7 +329,7 @@ const textScaleClass = computed(() => (resolvedLayout.value === 'vertical' ? 'sc
           resolvedLayout === 'vertical' ? 'items-center text-center' : (props.description ? 'items-start text-left' : 'items-center text-center'),
           (!icon && !iconRight && !loading) ? 'flex-1 w-full' : ''
         ]">
-        <div :class="[textClass, textScaleClass]" class="leading-tight w-full [&>:where(svg)]:mx-auto [&>:where(img)]:mx-auto">
+        <div :class="[textClass, textScaleClass]" class="inline-flex items-center gap-1.5 leading-tight [&>:where(svg)]:mx-auto [&>:where(img)]:mx-auto">
           <slot>{{ displayText }}</slot>
         </div>
         <span v-if="props.description" class="text-[0.75em] font-normal opacity-70 mt-0.5 leading-tight">
