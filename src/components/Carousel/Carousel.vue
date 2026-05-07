@@ -15,12 +15,12 @@ const props = withDefaults(defineProps<CarouselProps>(), {
   autoPlayInterval: 3000,
   itemsToShow: 1,
   gap: 0,
-  speed: 300,
+  speed: 500,
   easing: 'ease',
   mousewheel: true,
   loop: false,
   currentItem: 0,
-  bufferSize: 5,
+  bufferSize: 10,
   maxDomElements: 10,
   updateKey: undefined,
 })
@@ -66,7 +66,10 @@ defineExpose({
   <div class="carousel-wrapper">
     <VueCarouselLite
       ref="carouselRef"
-      v-bind="props as any"
+      v-bind="props"
+      :wheel-options="{
+        debounceTime: 0,
+      }"
       style="height: 100%; width: 100%"
       @slide-change="(index) => emit('slide-change', index)">
       <template v-for="(_, slot) in $slots" v-slot:[slot]="scope">
