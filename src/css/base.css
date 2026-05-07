@@ -271,7 +271,8 @@
 
 
 .dark .dropdown-secondary {
-  --color-white: #1f1f1f !important;
-  --color-mixture-1: #272727 !important;
+  --color-white: #202020 !important;
+  --color-body: #202020 !important;
+  --color-mixture-1: #232222 !important;
   --color-mixture-2: #ffffff !important;
 }
