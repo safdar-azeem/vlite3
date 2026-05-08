@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<CarouselProps>(), {
   autoPlayInterval: 3000,
   itemsToShow: 1,
   gap: 0,
-  speed: 300,
+  speed: 700,
   easing: 'ease',
   mousewheel: true,
   loop: false,
