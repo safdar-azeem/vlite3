@@ -51,7 +51,7 @@
     "v-event-calendar": "^0.0.10",
     "v-file-preview": "^0.1.3",
     "v-tooltip-lite": "^0.2.8",
-    "vue-carousel-lite": "^0.2.7",
+    "vue-carousel-lite": "^0.2.8",
     "vue-draggable-plus": "^0.5.3",
     "vue3-google-signin": "^2.1.1",
     "xlsx": "^0.18.5"
