@@ -1,7 +1,9 @@
+import { PaginationType } from 'vue-carousel-lite'
+
 export interface CarouselProps {
   data?: any[]
-  pagination?: string | string[] | boolean
-  paginationSize?: 'sm' | 'md' | 'lg'
+  pagination?: PaginationType | PaginationType[]
+  paginationSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   paginationPosition?: string | string[]
   paginationVisibility?: string | string[]
   paginationHoverInitialTimeout?: number
