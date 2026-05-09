@@ -15,6 +15,8 @@ const hOpts = ref<Record<string, unknown>>({
   gap: 16,
   pagination: 'dots',
   paginationPosition: 'bottom-center',
+  paginationSize: 'sm',
+  paginationVisibility: 'always',
   autoPlay: false,
   autoPlayInterval: 3000,
   loop: true,
@@ -49,6 +51,27 @@ const hControls: ControlItem[] = [
       { label: 'Bottom', value: 'bottom' },
     ],
   },
+  {
+    key: 'paginationSize',
+    label: 'Size',
+    type: 'segment',
+    options: [
+      { label: 'XS', value: 'xs' },
+      { label: 'SM', value: 'sm' },
+      { label: 'MD', value: 'md' },
+      { label: 'LG', value: 'lg' },
+      { label: 'XL', value: 'xl' },
+    ],
+  },
+  {
+    key: 'paginationVisibility',
+    label: 'Visibility',
+    type: 'segment',
+    options: [
+      { label: 'Always', value: 'always' },
+      { label: 'Hover', value: 'hover' },
+    ],
+  },
   { key: 'itemsToShow', label: 'Items to Show', type: 'slider', min: 1, max: 4, step: 1 },
   { key: 'gap', label: 'Gap (px)', type: 'slider', min: 0, max: 48, step: 4 },
   { key: 'autoPlay', label: 'Autoplay', type: 'toggle' },
@@ -70,7 +93,9 @@ const hControls: ControlItem[] = [
           :data="horizontalBanners"
           direction="horizontal"
           :pagination="(hOpts.pagination === 'none' ? false : hOpts.pagination) as any"
-          :pagination-position="hOpts.paginationPosition as string"
+          :pagination-position="hOpts.paginationPosition as any"
+          :pagination-size="hOpts.paginationSize as any"
+          :pagination-visibility="hOpts.paginationVisibility as any"
           :items-to-show="hOpts.itemsToShow as number"
           :gap="hOpts.gap as number"
           :auto-play="hOpts.autoPlay as boolean"
