@@ -20,6 +20,6 @@ const titleText = computed(() => {
     icon="lucide:plus"
     :title="titleText"
     rounded="none"
-    class="h-full!"
+    class="h-full! hover:bg-gray-250!"
     @click="emit('click', $event)" />
 </template>
