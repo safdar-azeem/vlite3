@@ -404,36 +404,36 @@
   --color-mixture-2: #ffffff !important;
 
   --color-gray-50: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 97%,
+      var(--color-mixture-1, #ffffff) 96.5%,
       var(--color-mixture-2, #000000));
 
   --color-gray-100: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 95%,
+      var(--color-mixture-1, #ffffff) 94.5%,
       var(--color-mixture-2, #000000));
 
   --color-gray-150: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 91%,
+      var(--color-mixture-1, #ffffff) 90.5%,
       var(--color-mixture-2, #000000));
 
   --color-gray-200: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 87%,
+      var(--color-mixture-1, #ffffff) 86.5%,
       var(--color-mixture-2, #000000));
 
   --color-gray-250: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 83%,
+      var(--color-mixture-1, #ffffff) 82.5%,
       var(--color-mixture-2, #000000));
 
   --color-gray-300: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 80%,
+      var(--color-mixture-1, #ffffff) 79.5%,
       var(--color-mixture-2, #000000));
 
 
-  --color-secondary: color-mix(in oklab, var(--color-mixture-1) 88%, var(--color-mixture-2));
+  --color-secondary: color-mix(in oklab, var(--color-mixture-1) 87.5%, var(--color-mixture-2));
   --color-accent: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 94%,
+      var(--color-mixture-1, #ffffff) 93.5%,
       var(--color-mixture-2, #000000));
   --color-muted: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 93%,
+      var(--color-mixture-1, #ffffff) 92.5%,
       var(--color-mixture-2, #000000));
   --color-destructive: #7f1d1d;
   --color-destructive-foreground: #fafafa;
@@ -465,7 +465,7 @@
   /* Semantics - Dark Mode High Contrast */
 
   /* Danger */
-  --color-danger-light: #311716;
+  --color-danger-light: #391413;
   --color-danger-fg-light: #FCFCFC;
   --color-danger: #7F1D1D;
   --color-danger-fg: #ffffff;
