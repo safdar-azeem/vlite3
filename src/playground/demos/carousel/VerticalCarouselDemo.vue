@@ -40,6 +40,8 @@ const vOpts = ref<Record<string, unknown>>({
   gap: 16,
   pagination: 'none',
   paginationPosition: 'center-right',
+  paginationSize: 'sm',
+  paginationVisibility: 'always',
   autoPlay: false,
   autoPlayInterval: 3000,
   loop: false,
@@ -64,6 +66,27 @@ const vControls: ControlItem[] = [
       { label: 'Center Right', value: 'center-right' },
       { label: 'Bottom', value: 'bottom' }
     ] },
+  {
+    key: 'paginationSize',
+    label: 'Size',
+    type: 'segment',
+    options: [
+      { label: 'XS', value: 'xs' },
+      { label: 'SM', value: 'sm' },
+      { label: 'MD', value: 'md' },
+      { label: 'LG', value: 'lg' },
+      { label: 'XL', value: 'xl' },
+    ],
+  },
+  {
+    key: 'paginationVisibility',
+    label: 'Visibility',
+    type: 'segment',
+    options: [
+      { label: 'Always', value: 'always' },
+      { label: 'Hover', value: 'hover' },
+    ],
+  },
   { key: 'itemsToShow', label: 'Items to Show', type: 'slider', min: 1, max: 3, step: 1 },
   { key: 'gap', label: 'Gap (px)', type: 'slider', min: 0, max: 48, step: 4 },
   { key: 'autoPlay', label: 'Autoplay', type: 'toggle' },
@@ -86,7 +109,9 @@ const vControls: ControlItem[] = [
             :data="verticalReels"
             direction="vertical"
             :pagination="(vOpts.pagination === 'none' ? false : vOpts.pagination) as any"
-            :pagination-position="vOpts.paginationPosition as string"
+            :pagination-position="vOpts.paginationPosition as any"
+            :pagination-size="vOpts.paginationSize as any"
+            :pagination-visibility="vOpts.paginationVisibility as any"
             :items-to-show="vOpts.itemsToShow as number"
             :gap="vOpts.gap as number"
             :auto-play="vOpts.autoPlay as boolean"
