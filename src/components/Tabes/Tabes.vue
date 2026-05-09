@@ -197,8 +197,7 @@ const markerClasses = computed(() => {
   const transitionClass = isInitialized.value
     ? 'transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)]'
     : ''
-  const base =
-    `absolute left-0 top-0 z-0 pointer-events-none ${transitionClass}`
+  const base = `absolute left-0 top-0 z-0 pointer-events-none ${transitionClass}`
 
   if (props.variant === 'line') {
     return `${base} !h-[2px] !top-auto bottom-0`
@@ -209,7 +208,7 @@ const markerClasses = computed(() => {
 
 const getMarkerColorClass = () => {
   const variantActiveStyles: Record<TabesVariant, string> = {
-    surface: 'bg-background',
+    surface: 'bg-[#ffff] dark:bg-[#0B0B0B]',
     primary: 'bg-primary',
     secondary: 'bg-secondary-foreground',
     danger: 'bg-danger',
@@ -242,7 +241,12 @@ const getComponentProps = (opt: TabesOption) => {
     (i.e. the consumer passes class="w-full"). This avoids any JS measurement
     and works purely with CSS, keeping the component lightweight.
   -->
-  <div ref="containerRef" :class="containerClasses" role="tablist" data-tabes>
+  <div
+    ref="containerRef"
+    :class="containerClasses"
+    role="tablist"
+    data-tabes
+    class="tabes-container">
     <div
       v-if="modelValue !== undefined && !wrap"
       :class="[markerClasses, getMarkerColorClass()]"
