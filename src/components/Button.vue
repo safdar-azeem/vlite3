@@ -81,8 +81,10 @@ const hasSlotContent = computed(() => {
   const content = slots.default()
   return content.some((vnode) => {
     if (vnode.type === Comment) return false
-    if (vnode.type === Fragment && Array.isArray(vnode.children) && vnode.children.length === 0) return false
-    if (vnode.type === Text && typeof vnode.children === 'string' && vnode.children.trim() === '') return false
+    if (vnode.type === Fragment && Array.isArray(vnode.children) && vnode.children.length === 0)
+      return false
+    if (vnode.type === Text && typeof vnode.children === 'string' && vnode.children.trim() === '')
+      return false
     return true
   })
 })
@@ -277,7 +279,7 @@ const textScaleClass = computed(() => (resolvedLayout.value === 'vertical' ? 'sc
         :class="[
           !isImageIcon ? 'rounded-full' : '',
           !isImageIcon ? tileCircleClasses : '',
-          !isImageIcon ? tileCircleSizeClasses : ''
+          !isImageIcon ? tileCircleSizeClasses : '',
         ]">
         <Icon
           v-if="loading"
@@ -326,13 +328,21 @@ const textScaleClass = computed(() => (resolvedLayout.value === 'vertical' ? 'sc
         v-if="displayText || hasSlotContent || props.description"
         class="flex flex-col justify-center"
         :class="[
-          resolvedLayout === 'vertical' ? 'items-center text-center' : (props.description ? 'items-start text-left' : 'items-center text-center'),
-          (!icon && !iconRight && !loading) ? 'flex-1 w-full' : ''
+          resolvedLayout === 'vertical'
+            ? 'items-center text-center'
+            : props.description
+              ? 'items-start text-left'
+              : 'items-center text-center',
+          !icon && !iconRight && !loading ? 'flex-1 w-full' : '',
         ]">
-        <div :class="[textClass, textScaleClass]" class="inline-flex items-center gap-1.5 leading-tight [&>:where(svg)]:mx-auto [&>:where(img)]:mx-auto">
+        <div
+          :class="[textClass, textScaleClass]"
+          class="inline-flex items-center gap-1.5 w-full leading-tight [&>:where(svg)]:mx-auto [&>:where(img)]:mx-auto">
           <slot>{{ displayText }}</slot>
         </div>
-        <span v-if="props.description" class="text-[0.75em] font-normal opacity-70 mt-0.5 leading-tight">
+        <span
+          v-if="props.description"
+          class="text-[0.75em] font-normal opacity-70 mt-0.5 leading-tight">
           {{ props.description }}
         </span>
       </div>
