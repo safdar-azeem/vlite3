@@ -315,17 +315,23 @@ const textScaleClass = computed(() => (resolvedLayout.value === 'vertical' ? 'sc
       <Icon
         v-if="loading"
         icon="lucide:loader-2"
-        class="animate-spin pointer-events-none"
+        class="animate-spin pointer-events-none shrink-0"
         :class="iconClasses" />
 
       <Icon
         v-else-if="icon"
         :icon="icon"
-        class="pointer-events-none"
+        class="pointer-events-none shrink-0"
         :class="[iconClass, iconClasses, isOnlyIcon ? 'mx-auto' : '']" />
 
+      <template v-if="!props.description && resolvedLayout === 'horizontal'">
+        <div v-if="textClass" :class="textClass" class="leading-tight truncate inline-flex items-center justify-center gap-1.5">
+          <slot>{{ displayText }}</slot>
+        </div>
+        <slot v-else>{{ displayText }}</slot>
+      </template>
       <div
-        v-if="displayText || hasSlotContent || props.description"
+        v-else-if="displayText || hasSlotContent || props.description"
         class="flex flex-col justify-center"
         :class="[
           resolvedLayout === 'vertical'
@@ -351,7 +357,7 @@ const textScaleClass = computed(() => (resolvedLayout.value === 'vertical' ? 'sc
         v-if="iconRight && !loading"
         :icon="iconRight"
         :class="[iconRightClass, iconClasses]"
-        class="h-4 w-4 pointer-events-none" />
+        class="h-4 w-4 pointer-events-none shrink-0" />
     </template>
   </button>
 </template>
