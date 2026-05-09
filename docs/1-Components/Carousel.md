@@ -7,26 +7,52 @@
 | Prop                            | Type                               | Default           | Description                                            |
 | :------------------------------ | :--------------------------------- | :---------------- | :----------------------------------------------------- |
 | `data`                          | `any[]`                            | `[]`              | Array of items to render                               |
-| `pagination`                    | `string \| string[] \| boolean`    | `'dots'`          | Pagination type: `dots`, `buttons`, or array of both   |
-| `paginationSize`                | `'sm' \| 'md' \| 'lg'`             | `'md'`            | Size of pagination elements                            |
-| `paginationPosition`            | `string \| string[]`               | `'bottom-center'` | Position(s) of pagination                              |
-| `paginationVisibility`          | `string \| string[]`               | `'always'`        | Visibility: `always`, `hover`                          |
-| `paginationHoverInitialTimeout` | `number`                           | —                 | Timeout before hiding on hover mode                    |
-| `paginationHoverEdgeThreshold`  | `number`                           | —                 | Edge threshold for hover mode                          |
+| `pagination`                    | `PaginationType \| PaginationType[] \| false`    | `'dots'`          | Pagination type: `dots`, `buttons`, `lines`, `fraction` or array of types   |
+| `paginationSize`                | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'`             | `'sm'`            | Size of pagination elements                            |
+| `paginationPosition`            | `PaginationPosition \| PaginationPosition[]`               | `'bottom-center'` | Position(s) of pagination                              |
+| `paginationVisibility`          | `PaginationVisibility \| PaginationVisibility[]`               | `'always'`        | Visibility: `always`, `hover`                          |
+| `paginationBackground`          | `boolean`                          | `false`           | Show background for pagination                         |
+| `paginationHoverInitialTimeout` | `number`                           | `500`             | Timeout before hiding on hover mode                    |
+| `paginationHoverEdgeThreshold`  | `number`                           | `10`              | Edge threshold for hover mode                          |
 | `direction`                     | `'horizontal' \| 'vertical'`       | `'horizontal'`    | Scroll direction                                       |
-| `itemsToShow`                   | `number \| Record<number, number>` | `1`               | Number of items or responsive map (e.g., `{ 768: 2 }`) |
+| `itemsToShow`                   | `number \| SlidesPerView` | `1`               | Number of items or responsive map (e.g., `{ 768: 2 }`) |
 | `gap`                           | `number`                           | `0`               | Space between items in pixels                          |
 | `autoPlay`                      | `boolean`                          | `false`           | Enable auto-scrolling                                  |
 | `autoPlayInterval`              | `number`                           | `3000`            | Delay between auto-plays                               |
 | `draggable`                     | `boolean`                          | `false`           | Enable mouse/touch dragging                            |
 | `loop`                          | `boolean`                          | `false`           | Infinite loop mode                                     |
-| `speed`                         | `number`                           | `300`             | Transition speed in ms                                 |
+| `speed`                         | `number`                           | `700`             | Transition speed in ms                                 |
 | `easing`                        | `string`                           | `'ease'`          | CSS easing function                                    |
 | `mousewheel`                    | `boolean`                          | `true`            | Enable scrolling via mousewheel                        |
+| `autoFocus`                     | `boolean`                          | `false`           | Auto focus on mount                                    |
 | `currentItem`                   | `number`                           | `0`               | Index of the current item                              |
 | `bufferSize`                    | `number`                           | `5`               | DOM nodes rendered outside view                        |
 | `maxDomElements`                | `number`                           | `10`              | Max DOM elements to render                             |
 | `updateKey`                     | `string \| number`                 | —                 | Force carousel update when changed                     |
+| `wheelOptions`                  | `WheelOptions`                     | —                 | Custom mousewheel sensitivity and thresholds           |
+
+### Types
+
+```typescript
+export type PaginationType = 'buttons' | 'dots' | 'lines' | 'fraction' | false
+
+export type PaginationPosition =
+   | 'center'
+   | 'bottom-center'
+   | 'bottom-left'
+   | 'bottom-right'
+   | 'center-right'
+   | 'bottom'
+
+export type PaginationVisibility = 'always' | 'hover'
+
+export interface WheelOptions {
+   threshold?: number
+   velocityThreshold?: number
+   pageScrollThreshold?: number
+   debounceTime?: number
+}
+```
 
 ### Exposed Methods
 
@@ -37,6 +63,7 @@ Access these via `ref`:
 - `goPrev(smooth?: boolean)`: Previous item
 - `goNextPage(smooth?: boolean)`: Next page of items
 - `goPrevPage(smooth?: boolean)`: Previous page of items
+- `state`: Readonly carousel state (`currentIndex`, `isTransitioning`, etc.)
 
 ### Slots
 
@@ -52,6 +79,22 @@ Access these via `ref`:
 <Carousel :data="images" pagination="dots">
   <template #default="{ item }">
     <img :src="item" class="rounded-lg" />
+  </template>
+</Carousel>
+```
+
+#### Multiple Paginations
+
+You can provide arrays for `pagination` and `paginationPosition` to render multiple control layers.
+
+```vue
+<Carousel 
+  :data="items" 
+  :pagination="['dots', 'buttons']" 
+  :pagination-position="['bottom-center', 'center']"
+>
+  <template #default="{ item }">
+    <div class="p-10 bg-muted">{{ item }}</div>
   </template>
 </Carousel>
 ```
