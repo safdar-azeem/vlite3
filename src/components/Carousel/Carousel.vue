@@ -9,6 +9,10 @@ const props = withDefaults(defineProps<CarouselProps>(), {
   pagination: 'dots',
   paginationSize: 'sm',
   paginationPosition: 'bottom-center',
+  paginationVisibility: 'always',
+  paginationBackground: false,
+  paginationHoverEdgeThreshold: 10,
+  paginationHoverInitialTimeout: 500,
   direction: 'horizontal',
   autoPlay: false,
   draggable: false,
@@ -18,11 +22,18 @@ const props = withDefaults(defineProps<CarouselProps>(), {
   speed: 700,
   easing: 'ease',
   mousewheel: true,
+  autoFocus: false,
   loop: false,
   currentItem: 0,
   bufferSize: 5,
   maxDomElements: 10,
   updateKey: undefined,
+  wheelOptions: () => ({
+    threshold: 5,
+    velocityThreshold: 0.5,
+    pageScrollThreshold: 0.1,
+    debounceTime: 50,
+  }),
 })
 
 const emit = defineEmits<{
