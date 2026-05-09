@@ -41,7 +41,7 @@ const displayDescription = computed(() =>
 <template>
   <div
     v-if="variant === 'card'"
-    class="flex items-start justify-between gap-4 w-full rounded-md border border-border bg-background px-4 py-3 cursor-pointer"
+    class="flex items-center justify-between gap-4 w-full rounded-md border border-border bg-background px-4 py-3 cursor-pointer"
     :class="disabled ? 'opacity-50 pointer-events-none' : ''"
     @click="toggle">
     <div class="flex flex-col gap-0.5 min-w-0">
@@ -65,12 +65,26 @@ const displayDescription = computed(() =>
       :disabled="disabled"
       class="relative mt-0.5 inline-flex h-5.5 w-10.5 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
       :class="modelValue ? 'bg-primary' : 'bg-input'"
-      :data-testid="$attrs['data-testid'] || ($attrs.name ? `switch-${$attrs.name}` : (id ? `switch-${id}` : (displayLabel ? `switch-${displayLabel.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : 'switch')))"
+      :data-testid="
+        $attrs['data-testid'] ||
+        ($attrs.name
+          ? `switch-${$attrs.name}`
+          : id
+            ? `switch-${id}`
+            : displayLabel
+              ? `switch-${displayLabel
+                  .toString()
+                  .toLowerCase()
+                  .replace(/[^a-z0-9]+/g, '-')}`
+              : 'switch')
+      "
       @click.stop="toggle">
       <span
         aria-hidden="true"
         class="pointer-events-none inline-block h-4.5 w-4.5 transform rounded-full bg-background shadow-lg ring-0 transition duration-200 ease-in-out"
-        :class="modelValue ? 'translate-x-5 rtl:translate-x-0' : 'translate-x-0 rtl:-translate-x-5'" />
+        :class="
+          modelValue ? 'translate-x-5 rtl:translate-x-0' : 'translate-x-0 rtl:-translate-x-5'
+        " />
     </button>
   </div>
 
@@ -84,12 +98,26 @@ const displayDescription = computed(() =>
       :disabled="disabled"
       class="relative inline-flex h-5.5 w-10.5 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
       :class="modelValue ? 'bg-primary' : 'bg-input'"
-      :data-testid="$attrs['data-testid'] || ($attrs.name ? `switch-${$attrs.name}` : (id ? `switch-${id}` : (displayLabel ? `switch-${displayLabel.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : 'switch')))"
+      :data-testid="
+        $attrs['data-testid'] ||
+        ($attrs.name
+          ? `switch-${$attrs.name}`
+          : id
+            ? `switch-${id}`
+            : displayLabel
+              ? `switch-${displayLabel
+                  .toString()
+                  .toLowerCase()
+                  .replace(/[^a-z0-9]+/g, '-')}`
+              : 'switch')
+      "
       @click="toggle">
       <span
         aria-hidden="true"
         class="pointer-events-none inline-block h-4.5 w-4.5 transform rounded-full bg-background shadow-lg ring-0 transition duration-200 ease-in-out"
-        :class="modelValue ? 'translate-x-5 rtl:translate-x-0' : 'translate-x-0 rtl:-translate-x-5'" />
+        :class="
+          modelValue ? 'translate-x-5 rtl:translate-x-0' : 'translate-x-0 rtl:-translate-x-5'
+        " />
     </button>
     <label
       v-if="displayLabel"
