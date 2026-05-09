@@ -22,7 +22,7 @@ const hOpts = ref<Record<string, unknown>>({
   loop: true,
   draggable: true,
   mousewheel: true,
-  speed: 700,
+  speed: 850,
 })
 
 const hControls: ControlItem[] = [
