@@ -77,7 +77,7 @@ const carouselPositions = computed(() => activePaginations.value.map(p => p.posi
                 v-model="config.type"
                 class="w-full bg-background border border-border rounded px-2 py-1 text-xs outline-none focus:border-primary"
               >
-                <option v-for="t in availableTypes" :key="t" :value="t">{{ t }}</option>
+                <option v-for="t in availableTypes" :key="String(t)" :value="t">{{ t }}</option>
               </select>
             </div>
 
