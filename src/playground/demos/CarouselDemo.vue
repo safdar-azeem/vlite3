@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import HorizontalCarouselDemo from './carousel/HorizontalCarouselDemo.vue'
 import VerticalCarouselDemo from './carousel/VerticalCarouselDemo.vue'
+import MultiPaginationDemo from './carousel/MultiPaginationDemo.vue'
 </script>
 
 <template>
@@ -21,5 +22,6 @@ import VerticalCarouselDemo from './carousel/VerticalCarouselDemo.vue'
 
     <HorizontalCarouselDemo />
     <VerticalCarouselDemo />
+    <MultiPaginationDemo />
   </div>
 </template>
