@@ -159,6 +159,13 @@ const wrapperClass = computed(() => {
   return props.block || isLine ? 'flex w-full relative' : 'inline-flex max-w-full relative'
 })
 
+const scrollButtonContainerClasses = computed(() => {
+  return [
+    'absolute top-0 bottom-0 z-20 flex items-center pointer-events-none transition-opacity duration-200',
+    props.variant === 'line' ? 'pb-[10px]' : ''
+  ]
+})
+
 const handleSelect = (option: TabesOption) => {
   if (option.disabled) return
   emit('update:modelValue', option.value)
@@ -303,7 +310,7 @@ const getComponentProps = (opt: TabesOption) => {
   <div :class="[wrapperClass, 'group']">
     <div 
       v-show="canScrollLeft" 
-      class="absolute left-0 top-0 bottom-0 z-20 flex items-center pointer-events-none pl-1 transition-opacity duration-200"
+      :class="['left-0 pl-1', scrollButtonContainerClasses]"
     >
       <button 
         @click="scrollByAmount(-200)" 
@@ -351,7 +358,7 @@ const getComponentProps = (opt: TabesOption) => {
 
     <div 
       v-show="canScrollRight" 
-      class="absolute right-0 top-0 bottom-0 z-20 flex items-center pointer-events-none pr-1 transition-opacity duration-200"
+      :class="['right-0 pr-1', scrollButtonContainerClasses]"
     >
       <button 
         @click="scrollByAmount(200)" 
