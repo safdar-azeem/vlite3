@@ -23,11 +23,11 @@ const roundedVal = ref(5)
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div class="space-y-2">
           <label class="text-sm font-medium">Split (Default)</label>
-          <NumberInput v-model="val" layout="split" />
+          <NumberInput v-model="val" variant="split" />
         </div>
         <div class="space-y-2">
           <label class="text-sm font-medium">Stacked</label>
-          <NumberInput v-model="stackedVal" layout="stacked" />
+          <NumberInput v-model="stackedVal" variant="stacked" />
         </div>
       </div>
     </DemoSection>
@@ -37,15 +37,15 @@ const roundedVal = ref(5)
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="space-y-2">
           <label class="text-sm font-medium">Outline</label>
-          <NumberInput variant="outline" />
+          <NumberInput mode="outline" />
         </div>
         <div class="space-y-2">
           <label class="text-sm font-medium">Solid</label>
-          <NumberInput variant="solid" />
+          <NumberInput mode="solid" />
         </div>
         <div class="space-y-2">
-          <label class="text-sm font-medium">Transparent</label>
-          <NumberInput variant="transparent" />
+          <label class="text-sm font-medium">Ghost</label>
+          <NumberInput mode="ghost" />
         </div>
       </div>
     </DemoSection>
