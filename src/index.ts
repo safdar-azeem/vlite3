@@ -79,7 +79,7 @@ export { default as CheckBox } from './components/CheckBox.vue'
 export { default as Textarea } from './components/Textarea.vue'
 export { default as Radio } from './components/Radio.vue'
 export { default as RadioGroup } from './components/RadioGroup.vue'
-export { default as FadeOverlay } from './components/FadeOverlay.vue'
+export * from './components/FadeOverlay'
 
 export { default as SidePanel } from './components/SidePanel.vue'
 export { default as DatePicker } from './components/DatePicker.vue'
