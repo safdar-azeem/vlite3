@@ -402,7 +402,7 @@ const shouldShowChevron = (option: IDropdownOption): boolean => {
       <slot name="menu" />
     </div>
 
-    <div v-if="$slots.footer" class="shrink-0">
+    <div v-if="$slots.footer" class="shrink-0 rounded-b-md overflow-hidden">
       <slot name="footer" />
     </div>
   </div>
