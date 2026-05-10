@@ -30,8 +30,8 @@ const internalList = computed({
 
 const handleUpdate = (val: CategoryItem[], item: CategoryItem) => {
   item.children = val
-  // Fix nested dropping bug: Propagate the change event up the tree so CategoryManager 
-  // can save the state. We do NOT forcefully emit update:modelValue here, 
+  // Fix nested dropping bug: Propagate the change event up the tree so CategoryManager
+  // can save the state. We do NOT forcefully emit update:modelValue here,
   // as it would overwrite the parent's array state and destroy cross-level drops.
   emit('change')
 }
@@ -96,7 +96,7 @@ const vFocus = {
         item.id,
         item.title,
         item.icon,
-        item.children?.map(c => c.id).join(','),
+        item.children?.map((c) => c.id).join(','),
         ctx?.expandedIds.value.has(item.id),
         ctx?.inlineState.value.targetId === item.id,
         ctx?.inlineState.value.mode,
@@ -176,22 +176,23 @@ const vFocus = {
             variant="ghost"
             size="xs"
             icon="lucide:plus"
+            rounded="full"
             :title="ctx?.quickAddTooltipText.value || 'Quick Add Subcategory'"
-            class="h-7 w-7 px-0 text-muted-foreground hover:text-primary"
             @click="ctx?.startInline('add-child', item.id)" />
           <Button
             variant="ghost"
             size="xs"
             icon="lucide:settings"
+            rounded="full"
             :title="ctx?.advancedDetailsTooltipText.value || 'Advanced Details'"
-            class="h-7 w-7 px-0 text-muted-foreground hover:text-primary"
             @click="ctx?.openModalForm('edit', item)" />
           <Button
-            variant="ghost"
             size="xs"
             icon="lucide:trash-2"
+            variant="danger-light"
+            rounded="full"
+            class="bg-transparent text-gray-900! hover:bg-danger-light"
             :title="ctx?.deleteTooltipText.value || 'Delete'"
-            class="h-7 w-7 px-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
             @click="ctx?.deleteItem(item)" />
         </div>
       </div>
