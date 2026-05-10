@@ -581,7 +581,7 @@
 }
 
 .dark .hover\:bg-card:hover {
-  background-color: var(--color-gray-50);
+  background-color: var(--color-gray-100);
 }
 
 .dark .bg-card .bg-card {
@@ -602,28 +602,28 @@
 
 
 .bg-card {
-  --color-body: #FAFAFA !important;
-  --color-white: #FAFAFA !important;
-  --color-mixture-1: #FAFAFA !important;
+  --color-body: #f7f7f7 !important;
+  --color-white: #f7f7f7 !important;
+  --color-mixture-1: #f7f7f7 !important;
   --color-mixture-2: #000000 !important;
-  background-color: #FAFAFA !important;
+  background-color: #f7f7f7 !important;
   border-color: color-mix(in oklab, var(--color-mixture-1) 95%, var(--color-mixture-2));
 }
 
 .bg-card .bg-card {
-  --color-body: #F5F5F5 !important;
-  --color-white: #F5F5F5 !important;
-  --color-mixture-1: #F5F5F5;
+  --color-body: #f1f1f1 !important;
+  --color-white: #f1f1f1 !important;
+  --color-mixture-1: #f1f1f1;
   --color-mixture-2: #000000;
-  background-color: #F5F5F5 !important;
+  background-color: #f1f1f1 !important;
 }
 
 .bg-card .bg-card .bg-card {
-  --color-body: #EEE !important;
-  --color-white: #EEE !important;
-  --color-mixture-1: #F5F5F5;
+  --color-body: #e8e8e8 !important;
+  --color-white: #e8e8e8 !important;
+  --color-mixture-1: #e8e8e8;
   --color-mixture-2: #000000;
-  background-color: #EEE !important;
+  background-color: #e8e8e8 !important;
 }
 
 
