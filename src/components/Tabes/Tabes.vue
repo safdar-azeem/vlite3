@@ -3,6 +3,7 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useResizeObserver } from '@vueuse/core'
 import type { TabesOption, TabesSize, TabesVariant } from './types'
 import Icon from '../Icon.vue'
+import FadeOverlay from '../FadeOverlay/FadeOverlay.vue'
 import { $t } from '@/utils/i18n'
 
 interface Props {
@@ -56,17 +57,23 @@ const ensureVisible = () => {
   if (!scrollRef.value || !containerRef.value) return
   const activeElement = itemRefs.value.get(props.modelValue)
   if (!activeElement) return
-  
+
   const scrollContainer = scrollRef.value
   const activeRect = activeElement.getBoundingClientRect()
   const scrollRect = scrollContainer.getBoundingClientRect()
-  
+
   const padding = 40
-  
+
   if (activeRect.left < scrollRect.left + padding) {
-    scrollContainer.scrollBy({ left: activeRect.left - scrollRect.left - padding, behavior: 'smooth' })
+    scrollContainer.scrollBy({
+      left: activeRect.left - scrollRect.left - padding,
+      behavior: 'smooth',
+    })
   } else if (activeRect.right > scrollRect.right - padding) {
-    scrollContainer.scrollBy({ left: activeRect.right - scrollRect.right + padding, behavior: 'smooth' })
+    scrollContainer.scrollBy({
+      left: activeRect.right - scrollRect.right + padding,
+      behavior: 'smooth',
+    })
   }
 }
 
@@ -126,26 +133,42 @@ useResizeObserver(containerRef, () => {
   checkScroll()
 })
 
-watch(() => props.modelValue, async () => {
-  await updateMarker()
-  ensureVisible()
-})
-watch(() => props.options, async () => {
-  await updateMarker()
-  checkScroll()
-}, { deep: true })
-watch(() => props.size, async () => {
-  await updateMarker()
-  checkScroll()
-})
-watch(() => props.block, async () => {
-  await updateMarker()
-  checkScroll()
-})
-watch(() => props.wrap, async () => {
-  await updateMarker()
-  checkScroll()
-})
+watch(
+  () => props.modelValue,
+  async () => {
+    await updateMarker()
+    ensureVisible()
+  }
+)
+watch(
+  () => props.options,
+  async () => {
+    await updateMarker()
+    checkScroll()
+  },
+  { deep: true }
+)
+watch(
+  () => props.size,
+  async () => {
+    await updateMarker()
+    checkScroll()
+  }
+)
+watch(
+  () => props.block,
+  async () => {
+    await updateMarker()
+    checkScroll()
+  }
+)
+watch(
+  () => props.wrap,
+  async () => {
+    await updateMarker()
+    checkScroll()
+  }
+)
 
 onMounted(async () => {
   await updateMarker()
@@ -162,7 +185,7 @@ const wrapperClass = computed(() => {
 const scrollButtonContainerClasses = computed(() => {
   return [
     'absolute top-0 bottom-0 z-20 flex items-center pointer-events-none transition-opacity duration-200',
-    props.variant === 'line' ? 'pb-[10px]' : ''
+    props.variant === 'line' ? 'pb-[10px]' : '',
   ]
 })
 
@@ -198,6 +221,22 @@ const containerClasses = computed(() => {
   const base = `${blockClass} rounded-lg relative isolate ${wrapClass}`
 
   return [base, variantStyles[props.variant]]
+})
+
+// Determine the fade color based on the variant so it blends with the container's background
+// instead of defaulting to the page background (which can look like an inverted shadow/glow).
+const fadeColor = computed(() => {
+  if (props.variant === 'surface' || props.variant === 'primary' || props.variant === 'secondary') {
+    return 'var(--color-secondary)'
+  }
+  if (props.variant === 'danger') {
+    return 'color-mix(in srgb, var(--color-danger) 10%, transparent)'
+  }
+  if (props.variant === 'success') {
+    return 'color-mix(in srgb, var(--color-success) 10%, transparent)'
+  }
+  // outline and line variants are transparent, so they should fade to the page background
+  return 'var(--color-background)'
 })
 
 const sizeClasses = {
@@ -310,24 +349,29 @@ const getComponentProps = (opt: TabesOption) => {
 
 <template>
   <div :class="[wrapperClass, 'group']">
-    <div 
-      v-show="canScrollLeft" 
-      :class="['left-0 pl-1', scrollButtonContainerClasses]"
-    >
-      <button 
-        @click="scrollByAmount(-200)" 
-        class="pointer-events-auto h-7 w-7 flex items-center justify-center rounded-full bg-background/95 backdrop-blur shadow-[0_2px_8px_rgba(0,0,0,0.1)] border border-border text-foreground hover:bg-accent hover:text-accent-foreground transition-all focus:outline-none focus:ring-2 focus:ring-primary/50"
-        aria-label="Scroll left"
-      >
-        <Icon icon="lucide:chevron-left" class="w-4 h-4" />
+    <FadeOverlay
+      v-show="canScrollLeft"
+      direction="left"
+      :color="fadeColor"
+      coverage="100px"
+      blur="40"
+      easing="smooth"
+      :tintOpacity="1"
+      class="z-10 pointer-events-none"
+      :class="props.variant === 'line' ? '' : 'rounded-l-lg'" />
+    <div v-show="canScrollLeft" :class="['left-0 pl-1', scrollButtonContainerClasses]">
+      <button
+        @click="scrollByAmount(-200)"
+        class="pointer-events-auto h-full px-1 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors focus:outline-none"
+        aria-label="Scroll left">
+        <Icon icon="lucide:chevron-left" class="w-5 h-5" />
       </button>
     </div>
 
-    <div 
-      ref="scrollRef" 
-      class="flex-1 min-w-0 max-w-full overflow-x-auto scrollbar-hide scroll-smooth" 
-      @scroll="checkScroll"
-    >
+    <div
+      ref="scrollRef"
+      class="flex-1 min-w-0 max-w-full overflow-x-auto scrollbar-hide scroll-smooth"
+      @scroll="checkScroll">
       <div
         ref="containerRef"
         :class="containerClasses"
@@ -350,7 +394,10 @@ const getComponentProps = (opt: TabesOption) => {
           :class="[getItemClasses(opt), sizeClasses[props.size]]"
           v-bind="getComponentProps(opt)"
           @click="handleSelect(opt)">
-          <Icon v-if="opt.icon" :icon="opt.icon" :class="size === 'sm' ? 'w-3.5 h-3.5' : 'w-4 h-4'" />
+          <Icon
+            v-if="opt.icon"
+            :icon="opt.icon"
+            :class="size === 'sm' ? 'w-3.5 h-3.5' : 'w-4 h-4'" />
           <span class="whitespace-nowrap z-20 relative" :class="textClass">{{
             getOptionLabel(opt)
           }}</span>
@@ -358,16 +405,22 @@ const getComponentProps = (opt: TabesOption) => {
       </div>
     </div>
 
-    <div 
-      v-show="canScrollRight" 
-      :class="['right-0 pr-1', scrollButtonContainerClasses]"
-    >
-      <button 
-        @click="scrollByAmount(200)" 
-        class="pointer-events-auto h-7 w-7 flex items-center justify-center rounded-full bg-background/95 backdrop-blur shadow-[0_2px_8px_rgba(0,0,0,0.1)] border border-border text-foreground hover:bg-accent hover:text-accent-foreground transition-all focus:outline-none focus:ring-2 focus:ring-primary/50"
-        aria-label="Scroll right"
-      >
-        <Icon icon="lucide:chevron-right" class="w-4 h-4" />
+    <FadeOverlay
+      v-show="canScrollRight"
+      direction="right"
+      :color="fadeColor"
+      coverage="100px"
+      blur="40"
+      easing="smooth"
+      :tintOpacity="1"
+      class="z-10 pointer-events-none"
+      :class="props.variant === 'line' ? '' : 'rounded-r-lg'" />
+    <div v-show="canScrollRight" :class="['right-0 pr-1', scrollButtonContainerClasses]">
+      <button
+        @click="scrollByAmount(200)"
+        class="pointer-events-auto h-full px-1 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors focus:outline-none"
+        aria-label="Scroll right">
+        <Icon icon="lucide:chevron-right" class="w-5 h-5" />
       </button>
     </div>
   </div>
