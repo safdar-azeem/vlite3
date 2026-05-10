@@ -354,7 +354,7 @@ const getComponentProps = (opt: TabesOption) => {
       direction="left"
       :color="fadeColor"
       coverage="100px"
-      blur="40"
+      blur="40px"
       easing="smooth"
       :tintOpacity="1"
       class="z-10 pointer-events-none"
