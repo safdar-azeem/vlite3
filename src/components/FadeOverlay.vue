@@ -252,7 +252,7 @@ const overlayStyles = computed(() => {
   const base: Record<string, string | number> = {
     position: 'absolute',
     pointerEvents: 'none',
-    borderRadius: 0,
+    borderRadius: 'inherit',
     opacity: props.opacity,
     zIndex: props.zIndex,
     ...sizeStyles(props.direction, coverageVal),
