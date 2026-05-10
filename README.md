@@ -482,6 +482,7 @@ Follow these rules strictly to ensure visual consistency and predictable styling
 - [x] **SidePanel**
 - [x] **Splitter**
 - [x] **Skeleton**
+- [x] **FadeOverlay**
 
 ### Utilities & Tools
 
