@@ -17,6 +17,8 @@ Built-in features include drag-and-drop reordering at every tree level, accordio
 | `modelValue`       | `CategoryItem[]`| `[]`                                       | The nested category tree. Bind with `v-model`.                                          |
 | `formSchema`       | `IForm[]?`      | Default schema (icon, title, description)  | Custom Form schema used in the Add/Edit modal. Overrides the default 3-field form.      |
 | `readonly`         | `boolean`       | `false`                                    | Disables all mutations (add, edit, delete, drag). Renders the tree as a read-only view. |
+| `loading`          | `boolean`       | `false`                                    | Shows a translucent overlay without destroying the component. **Use this instead of `v-if`** to preserve expanded/inline state across data refetches. |
+| `defaultExpanded`  | `(string \| number)[]` | `undefined`                          | Array of category IDs to auto-expand on initial mount.                                  |
 | `size`             | `'sm' \| 'md' \| 'lg'` | `'md'`                             | Size modifier applied to each tree node row.                                            |
 | `emptyTitle`       | `string`        | `'No Categories Found'`                    | Heading shown in the empty state.                                                       |
 | `emptyDescription` | `string`        | `'Get started by creating your first category.'` | Body text shown in the empty state.                                               |
@@ -154,6 +156,65 @@ const customFormSchema = [
 </template>
 ```
 
+#### 6. Production Pattern with API Refetching (Recommended)
+
+When performing CRUD operations that trigger a data refetch, use the `:loading` prop **instead of `v-if`**. This keeps the component mounted and preserves all expanded/inline state across refetches.
+
+```vue
+<script setup>
+import { computed } from 'vue'
+import { CategoryManager, type CategoryManagerExpose } from 'vlite3'
+import { useGetCategoriesQuery, useCreateCategoryMutation } from '@/graphql'
+
+const { result, loading, refetch } = useGetCategoriesQuery(/* ... */)
+const { mutate: create } = useCreateCategoryMutation()
+
+const categories = computed(() => result.value?.getCategories?.items || [])
+const categoryManagerRef = ref<CategoryManagerExpose | null>(null)
+
+const handleAdd = async (item) => {
+  await create({ data: { name: item.title, icon: item.icon } })
+  refetch() // Component stays mounted, expanded sections preserved
+}
+</script>
+
+<template>
+  <!-- ✅ DO: Use :loading prop — component survives refetch -->
+  <CategoryManager
+    ref="categoryManagerRef"
+    :loading="loading"
+    :raw-data="categories"
+    :default-expanded="['cat-1', 'cat-2']"
+    @onAdd="handleAdd" />
+
+  <!-- ❌ DON'T: v-if destroys the component and all internal state -->
+  <!-- <CategoryManager v-if="!loading" :raw-data="categories" /> -->
+</template>
+```
+
+#### 7. Programmatic Expand/Collapse (via ref)
+
+```vue
+<script setup>
+const cmRef = ref()
+
+// Expand all nodes
+cmRef.value?.expandAll()
+// Collapse all
+cmRef.value?.collapseAll()
+// Expand specific IDs
+cmRef.value?.expand('cat-1', 'cat-2')
+// Collapse specific IDs
+cmRef.value?.collapse('cat-1')
+// Read current expanded set
+console.log(cmRef.value?.expandedIds)
+</script>
+
+<template>
+  <CategoryManager ref="cmRef" v-model="categories" />
+</template>
+```
+
 ---
 
 ### Data Contract for AI Agents (JSON Template)
@@ -182,6 +243,20 @@ const customFormSchema = [
 
 ---
 
+### Exposed API (via `ref`)
+
+Access these by setting a template ref on the component:
+
+| Method / Property | Type | Description |
+| :--- | :--- | :--- |
+| `expandedIds` | `Ref<Set<string \| number>>` | Reactive set of currently expanded node IDs. |
+| `expandAll()` | `() => void` | Expands every node in the tree. |
+| `collapseAll()` | `() => void` | Collapses all nodes. |
+| `expand(...ids)` | `(...ids: (string \| number)[]) => void` | Expands specific node(s) by ID. |
+| `collapse(...ids)` | `(...ids: (string \| number)[]) => void` | Collapses specific node(s) by ID. |
+
+---
+
 ### Senior Engineer's Notes
 
 1.  **Two edit modes**: Each node has a **quick-add inline** mode (click ➕, type, press Enter to confirm or Esc to cancel) and a **modal form** mode (click the settings icon ⚙️). The inline mode is fast for 90% of cases; the modal is for structured data.
@@ -190,3 +265,5 @@ const customFormSchema = [
 4.  **Extra data fields are safe**: The `CategoryItem` interface uses `[key: string]: any` — your backend-specific fields (`slug`, `meta`, etc.) pass through undisturbed on all emit payloads.
 5.  **Optimized Drag-and-Drop Syncing**: Items can be freely reordered within their parent group or extracted seamlessly to the root. Upon releasing a dragged node, the component emits the completely updated tree via `update:modelValue`. Simultaneously, `@onReorder` triggers exactly once per drop with a minimal payload (`id`, `parentId`, `position`), eliminating continuous mid-drag emissions and allowing for extremely efficient network updates to your API.
 6.  **Self-contained state**: The component deep-clones your `modelValue` internally on initialization. All edits operate on this internal clone and emit the final state up. This prevents accidental mutation of your parent state.
+7.  **State preservation on refetch**: When using the `:loading` prop instead of `v-if`, the component stays mounted through data refetches. The `rawData` watcher intelligently prunes stale IDs from the expanded set while preserving valid ones, so users never lose their place in the tree.
+8.  **Empty data handling**: Deleting the last category via API (resulting in an empty `rawData` array) is handled correctly — the component clears its internal state and shows the empty state.
