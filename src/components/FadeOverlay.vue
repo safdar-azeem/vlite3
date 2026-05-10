@@ -124,7 +124,7 @@ const props = withDefaults(defineProps<FadeOverlayProps>(), {
   coverage: '100%',
   fadeStart: '0%',
   fadeEnd: '100%',
-  color: '#000000',
+  color: 'var(--color-background)',
   easing: 'smooth',
   opacity: 1,
   zIndex: 10,
