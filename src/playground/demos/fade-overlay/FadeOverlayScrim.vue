@@ -1,9 +1,23 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { FadeOverlay } from '@/components/FadeOverlay'
+import type { Direction, Easing } from '@/components/FadeOverlay/types'
 
-const scrimCoverage = ref(100)
-const scrimFadeStart = ref(45)
+const coverage = ref(100)
+const fadeStart = ref(45)
+const direction = ref<Direction>('bottom')
+const easing = ref<Easing>('smooth')
+const opacity = ref(1)
+
+const directionLabel = computed(() => {
+  const map: Record<Direction, string> = {
+    top: '↑ Top',
+    bottom: '↓ Bottom',
+    left: '← Left',
+    right: '→ Right',
+  }
+  return map[direction.value]
+})
 </script>
 
 <template>
@@ -18,12 +32,13 @@ const scrimFadeStart = ref(45)
         class="w-full h-full object-cover block transition-transform duration-700 group-hover:scale-105" />
 
       <FadeOverlay
-        direction="bottom"
-        :coverage="`${scrimCoverage}%`"
-        :fadeStart="`${scrimFadeStart}%`"
+        :direction="direction"
+        :coverage="`${coverage}%`"
+        :fadeStart="`${fadeStart}%`"
         fadeEnd="100%"
         color="#000000"
-        easing="smooth" />
+        :easing="easing"
+        :opacity="opacity" />
 
       <!-- Card text -->
       <div class="absolute bottom-0 inset-x-0 p-6 z-20 pointer-events-none text-[white]">
@@ -41,18 +56,62 @@ const scrimFadeStart = ref(45)
     </div>
 
     <!-- Controls -->
-    <div class="mt-4 flex flex-col gap-2.5">
+    <div class="mt-4 flex flex-col gap-3 p-4 rounded-xl bg-muted/30 border border-border/50">
+      <!-- Direction toggle -->
+      <div class="flex items-center justify-between">
+        <label class="text-xs text-muted-foreground">direction</label>
+        <div class="flex gap-1">
+          <button
+            v-for="d in (['top', 'bottom', 'left', 'right'] as Direction[])"
+            :key="d"
+            @click="direction = d"
+            class="px-2 py-1 text-[10px] font-medium rounded-md transition-colors"
+            :class="
+              direction === d
+                ? 'bg-foreground text-background'
+                : 'bg-muted text-muted-foreground hover:text-foreground'
+            ">
+            {{ d }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Easing toggle -->
+      <div class="flex items-center justify-between">
+        <label class="text-xs text-muted-foreground">easing</label>
+        <div class="flex gap-1">
+          <button
+            v-for="e in (['linear', 'smooth'] as Easing[])"
+            :key="e"
+            @click="easing = e"
+            class="px-2 py-1 text-[10px] font-medium rounded-md transition-colors"
+            :class="
+              easing === e
+                ? 'bg-foreground text-background'
+                : 'bg-muted text-muted-foreground hover:text-foreground'
+            ">
+            {{ e }}
+          </button>
+        </div>
+      </div>
+
       <label class="text-xs text-muted-foreground flex justify-between">
         coverage
-        <span class="text-muted-foreground/60">{{ scrimCoverage }}%</span>
+        <span class="text-muted-foreground/60">{{ coverage }}%</span>
       </label>
-      <input type="range" min="20" max="100" v-model="scrimCoverage" class="w-full" />
+      <input type="range" min="20" max="100" v-model.number="coverage" class="w-full" />
 
       <label class="text-xs text-muted-foreground flex justify-between">
         fadeStart
-        <span class="text-muted-foreground/60">{{ scrimFadeStart }}%</span>
+        <span class="text-muted-foreground/60">{{ fadeStart }}%</span>
       </label>
-      <input type="range" min="0" max="80" v-model="scrimFadeStart" class="w-full" />
+      <input type="range" min="0" max="80" v-model.number="fadeStart" class="w-full" />
+
+      <label class="text-xs text-muted-foreground flex justify-between">
+        opacity
+        <span class="text-muted-foreground/60">{{ opacity }}</span>
+      </label>
+      <input type="range" min="0" max="1" step="0.05" v-model.number="opacity" class="w-full" />
     </div>
   </div>
 </template>
