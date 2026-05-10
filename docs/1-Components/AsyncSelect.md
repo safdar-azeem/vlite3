@@ -167,3 +167,42 @@ If picking a customer should automatically fill in their billing address, use th
   }
 }
 ```
+
+### 4. Inline Item Creation (Add New)
+
+If a user needs to select an item that hasn't been created yet, you can pass an `addNewConfig` inside `props` to allow them to create the item directly from the dropdown. This renders an "Add New" button at the bottom of the dropdown that opens a modal with your provided component.
+
+```ts
+import CreateCategoryForm from '../../components/category/CreateCategoryForm.vue'
+
+{
+  name: 'categoryId',
+  label: 'Product Category',
+  type: SelectCategory,
+  props: {
+    addNewConfig: {
+      component: CreateCategoryForm,     // Your form component to create the item
+      label: 'Add Category',             // Text for the button and modal title
+      labelI18n: 'common.addCategory',   // Optional i18n key
+      props: {                           // Optional props to pass down to the component
+        // any additional props your form component expects
+      }
+    }
+  }
+}
+```
+
+When the item is successfully created, ensure your custom component calls the `close()` function passed down to it as a prop. This will close the modal and automatically trigger `AsyncSelect` to refetch its data.
+
+```vue
+<script setup lang="ts">
+// Inside your CreateCategoryForm.vue
+const props = defineProps<{ close?: () => void }>()
+
+const handleSave = async (payload: any) => {
+  await createCategory(payload)
+  // Important: Call close() to dismiss the modal and trigger the dropdown data refresh
+  props.close?.()
+}
+</script>
+```
