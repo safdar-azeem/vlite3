@@ -33,7 +33,44 @@ const emit = defineEmits<{
 }>()
 
 const containerRef = ref<HTMLElement | null>(null)
+const scrollRef = ref<HTMLElement | null>(null)
 const itemRefs = ref<Map<string | number, HTMLElement | null>>(new Map())
+
+const canScrollLeft = ref(false)
+const canScrollRight = ref(false)
+
+const checkScroll = () => {
+  if (!scrollRef.value) return
+  const { scrollLeft, scrollWidth, clientWidth } = scrollRef.value
+  canScrollLeft.value = scrollLeft > 1
+  canScrollRight.value = Math.ceil(scrollLeft + clientWidth) < scrollWidth - 1
+}
+
+const scrollByAmount = (amount: number) => {
+  if (scrollRef.value) {
+    scrollRef.value.scrollBy({ left: amount, behavior: 'smooth' })
+  }
+}
+
+const ensureVisible = () => {
+  if (!scrollRef.value || !containerRef.value) return
+  const activeElement = itemRefs.value.get(props.modelValue)
+  if (!activeElement) return
+  
+  const scrollContainer = scrollRef.value
+  const activeRect = activeElement.getBoundingClientRect()
+  const scrollRect = scrollContainer.getBoundingClientRect()
+  
+  const padding = 40
+  
+  if (activeRect.left < scrollRect.left + padding) {
+    scrollContainer.scrollBy({ left: activeRect.left - scrollRect.left - padding, behavior: 'smooth' })
+  } else if (activeRect.right > scrollRect.right - padding) {
+    scrollContainer.scrollBy({ left: activeRect.right - scrollRect.right + padding, behavior: 'smooth' })
+  }
+}
+
+useResizeObserver(scrollRef, checkScroll)
 
 const setItemRef = (el: any, value: string | number) => {
   if (el) {
@@ -84,15 +121,43 @@ const updateMarker = async () => {
   }
 }
 
-useResizeObserver(containerRef, updateMarker)
+useResizeObserver(containerRef, () => {
+  updateMarker()
+  checkScroll()
+})
 
-watch(() => props.modelValue, updateMarker)
-watch(() => props.options, updateMarker, { deep: true })
-watch(() => props.size, updateMarker)
-watch(() => props.block, updateMarker)
-watch(() => props.wrap, updateMarker)
+watch(() => props.modelValue, async () => {
+  await updateMarker()
+  ensureVisible()
+})
+watch(() => props.options, async () => {
+  await updateMarker()
+  checkScroll()
+}, { deep: true })
+watch(() => props.size, async () => {
+  await updateMarker()
+  checkScroll()
+})
+watch(() => props.block, async () => {
+  await updateMarker()
+  checkScroll()
+})
+watch(() => props.wrap, async () => {
+  await updateMarker()
+  checkScroll()
+})
 
-onMounted(updateMarker)
+onMounted(async () => {
+  await updateMarker()
+  checkScroll()
+  setTimeout(checkScroll, 100)
+  setTimeout(ensureVisible, 100)
+})
+
+const wrapperClass = computed(() => {
+  const isLine = props.variant === 'line'
+  return props.block || isLine ? 'flex w-full relative' : 'inline-flex max-w-full relative'
+})
 
 const handleSelect = (option: TabesOption) => {
   if (option.disabled) return
@@ -135,8 +200,8 @@ const sizeClasses = {
 const itemBaseClasses = computed(() => {
   const isLine = props.variant === 'line'
   const base = isLine
-    ? 'relative z-10 flex items-center justify-center gap-2 font-medium transition-colors duration-50 ease-out cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-primary/50 pb-2 border-b-2 border-transparent hover:text-foreground'
-    : 'relative z-10 flex items-center justify-center gap-2 font-medium transition-colors duration-50 ease-out cursor-pointer select-none rounded-md outline-none focus-visible:ring-2 focus-visible:ring-primary/50'
+    ? 'relative z-10 flex items-center justify-center gap-2 font-medium transition-colors duration-50 ease-out cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-primary/50 pb-2 border-b-2 border-transparent hover:text-foreground shrink-0'
+    : 'relative z-10 flex items-center justify-center gap-2 font-medium transition-colors duration-50 ease-out cursor-pointer select-none rounded-md outline-none focus-visible:ring-2 focus-visible:ring-primary/50 shrink-0'
 
   // flex-1 when:
   //   • block prop is set  → always fill row
@@ -235,39 +300,67 @@ const getComponentProps = (opt: TabesOption) => {
 </script>
 
 <template>
-  <!--
-    data-tabes-justify is used by the scoped CSS below to make child items
-    grow and fill the container whenever the host element carries w-full
-    (i.e. the consumer passes class="w-full"). This avoids any JS measurement
-    and works purely with CSS, keeping the component lightweight.
-  -->
-  <div
-    ref="containerRef"
-    :class="containerClasses"
-    role="tablist"
-    data-tabes
-    class="tabes-container">
-    <div
-      v-if="modelValue !== undefined && !wrap"
-      :class="[markerClasses, getMarkerColorClass()]"
-      :style="markerStyle"></div>
+  <div :class="[wrapperClass, 'group']">
+    <div 
+      v-show="canScrollLeft" 
+      class="absolute left-0 top-0 bottom-0 z-20 flex items-center pointer-events-none pl-1 transition-opacity duration-200"
+    >
+      <button 
+        @click="scrollByAmount(-200)" 
+        class="pointer-events-auto h-7 w-7 flex items-center justify-center rounded-full bg-background/95 backdrop-blur shadow-[0_2px_8px_rgba(0,0,0,0.1)] border border-border text-foreground hover:bg-accent hover:text-accent-foreground transition-all focus:outline-none focus:ring-2 focus:ring-primary/50"
+        aria-label="Scroll left"
+      >
+        <Icon icon="lucide:chevron-left" class="w-4 h-4" />
+      </button>
+    </div>
 
-    <component
-      :is="getComponentIs(opt)"
-      v-for="opt in options"
-      :key="opt.value"
-      :ref="(el: any) => setItemRef(el?.$el || el, opt.value)"
-      role="tab"
-      :aria-selected="modelValue === opt.value"
-      :disabled="opt.disabled"
-      :class="[getItemClasses(opt), sizeClasses[props.size]]"
-      v-bind="getComponentProps(opt)"
-      @click="handleSelect(opt)">
-      <Icon v-if="opt.icon" :icon="opt.icon" :class="size === 'sm' ? 'w-3.5 h-3.5' : 'w-4 h-4'" />
-      <span class="whitespace-nowrap z-20 relative" :class="textClass">{{
-        getOptionLabel(opt)
-      }}</span>
-    </component>
+    <div 
+      ref="scrollRef" 
+      class="flex-1 min-w-0 max-w-full overflow-x-auto scrollbar-hide scroll-smooth" 
+      @scroll="checkScroll"
+    >
+      <div
+        ref="containerRef"
+        :class="containerClasses"
+        role="tablist"
+        data-tabes
+        class="tabes-container">
+        <div
+          v-if="modelValue !== undefined && !wrap"
+          :class="[markerClasses, getMarkerColorClass()]"
+          :style="markerStyle"></div>
+
+        <component
+          :is="getComponentIs(opt)"
+          v-for="opt in options"
+          :key="opt.value"
+          :ref="(el: any) => setItemRef(el?.$el || el, opt.value)"
+          role="tab"
+          :aria-selected="modelValue === opt.value"
+          :disabled="opt.disabled"
+          :class="[getItemClasses(opt), sizeClasses[props.size]]"
+          v-bind="getComponentProps(opt)"
+          @click="handleSelect(opt)">
+          <Icon v-if="opt.icon" :icon="opt.icon" :class="size === 'sm' ? 'w-3.5 h-3.5' : 'w-4 h-4'" />
+          <span class="whitespace-nowrap z-20 relative" :class="textClass">{{
+            getOptionLabel(opt)
+          }}</span>
+        </component>
+      </div>
+    </div>
+
+    <div 
+      v-show="canScrollRight" 
+      class="absolute right-0 top-0 bottom-0 z-20 flex items-center pointer-events-none pr-1 transition-opacity duration-200"
+    >
+      <button 
+        @click="scrollByAmount(200)" 
+        class="pointer-events-auto h-7 w-7 flex items-center justify-center rounded-full bg-background/95 backdrop-blur shadow-[0_2px_8px_rgba(0,0,0,0.1)] border border-border text-foreground hover:bg-accent hover:text-accent-foreground transition-all focus:outline-none focus:ring-2 focus:ring-primary/50"
+        aria-label="Scroll right"
+      >
+        <Icon icon="lucide:chevron-right" class="w-4 h-4" />
+      </button>
+    </div>
   </div>
 </template>
 
@@ -306,37 +399,15 @@ const getComponentProps = (opt: TabesOption) => {
 
 /* When the container is full-width flex (not inline-flex), distribute items equally */
 [data-tabes]:not(.inline-flex):not([class*='gap-6']) > :where(button, a, [role='tab']) {
-  flex: 1 1 0%;
-  min-width: 0;
+  flex: 1 0 0%;
+  min-width: max-content;
 }
 
-/*
-  Small-screen overflow: when NOT in wrap mode and NOT block/w-full,
-  allow horizontal scroll on very narrow viewports so tabs are never clipped.
-*/
-[data-tabes].inline-flex {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  /* Hide scrollbar visually but keep it functional */
+.scrollbar-hide {
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
-[data-tabes].inline-flex::-webkit-scrollbar {
+.scrollbar-hide::-webkit-scrollbar {
   display: none;
-}
-
-/*
-  On small screens, even full-width tabs should scroll if they would overflow
-  (e.g. many tabs on a 320px screen). The flex-1 items will shrink via min-width:0
-  but text uses whitespace-nowrap, so we allow scroll as a last resort.
-*/
-@media (max-width: 480px) {
-  [data-tabes]:not([class*='flex-wrap']) {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  [data-tabes]:not([class*='flex-wrap'])::-webkit-scrollbar {
-    display: none;
-  }
 }
 </style>
