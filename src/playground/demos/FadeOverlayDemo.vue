@@ -23,16 +23,14 @@ import FadeOverlayBlur from './fade-overlay/FadeOverlayBlur.vue'
     </div>
 
     <!-- ── INTERACTIVE DEMOS ────────────────────────────────────────────────── -->
-    <DemoSection
-      title="Interactive Examples"
-      description="Play with coverage, blur, and opacity."
-      :code="sourceCode">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+    <div>
+      <h3>Interactive Examples</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mt-10">
         <FadeOverlayScrim />
         <FadeOverlayScroll />
         <FadeOverlayBlur />
       </div>
-    </DemoSection>
+    </div>
 
     <DemoSection
       title="Bottom Fade (Default)"
@@ -68,37 +66,43 @@ import FadeOverlayBlur from './fade-overlay/FadeOverlayBlur.vue'
 
     <DemoSection
       title="Right Fade"
-      description="Useful for horizontally scrollable lists."
+      description="Useful for horizontally scrollable lists and carousels."
       :code="sourceCode">
       <div
-        class="relative w-full max-w-md h-32 bg-card rounded-md overflow-hidden border border-border flex items-center p-4">
-        <div class="flex gap-2 whitespace-nowrap overflow-hidden">
+        class="relative w-full max-w-lg h-36 bg-card rounded-xl overflow-hidden border border-border flex items-center">
+        <div class="flex gap-3 whitespace-nowrap overflow-hidden px-5">
           <div
-            v-for="i in 10"
+            v-for="i in 12"
             :key="i"
-            class="w-16 h-16 bg-primary/20 rounded-md shrink-0 flex items-center justify-center">
-            Item {{ i }}
+            class="w-24 h-24 bg-secondary rounded-xl shrink-0 flex flex-col items-center justify-center gap-1.5 transition-colors hover:bg-secondary/80">
+            <span class="text-xl">{{
+              ['🏔', '🌲', '🦅', '💎', '⚡', '🌿', '🐺', '🧊', '⛰', '🦊', '💧', '⭐'][i - 1]
+            }}</span>
+            <span class="text-[10px] text-muted-foreground font-medium">Trail {{ i }}</span>
           </div>
         </div>
-        <FadeOverlay direction="right" coverage="30%" />
+        <FadeOverlay direction="right" coverage="25%" />
       </div>
     </DemoSection>
 
     <DemoSection
       title="Left Fade"
-      description="Fades out content at the left edge."
+      description="Mirror of the right fade — perfect for RTL contexts or content flowing from the right."
       :code="sourceCode">
       <div
-        class="relative w-full max-w-md h-32 bg-card rounded-md overflow-hidden border border-border flex items-center p-4">
-        <div class="flex gap-2 whitespace-nowrap overflow-hidden justify-end">
+        class="relative w-full max-w-lg h-36 bg-card rounded-xl overflow-hidden border border-border flex items-center">
+        <div class="flex gap-3 whitespace-nowrap overflow-hidden justify-end px-5">
           <div
-            v-for="i in 10"
+            v-for="i in 12"
             :key="i"
-            class="w-16 h-16 bg-primary/20 rounded-md shrink-0 flex items-center justify-center">
-            Item {{ i }}
+            class="w-24 h-24 bg-secondary rounded-xl shrink-0 flex flex-col items-center justify-center gap-1.5 transition-colors hover:bg-secondary/80">
+            <span class="text-xl">{{
+              ['🏔', '🌲', '🦅', '💎', '⚡', '🌿', '🐺', '🧊', '⛰', '🦊', '💧', '⭐'][i - 1]
+            }}</span>
+            <span class="text-[10px] text-muted-foreground font-medium">Trail {{ i }}</span>
           </div>
         </div>
-        <FadeOverlay direction="left" coverage="40%" />
+        <FadeOverlay direction="left" coverage="30%" />
       </div>
     </DemoSection>
   </div>
