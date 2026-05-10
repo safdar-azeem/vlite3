@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, watch, computed, provide } from 'vue'
+import { ref, watch, computed, provide, onMounted } from 'vue'
 import CategoryNode from './CategoryNode.vue'
 import Modal from '@/components/Modal.vue'
 import { Form, type IForm } from '@/components/Form'
 import Button from '@/components/Button.vue'
 import Icon from '@/components/Icon.vue'
 import IconPicker from '@/components/IconPicker.vue'
-import type { CategoryItem, RawCategoryItem, CategoryManagerProps, CategoryManagerContext, InlineState } from './types'
+import type { CategoryItem, RawCategoryItem, CategoryManagerProps, CategoryManagerContext, CategoryManagerExpose, InlineState } from './types'
 import { getUniqueId } from '@/utils'
 import { $t } from '@/utils/i18n'
 
@@ -14,6 +14,8 @@ const props = withDefaults(defineProps<CategoryManagerProps>(), {
   modelValue: () => [],
   rawData: undefined,
   readonly: false,
+  loading: false,
+  defaultExpanded: undefined,
   emptyTitle: 'No Categories Found',
   emptyDescription: 'Get started by creating your first category.',
   size: 'md',
@@ -85,15 +87,44 @@ const buildTreeFromRaw = (items: RawCategoryItem[]): CategoryItem[] => {
   return rootItems
 }
 
+// Collect all node IDs from a tree (used for expanded-state pruning)
+const collectAllIds = (nodes: CategoryItem[]): Set<string | number> => {
+  const ids = new Set<string | number>()
+  const walk = (list: CategoryItem[]) => {
+    for (const item of list) {
+      ids.add(item.id)
+      if (item.children) walk(item.children)
+    }
+  }
+  walk(nodes)
+  return ids
+}
+
 watch(
   () => props.rawData,
   (newRaw) => {
-    if (newRaw && newRaw.length > 0) {
+    if (newRaw) {
+      // Handle empty data (e.g. last item deleted via API)
+      if (newRaw.length === 0) {
+        internalData.value = []
+        // Prune all expanded IDs since there are no nodes left
+        expandedIds.value = new Set()
+        emit('update:modelValue', [])
+        return
+      }
+
       const newTree = buildTreeFromRaw(newRaw)
       ensureMeta(newTree)
       const newString = JSON.stringify(newTree)
       const oldString = JSON.stringify(internalData.value)
       if (newString !== oldString) {
+        // Preserve expanded state: prune IDs that no longer exist in the new data
+        const validIds = collectAllIds(newTree)
+        const preserved = new Set(
+          [...expandedIds.value].filter((id) => validIds.has(id))
+        )
+        expandedIds.value = preserved
+
         const cloned = clone(newTree)
         internalData.value = cloned
         emit('update:modelValue', cloned)
@@ -537,10 +568,51 @@ const vFocus = {
     setTimeout(() => el.focus(), 10)
   }
 }
+
+// -------------------------------------------------------------
+// Programmatic expand/collapse API
+// -------------------------------------------------------------
+const expandAll = () => {
+  const allIds = collectAllIds(internalData.value)
+  expandedIds.value = allIds
+}
+
+const collapseAll = () => {
+  expandedIds.value = new Set()
+}
+
+const expand = (...ids: (string | number)[]) => {
+  const newSet = new Set(expandedIds.value)
+  ids.forEach((id) => newSet.add(id))
+  expandedIds.value = newSet
+}
+
+const collapse = (...ids: (string | number)[]) => {
+  const newSet = new Set(expandedIds.value)
+  ids.forEach((id) => newSet.delete(id))
+  expandedIds.value = newSet
+}
+
+// Apply defaultExpanded on initial mount
+onMounted(() => {
+  if (props.defaultExpanded && props.defaultExpanded.length > 0) {
+    expand(...props.defaultExpanded)
+  }
+})
+
+defineExpose<CategoryManagerExpose>({
+  expandedIds,
+  expandAll,
+  collapseAll,
+  expand,
+  collapse,
+})
 </script>
 
 <template>
-  <div class="category-manager-container w-full bg-muted/10 rounded-xl border border-border p-4 lg:p-6">
+  <div
+    class="category-manager-container w-full bg-muted/10 rounded-xl border border-border p-4 lg:p-6 relative"
+    :class="{ 'category-manager--loading': loading }">
     <div class="flex items-center justify-between mb-6">
       <slot name="header">
         <div>
@@ -625,5 +697,32 @@ const vFocus = {
           @onSubmit="handleFormSubmit" />
       </div>
     </Modal>
+
+    <!-- Loading overlay: keeps component mounted and state intact -->
+    <Transition name="cm-fade">
+      <div
+        v-if="loading"
+        class="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-background/60 backdrop-blur-[1px] transition-opacity">
+        <div class="flex items-center gap-2 text-sm text-muted-foreground">
+          <Icon icon="lucide:loader-2" class="w-4 h-4 animate-spin" />
+          <span>{{ $t('vlite.categoryManager.loading') !== 'vlite.categoryManager.loading' ? $t('vlite.categoryManager.loading') : 'Updating...' }}</span>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
+
+<style scoped>
+.category-manager--loading {
+  pointer-events: none;
+  user-select: none;
+}
+.cm-fade-enter-active,
+.cm-fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.cm-fade-enter-from,
+.cm-fade-leave-to {
+  opacity: 0;
+}
+</style>
