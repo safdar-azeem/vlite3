@@ -1,21 +1,23 @@
 <script setup lang="ts">
 /**
- * FadeOverlay.demo.vue
- * Shows all three use cases with live controls.
+ * FadeOverlayDemo.vue
+ * Shows all use cases with live controls and static examples.
  */
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import FadeOverlay from '@/components/FadeOverlay.vue'
+import DemoSection from '../DemoSection.vue'
+import sourceCode from './FadeOverlayDemo.vue?raw'
 
 // ── Scrim controls ────────────────────────────────────────────────────────────
-const scrimCoverage = ref(55)
-const scrimFadeStart = ref(20)
+const scrimCoverage = ref(100)
+const scrimFadeStart = ref(45)
 
 // ── Scroll-fade controls ──────────────────────────────────────────────────────
-const scrollColor = ref('#ffffff')
+const scrollColor = ref('var(--color-background)')
 
 // ── Blur controls ─────────────────────────────────────────────────────────────
-const blurAmount = ref(16)
-const blurTintOpacity = ref(0)
+const blurAmount = ref(40)
+const blurTintOpacity = ref(0.5)
 const blurColor = ref('#000000')
 
 const blurVariantLabel = computed(() => {
@@ -24,526 +26,335 @@ const blurVariantLabel = computed(() => {
   return 'Cinematic dark'
 })
 
-import { computed } from 'vue'
+const propTable = [
+  {
+    prop: 'direction',
+    type: "'top'|'bottom'|'left'|'right'",
+    default: "'bottom'",
+    mode: 'both',
+    notes: 'Which edge the overlay anchors to',
+  },
+  {
+    prop: 'coverage',
+    type: 'string|number',
+    default: "'100%'",
+    mode: 'both',
+    notes: 'How much of the parent to cover. Any CSS length.',
+  },
+  {
+    prop: 'fadeStart',
+    type: 'string|number',
+    default: "'0%'",
+    mode: 'both',
+    notes: '% of coverage where transparent end begins',
+  },
+  {
+    prop: 'fadeEnd',
+    type: 'string|number',
+    default: "'100%'",
+    mode: 'both',
+    notes: '% of coverage where opaque end finishes',
+  },
+  {
+    prop: 'color',
+    type: 'string',
+    default: "'#000000'",
+    mode: 'both',
+    notes: 'Scrim color (scrim) or tint color (blur)',
+  },
+  {
+    prop: 'easing',
+    type: "'linear'|'smooth'",
+    default: "'smooth'",
+    mode: 'both',
+    notes: 'smooth = 13-stop Material scrim curve',
+  },
+  {
+    prop: 'opacity',
+    type: 'string|number',
+    default: '1',
+    mode: 'both',
+    notes: 'Overall element opacity',
+  },
+  {
+    prop: 'zIndex',
+    type: 'string|number',
+    default: '10',
+    mode: 'both',
+    notes: 'CSS z-index',
+  },
+  {
+    prop: 'blendMode',
+    type: 'CSSBlendMode',
+    default: 'undefined',
+    mode: 'both',
+    notes: 'CSS mix-blend-mode',
+  },
+  {
+    prop: 'blur',
+    type: 'number|string',
+    default: 'undefined',
+    mode: 'blur only',
+    notes: 'Activates blur mode. Number = px, string = as-is',
+  },
+  {
+    prop: 'tintOpacity',
+    type: 'number',
+    default: '0',
+    mode: 'blur only',
+    notes: '0 = pure vibrancy · 0.3 = frost · 0.6 = cinematic',
+  },
+]
 </script>
 
 <template>
-  <div
-    style="
-      font-family: 'Inter', system-ui, sans-serif;
-      background: #0f0f0f;
-      min-height: 100vh;
-      padding: 40px 24px;
-      color: #fff;
-      box-sizing: border-box;
-    ">
-    <h1
-      style="
-        font-size: 13px;
-        font-weight: 500;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: #666;
-        margin: 0 0 40px;
-      ">
-      FadeOverlay · Component Demo
-    </h1>
-
-    <div
-      style="
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 40px;
-        max-width: 1100px;
-      ">
-      <!-- ── 1. SCRIM ───────────────────────────────────────────────────────── -->
-      <section>
-        <p
-          style="
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: #555;
-            margin: 0 0 12px;
-          ">
-          01 — Image scrim
-        </p>
-
-        <div
-          style="
-            position: relative;
-            overflow: hidden;
-            border-radius: 16px;
-            aspect-ratio: 3/4;
-            background: #111;
-          ">
-          <img
-            src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=700&q=85"
-            alt="Mountain"
-            style="width: 100%; height: 100%; object-fit: cover; display: block" />
-
-          <FadeOverlay
-            direction="bottom"
-            :coverage="`${scrimCoverage}%`"
-            :fadeStart="`${scrimFadeStart}%`"
-            fadeEnd="100%"
-            color="#000000"
-            easing="smooth" />
-
-          <!-- Card text -->
-          <div
-            style="
-              position: absolute;
-              bottom: 0;
-              left: 0;
-              right: 0;
-              padding: 24px;
-              z-index: 20;
-              pointer-events: none;
-            ">
-            <p
-              style="
-                margin: 0 0 6px;
-                font-size: 11px;
-                font-weight: 600;
-                letter-spacing: 0.1em;
-                text-transform: uppercase;
-                color: rgba(255, 255, 255, 0.6);
-              ">
-              Featured trail
-            </p>
-            <h2
-              style="
-                margin: 0 0 10px;
-                font-size: 22px;
-                font-weight: 700;
-                line-height: 1.2;
-                color: #fff;
-              ">
-              American Cordillera Trails
-            </h2>
-            <div style="display: flex; gap: 14px; align-items: center">
-              <span style="font-size: 13px; color: rgba(255, 255, 255, 0.75)">⏱ 2 days</span>
-              <span style="font-size: 13px; color: rgba(255, 255, 255, 0.75)">★ 4.8 / 5</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Controls -->
-        <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 10px">
-          <label
-            style="font-size: 12px; color: #666; display: flex; justify-content: space-between">
-            coverage
-            <span style="color: #999">{{ scrimCoverage }}%</span>
-          </label>
-          <input type="range" min="20" max="100" v-model="scrimCoverage" style="width: 100%" />
-
-          <label
-            style="font-size: 12px; color: #666; display: flex; justify-content: space-between">
-            fadeStart
-            <span style="color: #999">{{ scrimFadeStart }}%</span>
-          </label>
-          <input type="range" min="0" max="80" v-model="scrimFadeStart" style="width: 100%" />
-        </div>
-
-        <!-- Usage -->
-        <pre
-          style="
-            margin-top: 20px;
-            padding: 14px 16px;
-            border-radius: 8px;
-            background: #1a1a1a;
-            border: 0.5px solid #2a2a2a;
-            font-size: 11px;
-            color: #888;
-            overflow-x: auto;
-            line-height: 1.7;
-          "><code><span style="color: #555;">&lt;</span><span style="color: #a78bfa;">FadeOverlay</span>
-  direction<span style="color: #555;">=</span><span style="color: #86efac;">"bottom"</span>
-  coverage<span style="color: #555;">=</span><span style="color: #86efac;">"{{ scrimCoverage }}%"</span>
-  fadeStart<span style="color: #555;">=</span><span style="color: #86efac;">"{{ scrimFadeStart }}%"</span>
-  color<span style="color: #555;">=</span><span style="color: #86efac;">"#000000"</span>
-  easing<span style="color: #555;">=</span><span style="color: #86efac;">"smooth"</span> <span style="color: #555;">/&gt;</span></code></pre>
-      </section>
-
-      <!-- ── 2. SCROLL FADE ─────────────────────────────────────────────────── -->
-      <section>
-        <p
-          style="
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: #555;
-            margin: 0 0 12px;
-          ">
-          02 — Scroll-edge fade
-        </p>
-
-        <div
-          style="
-            position: relative;
-            border-radius: 16px;
-            overflow: hidden;
-            background: #1c1c1e;
-            border: 0.5px solid #2a2a2a;
-          ">
-          <!-- Scrollable list -->
-          <div style="height: 300px; overflow-y: auto; padding: 20px">
-            <div
-              v-for="i in 20"
-              :key="i"
-              style="
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                padding: 12px 0;
-                border-bottom: 0.5px solid #2a2a2a;
-              ">
-              <div
-                style="
-                  width: 36px;
-                  height: 36px;
-                  border-radius: 8px;
-                  flex-shrink: 0;
-                  background: linear-gradient(135deg, #333, #222);
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: 14px;
-                  color: #666;
-                ">
-                {{ i }}
-              </div>
-              <div>
-                <p style="margin: 0; font-size: 13px; color: #e5e5e5">Trail segment {{ i }}</p>
-                <p style="margin: 0; font-size: 11px; color: #555">
-                  {{ (i * 2.3).toFixed(1) }} km · {{ i * 40 + 120 }}m elevation
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Top fade -->
-          <FadeOverlay direction="top" coverage="60px" color="#1c1c1e" easing="smooth" />
-
-          <!-- Bottom fade -->
-          <FadeOverlay direction="bottom" coverage="80px" color="#1c1c1e" easing="smooth" />
-        </div>
-
-        <!-- Controls -->
-        <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 10px">
-          <label style="font-size: 12px; color: #666"> color (match your container bg) </label>
-          <input
-            type="color"
-            v-model="scrollColor"
-            style="
-              width: 48px;
-              height: 28px;
-              border: none;
-              background: none;
-              cursor: pointer;
-              border-radius: 4px;
-            " />
-        </div>
-
-        <pre
-          style="
-            margin-top: 20px;
-            padding: 14px 16px;
-            border-radius: 8px;
-            background: #1a1a1a;
-            border: 0.5px solid #2a2a2a;
-            font-size: 11px;
-            color: #888;
-            overflow-x: auto;
-            line-height: 1.7;
-          "><code><span style="color: #555;">&lt;!-- top + bottom pair --&gt;</span>
-<span style="color: #555;">&lt;</span><span style="color: #a78bfa;">FadeOverlay</span>
-  direction<span style="color: #555;">=</span><span style="color: #86efac;">"top"</span>
-  coverage<span style="color: #555;">=</span><span style="color: #86efac;">"60px"</span>
-  color<span style="color: #555;">=</span><span style="color: #86efac;">"#1c1c1e"</span> <span style="color: #555;">/&gt;</span>
-<span style="color: #555;">&lt;</span><span style="color: #a78bfa;">FadeOverlay</span>
-  direction<span style="color: #555;">=</span><span style="color: #86efac;">"bottom"</span>
-  coverage<span style="color: #555;">=</span><span style="color: #86efac;">"80px"</span>
-  color<span style="color: #555;">=</span><span style="color: #86efac;">"#1c1c1e"</span> <span style="color: #555;">/&gt;</span></code></pre>
-      </section>
-
-      <!-- ── 3. BLUR ────────────────────────────────────────────────────────── -->
-      <section>
-        <p
-          style="
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: #555;
-            margin: 0 0 12px;
-          ">
-          03 — Blur / frosted glass
-          <span
-            style="
-              color: #444;
-              font-weight: 400;
-              text-transform: none;
-              letter-spacing: 0;
-              margin-left: 8px;
-            ">
-            {{ blurVariantLabel }}
-          </span>
-        </p>
-
-        <div
-          style="
-            position: relative;
-            overflow: hidden;
-            border-radius: 16px;
-            aspect-ratio: 3/4;
-            background: #111;
-          ">
-          <img
-            src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=700&q=85"
-            alt="Forest"
-            style="width: 100%; height: 100%; object-fit: cover; display: block" />
-
-          <FadeOverlay
-            direction="bottom"
-            coverage="60%"
-            :blur="+blurAmount"
-            :tintOpacity="blurTintOpacity"
-            :color="blurColor"
-            easing="smooth" />
-
-          <!-- Card text -->
-          <div
-            style="
-              position: absolute;
-              bottom: 0;
-              left: 0;
-              right: 0;
-              padding: 24px;
-              z-index: 20;
-              pointer-events: none;
-            ">
-            <p
-              style="
-                margin: 0 0 6px;
-                font-size: 11px;
-                font-weight: 600;
-                letter-spacing: 0.1em;
-                text-transform: uppercase;
-                color: rgba(255, 255, 255, 0.55);
-              ">
-              Nature reserve
-            </p>
-            <h2
-              style="
-                margin: 0 0 10px;
-                font-size: 22px;
-                font-weight: 700;
-                line-height: 1.2;
-                color: #fff;
-              ">
-              Pacific Forest Trail
-            </h2>
-            <div style="display: flex; gap: 14px; align-items: center">
-              <span style="font-size: 13px; color: rgba(255, 255, 255, 0.7)">⏱ 4 hours</span>
-              <span style="font-size: 13px; color: rgba(255, 255, 255, 0.7)">★ 4.6 / 5</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Controls -->
-        <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 10px">
-          <label
-            style="font-size: 12px; color: #666; display: flex; justify-content: space-between">
-            blur
-            <span style="color: #999">{{ blurAmount }}px</span>
-          </label>
-          <input type="range" min="4" max="40" v-model="blurAmount" style="width: 100%" />
-
-          <label
-            style="font-size: 12px; color: #666; display: flex; justify-content: space-between">
-            tintOpacity
-            <span style="color: #999">{{ blurTintOpacity }}</span>
-          </label>
-          <input
-            type="range"
-            min="0"
-            max="0.8"
-            step="0.05"
-            v-model="blurTintOpacity"
-            style="width: 100%" />
-
-          <div style="display: flex; align-items: center; gap: 10px">
-            <label style="font-size: 12px; color: #666">tint color</label>
-            <input
-              type="color"
-              v-model="blurColor"
-              style="
-                width: 48px;
-                height: 28px;
-                border: none;
-                background: none;
-                cursor: pointer;
-                border-radius: 4px;
-              " />
-          </div>
-        </div>
-
-        <pre
-          style="
-            margin-top: 20px;
-            padding: 14px 16px;
-            border-radius: 8px;
-            background: #1a1a1a;
-            border: 0.5px solid #2a2a2a;
-            font-size: 11px;
-            color: #888;
-            overflow-x: auto;
-            line-height: 1.7;
-          "><code><span style="color: #555;">&lt;</span><span style="color: #a78bfa;">FadeOverlay</span>
-  direction<span style="color: #555;">=</span><span style="color: #86efac;">"bottom"</span>
-  coverage<span style="color: #555;">=</span><span style="color: #86efac;">"60%"</span>
-  <span style="color: #fbbf24;">:blur</span><span style="color: #555;">=</span><span style="color: #86efac;">"{{ blurAmount }}"</span>
-  <span style="color: #fbbf24;">:tintOpacity</span><span style="color: #555;">=</span><span style="color: #86efac;">"{{ blurTintOpacity }}"</span>
-  color<span style="color: #555;">=</span><span style="color: #86efac;">"{{ blurColor }}"</span>
-  easing<span style="color: #555;">=</span><span style="color: #86efac;">"smooth"</span> <span style="color: #555;">/&gt;</span></code></pre>
-      </section>
-    </div>
-
-    <!-- ── Prop reference ────────────────────────────────────────────────────── -->
-    <div style="margin-top: 60px; max-width: 1100px">
-      <p
-        style="
-          font-size: 11px;
-          font-weight: 600;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          color: #444;
-          margin: 0 0 16px;
-        ">
-        Prop reference
+  <div class="space-y-10">
+    <div class="space-y-2">
+      <h2 class="text-2xl font-bold">FadeOverlay</h2>
+      <p class="text-muted-foreground">
+        A versatile overlay component for smooth scrims, scroll-edge fades, and frosted glass
+        effects.
       </p>
-      <table style="width: 100%; border-collapse: collapse; font-size: 12px">
-        <thead>
-          <tr style="border-bottom: 0.5px solid #2a2a2a">
-            <th style="text-align: left; padding: 8px 12px; color: #555; font-weight: 500">Prop</th>
-            <th style="text-align: left; padding: 8px 12px; color: #555; font-weight: 500">Type</th>
-            <th style="text-align: left; padding: 8px 12px; color: #555; font-weight: 500">
-              Default
-            </th>
-            <th style="text-align: left; padding: 8px 12px; color: #555; font-weight: 500">Mode</th>
-            <th style="text-align: left; padding: 8px 12px; color: #555; font-weight: 500">
-              Notes
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="row in propTable" :key="row.prop" style="border-bottom: 0.5px solid #1e1e1e">
-            <td style="padding: 8px 12px; color: #a78bfa; font-family: monospace">
-              {{ row.prop }}
-            </td>
-            <td style="padding: 8px 12px; color: #86efac; font-family: monospace">
-              {{ row.type }}
-            </td>
-            <td style="padding: 8px 12px; color: #fbbf24; font-family: monospace">
-              {{ row.default }}
-            </td>
-            <td style="padding: 8px 12px; color: #666">{{ row.mode }}</td>
-            <td style="padding: 8px 12px; color: #555">{{ row.notes }}</td>
-          </tr>
-        </tbody>
-      </table>
     </div>
+
+    <!-- ── INTERACTIVE DEMOS ────────────────────────────────────────────────── -->
+    <DemoSection
+      title="Interactive Examples"
+      description="Play with coverage, blur, and opacity."
+      :code="sourceCode">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <!-- ── 1. SCRIM ───────────────────────────────────────────────────────── -->
+        <div class="flex flex-col">
+          <p class="text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-3">
+            01 — Image scrim
+          </p>
+          <div class="relative overflow-hidden rounded-2xl aspect-[3/4] bg-neutral-900 group">
+            <img
+              src="https://plus.unsplash.com/premium_photo-1751906599954-2f814f94676c?q=80&w=985&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="Mountain"
+              class="w-full h-full object-cover block transition-transform duration-700 group-hover:scale-105" />
+
+            <FadeOverlay
+              direction="bottom"
+              :coverage="`${scrimCoverage}%`"
+              :fadeStart="`${scrimFadeStart}%`"
+              fadeEnd="100%"
+              color="#000000"
+              easing="smooth" />
+
+            <!-- Card text -->
+            <div class="absolute bottom-0 inset-x-0 p-6 z-20 pointer-events-none text-[white]">
+              <p
+                class="m-0 mb-1.5 text-[11px] font-semibold tracking-[0.1em] uppercase text-[white]/60">
+                Featured trail
+              </p>
+              <h2 class="m-0 mb-2.5 text-[22px] font-bold leading-[1.2] text-[white]">
+                American Cordillera Trails
+              </h2>
+              <div class="flex gap-3.5 items-center">
+                <span class="text-[13px] text-[white]/75">⏱ 2 days</span>
+                <span class="text-[13px] text-[white]/75">★ 4.8 / 5</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div class="mt-4 flex flex-col gap-2.5">
+            <label class="text-xs text-muted-foreground flex justify-between">
+              coverage
+              <span class="text-muted-foreground/60">{{ scrimCoverage }}%</span>
+            </label>
+            <input type="range" min="20" max="100" v-model="scrimCoverage" class="w-full" />
+
+            <label class="text-xs text-muted-foreground flex justify-between">
+              fadeStart
+              <span class="text-muted-foreground/60">{{ scrimFadeStart }}%</span>
+            </label>
+            <input type="range" min="0" max="80" v-model="scrimFadeStart" class="w-full" />
+          </div>
+        </div>
+
+        <!-- ── 2. SCROLL FADE ─────────────────────────────────────────────────── -->
+        <div class="flex flex-col">
+          <p class="text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-3">
+            02 — Scroll-edge fade
+          </p>
+          <div class="relative rounded-2xl overflow-hidden bg-card border border-border">
+            <!-- Scrollable list -->
+            <div class="h-[300px] overflow-y-auto p-5">
+              <div
+                v-for="i in 20"
+                :key="i"
+                class="flex items-center gap-3 py-3 border-b border-border/50 last:border-0">
+                <div
+                  class="w-9 h-9 rounded-lg shrink-0 bg-secondary flex items-center justify-center text-sm text-muted-foreground">
+                  {{ i }}
+                </div>
+                <div>
+                  <p class="m-0 text-[13px] text-foreground">Trail segment {{ i }}</p>
+                  <p class="m-0 text-[11px] text-muted-foreground">
+                    {{ (i * 2.3).toFixed(1) }} km · {{ i * 40 + 120 }}m elevation
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Top fade -->
+            <FadeOverlay direction="top" coverage="60px" :color="scrollColor" easing="smooth" />
+
+            <!-- Bottom fade -->
+            <FadeOverlay direction="bottom" coverage="80px" :color="scrollColor" easing="smooth" />
+          </div>
+
+          <!-- Controls -->
+          <div class="mt-4 flex flex-col gap-2.5">
+            <label class="text-xs text-muted-foreground flex items-center gap-2">
+              color (match container bg)
+              <input
+                type="color"
+                v-model="scrollColor"
+                class="w-12 h-7 border-0 bg-transparent cursor-pointer rounded" />
+            </label>
+          </div>
+        </div>
+
+        <!-- ── 3. BLUR ────────────────────────────────────────────────────────── -->
+        <div class="flex flex-col">
+          <p
+            class="text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-3 flex flex-wrap gap-1">
+            03 — Frosted glass
+            <span class="text-muted-foreground/60 font-normal normal-case tracking-normal ml-1">
+              {{ blurVariantLabel }}
+            </span>
+          </p>
+          <div class="relative overflow-hidden rounded-2xl aspect-[3/4] bg-neutral-900 group">
+            <img
+              src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=800"
+              alt="Forest"
+              class="w-full h-full object-cover block transition-transform duration-700 group-hover:scale-105" />
+
+            <FadeOverlay
+              direction="bottom"
+              coverage="70%"
+              :blur="+blurAmount"
+              :tintOpacity="blurTintOpacity"
+              :color="blurColor"
+              easing="smooth" />
+
+            <!-- Card text -->
+            <div class="absolute bottom-0 inset-x-0 p-6 z-20 pointer-events-none text-[white]">
+              <p
+                class="m-0 mb-1.5 text-[11px] font-semibold tracking-[0.1em] uppercase text-[white]/50">
+                Nature reserve
+              </p>
+              <h2 class="m-0 mb-2.5 text-[22px] font-bold leading-[1.2] text-[white]">
+                Pacific Forest Trail
+              </h2>
+              <div class="flex gap-3.5 items-center">
+                <span class="text-[13px] text-[white]/70">⏱ 4 hours</span>
+                <span class="text-[13px] text-[white]/70">★ 4.6 / 5</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div class="mt-4 flex flex-col gap-2.5">
+            <label class="text-xs text-muted-foreground flex justify-between">
+              blur
+              <span class="text-muted-foreground/60">{{ blurAmount }}px</span>
+            </label>
+            <input type="range" min="4" max="40" v-model="blurAmount" class="w-full" />
+
+            <label class="text-xs text-muted-foreground flex justify-between">
+              tintOpacity
+              <span class="text-muted-foreground/60">{{ blurTintOpacity }}</span>
+            </label>
+            <input
+              type="range"
+              min="0"
+              max="0.8"
+              step="0.05"
+              v-model="blurTintOpacity"
+              class="w-full" />
+
+            <div class="flex items-center gap-2">
+              <label class="text-xs text-muted-foreground">tint color</label>
+              <input
+                type="color"
+                v-model="blurColor"
+                class="w-12 h-7 border-0 bg-transparent cursor-pointer rounded" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </DemoSection>
+
+    <DemoSection
+      title="Bottom Fade (Default)"
+      description="Fades out content at the bottom of the container."
+      :code="sourceCode">
+      <div
+        class="relative w-full max-w-sm h-48 bg-card rounded-md overflow-hidden border border-border p-4">
+        <p class="text-sm">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt
+          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+          ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+        </p>
+        <FadeOverlay direction="bottom" coverage="50%" />
+      </div>
+    </DemoSection>
+
+    <DemoSection
+      title="Top Fade"
+      description="Fades out content at the top of the container."
+      :code="sourceCode">
+      <div
+        class="relative w-full max-w-sm h-48 bg-card rounded-md overflow-hidden border border-border p-4 flex items-end">
+        <p class="text-sm pb-4">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt
+          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+          ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+        </p>
+        <FadeOverlay direction="top" coverage="40%" />
+      </div>
+    </DemoSection>
+
+    <DemoSection
+      title="Right Fade"
+      description="Useful for horizontally scrollable lists."
+      :code="sourceCode">
+      <div
+        class="relative w-full max-w-md h-32 bg-card rounded-md overflow-hidden border border-border flex items-center p-4">
+        <div class="flex gap-2 whitespace-nowrap overflow-hidden">
+          <div
+            v-for="i in 10"
+            :key="i"
+            class="w-16 h-16 bg-primary/20 rounded-md shrink-0 flex items-center justify-center">
+            Item {{ i }}
+          </div>
+        </div>
+        <FadeOverlay direction="right" coverage="30%" />
+      </div>
+    </DemoSection>
+
+    <DemoSection
+      title="Left Fade"
+      description="Fades out content at the left edge."
+      :code="sourceCode">
+      <div
+        class="relative w-full max-w-md h-32 bg-card rounded-md overflow-hidden border border-border flex items-center p-4">
+        <div class="flex gap-2 whitespace-nowrap overflow-hidden justify-end">
+          <div
+            v-for="i in 10"
+            :key="i"
+            class="w-16 h-16 bg-primary/20 rounded-md shrink-0 flex items-center justify-center">
+            Item {{ i }}
+          </div>
+        </div>
+        <FadeOverlay direction="left" coverage="40%" />
+      </div>
+    </DemoSection>
   </div>
 </template>
-
-<script lang="ts">
-export default {
-  data() {
-    return {
-      propTable: [
-        {
-          prop: 'direction',
-          type: "'top'|'bottom'|'left'|'right'",
-          default: "'bottom'",
-          mode: 'both',
-          notes: 'Which edge the overlay anchors to',
-        },
-        {
-          prop: 'coverage',
-          type: 'string|number',
-          default: "'100%'",
-          mode: 'both',
-          notes: 'How much of the parent to cover. Any CSS length.',
-        },
-        {
-          prop: 'fadeStart',
-          type: 'string|number',
-          default: "'0%'",
-          mode: 'both',
-          notes: '% of coverage where transparent end begins',
-        },
-        {
-          prop: 'fadeEnd',
-          type: 'string|number',
-          default: "'100%'",
-          mode: 'both',
-          notes: '% of coverage where opaque end finishes',
-        },
-        {
-          prop: 'color',
-          type: 'string',
-          default: "'#000000'",
-          mode: 'both',
-          notes: 'Scrim color (scrim) or tint color (blur)',
-        },
-        {
-          prop: 'easing',
-          type: "'linear'|'smooth'",
-          default: "'smooth'",
-          mode: 'both',
-          notes: 'smooth = 13-stop Material scrim curve',
-        },
-        {
-          prop: 'opacity',
-          type: 'string|number',
-          default: '1',
-          mode: 'both',
-          notes: 'Overall element opacity',
-        },
-        {
-          prop: 'zIndex',
-          type: 'string|number',
-          default: '10',
-          mode: 'both',
-          notes: 'CSS z-index',
-        },
-        {
-          prop: 'blendMode',
-          type: 'CSSBlendMode',
-          default: 'undefined',
-          mode: 'both',
-          notes: 'CSS mix-blend-mode',
-        },
-        {
-          prop: 'blur',
-          type: 'number|string',
-          default: 'undefined',
-          mode: 'blur only',
-          notes: 'Activates blur mode. Number = px, string = as-is',
-        },
-        {
-          prop: 'tintOpacity',
-          type: 'number',
-          default: '0',
-          mode: 'blur only',
-          notes: '0 = pure vibrancy · 0.3 = frost · 0.6 = cinematic',
-        },
-      ],
-    }
-  },
-}
-</script>
