@@ -16,7 +16,23 @@ export interface FadeOverlayProps {
    */
   blur?: boolean | string | number
   /** CSS mix-blend-mode */
-  blendMode?: 'normal' | 'multiply' | 'screen' | 'overlay' | 'darken' | 'lighten' | 'color-dodge' | 'color-burn' | 'hard-light' | 'soft-light' | 'difference' | 'exclusion' | 'hue' | 'saturation' | 'color' | 'luminosity'
+  blendMode?:
+    | 'normal'
+    | 'multiply'
+    | 'screen'
+    | 'overlay'
+    | 'darken'
+    | 'lighten'
+    | 'color-dodge'
+    | 'color-burn'
+    | 'hard-light'
+    | 'soft-light'
+    | 'difference'
+    | 'exclusion'
+    | 'hue'
+    | 'saturation'
+    | 'color'
+    | 'luminosity'
   /** Overall opacity of the overlay (0–1) */
   opacity?: string | number
   /** CSS z-index */
@@ -93,7 +109,7 @@ const overlayStyles = computed(() => {
     // Use a semi-transparent version of the color so the blur effect is visible.
     const bgColor =
       props.color === 'var(--color-background)'
-        ? 'color-mix(in srgb, var(--color-background) 60%, transparent)'
+        ? 'color-mix(in srgb, var(--color-background) 90%, transparent)'
         : props.color
 
     return {
