@@ -248,7 +248,7 @@ const sizeClasses = {
 const itemBaseClasses = computed(() => {
   const isLine = props.variant === 'line'
   const base = isLine
-    ? 'relative z-10 flex items-center justify-center gap-2 font-medium transition-colors duration-50 ease-out cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-primary/50 pb-2 border-b-2 border-transparent hover:text-foreground shrink-0'
+    ? 'relative z-10 flex items-center justify-center gap-2 font-medium transition-colors duration-50 ease-out cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-primary/50 pb-3 border-b-2 border-transparent hover:text-foreground shrink-0'
     : 'relative z-10 flex items-center justify-center gap-2 font-medium transition-colors duration-50 ease-out cursor-pointer select-none rounded-md outline-none focus-visible:ring-2 focus-visible:ring-primary/50 shrink-0'
 
   // flex-1 when:
