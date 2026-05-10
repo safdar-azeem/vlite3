@@ -78,7 +78,7 @@ A schema-driven form builder with built-in validation, multi-step wizards, group
 | `iconRight`        | `string`                            | Right icon (Iconify ID)                                                             |
 | `addonLeft`        | `string \| IFormAddon`              | Left addon — plain text or addon config object                                      |
 | `addonRight`       | `string \| IFormAddon`              | Right addon — plain text or addon config object                                     |
-| `props`            | `Record<string, any>`               | Extra props forwarded to the field component                                        |
+| `props`            | `Record<string, any>`               | Extra props forwarded to the field component (e.g., `addNewConfig` for `AsyncSelect`) |
 | `min`              | `number`                            | Minimum value for number inputs                                                     |
 | `max`              | `number`                            | Maximum value for number inputs                                                     |
 | `maxFileSize`      | `number`                            | Maximum file size in MB for file/avatar uploads                                     |
