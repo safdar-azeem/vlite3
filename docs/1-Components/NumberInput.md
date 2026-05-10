@@ -10,8 +10,8 @@
 | `min`         | `number`             | —           | Minimum value           |
 | `max`         | `number`             | —           | Maximum value           |
 | `step`        | `number`             | `1`         | Increment step          |
-| `variant`     | `NumberInputVariant` | `split`     | Visual style            |
-| `mode`        | `NumberInputMode`    | `outline`   | Background/border style |
+| `layout`      | `NumberInputLayout`  | `split`     | Visual structure        |
+| `variant`     | `NumberInputVariant` | `outline`   | Background/border style |
 | `size`        | `NumberInputSize`    | `md`        | Dimensions              |
 | `rounded`     | `NumberInputRounded` | `md`        | Border radius           |
 | `placeholder` | `string`             | —           | Input placeholder       |
@@ -23,8 +23,8 @@
 ### Types
 
 ```ts
-type NumberInputVariant = 'split' | 'stacked'
-type NumberInputMode = 'solid' | 'outline' | 'ghost'
+type NumberInputLayout = 'split' | 'stacked'
+type NumberInputVariant = 'solid' | 'outline' | 'transparent'
 type NumberInputSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 type NumberInputRounded = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
 ```
@@ -33,5 +33,5 @@ type NumberInputRounded = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
 
 ```vue
 <NumberInput v-model="quantity" :min="1" :max="10" />
-<NumberInput v-model="price" variant="stacked" mode="ghost" />
+<NumberInput v-model="price" layout="stacked" variant="transparent" />
 ```
