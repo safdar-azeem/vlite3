@@ -32,6 +32,10 @@ export interface CategoryManagerProps {
   formSchema?: IForm[]
   /** Disable drag-and-drop and mutation actions */
   readonly?: boolean
+  /** Shows loading overlay without destroying component state. Use this instead of v-if to preserve expanded/inline state across refetches. */
+  loading?: boolean
+  /** Array of category IDs to expand on initial mount */
+  defaultExpanded?: (string | number)[]
   /** Title for the empty state */
   emptyTitle?: string
   /** Description for the empty state */
@@ -116,4 +120,17 @@ export interface CategoryManagerContext {
   deleteTooltipText: ComputedRef<string>
   saveTooltipText: ComputedRef<string>
   cancelTooltipText: ComputedRef<string>
+}
+
+export interface CategoryManagerExpose {
+  /** The set of currently expanded node IDs */
+  expandedIds: Ref<Set<string | number>>
+  /** Expand all nodes in the tree */
+  expandAll: () => void
+  /** Collapse all nodes in the tree */
+  collapseAll: () => void
+  /** Expand specific node IDs */
+  expand: (...ids: (string | number)[]) => void
+  /** Collapse specific node IDs */
+  collapse: (...ids: (string | number)[]) => void
 }
