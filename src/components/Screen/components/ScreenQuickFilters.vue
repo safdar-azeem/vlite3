@@ -42,7 +42,7 @@ const handleChange = (val: string | number) => {
 </script>
 
 <template>
-  <div class="w-max">
+  <div class="w-full min-w-0">
     <Tabes
       class="border-b-0! border-0! pb-0 gap-3!"
       :model-value="modelValue"
