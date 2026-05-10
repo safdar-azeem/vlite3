@@ -61,5 +61,5 @@ export type TabesVariant =
   wrap />
 ```
 
-> **Note:** When `wrap` is enabled, the animated sliding marker is hidden because it cannot accurately track the active tab across multiple rows. Active tab state is still indicated via color.
+> **Note:** By default, when `Tabes` exceed their container's width, they will enable smooth horizontal scrolling and display navigation buttons. Use `wrap` to wrap them to multiple rows instead. When `wrap` is enabled, the animated sliding marker is hidden.
 
