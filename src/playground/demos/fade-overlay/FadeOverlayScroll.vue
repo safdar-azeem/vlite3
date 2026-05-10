@@ -63,7 +63,7 @@ async function copyCode() {
       02 — Scroll-edge fade
     </p>
     <div class="relative rounded-2xl overflow-hidden bg-card border border-border">
-      <div class="h-[300px] overflow-y-auto p-5">
+      <div class="relative z-0 h-[300px] overflow-y-auto p-5">
         <div
           v-for="(item, i) in items"
           :key="i"
@@ -83,8 +83,8 @@ async function copyCode() {
         </div>
       </div>
 
-      <FadeOverlay v-if="showTop" direction="top" :coverage="`${topCoverage}px`" color="var(--color-card)" easing="smooth" />
-      <FadeOverlay v-if="showBottom" direction="bottom" :coverage="`${bottomCoverage}px`" color="var(--color-card)" easing="smooth" />
+      <FadeOverlay v-if="showTop" direction="top" :coverage="`${topCoverage}px`" color="var(--color-body)" easing="smooth" />
+      <FadeOverlay v-if="showBottom" direction="bottom" :coverage="`${bottomCoverage}px`" color="var(--color-body)" easing="smooth" />
     </div>
 
     <!-- Controls -->
