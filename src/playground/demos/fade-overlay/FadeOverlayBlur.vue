@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { FadeOverlay } from '@/components/FadeOverlay'
+import { highlightVue } from '@/playground/highlighter'
 
 const blurAmount = ref(40)
 const blurTintOpacity = ref(0.5)
@@ -34,6 +35,39 @@ function applyPreset(preset: (typeof presets)[number]) {
   blurAmount.value = preset.blur
   blurTintOpacity.value = preset.tint
   blurColor.value = preset.color
+}
+
+/* ── Generated code snippet ──────────────────────────────── */
+
+const generatedCode = computed(() => {
+  const props: string[] = []
+  props.push(`  direction="bottom"`)
+  if (coverage.value !== 100) props.push(`  coverage="${coverage.value}%"`)
+  props.push(`  :blur="${blurAmount.value}"`)
+  if (blurTintOpacity.value !== 0) props.push(`  :tintOpacity="${blurTintOpacity.value}"`)
+  if (blurColor.value !== '#000000') props.push(`  color="${blurColor.value}"`)
+  props.push(`  easing="smooth"`)
+
+  return `<FadeOverlay\n${props.join('\n')}\n/>`
+})
+
+const highlightedCode = computed(() => highlightVue(generatedCode.value))
+const copied = ref(false)
+
+async function copyCode() {
+  try { await navigator.clipboard.writeText(generatedCode.value) }
+  catch {
+    const ta = document.createElement('textarea')
+    ta.value = generatedCode.value
+    ta.style.position = 'fixed'
+    ta.style.opacity = '0'
+    document.body.appendChild(ta)
+    ta.select()
+    document.execCommand('copy')
+    document.body.removeChild(ta)
+  }
+  copied.value = true
+  setTimeout(() => (copied.value = false), 2000)
 }
 </script>
 
@@ -77,7 +111,6 @@ function applyPreset(preset: (typeof presets)[number]) {
 
     <!-- Controls -->
     <div class="mt-4 flex flex-col gap-3 p-4 rounded-xl bg-muted/30 border border-border/50">
-      <!-- Presets -->
       <label class="text-xs text-muted-foreground">presets</label>
       <div class="grid grid-cols-2 gap-1.5">
         <button
@@ -95,36 +128,44 @@ function applyPreset(preset: (typeof presets)[number]) {
       </div>
 
       <label class="text-xs text-muted-foreground flex justify-between">
-        blur
-        <span class="text-muted-foreground/60">{{ blurAmount }}px</span>
+        blur <span class="text-muted-foreground/60">{{ blurAmount }}px</span>
       </label>
       <input type="range" min="4" max="60" v-model.number="blurAmount" class="w-full" />
 
       <label class="text-xs text-muted-foreground flex justify-between">
-        tintOpacity
-        <span class="text-muted-foreground/60">{{ blurTintOpacity }}</span>
+        tintOpacity <span class="text-muted-foreground/60">{{ blurTintOpacity }}</span>
       </label>
-      <input
-        type="range"
-        min="0"
-        max="0.8"
-        step="0.05"
-        v-model.number="blurTintOpacity"
-        class="w-full" />
+      <input type="range" min="0" max="0.8" step="0.05" v-model.number="blurTintOpacity" class="w-full" />
 
       <label class="text-xs text-muted-foreground flex justify-between">
-        coverage
-        <span class="text-muted-foreground/60">{{ coverage }}%</span>
+        coverage <span class="text-muted-foreground/60">{{ coverage }}%</span>
       </label>
       <input type="range" min="20" max="100" v-model.number="coverage" class="w-full" />
 
       <div class="flex items-center gap-2">
         <label class="text-xs text-muted-foreground">tint color</label>
-        <input
-          type="color"
-          v-model="blurColor"
-          class="w-8 h-7 border-0 bg-transparent cursor-pointer rounded ml-auto" />
+        <input type="color" v-model="blurColor" class="w-8 h-7 border-0 bg-transparent cursor-pointer rounded ml-auto" />
+      </div>
+    </div>
+
+    <!-- Generated code -->
+    <div class="mt-3 rounded-xl overflow-hidden border border-border/50">
+      <div class="flex items-center justify-between px-4 py-2 bg-[#09090b] border-b border-white/[0.06]">
+        <span class="text-[11px] font-medium text-zinc-400 tracking-wide uppercase">Code</span>
+        <button @click="copyCode" class="inline-flex items-center justify-center h-7 w-7 rounded-md hover:bg-white/[0.06] text-zinc-500 hover:text-zinc-300 transition-colors" title="Copy code">
+          <svg v-if="copied" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-400"><polyline points="20 6 9 17 4 12" /></svg>
+          <svg v-else xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>
+        </button>
+      </div>
+      <div class="demo-code-body bg-[#09090b] p-4 overflow-x-auto text-[13px] leading-[1.6]">
+        <pre class="m-0"><code v-html="highlightedCode"></code></pre>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.demo-code-body pre {
+  font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
+}
+</style>
