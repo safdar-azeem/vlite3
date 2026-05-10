@@ -190,7 +190,9 @@ const containerClasses = computed(() => {
   // "block" prop OR explicit w-full class on parent → container is already full-width via CSS,
   // but we still need flex layout. When neither block nor isLine, default to inline-flex so
   // the container shrinks to content (auto width).
-  const blockClass = props.block || isLine ? 'flex w-full' : 'inline-flex'
+  // Use `min-w-full w-max` so that it fills 100% width when small, but expands to `max-content`
+  // when its children overflow, allowing the bottom border to stretch across all items.
+  const blockClass = props.block || isLine ? 'flex min-w-full w-max' : 'inline-flex'
 
   // When wrapping, hide the animated marker since it can't track across rows properly
   const base = `${blockClass} rounded-lg relative isolate ${wrapClass}`
