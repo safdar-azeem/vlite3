@@ -5,17 +5,42 @@ import { FadeOverlay } from '@/components/FadeOverlay'
 const blurAmount = ref(40)
 const blurTintOpacity = ref(0.5)
 const blurColor = ref('#000000')
+const coverage = ref(70)
+
+const presets = [
+  { label: 'macOS Vibrancy', blur: 16, tint: 0, color: '#000000' },
+  { label: 'iOS Frost', blur: 24, tint: 0.25, color: '#ffffff' },
+  { label: 'Cinematic Dark', blur: 32, tint: 0.55, color: '#000000' },
+  { label: 'Warm Fog', blur: 40, tint: 0.35, color: '#4a2810' },
+]
+
+const activePreset = computed(() => {
+  return presets.findIndex(
+    (p) =>
+      p.blur === blurAmount.value &&
+      Math.abs(p.tint - blurTintOpacity.value) < 0.01 &&
+      p.color === blurColor.value
+  )
+})
 
 const blurVariantLabel = computed(() => {
-  if (blurTintOpacity.value === 0) return 'Pure vibrancy (macOS)'
-  if (blurTintOpacity.value <= 0.3) return 'Frosted glass (iOS)'
-  return 'Cinematic dark'
+  if (activePreset.value >= 0) return presets[activePreset.value].label
+  if (blurTintOpacity.value === 0) return 'Pure vibrancy'
+  if (blurTintOpacity.value <= 0.3) return 'Frosted glass'
+  return 'Cinematic'
 })
+
+function applyPreset(preset: (typeof presets)[number]) {
+  blurAmount.value = preset.blur
+  blurTintOpacity.value = preset.tint
+  blurColor.value = preset.color
+}
 </script>
 
 <template>
   <div class="flex flex-col">
-    <p class="text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-3 flex flex-wrap gap-1">
+    <p
+      class="text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-3 flex flex-wrap gap-1">
       03 — Frosted glass
       <span class="text-muted-foreground/60 font-normal normal-case tracking-normal ml-1">
         {{ blurVariantLabel }}
@@ -29,7 +54,7 @@ const blurVariantLabel = computed(() => {
 
       <FadeOverlay
         direction="bottom"
-        coverage="70%"
+        :coverage="`${coverage}%`"
         :blur="+blurAmount"
         :tintOpacity="blurTintOpacity"
         :color="blurColor"
@@ -51,12 +76,29 @@ const blurVariantLabel = computed(() => {
     </div>
 
     <!-- Controls -->
-    <div class="mt-4 flex flex-col gap-2.5">
+    <div class="mt-4 flex flex-col gap-3 p-4 rounded-xl bg-muted/30 border border-border/50">
+      <!-- Presets -->
+      <label class="text-xs text-muted-foreground">presets</label>
+      <div class="grid grid-cols-2 gap-1.5">
+        <button
+          v-for="(preset, i) in presets"
+          :key="i"
+          @click="applyPreset(preset)"
+          class="px-2.5 py-1.5 text-[10px] font-medium rounded-lg transition-all duration-150 text-left"
+          :class="
+            activePreset === i
+              ? 'bg-foreground text-background shadow-sm'
+              : 'bg-muted text-muted-foreground hover:text-foreground'
+          ">
+          {{ preset.label }}
+        </button>
+      </div>
+
       <label class="text-xs text-muted-foreground flex justify-between">
         blur
         <span class="text-muted-foreground/60">{{ blurAmount }}px</span>
       </label>
-      <input type="range" min="4" max="40" v-model="blurAmount" class="w-full" />
+      <input type="range" min="4" max="60" v-model.number="blurAmount" class="w-full" />
 
       <label class="text-xs text-muted-foreground flex justify-between">
         tintOpacity
@@ -67,15 +109,21 @@ const blurVariantLabel = computed(() => {
         min="0"
         max="0.8"
         step="0.05"
-        v-model="blurTintOpacity"
+        v-model.number="blurTintOpacity"
         class="w-full" />
+
+      <label class="text-xs text-muted-foreground flex justify-between">
+        coverage
+        <span class="text-muted-foreground/60">{{ coverage }}%</span>
+      </label>
+      <input type="range" min="20" max="100" v-model.number="coverage" class="w-full" />
 
       <div class="flex items-center gap-2">
         <label class="text-xs text-muted-foreground">tint color</label>
         <input
           type="color"
           v-model="blurColor"
-          class="w-12 h-7 border-0 bg-transparent cursor-pointer rounded" />
+          class="w-8 h-7 border-0 bg-transparent cursor-pointer rounded ml-auto" />
       </div>
     </div>
   </div>
