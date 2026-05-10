@@ -430,7 +430,7 @@
 
   --color-secondary: color-mix(in oklab, var(--color-mixture-1) 87.5%, var(--color-mixture-2));
   --color-accent: color-mix(in oklab,
-      var(--color-mixture-1, #ffffff) 93.5%,
+      var(--color-mixture-1, #ffffff) 93%,
       var(--color-mixture-2, #000000));
   --color-muted: color-mix(in oklab,
       var(--color-mixture-1, #ffffff) 92.5%,
