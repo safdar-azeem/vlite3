@@ -619,10 +619,7 @@ const handleBackendExport = async (format: string) => {
       </div>
       <slot name="custom-header" v-else v-bind="screenState" />
       <slot name="sub-header" v-bind="screenState" />
-      <div
-        v-if="hasQuickFilters"
-        class="-mt-1 w-full min-w-0 overflow-hidden"
-        :class="quickFilterVariant == 'line' ? 'mb-1.5 sm:mb-3' : 'mb-3.5'">
+      <div v-if="hasQuickFilters" class="-mt-1.5 w-full min-w-0 overflow-hidden mb-3.5">
         <ScreenQuickFilters
           v-model="activeQuickFilter"
           :options="quickFilters!"
