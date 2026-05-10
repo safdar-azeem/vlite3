@@ -34,6 +34,13 @@ const variantOptions: TabesOption[] = [
 	{ label: 'Option 2', value: '2' },
 	{ label: 'Option 3', value: '3' },
 ]
+
+// Demo 5: Scrollable
+const scrollVal = ref('1')
+const scrollOptions: TabesOption[] = Array.from({ length: 15 }, (_, i) => ({
+	label: `Tab Item ${i + 1}`,
+	value: `${i + 1}`
+}))
 </script>
 
 <template>
@@ -174,6 +181,21 @@ const variantOptions: TabesOption[] = [
 						:options="variantOptions"
 						variant="line" />
 				</div>
+			</div>
+		</div>
+
+		<!-- Scrollable -->
+		<div class="space-y-4">
+			<h3 class="text-lg font-semibold text-gray-900">Scrollable (Overflow)</h3>
+			<div class="p-8 border rounded-xl bg-white shadow-sm flex flex-col gap-6 w-full overflow-hidden">
+				<Tabes
+					v-model="scrollVal"
+					:options="scrollOptions" />
+        
+				<Tabes
+					v-model="scrollVal"
+					:options="scrollOptions"
+					variant="line" />
 			</div>
 		</div>
 	</div>
