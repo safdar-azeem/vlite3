@@ -7,8 +7,8 @@ export interface NumberInputProps {
   min?: number
   max?: number
   step?: number
-  variant?: 'split' | 'stacked'
-  mode?: 'solid' | 'outline' | 'ghost'
+  layout?: 'split' | 'stacked'
+  variant?: 'solid' | 'outline' | 'transparent'
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   disabled?: boolean
   placeholder?: string
@@ -21,8 +21,8 @@ export interface NumberInputProps {
 const props = withDefaults(defineProps<NumberInputProps>(), {
   modelValue: undefined,
   step: 1,
-  variant: 'split',
-  mode: 'outline',
+  layout: 'split',
+  variant: 'outline',
   size: 'md',
   disabled: false,
   readonly: false,
@@ -107,11 +107,11 @@ const roundedRightStyles = computed(() => {
 // wrapper classes
 const wrapperClasses = computed(() => {
   return [
-    'flex items-center w-full relative transition-all duration-200',
+    'flex items-center w-full relative transition-all duration-200 text-foreground',
     props.disabled ? 'opacity-50 cursor-not-allowed' : '',
-    props.mode === 'solid' ? 'bg-muted' : '',
-    props.mode === 'outline' ? 'border border-input bg-background' : '',
-    props.mode === 'ghost' ? 'bg-transparent' : '',
+    props.variant === 'solid' ? 'bg-gray-100' : '',
+    props.variant === 'outline' ? 'border border-input bg-background' : '',
+    props.variant === 'transparent' ? 'bg-transparent' : '',
     sizeStyles.value.h,
     roundedStyles.value,
   ]
@@ -120,8 +120,8 @@ const wrapperClasses = computed(() => {
 // Input classes
 const inputClasses = computed(() => {
   return [
-    'flex-1 w-full bg-transparent focus:outline-none appearance-none',
-    props.variant === 'split' ? 'text-center' : 'text-left pl-3 pr-2',
+    'flex-1 w-full bg-transparent focus:outline-none appearance-none text-foreground',
+    props.layout === 'split' ? 'text-center' : 'text-left pl-3 pr-2',
     'placeholder:text-muted-foreground/50',
     sizeStyles.value.text,
     props.disabled ? 'cursor-not-allowed' : '',
@@ -132,21 +132,21 @@ const inputClasses = computed(() => {
 const buttonClasses = computed(() => {
   const base =
     'flex items-center justify-center transition-colors active:scale-95 shrink-0 select-none'
-  const hover = !props.disabled ? 'hover:text-primary hover:bg-muted/50' : ''
+  const hover = !props.disabled ? 'hover:text-primary hover:bg-accent' : ''
   const size = props.size === 'xs' || props.size === 'sm' ? 'w-6' : 'w-8'
 
-  if (props.variant === 'split') {
-    if (props.mode === 'solid') {
+  if (props.layout === 'split') {
+    if (props.variant === 'solid') {
       return [
         base,
-        !props.disabled ? 'hover:text-primary hover:bg-background/80' : '',
-        'bg-background shadow-sm rounded-full mx-1 my-0.5 aspect-square self-center h-[calc(100%-12px)] w-auto max-w-[calc(100%-12px)] flex items-center justify-center',
+        !props.disabled ? 'hover:text-primary hover:bg-gray-100 shadow-sm' : '',
+        'bg-background rounded-md mx-1 my-0.5 aspect-square self-center h-[calc(100%-8px)] w-auto max-w-[calc(100%-8px)] flex items-center justify-center text-foreground',
       ]
     }
-    return [base, hover, 'h-full', 'px-2']
+    return [base, hover, 'h-full', 'px-3', 'text-gray-600 hover:text-gray-900']
   } else {
     // Stacked
-    return [base, hover, 'h-1/2 w-8 border-l border-input/50']
+    return [base, hover, 'h-1/2 w-8 border-l border-input text-muted-foreground']
   }
 })
 
@@ -250,12 +250,12 @@ onBeforeUnmount(() => {
   <div :class="[wrapperClasses, 'overflow-hidden']">
     <button
       tabindex="-1"
-      v-if="variant === 'split' && !disabled && !readonly"
+      v-if="layout === 'split' && !disabled && !readonly"
       type="button"
       :class="[
         buttonClasses,
-        mode === 'outline' ? 'border-r border-input' : '',
-        variant === 'split' && mode !== 'solid' ? roundedLeftStyles : '',
+        variant === 'outline' ? 'border-r border-input' : '',
+        layout === 'split' && variant !== 'solid' ? roundedLeftStyles : '',
       ]"
       :disabled="disabled || (min !== undefined && Number(localValue) <= min)"
       @pointerdown="startContinuous('dec', $event)"
@@ -286,12 +286,12 @@ onBeforeUnmount(() => {
 
     <button
       tabindex="-1"
-      v-if="variant === 'split' && !disabled && !readonly"
+      v-if="layout === 'split' && !disabled && !readonly"
       type="button"
       :class="[
         buttonClasses,
-        mode === 'outline' ? 'border-l border-input' : '',
-        variant === 'split' && mode !== 'solid' ? roundedRightStyles : '',
+        variant === 'outline' ? 'border-l border-input' : '',
+        layout === 'split' && variant !== 'solid' ? roundedRightStyles : '',
       ]"
       :disabled="disabled || (max !== undefined && Number(localValue) >= max)"
       @pointerdown="startContinuous('inc', $event)"
@@ -303,12 +303,12 @@ onBeforeUnmount(() => {
       <Icon icon="lucide:plus" :class="sizeStyles.icon" />
     </button>
 
-    <div v-if="variant === 'stacked' && !disabled && !readonly" class="flex flex-col justify-center h-full py-[3px] pr-[3px]">
-      <div class="flex flex-col h-full w-6 scale-80">
+    <div v-if="layout === 'stacked' && !disabled && !readonly" class="flex flex-col justify-center h-full py-[2px] pr-[2px]">
+      <div class="flex flex-col h-full w-6 scale-85">
         <button
           tabindex="-1"
           type="button"
-          class="flex-1 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-muted-foreground hover:text-foreground rounded-t-[3px] border-b border-gray-300 transition-colors disabled:cursor-not-allowed"
+          :class="['flex-1 flex items-center justify-center hover:text-foreground rounded-t-[3px] border-b border-input transition-colors disabled:cursor-not-allowed', variant === 'solid' ? 'bg-background hover:bg-gray-100 text-foreground' : 'bg-gray-100 hover:bg-gray-200 text-gray-600']"
           :disabled="disabled || (max !== undefined && Number(localValue) >= max)"
           @pointerdown="startContinuous('inc', $event)"
           @pointerup="stopContinuous"
@@ -317,14 +317,14 @@ onBeforeUnmount(() => {
           @contextmenu.prevent
           :data-testid="$attrs['data-testid'] ? `${$attrs['data-testid']}-inc` : (name ? `number-${name}-inc` : (id ? `number-${id}-inc` : 'number-input-inc'))">
           <Icon
-            class="text-gray-700/85!"
+            class="text-current"
             icon="mynaui:chevron-up-solid"
             :class="size === 'xs' || size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5'" />
         </button>
         <button
           tabindex="-1"
           type="button"
-          class="flex-1 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-muted-foreground hover:text-foreground rounded-b-[3px] transition-colors disabled:cursor-not-allowed"
+          :class="['flex-1 flex items-center justify-center hover:text-foreground rounded-b-[3px] transition-colors disabled:cursor-not-allowed', variant === 'solid' ? 'bg-background hover:bg-gray-100 text-foreground' : 'bg-gray-100 hover:bg-gray-200 text-gray-600']"
           :disabled="disabled || (min !== undefined && Number(localValue) <= min)"
           @pointerdown="startContinuous('dec', $event)"
           @pointerup="stopContinuous"
@@ -333,7 +333,7 @@ onBeforeUnmount(() => {
           @contextmenu.prevent
           :data-testid="$attrs['data-testid'] ? `${$attrs['data-testid']}-dec` : (name ? `number-${name}-dec` : (id ? `number-${id}-dec` : 'number-input-dec'))">
           <Icon
-            class="text-gray-700/85!"
+            class="text-current"
             icon="mynaui:chevron-down-solid"
             :class="size === 'xs' || size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5'" />
         </button>
