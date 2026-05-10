@@ -489,7 +489,7 @@ const handleBackendExport = async (format: string) => {
           ]">
           <div
             :class="[
-              'flex-1 w-full flex items-center justify-start overflow-x-auto pt-1.5',
+              'flex-1 w-full min-w-0 flex items-center justify-start overflow-hidden pt-1.5',
               filtersContainerClass,
             ]">
             <ScreenQuickFilters
@@ -621,7 +621,7 @@ const handleBackendExport = async (format: string) => {
       <slot name="sub-header" v-bind="screenState" />
       <div
         v-if="hasQuickFilters"
-        class="-mt-1 max-sm:hidden!"
+        class="-mt-1 w-full min-w-0 overflow-hidden"
         :class="quickFilterVariant == 'line' ? 'mb-1.5 sm:mb-3' : 'mb-3.5'">
         <ScreenQuickFilters
           v-model="activeQuickFilter"
