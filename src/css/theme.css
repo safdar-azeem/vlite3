@@ -584,19 +584,19 @@
 }
 
 .dark .bg-card .bg-card {
-  --color-body: #202020 !important;
-  --color-white: #202020 !important;
-  --color-mixture-1: #181818;
+  --color-body: #1C1C1C !important;
+  --color-white: #1C1C1C !important;
+  --color-mixture-1: #232323 !important;
   --color-mixture-2: #000000;
-  background-color: #202020 !important;
+  background-color: #1C1C1C !important;
 }
 
 .dark .bg-card .bg-card .bg-card {
-  --color-body: #292929 !important;
-  --color-white: #292929 !important;
-  --color-mixture-1: #202020;
+  --color-body: #222222 !important;
+  --color-white: #222222 !important;
+  --color-mixture-1: #282828 !important;
   --color-mixture-2: #000000;
-  background-color: #292929 !important;
+  background-color: #222222 !important;
 }
 
 
@@ -668,6 +668,10 @@
 
 .dark .text-danger {
   color: #e8201f !important
+}
+
+.dark .text-warning {
+  color: #e98d00 !important
 }
 
 
