@@ -159,7 +159,7 @@ const handleClick = (e: MouseEvent) => {
       <div 
         v-if="variant === 'bordered'" 
         class="absolute bottom-0 right-0 h-[1px] bg-border pointer-events-none" 
-        :style="{ left: Math.max(0, depth - 1) * 20 + 10 + 'px' }"
+        :style="{ left: depth * 20 + 'px' }"
       ></div>
       <div 
         class="flex items-center pr-2" 
