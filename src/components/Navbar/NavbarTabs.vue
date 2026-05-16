@@ -230,4 +230,16 @@ const getItemClasses = (item: NavbarTabItem): string => {
 .fade-x-leave-to {
   opacity: 0;
 }
+
+.navbar-tabs-no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.navbar-tabs-no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
 </style>
