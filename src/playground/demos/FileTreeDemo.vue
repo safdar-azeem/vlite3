@@ -251,6 +251,17 @@ const handleLog = (msg: string) => {
     </div>
 
     <div class="space-y-4">
+      <h3 class="text-lg font-semibold border-b pb-2">Bordered Variant</h3>
+      <p class="text-sm text-gray-500 mb-2">
+        A more spacious UI style with bottom borders for better readability on large trees.
+      </p>
+      <div class="flex gap-6">
+        <div class="w-1/2 border rounded-lg p-4 bg-card h-[300px] overflow-auto">
+          <FileTree :data="basicData" selection-mode="single" variant="bordered" :default-expanded-keys="['root', 'src']" />
+        </div>
+      </div>
+    </div>
+    <div class="space-y-4">
       <h3 class="text-lg font-semibold border-b pb-2">Content Search Highlighting</h3>
       <p class="text-sm text-gray-500 mb-2">
         Simulates search results where the file content is matched. Note the line number and
