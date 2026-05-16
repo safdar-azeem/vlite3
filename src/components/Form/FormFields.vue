@@ -279,12 +279,13 @@ const getSafeLabel = (field: IForm) => {
 
         <div
           class="relative"
-          :class="
+          :class="[
             getResolvedType(field) === 'check' ||
             (getResolvedType(field) === 'switch' && field.props?.switchVariant === 'basic')
               ? 'w-auto'
-              : 'w-full'
-          "
+              : 'w-full',
+            getResolvedType(field) === 'switch' || getResolvedType(field) === 'check' ? 'mt-auto' : ''
+          ]"
           @focusin="handleFocusIn(field.name)"
           @focusout="handleFocusOut(field.name)">
           <label
