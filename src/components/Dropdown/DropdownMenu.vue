@@ -94,7 +94,8 @@ const normalizedOptions = computed<IDropdownOption[]>(() => {
 })
 
 const showSearch = computed(() => {
-  return props.searchable && (normalizedOptions.value.length || 0) > 5
+  if (!props.searchable) return false
+  return props.remote || (normalizedOptions.value.length || 0) > 5 || searchQuery.value.length > 0
 })
 
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
