@@ -264,9 +264,9 @@ const fieldProps = computed(() => {
 
   // Switch
   if (type === 'switch') {
-    // Destructure to prevent form-level props (variant, size, rounded, error) from
+    // Destructure to prevent form-level props (variant, rounded, error) from
     // leaking into the Switch component which does not accept them.
-    const { variant: _v, size: _s, rounded: _r, error: _e, switchVariant: _sv, ...safeSwitchProps } = baseProps
+    const { variant: _v, rounded: _r, error: _e, switchVariant: _sv, ...safeSwitchProps } = baseProps
     return {
       ...safeSwitchProps,
       modelValue: !!props.value,
@@ -276,6 +276,7 @@ const fieldProps = computed(() => {
       descriptionI18n: props.field.props?.descriptionI18n,
       // Default to 'card' inside forms unless explicitly overridden via field.props.switchVariant
       variant: (props.field.props?.switchVariant as 'basic' | 'card') ?? 'card',
+      size: props.size,
     }
   }
 
