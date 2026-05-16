@@ -20,6 +20,7 @@ export interface FileNode {
 }
 
 export type FileTreeSelectionMode = 'single' | 'multiple' | 'none'
+export type FileTreeVariant = 'default' | 'bordered'
 
 export interface FileTreeProps {
   modelValue?: string[]
@@ -33,6 +34,7 @@ export interface FileTreeProps {
   class?: string
   emptyText?: string
   emptyTextI18n?: string
+  variant?: FileTreeVariant
 }
 
 export interface FileTreeEvents {
