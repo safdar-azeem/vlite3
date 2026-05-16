@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { FileNode, FileTreeSelectionMode } from './types'
+import type { FileNode, FileTreeSelectionMode, FileTreeVariant } from './types'
 import Icon from '../Icon.vue'
 import CheckBox from '../CheckBox.vue'
 import { $t } from '@/utils/i18n'
@@ -20,6 +20,7 @@ interface Props {
   showCheckboxes?: boolean
   highlightSearch?: boolean
   searchQuery?: string
+  variant?: FileTreeVariant
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -27,6 +28,7 @@ const props = withDefaults(defineProps<Props>(), {
   selectionMode: 'single',
   showCheckboxes: false,
   highlightSearch: false,
+  variant: 'default',
 })
 
 const emit = defineEmits<{
@@ -142,16 +144,28 @@ const handleClick = (e: MouseEvent) => {
 <template>
   <div class="flex flex-col select-none">
     <div
-      class="group flex flex-col rounded-md transition-colors cursor-pointer"
+      class="group flex flex-col transition-colors cursor-pointer relative"
       :class="{
         'bg-accent/50 text-accent-foreground': isSelected && selectionMode === 'single' && !showCheckboxes,
         'hover:bg-accent/50': !isSelected || selectionMode !== 'single',
         'opacity-50 pointer-events-none': node.disabled,
+        'rounded-none': variant === 'bordered',
+        'rounded-md': variant === 'default',
       }"
       @click="handleClick"
       :title="displayLabel"
     >
-      <div class="flex items-center py-1 pr-2 min-h-[32px]" :style="{ paddingLeft }">
+      <!-- Custom Border Bottom -->
+      <div 
+        v-if="variant === 'bordered'" 
+        class="absolute bottom-0 right-0 h-[1px] bg-border pointer-events-none" 
+        :style="{ left: Math.max(0, depth - 1) * 20 + 10 + 'px' }"
+      ></div>
+      <div 
+        class="flex items-center pr-2" 
+        :class="variant === 'bordered' ? 'py-2 min-h-[40px]' : 'py-1 min-h-[32px]'"
+        :style="{ paddingLeft }"
+      >
         <button
           v-if="isFolder"
           type="button"
@@ -247,6 +261,7 @@ const handleClick = (e: MouseEvent) => {
           :show-checkboxes="showCheckboxes"
           :highlight-search="highlightSearch"
           :search-query="searchQuery"
+          :variant="variant"
           @toggle-expand="(n) => $emit('toggle-expand', n)"
           @toggle-select="(n) => $emit('toggle-select', n)"
           @click-node="(n) => $emit('click-node', n)"
