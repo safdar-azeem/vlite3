@@ -20,6 +20,7 @@ A recursive tree component for displaying hierarchical data (files, folders, cat
 | `defaultExpandedKeys` | `string[]`                      | `[]`       | Initially expanded nodes           |
 | `emptyText`           | `string`                        | —          | Text for empty state               |
 | `emptyTextI18n`       | `string`                        | —          | I18n key for empty text            |
+| `variant`             | `'default' \| 'bordered'`       | `'default'`| Visual style of the tree           |
 | `class`               | `string`                        | —          | CSS class for tree container       |
 
 ### Type Definitions
