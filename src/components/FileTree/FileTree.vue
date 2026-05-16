@@ -11,6 +11,7 @@ const props = withDefaults(defineProps<FileTreeProps>(), {
   showCheckboxes: false,
   defaultExpandedKeys: () => [],
   highlightSearch: false,
+  variant: 'default',
 })
 
 const emit = defineEmits<FileTreeEvents>()
@@ -283,6 +284,7 @@ const displayEmptyText = computed(() => {
         :show-checkboxes="showCheckboxes"
         :highlight-search="highlightSearch"
         :search-query="searchQuery"
+        :variant="variant"
         @toggle-expand="handleToggleExpand"
         @toggle-select="handleToggleSelect"
         @click-node="(n) => emit('node-click', n)" >
