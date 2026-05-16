@@ -214,6 +214,43 @@ const handleLog = (msg: string) => {
     </div>
 
     <div class="space-y-4">
+      <h3 class="text-lg font-semibold border-b pb-2">Node Actions Slot</h3>
+      <p class="text-sm text-gray-500 mb-2">
+        Custom actions can be added to the right side of each node using the <code>#actions</code> slot.
+      </p>
+      <div class="flex gap-6">
+        <div class="w-1/2 border rounded-lg p-4 bg-card h-[300px]">
+          <FileTree :data="basicData" selection-mode="single" :default-expanded-keys="['root', 'src']">
+            <template #actions="{ node }">
+              <div class="flex items-center gap-2">
+                <button
+                  class="text-xs text-muted-foreground hover:text-primary transition-colors"
+                  @click="handleLog(`Action 1 on node: ${node.label}`)"
+                >
+                  Edit
+                </button>
+                <button
+                  class="text-xs text-red-500 hover:text-red-600 transition-colors"
+                  @click="handleLog(`Action 2 on node: ${node.id}`)"
+                >
+                  Delete
+                </button>
+              </div>
+            </template>
+          </FileTree>
+        </div>
+        <div class="w-1/2 space-y-4">
+          <div class="p-4 bg-muted rounded-lg">
+            <h4 class="font-medium mb-2">Logs</h4>
+            <div class="text-xs space-y-1 text-muted-foreground">
+              <div v-for="(log, i) in logs" :key="i">{{ log }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="space-y-4">
       <h3 class="text-lg font-semibold border-b pb-2">Content Search Highlighting</h3>
       <p class="text-sm text-gray-500 mb-2">
         Simulates search results where the file content is matched. Note the line number and
