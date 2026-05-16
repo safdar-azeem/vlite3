@@ -199,6 +199,10 @@ const handleClick = (e: MouseEvent) => {
             >
           </template>
         </div>
+
+        <div class="ml-2 flex items-center shrink-0" @click.stop v-if="$slots.actions">
+          <slot name="actions" :node="node" />
+        </div>
       </div>
 
       <div
@@ -246,7 +250,11 @@ const handleClick = (e: MouseEvent) => {
           @toggle-expand="(n) => $emit('toggle-expand', n)"
           @toggle-select="(n) => $emit('toggle-select', n)"
           @click-node="(n) => $emit('click-node', n)"
-        />
+        >
+          <template #actions="slotProps" v-if="$slots.actions">
+            <slot name="actions" v-bind="slotProps" />
+          </template>
+        </FileTreeNode>
       </template>
       
       <div
