@@ -43,6 +43,10 @@ interface FileNode {
 - `@select` (node: `FileNode`, selected: `boolean`): Emitted when selection changes.
 - `@expand` (node: `FileNode`, expanded: `boolean`): Emitted when a folder is expanded/collapsed.
 
+### Slots
+
+- `actions` (`{ node: FileNode }`): Custom content to render on the right end of each node (e.g., action buttons like edit/delete).
+
 ### Usage
 
 #### 1. Content Search & Highlighting
@@ -114,5 +118,22 @@ const selectedIds = ref([])
       :default-expanded-keys="['root']" />
   </div>
   <div>Selected: {{ selectedIds }}</div>
+</template>
+```
+
+#### 4. Custom Node Actions
+
+You can render custom action buttons on the right side of the node using the `#actions` slot.
+
+```vue
+<template>
+  <FileTree :data="files">
+    <template #actions="{ node }">
+      <div class="flex gap-2 text-sm">
+        <button @click.stop="editFile(node)" class="text-blue-500 hover:text-blue-600">Edit</button>
+        <button @click.stop="deleteFile(node)" class="text-red-500 hover:text-red-600">Delete</button>
+      </div>
+    </template>
+  </FileTree>
 </template>
 ```
