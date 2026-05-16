@@ -466,10 +466,14 @@ const getComponentProps = (opt: TabesOption) => {
 }
 
 .scrollbar-hide {
-  scrollbar-width: none;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
   -webkit-overflow-scrolling: touch;
 }
 .scrollbar-hide::-webkit-scrollbar {
-  display: none;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
 }
 </style>
