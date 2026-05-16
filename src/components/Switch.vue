@@ -46,7 +46,7 @@ const displayDescription = computed(() =>
     v-if="variant === 'card'"
     class="flex items-center justify-between gap-4 w-full rounded-md border border-border bg-background px-4 cursor-pointer"
     :class="[
-      size === 'sm' ? 'min-h-7.5 py-1' : size === 'lg' ? 'min-h-10 py-2' : 'min-h-9 py-1.5',
+      size === 'sm' ? 'h-7.5 px-3' : size === 'lg' ? 'h-10 px-4' : 'h-9 px-4',
       disabled ? 'opacity-50 pointer-events-none' : ''
     ]"
     @click="toggle">
