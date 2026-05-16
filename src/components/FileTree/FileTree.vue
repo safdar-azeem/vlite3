@@ -285,7 +285,11 @@ const displayEmptyText = computed(() => {
         :search-query="searchQuery"
         @toggle-expand="handleToggleExpand"
         @toggle-select="handleToggleSelect"
-        @click-node="(n) => emit('node-click', n)" />
+        @click-node="(n) => emit('node-click', n)" >
+        <template #actions="slotProps" v-if="$slots.actions">
+          <slot name="actions" v-bind="slotProps" />
+        </template>
+      </FileTreeNode>
     </template>
     <div v-else class="text-sm text-muted-foreground p-4 text-center">{{ displayEmptyText }}</div>
   </div>
