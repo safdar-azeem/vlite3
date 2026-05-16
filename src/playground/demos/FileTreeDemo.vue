@@ -4,6 +4,7 @@ import { FileTree, FileNode } from '@/components/FileTree'
 import Input from '@/components/Input.vue'
 import DemoSection from '../DemoSection.vue'
 import sourceCode from './FileTreeDemo.vue?raw'
+import FileTreePlayground from './file-tree/FileTreePlayground.vue'
 
 // --- Data ---
 const basicData = ref<FileNode[]>([
@@ -148,6 +149,9 @@ const handleLog = (msg: string) => {
         async loading.
       </p>
     </div>
+
+    <!-- ── INTERACTIVE PLAYGROUND ───────────────────────────────────────────── -->
+    <FileTreePlayground />
 
     <div class="space-y-4">
       <h3 class="text-lg font-semibold border-b pb-2">Single Selection & Search</h3>
