@@ -274,7 +274,7 @@ const displayEmptyText = computed(() => {
       <FileTreeNode
         v-for="node in filteredData"
         :key="node.id"
-        v-memo="[node, selectedKeys, expandedKeys, indeterminateKeys, loadingKeys, highlightSearch, searchQuery]"
+        v-memo="[node, selectedKeys, expandedKeys, indeterminateKeys, loadingKeys, highlightSearch, searchQuery, showCheckboxes, variant, !!$slots.actions]"
         :node="node"
         :selection-mode="selectionMode"
         :selected-keys="selectedKeys"
