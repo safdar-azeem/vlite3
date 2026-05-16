@@ -437,8 +437,8 @@
   --color-destructive: #7f1d1d;
   --color-destructive-foreground: #fafafa;
 
-  --color-border: color-mix(in oklab, var(--color-mixture-1) 87%, var(--color-mixture-2));
-  --color-input: color-mix(in oklab, var(--color-mixture-1) 86%, var(--color-mixture-2));
+  --color-border: color-mix(in oklab, var(--color-mixture-1) 86%, var(--color-mixture-2));
+  --color-input: color-mix(in oklab, var(--color-mixture-1) 85%, var(--color-mixture-2));
 
   /* Charts (Dark) */
   --color-chart-1: #818cf8;
@@ -606,7 +606,7 @@
   --color-mixture-1: #f7f7f7 !important;
   --color-mixture-2: #000000 !important;
   background-color: #f7f7f7 !important;
-  border-color: color-mix(in oklab, var(--color-mixture-1) 95%, var(--color-mixture-2));
+  border-color: color-mix(in oklab, var(--color-mixture-1) 94%, var(--color-mixture-2));
 }
 
 .bg-card .bg-card {
