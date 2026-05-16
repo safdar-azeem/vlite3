@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { $t } from '@/utils/i18n'
+import type { InputSize } from '@/types'
 
 type SwitchVariant = 'basic' | 'card'
 
@@ -12,6 +13,7 @@ interface Props {
   description?: string
   descriptionI18n?: string
   variant?: SwitchVariant
+  size?: InputSize
   class?: string
   id?: string
 }
@@ -20,6 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
   modelValue: false,
   disabled: false,
   variant: 'basic',
+  size: 'md',
   class: '',
 })
 
@@ -41,8 +44,11 @@ const displayDescription = computed(() =>
 <template>
   <div
     v-if="variant === 'card'"
-    class="flex items-center justify-between gap-4 w-full rounded-md border border-border bg-background px-4 py-3 cursor-pointer"
-    :class="disabled ? 'opacity-50 pointer-events-none' : ''"
+    class="flex items-center justify-between gap-4 w-full rounded-md border border-border bg-background px-4 cursor-pointer"
+    :class="[
+      size === 'sm' ? 'min-h-7.5 py-1' : size === 'lg' ? 'min-h-10 py-2' : 'min-h-9 py-1.5',
+      disabled ? 'opacity-50 pointer-events-none' : ''
+    ]"
     @click="toggle">
     <div class="flex flex-col gap-0.5 min-w-0">
       <span
