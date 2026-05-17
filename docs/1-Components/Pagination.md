@@ -8,7 +8,8 @@
 | :-------------------- | :------------------------------------------ | :------------ | :------------------------------------------------- |
 | `currentPage`         | `number`                                    | `1`           | Binding (`v-model:currentPage`)                    |
 | `totalPages`          | `number`                                    | required      | Total pages                                        |
-| `totalItems`          | `number`                                    | `1`           | Number of sibling pages to show                    |
+| `totalItems`          | `number`                                    | `0`           | Total number of items (records)                    |
+| `siblingCount`        | `number`                                    | `1`           | Number of sibling pages to show next to current    |
 | `disabled`            | `boolean`                                   | `false`       | Disable navigation                                 |
 | `showEdges`           | `boolean`                                   | `false`       | Show first/last buttons                            |
 | `showPageInfo`        | `boolean`                                   | `false`       | Show "Page X of Y"                                 |
