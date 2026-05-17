@@ -7,7 +7,8 @@ import { $t } from '@/utils/i18n'
 
 const props = withDefaults(defineProps<PaginationProps>(), {
   currentPage: 1,
-  totalItems: 1,
+  totalItems: 0,
+  siblingCount: 1,
   disabled: false,
   showEdges: false,
   showPageInfo: false,
@@ -46,14 +47,15 @@ const handleItemsPerPageChange = (event: Event) => {
 }
 
 const paginationRange = computed(() => {
-  const totalPageNumbers = props.totalItems * 2 + 5
+  const siblingCount = props.siblingCount ?? 1
+  const totalPageNumbers = siblingCount * 2 + 5
 
   if (totalPageNumbers >= props.totalPages) {
     return range(1, props.totalPages)
   }
 
-  const leftSiblingIndex = Math.max(props.currentPage - props.totalItems, 1)
-  const rightSiblingIndex = Math.min(props.currentPage + props.totalItems, props.totalPages)
+  const leftSiblingIndex = Math.max(props.currentPage - siblingCount, 1)
+  const rightSiblingIndex = Math.min(props.currentPage + siblingCount, props.totalPages)
 
   const shouldShowLeftDots = leftSiblingIndex > 2
   const shouldShowRightDots = rightSiblingIndex < props.totalPages - 2
@@ -62,13 +64,13 @@ const paginationRange = computed(() => {
   const lastPageIndex = props.totalPages
 
   if (!shouldShowLeftDots && shouldShowRightDots) {
-    const leftItemCount = 3 + 2 * props.totalItems
+    const leftItemCount = 3 + 2 * siblingCount
     const leftRange = range(1, leftItemCount)
     return [...leftRange, 'DOTS', lastPageIndex]
   }
 
   if (shouldShowLeftDots && !shouldShowRightDots) {
-    const rightItemCount = 3 + 2 * props.totalItems
+    const rightItemCount = 3 + 2 * siblingCount
     const rightRange = range(props.totalPages - rightItemCount + 1, props.totalPages)
     return [firstPageIndex, 'DOTS', ...rightRange]
   }
