@@ -93,6 +93,20 @@
     scroll-behavior: smooth;
   }
 
+  button:focus,
+  input:focus,
+  textarea:focus,
+  [role="button"]:focus {
+    outline: none !important;
+  }
+
+  button:focus-visible,
+
+  [role="button"]:focus-visible {
+    outline: 1px solid color-mix(in oklab, var(--color-foreground) 40%, transparent) !important;
+    outline-offset: 2px !important;
+  }
+
   .dropdown .tooltip-content {
     padding: 0 !important;
   }
