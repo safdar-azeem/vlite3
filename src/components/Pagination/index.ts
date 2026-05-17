@@ -14,6 +14,7 @@ export interface PaginationProps {
   currentPage?: number
   totalPages: number
   totalItems?: number
+  siblingCount?: number
   disabled?: boolean
   showEdges?: boolean
   showPageInfo?: boolean // "Page 1 of 10"
