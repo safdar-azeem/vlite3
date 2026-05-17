@@ -218,7 +218,7 @@ const txtNext = computed(() => {
       <Button
         v-if="showEdges"
         variant="ghost"
-        size="sm"
+        size="sm2"
         icon="lucide:chevrons-left"
         :class="roundedClass"
         :disabled="disabled || currentPage === 1"
@@ -227,7 +227,7 @@ const txtNext = computed(() => {
       <Button
         v-if="navType === 'icon'"
         variant="ghost"
-        size="sm"
+        size="sm2"
         icon="lucide:chevron-left"
         :class="roundedClass"
         :disabled="disabled || currentPage === 1"
@@ -236,7 +236,7 @@ const txtNext = computed(() => {
       <template v-else>
         <Button
           variant="ghost"
-          size="sm"
+          size="sm2"
           class="hidden sm:flex"
           :class="roundedClass"
           :disabled="disabled || currentPage === 1"
@@ -245,7 +245,7 @@ const txtNext = computed(() => {
         </Button>
         <Button
           variant="ghost"
-          size="sm"
+          size="sm2"
           icon="lucide:chevron-left"
           class="flex sm:hidden"
           :class="roundedClass"
@@ -254,14 +254,14 @@ const txtNext = computed(() => {
       </template>
 
       <template v-for="(page, index) in paginationRange" :key="index">
-        <div v-if="page === 'DOTS'" class="px-2 text-muted-foreground select-none">...</div>
+        <div v-if="page === 'DOTS'" class="w-8 h-8 flex items-center justify-center text-muted-foreground select-none">...</div>
 
         <!-- Active / current page button -->
         <Button
           v-else-if="page === currentPage"
-          size="sm"
+          size="sm2"
           :variant="getActivePageClasses.variant"
-          :class="[getActivePageClasses.extraClass, roundedClass]"
+          :class="['w-8! h-8! px-0! py-0! flex items-center justify-center min-w-[2rem]', getActivePageClasses.extraClass, roundedClass]"
           :disabled="disabled">
           {{ page }}
         </Button>
@@ -269,9 +269,9 @@ const txtNext = computed(() => {
         <!-- Inactive page button -->
         <Button
           v-else
-          size="sm"
+          size="sm2"
           variant="ghost"
-          :class="['text-gray-600 hover:bg-gray-100', roundedClass]"
+          :class="['w-8! h-8! px-0! py-0! border border-transparent flex items-center justify-center min-w-[2rem] text-gray-600 hover:bg-gray-100', roundedClass]"
           :disabled="disabled"
           @click="handlePageChange(page as number)">
           {{ page }}
@@ -281,7 +281,7 @@ const txtNext = computed(() => {
       <Button
         v-if="navType === 'icon'"
         variant="ghost"
-        size="sm"
+        size="sm2"
         icon="lucide:chevron-right"
         :class="roundedClass"
         :disabled="disabled || currentPage === totalPages"
@@ -290,7 +290,7 @@ const txtNext = computed(() => {
       <template v-else>
         <Button
           variant="ghost"
-          size="sm"
+          size="sm2"
           class="hidden sm:flex"
           :class="roundedClass"
           :disabled="disabled || currentPage === totalPages"
@@ -299,7 +299,7 @@ const txtNext = computed(() => {
         </Button>
         <Button
           variant="ghost"
-          size="sm"
+          size="sm2"
           icon="lucide:chevron-right"
           class="flex sm:hidden"
           :class="roundedClass"
@@ -310,7 +310,7 @@ const txtNext = computed(() => {
       <Button
         v-if="showEdges"
         variant="ghost"
-        size="sm"
+        size="sm2"
         icon="lucide:chevrons-right"
         :class="roundedClass"
         :disabled="disabled || currentPage === totalPages"
