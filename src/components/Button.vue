@@ -25,7 +25,7 @@ const tileIconBgMap: Record<ButtonVariant, string> = {
   'outline-warning': 'bg-warning/10 text-warning',
   'outline-info': 'bg-info/10 text-info',
   'outline-success': 'bg-success/10 text-success',
-  ghost: 'bg-accent text-accent-foreground',
+  ghost: 'bg-secondary text-foreground',
   link: 'bg-primary/10 text-primary',
   transparent: 'bg-muted text-foreground',
 }
@@ -147,7 +147,7 @@ const classes = computed(() => {
     'outline-info': 'border border-info text-info hover:bg-info/10',
     'outline-success': 'border border-success text-success hover:bg-success/10',
 
-    ghost: 'hover:bg-accent hover:text-accent-foreground text-foreground',
+    ghost: 'hover:bg-secondary hover:text-foreground text-foreground',
     link: 'text-primary underline-offset-4 hover:underline',
     transparent: '',
   }
@@ -325,7 +325,10 @@ const textScaleClass = computed(() => (resolvedLayout.value === 'vertical' ? 'sc
         :class="[iconClass, iconClasses, isOnlyIcon ? 'mx-auto' : '']" />
 
       <template v-if="!props.description && resolvedLayout === 'horizontal'">
-        <div v-if="textClass" :class="textClass" class="leading-tight truncate inline-flex items-center justify-center gap-1.5">
+        <div
+          v-if="textClass"
+          :class="textClass"
+          class="leading-tight truncate inline-flex items-center justify-center gap-1.5">
           <slot>{{ displayText }}</slot>
         </div>
         <slot v-else>{{ displayText }}</slot>
