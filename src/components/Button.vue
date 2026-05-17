@@ -121,7 +121,7 @@ const classes = computed(() => {
           ? 'gap-3'
           : 'gap-2'
 
-  const baseClasses = `inline-flex items-center justify-center whitespace-nowrap text-sm font-medium disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] cursor-pointer ${layoutGap} ${isOnlyIcon.value ? 'icon-only shrink-0' : ''}`
+  const baseClasses = `inline-flex items-center justify-center whitespace-nowrap text-sm font-medium disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] cursor-pointer focus:outline-none focus-visible:outline-none ${layoutGap} ${isOnlyIcon.value ? 'icon-only shrink-0' : ''}`
 
   const variants: Record<ButtonVariant, string> = {
     primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
